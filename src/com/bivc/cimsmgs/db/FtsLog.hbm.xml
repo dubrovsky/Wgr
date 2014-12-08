@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.FtsLog" table="FTS_LOG" dynamic-insert="true" dynamic-update="true">
+        <id name="hid" type="long">
+            <column name="HID" precision="30" scale="0"/>
+            <generator class="sequence">
+                <param name="sequence">FTS_LOG_HID</param>
+            </generator>
+        </id>
+        <property name="hid_src" type="long" column="HID_SRC" precision="20" scale="0"/>
+        <property name="in_out" type="byte" column="IN_OUT" precision="1" scale="0"/>
+        <property name="xml" type="string" column="XML" length="4000"/>
+        <property name="res_code" type="string" column="RES_CODE" length="11"/>
+        <property name="res_descr" type="string" column="RES_DESCR" length="4000"/>
+        <property name="reg_id" type="string" column="REG_ID" length="36"/>
+        <property name="reg_status" type="string" column="REG_STATUS" length="4000"/>
+        <property name="message_type" type="string" column="MESSAGE_TYPE" length="11"/>
+        <property name="doc_id" type="string" column="DOC_ID" length="36"/>
+        <property name="ref_doc_id" type="string" column="REF_DOC_ID" length="36"/>
+        <property name="ecp_res" type="byte" column="ECP_RES" precision="1" scale="0"/>
+        <property name="doc_date" type="timestamp" column="DOC_DATE" length="7"/>
+    </class>
+</hibernate-mapping>

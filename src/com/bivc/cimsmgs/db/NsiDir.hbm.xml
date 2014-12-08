@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 16.01.2012 14:17:16 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.NsiDir" table="NSI_DIR">
+        <id name="hid" type="big_decimal">
+            <column name="HID" precision="20" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <property name="name" type="string">
+            <column name="NAME" length="300" />
+        </property>
+        <property name="descr" type="string">
+            <column name="DESCR" length="300" />
+        </property>
+        <property name="zipped" type="boolean">
+            <column name="zipped" precision="1" scale="0"/>
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 22.04.2009 13:49:34 by Hibernate Tools 3.2.4.GA -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.nsi.Country" table="COUNTRY">
+        <id name="code" type="string">
+            <column name="CODE" length="2" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="currency" class="com.bivc.cimsmgs.db.nsi.Currency" fetch="select">
+            <column name="CUR_CODE" length="3" not-null="true" />
+        </many-to-one>
+        <property name="id" type="big_decimal">
+            <column name="ID" precision="22" scale="0" not-null="true" unique="true" />
+        </property>
+        <property name="name" type="string">
+            <column name="NAME" length="128" not-null="true" />
+        </property>
+        <property name="codeInt" type="java.lang.Short">
+            <column name="CODE_INT" precision="3" scale="0" unique="true" />
+        </property>
+        <property name="nameLatin1" type="string">
+            <column name="NAME_LATIN1" length="50" not-null="true" />
+        </property>
+        <property name="pdImport" type="string">
+            <column name="PD_IMPORT" length="1" not-null="true" />
+        </property>
+        <property name="pdExport" type="string">
+            <column name="PD_EXPORT" length="1" not-null="true" />
+        </property>
+        <property name="pdTransit" type="string">
+            <column name="PD_TRANSIT" length="1" not-null="true" />
+        </property>
+        <property name="sendDecl" type="string">
+            <column name="SEND_DECL" length="1" not-null="true" />
+        </property>
+        <property name="presentsCustomsCodes" type="string">
+            <column name="PRESENTS_CUSTOMS_CODES" length="1" not-null="true" />
+        </property>
+        <property name="smgsInstruction" type="string">
+            <column name="SMGS_INSTRUCTION" length="128" />
+        </property>
+        <property name="invoiceInstruction" type="string">
+            <column name="INVOICE_INSTRUCTION" length="128" />
+        </property>
+        <set name="bankaccounts" inverse="true" lazy="true" table="BANKACCOUNT" fetch="select">
+            <key>
+                <column name="COUNTRY_CODE" length="2" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.nsi.Bankaccount" />
+        </set>
+        <set name="customcodes" inverse="true" lazy="true" table="CUSTOMCODE" fetch="select">
+            <key>
+                <column name="COUNTRY_CODE" length="2" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.nsi.Customcode" />
+        </set>
+        <set name="companies" inverse="true" lazy="true" table="COMPANY" fetch="select">
+            <key>
+                <column name="REG_COUNTRY" length="2" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.nsi.Company" />
+        </set>
+        <set name="clientscompanies" inverse="true" lazy="true" table="CLIENTSCOMPANY" fetch="select">
+            <key>
+                <column name="REG_COUNTRY" length="2" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.nsi.Clientscompany" />
+        </set>
+        <set name="clibankaccounts" inverse="true" lazy="true" table="CLIBANKACCOUNT" fetch="select">
+            <key>
+                <column name="COUNTRY_CODE" length="2" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.nsi.Clibankaccount" />
+        </set>
+        <set name="railroadlands" inverse="true" lazy="true" table="RAILROADLAND" fetch="select">
+            <key>
+                <column name="COUNTRY_CODE" length="2" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.nsi.Railroadland" />
+        </set>
+        <set name="addresses" inverse="true" lazy="true" table="ADDRESS" fetch="select">
+            <key>
+                <column name="COUNTRY_CODE" length="2" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.nsi.Address" />
+        </set>
+        <set name="railroadstationsForCountryCode" inverse="true" lazy="true" table="RAILROADSTATION" fetch="select">
+            <key>
+                <column name="COUNTRY_CODE" length="2" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.nsi.Railroadstation" />
+        </set>
+        <set name="railroadstationsForLinkCountryCode" inverse="true" lazy="true" table="RAILROADSTATION" fetch="select">
+            <key>
+                <column name="LINK_COUNTRY_CODE" length="2" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.nsi.Railroadstation" />
+        </set>
+        <set name="cliaddresses" inverse="true" lazy="true" table="CLIADDRESS" fetch="select">
+            <key>
+                <column name="COUNTRY_CODE" length="2" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.nsi.Cliaddress" />
+        </set>
+    </class>
+</hibernate-mapping>

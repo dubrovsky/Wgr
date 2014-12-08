@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 12.07.2012 14:46:29 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.PrintTemplates" table="PRINT_TEMPLATES">
+        <id name="hid" type="long">
+            <column name="HID" precision="22" scale="0" />
+            <generator class="sequence">
+                <param name="sequence">PRINT_TEMPLATES_HID</param>
+            </generator>
+        </id>
+        <many-to-one name="docDir" class="com.bivc.cimsmgs.db.DocDir" fetch="select">
+            <column name="HID_DOC" precision="22" scale="0" not-null="true" />
+        </many-to-one>
+        <property name="name" type="string">
+            <column name="NAME" length="300" />
+        </property>
+        <property name="dattr" type="timestamp" >
+            <column name="DATTR" length="7"/>
+        </property>
+        <property name="un" type="string" update="false">
+            <column name="UN" length="20"/>
+        </property>
+        <property name="trans" type="string" update="false">
+            <column name="TRANS" length="20"/>
+        </property>
+        <property name="altered" type="timestamp" update="false">
+            <column name="ALTERED" length="7"/>
+        </property>
+        <property name="defaults" type="boolean">
+            <column name="DEFAULTS" precision="1" scale="0" not-null="true" />
+        </property>
+        <property name="sync" type="boolean">
+            <column name="SYNC" precision="1" scale="0"/>
+        </property>
+        <property name="paperWidth" type="java.lang.Float">
+            <column name="PAPER_WIDTH" precision="4" scale="1" not-null="true" />
+        </property>
+        <property name="paperHeight" type="java.lang.Float">
+            <column name="PAPER_HEIGHT" precision="4" scale="1" not-null="true" />
+        </property>
+        <property name="fontSize" type="byte">
+            <column name="FONT_SIZE" precision="2" scale="0" not-null="true" />
+        </property>
+        <property name="fontFamily" type="string">
+            <column name="FONT_FAMILY" length="30" not-null="true" />
+        </property>
+        <property name="leading" type="java.lang.Byte">
+            <column name="LEADING" length="2" scale="0" not-null="true" />
+        </property>
+       <!-- <property name="bold" type="boolean">
+            <column name="BOLD" precision="1" scale="0" not-null="true" />
+        </property>
+        <property name="uppercase" type="boolean">
+            <column name="UPPERCASE" precision="1" scale="0" not-null="true" />
+        </property>-->
+        <set name="routePrintTemplateses" table="ROUTE_PRINT_TEMPLATES" inverse="true" lazy="true" cascade="all" batch-size="50">
+            <key>
+                <column name="HID_PRN_TMPL" precision="22" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.RoutePrintTemplates" />
+        </set>
+        <set name="routeUnPrintTemplateses" table="ROUTE_UN_PRINT_TEMPLATES" inverse="true" lazy="true" cascade="all" batch-size="50">
+            <key>
+                <column name="HID_PRN_TMPL" precision="22" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.RouteUnPrintTemplates" />
+        </set>
+        <set name="printBlankTemplRefs" table="PRINT_BLANK_TEMPL_REF" inverse="true" lazy="true" cascade="all" batch-size="50">
+            <key>
+                <column name="HID_TEMPL" precision="20" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.PrintBlankTemplRef" />
+        </set>
+        <map name="printDatas" table="PRINT_DATA" inverse="true" cascade="all-delete-orphan" batch-size="50" sort="natural">
+            <key>
+                <column name="HID_TEMPL" precision="22" scale="0" not-null="true" />
+            </key>
+            <map-key column="SORT" type="java.lang.Integer"/>
+            <one-to-many class="com.bivc.cimsmgs.db.PrintData" />
+        </map>
+        <!--<set name="printDatas" table="PRINT_DATA" inverse="true" lazy="true" cascade="all-delete-orphan" batch-size="50">-->
+            <!--<key>-->
+                <!--<column name="HID_TEMPL" precision="22" scale="0" not-null="true" />-->
+            <!--</key>-->
+            <!--<one-to-many class="com.bivc.cimsmgs.db.PrintData" />-->
+        <!--</set>-->
+    </class>
+</hibernate-mapping>

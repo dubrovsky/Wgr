@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:sec="http://www.springframework.org/schema/security"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
+                        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
+
+    <sec:global-method-security access-decision-manager-ref="accessDecisionManager">
+        <sec:protect-pointcut expression="execution(* com.bivc.cimsmgs.actions.exchange.Iftmin_A.*())" access="CIM_IFTMIN,CIM_BTLC"/>
+        <sec:protect-pointcut expression="execution(* com.bivc.cimsmgs.actions.User_A.userProvfile())" access="IS_AUTHENTICATED_FULLY"/>
+        <sec:protect-pointcut expression="execution(* com.bivc.cimsmgs.actions.User_A.unText())" access="IS_AUTHENTICATED_FULLY"/>
+        <sec:protect-pointcut expression="execution(* com.bivc.cimsmgs.actions.User_A.*())" access="CIM_USR_ADMIN"/>
+        <sec:protect-pointcut expression="execution(* com.bivc.cimsmgs.actions.*_A.save*())" access="CIM_SAVE"/>
+        <sec:protect-pointcut expression="execution(* com.bivc.cimsmgs.actions.*_A.delete*())" access="CIM_DELETE"/>
+    </sec:global-method-security>
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+
+    <sec:http pattern="/app/**" security="none"/>
+    <sec:http pattern="/build/**" security="none"/>
+    <sec:http pattern="/docs/**" security="none"/>
+    <sec:http pattern="/ext/**" security="none"/>
+    <sec:http pattern="/fonts/**" security="none"/>
+    <sec:http pattern="/jsp/**" security="none"/>
+    <sec:http pattern="/resources/**" security="none"/>
+    <sec:http pattern="/Login.jsp" security="none"/>
+    <sec:http pattern="/Locale.do" security="none"/>
+
+    <sec:http auto-config="false" access-decision-manager-ref="accessDecisionManager">
+        <sec:intercept-url pattern="/*.do" access="IS_AUTHENTICATED_FULLY"/>
+        <sec:intercept-url pattern="/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <!--<sec:custom-filter position="PRE_AUTH_FILTER" ref="myPreAuthFilter"/>-->
+        <sec:form-login login-page="/Locale.do" authentication-failure-url="/Locale.do?login_error"/>
+        <!--<sec:anonymous/>-->
+        <sec:logout logout-success-url="/Locale.do"/>
+    </sec:http>
+
+    <bean id="accessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased" >
+        <constructor-arg>
+            <list>
+                <bean class="org.springframework.security.access.vote.RoleVoter">
+                    <property name="rolePrefix" value="CIM_"/>
+                </bean>
+                <bean class="org.springframework.security.access.vote.AuthenticatedVoter"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <sec:authentication-manager alias="authenticationManager">
+        <!--<sec:authentication-provider ref="preAuthenticatedAuthenticationProvider"/>-->
+        <sec:authentication-provider ref="daoAuthenticationProvider"/>
+    </sec:authentication-manager>
+
+    <bean id="daoAuthenticationProvider"
+          class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+        <property name="hideUserNotFoundExceptions" value="false"/>
+        <property name="userDetailsService" ref="myUserDetailsService"/>
+    </bean>
+
+    <bean id="myUserDetailsService" class="com.bivc.cimsmgs.security.UserDetailsServiceImpl1"/>
+
+    <bean id="messageSource" class="org.springframework.security.core.SpringSecurityMessageSource">
+        <property name="basename" value="messages"/>
+    </bean>
+
+</beans>
+
+

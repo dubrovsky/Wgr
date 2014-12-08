@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.NsiOhr" table="NSI_OHR" batch-size="50">
+        <id name="hid" type="java.lang.Long">
+            <column name="HID" precision="20" scale="0"/>
+            <generator class="assigned"/>
+        </id>
+        <!--<many-to-one name="gng" class="com.bivc.cimsmgs.db.nsi.CargoGng" fetch="select">
+            <column name="cargoPl" precision="20" scale="0"  />
+        </many-to-one>-->
+        <!--<many-to-one name="etsng" class="com.bivc.cimsmgs.db.nsi.Cargo" fetch="select">
+            <column name="HID_CS" precision="20" scale="0"  />
+        </many-to-one>-->
+        <property name="etsng" type="string">
+            <column length="6" name="etsng"/>
+        </property>
+        <property name="cargoPl" type="string">
+            <column length="12" name="cargo_pl"/>
+        </property>
+        <property name="ohr" type="boolean">
+            <column name="ohr" precision="1" scale="0" />
+        </property>
+    </class>
+</hibernate-mapping>

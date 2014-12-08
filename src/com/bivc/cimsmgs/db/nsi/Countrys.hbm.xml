@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 08.04.2011 10:06:33 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.nsi.Countrys" table="COUNTRYS"
+           where="SYSDATE &gt;= COU_BGN and SYSDATE &lt; COU_END">
+        <id name="couUn" type="java.lang.Long">
+            <column name="COU_UN" precision="10" scale="0"/>
+            <generator class="assigned"/>
+        </id>
+        <property name="couId" type="java.lang.Long">
+            <column name="COU_ID" precision="10" scale="0"/>
+        </property>
+        <property name="countryNo" type="string">
+            <column length="3" name="COUNTRY_NO"/>
+        </property>
+        <property name="region" type="string">
+            <column length="1" name="REGION"/>
+        </property>
+        <property name="countryId" type="string">
+            <column length="4" name="COUNTRY_ID"/>
+        </property>
+        <property name="countryName" type="string">
+            <column length="232" name="COUNTRY_NAME"/>
+        </property>
+        <property name="countryFullname" type="string">
+            <column length="550" name="COUNTRY_FULLNAME"/>
+        </property>
+        <property name="countryId3" type="string">
+            <column length="4" name="COUNTRY_ID3"/>
+        </property>
+        <property name="countryOkrb" type="string">
+            <column length="150" name="COUNTRY_OKRB"/>
+        </property>
+        <property name="couBgn" type="date">
+            <column length="7" name="COU_BGN"/>
+        </property>
+        <property name="couEnd" type="date">
+            <column length="7" name="COU_END"/>
+        </property>
+    </class>
+</hibernate-mapping>

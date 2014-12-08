@@ -1,0 +1,1103 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="com.bivc.cimsmgs.db.CimSmgs" table="CIM_SMGS" batch-size="50">
+        <id name="hid" type="long">
+            <column name="HID" precision="20" scale="0"/>
+            <generator class="sequence">
+                <param name="sequence">CIM_SMGS_HID</param>
+            </generator>
+        </id>
+        <many-to-one name="route" class="com.bivc.cimsmgs.db.Route" fetch="select">
+            <column name="HID_ROUTE" precision="20" scale="0"/>
+        </many-to-one>
+        <many-to-one name="packDoc" class="com.bivc.cimsmgs.db.PackDoc" fetch="select">
+            <column name="HID_PACK" precision="20" scale="0"/>
+        </many-to-one>
+        <!-- <many-to-one name="doc" class="com.bivc.cimsmgs.db.DocDir" fetch="select" property-ref="type" insert="false" update="false" lazy="">
+            <column name="TYPE" precision="2" scale="0" />
+        </many-to-one>-->
+        <many-to-one name="cimSmgs" class="com.bivc.cimsmgs.db.CimSmgs" fetch="select">
+            <column name="HID_CS" precision="20" scale="0"/>
+        </many-to-one>
+        <property name="g1" type="string">
+            <column name="G_1" length="512"/>
+        </property>
+        <property name="g2" type="string">
+            <column name="G_2" length="32"/>
+        </property>
+        <property name="g2_" type="string">
+            <column name="G_2_" length="32"/>
+        </property>
+        <property name="g3" type="string">
+            <column name="G_3" length="32"/>
+        </property>
+        <property name="g3_" type="string">
+            <column name="G_3_" length="32"/>
+        </property>
+        <property name="g4" type="string">
+            <column name="G_4" length="512"/>
+        </property>
+        <property name="g4prim" type="string">
+            <column name="G_4_PRIM" length="250"/>
+        </property>
+        <property name="g5" type="string">
+            <column name="G_5" length="32"/>
+        </property>
+        <property name="g5_" type="string">
+            <column name="G_5_" length="32"/>
+        </property>
+        <property name="g6" type="string">
+            <column name="G_6" length="32"/>
+        </property>
+        <property name="g7" type="string">
+            <column name="G_7" length="512"/>
+        </property>
+        <property name="g7_" type="string">
+            <column name="G_7_" length="32"/>
+        </property>
+        <property name="g8" type="string">
+            <column name="G_8" length="64"/>
+        </property>
+        <property name="g9" type="string">
+            <column name="G_9" length="512"/>
+        </property>
+        <property name="g10" type="string">
+            <column name="G_10" length="240"/>
+        </property>
+        <property name="g11" type="string">
+            <column name="G_11" length="40"/>
+        </property>
+        <property name="g12" type="string">
+            <column name="G_12" length="2"/>
+        </property>
+        <property name="g13" type="string">
+            <column name="G_13" length="240"/>
+        </property>
+        <property name="g141" type="string">
+            <column name="G_14_1" length="40"/>
+        </property>
+        <property name="g142" type="string">
+            <column name="G_14_2" length="32"/>
+        </property>
+        <property name="g15" type="string">
+            <column name="G_15" length="512"/>
+        </property>
+        <property name="g16" type="string">
+            <column name="G_16" length="128"/>
+        </property>
+        <property name="g161" type="string">
+            <column name="G_16_1" length="8"/>
+        </property>
+        <property name="g17" type="string">
+            <column name="G_17" length="40"/>
+        </property>
+        <property name="g18" type="string">
+            <column name="G_18" length="512"/>
+        </property>
+        <property name="g181" type="string">
+            <column name="G_18_1" length="10"/>
+        </property>
+        <property name="g19" type="string">
+            <column name="G_19" length="32"/>
+        </property>
+        <property name="g20" type="string">
+            <column name="G_20" length="4000"/>
+        </property>
+        <property name="g21" type="java.lang.Byte">
+            <column name="G_21" precision="1" scale="0"/>
+        </property>
+        <property name="g22" type="java.lang.Byte">
+            <column name="G_22" precision="1" scale="0"/>
+        </property>
+        <property name="g23" type="string">
+            <column name="G_23" length="20"/>
+        </property>
+        <property name="g24" type="string">
+            <column name="G_24" length="80"/>
+        </property>
+        <property name="g25" type="java.lang.Byte">
+            <column name="G_25" precision="1" scale="0"/>
+        </property>
+        <property name="g26" type="string">
+            <column name="G_26" length="128"/>
+        </property>
+        <property name="g27" type="string">
+            <column name="G_27" length="64"/>
+        </property>
+        <property name="g28" type="string">
+            <column name="G_28" length="240"/>
+        </property>
+        <property name="g281" type="date">
+            <column name="G_28_1" length="7"/>
+        </property>
+        <property name="g29" type="string">
+            <column name="G_29" length="128"/>
+        </property>
+        <property name="g30" type="string">
+            <column name="G_30" length="64"/>
+        </property>
+        <property name="g301" type="date">
+            <column name="G_30_1" length="7"/>
+        </property>
+        <property name="arch" type="date">
+            <column name="ARCH" length="7"/>
+        </property>
+        <property name="un" type="string" update="false">
+            <column name="UN" length="20"/>
+        </property>
+        <property name="trans" type="string" update="false">
+            <column name="TRANS" length="20"/>
+        </property>
+        <property name="dattr" type="timestamp">
+            <column name="DATTR" length="7"/>
+        </property>
+        <property name="locked" type="date">
+            <column name="LOCKED" length="7"/>
+        </property>
+        <property name="unLock" type="string">
+            <column name="UN_LOCK" length="20"/>
+        </property>
+        <property name="g40" type="string">
+            <column name="G_40" length="6"/>
+        </property>
+        <property name="g44" type="string">
+            <column name="G_44" length="6"/>
+        </property>
+        <property name="g191" type="string">
+            <column name="G_19_1" length="128"/>
+        </property>
+        <property name="g192" type="string">
+            <column name="G_19_2" length="5"/>
+        </property>
+        <property name="g193" type="string">
+            <column name="G_19_3" length="16"/>
+        </property>
+        <property name="g48" type="string">
+            <column name="G_48" length="16"/>
+        </property>
+        <property name="g41" type="string">
+            <column name="G_41" length="4"/>
+        </property>
+        <property name="g45" type="string">
+            <column name="G_45" length="4"/>
+        </property>
+        <property name="ga491" type="string">
+            <column name="GA_49_1" length="2"/>
+        </property>
+        <property name="gb491" type="string">
+            <column name="GB_49_1" length="2"/>
+        </property>
+        <property name="ga492" type="string">
+            <column name="GA_49_2" length="2"/>
+        </property>
+        <property name="gb492" type="string">
+            <column name="GB_49_2" length="2"/>
+        </property>
+        <property name="ga493" type="string">
+            <column name="GA_49_3" length="6"/>
+        </property>
+        <property name="gb493" type="string">
+            <column name="GB_49_3" length="6"/>
+        </property>
+        <property name="ga494" type="string">
+            <column name="GA_49_4" length="6"/>
+        </property>
+        <property name="gb494" type="string">
+            <column name="GB_49_4" length="6"/>
+        </property>
+        <property name="ga50" type="string">
+            <column name="GA_50" length="3"/>
+        </property>
+        <property name="gb50" type="string">
+            <column name="GB_50" length="3"/>
+        </property>
+        <property name="ga52" type="string">
+            <column name="GA_52" length="3"/>
+        </property>
+        <property name="gb52" type="string">
+            <column name="GB_52" length="3"/>
+        </property>
+        <property name="ga51" type="string">
+            <column name="GA_51" length="6"/>
+        </property>
+        <property name="gb51" type="string">
+            <column name="GB_51" length="6"/>
+        </property>
+        <property name="ga53" type="string">
+            <column name="GA_53" length="6"/>
+        </property>
+        <property name="gb53" type="string">
+            <column name="GB_53" length="6"/>
+        </property>
+        <property name="ga54" type="string">
+            <column name="GA_54" length="7"/>
+        </property>
+        <property name="gb54" type="string">
+            <column name="GB_54" length="7"/>
+        </property>
+        <property name="ga55" type="string">
+            <column name="GA_55" length="4"/>
+        </property>
+        <property name="gb55" type="string">
+            <column name="GB_55" length="4"/>
+        </property>
+        <property name="ga56" type="string">
+            <column name="GA_56" length="4"/>
+        </property>
+        <property name="gb56" type="string">
+            <column name="GB_56" length="4"/>
+        </property>
+        <property name="ga57" type="string">
+            <column name="GA_57" length="4"/>
+        </property>
+        <property name="gb57" type="string">
+            <column name="GB_57" length="4"/>
+        </property>
+        <property name="g591" type="string">
+            <column name="G_59_1" length="2"/>
+        </property>
+        <property name="g592" type="string">
+            <column name="G_59_2" length="2"/>
+        </property>
+        <property name="g593" type="string">
+            <column name="G_59_3" length="2"/>
+        </property>
+        <property name="g594" type="string">
+            <column name="G_59_4" length="2"/>
+        </property>
+        <property name="g595" type="string">
+            <column name="G_59_5" length="2"/>
+        </property>
+        <property name="g596" type="string">
+            <column name="G_59_6" length="2"/>
+        </property>
+        <property name="g597" type="string">
+            <column name="G_59_7" length="2"/>
+        </property>
+        <property name="g598" type="string">
+            <column name="G_59_8" length="6"/>
+        </property>
+        <property name="g60" type="string">
+            <column name="G_60" length="240"/>
+        </property>
+        <property name="g61" type="string">
+            <column name="G_61" length="80"/>
+        </property>
+        <property name="g611" type="string">
+            <column name="G_61_1" length="2"/>
+        </property>
+        <property name="g612" type="string">
+            <column name="G_61_2" length="6"/>
+        </property>
+        <property name="g43" type="string">
+            <column name="G_43" length="4"/>
+        </property>
+        <property name="g47" type="string">
+            <column name="G_47" length="4"/>
+        </property>
+        <property name="g63" type="string">
+            <column name="G_63" length="180"/>
+        </property>
+        <property name="g64" type="string">
+            <column name="G_64" length="160"/>
+        </property>
+        <property name="g65" type="string">
+            <column name="G_65" length="200"/>
+        </property>
+        <property name="g651" type="string">
+            <column name="G_65_1" length="160"/>
+        </property>
+        <property name="g652" type="string">
+            <column name="G_65_2" length="30"/>
+        </property>
+        <property name="ga66" type="string">
+            <column name="GA_66" length="100"/>
+        </property>
+        <property name="gb661" type="java.lang.Byte">
+            <column name="GB_66_1" precision="1" scale="0"/>
+        </property>
+        <property name="gb662" type="string">
+            <column name="GB_66_2" length="4"/>
+        </property>
+        <property name="g67" type="date">
+            <column name="G_67" length="7"/>
+        </property>
+        <property name="g691" type="string">
+            <column name="G_69_1" length="2"/>
+        </property>
+        <property name="g692" type="string">
+            <column name="G_69_2" length="6"/>
+        </property>
+        <property name="g693" type="string">
+            <column name="G_69_3" length="4"/>
+        </property>
+        <property name="g694" type="string">
+            <column name="G_69_4" length="50"/>
+        </property>
+        <property name="g68" type="string">
+            <column name="G_68" length="6"/>
+        </property>
+        <property name="g62" type="string">
+            <column name="G_62" length="16"/>
+        </property>
+        <property name="g621" type="string">
+            <column name="G_62_1" length="4"/>
+        </property>
+        <property name="g622" type="string">
+            <column name="G_62_2" length="4"/>
+        </property>
+        <property name="g38" type="string">
+            <column name="G_38" length="10"/>
+        </property>
+        <property name="g39" type="string">
+            <column name="G_39" length="50"/>
+        </property>
+        <property name="g18B1" type="string">
+            <column name="G_18_B1"/>
+        </property>
+        <property name="g18B1a" type="string">
+            <column name="G_18_B1A" length="4"/>
+        </property>
+        <property name="g18B1b" type="string">
+            <column name="G_18_B1B" length="4"/>
+        </property>
+        <property name="g18B1c" type="string">
+            <column name="G_18_B1C" length="4"/>
+        </property>
+        <property name="g18B1d" type="string">
+            <column name="G_18_B1D" length="4"/>
+        </property>
+        <property name="g18B2" type="string">
+            <column name="G_18_B2" length="4"/>
+        </property>
+        <property name="ga581" type="string">
+            <column name="GA_58_1" length="2"/>
+        </property>
+        <property name="gb581" type="string">
+            <column name="GB_58_1" length="2"/>
+        </property>
+        <property name="ga582" type="string">
+            <column name="GA_58_2" length="8"/>
+        </property>
+        <property name="gb582" type="string">
+            <column name="GB_58_2" length="8"/>
+        </property>
+        <property name="ga583" type="string">
+            <column name="GA_58_3" length="2"/>
+        </property>
+        <property name="gb583" type="string">
+            <column name="GB_58_3" length="2"/>
+        </property>
+        <property name="ga584" type="string">
+            <column name="GA_58_4" length="8"/>
+        </property>
+        <property name="gb584" type="string">
+            <column name="GB_58_4" length="8"/>
+        </property>
+        <property name="ga585" type="string">
+            <column name="GA_58_5" length="2"/>
+        </property>
+        <property name="gb585" type="string">
+            <column name="GB_58_5" length="2"/>
+        </property>
+        <property name="ga586" type="string">
+            <column name="GA_58_6" length="8"/>
+        </property>
+        <property name="gb586" type="string">
+            <column name="GB_58_6" length="8"/>
+        </property>
+        <property name="g20100" type="string">
+            <column name="G_20_100" length="100"/>
+        </property>
+        <property name="g42" type="string">
+            <column name="G_42" length="4"/>
+        </property>
+        <property name="g46" type="string">
+            <column name="G_46" length="4"/>
+        </property>
+        <property name="g11_1" type="string">
+            <column name="G_1_1" length="80"/>
+        </property>
+        <property name="g12_1" type="string">
+            <column name="G_1_2" length="60"/>
+        </property>
+        <property name="g13_1" type="string">
+            <column name="G_1_3" length="60"/>
+        </property>
+        <property name="g41_1" type="string">
+            <column name="G_4_1" length="80"/>
+        </property>
+        <property name="g42_1" type="string">
+            <column name="G_4_2" length="60"/>
+        </property>
+        <property name="g43_1" type="string">
+            <column name="G_4_3" length="60"/>
+        </property>
+        <property name="hidCim" type="big_decimal">
+            <column name="HID_CIM" precision="20" scale="0"/>
+        </property>
+        <property name="hidIcf" type="big_decimal">
+            <column name="HID_ICF" precision="20" scale="0"/>
+        </property>
+        <property name="hidSp" type="big_decimal">
+            <column name="HID_SP" precision="20" scale="0"/>
+        </property>
+        <property name="hidSmgs" type="long">
+            <column name="HID_SMGS" precision="20" scale="0"/>
+        </property>
+        <property name="iftminId" type="java.lang.Long">
+            <column name="IFTMIN_ID" precision="14" scale="0"/>
+        </property>
+        <property name="iftminOut" type="timestamp">
+            <column name="IFTMIN_OUT" length="7"/>
+        </property>
+        <property name="iftminIn" type="timestamp">
+            <column name="IFTMIN_IN" length="7"/>
+        </property>
+        <property name="iftminId2" type="java.lang.Long">
+            <column name="IFTMIN_ID_2" precision="14" scale="0"/>
+        </property>
+        <property name="iftminOut2" type="timestamp">
+            <column name="IFTMIN_OUT_2" length="7"/>
+        </property>
+        <property name="iftminIn2" type="timestamp">
+            <column name="IFTMIN_IN_2" length="7"/>
+        </property>
+        <property name="g121" type="string">
+            <column name="G_12_1" length="6"/>
+        </property>
+        <property name="g24N" type="big_decimal">
+            <column name="G_24_N" precision="13" scale="3"/>
+        </property>
+        <property name="g24T" type="big_decimal">
+            <column name="G_24_T" precision="13" scale="3"/>
+        </property>
+        <property name="g24B" type="big_decimal">
+            <column name="G_24_B" precision="13" scale="3"/>
+        </property>
+        <property name="g_24_bcn" type="string">
+            <column name="G_24_BCN"/>
+        </property>
+        <property name="statusBr" type="string">
+            <column name="STATUS_BR" length="1"/>
+        </property>
+        <property name="altered" type="timestamp" update="false">
+            <column name="ALTERED" length="7"/>
+        </property>
+        <property name="g1r" type="string">
+            <column name="G_1R" length="512"/>
+        </property>
+        <property name="g14" type="string">
+            <column name="G_1_4" length="64"/>
+        </property>
+        <property name="g44_1" type="string">
+            <column name="G_4_4" length="64"/>
+        </property>
+        <property name="g4r" type="string">
+            <column name="G_4R" length="512"/>
+        </property>
+        <property name="g7r" type="string">
+            <column name="G_7R" length="512"/>
+        </property>
+        <property name="g9r" type="string">
+            <column name="G_9R" length="512"/>
+        </property>
+        <property name="g101" type="string">
+            <column name="G_10_1" length="80"/>
+        </property>
+        <property name="g101r" type="string">
+            <column name="G_10_1R" length="80"/>
+        </property>
+        <property name="g102" type="string">
+            <column name="G_10_2" length="64"/>
+        </property>
+        <property name="g102r" type="string">
+            <column name="G_10_2R" length="64"/>
+        </property>
+        <property name="g104" type="string">
+            <column name="G_10_4" length="64"/>
+        </property>
+        <property name="g13r" type="string">
+            <column name="G_13R" length="240"/>
+        </property>
+        <property name="g15r" type="string">
+            <column name="G_15R" length="512"/>
+        </property>
+        <property name="g162" type="string">
+            <column name="G_16_2" length="80"/>
+        </property>
+        <property name="g162r" type="string">
+            <column name="G_16_2R" length="80"/>
+        </property>
+        <property name="g163" type="string">
+            <column name="G_16_3" length="64"/>
+        </property>
+        <property name="g163r" type="string">
+            <column name="G_16_3R" length="64"/>
+        </property>
+        <property name="g164" type="string">
+            <column name="G_16_4" length="64"/>
+        </property>
+        <property name="g18r" type="string">
+            <column name="G_18R" length="512"/>
+        </property>
+        <property name="g29r" type="string">
+            <column name="G_29R" length="128"/>
+        </property>
+        <property name="profile" type="string">
+            <column name="PROFILE" length="250"/>
+        </property>
+        <property name="targGr" type="string">
+            <column name="TARG_GR" length="64"/>
+        </property>
+        <property name="avFields" type="string">
+            <column name="AV_FIELDS" length="128"/>
+        </property>
+        <property name="g1c" type="java.lang.Byte">
+            <column name="G_1C" precision="1" scale="0"/>
+        </property>
+        <property name="g4c" type="java.lang.Byte">
+            <column name="G_4C" precision="1" scale="0"/>
+        </property>
+        <property name="g7c" type="java.lang.Byte">
+            <column name="G_7C" precision="1" scale="0"/>
+        </property>
+        <property name="g9c" type="java.lang.Byte">
+            <column name="G_9C" precision="1" scale="0"/>
+        </property>
+        <property name="g13c" type="java.lang.Byte">
+            <column name="G_13C" precision="1" scale="0"/>
+        </property>
+        <property name="g15c" type="java.lang.Byte">
+            <column name="G_15C" precision="1" scale="0"/>
+        </property>
+        <property name="g18c" type="java.lang.Byte">
+            <column name="G_18C" precision="1" scale="0"/>
+        </property>
+        <property name="g20c" type="java.lang.Byte">
+            <column name="G_20C" precision="1" scale="0"/>
+        </property>
+        <property name="numClaim" type="string">
+            <column name="NUM_CLAIM" length="48"/>
+        </property>
+        <property name="g15_1" type="string">
+            <column name="G_1_5" length="3"/>
+        </property>
+        <property name="g16_1" type="string">
+            <column name="G_1_6" length="32"/>
+        </property>
+        <property name="g16r" type="string">
+            <column name="G_1_6R" length="550"/>
+        </property>
+        <property name="g17_1" type="string">
+            <column name="G_1_7" length="10"/>
+        </property>
+        <property name="g18_1" type="string">
+            <column name="G_1_8" length="32"/>
+        </property>
+        <property name="g18r_1" type="string">
+            <column name="G_1_8R" length="32"/>
+        </property>
+        <property name="g19_1" type="string">
+            <column name="G_1_9" length="128"/>
+        </property>
+        <property name="g19r" type="string">
+            <column name="G_1_9R" length="250"/>
+        </property>
+        <property name="g45_1" type="string">
+            <column name="G_4_5" length="3"/>
+        </property>
+        <property name="g46_1" type="string">
+            <column name="G_4_6" length="32"/>
+        </property>
+        <property name="g46r" type="string">
+            <column name="G_4_6R" length="550"/>
+        </property>
+        <property name="g47_1" type="string">
+            <column name="G_4_7" length="10"/>
+        </property>
+        <property name="g48_1" type="string">
+            <column name="G_4_8" length="32"/>
+        </property>
+        <property name="g48r" type="string">
+            <column name="G_4_8R" length="32"/>
+        </property>
+        <property name="g49" type="string">
+            <column name="G_4_9" length="128"/>
+        </property>
+        <property name="g49r" type="string">
+            <column name="G_4_9R" length="250"/>
+        </property>
+        <property name="g201" type="string">
+            <column name="G_20_1" length="160"/>
+        </property>
+        <property name="g202" type="string">
+            <column name="G_20_2" length="160"/>
+        </property>
+        <property name="g202r" type="string">
+            <column name="G_20_2R" length="160"/>
+        </property>
+        <property name="g203" type="string">
+            <column name="G_20_3" length="64"/>
+        </property>
+        <property name="g204" type="string">
+            <column name="G_20_4" length="128"/>
+        </property>
+        <property name="g205" type="string">
+            <column name="G_20_5" length="160"/>
+        </property>
+        <property name="g206" type="string">
+            <column name="G_20_6" length="512"/>
+        </property>
+        <property name="g206r" type="string">
+            <column name="G_20_6R" length="512"/>
+        </property>
+        <property name="g207" type="string">
+            <column name="G_20_7" length="250"/>
+        </property>
+        <property name="g207r" type="string">
+            <column name="G_20_7R" length="250"/>
+        </property>
+        <property name="g208" type="string">
+            <column name="G_20_8" length="128"/>
+        </property>
+        <property name="g209" type="string">
+            <column name="G_20_9" length="160"/>
+        </property>
+        <property name="g209r" type="string">
+            <column name="G_20_9R" length="160"/>
+        </property>
+        <property name="g2010" type="string">
+            <column name="G_20_10" length="64"/>
+        </property>
+        <property name="g2011" type="string">
+            <column name="G_20_11" length="250"/>
+        </property>
+        <property name="g2012" type="string">
+            <column name="G_20_12" length="160"/>
+        </property>
+        <property name="g2013" type="string">
+            <column name="G_20_13" length="160"/>
+        </property>
+        <property name="g2014" type="string">
+            <column name="G_20_14" length="160"/>
+        </property>
+        <property name="g2014r" type="string">
+            <column name="G_20_14R" length="160"/>
+        </property>
+        <property name="g2015" type="string">
+            <column name="G_20_15" length="128"/>
+        </property>
+        <property name="g2016" type="string">
+            <column name="G_20_16" length="128"/>
+        </property>
+        <property name="g2017" type="string">
+            <column name="G_20_17" length="64"/>
+        </property>
+        <property name="g2017r" type="string">
+            <column name="G_20_17R" length="64"/>
+        </property>
+        <property name="g2011r" type="string">
+            <column name="G_20_11R" length="250"/>
+        </property>
+        <property name="g110" type="string">
+            <column name="G_1_10" length="16"/>
+        </property>
+        <property name="g111" type="string">
+            <column name="G_1_11" length="32"/>
+        </property>
+        <property name="g112" type="string">
+            <column name="G_1_12" length="16"/>
+        </property>
+        <property name="g410" type="string">
+            <column name="G_4_10" length="16"/>
+        </property>
+        <property name="g411" type="string">
+            <column name="G_4_11" length="32"/>
+        </property>
+        <property name="g412" type="string">
+            <column name="G_4_12" length="16"/>
+        </property>
+        <property name="ready" type="string">
+            <column name="READY" length="1"/>
+        </property>
+        <property name="g171" type="string">
+            <column name="G_17_1" length="2"/>
+        </property>
+        <property name="g2018" type="string">
+            <column name="G_20_18" length="64"/>
+        </property>
+        <property name="g2018r" type="string">
+            <column name="G_20_18R" length="64"/>
+        </property>
+        <property name="status" type="java.lang.Byte">
+            <column name="STATUS" precision="1" scale="0"/>
+        </property>
+        <property name="btlc_status" type="java.lang.Byte">
+            <column name="BTLC_STATUS" precision="2" scale="0"/>
+        </property>
+        <property name="tdg_status1" type="java.lang.Byte">
+            <column name="TDG_STATUS_1" precision="2" scale="0"/>
+        </property>
+        <property name="tdg_status2" type="java.lang.Byte">
+            <column name="TDG_STATUS_2" precision="2" scale="0"/>
+        </property>
+        <property name="type" type="java.lang.Byte">
+            <column name="TYPE" precision="2" scale="0"/>
+        </property>
+        <!--
+                <property name="g23a" type="string">
+                    <column name="G_23_A" length="20"/>
+                </property>
+        -->
+        <property name="g23b" type="string">
+            <column name="G_23_B" length="20"/>
+        </property>
+        <property name="g74_1" type="string">
+            <column name="G_74_1" length="2"/>
+        </property>
+        <property name="g74_2" type="string">
+            <column name="G_74_2" length="10"/>
+        </property>
+        <property name="gs_22" type="java.lang.Byte">
+            <column name="GS_22" precision="1" scale="0"/>
+        </property>
+        <property name="gs_24" type="string">
+            <column name="GS_24" length="250"/>
+        </property>
+        <property name="gs_48" type="string">
+            <column name="GS_48" length="50"/>
+        </property>
+        <property name="gs_141_1" type="string">
+            <column name="GS_141_1" length="16"/>
+        </property>
+        <property name="gs_141_2" type="date">
+            <column name="GS_141_2"/>
+        </property>
+        <property name="gs_66_1" type="string">
+            <column name="GS_66_1" length="30"/>
+        </property>
+        <property name="amount" type="long">
+            <column name="AMOUNT" precision="20" scale="0"/>
+        </property>
+        <property name="aviso_num" type="string">
+            <column name="AVISO_NUM" length="20"/>
+        </property>
+        <property name="aviso_dat" type="date">
+            <column name="AVISO_DAT"/>
+        </property>
+        <property name="aviso_cod_dat" type="date">
+            <column name="AVISO_COD_DAT"/>
+        </property>
+        <property name="aviso_stavka" type="big_decimal">
+            <column name="AVISO_STAVKA" precision="20" scale="2"/>
+        </property>
+        <property name="g11_prim" type="string">
+            <column name="G11_PRIM" length="1024"/>
+        </property>
+        <!--<property name="konPrim" type="string" >-->
+        <!--<column name="kon_PRIM" length="512" />-->
+        <!--</property>-->
+        <property name="vagPrim" type="string">
+            <column name="vag_PRIM" length="512"/>
+        </property>
+        <property name="g_1_5k" type="string">
+            <column name="G_1_5K" length="3"/>
+        </property>
+        <property name="g_4_5k" type="string">
+            <column name="G_4_5K" length="3"/>
+        </property>
+        <property name="g_10_3r" type="string">
+            <column name="G_10_3r" length="3"/>
+        </property>
+        <property name="g_16_33r" type="string">
+            <column name="G_16_33r" length="3"/>
+        </property>
+        <property name="guInf" type="string">
+            <column name="GU_INF" length="250"/>
+        </property>
+        <property name="perevozchik" type="string">
+            <column name="PEREVOZCHIK" length="250"/>
+        </property>
+        <property name="tarifShema" type="string">
+            <column name="TARIF_SHEMA" length="50"/>
+        </property>
+        <property name="tarifVOtpr" type="string">
+            <column name="TARIF_V_OTPR" length="50"/>
+        </property>
+        <property name="platezhKm" type="long">
+            <column name="platezh_Km" precision="10" scale="1"/>
+        </property>
+        <property name="platezhRub" type="long">
+            <column name="platezh_Rub" precision="10" scale="0"/>
+        </property>
+        <property name="platezhKop" type="string">
+            <column name="platezh_Kop" length="2"/>
+        </property>
+        <property name="provozPlata" type="string">
+            <column name="provoz_Plata" length="12"/>
+        </property>
+        <property name="zpuInfo" type="string">
+            <column name="zpu_Info" length="50"/>
+        </property>
+        <property name="zpuInfo1" type="string">
+            <column name="zpu_Info1" length="50"/>
+        </property>
+        <property name="trueInfo" type="string">
+            <column name="TRUE_INFO" length="250"/>
+        </property>
+        <!--<property name="zajavNo" type="string">-->
+        <!--<column name="ZAJAV_NO" length="50" />-->
+        <!--</property>-->
+        <property name="vizaNo" type="string">
+            <column name="VIZA_NO" length="50"/>
+        </property>
+        <property name="perevozSign" type="string">
+            <column name="PEREVOZ_SIGN" length="50"/>
+        </property>
+        <property name="perevozDate" type="date">
+            <column name="PEREVOZ_DATE" length="7"/>
+        </property>
+        <property name="sborCennost1" type="string">
+            <column name="SBOR_CENNOST1" length="12"/>
+        </property>
+        <property name="sborCennost11" type="string">
+            <column name="SBOR_CENNOST11" length="12"/>
+        </property>
+        <property name="sborCennost21" type="string">
+            <column name="SBOR_CENNOST21" length="12"/>
+        </property>
+        <property name="sborCennost2" type="string">
+            <column name="SBOR_CENNOST2" length="12"/>
+        </property>
+        <property name="sborCennost22" type="string">
+            <column name="SBOR_CENNOST22" length="12"/>
+        </property>
+        <property name="otprItogo" type="string">
+            <column name="OTPR_ITOGO" length="12"/>
+        </property>
+        <property name="tbcNomer" type="string">
+            <column length="20" name="TBC_NOMER"/>
+        </property>
+        <property name="tbcStatus" type="byte">
+            <column name="TBC_STATUS" precision="1" scale="0" default="0"/>
+        </property>
+        <property name="zakazNo" type="string">
+            <column length="20" name="ZAKAZ_NO"/>
+        </property>
+        <property name="cim" type="java.lang.Byte">
+            <column name="CIM" precision="1" scale="0"/>
+        </property>
+        <property name="incoterms" type="java.lang.Byte">
+            <column name="incoterms" precision="1" scale="0"/>
+        </property>
+        <property name="kodUslPost" type="string">
+            <column length="20" name="kod_Usl_Post"/>
+        </property>
+        <property name="frankofracht" type="java.lang.Byte">
+            <column name="frankofracht" precision="1" scale="0"/>
+        </property>
+        <property name="otmPoluch" type="string">
+            <column length="520" name="OTM_POLUCH"/>
+        </property>
+        <property name="vidKontOtpr" type="java.lang.Byte">
+            <column name="VID_KONT_OTPR" precision="1" scale="0"/>
+        </property>
+        <property name="platform" type="string">
+            <column length="100" name="PLATFORM"/>
+        </property>
+        <property name="docNum" type="string">
+            <column length="100" name="DOC_NUM"/>
+        </property>
+        <property name="tehUslG12" type="string">
+            <column length="100" name="teh_Usl_G12"/>
+        </property>
+        <property name="grOtpFio" type="string">
+            <column length="100" name="gr_Otp_Fio"/>
+        </property>
+        <property name="npoezd" type="string">
+            <column length="32" name="n_poezd"/>
+        </property>
+        <property name="nettoPref" type="string">
+            <column name="netto_pref" length="20"/>
+        </property>
+        <property name="taraPref" type="string">
+            <column name="tara_Pref" length="20"/>
+        </property>
+        <property name="bruttoPref" type="string">
+            <column name="brutto_Pref" length="20"/>
+        </property>
+        <property name="kontKol" type="string">
+            <column name="kont_kol" length="10"/>
+        </property>
+        <property name="g2_1" type="string">
+            <column name="G_2_1" length="32"/>
+        </property>
+        <property name="g5_1" type="string">
+            <column name="G_5_1" length="32"/>
+        </property>
+        <property name="docType1" type="big_decimal">
+            <column name="doc_type1" precision="20"/>
+        </property>
+        <property name="plat" type="string">
+            <column name="plat" length="250"/>
+        </property>
+        <property name="plat1" type="string">
+            <column name="plat1" length="250"/>
+        </property>
+        <property name="gu" type="java.lang.Byte">
+            <column name="gu" precision="2" scale="0"/>
+        </property>
+        <property name="ftsNomer" type="string">
+            <column length="36" name="FTS_NOMER"/>
+        </property>
+        <property name="ftsStatus" type="byte">
+            <column name="FTS_STATUS" precision="2" scale="0" default="0"/>
+        </property>
+        <property name="index_p" type="string">
+            <column name="INDEX_P" length="250"/>
+        </property>
+        <property name="n_ppv" type="string">
+            <column name="N_PPV" length="250"/>
+        </property>
+        <property name="nppr" type="integer">
+            <column name="NPPR" precision="2" scale="0" default="0"/>
+        </property>
+        <property name="dprb" type="timestamp">
+            <column name="DPRB" length="7"/>
+        </property>
+        <property name="g_2inn" type="string">
+            <column name="G_2INN" length="32"/>
+        </property>
+        <property name="g_5inn" type="string">
+            <column name="G_5INN" length="32"/>
+        </property>
+        <property name="ftsDocId" type="string">
+            <column length="36" name="FTS_DOC_ID"/>
+        </property>
+        <property name="g36" type="string">
+            <column name="G_36" length="5"/>
+        </property>
+        <property name="g25Txt" type="string">
+            <column name="G_25_txt" length="10"/>
+        </property>
+        <property name="n_packet" type="string">
+            <column name="n_packet" length="10"/>
+        </property>
+        <property name="sort" type="java.lang.Integer">
+            <column name="SORT" precision="3" scale="0"/>
+        </property>
+        <property name="kind" type="java.lang.Integer">
+            <column name="KIND" precision="2" scale="0" default="0"/>
+        </property>
+        <property name="send_br" type="string">
+            <column name="send_br" length="1"/>
+        </property>
+        <property name="src" type="char">
+            <column name="SRC" length="1"/>
+        </property>
+
+        <map name="cimSmgsDocses7" cascade="all, delete-orphan" inverse="true" sort="natural" where="FIELD_NUM = '7'" lazy="true" batch-size="50">
+            <key>
+                <column name="HID_CS" precision="20" scale="0" not-null="true"/>
+            </key>
+            <map-key column="SORT" type="byte"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsDocs"/>
+        </map>
+
+        <map name="cimSmgsDocses9" cascade="all, delete-orphan" inverse="true" sort="natural" where="FIELD_NUM = '9'" lazy="true" batch-size="50">
+            <key>
+                <column name="HID_CS" precision="20" scale="0" not-null="true"/>
+            </key>
+            <map-key column="SORT" type="byte"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsDocs"/>
+        </map>
+
+        <map name="cimSmgsDocses13" cascade="all, delete-orphan" inverse="true" sort="natural" where="FIELD_NUM = '13'" lazy="true" batch-size="50">
+            <key>
+                <column name="HID_CS" precision="20" scale="0" not-null="true"/>
+            </key>
+            <map-key column="SORT" type="byte"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsDocs"/>
+        </map>
+
+        <map name="cimSmgsDocses136" cascade="all, delete-orphan" inverse="true" sort="natural" where="FIELD_NUM = '13.6'" lazy="true" batch-size="50">
+            <key>
+                <column name="HID_CS" precision="20" scale="0" not-null="true"/>
+            </key>
+            <map-key column="SORT" type="byte"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsDocs"/>
+        </map>
+
+        <map name="cimSmgsCarLists" cascade="all, delete-orphan" inverse="true" sort="natural" lazy="true" batch-size="50">
+            <key>
+                <column name="HID_CS" precision="20" scale="0" not-null="true"/>
+            </key>
+            <map-key column="SORT" type="byte"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsCarList"/>
+        </map>
+
+
+        <map name="cimSmgsPlatels" cascade="all, delete-orphan" inverse="true" sort="natural" lazy="true">
+            <key>
+                <column name="HID_CS" precision="20" scale="0" not-null="true"/>
+            </key>
+            <map-key column="SORT" type="byte"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsPlatel"/>
+        </map>
+
+        <map name="cimSmgsPlombs" cascade="all, delete-orphan" inverse="true" sort="natural" lazy="true" batch-size="50">
+            <key>
+                <column name="HID_CS" precision="20" scale="0" not-null="true"/>
+            </key>
+            <map-key column="SORT" type="byte"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsPlomb"/>
+        </map>
+
+        <set name="iftminLogs" inverse="true" lazy="true" table="B_IFTMIN_LOG" where="MES_NAME = 'IFTMIN' AND SRC = 'CIMSMGS' AND upper(DIR) = upper('bch')" order-by="DATTR DESC" batch-size="50">
+            <key>
+                <column name="HID_SRC" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.BIftminLog"/>
+        </set>
+
+        <set name="iftminLogsBtlc" inverse="true" lazy="true" table="B_IFTMIN_LOG" where="MES_NAME = 'IFTMIN' AND SRC = 'CIMSMGS' AND upper(DIR) = upper('btlc')" order-by="DATTR DESC" batch-size="50">
+            <key>
+                <column name="HID_SRC" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.BIftminLog"/>
+        </set>
+
+        <set name="tdgLog" inverse="true" lazy="true" table="TDG_LOG" order-by="HID DESC" batch-size="50">
+            <key>
+                <column name="HID_CS" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.TdgLog"/>
+        </set>
+
+        <set name="csComnt" inverse="true" lazy="true" table="CS_COMNT" batch-size="50">
+            <key column="REF_ID" property-ref="iftminId"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CsComnt"/>
+        </set>
+
+
+        <set name="cimSmgses" inverse="true" lazy="true">
+            <key>
+                <column name="HID_CS" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgs"/>
+        </set>
+
+        <set name="statuses" table="STATUS" inverse="true" lazy="true" batch-size="50" cascade="delete">
+            <key>
+                <column name="HID_CS" precision="20" scale="0" not-null="false"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.Status"/>
+        </set>
+
+    </class>
+</hibernate-mapping>

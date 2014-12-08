@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 16.10.2012 4:24:22 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.Doc2docTemplates" table="DOC2DOC_TEMPLATES">
+        <id name="hid" type="long">
+            <column name="HID" precision="20" scale="0" />
+            <generator class="sequence">
+                <param name="sequence">DOC2DOC_TEMPLATES_SEQ</param>
+            </generator>
+        </id>
+        <!--<many-to-one name="docDirByHidDocTo" class="com.bivc.cimsmgs.db.DocDir" fetch="select">
+            <column name="HID_DOC_TO" precision="20" scale="0" not-null="true" />
+        </many-to-one>
+        <many-to-one name="docDirByHidDocFrom" class="com.bivc.cimsmgs.db.DocDir" fetch="select">
+            <column name="HID_DOC_FROM" precision="20" scale="0" not-null="true" />
+        </many-to-one>-->
+        <property name="methodName" type="string">
+            <column name="METHOD_NAME" length="50" not-null="true" />
+        </property>
+        <property name="descr" type="string">
+            <column name="DESCR" length="600" />
+        </property>
+        <property name="defaults" type="boolean">
+            <column name="DEFAULTS" precision="1" scale="0" />
+        </property>
+        <property name="dattr" type="timestamp">
+            <column name="DATTR" length="7" not-null="true" />
+        </property>
+        <property name="un" type="string">
+            <column name="UN" length="20" not-null="true" />
+        </property>
+        <property name="trans" type="string">
+            <column name="TRANS" length="20" not-null="true" />
+        </property>
+        <property name="groupBy" type="string">
+            <column name="GROUP_BY" length="20" not-null="true" />
+        </property>
+        <property name="altered" type="timestamp">
+            <column name="ALTERED" length="7" not-null="true" />
+        </property>
+        <!--<set name="doc2docTemplsUnRefses" table="DOC2DOC_TEMPLS_UN_REFS" inverse="true" lazy="true" cascade="all" batch-size="50">
+            <key>
+                <column name="HID_DOC2DOC" precision="20" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.Doc2docTemplsUnRefs" />
+        </set>-->
+        <set name="doc2docTemplsRouteUnRefses" table="DOC2DOC_TEMPLS_ROUTE_UN_REFS" inverse="true" lazy="true" cascade="all" batch-size="50">
+            <key>
+                <column name="HID_DOC2DOC" precision="20" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.Doc2docTemplsRouteUnRefs" />
+        </set>
+        <set name="doc2docTemplsRouteRefses" table="DOC2DOC_TEMPLS_ROUTE_REFS" inverse="true" lazy="true" cascade="all" batch-size="50">
+            <key>
+                <column name="HID_DOC2DOC" precision="20" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.Doc2docTemplsRouteRefs" />
+        </set>
+    </class>
+</hibernate-mapping>

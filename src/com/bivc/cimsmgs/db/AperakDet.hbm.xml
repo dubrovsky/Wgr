@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+  <class name="com.bivc.cimsmgs.db.AperakDet" table="B_APERAK_DET" dynamic-update="true" dynamic-insert="true">
+    <id name="hid" column ="HID" type="long">
+       <generator class="sequence">
+         <param name="sequence">B_APERAK_DET_HID</param>
+       </generator>
+    </id>
+    <many-to-one name="main" class="com.bivc.cimsmgs.db.Aperak" column="HID_MAIN" not-null="true" fetch="select"/>
+    <!--many-to-one name="BIftminLog" class="com.bivc.cimsmgs.db.BIftminLog" fetch="select">
+            <column name="ID_UNH_ORI" length="45" />
+        </many-to-one-->
+    <property column="KOD1" name="kod1" type="java.lang.String"/>
+    <property column="KOD2" name="kod2" type="java.lang.String"/>
+    <property column="ERR_TEXT" name="errText" type="java.lang.String"/>
+    <property column="ID_UNH_ORI" name="idUnhOri" type="java.lang.String"/>
+    <property column="ERR_TEXT2" name="errText2" type="java.lang.String"/>
+  </class>
+</hibernate-mapping>

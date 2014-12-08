@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+  <class name="com.bivc.cimsmgs.db.Contrl" table="B_CONTRL" dynamic-update="true" dynamic-insert="true">
+    <id name="hid" type="long">
+       <column name="HID" precision="20" scale="0" />
+         <generator class="sequence">
+           <param name="sequence">B_CONTRL_HID</param>
+         </generator>
+    </id>
+    <!--many-to-one name="BIftminLog" class="com.bivc.cimsmgs.db.BIftminLog" fetch="select">
+            <column name="ID_UNB_ORI" length="45" />
+        </many-to-one-->
+    <property column="ID" name="id" type="java.lang.String"/>
+    <property column="ID_UNB_ORI" name="idUnbOri" type="java.lang.String"/>
+    <property column="MSG" name="msg" type="java.lang.String"/>
+    <property column="OTP_ORI" name="otpOri" type="java.lang.String"/>
+    <property column="POL_ORI" name="polOri" type="java.lang.String"/>
+    <property column="ERROR" name="error" type="java.lang.String"/>
+    <property column="TEXT" name="text" type="java.lang.String"/>
+    <property column="DATTR" name="dattr" type="java.util.Date"/>
+    <property column="DAT_UNB" name="datUnb" type="java.util.Date"/>
+    <property column="ID_UNB" name="idUnb" type="java.lang.String"/>
+  </class>
+</hibernate-mapping>

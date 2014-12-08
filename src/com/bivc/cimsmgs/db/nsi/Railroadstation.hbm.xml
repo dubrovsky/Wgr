@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 22.04.2009 13:49:34 by Hibernate Tools 3.2.4.GA -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.nsi.Railroadstation" table="RAILROADSTATION">
+        <id name="id" type="big_decimal">
+            <column name="ID" precision="22" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <!--many-to-one name="railroadstation" class="com.bivc.cimsmgs.db.nsi.Railroadstation" fetch="select">
+            <column name="LINK_STATION_ID" precision="22" scale="0" />
+        </many-to-one-->
+        <many-to-one name="railroadland" class="com.bivc.cimsmgs.db.nsi.Railroadland" fetch="join">
+            <column name="RAILROADLAND_ID" precision="22" scale="0" not-null="true" />
+        </many-to-one>
+        <many-to-one name="railroad" class="com.bivc.cimsmgs.db.nsi.Railroad" fetch="join">
+            <column name="RAILROAD_ID" precision="22" scale="0" not-null="true" />
+        </many-to-one>
+        <!--many-to-one name="countryByLinkCountryCode" class="com.bivc.cimsmgs.db.nsi.Country" fetch="select">
+            <column name="LINK_COUNTRY_CODE" length="2" />
+        </many-to-one-->
+        <!--many-to-one name="countryByCountryCode" class="com.bivc.cimsmgs.db.nsi.Country" fetch="select">
+            <column name="COUNTRY_CODE" length="2" />
+        </many-to-one-->
+        <property name="code" type="string">
+            <column name="CODE" length="20" not-null="true" />
+        </property>
+        <property name="mlName" type="string">
+            <column name="ML_NAME" length="1200" not-null="true" />
+        </property>
+        <property name="nameLatin1" type="string">
+            <column name="NAME_LATIN1" length="400" not-null="true" />
+        </property>
+        <property name="impKod" type="string">
+            <column name="IMP_KOD" length="60" />
+        </property>
+        <property name="impNewcode" type="string">
+            <column name="IMP_NEWCODE" length="60" />
+        </property>
+        <property name="impName" type="string">
+            <column name="IMP_NAME" length="400" />
+        </property>
+        <property name="impNewname" type="string">
+            <column name="IMP_NEWNAME" length="600" />
+        </property>
+        <property name="impNewparat" type="string">
+            <column name="IMP_NEWPARAT" length="300" />
+        </property>
+        <property name="impParagtxt" type="string">
+            <column name="IMP_PARAGTXT" length="300" />
+        </property>
+        <property name="impRoad" type="string">
+            <column name="IMP_ROAD" length="600" />
+        </property>
+        <property name="impLand" type="string">
+            <column name="IMP_LAND" length="150" />
+        </property>
+        <property name="impLinkcode" type="string">
+            <column name="IMP_LINKCODE" length="60" />
+        </property>
+        <property name="recState" type="string">
+            <column name="REC_STATE" length="1" not-null="true" />
+        </property>
+        <property name="workFrom" type="date">
+            <column name="WORK_FROM" length="7" not-null="true" />
+        </property>
+        <property name="workTill" type="date">
+            <column name="WORK_TILL" length="7" />
+        </property>
+        <property name="digest" type="string">
+            <column name="DIGEST" length="20" />
+        </property>
+        <!--set name="railroadstations" inverse="true" lazy="true" table="RAILROADSTATION" fetch="select">
+            <key>
+                <column name="LINK_STATION_ID" precision="22" scale="0" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.nsi.Railroadstation" />
+        </set-->
+    </class>
+</hibernate-mapping>

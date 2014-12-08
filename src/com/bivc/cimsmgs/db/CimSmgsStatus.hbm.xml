@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.CimSmgsStatus" table="CIM_SMGS_STATUS">
+        <id name="hid" type="long">
+            <column name="HID" precision="20" scale="0" />
+            <generator class="sequence">
+              <param name="sequence">CIM_SMGS_STATUS_HID</param>
+            </generator>
+        </id>
+        <many-to-one name="cimSmgs" class="com.bivc.cimsmgs.db.CimSmgs" fetch="select">
+            <column name="HID_CS" precision="22" scale="0" not-null="true" />
+        </many-to-one>
+        <many-to-one name="company" class="com.bivc.cimsmgs.db.nsi.Company" fetch="select" >
+            <column name="HID_COMP" precision="22" scale="0" not-null="true" />
+        </many-to-one>
+        <property name="dattr" type="timestamp">
+            <column name="DATTR" length="7" not-null="true" />
+        </property>
+        <property name="loginName" type="string">
+            <column name="LOGIN_NAME" length="20" not-null="true"  />
+        </property>
+        <property name="arch" type="timestamp">
+            <column name="ARCH" length="7" />
+        </property>
+        <property name="status" type="byte">
+            <column name="STATUS" precision="2" scale="0" not-null="true" />
+        </property>
+        <property name="statusDate" type="timestamp">
+            <column name="STATUS_DATE" length="7" />
+        </property>
+        <property name="statusText" type="string">
+            <column name="STATUS_TEXT" length="3000" />
+        </property>
+    </class>
+</hibernate-mapping>

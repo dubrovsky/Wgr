@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 22.04.2009 13:49:34 by Hibernate Tools 3.2.4.GA -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.nsi.Companycontact" table="COMPANYCONTACT">
+        <id name="id" type="big_decimal">
+            <column name="ID" precision="22" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="company" class="com.bivc.cimsmgs.db.nsi.Company" fetch="select">
+            <column name="COMPANY_ID" precision="22" scale="0" not-null="true" />
+        </many-to-one>
+        <property name="contactType" type="string">
+            <column name="CONTACT_TYPE" length="1" not-null="true" />
+        </property>
+        <property name="name" type="string">
+            <column name="NAME" length="128" not-null="true" />
+        </property>
+        <property name="jobTitle" type="string">
+            <column name="JOB_TITLE" length="128" not-null="true" />
+        </property>
+        <property name="phones" type="string">
+            <column name="PHONES" length="40" />
+        </property>
+        <property name="mobPhone" type="string">
+            <column name="MOB_PHONE" length="40" />
+        </property>
+    </class>
+</hibernate-mapping>

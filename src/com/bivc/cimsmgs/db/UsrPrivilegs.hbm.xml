@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 12.11.2010 16:44:31 by Hibernate Tools 3.4.0.Beta1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.UsrPrivilegs" table="USR_PRIVILEGS" batch-size="50">
+        <composite-id name="id" class="com.bivc.cimsmgs.db.UsrPrivilegsId">
+            <key-property name="userId" type="string" >
+                <column name="USER_ID" length="20" />
+            </key-property>
+            <key-property name="privId" type="string">
+                <column name="PRIV_ID" length="64" />
+            </key-property>
+        </composite-id>
+        <many-to-one name="privileg" class="com.bivc.cimsmgs.db.UsrPrivilegsDir" update="false" insert="false" fetch="select">
+            <column name="PRIV_ID" length="64" not-null="true" />
+        </many-to-one>
+        <many-to-one name="usr" class="com.bivc.cimsmgs.db.Usr" update="false" insert="false" fetch="select">
+            <column name="USER_ID" length="20" not-null="true" />
+        </many-to-one>
+    </class>
+</hibernate-mapping>

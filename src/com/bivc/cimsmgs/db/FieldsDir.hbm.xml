@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.FieldsDir" table="FIELDS_DIR">
+        <id name="hid" type="long">
+            <column name="HID" precision="20" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <property name="name" type="string">
+            <column name="NAME" length="20" not-null="true" />
+        </property>
+        <property name="descr" type="string">
+            <column name="DESCR" length="200" />
+        </property>
+        <property name="path" type="string">
+            <column name="PATH" length="50" />
+        </property>
+        <set name="fieldsAccessFobiddens" table="FIELDS_ACCESS_FOBIDDEN" inverse="true" lazy="true" batch-size="20" cascade="all-delete-orphan">
+            <key>
+                <column name="FIELD_HID" precision="20" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.FieldsAccessFobidden" />
+        </set>
+        <set name="fieldsDocsRefses" table="FIELDS_DOCS_REFS" inverse="true" lazy="true" batch-size="20" cascade="all-delete-orphan">
+            <key>
+                <column name="FIELD_HID" precision="20" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.FieldsDocsRefs" />
+            <filter name="limitDocRefsByDocId" condition=":docId = DOC_HID"/>
+        </set>
+        <set name="fieldsCommentses" table="FIELDS_COMMENTS" inverse="true" lazy="true" batch-size="20" cascade="all-delete-orphan">
+            <key>
+                <column name="FIELD_HID" precision="20" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.FieldsComments" />
+        </set>
+    </class>
+    <filter-def name="limitDocRefsByDocId">
+        <filter-param name="docId" type="big_decimal"/>
+    </filter-def>
+</hibernate-mapping>

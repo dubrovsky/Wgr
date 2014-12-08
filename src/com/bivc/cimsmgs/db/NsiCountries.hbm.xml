@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 13.04.2009 14:27:00 by Hibernate Tools 3.2.4.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.NsiCountries" table="NSI_COUNTRIES" >
+        <id name="kod" type="string">
+            <column name="KOD" length="3" />
+            <generator class="assigned" />
+        </id>
+        <property name="abc2" type="string">
+            <column name="ABC2" length="2" />
+        </property>
+        <property name="abc3" type="string">
+            <column name="ABC3" length="3" />
+        </property>
+        <property name="anaim" type="string">
+            <column name="ANAIM" length="40" />
+        </property>
+        <property name="krnaim" type="string">
+            <column name="KRNAIM" length="17" />
+        </property>
+        <property name="naim" type="string">
+            <column name="NAIM" length="62" />
+        </property>
+        <set name="nsiDors" inverse="true" lazy="true" fetch="subselect">
+            <key>
+                <column name="KOD_STR" length="3" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.NsiDor" />
+        </set>
+    </class>
+</hibernate-mapping>

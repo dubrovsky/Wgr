@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 12.11.2010 16:44:31 by Hibernate Tools 3.4.0.Beta1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.UsrPrivilegsDir" table="USR_PRIVILEGS_DIR">
+        <id name="name" type="string">
+            <column name="NAME" length="64" />
+            <generator class="assigned" />
+        </id>
+        <property name="descr" type="string">
+            <column name="DESCR" length="600" />
+        </property>
+        <property name="locked" type="boolean">
+            <column name="LOCKED" precision="1" scale="0" not-null="true" />
+        </property>
+        <property name="hidden" type="boolean">
+            <column name="HIDDEN" precision="1" scale="0" />
+        </property>
+        <property name="dattr" type="timestamp">
+            <column name="DATTR" length="7" not-null="true" />
+        </property>
+        <property name="un" type="string">
+            <column name="UN" length="20" not-null="true" />
+        </property>
+        <set name="privilegs" table="USR_PRIVILEGS" inverse="true" lazy="true" fetch="select" batch-size="50">
+            <key>
+                <column name="PRIV_ID" length="64" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.UsrPrivilegs" />
+        </set>
+    </class>
+</hibernate-mapping>

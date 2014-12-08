@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.nsi.Company" table="COMPANY">
+        <id name="id" type="big_decimal">
+            <column name="ID" precision="22" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="country" class="com.bivc.cimsmgs.db.nsi.Country" fetch="select">
+            <column name="REG_COUNTRY" length="2" not-null="true" />
+        </many-to-one>
+        <property name="vatcode" type="string">
+            <column name="VATCODE" length="50" />
+        </property>
+        <property name="regcode" type="string">
+            <column name="REGCODE" length="50" not-null="true" />
+        </property>
+        <property name="name" type="string">
+            <column name="NAME" length="400" not-null="true" />
+        </property>
+        <property name="loginsAllowed" type="string">
+            <column name="LOGINS_ALLOWED" length="1" not-null="true" />
+        </property>
+        <property name="nameLatin1" type="string">
+            <column name="NAME_LATIN1" length="128" not-null="true" />
+        </property>
+        <property name="isActive" type="string">
+            <column name="IS_ACTIVE" length="1" not-null="true" />
+        </property>
+        <property name="digSignature" type="string">
+            <column name="DIG_SIGNATURE" />
+        </property>
+        <property name="functionalPermissions" type="string">
+            <column name="FUNCTIONAL_PERMISSIONS" length="4000" />
+        </property>
+        <property name="systemRoles" type="string">
+            <column name="SYSTEM_ROLES" length="30" />
+        </property>
+        <set name="measures" inverse="true" lazy="true" table="MEASURE" fetch="select">
+            <key>
+                <column name="COMPANY_ID" precision="22" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.nsi.Measure" />
+        </set>
+        <set name="workstations" inverse="true" lazy="true" table="WORKSTATION" fetch="select">
+            <key>
+                <column name="COMPANY_ID" precision="22" scale="0" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.nsi.Workstation" />
+        </set>
+        <set name="addresses" inverse="true" lazy="true" table="ADDRESS" fetch="subselect" where="ADDRESS_TYPE = 'R'">
+            <key>
+                <column name="COMPANY_ID" precision="22" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.nsi.Address" />
+        </set>
+        <set name="userses" inverse="true" lazy="true" table="USERS" fetch="subselect">
+            <key>
+                <column name="COMPANY_ID" precision="22" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.nsi.Users" />
+        </set>
+        <set name="clientscompanies" inverse="true" lazy="true" table="CLIENTSCOMPANY" fetch="select">
+            <key>
+                <column name="COMPANY_ID" precision="22" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.nsi.Clientscompany" />
+        </set>
+        <set name="bankaccounts" inverse="true" lazy="true" table="BANKACCOUNT" fetch="select">
+            <key>
+                <column name="COMPANY_ID" precision="22" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.nsi.Bankaccount" />
+        </set>
+        <set name="companycontacts" inverse="true" lazy="true" table="COMPANYCONTACT" fetch="select">
+            <key>
+                <column name="COMPANY_ID" precision="22" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.nsi.Companycontact" />
+        </set>
+<!--         <set name="cimSmgsStatuses" inverse="true" lazy="true" table="CIM_SMGS_STATUS" fetch="select"> -->
+<!--             <key> -->
+<!--                 <column name="COMPANY_ID" precision="22" scale="0" /> -->
+<!--             </key> -->
+<!--             <one-to-many class="com.bivc.cimsmgs.db.CimSmgsStatus" /> -->
+<!--         </set> -->
+<!--         <set name="cimSmgsStatusAlloweds" inverse="true" lazy="true" table="CIM_SMGS_STATUS_ALLOWED" fetch="select"> -->
+<!--             <key> -->
+<!--                 <column name="HID_COMP" precision="22" scale="0" not-null="true" /> -->
+<!--             </key> -->
+<!--             <one-to-many class="com.bivc.cimsmgs.db.CimSmgsStatusAllowed" /> -->
+<!--         </set> -->
+    </class>
+</hibernate-mapping>

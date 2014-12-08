@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    <package name="cimsmgs-default" namespace="/" extends="struts-default">
+
+        <result-types>
+            <result-type name="json" class="com.bivc.cimsmgs.commons.JsonResult"/>
+            <result-type name="jsonEx" class="com.bivc.cimsmgs.commons.JsonResultException"/>
+            <result-type name="jspEx" class="com.bivc.cimsmgs.commons.JSPResultException"/>
+            <!--<result-type name="json2" class="com.bivc.cimsmgs.commons.JsonResult2"/>-->
+        </result-types>
+
+        <interceptors>
+            <interceptor name="hibernate4Json" class="com.bivc.cimsmgs.interceptors.HibernateInterceptor"/>
+            <interceptor name="hibernate4Jsp" class="com.bivc.cimsmgs.interceptors.HibernateOpenSessionInViewInterceptor"/>
+            <interceptor name="dao-init" class="com.bivc.cimsmgs.interceptors.DaoInitInterceptor"/>
+            <interceptor name="exceptions" class="com.bivc.cimsmgs.interceptors.ExceptionMappingInterceptor"/>
+            <interceptor name="params1" class="com.bivc.cimsmgs.interceptors.ParamsInterceptor"/>
+            <interceptor name="authentication" class="com.bivc.cimsmgs.interceptors.AuthenticationInterceptor"/>
+            <interceptor name="auditStatus" class="com.bivc.cimsmgs.interceptors.AuditStatusInterceptor"/>
+
+
+           <!-- <interceptor-stack name="defaultStack">
+                <interceptor-ref name="exceptions"/>
+                <interceptor-ref name="servletConfig"/>
+                <interceptor-ref name="i18n">
+                    <param name="parameterName">lang</param>
+                </interceptor-ref>
+                <interceptor-ref name="params"/>
+            </interceptor-stack>-->
+
+            <interceptor-stack name="hibernateStack">
+                <interceptor-ref name="exceptions">
+                    <param name="logCategory">com.bivc.cimsmgs</param>
+                    <param name="logEnabled">true</param>
+                    <param name="logLevel">error</param>
+                </interceptor-ref>
+                <interceptor-ref name="servletConfig"/>
+                <interceptor-ref name="i18n">
+                    <param name="parameterName">lang</param>
+                </interceptor-ref>
+                <interceptor-ref name="params1"/>
+                <interceptor-ref name="params"/>
+                <!--<interceptor-ref name="conversionError"/>-->
+                <interceptor-ref name="authentication"/>
+                <interceptor-ref name="hibernate4Json"/>
+                <interceptor-ref name="dao-init"/>
+                <interceptor-ref name="auditStatus"/>
+                <interceptor-ref name="prepare"/>
+               <!-- <interceptor-ref name="validation">
+                    <param name="excludeMethods">input,back,cancel,browse,create,edit</param>
+                </interceptor-ref>-->
+                <!--<interceptor-ref name="workflow">
+                    <param name="excludeMethods">input,back,cancel,browse,create,edit</param>
+                </interceptor-ref>-->
+            </interceptor-stack>
+
+            <interceptor-stack name="hibernate4JspStack">
+                <interceptor-ref name="exceptions">
+                    <param name="logCategory">com.bivc.cimsmgs</param>
+                    <param name="logEnabled">true</param>
+                    <param name="logLevel">error</param>
+                </interceptor-ref>
+                <interceptor-ref name="servletConfig"/>
+                <interceptor-ref name="i18n">
+                    <param name="parameterName">lang</param>
+                </interceptor-ref>
+                <interceptor-ref name="params1"/>
+                <interceptor-ref name="params"/>
+                <!--<interceptor-ref name="conversionError"/>-->
+                <interceptor-ref name="authentication"/>
+                <interceptor-ref name="hibernate4Jsp"/>
+                <interceptor-ref name="dao-init"/>
+                <interceptor-ref name="auditStatus"/>
+                <interceptor-ref name="prepare"/>
+                <!-- <interceptor-ref name="validation">
+                     <param name="excludeMethods">input,back,cancel,browse,create,edit</param>
+                 </interceptor-ref>-->
+                <!--<interceptor-ref name="workflow">
+                    <param name="excludeMethods">input,back,cancel,browse,create,edit</param>
+                </interceptor-ref>-->
+            </interceptor-stack>
+
+            <interceptor-stack name="fileUploadStack">
+                <interceptor-ref name="exceptions">
+                    <param name="logCategory">com.bivc.cimsmgs</param>
+                    <param name="logEnabled">true</param>
+                    <param name="logLevel">error</param>
+                </interceptor-ref>
+                <interceptor-ref name="servletConfig"/>
+                <interceptor-ref name="i18n">
+                    <param name="parameterName">lang</param>
+                </interceptor-ref>
+                <interceptor-ref name="fileUpload"/>
+                <interceptor-ref name="params1"/>
+                <interceptor-ref name="params"/>
+                <!--<interceptor-ref name="conversionError"/>-->
+                <interceptor-ref name="authentication"/>
+                <interceptor-ref name="hibernate4Json"/>
+                <interceptor-ref name="dao-init"/>
+                <interceptor-ref name="auditStatus"/>
+                <interceptor-ref name="prepare"/>
+                <!--<interceptor-ref name="validation">
+                    <param name="excludeMethods">input,back,cancel,browse,create,edit</param>
+                </interceptor-ref>-->
+                <!--<interceptor-ref name="workflow">
+                    <param name="excludeMethods">input,back,cancel,browse,create,edit</param>
+                </interceptor-ref>-->
+            </interceptor-stack>
+
+        </interceptors>
+
+        <default-interceptor-ref name="hibernateStack"/>
+
+        <global-results>
+            <result name="error" type="jsonEx"/>
+            <result name="errorJsp" type="jspEx"/>
+            <!--<result name="errorJsp">/jsp/Error1.jsp</result>-->
+            <!--<result name="errorJspHandler" type="redirect">/ErrorJspHandler.do</result>-->
+            <!--<result name="error1" type="json1"/>-->
+            <!--<result name="input" type="json1"/>-->
+        </global-results>
+
+        <global-exception-mappings>
+            <!--<exception-mapping result="errorJsp" exception="javax.servlet.ServletException"/>-->
+            <exception-mapping result="error" exception="java.lang.Exception"/>
+
+            <!--<exception-mapping result="error" exception="java.lang.Exception"/>-->
+        </global-exception-mappings>
+    </package>
+</struts>

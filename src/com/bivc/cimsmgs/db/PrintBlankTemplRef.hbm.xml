@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 14.09.2012 11:14:44 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.PrintBlankTemplRef" table="PRINT_BLANK_TEMPL_REF">
+        <composite-id name="id" class="com.bivc.cimsmgs.db.PrintBlankTemplRefId">
+            <key-property name="hidBlank" type="long">
+                <column name="HID_BLANK" precision="22" scale="0" />
+            </key-property>
+            <key-property name="hidTempl" type="long">
+                <column name="HID_TEMPL" precision="22" scale="0" />
+            </key-property>
+        </composite-id>
+        <many-to-one name="printBlank" class="com.bivc.cimsmgs.db.PrintBlank" update="false" insert="false" fetch="select">
+            <column name="HID_BLANK" precision="22" scale="0" not-null="true" />
+        </many-to-one>
+        <many-to-one name="printTemplates" class="com.bivc.cimsmgs.db.PrintTemplates" update="false" insert="false" fetch="select">
+            <column name="HID_TEMPL" precision="22" scale="0" not-null="true" />
+        </many-to-one>
+       <!-- <property name="page" type="java.lang.Byte">
+            <column name="PAGE" precision="2" scale="0" not-null="true"/>
+        </property>-->
+    </class>
+</hibernate-mapping>

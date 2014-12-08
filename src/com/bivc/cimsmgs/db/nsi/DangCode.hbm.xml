@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 22.04.2009 13:49:34 by Hibernate Tools 3.2.4.GA -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.nsi.DangCode" table="DANG_CODE">
+        <id name="hid" type="big_decimal">
+            <column name="HID" precision="20" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <property name="code" type="string">
+            <column name="CODE" />
+        </property>
+        <property name="descr" type="string">
+            <column name="DESCR" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 14.04.2009 10:09:20 by Hibernate Tools 3.2.4.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.NsiDor" table="NSI_DOR" >
+        <id name="kod" type="string">
+            <column name="KOD" length="3" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="nsiCountries" class="com.bivc.cimsmgs.db.NsiCountries" fetch="join">
+            <column name="KOD_STR" length="3" />
+        </many-to-one>
+        <property name="strana" type="string">
+            <column name="STRANA" length="15" />
+        </property>
+        <property name="sokrNam" type="string">
+            <column name="SOKR_NAM" length="4" />
+        </property>
+        <property name="sokrNamEu" type="string">
+            <column name="SOKR_NAM_EU" length="4" />
+        </property>
+        <!--property name="dorKod" type="string">
+          <formula>'0' || KOD</formula>
+        </property>
+        <set name="nsiStCises" inverse="true">
+            <key>
+                <column name="COD_DIR" length="3" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.NsiStCis" />
+        </set>
+        <set name="nsiStEus" inverse="true">
+            <key>
+                <column name="COD_DIR" length="3" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.NsiStEu" />
+        </set-->
+    </class>
+</hibernate-mapping>

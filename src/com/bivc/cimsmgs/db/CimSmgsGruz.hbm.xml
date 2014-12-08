@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 02.03.2009 10:02:25 by Hibernate Tools 3.2.4.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.CimSmgsGruz" table="CIM_SMGS_GRUZ" >
+        <id name="hid" type="long">
+            <column name="HID" precision="20" scale="0" />
+            <generator class="sequence">
+              <param name="sequence">CIM_SMGS_GRUZ_HID</param>
+            </generator>
+        </id>
+        <many-to-one name="cimSmgsCarList" class="com.bivc.cimsmgs.db.CimSmgsCarList" fetch="select">
+            <column name="HID_CAR" precision="20" scale="0" />
+        </many-to-one>
+    <!--    <many-to-one name="cimSmgs" class="com.bivc.cimsmgs.db.CimSmgs" fetch="select">
+            <column name="HID_CS" precision="20" scale="0"  not-null="true"/>
+        </many-to-one>-->
+        <many-to-one name="cimSmgsKonList" class="com.bivc.cimsmgs.db.CimSmgsKonList" fetch="select">
+            <column name="HID_KON" precision="20" scale="0"  />
+        </many-to-one>
+        <property name="upak" type="string">
+            <column name="UPAK" length="50" />
+        </property>
+        <property name="len" type="string">
+            <column name="LEN" length="32" />
+        </property>
+        <property name="kgvn" type="string">
+            <column name="KGVN" length="10" />
+        </property>
+        <property name="nzgr" type="string">
+            <column name="NZGR" length="4000" />
+        </property>
+        <property name="nzgrEu" type="string">
+            <column name="NZGR_EU" length="4000" />
+        </property>
+        <property name="nzgrRid" type="string">
+            <column name="NZGR_RID" length="4000" />
+        </property>
+        <property name="nzgrRidEu" type="string">
+            <column name="NZGR_RID_EU" length="4000" />
+        </property>
+        <property name="ekgvn" type="string">
+            <column name="KGVN1" length="10" />
+        </property>
+        <property name="enzgr" type="string">
+            <column name="NZGR1" length="4000" />
+        </property>
+        <property name="places" type="java.lang.Integer">
+            <column name="PLACES" precision="8" scale="0" />
+        </property>
+        <property name="massa" type="big_decimal">
+            <column name="MASSA" precision="13" scale="3" />
+        </property>
+       <!-- <property name="dattr" type="date">
+            <column name="DATTR" length="7" />
+        </property>-->
+        <!--<property name="locked" type="date">
+            <column name="LOCKED" length="7" />
+        </property>
+        <property name="unLock" type="string">
+            <column name="UN_LOCK" length="64" />
+        </property>-->
+        <property name="lang" type="java.lang.Byte">
+            <column name="LANG" precision="1" scale="0" />
+        </property>
+        <property name="seq" type="java.lang.Byte">
+            <column name="SEQ" precision="1" scale="0" />
+        </property>
+        <property name="sort" type="java.lang.Integer">
+            <column name="SORT" length="2" not-null="true"/>
+        </property>
+        <property name="ohr" type="boolean">
+            <column name="ohr" precision="1" scale="0" />
+        </property>
+    </class>
+</hibernate-mapping>

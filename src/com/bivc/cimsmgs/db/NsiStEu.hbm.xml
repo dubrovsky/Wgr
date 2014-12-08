@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.NsiStEu" table="NSI_ST_EU" >
+        <id name="hid" type="long">
+            <column name="HID" precision="20" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="nsiDor" class="com.bivc.cimsmgs.db.NsiDor" fetch="join" >
+            <column name="COD_DIR" length="3" />
+        </many-to-one>
+        <property name="kst" type="string" >
+            <column name="KST" length="6" />
+        </property>
+        <property name="nst" type="string">
+            <column name="NST" length="30" />
+        </property>
+        <property name="dattr" type="date">
+            <column name="DATTR" length="7" />
+        </property>
+        <property name="locked" type="date">
+            <column name="LOCKED" length="7" />
+        </property>
+        <property name="unLock" type="string">
+            <column name="UN_LOCK" length="20" />
+        </property>
+        <property name="trans" type="string">
+            <column name="TRANS" length="20" />
+        </property>
+        <property name="un" type="string">
+            <column name="UN" length="20" />
+        </property>
+        <property name="deleted" type="date">
+            <column name="DELETED" length="7" />
+        </property>
+        <property name="altered" type="date">
+            <column name="ALTERED" length="7" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 14.09.2012 11:14:44 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.PrintBlank" table="PRINT_BLANK">
+        <id name="hid" type="long">
+            <column name="HID" precision="22" scale="0"/>
+            <generator class="sequence">
+                <param name="sequence">PRINT_BLANK_HID</param>
+            </generator>
+        </id>
+        <many-to-one name="docDir" class="com.bivc.cimsmgs.db.DocDir" fetch="select">
+            <column name="HID_DOC" precision="22" scale="0" not-null="true"/>
+        </many-to-one>
+        <property name="name" type="string">
+            <column name="NAME" length="300" not-null="true"/>
+        </property>
+        <property name="data" type="blob">
+            <column name="DATA" not-null="true"/>
+        </property>
+        <property name="dattr" type="timestamp" update="false">
+            <column name="DATTR" length="7" not-null="true"/>
+        </property>
+        <property name="un" type="string" update="false">
+            <column name="UN" length="20" not-null="true"/>
+        </property>
+        <property name="trans" type="string" update="false">
+            <column name="TRANS" length="20" not-null="true"/>
+        </property>
+        <property name="altered" type="timestamp" update="false">
+            <column name="ALTERED" length="7" not-null="true"/>
+        </property>
+        <property name="page" type="java.lang.Byte">
+            <column name="PAGE" precision="2" scale="0" not-null="true"/>
+        </property>
+        <property name="ncopy" type="java.lang.Byte">
+            <column name="NCOPY" precision="2" scale="0" not-null="true"/>
+        </property>
+        <property name="fileName" type="string">
+            <column name="FILE_NAME" length="500"/>
+        </property>
+        <property name="contentType" type="string">
+            <column name="CONTENT_TYPE" length="200"/>
+        </property>
+        <property name="length" type="big_decimal">
+            <column name="LENGTH" precision="22" scale="0"/>
+        </property>
+        <!--<map name="printBlankTemplRefs" cascade="all, delete-orphan" inverse="true" sort="natural" lazy="true">
+            <key>
+                <column name="HID_BLANK" precision="20" scale="0" not-null="true"/>
+            </key>
+            <map-key column="PAGE" type="byte"/>
+            <one-to-many class="com.bivc.cimsmgs.db.PrintBlankTemplRef"/>
+        </map>-->
+
+        <set name="printBlankTemplRefs" table="PRINT_BLANK_TEMPL_REF" inverse="true" lazy="true" fetch="select"
+             cascade="all-delete-orphan">
+            <key>
+                <column name="HID_BLANK" precision="20" scale="0" not-null="true"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.PrintBlankTemplRef"/>
+        </set>
+    </class>
+</hibernate-mapping>

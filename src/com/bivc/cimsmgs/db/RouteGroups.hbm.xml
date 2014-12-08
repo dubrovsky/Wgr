@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 13.05.2011 15:11:19 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.RouteGroups" table="ROUTE_GROUPS" mutable="false">
+        <composite-id name="id" class="com.bivc.cimsmgs.db.RouteGroupsId">
+            <key-property name="hidRoute" type="long">
+                <column name="HID_ROUTE" precision="20" scale="0" />
+            </key-property>
+            <key-property name="groupId" type="string">
+                <column name="GROUP_ID" length="64" />
+            </key-property>
+        </composite-id>
+        <many-to-one name="usrGroupsDir" class="com.bivc.cimsmgs.db.UsrGroupsDir" update="false" insert="false" fetch="select">
+            <column name="GROUP_ID" length="64" not-null="true" />
+        </many-to-one>
+        <many-to-one name="route" class="com.bivc.cimsmgs.db.Route" update="false" insert="false" fetch="select">
+            <column name="HID_ROUTE" precision="20" scale="0" not-null="true" />
+        </many-to-one>
+    </class>
+</hibernate-mapping>

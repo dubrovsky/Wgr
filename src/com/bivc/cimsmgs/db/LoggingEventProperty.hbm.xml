@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 05.05.2012 14:42:50 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.LoggingEventProperty" table="LOGGING_EVENT_PROPERTY">
+        <composite-id name="id" class="com.bivc.cimsmgs.db.LoggingEventPropertyId">
+            <key-property name="eventId" type="long">
+                <column name="EVENT_ID" precision="10" scale="0" />
+            </key-property>
+            <key-property name="mappedKey" type="string">
+                <column name="MAPPED_KEY" length="254" />
+            </key-property>
+        </composite-id>
+        <many-to-one name="loggingEvent" class="com.bivc.cimsmgs.db.LoggingEvent" update="false" insert="false" fetch="select">
+            <column name="EVENT_ID" precision="10" scale="0" not-null="true" />
+        </many-to-one>
+        <property name="mappedValue" type="string">
+            <column name="MAPPED_VALUE" length="1024" />
+        </property>
+    </class>
+</hibernate-mapping>

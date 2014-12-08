@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+                                   "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 08.04.2011 10:06:33 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+	<class name="com.bivc.cimsmgs.db.nsi.Sta" table="STA" where="SYSDATE &gt;= ST_BGN and SYSDATE &lt; ST_END">
+		<id name="stUn" type="java.lang.Long">
+			<column name="ST_UN" precision="10" scale="0" />
+			<generator class="assigned" />
+		</id>
+		<many-to-one name="road" class="com.bivc.cimsmgs.db.nsi.Road" fetch="join" property-ref="roadNo" >
+            <column name="ROAD_NO" precision="5" scale="0"/>
+        </many-to-one>
+        <many-to-one name="management" class="com.bivc.cimsmgs.db.nsi.Management" fetch="join" property-ref="managNo" >
+            <column name="MANAG_NO" precision="5" scale="0"/>
+        </many-to-one>
+		<property name="stId" type="java.lang.Long">
+			<column name="ST_ID" precision="10" scale="0" />
+		</property>
+		<property name="staNo" type="string">
+			<column length="8" name="STA_NO" />
+		</property>
+		<property name="staName" type="string">
+			<column length="100" name="STA_NAME" />
+		</property>
+        <property name="staNameCh" type="string">
+            <column length="300" name="STA_NAME_CH"/>
+        </property>
+        <property name="staNameEn" type="string">
+            <column length="300" name="STA_NAME_EN"/>
+        </property>
+<!-- 		<property name="managNo" type="java.lang.Integer"> -->
+<!-- 			<column name="MANAG_NO" precision="5" scale="0" /> -->
+<!-- 		</property> -->
+<!-- 		<property name="roadNo" type="java.lang.Integer"> -->
+<!-- 			<column name="ROAD_NO" precision="5" scale="0" /> -->
+<!-- 		</property> -->
+		<property name="divNo" type="string">
+			<column length="2" name="DIV_NO" />
+		</property>
+		<property name="provNo" type="string">
+			<column length="4" name="PROV_NO" />
+		</property>
+		<property name="prPort" type="java.lang.Integer">
+			<column name="PR_PORT" precision="5" scale="0" />
+		</property>
+		<property name="sign" type="java.lang.Integer">
+			<column name="SIGN" precision="5" scale="0" />
+		</property>
+		<property name="gaugeKind" type="string">
+			<column length="2" name="GAUGE_KIND" />
+		</property>
+		<property name="stWork" type="string">
+			<column length="1" name="ST_WORK" />
+		</property>
+		<property name="paragraph" type="string">
+			<column length="40" name="PARAGRAPH" />
+		</property>
+		<property name="stBgn" type="date">
+			<column length="7" name="ST_BGN" />
+		</property>
+		<property name="stEnd" type="date">
+			<column length="7" name="ST_END" />
+		</property>
+        <property name="ro" type="byte">
+            <column length="1" name="RO" />
+        </property>
+	</class>
+</hibernate-mapping>

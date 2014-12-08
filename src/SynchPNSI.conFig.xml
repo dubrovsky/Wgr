@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='windows-1251'?>
+
+<root>
+
+  <!-- При изменении файла необходимо перезапустить программу -->
+
+  <context-param>
+    <param-name>runAtOne</param-name>
+    <param-value>true</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>displayGUI</param-name>
+    <param-value>false</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>sourceData</param-name>
+    <param-value>FILE</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>sendDataToMail</param-name>
+    <param-value>true</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>WEBPNSI</param-name>
+    <param-value></param-value>
+  </context-param>
+  <context-param>
+    <param-name>register</param-name>
+    <param-value>register</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>mailHost</param-name>
+    <param-value></param-value>
+  </context-param>
+  <context-param>
+    <param-name>mailAccount</param-name>
+    <param-value></param-value>
+  </context-param>
+  <context-param>
+    <param-name>mailPassword</param-name>
+    <param-value></param-value>
+  </context-param>
+  <context-param>
+    <param-name>mailFrom</param-name>
+    <param-value></param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>mailHost_to</param-name>
+    <param-value></param-value>
+  </context-param>
+  <context-param>
+    <param-name>mailAccount_to</param-name>
+    <param-value></param-value>
+  </context-param>
+  <context-param>
+    <param-name>mailPassword_to</param-name>
+    <param-value></param-value>
+  </context-param>
+  <context-param>
+    <param-name>mailFrom_to</param-name>
+    <param-value></param-value>
+  </context-param>
+  <context-param>
+    <param-name>suffixTableName_to</param-name>
+    <param-value>_V</param-value>
+  </context-param>
+
+
+  <context-param>
+    <param-name>pathToAttachFiles</param-name>
+    <param-value>./Attach</param-value>
+  </context-param>
+  <context-param>
+    <param-name>pathToLog</param-name>
+    <param-value>./logs/synchPNSI</param-value>
+  </context-param>
+  <context-param>
+    <param-name>pathToBackUpFiles</param-name>
+    <param-value>./BackUp</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>maskTypeDATE</param-name>
+    <param-value>yyyy-MM-dd</param-value>
+  </context-param>
+  <context-param>
+    <param-name>maskTypeTIMESTAMP</param-name>
+    <param-value>yyyy-MM-dd HH:mm:ss</param-value>
+  </context-param>
+  <context-param>
+    <param-name>maskTypeTIMESTAMP2</param-name>
+    <param-value>yyyy-MM-dd HH:mm:ss.SSSSSS</param-value>
+  </context-param>
+  <context-param>
+    <param-name>queryDateName</param-name>
+    <param-value>date</param-value>
+  </context-param>
+  <context-param>
+    <param-name>queryDateMask</param-name>
+    <param-value>yyyy-MM-dd-HH.mm</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>sleepTimeInSeconds</param-name>
+    <param-value>60</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>drvClassName1</param-name>
+    <param-value>oracle.jdbc.OracleDriver</param-value>
+  </context-param>
+
+  <schema>
+    <name>tk</name>
+    <connectionString>jdbc:oracle:thin:@10.3.6.6:1521:test2</connectionString>
+    <password>tk</password>
+  </schema>
+
+</root>

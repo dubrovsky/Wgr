@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!ELEMENT script ( action+ ) >
+
+<!ELEMENT action ( transport+ ) >
+<!ATTLIST action name ( send | receive ) #REQUIRED >
+<!ATTLIST action recipient NMTOKEN #IMPLIED >
+<!ATTLIST action sender NMTOKEN #IMPLIED >
+<!ATTLIST action direction ( bch | ctm | tbc | btlc | gr ) #REQUIRED >
+
+<!ELEMENT transport ( email?, from?, subject?, maxAttachCount?, server?, filename? ) >
+<!ATTLIST transport name NMTOKEN #REQUIRED >
+<!ATTLIST transport encoding NMTOKEN #IMPLIED >
+
+<!ELEMENT email ( #PCDATA ) >
+
+<!ELEMENT from ( #PCDATA ) >
+
+<!ELEMENT subject ( #PCDATA ) >
+
+<!ELEMENT maxAttachCount ( #PCDATA ) >
+
+<!ELEMENT filename ( #PCDATA ) >
+
+<!ELEMENT server ( service? ) >
+<!ATTLIST server password NMTOKEN #IMPLIED >
+<!ATTLIST server host CDATA #REQUIRED >
+<!ATTLIST server account CDATA #IMPLIED >
+<!ATTLIST server dir NMTOKEN #IMPLIED >
+<!ATTLIST server port NMTOKEN #IMPLIED >
+<!ATTLIST server chanel NMTOKEN #IMPLIED >
+<!ATTLIST server manager NMTOKEN #IMPLIED >
+<!ATTLIST server queue NMTOKEN #IMPLIED >
+<!ATTLIST server ssl ( true | false ) #IMPLIED >
+
+<!ELEMENT service EMPTY >
+<!ATTLIST service name NMTOKEN #REQUIRED >
+<!ATTLIST service getFuncName NMTOKEN #REQUIRED >
+<!ATTLIST service putFuncName NMTOKEN #REQUIRED >
+<!ATTLIST service putParamName NMTOKEN #REQUIRED >
+<!ATTLIST service putParamText NMTOKEN #REQUIRED >

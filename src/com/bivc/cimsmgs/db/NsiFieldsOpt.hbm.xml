@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 31.03.2009 15:14:41 by Hibernate Tools 3.2.4.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.NsiFieldsOpt" table="NSI_FIELDS_OPT" >
+        <id name="hid" type="long">
+            <column name="HID" precision="20" scale="0" />
+            <generator class="sequence">
+              <param name="sequence">NSI_FIELDS_OPT_HID</param>
+            </generator>
+        </id>
+        <property name="dattr" type="date">
+            <column name="DATTR" length="7" />
+        </property>
+        <property name="locked" type="date">
+            <column name="LOCKED" length="7" />
+        </property>
+        <property name="unLock" type="string">
+            <column name="UN_LOCK" length="20" />
+        </property>
+        <property name="trans" type="string">
+            <column name="TRANS" length="20" />
+        </property>
+        <property name="un" type="string">
+            <column name="UN" length="20" />
+        </property>
+        <property name="deleted" type="date">
+            <column name="DELETED" length="7" />
+        </property>
+        <property name="altered" type="date">
+            <column name="ALTERED" length="7" not-null="true" />
+        </property>
+        <property name="nsiName" type="string">
+            <column name="NSI_NAME" length="64" />
+        </property>
+        <property name="nsiFName" type="string">
+            <column name="NSI_F_NAME" length="16" />
+        </property>
+        <property name="nsiFDesc" type="string">
+            <column name="NSI_F_DESC" length="1024" />
+        </property>
+        <property name="nsiFNsi" type="string">
+            <column name="NSI_F_NSI" length="32" />
+        </property>
+        <property name="nsiFDsc2" type="string">
+            <column name="NSI_F_DSC2" length="1024" />
+        </property>
+        <property name="nsiFLoc" type="java.lang.Byte">
+            <column name="NSI_F_LOC" precision="1" scale="0" />
+        </property>
+        <property name="nsiFNn" type="string">
+            <column name="NSI_F_NN" length="6" />
+        </property>
+        <property name="nsiFF" type="string">
+            <column name="NSI_F_F" length="32" />
+        </property>
+        <property name="nsiFType" type="java.lang.Byte">
+            <column name="NSI_F_TYPE" precision="2" scale="0" />
+        </property>
+        <property name="nsiFNcas" type="string">
+            <column name="NSI_F_NCAS" length="6" />
+        </property>
+        <property name="nsiFDsc3" type="string">
+            <column name="NSI_F_DSC3" length="1024" />
+        </property>
+        <property name="sort" type="byte">
+            <column name="SORT" length="3" />
+        </property>
+    </class>
+</hibernate-mapping>

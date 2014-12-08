@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 08.04.2011 10:06:33 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+
+    <class name="com.bivc.cimsmgs.db.nsi.Cargo" table="CARGO_V" where="SYSDATE &gt;= CAR#BGN and SYSDATE &lt; CAR#END">
+        <id name="car_un" type="java.lang.Long">
+            <column name="CAR#UN"/>
+            <generator class="assigned"/>
+        </id>
+        <property name="car_id" type="java.lang.Long">
+            <column name="CAR#ID"/>
+        </property>
+        <property name="cargo" type="string">
+            <column name="CARGO"/>
+        </property>
+        <property name="cargo_sg" type="string">
+            <column name="CARGO_SG"/>
+        </property>
+        <property name="cargo_fullname" type="string">
+            <column name="CARGO_FULLNAME"/>
+        </property>
+        <property name="cargo_security" type="string">
+            <column name="CARGO_SECURITY"/>
+        </property>
+        <property name="car_bgn" type="date">
+            <column name="CAR#BGN"/>
+        </property>
+        <property name="car_end" type="date">
+            <column name="CAR#END"/>
+        </property>
+        <!--<set name="ohranas" inverse="true" lazy="true" fetch="select">
+            <key property-ref="cargo">
+                <column name="etsng" length="6"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.NsiOhr"/>
+        </set>-->
+    </class>
+</hibernate-mapping>

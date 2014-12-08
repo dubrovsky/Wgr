@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "http://jakarta.apache.org/log4j/log4j.dtd">
+<log4j:configuration>
+
+    <appender name="FILE" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="file" value="${catalina.home}/logs/CimSmgs2.log"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{dd-MM-yy HH:mm:ss} [%x] %-5p %C{1}.%M - %m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{dd-MM-yy HH:mm:ss} [user=%X{userName}] %-5p %C{1}.%M - %m%n"/>
+        </layout>
+    </appender>
+
+    <!--
+
+      log4j.appender.F = org.apache.log4j.DailyRollingFileAppender
+    log4j.appender.F.File = ${catalina.home}/logs/GreenRailServer.log
+    log4j.appender.F.layout = org.apache.log4j.PatternLayout
+    log4j.appender.F.layout.ConversionPattern = %d{dd-MM-yy HH:mm:ss} [%x] %-5p %C{1}.%M - %m%n
+
+
+      <category name="com.opensymphony.xwork2.ognl.OgnlValueStack">
+        <priority value="error"/>
+      </category>
+    -->
+    <!-- Log the real SQL -->
+    <category name="org.hibernate.SQL">
+        <priority value="DEBUG"/>
+    </category>
+
+    <!-- Log SQL statements-->
+
+    <!--
+    org.zefer.pd4ml
+
+    <logger name="com.bivc.cimsmgs.security">
+      <level value="INFO"/>
+    </logger>
+    -->
+
+    <!--
+    <category name="org.hibernate">
+    <priority value="DEBUG"/>
+    </category>
+
+    <logger name="com.bivc.cimsmgs.interceptors">
+      <level value="INFO"/>
+    </logger>
+
+
+
+    <category name="org.hibernate">
+    <priority value="INFO"/>
+    </category>
+
+    <category name="com.bivc.cimsmgs">
+    <priority value="DEBUG"/>
+    </category>
+    -->
+    <!--
+    <category name="org.zefer.pd4ml">
+    <priority value="TRACE"/>
+    </category>
+
+
+    -->
+    <category name="com.bivc.cimsmgs">
+        <priority value="INFO"/>
+    </category>
+
+    <!--<category name="com.opensymphony.xwork2.interceptor.ParametersInterceptor">
+            <priority value="DEBUG"/>
+        </category>-->
+
+    <root>
+        <level value="WARN"/>
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+</log4j:configuration>

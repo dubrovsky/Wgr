@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+  <class name="com.bivc.cimsmgs.db.Aperak" table="B_APERAK" dynamic-update="true" dynamic-insert="true">
+    <id name="hid" type="long" column="HID">
+       <generator class="sequence">
+         <param name="sequence">B_APERAK_HID</param>
+       </generator>
+    </id>
+    <property column="ID_UNB" name="idUnb" type="java.lang.String"/>
+    <property column="DAT_UNB" name="datUnb" type="java.util.Date"/>
+    <property column="ID" name="id" type="java.lang.String"/>
+    <property column="KOD_DOC" name="kodDoc" type="java.lang.String"/>
+    <property column="ID_BGM" name="idBgm" type="java.lang.String"/>
+    <property column="STATUS" name="status" type="java.lang.String"/>
+    <property column="DAT_OF" name="datOf" type="java.util.Date"/>
+    <property column="SMGS" name="smgs" type="java.lang.String"/>
+    <property column="DPRV" name="dprv" type="java.util.Date"/>
+    <property column="TEXT" name="text" type="java.lang.String"/>
+    <property column="DATTR" name="dattr" type="java.util.Date"/>
+    <set name="aperakDet" cascade="all" inverse="true" lazy="true">
+      <key column="HID_MAIN"/>
+      <one-to-many class="com.bivc.cimsmgs.db.AperakDet" />
+    </set>
+  </class>
+</hibernate-mapping>

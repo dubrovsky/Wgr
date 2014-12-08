@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 13.05.2011 15:11:19 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.Project" table="PROJECT">
+        <id name="hid" type="long">
+            <column name="HID" precision="20" scale="0"/>
+            <generator class="sequence">
+              <param name="sequence">PROJECT_HID</param>
+            </generator>
+        </id>
+        <property name="name" type="string">
+            <column length="500" name="NAME"/>
+        </property>
+        <property name="dattr" type="timestamp">
+            <column length="7" name="DATTR"/>
+        </property>
+        <property name="un" type="string">
+            <column length="20" name="UN"/>
+        </property>
+        <!--<property name="locked" type="date">
+            <column length="7" name="LOCKED"/>
+        </property>
+        <property name="unLock" type="string">
+            <column length="20" name="UN_LOCK"/>
+        </property>
+        <property name="altered" type="date">
+            <column length="7" name="ALTERED"/>
+        </property>-->
+        <set name="projectGroupses" cascade="all, delete-orphan" inverse="true" lazy="true" batch-size="20">
+            <key>
+                <column name="HID_PROJ" not-null="true" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ProjectGroups"/>
+        </set>
+        <set name="routes" cascade="all, delete-orphan" inverse="true" lazy="true" batch-size="50" sort="natural">
+            <key>
+                <column name="HID_PROJ" not-null="true" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.Route"/>
+            <filter name="limitRoutesByUserGroup" condition="HID IN (SELECT r.HID FROM ROUTE r, ROUTE_GROUPS rgr WHERE r.HID = rgr.HID_ROUTE AND rgr.GROUP_ID IN (:userGroup))"/>
+        </set>
+        <!--<map name="routes" cascade="all, delete-orphan" inverse="true" lazy="true" batch-size="20" sort="natural">
+            <key>
+                <column name="HID_PROJ" not-null="true" precision="20" scale="0"/>
+            </key>
+            <map-key column="HID" type="long"/>
+            <one-to-many class="com.bivc.cimsmgs.db.Route"/>
+            <filter name="limitRoutesByUserGroup" condition="HID IN (SELECT r.HID FROM ROUTE r, ROUTE_GROUPS rgr WHERE r.HID = rgr.HID_ROUTE AND rgr.GROUP_ID IN (:userGroup))"/>
+        </map>-->
+    </class>
+    <filter-def name="limitRoutesByUserGroup">
+        <filter-param name="userGroup" type="string"/>
+    </filter-def>
+</hibernate-mapping>

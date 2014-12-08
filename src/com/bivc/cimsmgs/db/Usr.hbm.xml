@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 12.11.2010 16:44:31 by Hibernate Tools 3.4.0.Beta1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.Usr" table="USR">
+        <id name="un" type="string">
+            <column name="UN" length="20"/>
+            <generator class="assigned"/>
+        </id>
+        <many-to-one name="group" class="com.bivc.cimsmgs.db.UsrGroupsDir" fetch="select">
+            <column name="GROUP_ID" length="64" not-null="true"/>
+        </many-to-one>
+        <property name="namKlient" type="string">
+            <column name="NAM_KLIENT" length="96"/>
+        </property>
+        <property name="email" type="string">
+            <column name="EMAIL" length="250"/>
+        </property>
+        <property name="strans" type="boolean">
+            <column name="STRANS" precision="1" scale="0" not-null="true"/>
+        </property>
+        <property name="ps" type="string">
+            <column name="PS" length="64" not-null="true"/>
+        </property>
+        <property name="locked" type="boolean">
+            <column name="LOCKED" precision="1" scale="0" not-null="true"/>
+        </property>
+        <property name="su" type="boolean">
+            <column name="SU" precision="1" scale="0" not-null="true"/>
+        </property>
+        <property name="dattr" type="timestamp">
+            <column name="DATTR" length="7" not-null="true"/>
+        </property>
+        <property name="un1" type="string">
+            <column name="UN1" length="20" not-null="true"/>
+        </property>
+        <set name="groups" table="USR_GROUPS" inverse="true" lazy="true"  batch-size="50" cascade="all, delete-orphan">
+            <key>
+                <column name="USR_ID" length="20" not-null="true"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.UsrGroups"/>
+        </set>
+        <set name="privilegs" table="USR_PRIVILEGS" inverse="true" lazy="true"  batch-size="50"  cascade="all, delete-orphan">
+            <key>
+                <column name="USER_ID" length="20" not-null="true"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.UsrPrivilegs"/>
+        </set>
+        <set name="statuses" table="STATUS" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="UN" length="20" not-null="true"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.Status"/>
+        </set>
+        <set name="routeUnPrintTemplateses" cascade="all" inverse="true" lazy="true" batch-size="50">
+            <key>
+                <column name="HID_UN" precision="22" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.RouteUnPrintTemplates" />
+        </set>
+        <!--<set name="doc2docTemplsUnRefses" table="DOC2DOC_TEMPLS_UN_REFS" inverse="true" lazy="true" batch-size="50" cascade="all">
+            <key>
+                <column name="HID_UN" length="20" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.Doc2docTemplsUnRefs" />
+        </set>-->
+        <set name="doc2docTemplsRouteUnRefses" table="DOC2DOC_TEMPLS_ROUTE_UN_REFS" inverse="true" lazy="true" fetch="select" cascade="all">
+            <key>
+                <column name="HID_UN" length="20" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.Doc2docTemplsRouteUnRefs" />
+        </set>
+        <set name="fieldsCommentses" table="FIELDS_COMMENTS" inverse="true" lazy="true" batch-size="50" cascade="all">
+            <key>
+                <column name="UN" length="20" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.FieldsComments" />
+        </set>
+    </class>
+</hibernate-mapping>

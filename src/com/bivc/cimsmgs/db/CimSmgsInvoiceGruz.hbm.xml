@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 02.03.2009 10:02:25 by Hibernate Tools 3.2.4.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.CimSmgsInvoiceGruz" table="CIM_SMGS_INVOICE_GRUZ" >
+        <id name="hid" type="long">
+            <column name="HID" precision="20" scale="0" />
+            <generator class="sequence">
+              <param name="sequence">CS_INVOICE_GRUZ_HID</param>
+            </generator>
+        </id>
+
+<!--
+        <property name="hid_csinv" type="long">
+            <column name="HID_CSINV" length="20" />
+        </property>
+-->
+
+        <many-to-one name="Invoice" class="com.bivc.cimsmgs.db.CimSmgsInvoice" fetch="select">
+            <column name="HID_CSINV" precision="20" scale="0"  not-null="true"/>
+        </many-to-one>
+        <property name="znak" type="string">
+            <column name="znak" length="20" />
+        </property>
+        <property name="nzyp" type="string">
+            <column name="nzyp" length="100" />
+        </property>
+        <property name="kypk" type="string">
+            <column name="kypk" length="5" />
+        </property>
+        <property name="tnved" type="string">
+            <column name="TNVED" length="12" />
+        </property>
+        <property name="cus_edizm" type="string">
+            <column name="CUS_EDIZM" length="25" />
+        </property>
+        <property name="nzgr" type="string">
+            <column name="NZGR" length="2500" />
+        </property>
+        <property name="cost" type="string">
+            <column name="COST" length="10"/>
+        </property>
+        <property name="itogo" type="string">
+            <column name="ITOGO" length="20"/>
+        </property>
+        <property name="kolm" type="big_decimal">
+            <column name="KOLM" precision="10" scale="0" />
+        </property>
+        <property name="mbrt" type="big_decimal">
+            <column name="MBRT" precision="12" scale="3" />
+        </property>
+        <property name="mnet" type="big_decimal">
+            <column name="MNET" precision="12" scale="3" />
+        </property>
+        <property name="klms" type="big_decimal">
+            <column name="KLMS" precision="10" scale="0" />
+        </property>
+        <property name="cus_kolm" type="big_decimal">
+            <column name="CUS_KOLM" precision="10" scale="0" />
+        </property>
+        <property name="type" type="string">
+            <column name="TYPE" length="50" />
+        </property>
+        <property name="kole" type="big_decimal">
+            <column name="KOLE" precision="10" scale="0"/>
+        </property>
+        <property name="eizm" type="string">
+            <column name="EIZM" length="10"/>
+        </property>
+
+    </class>
+</hibernate-mapping>

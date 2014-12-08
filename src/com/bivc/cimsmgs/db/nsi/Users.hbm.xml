@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 22.04.2009 13:49:34 by Hibernate Tools 3.2.4.GA -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.nsi.Users" table="USERS">
+        <id name="id" type="big_decimal">
+            <column name="ID" precision="22" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="company" class="com.bivc.cimsmgs.db.nsi.Company" fetch="join">
+            <column name="COMPANY_ID" precision="22" scale="0" not-null="true" />
+        </many-to-one>
+        <property name="loginName" type="string">
+            <column name="LOGIN_NAME" length="20" not-null="true" unique="true" />
+        </property>
+        <property name="allowedFrom" type="date">
+            <column name="ALLOWED_FROM" length="7" />
+        </property>
+        <property name="allowedTo" type="date">
+            <column name="ALLOWED_TO" length="7" />
+        </property>
+        <property name="jobTitle" type="string">
+            <column name="JOB_TITLE" length="128" not-null="true" />
+        </property>
+        <property name="phones" type="string">
+            <column name="PHONES" length="128" />
+        </property>
+        <property name="email" type="string">
+            <column name="EMAIL" length="50" />
+        </property>
+        <property name="password" type="string">
+            <column name="PASSWORD" length="20" not-null="true" />
+        </property>
+        <property name="nextPasswordChange" type="date">
+            <column name="NEXT_PASSWORD_CHANGE" length="7" />
+        </property>
+        <property name="clockNumber" type="string">
+            <column name="CLOCK_NUMBER" length="50" />
+        </property>
+        <property name="disabled" type="string">
+            <column name="DISABLED" length="1" not-null="true" />
+        </property>
+        <property name="disabledMessage" type="string">
+            <column name="DISABLED_MESSAGE" length="128" />
+        </property>
+        <property name="name" type="string">
+            <column name="NAME" length="55" not-null="true" />
+        </property>
+        <property name="surname" type="string">
+            <column name="SURNAME" length="55" not-null="true" />
+        </property>
+        <property name="mobPhone" type="string">
+            <column name="MOB_PHONE" length="50" />
+        </property>
+        <property name="fax" type="string">
+            <column name="FAX" length="50" />
+        </property>
+        <property name="locale" type="string">
+            <column name="LOCALE" length="20" not-null="true" />
+        </property>
+        <property name="subscribedToCtmMaillist" type="string">
+            <column name="SUBSCRIBED_TO_CTM_MAILLIST" length="1" not-null="true" />
+        </property>
+        <property name="isConnected" type="string">
+            <column name="IS_CONNECTED" length="1" not-null="true" />
+        </property>
+        <property name="functionalPermissions" type="string">
+            <column name="FUNCTIONAL_PERMISSIONS" length="4000" />
+        </property>
+        <!-- <set name="cimSmgsStatuses" inverse="true" lazy="true" table="CIM_SMGS_STATUS" fetch="select">
+            <key>
+                <column name="HID_USER" precision="22" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsStatus" />
+        </set> -->
+    </class>
+</hibernate-mapping>

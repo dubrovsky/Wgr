@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.CimSmgsScan" table="CIM_SMGS_SCAN">
+        <id name="hid" type="long">
+            <column name="HID" precision="22" scale="0" />
+            <generator class="sequence">
+              <param name="sequence">CIM_SMGS_SCAN_HID</param>
+            </generator>
+        </id>
+        <many-to-one name="route" class="com.bivc.cimsmgs.db.Route" fetch="select">
+            <column name="HID_ROUTE" precision="20" scale="0" />
+        </many-to-one>
+        <many-to-one name="packDoc" class="com.bivc.cimsmgs.db.PackDoc" fetch="select">
+            <column name="HID_PACK" precision="20" scale="0" />
+        </many-to-one>
+        <many-to-one name="cimSmgs" class="com.bivc.cimsmgs.db.CimSmgs" fetch="select">
+            <column name="HID_CS" precision="22" scale="0" not-null="true" />
+        </many-to-one>
+        <property name="files" type="blob">
+            <column name="FILES" />
+        </property>
+        <property name="fileName" type="string">
+            <column name="FILE_NAME" length="100" />
+        </property>
+        <property name="contentType" type="string">
+            <column name="CONTENT_TYPE" length="50" />
+        </property>
+        <property name="length" type="big_decimal">
+            <column name="LENGTH" precision="22" scale="0" />
+        </property>
+        <property name="dattr" type="timestamp">
+            <column name="DATTR" length="7" not-null="true"/>
+        </property>
+        <property name="un" type="string">
+            <column name="UN" length="20" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 02.03.2009 10:02:25 by Hibernate Tools 3.2.4.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.PackListGruz" table="CS_PACKLIST_GRUZ" >
+        <id name="hid" type="long">
+            <column name="HID" precision="20" scale="0" />
+            <generator class="sequence">
+              <param name="sequence">CS_PACKLISTGRUZ_HID</param>
+            </generator>
+        </id>
+
+        <many-to-one name="PackList" class="com.bivc.cimsmgs.db.PackList" fetch="select">
+            <column name="HID_CSPL" precision="20" scale="0"  not-null="true"/>
+        </many-to-one>
+
+        <property name="pak_nomer" type="string">
+            <column name="PAK_NOMER" length="20" />
+        </property>
+        <property name="pak_type" type="string">
+            <column name="PAK_TYPE" length="30" />
+        </property>
+        <property name="dim" type="string">
+            <column name="DIM" length="30" />
+        </property>
+        <property name="mbrt" type="big_decimal">
+            <column name="MBRT" precision="6" scale="0" />
+        </property>
+        <property name="mnet" type="big_decimal">
+            <column name="MNET" precision="6" scale="0" />
+        </property>
+        <property name="dattr" type="date">
+          <column name="DATTR" length="7" />
+        </property>
+        <property name="altered" type="date">
+          <column name="ALTERED" length="7" />
+        </property>
+
+    </class>
+</hibernate-mapping>

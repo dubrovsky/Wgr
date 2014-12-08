@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21.11.2012 15:44:35 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.FieldsComments" table="FIELDS_COMMENTS">
+        <id name="hid" type="java.lang.Long">
+            <column name="HID" precision="20" scale="0" />
+            <generator class="sequence">
+                <param name="sequence">FIELDS_COMMENTS_SEQ</param>
+            </generator>
+        </id>
+        <many-to-one name="fieldsDir" class="com.bivc.cimsmgs.db.FieldsDir" fetch="select">
+            <column name="FIELD_HID" precision="20" scale="0" not-null="true" />
+        </many-to-one>
+        <many-to-one name="packDoc" class="com.bivc.cimsmgs.db.PackDoc" fetch="select">
+            <column name="PACK_HID" precision="20" scale="0" not-null="true" />
+        </many-to-one>
+        <many-to-one name="usr" class="com.bivc.cimsmgs.db.Usr" fetch="select">
+            <column name="UN" length="20" not-null="true" />
+        </many-to-one>
+        <property name="comments" type="string">
+            <column name="COMMENTS" length="200" not-null="true" />
+        </property>
+        <property name="altered" type="timestamp" update="false">
+            <column name="ALTERED" length="7"/>
+        </property>
+        <property name="dattr" type="timestamp">
+            <column name="DATTR" length="7"/>
+        </property>
+    </class>
+</hibernate-mapping>

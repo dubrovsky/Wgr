@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.CsComntDet" table="CS_COMNT_DET" dynamic-update="true" dynamic-insert="true">
+        <id name="hid" column="HID" type="long">
+            <generator class="sequence">
+                <param name="sequence">CS_COMNT_DET_HID</param>
+            </generator>
+        </id>
+        <many-to-one name="main" class="com.bivc.cimsmgs.db.CsComnt" column="HID_MAIN" not-null="true" fetch="select"/>
+        <property column="SEG" name="seg" type="java.lang.String"/>
+        <property column="TEXT" name="text" type="java.lang.String"/>
+    </class>
+</hibernate-mapping>

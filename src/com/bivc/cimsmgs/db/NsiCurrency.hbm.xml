@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 02.06.2011 11:17:18 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.NsiCurrency" table="NSI_CURRENCY">
+        <id name="hid" type="big_decimal">
+            <column name="HID" precision="20" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <property name="dattr" type="timestamp">
+            <column name="DATTR" length="7" not-null="true" />
+        </property>
+        <property name="locked" type="date">
+            <column name="LOCKED" length="7" />
+        </property>
+        <property name="unLock" type="string">
+            <column name="UN_LOCK" length="60" />
+        </property>
+        <property name="trans" type="string">
+            <column name="TRANS" length="60" />
+        </property>
+        <property name="un" type="string">
+            <column name="UN" length="60" />
+        </property>
+        <property name="deleted" type="date">
+            <column name="DELETED" length="7" />
+        </property>
+        <property name="altered" type="timestamp">
+            <column name="ALTERED" length="7" not-null="true" />
+        </property>
+        <property name="kod" type="string">
+            <column name="KOD" length="3" />
+        </property>
+        <property name="abv3" type="string">
+            <column name="ABV3" length="3" />
+        </property>
+        <property name="name" type="string">
+            <column name="NAME" length="105" />
+        </property>
+    </class>
+</hibernate-mapping>

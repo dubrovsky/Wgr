@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 05.05.2012 14:42:50 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.LoggingEvent" table="LOGGING_EVENT">
+        <id name="eventId" type="long">
+            <column name="EVENT_ID" precision="10" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <property name="timestmp" type="big_decimal">
+            <column name="TIMESTMP" precision="20" scale="0" not-null="true" />
+        </property>
+        <property name="formattedMessage" type="string">
+            <column name="FORMATTED_MESSAGE" length="4000" not-null="true" />
+        </property>
+        <property name="loggerName" type="string">
+            <column name="LOGGER_NAME" length="254" not-null="true" />
+        </property>
+        <property name="levelString" type="string">
+            <column name="LEVEL_STRING" length="254" not-null="true" />
+        </property>
+        <property name="threadName" type="string">
+            <column name="THREAD_NAME" length="254" />
+        </property>
+        <property name="referenceFlag" type="java.lang.Byte">
+            <column name="REFERENCE_FLAG" precision="3" scale="0" />
+        </property>
+        <property name="arg0" type="string">
+            <column name="ARG0" length="254" />
+        </property>
+        <property name="arg1" type="string">
+            <column name="ARG1" length="254" />
+        </property>
+        <property name="arg2" type="string">
+            <column name="ARG2" length="254" />
+        </property>
+        <property name="arg3" type="string">
+            <column name="ARG3" length="254" />
+        </property>
+        <property name="callerFilename" type="string">
+            <column name="CALLER_FILENAME" length="254" not-null="true" />
+        </property>
+        <property name="callerClass" type="string">
+            <column name="CALLER_CLASS" length="254" not-null="true" />
+        </property>
+        <property name="callerMethod" type="string">
+            <column name="CALLER_METHOD" length="254" not-null="true" />
+        </property>
+        <property name="callerLine" type="string">
+            <column name="CALLER_LINE" length="4" not-null="true" />
+        </property>
+        <set name="loggingEventProperties" table="LOGGING_EVENT_PROPERTY" inverse="true" lazy="true" batch-size="50">
+            <key>
+                <column name="EVENT_ID" precision="10" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.LoggingEventProperty" />
+        </set>
+        <set name="loggingEventExceptions" table="LOGGING_EVENT_EXCEPTION" inverse="true" lazy="true" batch-size="50">
+            <key>
+                <column name="EVENT_ID" precision="10" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.LoggingEventException" />
+        </set>
+    </class>
+</hibernate-mapping>

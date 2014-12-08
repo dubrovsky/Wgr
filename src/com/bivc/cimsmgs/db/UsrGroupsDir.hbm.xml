@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 12.11.2010 16:44:31 by Hibernate Tools 3.4.0.Beta1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.UsrGroupsDir" table="USR_GROUPS_DIR">
+        <id name="name" type="string">
+            <column name="NAME" length="64" />
+            <generator class="assigned" />
+        </id>
+        <property name="deptrans" type="string">
+            <column name="DEPTRANS" length="512" />
+        </property>
+        <property name="locked" type="boolean">
+            <column name="LOCKED" precision="1" scale="0" not-null="true" />
+        </property>
+        <property name="dattr" type="timestamp">
+            <column name="DATTR" length="7" not-null="true" />
+        </property>
+        <property name="un" type="string">
+            <column name="UN" length="20" not-null="true" />
+        </property>
+        <property name="descr" type="string">
+            <column name="DESCR" length="600" />
+        </property>
+        <set name="groups" table="USR_GROUPS" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="GROUP_ID" length="64" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.UsrGroups" />
+        </set>
+        <set name="usrs" table="USR" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="GROUP_ID" length="64" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.Usr" />
+        </set>
+        <set name="routeGroupses" table="ROUTE_GROUPS" inverse="true" lazy="true" fetch="select" cascade="all, delete-orphan">
+            <key>
+                <column name="GROUP_ID" length="64" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.RouteGroups" />
+        </set>
+        <set name="projectGroupses" table="PROJECT_GROUPS" inverse="true" lazy="true" fetch="select" cascade="all, delete-orphan">
+            <key>
+                <column name="GROUP_ID" length="64" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ProjectGroups" />
+        </set>
+        <set name="packDocs" table="PACK_DOC" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="TRANS" length="64" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.PackDoc" />
+        </set>
+        <set name="printTemplateses" table="PRINT_TEMPLATES" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="HID_GROUP" length="64" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.PrintTemplates" />
+        </set>
+        <set name="fieldsAccessFobiddens" table="FIELDS_ACCESS_FOBIDDEN" inverse="true" lazy="true" fetch="select" cascade="all, delete-orphan">
+            <key>
+                <column name="GROUP_NAME" length="64" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.FieldsAccessFobidden" />
+        </set>
+        <set name="docsFobiddenUsrGroupses" table="DOCS_FOBIDDEN_USR_GROUPS" inverse="true" lazy="true" fetch="select" cascade="all, delete-orphan">
+            <key>
+                <column name="GROUP_NAME" length="64" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.DocsFobiddenUsrGroups" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.Doc2docTemplsRouteUnRefs" table="DOC2DOC_TEMPLS_ROUTE_UN_REFS">
+        <composite-id name="id" class="com.bivc.cimsmgs.db.Doc2docTemplsRouteUnRefsId">
+            <key-property name="hidDoc2doc" type="long">
+                <column name="HID_DOC2DOC" precision="20" scale="0" />
+            </key-property>
+            <key-property name="hidUn" type="string">
+                <column name="HID_UN" length="20" />
+            </key-property>
+            <key-property name="hidRoute" type="java.lang.Long">
+                <column name="HID_ROUTE" precision="20" scale="0" />
+            </key-property>
+        </composite-id>
+        <many-to-one name="route" class="com.bivc.cimsmgs.db.Route" update="false" insert="false" fetch="select">
+            <column name="HID_ROUTE" precision="20" scale="0" not-null="true" />
+        </many-to-one>
+        <many-to-one name="doc2docTemplates" class="com.bivc.cimsmgs.db.Doc2docTemplates" update="false" insert="false" fetch="select">
+            <column name="HID_DOC2DOC" precision="20" scale="0" not-null="true" />
+        </many-to-one>
+        <many-to-one name="usr" class="com.bivc.cimsmgs.db.Usr" update="false" insert="false" fetch="select">
+            <column name="HID_UN" length="20" not-null="true" />
+        </many-to-one>
+    </class>
+</hibernate-mapping>

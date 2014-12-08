@@ -1,0 +1,238 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 02.03.2009 10:02:25 by Hibernate Tools 3.2.4.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.CimSmgsInvoice" table="CIM_SMGS_INVOICE">
+        <id name="hid" type="long">
+            <column name="HID" precision="20" scale="0"/>
+            <generator class="sequence">
+                <!--<param name="sequence">CS_INVOICE_HID</param>-->
+                <param name="sequence">CIM_SMGS_HID</param>
+            </generator>
+        </id>
+        <many-to-one name="route" class="com.bivc.cimsmgs.db.Route" fetch="select">
+            <column name="HID_ROUTE" precision="20" scale="0"/>
+        </many-to-one>
+        <many-to-one name="packDoc" class="com.bivc.cimsmgs.db.PackDoc" fetch="select">
+            <column name="HID_PACK" precision="20" scale="0"/>
+        </many-to-one>
+        <!--<many-to-one name="cimSmgs" class="com.bivc.cimsmgs.db.CimSmgs" fetch="select">-->
+        <!--<column name="HID_CS" precision="20" scale="0"  />-->
+        <!--</many-to-one>-->
+
+        <!--property name="hid_cs" type="java.lang.Long">
+          <column name="HID_CS"  precision="20" scale="0"/>
+        </property-->
+        <property name="notd" type="string">
+            <column name="NOTD" length="250"/>
+        </property>
+        <property name="adres_o" type="string">
+            <column name="ADRES_O" length="250"/>
+        </property>
+        <property name="n_dog" type="string">
+            <column name="N_DOG" length="10"/>
+        </property>
+        <property name="npol" type="string">
+            <column name="NPOL" length="250"/>
+        </property>
+        <property name="adres_p" type="string">
+            <column name="ADRES_P" length="250"/>
+        </property>
+        <property name="kod_pol" type="string">
+            <column name="KOD_POL" length="20"/>
+        </property>
+        <property name="itogo" type="string">
+            <column name="ITOGO" length="20"/>
+        </property>
+        <property name="invoice" type="string">
+            <column name="INVOICE" length="20"/>
+        </property>
+        <property name="nsel" type="string">
+            <column name="NSEL" length="100"/>
+        </property>
+        <property name="adres_s" type="string">
+            <column name="ADRES_S" length="200"/>
+        </property>
+        <property name="nbuy" type="string">
+            <column name="NBUY" length="100"/>
+        </property>
+        <property name="adres_b" type="string">
+            <column name="ADRES_B" length="200"/>
+        </property>
+        <property name="kod_b" type="string">
+            <column name="KOD_B" length="20"/>
+        </property>
+        <property name="kod_del" type="string">
+            <column name="KOD_DEL" length="20"/>
+        </property>
+        <property name="ndel" type="string">
+            <column name="NDEL" length="20"/>
+        </property>
+        <property name="cux" type="string">
+            <column name="CUX" length="150"/>
+        </property>
+        <property name="prim" type="string">
+            <column name="PRIM" length="250"/>
+        </property>
+        <property name="fio_otv" type="string">
+            <column name="FIO_OTV" length="30"/>
+        </property>
+        <property name="un" type="string" update="false">
+            <column name="UN" length="20"/>
+        </property>
+        <property name="un_lock" type="string">
+            <column name="UN_LOCK" length="20"/>
+        </property>
+        <property name="dat_dog" type="date">
+            <column name="DAT_DOG" length="7"/>
+        </property>
+        <property name="dat_inv" type="date">
+            <column name="DAT_INV" length="7"/>
+        </property>
+        <property name="trans" type="string" update="false">
+            <column name="TRANS" length="20"/>
+        </property>
+        <property name="dattr" type="timestamp">
+            <column name="DATTR" length="7"/>
+        </property>
+        <property name="altered" type="timestamp" update="false">
+            <column name="ALTERED" length="7"/>
+        </property>
+        <property name="locked" type="timestamp">
+            <column name="LOCKED" length="7"/>
+        </property>
+        <property name="invoicId" type="java.lang.Long">
+            <column name="INVOIC_ID" precision="14" scale="0"/>
+        </property>
+        <property name="invoicOut" type="timestamp">
+            <column name="INVOIC_OUT" length="7"/>
+        </property>
+        <property name="invoicIn" type="timestamp">
+            <column name="INVOIC_IN" length="7"/>
+        </property>
+        <property name="invoicId2" type="java.lang.Long">
+            <column name="INVOIC_ID_2" precision="14" scale="0"/>
+        </property>
+        <property name="invoicOut2" type="timestamp">
+            <column name="INVOIC_OUT_2" length="7"/>
+        </property>
+        <property name="invoicIn2" type="timestamp">
+            <column name="INVOIC_IN_2" length="7"/>
+        </property>
+        <property name="postavka" type="string">
+            <column name="POSTAVKA" length="100"/>
+        </property>
+        <property name="postavkaPunkt" type="string">
+            <column name="POSTAVKA_PUNKT" length="250"/>
+        </property>
+        <property name="docType" type="string">
+            <column name="DOC_TYPE" length="100"/>
+        </property>
+        <property name="notpr" type="string">
+            <column name="NOTPR" length="50"/>
+        </property>
+        <property name="nvag" type="string">
+            <column name="NVAG" length="18"/>
+        </property>
+        <property name="utiN" type="string">
+            <column name="UTI_N" length="16"/>
+        </property>
+        <property name="country_o" type="string">
+            <column name="COUNTRY_O" length="2"/>
+        </property>
+        <property name="zip_o" type="string">
+            <column name="ZIP_O" length="10"/>
+        </property>
+        <property name="city_o" type="string">
+            <column name="CITY_O" length="50"/>
+        </property>
+        <property name="country_p" type="string">
+            <column name="COUNTRY_P" length="2"/>
+        </property>
+        <property name="zip_p" type="string">
+            <column name="ZIP_P" length="10"/>
+        </property>
+        <property name="city_p" type="string">
+            <column name="CITY_P" length="50"/>
+        </property>
+        <property name="status" type="java.lang.Byte">
+            <column name="STATUS" precision="1"/>
+        </property>
+        <property name="docType1" type="big_decimal">
+            <column name="doc_type1" precision="20"/>
+        </property>
+
+        <!--
+                <map name="cimSmgsKonLists" cascade="all, delete-orphan" inverse="true" sort="natural">
+                    <key>
+                        <column name="HID_CS" precision="20" scale="0"  not-null="true"/>
+                    </key>
+                    <map-key column="SORT" type="byte"/>
+                    <one-to-many class="com.bivc.cimsmgs.db.CimSmgsKonList" />
+                </map>
+        -->
+        <!--map name="cimSmgsGruzs" cascade="all, delete-orphan" inverse="true" sort="natural" >
+            <key>
+                <column name="HID_CS" precision="20" scale="0"  not-null="true"/>
+            </key>
+            <map-key column="SORT" type="byte"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsGruz" />
+        </map
+
+        <map name="cimSmgsDocses7" cascade="all, delete-orphan" inverse="true" sort="natural" where="FIELD_NUM = '7'" lazy="false" fetch="subselect">
+            <key>
+                <column name="HID_CS" precision="20" scale="0"  not-null="true"/>
+            </key>
+            <map-key column="SORT" type="byte"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsDocs" />
+        </map>
+
+        <map name="cimSmgsDocses9" cascade="all, delete-orphan" inverse="true" sort="natural" where="FIELD_NUM = '9'" lazy="false" fetch="subselect">
+            <key>
+                <column name="HID_CS" precision="20" scale="0"  not-null="true"/>
+            </key>
+            <map-key column="SORT" type="byte"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsDocs" />
+        </map>
+
+        <map name="cimSmgsDocses13" cascade="all, delete-orphan" inverse="true" sort="natural" where="FIELD_NUM = '13'" lazy="false" fetch="subselect">
+            <key>
+                <column name="HID_CS" precision="20" scale="0"  not-null="true"/>
+            </key>
+            <map-key column="SORT" type="byte"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsDocs" />
+        </map>
+        -->
+
+
+        <map name="invoiceGruzs" cascade="all, delete-orphan" inverse="true" sort="natural" lazy="true" batch-size="50">
+            <key>
+                <column name="HID_CSINV" precision="20" scale="0" not-null="true"/>
+            </key>
+            <map-key column="HID" type="long"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsInvoiceGruz"/>
+        </map>
+
+        <set name="iftminLogs" inverse="true" lazy="true" table="B_IFTMIN_LOG" where="MES_NAME = 'INVOIC' AND SRC = 'CIMSMGS' AND lower(DIR) = 'bch'" batch-size="50">
+            <key>
+                <column name="HID_SRC" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.BIftminLog"/>
+        </set>
+
+        <set name="iftminLogsBtlc" inverse="true" lazy="true" table="B_IFTMIN_LOG" where="MES_NAME = 'INVOIC' AND SRC = 'CIMSMGS' AND lower(DIR) = 'btlc'" batch-size="50">
+            <key>
+                <column name="HID_SRC" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.BIftminLog"/>
+        </set>
+
+        <set name="statuses" table="STATUS" inverse="true" lazy="true" batch-size="50" cascade="delete">
+            <key>
+                <column name="HID_CS" precision="20" scale="0" not-null="false"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.Status"/>
+        </set>
+    </class>
+</hibernate-mapping>

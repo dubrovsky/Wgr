@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.TbcLog" table="TBC_LOG" dynamic-insert="true" dynamic-update="true">
+        <id name="hid" type="long">
+            <column name="HID" precision="30" scale="0"/>
+            <generator class="sequence">
+                <param name="sequence">TBC_LOG_HID</param>
+            </generator>
+        </id>
+        <property name="hid_src" type="long" column="HID_SRC" precision="20" scale="0"/>
+        <property name="in_out" type="byte" column="IN_OUT" precision="1" scale="0"/>
+        <property name="xml" type="string" column="XML" length="4000"/>
+        <property name="status" type="integer" column="STATUS" precision="5" scale="0"/>
+        <property name="type" type="integer" column="TYPE" precision="5" scale="0"/>
+        <property name="text" type="string" column="TEXT" length="4000"/>
+        <property name="tbc_nomer" type="string" column="TBC_NOMER" length="16"/>
+        <property name="dattr" type="timestamp" column="dattr" length="7"/>
+</class>
+</hibernate-mapping>

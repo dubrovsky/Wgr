@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 12.07.2012 14:46:29 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.RoutePrintTemplates" table="ROUTE_PRINT_TEMPLATES">
+        <composite-id name="id" class="com.bivc.cimsmgs.db.RoutePrintTemplatesId">
+            <key-property name="hidPrnTmpl" type="long">
+                <column name="HID_PRN_TMPL" precision="22" scale="0" />
+            </key-property>
+            <key-property name="hidRoute" type="long">
+                <column name="HID_ROUTE" precision="22" scale="0" />
+            </key-property>
+        </composite-id>
+        <many-to-one name="printTemplates" class="com.bivc.cimsmgs.db.PrintTemplates" update="false" insert="false" fetch="select">
+            <column name="HID_PRN_TMPL" precision="22" scale="0" not-null="true" />
+        </many-to-one>
+        <many-to-one name="route" class="com.bivc.cimsmgs.db.Route" update="false" insert="false" fetch="select">
+            <column name="HID_ROUTE" precision="22" scale="0" not-null="true" />
+        </many-to-one>
+    </class>
+</hibernate-mapping>

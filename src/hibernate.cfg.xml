@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 4.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.connection.driver_class">oracle.jdbc.OracleDriver</property>
+        <property name="hibernate.connection.password">wgr2013</property>
+        <property name="hibernate.connection.username">wgr</property>
+                  <!--<property name="hibernate.connection.url">jdbc:oracle:thin:@10.50.25.23:51521:trans</property>-->
+        <property name="hibernate.connection.url">jdbc:oracle:thin:@10.50.100.197:1521:test2</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</property>
+        <!--<property name="hibernate.generate_statistics">true</property>-->
+        <property name="hibernate.show_sql">false</property>
+        <property name="hibernate.connection.pool_size">0</property>
+        <property name="hibernate.current_session_context_class">thread</property>
+
+<!--
+        <property name="hibernate.connection.url">jdbc:oracle:thin:@localhost:41521:TK</property>
+        <property name="hibernate.connection.password">tktk2</property>
+        <property name="hibernate.connection.username">TK2</property>
+-->
+
+        <mapping resource="com/bivc/cimsmgs/db/Project.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/ProjectGroups.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/Route.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/RouteGroups.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/RouteDoc.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/DocDir.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/PackDoc.hbm.xml"/>
+
+        <mapping resource="com/bivc/cimsmgs/db/CimSmgs.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/CimSmgsCarList.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/CimSmgsDocs.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/CimSmgsGruz.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/CimSmgsKonList.hbm.xml"/>
+        <!--<mapping resource="com/bivc/cimsmgs/db/CimSmgsActiveSession.hbm.xml"/>-->
+        <!--<mapping resource="com/bivc/cimsmgs/db/CimSmgsScan.hbm.xml"/>-->
+        <mapping resource="com/bivc/cimsmgs/db/CimSmgsPlatel.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/CimSmgsPlomb.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/CimSmgsInvoice.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/CimSmgsInvoiceGruz.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/CimSmgsInvoiceBrief.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/CimSmgsFileInf.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/CimSmgsFile.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/BIftminLog.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/FtsLog.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/NsiDir.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/TbcLog.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/TdgLog.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/Contrl.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/Aperak.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/AperakDet.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/CsComnt.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/CsComntDet.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/NsiCsG1.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/NsiCsG4.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/NsiFieldsOpt.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/NsiPlatel.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/NsiCurrency.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/NsiDeliv.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/NsiUpak.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/Usr.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/UsrGroups.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/UsrGroupsDir.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/UsrPrivilegs.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/UsrPrivilegsDir.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/PrintData.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/PrintTemplates.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/RoutePrintTemplates.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/RouteUnPrintTemplates.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/Doc2docTemplates.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/Doc2docTemplsRouteRefs.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/Doc2docTemplsRouteUnRefs.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/PrintBlank.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/PrintBlankTemplRef.hbm.xml"/>
+
+        <mapping resource="com/bivc/cimsmgs/db/FieldsAccessFobidden.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/FieldsDir.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/FieldsDocsRefs.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/DocsFobiddenUsrGroups.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/FieldsComments.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/MailSettings.hbm.xml"/>
+
+        <mapping resource="com/bivc/cimsmgs/db/NsiOhr.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Gngcode.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Etsngcode.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Railroadstation.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Railroadland.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Railroad.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Clientrailcode.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Clientscompany.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Clicompanycontact.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Cliaddress.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Clibankaccount.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Country.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Bankaccount.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Customcode.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Company.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Address.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Measure.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Workstation.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Users.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Companycontact.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Currency.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/NsiStEu.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/NsiDor.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/NsiCountries.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/DangCode.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Karantin.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Veterin.hbm.xml"/>
+
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Sta.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Road.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Management.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Countrys.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/NsiTnved4.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/StaE.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/Status.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/StatusDir.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/CargoGng.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Cargo.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/NsiNhm.hbm.xml"/>
+
+        <mapping resource="com/bivc/cimsmgs/db/LoggingEvent.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/LoggingEventException.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/LoggingEventProperty.hbm.xml"/>
+
+        <event type="merge">
+            <listener class="org.springframework.orm.hibernate3.support.IdTransferringMergeEventListener"/>
+        </event>
+        <listener type="pre-update" class="com.bivc.cimsmgs.audit.HibernateAuditLogListener"/>
+        <listener type="pre-insert" class="com.bivc.cimsmgs.audit.HibernateAuditLogListener"/>
+        <!--<listener type="flush-entity" class="com.bivc.cimsmgs.audit.HibernateAuditLogListener"/>-->
+
+    </session-factory>
+</hibernate-configuration>

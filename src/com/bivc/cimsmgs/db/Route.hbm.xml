@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 13.05.2011 15:11:19 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.Route" table="ROUTE" batch-size="20">
+        <id name="hid" type="long">
+            <column name="HID" precision="20" scale="0"/>
+            <generator class="sequence">
+              <param name="sequence">ROUTE_HID</param>
+            </generator>
+        </id>
+        <many-to-one class="com.bivc.cimsmgs.db.Project" fetch="select" name="project">
+            <column name="HID_PROJ" not-null="true" precision="20" scale="0"/>
+        </many-to-one>
+        <property name="name" type="string">
+            <column length="500" name="NAME"/>
+        </property>
+        <property name="dattr" type="date">
+            <column length="7" name="DATTR"/>
+        </property>
+        <property name="un" type="string">
+            <column length="20" name="UN"/>
+        </property>
+        <property name="tbc_st_code" type="string">
+            <column length="20" name="TBC_ST_CODE"/>
+        </property>
+        <property name="customCode" type="string">
+            <column length="20" name="CUSTOM_CODE"/>
+        </property>
+        <!--<property name="locked" type="date">
+            <column length="7" name="LOCKED"/>
+        </property>
+        <property name="unLock" type="string">
+            <column length="20" name="UN_LOCK"/>
+        </property>
+        <property name="altered" type="date">
+            <column length="7" name="ALTERED"/>
+        </property>-->
+        <set name="routeGroupses" cascade="all, delete-orphan" inverse="true" lazy="true" batch-size="20">
+            <key>
+                <column name="HID_ROUTE" precision="20" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.RouteGroups" />
+        </set>
+        <list name="routeDocs" cascade="all, delete-orphan" inverse="true" lazy="true" batch-size="20">
+            <key>
+                <column name="HID_ROUTE" precision="20" scale="0" not-null="true" />
+            </key>
+            <list-index column="SORT_ID" base="1"/>
+            <one-to-many class="com.bivc.cimsmgs.db.RouteDoc" />
+            <filter name="limitDocsByFobiddenUserGroup" condition="HID_DDIR NOT IN (SELECT doc.hid FROM DOC_DIR doc, DOCS_FOBIDDEN_USR_GROUPS fobid_gr WHERE doc.hid = fobid_gr.doc_hid AND fobid_gr.group_name IN (:userGroup))"/>
+        </list>
+        <set name="routePrintTemplateses" cascade="all" inverse="true" lazy="true" batch-size="50">
+            <key>
+                <column name="HID_ROUTE" precision="22" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.RoutePrintTemplates" />
+        </set>
+        <set name="routeUnPrintTemplateses" cascade="all" inverse="true" lazy="true" batch-size="50">
+            <key>
+                <column name="HID_ROUTE" precision="22" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.RouteUnPrintTemplates" />
+        </set>
+        <!--<set name="cimSmgsScans" table="CIM_SMGS_SCAN" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="HID_ROUTE" precision="20" scale="0" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsScan" />
+        </set>-->
+        <set name="cimSmgses" table="CIM_SMGS" inverse="true" lazy="true" fetch="select" batch-size="50">
+            <key>
+                <column name="HID_ROUTE" precision="20" scale="0" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgs" />
+        </set>
+
+        <set name="invoices" table="CIM_SMGS_INVOICE" inverse="true" lazy="true" fetch="select" batch-size="50">
+            <key>
+                <column name="HID_ROUTE" precision="20" scale="0" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsInvoice" />
+        </set>
+        <!--<set name="invoicesBrief" table="CIM_SMGS_INVOICE_BRIEF" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="HID_ROUTE" precision="20" scale="0" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsInvoiceBrief" />
+        </set>-->
+        <set name="packDocs" table="PACK_DOC" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="HID_ROUTE" precision="20" scale="0" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.PackDoc" />
+        </set>
+        <set name="cimSmgsFileInfs" table="CIM_SMGS_FILE_INF" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="HID_ROUTE" precision="20" scale="0" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsFileInf" />
+        </set>
+        <set name="doc2docTemplsRouteUnRefses" table="DOC2DOC_TEMPLS_ROUTE_UN_REFS" inverse="true" lazy="true" fetch="select" cascade="all">
+            <key>
+                <column name="HID_ROUTE" precision="20" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.Doc2docTemplsRouteUnRefs" />
+        </set>
+        <set name="doc2docTemplsRouteRefses" table="DOC2DOC_TEMPLS_ROUTE_REFS" inverse="true" lazy="true" fetch="select" cascade="all">
+            <key>
+                <column name="HID_ROUTE" precision="20" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.Doc2docTemplsRouteRefs" />
+        </set>
+    </class>
+    <filter-def name="limitDocsByFobiddenUserGroup">
+        <filter-param name="userGroup" type="string"/>
+    </filter-def>
+</hibernate-mapping>

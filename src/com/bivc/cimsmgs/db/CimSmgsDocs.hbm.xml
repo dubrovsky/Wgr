@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 02.03.2009 10:02:25 by Hibernate Tools 3.2.4.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.CimSmgsDocs" table="CIM_SMGS_DOCS" >
+        <id name="hid" type="long">
+            <column name="HID" precision="20" scale="0" />
+            <generator class="sequence">
+              <param name="sequence">CIM_SMGS_DOCS_HID</param>
+            </generator>
+        </id>
+        <many-to-one name="cimSmgs" class="com.bivc.cimsmgs.db.CimSmgs" fetch="select" >
+            <column name="HID_CS" precision="20" scale="0" not-null="true"/>
+        </many-to-one>
+        <property name="code" type="string">
+            <column name="CODE" length="3" />
+        </property>
+        <property name="text" type="string">
+            <column name="TEXT" length="500" />
+        </property>
+       <!-- <property name="dattr" type="date">
+            <column name="DATTR" length="7" />
+        </property>-->
+        <!--<property name="locked" type="date">
+            <column name="LOCKED" length="7" />
+        </property>
+        <property name="unLock" type="string">
+            <column name="UN_LOCK" length="64" />
+        </property>-->
+        <property name="text2" type="string">
+            <column name="TEXT2" length="240" />
+        </property>
+        <property name="fieldNum" type="string">
+            <column name="FIELD_NUM" length="6" not-null="true" />
+        </property>
+        <property name="sort" type="byte">
+            <column name="SORT" length="2" not-null="true"/>
+        </property>
+        <property name="ncas" type="string">
+            <column name="NCAS" length="6" />
+        </property>
+        <property name="ndoc" type="string">
+            <column name="NDOC" length="56" />
+        </property>
+        <property name="dat" type="date">
+            <column name="DAT" length="7" />
+        </property>
+        <property name="ncopy" type="java.lang.Integer">
+            <column name="NCOPY" precision="10" scale="0" />
+        </property>
+        <property name="text3" type="string">
+          <column name="TEXT3" length="240" />
+        </property>
+    </class>
+</hibernate-mapping>

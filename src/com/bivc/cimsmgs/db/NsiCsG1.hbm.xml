@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 31.03.2009 15:14:41 by Hibernate Tools 3.2.4.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.NsiCsG1" table="NSI_CS_G1" >
+        <id name="hid" type="long">
+            <column name="HID" precision="20" scale="0" />
+            <generator class="sequence">
+              <param name="sequence">NSI_CS_G1_HID</param>
+            </generator>
+        </id>
+        <property name="dattr" type="timestamp">
+            <column name="DATTR" length="7" not-null="true" />
+        </property>
+        <property name="locked" type="date">
+            <column name="LOCKED" length="7" />
+        </property>
+        <property name="unLock" type="string">
+            <column name="UN_LOCK" length="20" />
+        </property>
+        <property name="trans" type="string">
+            <column name="TRANS" length="20" />
+        </property>
+        <property name="un" type="string">
+            <column name="UN" length="20" />
+        </property>
+        <property name="deleted" type="date">
+            <column name="DELETED" length="7" />
+        </property>
+        <property name="altered" type="timestamp">
+            <column name="ALTERED" length="7" not-null="true" />
+        </property>
+        <property name="g1" type="string">
+            <column name="G_1" length="512" />
+        </property>
+        <property name="g11" type="string">
+            <column name="G_1_1" length="80" />
+        </property>
+        <property name="g12" type="string">
+            <column name="G_1_2" length="60" />
+        </property>
+        <property name="g13" type="string">
+            <column name="G_1_3" length="60" />
+        </property>
+        <property name="g14" type="string">
+            <column name="G_1_4" length="64" />
+        </property>
+        <property name="g15_1" type="string">
+            <column name="G_1_5" length="3" />
+        </property>
+        <property name="g16_1" type="string">
+            <column name="G_1_6" length="32" />
+        </property>
+        <property name="g16r" type="string">
+            <column name="G_1_6R" length="550" />
+        </property>
+        <property name="g17_1" type="string">
+            <column name="G_1_7" length="10" />
+        </property>
+        <property name="g18_1" type="string">
+            <column name="G_1_8" length="32" />
+        </property>
+        <property name="g18r_1" type="string">
+            <column name="G_1_8R" length="32" />
+        </property>
+        <property name="g19_1" type="string">
+            <column name="G_1_9" length="128" />
+        </property>
+        <property name="g19r" type="string">
+            <column name="G_1_9R" length="128" />
+        </property>
+        <property name="g2" type="string">
+            <column name="G_2" length="32" />
+        </property>
+        <property name="g3" type="string">
+            <column name="G_3" length="32" />
+        </property>
+        <property name="g1r" type="string">
+            <column name="G_1R" length="512" />
+        </property>
+        <property name="g110" type="string">
+            <column name="G_1_10" length="16" />
+        </property>
+        <property name="g111" type="string">
+            <column name="G_1_11" length="32" />
+        </property>
+        <property name="g112" type="string">
+            <column name="G_1_12" length="16" />
+        </property>
+        <property name="g_1_5k" type="string" >
+            <column name="G_1_5K" length="3" />
+        </property>
+        <property name="g_2inn" type="string">
+            <column name="G_2INN" length="32"/>
+        </property>
+    </class>
+</hibernate-mapping>

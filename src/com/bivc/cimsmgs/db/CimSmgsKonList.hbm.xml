@@ -1,0 +1,194 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 02.03.2009 10:02:25 by Hibernate Tools 3.2.4.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.CimSmgsKonList" table="CIM_SMGS_KON_LIST" >
+        <id name="hid" type="long">
+            <column name="HID" precision="20" scale="0" />
+            <generator class="sequence">
+              <param name="sequence">CIM_SMGS_KON_LIST_HID</param>
+            </generator>
+        </id>
+        <many-to-one name="cimSmgsCarList" class="com.bivc.cimsmgs.db.CimSmgsCarList" fetch="select">
+            <column name="HID_CAR" precision="20" scale="0" not-null="true"/>
+        </many-to-one>
+      <!--
+        <many-to-one name="cimSmgs" class="com.bivc.cimsmgs.db.CimSmgs" fetch="select">
+            <column name="HID_CS" precision="20" scale="0"  not-null="true"/>
+        </many-to-one>
+        -->
+        <!--<property name="dattr" type="date">
+            <column name="DATTR" length="7" />
+        </property>
+        <property name="locked" type="date">
+            <column name="LOCKED" length="7" />
+        </property>
+        <property name="unLock" type="string">
+            <column name="UN_LOCK" length="20" />
+        </property>-->
+        <property name="trans" type="string">
+            <column name="TRANS" length="20" />
+        </property>
+        <property name="un" type="string">
+            <column name="UN" length="20" />
+        </property>
+        <property name="arch" type="date">
+            <column name="ARCH" length="7" />
+        </property>
+        <property name="num" type="java.lang.Short">
+            <column name="NUM" precision="3" scale="0" />
+        </property>
+        <property name="nvag" type="string">
+            <column name="NVAG" length="16" />
+        </property>
+        <property name="nhmNames" type="string">
+            <column name="NHM_NAMES" length="512" />
+        </property>
+        <property name="nhmCodes" type="string">
+            <column name="NHM_CODES" length="128" />
+        </property>
+        <property name="rid" type="java.lang.Byte">
+            <column name="RID" precision="1" scale="0" />
+        </property>
+        <property name="plombs" type="string">
+            <column name="PLOMBS" length="250" />
+        </property>
+        <property name="massSend" type="big_decimal">
+            <column name="MASS_SEND" precision="12" scale="3" />
+        </property>
+        <property name="massCalc" type="big_decimal">
+            <column name="MASS_CALC" precision="12" scale="3" />
+        </property>
+        <property name="price" type="big_decimal">
+            <column name="PRICE" precision="12" />
+        </property>
+        <property name="priceAdd" type="big_decimal">
+            <column name="PRICE_ADD" precision="12" />
+        </property>
+        <property name="priceAll" type="big_decimal">
+            <column name="PRICE_ALL" precision="12" />
+        </property>
+        <property name="utiN" type="string">
+            <column name="UTI_N" length="16" />
+        </property>
+        <property name="utiType" type="string">
+            <column name="UTI_TYPE" length="16" />
+        </property>
+        <property name="docSend" type="string">
+            <column name="DOC_SEND" length="128" />
+        </property>
+        <property name="notes" type="string">
+            <column name="NOTES" length="80" />
+        </property>
+        <property name="g141" type="string">
+            <column name="G_14_1" length="160" />
+        </property>
+        <property name="g142" type="string">
+            <column name="G_14_2" length="160" />
+        </property>
+        <property name="g142r" type="string">
+            <column name="G_14_2R" length="160" />
+        </property>
+        <property name="g146" type="string">
+            <column name="G_14_6" length="250" />
+        </property>
+        <property name="g149" type="string">
+            <column name="G_14_9" length="160" />
+        </property>
+        <property name="g149r" type="string">
+            <column name="G_14_9R" length="160" />
+        </property>
+        <property name="g1410" type="string">
+            <column name="G_14_10" length="64" />
+        </property>
+        <property name="sort" type="byte">
+            <column name="SORT" length="2" not-null="true"/>
+        </property>
+        <property name="sizeMm" type="big_decimal">
+            <column name="SIZE_MM" precision="12" />
+        </property>
+        <property name="sizeFoot" type="big_decimal">
+            <column name="SIZE_FOOT" precision="5" />
+        </property>
+        <property name="kodSob" type="byte">
+            <column name="KOD_SOB" length="2" />
+        </property>
+        <property name="otmKSob" type="byte">
+            <column name="OTM_KSOB" length="1" />
+        </property>
+        <property name="taraKont" type="java.lang.Short">
+            <column name="TARA_KONT" length="5" />
+        </property>
+         <property name="vid" type="string">
+            <column name="VID" length="80" />
+        </property>
+         <property name="kat" type="string">
+            <column name="KAT" length="40" />
+        </property>
+        <property name="ownerKod" type="string">
+            <column name="OWNER_KOD" length="10" />
+        </property>
+        <property name="specKon" type="string">
+            <column name="SPEC_KON" length="50" />
+        </property>
+        <property name="pogrKon" type="java.lang.Byte" >
+            <column name="POGR_KON" precision="1" scale="0" />
+        </property>
+        <property name="zajavNo" type="string">
+            <column name="ZAJAV_NO" length="50" />
+        </property>
+        <property name="vvoz" type="date">
+            <column name="VVOZ" length="7" />
+        </property>
+        <property name="pogruzka" type="date">
+            <column name="POGRUZKA" length="7" />
+        </property>
+        <property name="count" type="big_decimal">
+            <column name="COUNT" length="10" scale="0" />
+        </property>
+        <property name="privat" type="java.lang.Byte" >
+            <column name="PRIVATE" precision="1" scale="0" />
+        </property>
+        <property name="g25" type="string" >
+            <column name="G_25" length="50"/>
+        </property>
+        <property name="netto" type="big_decimal">
+            <column name="netto" precision="12" scale="2" />
+        </property>
+        <property name="nettoPref" type="string" >
+            <column name="netto_pref" length="20"/>
+        </property>
+        <property name="nettoSuf" type="string" >
+            <column name="netto_Suf" length="20"/>
+        </property>
+        <property name="tara" type="big_decimal">
+            <column name="tara" precision="12" scale="2" />
+        </property>
+        <property name="taraPref" type="string" >
+            <column name="tara_Pref" length="20"/>
+        </property>
+        <property name="taraSuf" type="string" >
+            <column name="tara_Suf" length="20"/>
+        </property>
+        <property name="brutto" type="big_decimal">
+            <column name="brutto" precision="12" scale="2" />
+        </property>
+        <property name="bruttoPref" type="string" >
+            <column name="brutto_Pref" length="20"/>
+        </property>
+        <property name="bruttoSuf" type="string" >
+            <column name="brutto_Suf" length="20"/>
+        </property>
+        <property name="prim" type="string" >
+            <column name="prim" length="512"/>
+        </property>
+        <map name="cimSmgsGruzs" cascade="all, delete-orphan" inverse="true" sort="natural" lazy="true" batch-size="50"  >
+            <key>
+                <column name="HID_KON" precision="20" scale="0"  not-null="true"/>
+            </key>
+            <map-key column="SORT" type="java.lang.Integer"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsGruz" />
+        </map>
+    </class>
+</hibernate-mapping>

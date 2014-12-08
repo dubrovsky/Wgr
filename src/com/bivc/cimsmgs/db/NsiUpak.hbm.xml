@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 07.12.2011 10:07:37 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.NsiUpak" table="NSI_UPAK">
+        <id name="hid" type="big_decimal">
+            <column name="HID" precision="20" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <property name="kypk" type="string">
+            <column name="KYPK" length="6" />
+        </property>
+        <property name="kodOon" type="string">
+            <column name="KOD_OON" length="6" />
+        </property>
+        <property name="nzypRu" type="string">
+            <column name="NZYP_RU" length="300" />
+        </property>
+        <property name="nzypDe" type="string">
+            <column name="NZYP_DE" length="300" />
+        </property>
+        <property name="nzypPl" type="string">
+            <column name="NZYP_PL" length="300" />
+        </property>
+        <property name="nzypEn" type="string">
+            <column name="NZYP_EN" length="300" />
+        </property>
+    </class>
+</hibernate-mapping>

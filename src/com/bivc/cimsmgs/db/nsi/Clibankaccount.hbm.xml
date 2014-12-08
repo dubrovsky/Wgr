@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 22.04.2009 13:49:34 by Hibernate Tools 3.2.4.GA -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.nsi.Clibankaccount" table="CLIBANKACCOUNT">
+        <id name="id" type="big_decimal">
+            <column name="ID" precision="22" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="clientscompany" class="com.bivc.cimsmgs.db.nsi.Clientscompany" fetch="select">
+            <column name="CLICOMPANY_ID" precision="22" scale="0" not-null="true" />
+        </many-to-one>
+        <many-to-one name="country" class="com.bivc.cimsmgs.db.nsi.Country" fetch="select">
+            <column name="COUNTRY_CODE" length="2" not-null="true" />
+        </many-to-one>
+        <property name="bankCode" type="string">
+            <column name="BANK_CODE" length="50" not-null="true" />
+        </property>
+        <property name="bankName" type="string">
+            <column name="BANK_NAME" length="128" not-null="true" />
+        </property>
+        <property name="bankNameLatin1" type="string">
+            <column name="BANK_NAME_LATIN1" length="50" not-null="true" />
+        </property>
+        <property name="accountNr" type="string">
+            <column name="ACCOUNT_NR" length="35" not-null="true" />
+        </property>
+        <property name="corBankName" type="string">
+            <column name="COR_BANK_NAME" length="128" />
+        </property>
+        <property name="corBankCode" type="string">
+            <column name="COR_BANK_CODE" length="50" />
+        </property>
+        <property name="bankCodeOkpo" type="string">
+            <column name="BANK_CODE_OKPO" length="50" />
+        </property>
+        <property name="bankCodeInn" type="string">
+            <column name="BANK_CODE_INN" length="50" />
+        </property>
+        <property name="bankCodeBik" type="string">
+            <column name="BANK_CODE_BIK" length="50" />
+        </property>
+    </class>
+</hibernate-mapping>

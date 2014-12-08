@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.FieldsDocsRefs" table="FIELDS_DOCS_REFS">
+        <composite-id name="id" class="com.bivc.cimsmgs.db.FieldsDocsRefsId">
+            <key-property name="fieldHid" type="long">
+                <column name="FIELD_HID" precision="20" scale="0" />
+            </key-property>
+            <key-property name="docHid" type="big_decimal">
+                <column name="DOC_HID" precision="20" scale="0" />
+            </key-property>
+        </composite-id>
+        <many-to-one name="fieldsDir" class="com.bivc.cimsmgs.db.FieldsDir" update="false" insert="false" fetch="select">
+            <column name="FIELD_HID" precision="20" scale="0" not-null="true" />
+        </many-to-one>
+        <many-to-one name="docDir" class="com.bivc.cimsmgs.db.DocDir" update="false" insert="false" fetch="select">
+            <column name="DOC_HID" precision="20" scale="0" not-null="true" />
+        </many-to-one>
+        <property name="descr" type="string">
+            <column name="DESCR" length="200" />
+        </property>
+    </class>
+</hibernate-mapping>

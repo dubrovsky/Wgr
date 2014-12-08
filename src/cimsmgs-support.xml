@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    <!--<package name="cimsmgs-support" namespace="/" extends="cimsmgs-default">-->
+        <!--<action name="Login" class="com.bivc.cimsmgs.actions.Login_A">-->
+            <!--<result name="success">/jsp/Menu.jsp</result>-->
+        <!--</action>-->
+    <!--</package>-->
+
+    <package name="default" namespace="/" extends="cimsmgs-default">
+        <action name="Locale" class="com.bivc.cimsmgs.actions.Locale_A">
+            <result name="SUCCESS">/Login.jsp</result>
+        </action>
+    </package>
+
+    <package name="cimsmgs-support4" namespace="/" extends="cimsmgs-default">
+        <action name="Login4" class="com.bivc.cimsmgs.actions.Login4_A">
+            <result name="success">/dev.jsp</result>
+        </action>
+    </package>
+    <package name="cimsmgs-support4-prod" namespace="/" extends="cimsmgs-default">
+        <action name="Login4-prod" class="com.bivc.cimsmgs.actions.Login4_A">
+            <result name="success">/jsp/Menu4-prod.jsp</result>
+        </action>
+    </package>
+
+    <package name="smgs-support" namespace="/" extends="cimsmgs-default">
+        <action name="Smgs_*" method="{1}" class="smgs_a">
+            <result name="success" type="json"/>
+            <result name="aviso">/jsp/Aviso.jsp</result>
+            <result name="cimsmgsKaluga">/jsp/CimSmgsKaluga.jsp</result>
+            <result name="smgsDobra">/jsp/SmgsDobra.jsp</result>
+            <result name="smgsMalashevichi">/jsp/SmgsMalashevichi.jsp</result>
+            <result name="gu29k">/jsp/Gu29k.jsp</result>
+            <result name="gu27v">/jsp/Gu27v.jsp</result>
+            <result name="cim">/jsp/Cim.jsp</result>
+            <result name="cmr">/jsp/Cmr.jsp</result>
+            <result name="smgsnvr">/jsp/SmgsNovoross.jsp</result>
+        </action>
+
+
+        <action name="SmgsIftmin_*" method="{1}" class="com.bivc.cimsmgs.actions.exchange.Iftmin_A">
+            <result name="success" type="json"/>
+            <result name="view" type="stream">
+                <param name="contentType">application/xml</param>
+                <param name="contentDisposition">attachment;filename="${fileName}"</param>
+                <param name="contentLength">${fileLength}</param>
+            </result>
+        </action>
+
+        <action name="Btlc_*" method="{1}" class="com.bivc.cimsmgs.actions.exchange.Btlc_A">
+            <result name="success" type="json"/>
+        </action>
+
+        <action name="Tdg_*" method="{1}" class="com.bivc.cimsmgs.actions.exchange.Tdg_A">
+            <result name="success" type="json"/>
+        </action>
+
+        <action name="GreenRail_*" method="{1}" class="com.bivc.cimsmgs.actions.exchange.GreenRail_A">
+            <result name="success" type="json"/>
+        </action>
+
+    </package>
+
+    <package name="invoice-support" namespace="/" extends="cimsmgs-default">
+        <action name="Invoice_*" method="{1}" class="invoice_a">
+            <result name="success" type="json"/>
+        </action>
+
+        <action name="Invoice_view" method="view" class="invoice_a">
+            <result name="invoice">/jsp/Invoice.jsp</result>
+            <interceptor-ref name="hibernate4JspStack"/>
+            <exception-mapping result="errorJsp" exception="java.lang.Exception"/>
+        </action>
+
+        <!--<action name="ErrorJspHandler" class="com.bivc.cimsmgs.actions.ErrorJspHandler_A"/>-->
+
+    </package>
+
+    <package name="file-support" namespace="/" extends="cimsmgs-default">
+        <action name="File_saveFile" method="saveFile" class="com.bivc.cimsmgs.actions.File_A">
+            <result name="success" type="json"/>
+            <interceptor-ref name="fileUploadStack"/>
+        </action>
+        <action name="File_uploadAviso" method="uploadAviso" class="com.bivc.cimsmgs.actions.File_A">
+            <result name="success" type="json"/>
+            <interceptor-ref name="fileUploadStack"/>
+        </action>
+        <action name="File_uploadNsi" method="uploadNsi" class="com.bivc.cimsmgs.actions.File_A">
+          <result name="success" type="json"/>
+          <interceptor-ref name="fileUploadStack"/>
+        </action>
+        <action name="File_uploadTBC" method="uploadTBC" class="com.bivc.cimsmgs.actions.File_A">
+            <result name="success" type="json"/>
+            <interceptor-ref name="fileUploadStack"/>
+        </action>
+        <action name="File_*" method="{1}" class="com.bivc.cimsmgs.actions.File_A">
+            <result name="success" type="json"/>
+            <result name="view" type="stream">
+                <param name="contentType">${files.contentType}</param>
+                <param name="contentDisposition">attachment;filename="${encodedFileName}"</param>
+                <param name="contentLength">${files.length}</param>
+            </result>
+        </action>
+    </package>
+
+    <package name="print-templates-support" namespace="/" extends="cimsmgs-default">
+        <action name="PrintTemplates_saveBlank" method="saveBlank" class="com.bivc.cimsmgs.actions.PrintTemplates_A">
+            <result name="success" type="json"/>
+            <interceptor-ref name="fileUploadStack"/>
+            <!--<interceptor-ref name="hibernateStack"/>
+            <interceptor-ref name="fileUpload">
+                <param name="allowedTypes">
+                    image/png,image/gif,image/jpeg
+                </param>
+            </interceptor-ref>-->
+        </action>
+        <action name="PrintTemplates_*" method="{1}" class="com.bivc.cimsmgs.actions.PrintTemplates_A">
+            <result name="success" type="json"/>
+            <result name="view" type="stream">
+                <param name="contentType">${blank.contentType}</param>
+                <param name="contentDisposition">attachment;filename="${encodedFileName}"</param>
+                <param name="contentLength">${blank.length}</param>
+            </result>
+        </action>
+    </package>
+
+    <package name="pgf-support" namespace="/" extends="cimsmgs-default">
+        <action name="Pdf" class="com.bivc.cimsmgs.actions.Pdf_A">
+            <result name="success" type="stream">
+                <param name="contentType">application/pdf</param>
+                <param name="contentDisposition">inline;filename="${fileName}"</param>
+                <param name="contentLength">${contentLength}</param>
+            </result>
+        </action>
+    </package>
+
+    <package name="comments-support" namespace="/" extends="cimsmgs-default">
+        <action name="Fields_*" method="{1}" class="com.bivc.cimsmgs.actions.Fields_A">
+            <result name="success" type="json"/>
+        </action>
+    </package>
+
+    <package name="doc2doc-support" namespace="/" extends="cimsmgs-default">
+       <!-- <action name="Doc2Doc" class="doc2doc_A">
+            <result name="success" type="json"/>
+        </action>-->
+        <action name="Doc2Doc_*" method="{1}" class="doc2doc_A">
+            <result name="success" type="json"/>
+        </action>
+        <action name="Doc2Doc_upload" method="upload" class="doc2doc_A">
+            <result name="success" type="json"/>
+            <interceptor-ref name="fileUploadStack"/>
+        </action>
+    </package>
+
+    <package name="project-support" namespace="/" extends="cimsmgs-default">
+        <action name="Project_*" method="{1}" class="com.bivc.cimsmgs.actions.Project_A">
+            <result name="success" type="json"/>
+        </action>
+    </package>
+
+    <package name="status-support" namespace="/" extends="cimsmgs-default">
+        <action name="Status_*" method="{1}" class="com.bivc.cimsmgs.actions.Status_A">
+            <result name="success" type="json"/>
+        </action>
+    </package>
+
+    <package name="report-support" namespace="/" extends="cimsmgs-default">
+        <action name="Report_*" method="{1}" class="com.bivc.cimsmgs.actions.Report_A">
+            <result name="success" type="json"/>
+            <result name="view" type="stream">
+                <param name="contentType">application/vnd.ms-excel</param>
+                <param name="contentDisposition">attachment;filename="Report.xls"</param>
+                <!--<param name="contentLength">${excel.getBytes().length}</param>-->
+            </result>
+            <result name="link" type="stream">
+                <param name="contentType">application/octet-stream</param>
+                <param name="contentDisposition">attachment;filename="Gruzy.doc"</param>
+            </result>
+            <result name="instruction" type="stream">
+                <param name="contentType">application/octet-stream</param>
+                <param name="contentDisposition">attachment;filename="${search.kod}.doc"</param>
+            </result>
+            <result name="dir2Excel" type="stream">
+                <param name="contentType">application/octet-stream</param>
+                <param name="contentDisposition">attachment;filename="${encodedFileName}"</param>
+            </result>
+        </action>
+    </package>
+
+    <!--<package name="packList-support" namespace="/" extends="cimsmgs-default">-->
+    <!--<action name="PackList_*" method="{1}" class="com.bivc.cimsmgs.actions.PackListRCUD_A">-->
+    <!--<result name="success">/jsp/PackList.jsp</result>-->
+    <!--<result name="update" type="json"/>-->
+    <!--<result name="list" type="json"/>-->
+    <!--<result name="view">/jsp/PackList.jsp</result>-->
+    <!--<result name="doc">/jsp/PackListDoc.jsp</result>-->
+    <!--</action>-->
+    <!--</package>-->
+
+    <package name="nsi-support" namespace="/" extends="cimsmgs-default">
+        <action name="NsiSmgsG1_*" method="{1}" class="com.bivc.cimsmgs.actions.nsi.NsiG1_A">
+            <result name="success" type="json"/>
+            <!--<result name="journal">/jsp/NsiSmgsG1.jsp</result>-->
+        </action>
+
+        <action name="NsiPlatel_*" method="{1}" class="com.bivc.cimsmgs.actions.nsi.Platel_A">
+            <result name="success" type="json"/>
+        </action>
+
+        <action name="Sta_*" method="{1}" class="com.bivc.cimsmgs.actions.nsi.Sta_A">
+            <result name="success" type="json"/>
+        </action>
+
+        <action name="Nsi_*_view" method="{1}" class="com.bivc.cimsmgs.actions.nsi.Nsi_A">
+            <result name="success" type="json"/>
+            <!--<result name="btns">/jsp/NsiBtns.jsp</result>-->
+        </action>
+    </package>
+
+    <package name="nsidir-support" namespace="/" extends="cimsmgs-default">
+        <action name="NsiDir_*" method="{1}" class="com.bivc.cimsmgs.actions.NsiDir_A">
+            <result name="success" type="json"/>
+        </action>
+    </package>
+
+    <package name="users-support" namespace="/" extends="cimsmgs-default">
+        <action name="User_*" method="{1}" class="com.bivc.cimsmgs.actions.User_A">
+            <result name="success" type="json"/>
+        </action>
+    </package>
+
+    <package name="wildcard" namespace="/" extends="cimsmgs-default">
+        <action name="*" class="com.bivc.cimsmgs.actions.CimSmgsSupport_A">
+            <result>/jsp/{1}.jsp</result>
+            <!--<interceptor-ref name="defaultStack"/>-->
+        </action>
+    </package>
+
+</struts>

@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<!-- Generated 16.04.2012 15:44:54 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.Status" table="STATUS">
+        <id name="hid" type="long">
+            <column name="HID" precision="20" scale="0"/>
+            <generator class="sequence">
+                <param name="sequence">STATUS_HID</param>
+            </generator>
+        </id>
+        <many-to-one name="statusDir" class="com.bivc.cimsmgs.db.StatusDir" fetch="select">
+            <column name="HID_STAT" precision="20" scale="0"/>
+        </many-to-one>
+        <many-to-one name="packDoc" class="com.bivc.cimsmgs.db.PackDoc" fetch="select">
+            <column name="HID_PACK" precision="20" scale="0"/>
+        </many-to-one>
+        <many-to-one name="usr" class="com.bivc.cimsmgs.db.Usr" fetch="select">
+            <column name="UN" length="20"/>
+        </many-to-one>
+        <many-to-one name="docDir" class="com.bivc.cimsmgs.db.DocDir" fetch="select">
+            <column name="TYPE" precision="20" scale="0"/>
+        </many-to-one>
+        <!--<many-to-one name="cimSmgs" class="com.bivc.cimsmgs.db.CimSmgs" fetch="select" >
+            <column name="HID_CS" precision="20" scale="0" />
+        </many-to-one>
+        <many-to-one name="cimSmgsInvoice" class="com.bivc.cimsmgs.db.CimSmgsInvoice" fetch="select" >
+                    <column name="HID_CS" precision="20" scale="0" />
+                </many-to-one>-->
+        <property name="datBegin" type="timestamp">
+            <column name="DAT_BEGIN" length="7"/>
+        </property>
+        <property name="datEnd" type="timestamp">
+            <column name="DAT_END" length="7"/>
+        </property>
+        <property name="hidCs" type="long">
+            <column name="HID_CS" precision="20" scale="0"/>
+        </property>
+
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 16.04.2012 15:44:54 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.StatusDir" table="STATUS_DIR">
+        <id name="hid" type="big_decimal">
+            <column name="HID" precision="20" scale="0" />
+            <generator class="sequence">
+             <param name="sequence">STATUS_HID</param>
+           </generator>
+        </id>
+        <property name="name" type="string">
+            <column name="NAME" length="300"/>
+        </property>
+        <property name="prim" type="string">
+            <column name="PRIM" length="300"/>
+        </property>
+        <set name="statuses" table="STATUS" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="HID_STAT" precision="20" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.Status" />
+        </set>
+    </class>
+</hibernate-mapping>

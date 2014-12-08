@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 17.05.2011 15:02:20 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.PackDoc" table="PACK_DOC">
+        <id name="hid" type="long">
+            <column name="HID" precision="20" scale="0"/>
+            <generator class="sequence">
+                <param name="sequence">PACK_DOC_HID</param>
+            </generator>
+        </id>
+        <many-to-one name="route" class="com.bivc.cimsmgs.db.Route" fetch="select">
+            <column name="HID_ROUTE" precision="20" scale="0"/>
+        </many-to-one>
+        <many-to-one name="usrGroupsDir" class="com.bivc.cimsmgs.db.UsrGroupsDir" fetch="select">
+            <column name="TRANS" length="64"/>
+        </many-to-one>
+        <property name="dattr" type="timestamp">
+            <column name="DATTR" length="7"/>
+        </property>
+        <!--<property name="tbc_nomer" type="string">
+            <column length="20" name="TBC_NOMER"/>
+        </property>
+        <property name="un" type="string">
+            <column name="UN" length="20" />
+        </property>
+
+        <property name="g692" type="string">
+            <column length="6" name="G_69_2"/>
+        </property>
+        <property name="g162" type="string">
+            <column length="80" name="G_16_2"/>
+        </property>
+        <property name="g1r" type="string">
+            <column length="512" name="G_1R"/>
+        </property>
+        <property name="g19r" type="string">
+            <column length="128" name="G_1_9R"/>
+        </property>
+        <property name="g4r" type="string">
+            <column length="512" name="G_4R"/>
+        </property>
+        <property name="g49r" type="string">
+            <column length="128" name="G_4_9R"/>
+        </property>
+        <map name="cimSmgsCarLists" cascade="all, delete-orphan" inverse="true" sort="natural" lazy="true"  batch-size="50" >
+            <key>
+                <column name="HID_PACK" precision="20" scale="0"  not-null="true"/>
+            </key>
+            <map-key column="SORT" type="byte"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsCarList" />
+        </map>-->
+
+        <set name="cimSmgses" table="CIM_SMGS" inverse="true" lazy="true" fetch="select" batch-size="50" cascade="all, delete-orphan">
+            <key>
+                <column name="HID_PACK" precision="20" scale="0" not-null="true"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgs"/>
+        </set>
+        <!--<set name="cimSmgsScans" cascade="all, delete-orphan" table="CIM_SMGS_SCAN" inverse="true" lazy="true" fetch="select" batch-size="50">
+            <key>
+                <column name="HID_PACK" precision="20" scale="0"  not-null="true"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsScan" />
+        </set>-->
+        <set name="csInvoices" table="CIM_SMGS_INVOICE" inverse="true" lazy="true" fetch="select" batch-size="50" cascade="all, delete-orphan">
+            <key>
+                <column name="HID_PACK" precision="20" scale="0" not-null="true"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsInvoice"/>
+        </set>
+        <!--<set name="invoicesBrief" cascade="all, delete-orphan" table="CIM_SMGS_INVOICE_BRIEF" inverse="true" lazy="true" fetch="select" batch-size="50">
+            <key>
+                <column name="HID_PACK" precision="20" scale="0"  not-null="true"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsInvoiceBrief" />
+        </set>-->
+        <set name="cimSmgsFileInfs" table="CIM_SMGS_FILE_INF" inverse="true" lazy="true" batch-size="50" cascade="all, delete-orphan">
+            <key>
+                <column name="HID_PACK" precision="20" scale="0" not-null="true"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsFileInf"/>
+        </set>
+        <set name="statuses" table="STATUS" inverse="true" lazy="true" batch-size="100" cascade="all, delete-orphan">
+            <key>
+                <column name="HID_PACK" precision="20" scale="0" not-null="false" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.Status"/>
+        </set>
+        <set name="fieldsCommentses" table="FIELDS_COMMENTS" inverse="true" lazy="true" batch-size="50" cascade="all, delete-orphan">
+            <key>
+                <column name="PACK_HID" precision="20" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.FieldsComments" />
+            <filter name="limitFieldCommentsByDocId" condition="FIELD_HID IN (SELECT dir.hid FROM FIELDS_DIR dir INNER JOIN FIELDS_DOCS_REFS refs ON dir.hid = refs.field_hid AND refs.doc_hid = :docId)"/>
+        </set>
+    </class>
+    <filter-def name="limitFieldCommentsByDocId">
+        <filter-param name="docId" type="big_decimal"/>
+    </filter-def>
+</hibernate-mapping>

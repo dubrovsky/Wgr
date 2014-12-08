@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.CsComnt" table="CS_COMNT" dynamic-update="true" dynamic-insert="true">
+        <id name="hid" type="long" column="HID">
+            <generator class="sequence">
+                <param name="sequence">CS_COMNT_HID</param>
+            </generator>
+        </id>
+        <property column="DAT_SEND" name="datSend" type="java.util.Date"/>
+        <property column="REF_ID" name="refId" type="java.lang.String"/>
+        <property column="REF_DATE" name="refDate" type="java.util.Date"/>
+        <property column="REF_TYPE" name="refType" type="java.lang.String"/>
+        <property column="DATTR" name="dattr" type="java.util.Date"/>
+        <property column="ID" name="id" type="java.lang.String"/>
+        <property column="TEXT" name="text" type="java.lang.String"/>
+        <!--<set name="comntDet" cascade="all" inverse="true" lazy="true">
+            <key column="HID_MAIN"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CsComntDet"/>
+        </set>-->
+    </class>
+</hibernate-mapping>

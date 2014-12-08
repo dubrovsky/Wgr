@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 09.09.2011 13:31:29 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.CimSmgsInvoiceBrief" table="CIM_SMGS_INVOICE_BRIEF">
+        <id name="hid" type="long">
+            <column name="HID" precision="22" scale="0" />
+            <generator class="sequence">
+              <param name="sequence">INVOICE_BRIEF_SEQ</param>
+            </generator>
+        </id>
+        <many-to-one name="route" class="com.bivc.cimsmgs.db.Route" fetch="select">
+            <column name="HID_ROUTE" precision="20" scale="0" />
+        </many-to-one>
+        <many-to-one name="packDoc" class="com.bivc.cimsmgs.db.PackDoc" fetch="select">
+            <column name="HID_PACK" precision="20" scale="0" />
+        </many-to-one>
+        <many-to-one name="cimSmgs" class="com.bivc.cimsmgs.db.CimSmgs" fetch="select">
+            <column name="HID_CS" precision="20" scale="0" />
+        </many-to-one>
+        <property name="utiN" type="string">
+            <column name="UTI_N" length="16" />
+        </property>
+        <property name="num" type="string">
+            <column name="NUM" length="50" />
+        </property>
+        <property name="dat" type="date">
+            <column name="DAT" length="7" />
+        </property>
+        <property name="places" type="java.lang.Integer">
+            <column name="PLACES" precision="8" scale="0" />
+        </property>
+        <property name="g24N" type="big_decimal">
+            <column name="G_24_N" precision="12" scale="2"/>
+        </property>
+        <property name="un" type="string">
+            <column name="UN" length="20" not-null="true" />
+        </property>
+        <property name="trans" type="string">
+            <column name="TRANS" length="20" not-null="true" />
+        </property>
+        <property name="dattr" type="timestamp">
+            <column name="DATTR" length="7" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

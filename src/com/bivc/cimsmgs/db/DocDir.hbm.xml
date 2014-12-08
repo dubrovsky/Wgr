@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 17.05.2011 9:39:57 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.DocDir" table="DOC_DIR" batch-size="50">
+        <id name="hid" type="big_decimal">
+            <column name="HID" precision="20" scale="0"/>
+            <generator class="assigned"/>
+        </id>
+        <property name="name" type="string">
+            <column name="NAME" length="30"/>
+        </property>
+        <property name="descr" type="string">
+            <column name="DESCR" length="100"/>
+        </property>
+        <property name="dattr" type="date">
+            <column name="DATTR" length="7"/>
+        </property>
+        <property name="un" type="string">
+            <column name="UN" length="20"/>
+        </property>
+        <!--<property name="locked" type="date">
+            <column name="LOCKED" length="7" />
+        </property>
+        <property name="unLock" type="string">
+            <column name="UN_LOCK" length="20" />
+        </property>-->
+        <!--<property name="altered" type="date">-->
+        <!--<column name="ALTERED" length="7" />-->
+        <!--</property>-->
+        <property name="alias" type="string">
+            <column name="ALIAS" length="50"/>
+        </property>
+        <property name="groupAlias" type="string">
+            <column name="GROUP_ALIAS" length="50"/>
+        </property>
+        <!-- <property name="aliasChild" type="string">
+            <column name="ALIAS_CHILD" length="50"/>
+        </property>-->
+        <property name="range" type="string">
+            <column name="RANGE" length="50"/>
+        </property>
+        <property name="prefix" type="string">
+            <column name="PREFIX" length="50"/>
+        </property>
+        <property name="type" type="java.lang.Byte">
+            <column name="TYPE" precision="2" scale="0"/>
+        </property>
+        <property name="zipped" type="java.lang.Boolean">
+            <column name="zipped" precision="1" scale="0"/>
+        </property>
+        <set name="routeDocs" table="ROUTE_DOC" inverse="true" lazy="true" cascade="all, delete-orphan">
+            <key>
+                <column name="HID_DDIR" precision="20" scale="0" not-null="true"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.RouteDoc"/>
+        </set>
+        <set name="statuses" table="STATUS" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="TYPE" precision="20" scale="0" not-null="true"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.Status"/>
+        </set>
+        <set name="printTemplateses" table="PRINT_TEMPLATES" inverse="true" lazy="true" batch-size="50" cascade="all-delete-orphan">
+            <key>
+                <column name="HID_DOC" precision="22" scale="0" not-null="true"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.PrintTemplates"/>
+        </set>
+        <!--<set name="doc2docTemplatesesForHidDocTo" table="DOC2DOC_TEMPLATES" inverse="true" lazy="true" batch-size="50" cascade="all-delete-orphan">
+            <key>
+                <column name="HID_DOC_TO" precision="20" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.Doc2docTemplates" />
+        </set>
+        <set name="doc2docTemplatesesForHidDocFrom" table="DOC2DOC_TEMPLATES" inverse="true" lazy="true" batch-size="50" cascade="all-delete-orphan">
+            <key>
+                <column name="HID_DOC_FROM" precision="20" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.Doc2docTemplates" />
+        </set>-->
+        <set name="printBlanks" table="PRINT_BLANK" inverse="true" lazy="true" batch-size="50" cascade="all-delete-orphan">
+            <key>
+                <column name="HID_DOC" precision="22" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.PrintBlank" />
+        </set>
+        <set name="fieldsDocsRefses" table="FIELDS_DOCS_REFS" inverse="true" lazy="true" batch-size="50" cascade="all-delete-orphan">
+            <key>
+                <column name="DOC_HID" precision="20" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.FieldsDocsRefs" />
+        </set>
+        <!--<set name="fieldsAccessFobiddens" table="FIELDS_ACCESS_FOBIDDEN" inverse="true" lazy="true" batch-size="50" cascade="all-delete-orphan">
+            <key>
+                <column name="DOC_HID" precision="20" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.FieldsAccessFobidden" />
+        </set>-->
+        <set name="docsFobiddenUsrGroupses" table="DOCS_FOBIDDEN_USR_GROUPS" inverse="true" lazy="true" batch-size="50" cascade="all-delete-orphan">
+            <key>
+                <column name="DOC_HID" precision="20" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.DocsFobiddenUsrGroups" />
+        </set>
+        <!--<set name="cimSmgses" table="CIM_SMGS" inverse="true" lazy="true" fetch="select" batch-size="50">
+            <key property-ref="type">
+                <column name="TYPE" precision="2" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgs" />
+        </set>-->
+    </class>
+</hibernate-mapping>

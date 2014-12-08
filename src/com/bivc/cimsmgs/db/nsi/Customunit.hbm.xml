@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 22.04.2009 13:49:34 by Hibernate Tools 3.2.4.GA -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.nsi.Customunit" table="CUSTOMUNIT">
+        <id name="id" type="big_decimal">
+            <column name="ID" precision="22" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <property name="code" type="string">
+            <column name="CODE" length="20" not-null="true" />
+        </property>
+        <property name="mlName" type="string">
+            <column name="ML_NAME" length="500" not-null="true" />
+        </property>
+        <property name="nameLatin1" type="string">
+            <column name="NAME_LATIN1" length="170" not-null="true" />
+        </property>
+        <property name="impCode" type="string">
+            <column name="IMP_CODE" length="60" />
+        </property>
+        <property name="impName" type="string">
+            <column name="IMP_NAME" length="170" />
+        </property>
+        <property name="recState" type="string">
+            <column name="REC_STATE" length="1" not-null="true" />
+        </property>
+        <property name="workFrom" type="date">
+            <column name="WORK_FROM" length="7" not-null="true" />
+        </property>
+        <property name="workTill" type="date">
+            <column name="WORK_TILL" length="7" />
+        </property>
+        <property name="digest" type="string">
+            <column name="DIGEST" length="20" />
+        </property>
+    </class>
+</hibernate-mapping>

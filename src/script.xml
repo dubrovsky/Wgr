@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE script SYSTEM "script.dtd">
+<script>
+
+    <action name="receive" direction="bch">
+
+        <transport name="file">
+            <filename>../!/in</filename>
+        </transport>
+
+        <!--
+              <transport name="mail">
+                <subject>IFTMIN</subject>
+                <server host="10.3.6.13" port="110" ssl="false" account="graphdoc" password="qwezxcasd"/>
+              </transport>
+        -->
+    </action>
+
+    <action name="send" recipient="Q" direction="gr">
+        <transport name="file" encoding="utf-8">
+            <filename>d:/work/eclipse/cimsmgs2/doc/temp</filename>
+        </transport>
+    </action>
+
+    <action name="send" recipient="CCC" direction="btlc">
+        <transport name="file">
+            <filename>D:\WORK\Eclipse\CimSmgs2\doc\exchange</filename>
+        </transport>
+    </action>
+    <action name="send" recipient="ФФФ" direction="bch">
+        <transport name="file">
+            <filename>D:\WORK\Eclipse\CimSmgs2\doc\exchange</filename>
+        </transport>
+    </action>
+    <action name="send" direction="ctm">
+        <!--
+            <transport name="mail">
+              <email>ldn@test-server</email>
+              <from>icftest@brestrw.by</from>
+              <subject>IFTMIN_TK</subject>
+              <maxAttachCount>30</maxAttachCount>
+              <server host="10.3.6.123" port="25" ssl="false" account="ldn" password="observantus"/>
+            </transport>
+        -->
+
+        <transport name="file" encoding="utf-8">
+            <filename>../!/out</filename>
+        </transport>
+
+        <!--
+            <transport name="MQ" encoding="IBM1025">
+              <server host="10.3.6.23" port="1434" chanel="MAIL.TO.EDIM" manager="CSQB" queue="IAS22.EDIBREST.IN"/>
+            </transport>
+        -->
+    </action>
+
+    <action name="send" sender="999" direction="tbc">
+        <transport name="mail" encoding="utf-8">
+            <email>ldn@brestrw.by</email>
+            <from>icftest@brestrw.by</from>
+            <subject>VMIITDEX</subject>
+            <maxAttachCount>30</maxAttachCount>
+            <server host="10.3.6.13" port="25" ssl="false" account="ldn" password="observantus1976"/>
+        </transport>
+        <!--
+            <transport name="file" encoding="utf-8">
+              <filename>../!/out</filename>
+            </transport>
+            -->
+    </action>
+
+    <action name="receive" direction="tbc">
+        <transport name="mail" encoding="utf-8">
+            <server host="10.3.1.1" port="110" ssl="false" account="ldn" password="observantus1976"/>
+        </transport>
+    </action>
+</script>

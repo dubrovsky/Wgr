@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 01.11.2011 8:57:21 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.CimSmgsFile" table="CIM_SMGS_FILE">
+        <id name="hid" type="long">
+            <column name="HID" precision="22" scale="0" />
+            <generator class="sequence">
+              <param name="sequence">CIM_SMGS_FILE_HID</param>
+            </generator>
+        </id>
+        <many-to-one name="cimSmgsFileInf" class="com.bivc.cimsmgs.db.CimSmgsFileInf" fetch="select">
+            <column name="HID_INF" precision="22" scale="0" not-null="true" />
+        </many-to-one>
+        <property name="files" type="blob">
+            <column name="FILES" />
+        </property>
+        <property name="fileName" type="string">
+            <column name="FILE_NAME" length="1500" />
+        </property>
+        <property name="contentType" type="string">
+            <column name="CONTENT_TYPE" length="200" />
+        </property>
+        <property name="length" type="big_decimal">
+            <column name="LENGTH" precision="22" scale="0" />
+        </property>
+    </class>
+</hibernate-mapping>

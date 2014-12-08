@@ -1,0 +1,61 @@
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoders are assigned the type
+     ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <!--<logger name="org.springframework.security" level="DEBUG"/>-->
+
+    <!--<logger name="org.apache.struts2" level="DEBUG"/>-->
+    <!--<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${catalina.home}/logs/tk2.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${catalina.home}/logs/tk2.%i.log.gz</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>99</maxIndex>
+        </rollingPolicy>
+
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>10485760</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>-->
+
+    <appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+        <connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+            <driverClass>oracle.jdbc.OracleDriver</driverClass>
+            <url>jdbc:oracle:thin:@10.50.100.197:1521:test2</url>
+            <user>wgr</user>
+            <password>wgr2013</password>
+        </connectionSource>
+    </appender>
+
+
+    <logger name="org.hibernate.SQL" level="DEBUG"/>
+
+    <!--<logger name="ma.glasnost.orika" level="DEBUG"/>-->
+    <!-- <logger name="org.hibernate.pretty" level="DEBUG">
+        <appender-ref ref="DB"/>
+    </logger>-->
+    <logger name="com.bivc.cimsmgs" level="INFO">
+        <appender-ref ref="DB"/>
+    </logger>
+
+    <!--<logger name="com.bivc.cimsmgs" level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+    </logger>-->
+    <!--<logger name="org.hibernate.Interceptor" level="DEBUG">-->
+    <!--<appender-ref ref="DB"/>-->
+    <!--</logger>-->
+
+    <root level="WARN">
+        <appender-ref ref="STDOUT"/>
+
+    </root>
+</configuration>

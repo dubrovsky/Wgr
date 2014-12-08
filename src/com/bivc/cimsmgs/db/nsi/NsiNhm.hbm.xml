@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+                                   "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 08.04.2011 10:06:33 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+
+	<class name="com.bivc.cimsmgs.db.nsi.NsiNhm" table="NSI_NHM" >
+		<id name="hid" type="java.lang.Long">
+			<column name="HID"/>
+			<generator class="assigned" />
+		</id>
+    <property name="kgvn" type="string">
+      <column name="KGVN" />
+    </property>
+    <property name="nzgr" type="string">
+      <column name="NZGR" />
+    </property>
+    <property name="nzgr_f" type="string">
+      <column name="NZGR_F" />
+    </property>
+    <property name="kgvn_de" type="string">
+      <column name="KGVN_DE" />
+    </property>
+    <property name="nzgr_de_f" type="string">
+      <column name="NZGR_DE_F" />
+    </property>
+    <property name="nzgr_de" type="string">
+      <column name="NZGR_DE" />
+    </property>
+    <property name="etsng" type="string">
+      <column name="ETSNG" />
+    </property>
+    <property name="karantin" type="string">
+      <column name="KARANTIN" />
+    </property>
+    <property name="otxod" type="string">
+      <column name="OTXOD" />
+    </property>
+    <property name="ozon_raz" type="string">
+      <column name="OZON_RAZ" />
+    </property>
+    <property name="veterin" type="string">
+      <column name="VETERIN" />
+    </property>
+    <property name="customs" type="string">
+      <column name="CUSTOMS" />
+    </property>
+    <property name="nzgr_pl" type="string">
+      <column name="NZGR_PL" />
+    </property>
+    <property name="dattr" type="date">
+      <column name="DATTR" />
+    </property>
+    <property name="locked" type="date">
+      <column name="LOCKED" />
+    </property>
+    <property name="un_lock" type="string">
+      <column name="UN_LOCK" />
+    </property>
+    <property name="trans" type="string">
+      <column name="TRANS" />
+    </property>
+    <property name="un" type="string">
+      <column name="UN" />
+    </property>
+    <property name="deleted" type="date">
+      <column name="DELETED" />
+    </property>
+    <property name="altered" type="date">
+      <column name="ALTERED" />
+    </property>
+
+	</class>
+</hibernate-mapping>

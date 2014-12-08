@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 02.06.2011 10:05:07 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.CimSmgsPlomb" table="CIM_SMGS_PLOMB">
+        <id name="hid" type="long">
+            <column name="HID" precision="20" scale="0" />
+            <generator class="sequence">
+              <param name="sequence">CIM_SMGS_PLOMB_HID</param>
+            </generator>
+        </id>
+        <many-to-one class="com.bivc.cimsmgs.db.CimSmgs" fetch="select" name="cimSmgs">
+            <column name="HID_CS" precision="20" scale="0"/>
+        </many-to-one>
+        <property name="kpl" type="java.lang.Short">
+            <column name="KPL" precision="3" scale="0"/>
+        </property>
+        <property name="znak" type="string">
+            <column length="128" name="ZNAK"/>
+        </property>
+        <property name="type" type="string">
+            <column length="32" name="TYPE"/>
+        </property>
+        <property name="dattr" type="date">
+            <column length="7" name="DATTR"/>
+        </property>
+        <property name="locked" type="date">
+            <column length="7" name="LOCKED"/>
+        </property>
+        <property name="unLock" type="string">
+            <column length="64" name="UN_LOCK"/>
+        </property>
+        <property name="hidCar" type="big_decimal">
+            <column name="HID_CAR" precision="20" scale="0"/>
+        </property>
+        <property name="hidKon" type="big_decimal">
+            <column name="HID_KON" precision="20" scale="0"/>
+        </property>
+        <property name="sort" type="byte">
+            <column name="SORT" not-null="true" precision="2" scale="0"/>
+        </property>
+    </class>
+</hibernate-mapping>

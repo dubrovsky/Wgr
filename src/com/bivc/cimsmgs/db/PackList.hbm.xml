@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 02.03.2009 10:02:25 by Hibernate Tools 3.2.4.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.PackList" table="CS_PACKLIST" >
+        <id name="hid" type="long">
+            <column name="HID" precision="20" scale="0" />
+            <generator class="sequence">
+              <param name="sequence">CS_PACKLIST_HID</param>
+            </generator>
+        </id>
+
+        <property name="hid_cs" type="java.lang.Long">
+          <column name="HID_CS"  precision="20" scale="0"/>
+        </property>
+        <property name="hid_kon" type="java.lang.Long">
+          <column name="HID_KON"  precision="20" scale="0"/>
+        </property>
+        <property name="notd" type="string">
+          <column name="NOTD" length="50" />
+        </property>
+        <property name="adres_o" type="string">
+          <column name="ADRES_O" length="200" />
+        </property>
+        <property name="npol" type="string">
+          <column name="NPOL" length="50" />
+        </property>
+        <property name="adres_p" type="string">
+          <column name="ADRES_P" length="200" />
+        </property>
+        <property name="kod_pol" type="string">
+          <column name="KOD_POL" length="20" />
+        </property>
+        <property name="nomer_pl" type="string">
+          <column name="NOMER_PL" length="10" />
+        </property>
+        <property name="trans" type="string">
+          <column name="TRANS" length="20" />
+        </property>
+        <property name="dat_pl" type="date">
+          <column name="DAT_PL" length="7" />
+        </property>
+
+        <property name="un" type="string">
+          <column name="UN" length="20" />
+        </property>
+        <property name="un_lock" type="string">
+          <column name="UN_LOCK" length="20" />
+        </property>
+        <property name="dattr" type="date">
+          <column name="DATTR" length="7" />
+        </property>
+        <property name="altered" type="date">
+          <column name="ALTERED" length="7" />
+        </property>
+        <property name="locked" type="date">
+          <column name="LOCKED" length="7" />
+        </property>
+
+
+
+
+<!--
+        <map name="cimSmgsKonLists" cascade="all, delete-orphan" inverse="true" sort="natural">
+            <key>
+                <column name="HID_CS" precision="20" scale="0"  not-null="true"/>
+            </key>
+            <map-key column="SORT" type="byte"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsKonList" />
+        </map>
+-->
+        <!--map name="cimSmgsGruzs" cascade="all, delete-orphan" inverse="true" sort="natural" >
+            <key>
+                <column name="HID_CS" precision="20" scale="0"  not-null="true"/>
+            </key>
+            <map-key column="SORT" type="byte"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsGruz" />
+        </map
+
+        <map name="cimSmgsDocses7" cascade="all, delete-orphan" inverse="true" sort="natural" where="FIELD_NUM = '7'" lazy="false" fetch="subselect">
+            <key>
+                <column name="HID_CS" precision="20" scale="0"  not-null="true"/>
+            </key>
+            <map-key column="SORT" type="byte"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsDocs" />
+        </map>
+
+        <map name="cimSmgsDocses9" cascade="all, delete-orphan" inverse="true" sort="natural" where="FIELD_NUM = '9'" lazy="false" fetch="subselect">
+            <key>
+                <column name="HID_CS" precision="20" scale="0"  not-null="true"/>
+            </key>
+            <map-key column="SORT" type="byte"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsDocs" />
+        </map>
+
+        <map name="cimSmgsDocses13" cascade="all, delete-orphan" inverse="true" sort="natural" where="FIELD_NUM = '13'" lazy="false" fetch="subselect">
+            <key>
+                <column name="HID_CS" precision="20" scale="0"  not-null="true"/>
+            </key>
+            <map-key column="SORT" type="byte"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsDocs" />
+        </map>
+        -->
+
+
+        <map name="PackListGruz" cascade="all, delete-orphan" inverse="true" sort="natural" lazy="false" fetch="subselect">
+            <key>
+                <column name="HID_CSPL" precision="20" scale="0"  not-null="true"/>
+            </key>
+            <map-key column="HID" type="long"/>
+            <one-to-many class="com.bivc.cimsmgs.db.PackListGruz" />
+        </map>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 22.04.2009 13:49:34 by Hibernate Tools 3.2.4.GA -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.nsi.Clientrailcode" table="CLIENTRAILCODE">
+        <id name="id" type="big_decimal">
+            <column name="ID" precision="22" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="clientscompany" class="com.bivc.cimsmgs.db.nsi.Clientscompany" fetch="select">
+            <column name="CLICOMPANY_ID" precision="22" scale="0" not-null="true" />
+        </many-to-one>
+        <many-to-one name="railroadland" class="com.bivc.cimsmgs.db.nsi.Railroadland" fetch="select">
+            <column name="RRLAND_ID" precision="22" scale="0" not-null="true" />
+        </many-to-one>
+        <property name="code" type="string">
+            <column name="CODE" length="20" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

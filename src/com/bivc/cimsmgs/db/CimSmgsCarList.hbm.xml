@@ -1,0 +1,195 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 02.03.2009 10:02:25 by Hibernate Tools 3.2.4.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.CimSmgsCarList" table="CIM_SMGS_CAR_LIST" >
+        <id name="hid" type="long">
+            <column name="HID" precision="20" scale="0" />
+            <generator class="sequence">
+              <param name="sequence">CIM_SMGS_CAR_LIST_HID</param>
+            </generator>
+        </id>
+        <many-to-one name="packDoc" class="com.bivc.cimsmgs.db.PackDoc" fetch="select">
+            <column name="HID_PACK" precision="20" scale="0" />
+        </many-to-one>
+        <many-to-one name="cimSmgs" class="com.bivc.cimsmgs.db.CimSmgs" fetch="select">
+            <column name="HID_CS" precision="20" scale="0"  />
+        </many-to-one>
+       <!-- <property name="dattr" type="date" update="false" insert="false">
+            <column name="DATTR" length="7" />
+        </property>-->
+       <!-- <property name="locked" type="date">
+            <column name="LOCKED" length="7" />
+        </property>
+        <property name="unLock" type="string">
+            <column name="UN_LOCK" length="20" />
+        </property>-->
+        <property name="trans" type="string">
+            <column name="TRANS" length="20" />
+        </property>
+        <property name="un" type="string">
+            <column name="UN" length="20" />
+        </property>
+        <property name="arch" type="date">
+            <column name="ARCH" length="7" />
+        </property>
+        <property name="num" type="java.lang.Short">
+            <column name="NUM" precision="3" scale="0" />
+        </property>
+        <property name="nvag" type="string">
+            <column name="NVAG" length="160" />
+        </property>
+        <property name="nhmNames" type="string">
+            <column name="NHM_NAMES" length="512" />
+        </property>
+        <property name="nhmCodes" type="string">
+            <column name="NHM_CODES" length="128" />
+        </property>
+        <property name="rid" type="java.lang.Byte">
+            <column name="RID" precision="1" scale="0" />
+        </property>
+        <property name="plombs" type="string">
+            <column name="PLOMBS" length="250" />
+        </property>
+        <property name="massSend" type="long">
+            <column name="MASS_SEND" precision="12" scale="3" />
+        </property>
+        <property name="massCalc" type="long">
+            <column name="MASS_CALC" precision="12" scale="3" />
+        </property>
+        <property name="price" type="long">
+            <column name="PRICE" precision="12" />
+        </property>
+        <property name="priceAdd" type="long">
+            <column name="PRICE_ADD" precision="12" />
+        </property>
+        <property name="priceAll" type="long">
+            <column name="PRICE_ALL" precision="12" />
+        </property>
+        <property name="notes" type="string">
+            <column name="NOTES" length="80" />
+        </property>
+        <property name="g131" type="string">
+            <column name="G_13_1" length="160" />
+        </property>
+        <property name="g132" type="string">
+            <column name="G_13_2" length="160" />
+        </property>
+        <property name="g132r" type="string">
+            <column name="G_13_2R" length="160" />
+        </property>
+        <property name="g133" type="string">
+            <column name="G_13_3" length="64" />
+        </property>
+        <property name="g134" type="string">
+            <column name="G_13_4" length="128" />
+        </property>
+        <property name="g135" type="string">
+            <column name="G_13_5" length="160" />
+        </property>
+        <property name="g136" type="string">
+            <column name="G_13_6" length="250" />
+        </property>
+        <property name="g136r" type="string">
+            <column name="G_13_6R" length="250" />
+        </property>
+        <property name="g137" type="string">
+            <column name="G_13_7" length="250" />
+        </property>
+        <property name="g137r" type="string">
+            <column name="G_13_7R" length="250" />
+        </property>
+        <property name="g138" type="string">
+            <column name="G_13_8" length="128" />
+        </property>
+        <property name="g139" type="string">
+            <column name="G_13_9" length="160" />
+        </property>
+        <property name="g139r" type="string">
+            <column name="G_13_9R" length="160" />
+        </property>
+        <property name="g1310" type="string">
+            <column name="G_13_10" length="64" />
+        </property>
+        <property name="g1311" type="string">
+            <column name="G_13_11" length="250" />
+        </property>
+        <property name="g1311r" type="string">
+            <column name="G_13_11R" length="250" />
+        </property>
+        <property name="g1312" type="string">
+            <column name="G_13_12" length="160" />
+        </property>
+        <property name="g1313" type="string">
+            <column name="G_13_13" length="160" />
+        </property>
+        <property name="g1314" type="string">
+            <column name="G_13_14" length="160" />
+        </property>
+        <property name="g1314r" type="string">
+            <column name="G_13_14R" length="160" />
+        </property>
+        <property name="g1315" type="string">
+            <column name="G_13_15" length="128" />
+        </property>
+        <property name="g1316" type="string">
+            <column name="G_13_16" length="128" />
+        </property>
+        <property name="g1317" type="string">
+            <column name="G_13_17" length="64" />
+        </property>
+        <property name="g1317r" type="string">
+            <column name="G_13_17R" length="64" />
+        </property>
+        <property name="massGross" type="long">
+            <column name="MASS_GROSS" precision="12" scale="3" />
+        </property>
+        <property name="sort" type="byte">
+            <column name="SORT" length="2" not-null="true"/>
+        </property>
+        <property name="kodSob" type="byte">
+            <column name="KOD_SOB" length="2" />
+        </property>
+        <property name="otmKSob" type="byte">
+            <column name="OTM_KSOB" length="1" />
+        </property>
+        <property name="grPod" type="big_decimal">
+            <column name="GRPOD" length="4" scale="1" />
+        </property>
+        <property name="taraVag" type="big_decimal">
+            <column name="TARA_VAG" length="4" scale="1" />
+        </property>
+        <property name="kolOs" type="byte">
+            <column name="KOL_OS" length="2" />
+        </property>
+        <property name="rod" type="string">
+            <column name="ROD" length="20" />
+        </property>
+        <property name="speed" type="string">
+            <column name="SPEED" length="20" />
+        </property>
+        <property name="prim" type="string">
+            <column name="PRIM" length="250" />
+        </property>
+        <property name="count" type="big_decimal">
+            <column name="COUNT" length="10" scale="0" />
+        </property>
+        <map name="cimSmgsGruzs" cascade="all, delete-orphan" inverse="true" sort="natural" lazy="true" >
+            <key>
+                <column name="HID_CAR" precision="20" scale="0"  not-null="true"/>
+            </key>
+            <map-key column="SORT" type="byte"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsGruz" />
+        </map>
+
+        <map name="cimSmgsKonLists" cascade="all, delete-orphan" inverse="true" sort="natural" lazy="true" batch-size="50"  >
+            <key>
+                <column name="HID_CAR" precision="20" scale="0"  not-null="true"/>
+            </key>
+            <map-key column="SORT" type="byte"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsKonList" />
+        </map>
+
+    </class>
+</hibernate-mapping>

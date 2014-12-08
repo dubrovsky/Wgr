@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 10.02.2010 14:28:44 by Hibernate Tools 3.2.5.Beta -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.NsiPlatel" table="NSI_PLATEL">
+        <id name="hid" type="long">
+            <column name="HID" precision="20" scale="0" />
+            <generator class="sequence">
+              <param name="sequence">NSI_PLATEL_HID</param>
+            </generator>
+        </id>
+        <property name="dor" type="string">
+            <column name="DOR" length="5" />
+        </property>
+        <property name="plat" type="string">
+            <column name="PLAT" length="45" />
+        </property>
+        <property name="prim" type="string">
+            <column name="PRIM" length="70" />
+        </property>
+        <property name="dattr" type="date">
+            <column name="DATTR" length="7" />
+        </property>
+        <property name="locked" type="date">
+            <column name="LOCKED" length="7" />
+        </property>
+        <property name="unLock" type="string">
+            <column name="UN_LOCK" length="20" />
+        </property>
+        <property name="kplat" type="string">
+            <column name="KPLAT" length="50" />
+        </property>
+        <property name="kplat1" type="string">
+            <column name="KPLAT1" length="50" />
+        </property>
+        <property name="kplat2" type="string">
+            <column name="KPLAT2" length="50" />
+        </property>
+        <property name="kplat3" type="string">
+            <column name="KPLAT3" length="50" />
+        </property>
+        <property name="trans" type="string">
+            <column name="TRANS" length="20" />
+        </property>
+        <property name="un" type="string">
+            <column name="UN" length="20" />
+        </property>
+        <property name="altered" type="date">
+            <column name="ALTERED" length="7" />
+        </property>
+        <property name="deleted" type="date">
+            <column name="DELETED" length="7" />
+        </property>
+        <property name="dorR" type="string">
+            <column name="DOR_R" length="5" />
+        </property>
+        <property name="platR" type="string">
+            <column name="PLAT_R" length="45" />
+        </property>
+        <property name="primR" type="string">
+            <column name="PRIM_R" length="70" />
+        </property>
+        <property name="strana" type="string">
+            <column name="STRANA" length="2" />
+        </property>
+    </class>
+</hibernate-mapping>

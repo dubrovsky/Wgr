@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 10.04.2009 11:19:18 by Hibernate Tools 3.2.4.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.NsiNhm" table="_NSI_NHM" >
+        <id name="hid" type="big_decimal">
+            <column name="HID" precision="20" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <property name="kgvn" type="string">
+            <column name="KGVN" length="9" />
+        </property>
+        <property name="nzgr" type="string">
+            <column name="NZGR" length="240" />
+        </property>
+        <property name="nzgrF" type="string">
+            <column name="NZGR_F" length="4000" />
+        </property>
+        <property name="kgvnDe" type="string">
+            <column name="KGVN_DE" length="9" />
+        </property>
+        <property name="nzgrDeF" type="string">
+            <column name="NZGR_DE_F" length="4000" />
+        </property>
+        <property name="nzgrDe" type="string">
+            <column name="NZGR_DE" length="240" />
+        </property>
+        <property name="etsng" type="string">
+            <column name="ETSNG" length="6" />
+        </property>
+        <property name="karantin" type="string">
+            <column name="KARANTIN" length="3" />
+        </property>
+        <property name="otxod" type="string">
+            <column name="OTXOD" length="3" />
+        </property>
+        <property name="ozonRaz" type="string">
+            <column name="OZON_RAZ" length="3" />
+        </property>
+        <property name="veterin" type="string">
+            <column name="VETERIN" length="3" />
+        </property>
+        <property name="customs" type="string">
+            <column name="CUSTOMS" length="3" />
+        </property>
+        <property name="nzgrPl" type="string">
+            <column name="NZGR_PL" length="240" />
+        </property>
+        <property name="dattr" type="date">
+            <column name="DATTR" length="7" />
+        </property>
+        <property name="locked" type="date">
+            <column name="LOCKED" length="7" />
+        </property>
+        <property name="unLock" type="string">
+            <column name="UN_LOCK" length="20" />
+        </property>
+        <property name="trans" type="string">
+            <column name="TRANS" length="20" />
+        </property>
+        <property name="un" type="string">
+            <column name="UN" length="20" />
+        </property>
+        <property name="deleted" type="date">
+            <column name="DELETED" length="7" />
+        </property>
+        <property name="altered" type="date">
+            <column name="ALTERED" length="7" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

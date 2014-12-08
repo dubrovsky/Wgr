@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="com.bivc.cimsmgs.db.CimSmgs1" table="CIM_SMGS">
+        <id name="hid" type="long">
+            <column name="HID" precision="20" scale="0"/>
+            <generator class="sequence">
+                <param name="sequence">CIM_SMGS_HID</param>
+            </generator>
+        </id>
+
+        <many-to-one name="packDoc" class="com.bivc.cimsmgs.db.PackDoc" fetch="select">
+            <column name="HID_PACK" precision="20" scale="0"/>
+        </many-to-one>
+
+        <many-to-one name="route" class="com.bivc.cimsmgs.db.Route" fetch="select">
+            <column name="HID_ROUTE" precision="20" scale="0"/>
+        </many-to-one>
+
+        <property name="g1" type="string">
+            <column name="G_1" length="512"/>
+        </property>
+        <property name="g2" type="string">
+            <column name="G_2" length="32"/>
+        </property>
+
+        <map name="cimSmgsCarLists" cascade="all, delete-orphan" inverse="true" sort="natural" batch-size="20">
+            <key>
+                <column name="HID_CS" precision="20" scale="0" not-null="true"/>
+            </key>
+            <map-key column="SORT" type="byte"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsCarList"/>
+        </map>
+
+        <set name="statuses" table="STATUS" cascade="delete" inverse="true" batch-size="20">
+            <key>
+                <column name="HID_CS" precision="20" scale="0" not-null="false"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.Status"/>
+        </set>
+    </class>
+</hibernate-mapping>
