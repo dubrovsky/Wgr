@@ -1,0 +1,1 @@
+<% response.sendRedirect("Login4.do"); %>

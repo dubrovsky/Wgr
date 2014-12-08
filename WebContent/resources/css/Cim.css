@@ -1,0 +1,79 @@
+@charset "utf-8";
+body {
+	font: 12px "Times New Roman", Times, serif;
+	vertical-align: text-top;
+}
+table {
+	font: 12px "Times New Roman", Times, serif;
+}
+td{
+    vertical-align: text-top;
+}
+img {position: absolute;left: 0px;top: 0px;width:831px;}
+div {overflow: hidden;position: absolute;/*background-color:#FC6;*/}
+.d1 { height: 82px; left: 80px; top: 185px; width: 217px; }
+.d2 { height: 84px; left: 81px; top: 85px; width: 217px; }
+.d3 {height: 14px;left: 206px;top: 47px;width: 14px;}
+.d4 {height: 19px;left: 310px;top: 77px;width: 113px;}
+.d5 {height: 19px; left: 311px; top: 101px; width: 113px;}
+.d6 { height: 14px; left: 312px; top: 126px; width: 113px; }
+.d7 { height: 15px; left: 312px; top: 140px; width: 113px; }
+.d8 { height: 15px; left: 312px; top: 155px; width: 113px; }
+.d9 { height: 19px; left: 312px; top: 173px; width: 113px; }
+.d10 { height: 19px; left: 312px; top: 196px; width: 113px; }
+.d11 { height: 16px; left: 313px; top: 220px; width: 113px; }
+.d12 { height: 16px; left: 313px; top: 238px; width: 113px; }
+.d13 { height: 15px; left: 313px; top: 252px; width: 113px; }
+.d14 { height: 19px; left: 167px; top: 269px; width: 124px; }
+.d15 { height: 19px; left: 302px; top: 269px; width: 35px; }
+.d16 { height: 19px; left: 342px; top: 269px; width: 85px; }
+.d17 { height: 38px; left: 17px; top: 294px; width: 263px; }
+.d18 { height: 32px; left: 284px; top: 315px; width: 137px; }
+.d19 { height: 38px; left: 16px; top: 373px; width: 415px; }
+.d20 { height: 19px; left: 273px; top: 350px; width: 37px; }
+.d21 { height: 19px; left: 313px; top: 350px; width: 113px; }
+.d22 { height: 38px; left: 15px; top: 421px; width: 412px; }
+.d23 { height: 19px; left: 601px; top: 83px; width: 183px; }
+.d24 { height: 74px; left: 428px; top: 104px; width: 360px; }
+.d25 { height: 79px; left: 431px; top: 184px; width: 352px; }
+.d26 { height: 19px; left: 559px; top: 269px; width: 89px; }
+.d27 { height: 19px; left: 659px; top: 269px; width: 36px; }
+.d28 { height: 19px; left: 697px; top: 269px; width: 93px; }
+.d29 { height: 32px; left: 469px; top: 298px; width: 204px; }
+.d30 { height: 32px; left: 675px; top: 298px; width: 113px; }
+.d31 { height: 50px; left: 662px; top: 343px; width: 55px; }
+.d32 { height: 52px; left: 734px; top: 342px; width: 54px; }
+.d33 { height: 16px; left: 433px; top: 417px; width: 15px; }
+.d34 { height: 15px; left: 433px; top: 442px; width: 15px; }
+.d35 { height: 19px; left: 525px; top: 438px; width: 46px; }
+.d36 { height: 29px; left: 656px; top: 405px; width: 130px; }
+.d37 { height: 51px; left: 429px; top: 343px; width: 231px; }
+.d38 { height: 226px; left: 17px; top: 485px; width: 472px; }
+.d39 { height: 13px; left: 391px; top: 466px; width: 15px; }
+.d40 { height: 13px; left: 469px; top: 466px; width: 15px; }
+.d41 { height: 68px; left: 490px; top: 488px; width: 84px; }
+.d42 { height: 19px; left: 578px; top: 481px; width: 104px; }
+.d43 { height: 19px; left: 579px; top: 510px; width: 103px; }
+.d44 { height: 19px; left: 578px; top: 539px; width: 103px; }
+.d45 { height: 123px; left: 493px; top: 587px; width: 186px; }
+.d46 { height: 97px; left: 688px; top: 609px; width: 100px; }
+.d47 { height: 37px; left: 429px; top: 749px; width: 356px; }
+.d48 { height: 19px; left: 431px; top: 791px; width: 241px; }
+.d49 { height: 19px; left: 676px; top: 791px; width: 29px; }
+.d50 { height: 19px; left: 708px; top: 791px; width: 79px; }
+.d51 { height: 26px; left: 429px; top: 903px; width: 353px; }
+.d52 { height: 80px; left: 16px; top: 946px; width: 214px; }
+.d53 { height: 73px; left: 231px; top: 952px; width: 247px; }
+.d54 { height: 73px; left: 484px; top: 953px; width: 246px; }
+.d55 { height: 74px; left: 734px; top: 953px; width: 57px; }
+.d56 { height: 61px; left: 19px; top: 1041px; width: 212px; }
+.d57 { height: 43px; left: 241px; top: 1043px; width: 180px; }
+.d58 { height: 19px; left: 487px; top: 1049px; width: 89px; }
+.d59 { height: 19px; left: 652px; top: 1045px; width: 28px; }
+.d60 { height: 19px; left: 697px; top: 1045px; width: 86px; }
+.d61 { height: 19px; left: 622px; top: 1089px; width: 58px; }
+.d62 { height: 19px; left: 697px; top: 1089px; width: 85px; }
+.d63 { height: 19px; left: 201px; top: 1112px; width: 19px; }
+.d64 { height: 19px; left: 142px; top: 1136px; width: 78px; }
+.d65 { height: 36px; left: 587px; top: 1123px; width: 123px; }
+.d66 { height: 19px; left: 716px; top: 1124px; width: 70px; }

@@ -1,0 +1,738 @@
+/*.docs_background {
+    background-color: gray;
+}*/
+/*.x-grid-row-over .x-grid-cell-inner {
+    font-weight: bold;
+}*/
+/*.x-boundlist-item {
+    min-height: 20px;
+}*/
+
+.header-main{
+    font-size: 16px;
+    padding-top: 2px;
+}
+
+.header-items-main{
+    padding-top: 20px;
+}
+
+.header-logo {
+    background: url("../images/tk-logo2.gif") no-repeat scroll -20px 0 transparent;
+    padding-left: 65px;
+    font-weight: bold;
+}
+
+.header-logo1 span {
+    display: none;
+}
+
+.header-logo1 {
+    background: url("../images/logo.png") no-repeat scroll 10px 0 transparent;
+}
+
+.x-check-group-alt {
+    background: #D1DDEF;
+    border: 1px dotted #B5B8C8;
+}
+.top {
+    background: none repeat scroll 0 0 #F1F1F1;
+    border-bottom: 1px solid #E2E0E0;
+    color: #9B9B9B;
+    height: 25px;
+    line-height: 25px;
+    padding: 0 30px;
+}
+
+.top .left {
+    float: left;
+}
+
+.top .right {
+    float: right;
+    font-size: 91%;
+    width: 515px;
+}
+
+#loading {
+    position: absolute;
+    width: 180px;
+    margin: -85px 0 0 -65px;
+    height: 140px;
+    top: 50%;
+    left: 50%;
+}
+
+/*#loading .title {
+    background: url(../images/tk-logo.gif) no-repeat;
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    width: 108px;
+    height: 44px;
+}*/
+
+#loading .logo {
+    background: url(../images/loading1.gif) no-repeat;
+    position: absolute;
+    display: block;
+    top: 44px;
+    left: 22px;
+    width: 120px;
+    height: 120px;
+}
+
+.lang-combo {
+    float: right;
+    margin-right: 5px;
+    margin-top: 20px;
+}
+
+.browser-header{
+    text-align: right;
+    color: red;
+}
+
+.user-header {
+    text-align: right;
+    margin-top: 4px;
+}
+
+.locale-header {
+    margin-top: 23px;
+    font-size: 0.9em
+}
+
+div {
+    font-size: 105%;
+}
+
+input {
+    font-size: 110% !important;
+}
+
+textarea {
+    font-size: 105% !important;
+}
+
+button span {
+    font-size: 100% !important;
+}
+
+.x-column-header-inner .x-column-header-text {
+    white-space: normal;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.width100 {
+    width: 100%;
+}
+
+.div-active {
+    background-color: #D9E8FB;
+}
+
+.overflow {
+    overflow-y: auto;
+}
+
+.hide_el {
+    display: none;
+}
+
+.show-el {
+    dispaly: block;
+}
+
+.x-column-header-inner {
+    text-align: center;
+}
+
+#header-content {
+    /*color: #FFFFFF;*/
+    background: url("../images/tk-logo.gif") no-repeat scroll 0 0 transparent;
+    /*font-family: "Helvetica Neue","Helvetica","Arial","Lucida Grande",sans-serif;*/
+    font-size: 1.3em;
+    line-height: 25px;
+    margin: 2px 0 0 5px;
+    padding-left: 120px;
+    padding-top: 18px;
+}
+
+.x-action-col-cell img {
+    cursor: pointer;
+    height: 16px;
+    width: 16px;
+    margin: 0px 5px 0px 2px;
+}
+
+/*.ux-cell-value {
+    position:relative;
+    zoom:1;
+}
+.ux-cell-actions {
+    position:absolute;
+    right:0;
+    top:-2px;
+}
+.ux-cell-actions-left {
+    left:0;
+    top:-2px;
+}
+.ux-cell-action {
+    width:16px;
+    height:16px;
+    float:left;
+    margin: 0 0 0 4px;
+}
+.ux-cell-actions-left .ux-cell-action {
+    margin: 0 4px 0 0;
+}*/
+.x-form-focus {
+    background: url("../images/form/text-bg.gif") no-repeat scroll 0 0 #D9E8FB;
+}
+
+textarea.x-form-focus {
+    background: url("../images/form/text-bg.gif") no-repeat scroll 0 0 #D9E8FB;
+}
+
+.gruz-guN-td1 {
+    width: 9%;
+}
+
+.gruz-guN-td2 {
+    width: 9.5%;
+}
+
+.gruz-guN-td3 {
+    width: 81.5%;
+}
+
+.gruz-gu-td1 {
+    width: 8.5%;
+}
+
+.gruz-gu-td2 {
+    width: 8.5%;
+}
+
+.gruz-gu-td3 {
+    width: 83%;
+}
+
+.gruz-td1 {
+    width: 19%;
+}
+
+.gruz-td2 {
+    width: 71%;
+}
+
+.gruz-td3 {
+    width: 10%;
+}
+
+.vag-td1 {
+    width: 53%;
+}
+
+.vag-td2 {
+    width: 16.7%;
+}
+
+.vag-td3 {
+    width: 9.5%;
+}
+
+.vag-td4 {
+    width: 20.8%;
+}
+
+.g20-td1, .g20-td2, .g20-td3, .g20-td4, .g20-td5 {
+  width: 20%;
+}
+
+.td {
+    vertical-align: top;
+}
+
+.bg-c-white {
+    background-color: white;
+}
+
+.bg-c-yellow {
+    background: #feff6e none;
+}
+
+.cimsmgs-scan {
+    background: url(./../images/cimsmgs3.jpg) no-repeat;
+}
+
+.multiselect {
+    margin-bottom: 10px;
+}
+
+.field-padd {
+    padding: 10px 10px;
+}
+
+.x-required {
+    font-weight: bold;
+    color: red;
+}
+
+.rewrite {
+    background: url(./../images/rewrite.png)  no-repeat !important;
+}
+
+.update {
+    background: url(./../images/update2.png)  no-repeat !important;
+}
+
+.dop-list {
+    background-image: url(./../images/list.png) !important;
+}
+
+.conts {
+    background-image: url(./../images/conts.png) !important;
+}
+
+.comments {
+    background-image: url(./../images/comments.png) !important;
+}
+
+.export2Xls {
+    background-image: url(./../images/export2Xls.png) !important;
+}
+
+.download {
+    background-image: url(./../images/download.gif) !important;
+}
+
+.info {
+    background-image: url(./../images/info.png) !important;
+}
+
+.change {
+    background-image: url(./../images/change.gif) !important;
+}
+
+.bind {
+    background-image: url(./../images/bind.png) !important;
+}
+
+.bind1 {
+    background-image: url(./../images/bind1.png) !important;
+}
+
+.print {
+    background-image: url(./../images/print1.gif) !important;
+}
+
+.print1 {
+    background-image: url(./../images/print.gif) !important;
+}
+
+.signature {
+    background-image: url(./../images/signature.gif) !important;
+}
+
+.history {
+    background-image: url(./../images/history.gif) !important;
+}
+
+.upload {
+    background-image: url(./../images/upload.gif) !important;
+}
+
+.aviso {
+    background-image: url(./../images/aviso.gif) !important;
+}
+
+.view {
+    background-image: url(./../images/view.gif) !important;
+}
+
+.template {
+    background-image: url(./../images/template.gif) !important;
+}
+
+.invoice {
+    background-image: url(./../images/invoice.gif) !important;
+}
+
+.report {
+    background-image: url(./../images/report.gif) !important;
+}
+
+.smgs1 {
+    background-image: url(./../images/smgs1.gif) !important;
+}
+
+.filter {
+    background-image: url(./../images/filter.gif) !important;
+}
+
+.saveas_print {
+    background-image: url(./../images/saveas_print.gif) !important;
+}
+
+.saveas {
+    background-image: url(./../images/saveas.gif) !important;
+}
+
+.save_close {
+    background-image: url(./../images/save_close.png) !important;
+}
+
+.add1 {
+    background-image: url(./../images/add.png) !important;
+}
+
+.check1 {
+    background-image: url(./../images/check.png) !important;
+}
+
+.delete1 {
+    background-image: url(./../images/delete.png) !important;
+}
+
+.edit1 {
+    background-image: url(./../images/edit.png) !important;
+}
+
+.user_edit {
+    background-image: url(./../images/user_edit.gif) !important;
+}
+
+.refresh {
+    background-image: url(./../images/refresh.gif) !important;
+}
+
+.user_del {
+    background-image: url(./../images/user_del.gif) !important;
+}
+
+.user_add {
+    background-image: url(./../images/user_add.gif) !important;
+}
+
+.users {
+    background-image: url(./../images/users.gif) !important;
+}
+
+.nsimanager {
+    background-image: url(./../images/dir.gif) !important;
+}
+
+.instr {
+    background-image: url(./../images/instr.gif) !important;
+}
+
+.logs {
+    background-image: url(./../images/logs.gif) !important;
+}
+
+.routes {
+    background-image: url(./../images/route.gif) !important;
+}
+
+.route1 {
+    background-image: url(./../images/route1.gif) !important;
+}
+
+.route2 {
+    background-image: url(./../images/route2.gif) !important;
+}
+
+.paragr {
+    background-image: url(./../images/paragr2.gif) !important;
+}
+
+.save_print {
+    background-image: url(./../images/save_print.gif) !important;
+}
+
+.logout {
+    background-image: url(./../images/logout.gif) !important;
+}
+
+.save_print1 {
+    background-image: url(./../images/save_print1.gif) !important;
+}
+
+.save_print2 {
+    background-image: url(./../images/save_print2.gif) !important;
+}
+
+.save_print3 {
+    background-image: url(./../images/save_print3.gif) !important;
+}
+
+.del1 {
+    background-image: url(./../images/del1.gif) !important;
+}
+
+.add {
+    background-image: url(./../images/add.gif) !important;
+}
+
+.save {
+    background-image: url(./../images/save.gif) !important;
+}
+
+.pdf_print {
+    background-image: url(./../images/pdf_print.gif) !important;
+}
+
+.exit {
+    background-image: url(./../images/exit.gif) !important;
+}
+
+.close1 {
+    background-image: url(./../images/close1.gif) !important;
+}
+
+.search {
+    background-image: url(./../images/search.png) !important;
+}
+
+.del {
+    background-image: url(./../images/del.gif) !important;
+}
+
+.edit {
+    background-image: url(./../images/edit.gif) !important;
+}
+
+.copy {
+    background-image: url(./../images/docs_new.gif) !important;
+}
+
+.packet {
+    background-image: url(./../images/packet.gif) !important;
+}
+
+.dir {
+    background-image: url(./../images/trigger_dir.gif) !important;
+}
+
+.letter {
+    background-image: url(./../images/letter.gif) !important;
+}
+
+.doc_new {
+    background-image: url(./../images/doc_new.gif) !important;
+}
+
+.doc_view {
+    background-image: url(./../images/doc_view.gif) !important;
+}
+
+.docs_new {
+    background-image: url(./../images/docs_new.gif) !important;
+}
+
+.smgs {
+    background-image: url(./../images/smgs.gif) !important;
+}
+
+.scan {
+    background-image: url(./../images/scan.gif) !important;
+}
+
+.close {
+    background-image: url(./../images/close.gif) !important;
+}
+
+.locked {
+    background-image: url(./../images/locked.gif) !important;
+}
+
+.open {
+    background-image: url(./../images/open.gif) !important;
+}
+
+.smgs_dop {
+    background-image: url(./../images/smgs_dop.gif) !important;
+}
+
+.smgs_kon {
+    background-image: url(./../images/smgs_kon.gif) !important;
+}
+
+.smgs_vag {
+    background-image: url(./../images/smgs_vag.gif) !important;
+}
+
+.status {
+    background-image: url(./../images/status.gif) !important;
+}
+
+.iftmin {
+    background-image: url(./../images/iftmin.gif) !important;
+}
+
+.paket {
+    background-image: url(./../images/paket.gif) !important;
+}
+
+.smgs_back {
+    background-image: url(./../images/smgs_back.gif) !important;
+}
+
+.blank {
+    background-image: url(./../images/blank.gif) !important;
+}
+
+.pdf_blank {
+    background-image: url(./../images/pdf_blank.gif) !important;
+}
+
+.blank_back {
+    background-image: url(./../images/blank_back.gif) !important;
+}
+
+.pdf_blank_back {
+    background-image: url(./../images/pdf_blank_back.gif) !important;
+}
+
+.blank_off {
+    background-image: url(./../images/blank_off.gif) !important;
+}
+
+.pdf_blank_off {
+    background-image: url(./../images/pdf_blank_off.gif) !important;
+}
+
+.blank_off_back {
+    background-image: url(./../images/blank_off_back.gif) !important;
+}
+
+.pdf_blank_off_back {
+    background-image: url(./../images/pdf_blank_off_back.gif) !important;
+}
+
+.copy1 {
+    background-image: url(./../images/copy1.gif) !important;
+}
+
+.copy2 {
+    background-image: url(./../images/copy2.gif) !important;
+}
+
+.copy3 {
+    background-image: url(./../images/copy3.gif) !important;
+}
+
+.copy4 {
+    background-image: url(./../images/copy4.gif) !important;
+}
+
+.copy5 {
+    background-image: url(./../images/copy5.gif) !important;
+}
+
+.copy6 {
+    background-image: url(./../images/copy6.gif) !important;
+}
+
+.smgsInputArea {
+    position: absolute;
+    z-index: 10;
+}
+
+.smgsFieldset {
+    position: absolute;
+    z-index: 11;
+    background-color: #EDEFEE;
+    border-width: 1px;
+    border-color: #000000;
+}
+
+.smgsClosedField {
+    position: absolute;
+    z-index: 10;
+    background-color: #CCCCCC;
+}
+
+/*.smgsTab .x-tab-right{
+background-image:url() !important;
+}
+
+.smgsTab .x-tab-left{
+background-image:url() !important;
+}*/
+
+.ext-ie .x-menu-item-icon {
+    left: -24px;
+    top: 0px;
+}
+
+.ext-strict .x-menu-item-icon {
+    left: 3px;
+    top: 3px;
+}
+
+.ext-ie6 .x-menu-item-icon {
+    left: -24px;
+    top: 0px;
+}
+
+.x-grid3-header {
+    position: relative;
+}
+
+.th {
+    font-weight: bold;
+}
+
+.ro {
+    background-image: none;
+    border: none;
+}
+
+.x-tab-panel-bwrap {
+    border: 1px solid #8db2e3;
+    background: #fff;
+}
+
+.x-grid3-hd-inner {
+    white-space: normal;
+    font-weight: bold;
+    text-align: center;
+}
+
+.cmr_gruz td {
+    vertical-align: top;
+}
+
+.view_tbc {
+    background: url("../images/view.gif") no-repeat left center;
+    cursor: pointer;
+    height: 18px;
+    padding-left: 16px;
+}
+
+.graph_copy {
+    background: url("../images/graph_copy.gif") no-repeat left center;
+    /*cursor: pointer;*/
+    /*height: 18px;*/
+    padding-left: 16px;
+}
+
+.printed {
+    background: url("../images/print1.gif") no-repeat left center;
+    /*cursor: pointer;*/
+    padding-left: 16px;
+}
+
+.locked {
+    background: url("../images/locked.gif") no-repeat left center;
+    /*cursor: pointer;*/
+    padding-left: 16px;
+}

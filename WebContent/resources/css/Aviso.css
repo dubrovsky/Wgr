@@ -1,0 +1,178 @@
+.pic {
+	position: absolute;
+	left: 0mm;
+	top: 0mm;
+}
+.div1 {
+	border: thin solid;
+	position: absolute;
+	height: 5.556mm;
+	width: 24.342mm;
+	left: 0.794mm;
+	top: 39mm;
+}
+.div2 {
+	border: thin solid;
+	position: absolute;
+	height: 5.556mm;
+	width: 150.813mm;
+	left: 26mm;
+	top: 39mm;
+	text-align: center;
+}
+.div2a {
+	position: absolute;
+	height: 5.556mm;
+	width: 43.392mm;
+	left: 134.144mm;
+	top: 48.419mm;
+}
+.div3 {
+	position: absolute;
+	height: 5.556mm;
+	width: 11.112mm;
+	left: 1.058mm;
+	top: 55.827mm;
+}
+.div4 {
+	border: thin solid;
+	position: absolute;
+	height: 4.762mm;
+	width: 13.494mm;
+	left: 14.552mm;
+	top: 55.827mm;
+}
+.div5 {
+	position: absolute;
+	height: 6.615mm;
+	width: 12.965mm;
+	left: 135.996mm;
+	top: 56.356mm;
+}
+.div6 {
+	border: thin solid;
+	position: absolute;
+	height: 5.292mm;
+	width: 22.49mm;
+	left: 153.723mm;
+	top: 56.356mm;
+}
+.div7 {
+	position: absolute;
+	height: 6.085mm;
+	width: 11.112mm;
+	left: 0.794mm;
+	top: 66.41mm;
+}
+.div8 {
+	border: thin solid;
+	position: absolute;
+	height: 11.642mm;
+	width: 163.512mm;
+	left: 13.758mm;
+	top: 66.41mm;
+	white-space: normal;
+}
+.div9 {
+	position: absolute;
+	height: 6.35mm;
+	width: 10.319mm;
+	left: 0.794mm;
+	top: 80.962mm;
+}
+.div10 {
+	border: thin solid;
+	position: absolute;
+	height: 5.556mm;
+	width: 81.492mm;
+	left: 13.229mm;
+	top: 80.698mm;
+}
+.div11 {
+	border: thin solid;
+	position: absolute;
+	height: 5.556mm;
+	width: 81.492mm;
+	left: 95.779mm;
+	top: 80.698mm;
+}
+.div12 {
+	position: absolute;
+	height: 6.35mm;
+	width: 56.092mm;
+	left: 63.235mm;
+	top: 89.429mm;
+}
+.div13 {
+	border: thin solid;
+	position: absolute;
+	height: 6.35mm;
+	width: 83.608mm;
+	left: 45.244mm;
+	top: 97.631mm;
+}
+.div14 {
+	position: absolute;
+	height: 6.35mm;
+	width: 25.135mm;
+	left: 132.027mm;
+	top: 97.631mm;
+}
+.div15 {
+	position: absolute;
+	height: 6.35mm;
+	width: 25.135mm;
+	left: 0.529mm;
+	top: 106.892mm;
+}
+.div16 {
+	border: thin solid;
+	position: absolute;
+	height: 6.35mm;
+	width: 150.283mm;
+	left: 26.987mm;
+	top: 106.892mm;
+}
+.div17 {
+	position: absolute;
+	height: 6.35mm;
+	width: 25.135mm;
+	left: 1.058mm;
+	top: 119.592mm;
+}
+.div18 {
+	border: thin solid;
+	position: absolute;
+	height: 6.35mm;
+	width: 21.167mm;
+	left: 27.781mm;
+	top: 119.327mm;
+}
+.div19 {
+	position: absolute;
+	height: 6.35mm;
+	width: 32.544mm;
+	left: 53.446mm;
+	top: 119.592mm;
+}
+.div20 {
+	border: thin solid;
+	position: absolute;
+	height: 6.35mm;
+	width: 88.635mm;
+	left: 88.371mm;
+	top: 119.592mm;
+}
+.div21 {
+	border-collapse: collapse;
+	position: absolute;
+	width: 177.271mm;
+	left: 0.794mm;
+	top: 130.175mm;
+}
+.div21a td {
+	border: 0px;
+}
+.div21b {
+	border: 1px solid #000;
+}

@@ -1,0 +1,28 @@
+@charset "utf-8";
+body {
+	font: 12px "Times New Roman", Times, serif;
+	vertical-align: text-top;
+}
+table {
+	font: 12px "Times New Roman", Times, serif;
+}
+td{
+    vertical-align: text-top;
+}
+img {position: absolute;left: 0px;top: 0px;}
+div { overflow: hidden; position: absolute; /*background-color:#FC6;*/ height: 15px; width: 233px; left: 136px; top: 20px; }
+.d1 { height: 73px; left: 68px; top: 84px; width: 340px; }
+.d2 { height: 73px; left: 68px; top: 179px; width: 343px; }
+.d3 { height: 14px; left: 127px; top: 332px; width: 276px; }
+.d4 { height: 59px; left: 69px; top: 394px; width: 333px; }
+.d5 { height: 103px; left: 72px; top: 610px; width: 330px; }
+.d6 { height: 102px; left: 252px; top: 627px; width: 164px; }
+.d7 { height: 132px; left: 69px; top: 457px; width: 575px; }
+.d8 { height: 20px; left: 84px; top: 451px; width: 100px; }
+.d9 { height: 20px; left: 184px; top: 451px; width: 100px; }
+.d10 { height: 14px; left: 129px; top: 266px; width: 274px; }
+.d11 { height: 14px; left: 129px; top: 281px; width: 273px; }
+.d12 { height: 14px; left: 127px; top: 347px; width: 276px; }
+.d13 { height: 14px; left: 70px; top: 792px; width: 226px; }
+.d14 { height: 14px; left: 303px; top: 792px; width: 164px; }
+.d15 { height: 34px; left: 73px; top: 998px; width: 342px; }
