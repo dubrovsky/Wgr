@@ -3,7 +3,7 @@ package com.bivc.cimsmgs.db;
 // Generated 13.05.2011 15:11:19 by Hibernate Tools 3.4.0.CR1
 
 import com.fasterxml.jackson.annotation.*;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

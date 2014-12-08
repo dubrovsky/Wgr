@@ -3,7 +3,7 @@ package com.bivc.cimsmgs.dao.hibernate;
 import com.bivc.cimsmgs.commons.Search;
 import com.bivc.cimsmgs.dao.LoggingEventDAO;
 import com.bivc.cimsmgs.db.LoggingEvent;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;

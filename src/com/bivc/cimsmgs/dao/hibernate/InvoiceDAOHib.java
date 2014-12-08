@@ -7,7 +7,7 @@ import com.bivc.cimsmgs.db.PackDoc;
 import com.bivc.cimsmgs.db.Status;
 import com.bivc.cimsmgs.db.Usr;
 import com.bivc.cimsmgs.exceptions.InfrastructureException;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.*;
 import org.slf4j.Logger;

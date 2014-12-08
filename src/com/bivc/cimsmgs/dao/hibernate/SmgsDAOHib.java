@@ -4,7 +4,7 @@ import com.bivc.cimsmgs.commons.Search;
 import com.bivc.cimsmgs.dao.SmgsDAO;
 import com.bivc.cimsmgs.db.*;
 import com.bivc.cimsmgs.exceptions.InfrastructureException;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.*;

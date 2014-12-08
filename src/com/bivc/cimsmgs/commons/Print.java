@@ -7,7 +7,7 @@ import com.bivc.cimsmgs.db.PrintTemplates;
 import com.bivc.cimsmgs.exceptions.BusinessException;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.commons.lang3.text.WordUtils;

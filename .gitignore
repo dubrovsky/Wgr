@@ -66,4 +66,6 @@ hibernate.reveng.xml
 s101plugin.state
 src/com/bivc/transport
 src/com/isc/leechdictionary
+src/com/isc/nsiintegration
+src/com/isc/nsiintegration2
 src/NSI_VAG.sql

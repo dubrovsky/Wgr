@@ -3,7 +3,7 @@ package com.bivc.cimsmgs.dao.hibernate;
 import com.bivc.cimsmgs.commons.Search;
 import com.bivc.cimsmgs.dao.RouteDAO;
 import com.bivc.cimsmgs.db.Route;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;

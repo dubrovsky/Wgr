@@ -8,7 +8,7 @@ import com.bivc.cimsmgs.dao.SmgsDAOAware;
 import com.bivc.cimsmgs.db.*;
 import com.bivc.cimsmgs.exchange.EDIConvertor;
 import com.bivc.cimsmgs.exchange.ExchangeServer;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.struts2.util.ServletContextAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

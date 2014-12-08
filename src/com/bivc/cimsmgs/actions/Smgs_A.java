@@ -9,7 +9,7 @@ import com.bivc.cimsmgs.doc2doc.Mapper;
 import com.bivc.cimsmgs.exceptions.InfrastructureException;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.config.entities.ResultConfig;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

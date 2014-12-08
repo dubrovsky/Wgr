@@ -1,7 +1,7 @@
 package com.bivc.cimsmgs.audit;
 
 import com.bivc.cimsmgs.commons.myUser;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.hibernate.event.PreInsertEvent;
 import org.hibernate.event.PreInsertEventListener;
 import org.hibernate.event.PreUpdateEvent;
