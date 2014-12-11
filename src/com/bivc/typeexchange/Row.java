@@ -1,7 +1,7 @@
 package com.bivc.typeexchange;
 
-import org.apache.commons.lang.builder.*;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.builder.*;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class Row  implements java.io.Serializable {
     private java.lang.String[] data;

@@ -3,7 +3,7 @@ package com.bivc.cimsmgs.exchange;
 import com.bivc.cimsmgs.commons.HibernateUtil;
 import com.bivc.cimsmgs.db.*;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;

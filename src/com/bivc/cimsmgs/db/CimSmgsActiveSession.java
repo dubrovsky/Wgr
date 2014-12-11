@@ -3,7 +3,7 @@ package com.bivc.cimsmgs.db;
 // Generated 05.05.2009 10:46:06 by Hibernate Tools 3.2.4.GA
 
 import com.bivc.cimsmgs.db.nsi.Users;
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.math.BigDecimal;
 import java.util.Date;

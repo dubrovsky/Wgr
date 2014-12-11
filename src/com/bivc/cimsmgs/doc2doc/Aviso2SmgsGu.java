@@ -2,7 +2,7 @@ package com.bivc.cimsmgs.doc2doc;
 
 import com.bivc.cimsmgs.actions.Doc2Doc_A;
 import com.bivc.cimsmgs.db.*;
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

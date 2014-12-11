@@ -3,10 +3,10 @@ package com.bivc.typeexchange;
 import java.util.Arrays;
 import java.util.TreeMap;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.log4j.Logger;
 
 public class Table implements java.io.Serializable

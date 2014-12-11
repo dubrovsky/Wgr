@@ -5,7 +5,7 @@ import com.bivc.cimsmgs.db.CimSmgsDocs;
 import com.bivc.cimsmgs.db.CimSmgsPlatel;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MappingContext;
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.MapUtils;
 
 import java.util.TreeMap;
 
