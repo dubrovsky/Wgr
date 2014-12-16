@@ -30,7 +30,83 @@ public class ExportDopList2Excel extends Export2Excel {
 
     public void makeCimSmgsDopList_de() {
         Cell cell;
+        //Страна
+        if(StringUtils.isNotBlank(doc.getG691())) {
+            for(int i = 0; i < doc.getG691().length(); i++){
+                if(i == 0) {
+                    CellUtil.getCell(CellUtil.getRow(1, sheet), 9).setCellValue(doc.getG691().charAt(i) + "");
+                }
+                if(i == 1) {
+                    CellUtil.getCell(CellUtil.getRow(1, sheet), 10).setCellValue(doc.getG691().charAt(i) + "");
+                }
+            }
+        }
 
+        //Станция
+        if(StringUtils.isNotBlank(doc.getG692())) {
+            for(int i = 0; i < doc.getG692().length(); i++){
+                if(i == 0) {
+                    CellUtil.getCell(CellUtil.getRow(1, sheet), 12).setCellValue(doc.getG692().charAt(i) + "");
+                }
+                if(i == 1) {
+                    CellUtil.getCell(CellUtil.getRow(1, sheet), 13).setCellValue(doc.getG692().charAt(i) + "");
+                }
+                if(i == 2) {
+                    CellUtil.getCell(CellUtil.getRow(1, sheet), 14).setCellValue(doc.getG692().charAt(i) + "");
+                }
+                if(i == 3) {
+                    CellUtil.getCell(CellUtil.getRow(1, sheet), 15).setCellValue(doc.getG692().charAt(i) + "");
+                }
+                if(i == 4) {
+                    CellUtil.getCell(CellUtil.getRow(1, sheet), 16).setCellValue(doc.getG692().charAt(i) + "");
+                }
+                if(i == 5) {
+                    CellUtil.getCell(CellUtil.getRow(1, sheet), 17).setCellValue(doc.getG692().charAt(i) + "");
+                }
+            }
+        }
+
+        //Перевозчик
+        if(StringUtils.isNotBlank(doc.getG693())) {
+            for(int i = 0; i < doc.getG693().length(); i++){
+                if(i == 0) {
+                    CellUtil.getCell(CellUtil.getRow(3, sheet), 7).setCellValue(doc.getG693().charAt(i) + "");
+                }
+                if(i == 1) {
+                    CellUtil.getCell(CellUtil.getRow(3, sheet), 8).setCellValue(doc.getG693().charAt(i) + "");
+                }
+                if(i == 2) {
+                    CellUtil.getCell(CellUtil.getRow(3, sheet), 9).setCellValue(doc.getG693().charAt(i) + "");
+                }
+                if(i == 3) {
+                    CellUtil.getCell(CellUtil.getRow(3, sheet), 10).setCellValue(doc.getG693().charAt(i) + "");
+                }
+            }
+        }
+
+        //№ Отправки
+        if(StringUtils.isNotBlank(doc.getG694())) {
+            for(int i = 0; i < doc.getG694().length(); i++){
+                if(i == 0) {
+                    CellUtil.getCell(CellUtil.getRow(3, sheet), 12).setCellValue(doc.getG694().charAt(i) + "");
+                }
+                if(i == 1) {
+                    CellUtil.getCell(CellUtil.getRow(3, sheet), 13).setCellValue(doc.getG694().charAt(i) + "");
+                }
+                if(i == 2) {
+                    CellUtil.getCell(CellUtil.getRow(3, sheet), 14).setCellValue(doc.getG694().charAt(i) + "");
+                }
+                if(i == 3) {
+                    CellUtil.getCell(CellUtil.getRow(3, sheet), 15).setCellValue(doc.getG694().charAt(i) + "");
+                }
+                if(i == 4) {
+                    CellUtil.getCell(CellUtil.getRow(3, sheet), 16).setCellValue(doc.getG694().charAt(i) + "");
+                }
+                if(i == 5) {
+                    CellUtil.getCell(CellUtil.getRow(3, sheet), 17).setCellValue(doc.getG694().charAt(i) + "");
+                }
+            }
+        }
         // Номер накладной
         int rowInd = 5;
         int colInd = 0;
