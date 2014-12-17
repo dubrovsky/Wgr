@@ -55,7 +55,6 @@ out/artifacts
 WebContent/ext2
 WebContent/ext
 WebContent/build
-WebContent/docs
 .classpath
 .project
 CimSmgs2.eml
@@ -69,3 +68,4 @@ src/com/isc/leechdictionary
 src/com/isc/nsiintegration
 src/com/isc/nsiintegration2
 src/NSI_VAG.sql
+./Wgr.iml

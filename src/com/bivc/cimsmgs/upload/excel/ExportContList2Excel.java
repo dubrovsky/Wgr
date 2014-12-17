@@ -716,20 +716,20 @@ public class ExportContList2Excel extends Export2Excel {
                 rowInd = 6;
                 sb = new StringBuilder();
                 prefix = "";
-                /*if (StringUtils.isNotEmpty(doc.getG693())) {
+                if (StringUtils.isNotEmpty(doc.getG693())) {
                     for (char ch : doc.getG693().toCharArray()) {
                         sb.append(prefix);
                         prefix = "   ";
                         sb.append(ch);
                     }
-                }*/
-                if (StringUtils.isNotEmpty(doc.getGb662())) {
+                }
+                /*if (StringUtils.isNotEmpty(doc.getGb662())) {
                     for (char ch : doc.getGb662().toCharArray()) {
                         sb.append(prefix);
                         prefix = "   ";
                         sb.append(ch);
                     }
-                }
+                }*/
                 CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd++, sb.toString());
 
                 colInd = 16;
