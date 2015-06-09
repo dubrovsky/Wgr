@@ -1,15 +1,15 @@
 package com.bivc.cimsmgs.exchange;
 
-import com.bivc.transport.FtpTransport;
+import java.io.StringReader;
+import java.util.Properties;
+import java.util.StringTokenizer;
+
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
-
-import java.io.StringReader;
-import java.util.Properties;
-import java.util.StringTokenizer;
+import com.bivc.transport.FtpTransport;
 
 class ReceiverTask extends AbstractTask {
   private String un;

@@ -1,18 +1,13 @@
 package com.bivc.cimsmgs.exchange;
 
-import com.bivc.cimsmgs.db.CimSmgs;
-import com.bivc.cimsmgs.db.CimSmgsInvoice;
-import com.bivc.cimsmgs.db.PackDoc;
-import org.dom4j.Document;
-import org.dom4j.io.SAXReader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.mail.*;
-import javax.mail.Flags.Flag;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeUtility;
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
@@ -21,6 +16,23 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import javax.mail.Address;
+import javax.mail.Flags.Flag;
+import javax.mail.Folder;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Part;
+import javax.mail.Session;
+import javax.mail.Store;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeUtility;
+
+import org.dom4j.Document;
+import org.dom4j.io.SAXReader;
+import com.bivc.cimsmgs.db.CimSmgs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class TIReceiverTask extends AbstractTask {
   private String un;
@@ -61,7 +73,7 @@ class TIReceiverTask extends AbstractTask {
 
     for (int i = 0; i < n; i++) {
       ArrayList<byte[]> list = new ArrayList<byte[]>();
-      String info = "";
+      String info;
       try {
         Message msg = message[i];
         String subj = msg.getSubject();
@@ -128,11 +140,9 @@ class TIReceiverTask extends AbstractTask {
             Document document = reader.read(new ByteArrayInputStream(doc));
             CimSmgs cs = docloader.load(document, un, trans, routes);
 
-            if (cs != null /*&& !"v".equals(cs.getSrc())*/ && server.SendIftmin(cs.getHid())) {
-              PackDoc pd = cs.getPackDoc();
-              for(CimSmgsInvoice invoice : pd.getCsInvoices()) {
-                server.SendIvoice(invoice.getHid());
-              }
+            if (cs != null /*&& !"v".equals(cs.getSrc())*/) {
+              server.SendIftmin(cs.getHid(), un, EDIConvertor.EdiDir.BCH);
+              server.SendIftmin(cs.getHid(), un, EDIConvertor.EdiDir.BTLC);
             }
           }
           catch (Exception pex) {

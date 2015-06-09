@@ -3,46 +3,44 @@ package com.bivc.cimsmgs.db;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 public class BIftminLog implements Serializable {
 
-  private String hid;
-  private String out_text;
-  private String in_text;
+  private Long hid;
+  private String text;
   private String mes_name;
   private String src;
   private Long hid_src;
   private CimSmgs cimSmgs;
   private Date dattr;
   private Set<Contrl> BContrls = new HashSet<Contrl>(0);
-  private Set<AperakDet> BAperakDets = new HashSet<AperakDet>(0);
+  private Set<Aperak> BAperak = new HashSet<Aperak>(0);
+  private String cod_dir;
   private String dir;
+  private String id;
 
   public BIftminLog()   {
   }
 
   public BIftminLog(String out_text)   {
-    this.out_text=out_text;
-  }
-
-  public String getIn_text() {
-    return in_text;
+    this.text =out_text;
   }
 
   public String getMes_name() {
     return mes_name;
   }
 
-  public String getOut_text() {
-    return out_text;
+  public String getText() {
+    return text;
   }
 
   public String getSrc() {
     return src;
   }
 
-  public String getHid() {
+  public Long getHid() {
     return hid;
   }
 
@@ -50,23 +48,19 @@ public class BIftminLog implements Serializable {
     return hid_src;
   }
 
-  public void setIn_text(String in_text) {
-    this.in_text = in_text;
-  }
-
   public void setMes_name(String mes_name) {
     this.mes_name = mes_name;
   }
 
-  public void setOut_text(String out_text) {
-    this.out_text = out_text;
+  public void setText(String out_text) {
+    this.text = out_text;
   }
 
   public void setSrc(String src) {
     this.src = src;
   }
 
-  public void setHid(String hid) {
+  public void setHid(Long hid) {
     this.hid = hid;
   }
 
@@ -95,17 +89,15 @@ public class BIftminLog implements Serializable {
     this.BContrls = BContrls;
   }
 
-  public Set<AperakDet> getBAperakDets()
+  public Set<Aperak> getBAperak()
   {
-    return this.BAperakDets;
+    return this.BAperak;
   }
 
-  public void setBAperakDets(Set<AperakDet> BAperakDets)
+  public void setBAperak(Set<Aperak> BAperakDets)
   {
-    this.BAperakDets = BAperakDets;
+    this.BAperak = BAperakDets;
   }
-
-
 
   public void setHid_src(Long hid_src) {
     this.hid_src = hid_src;
@@ -116,11 +108,42 @@ public class BIftminLog implements Serializable {
     this.dattr = dattr;
   }
 
+  public String getCod_dir() {
+    return cod_dir;
+  }
+
+  public void setCod_dir(String dir) {
+    this.cod_dir = dir;
+  }
+
   public String getDir() {
     return dir;
   }
 
   public void setDir(String dir) {
     this.dir = dir;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  public Set<AperakDet> getBAperakDetSet() {
+    if (BAperak.size() > 0) {
+      Set<AperakDet> detSet = BAperak.iterator().next().getAperakDet();
+      if (detSet.size() > 0) {
+        return detSet;
+      }
+      else {
+        return new HashSet<>(0);
+      }
+    }
+    else {
+      return new HashSet<>(0);
+    }
   }
 }

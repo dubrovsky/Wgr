@@ -40,6 +40,14 @@ public class ExchangeServer {
         return res;
     }
 
+    public String getIftminText(Long hid_cs, String user)  throws Exception {
+        if (log.isDebugEnabled()) log.debug("ID = " + hid_cs);
+
+        EDIConvertor97B conv = new EDIConvertor97B(EDIConvertor.EdiDir.DB);
+        conv.sendIftmin(hid_cs);
+        return conv.getIftminText();
+    }
+
     public boolean SendIftmin(Long hid_cs, String user, EDIConvertor.EdiDir dir) throws Exception {
         if (log.isDebugEnabled()) log.debug("ID = " + hid_cs);
         boolean res = false;
@@ -48,7 +56,7 @@ public class ExchangeServer {
             String path = getScriptFile();
             if (log.isDebugEnabled()) log.debug("Path=" + path);
 
-            EDIConvertor conv = new EDIConvertor(path, dir);
+            EDIConvertor97A conv = new EDIConvertor97A(path, dir);
 
             conv.sendIftmin(hid_cs);
        /* try{
@@ -103,6 +111,8 @@ public class ExchangeServer {
         session.close();
     }
 
+/*
+    @Deprecated
     public boolean SendIftmin(Long id) {
         if (log.isDebugEnabled()) log.debug("ID = " + id);
         boolean res = false;
@@ -121,7 +131,10 @@ public class ExchangeServer {
         }
         return res;
     }
+*/
 
+/*
+    @Deprecated
     public boolean SendIvoice(Long id) {
         if (log.isDebugEnabled()) log.debug("ID = " + id);
         boolean res = false;
@@ -140,6 +153,7 @@ public class ExchangeServer {
         }
         return res;
     }
+*/
 
     public boolean SendCTM(Long id) {
         if (log.isDebugEnabled()) log.debug("ID = " + id);
@@ -199,30 +213,6 @@ public class ExchangeServer {
         return res;
     }
 
-    public long SendGR(String npoezd, Route route, Byte type, String user) throws Exception {
-        if (log.isDebugEnabled()) log.debug("npoezd = " + npoezd + "route = " + route.getHid() );
-        Long[] hids;
-
-        try {
-            String path = getScriptFile();
-            if (log.isDebugEnabled()) log.debug("Path=" + path);
-
-            DocUnloader conv = new DocUnloader(path);
-            hids = conv.sendXML(npoezd, route, type);
-
-            for (Long hid_cs : hids) {
-                saveStatus(hid_cs, user, (byte)49, "ftsStatus", false);
-            }
-
-            log.info("Complete");
-        }
-        catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw e;
-        }
-        return hids.length;
-    }
-
     /**
      * @param id - CimSmgs.hid
      * @param sc - ServletContext
@@ -254,7 +244,7 @@ public class ExchangeServer {
             String path = getScriptFile();
             if (log.isDebugEnabled()) log.debug("Path=" + path);
 
-            EDIConvertor conv = new EDIConvertor(path, EDIConvertor.EdiDir.BCH);
+            EDIConvertor97A conv = new EDIConvertor97A(path, EDIConvertor.EdiDir.BCH);
 
             conv.receive();
             res = true;
@@ -323,6 +313,30 @@ public class ExchangeServer {
 
     private String getScriptFile() throws URISyntaxException {
         return new File(new java.net.URI(ExchangeServer.class.getClassLoader().getResource(fileName).toString().replaceAll(" ", "%20"))).getAbsolutePath();
+    }
+
+    public Long SendGR(String npoezd, Route route, Byte type, String user) throws Exception {
+      if (log.isDebugEnabled()) log.debug("npoezd = " + npoezd + "route = " + route.getHid() );
+      Long[] hids;
+
+      try {
+        String path = getScriptFile();
+        if (log.isDebugEnabled()) log.debug("Path=" + path);
+
+        DocUnloader conv = new DocUnloader(path);
+        hids = conv.sendXML(npoezd, route, type);
+
+        for (Long hid_cs : hids) {
+          saveStatus(hid_cs, user, (byte)49, "greenRail_status", false);
+        }
+
+        log.info("Complete");
+      }
+      catch (Exception e) {
+        log.error(e.getMessage(), e);
+        throw e;
+      }
+      return (long)hids.length;
     }
 
 /*

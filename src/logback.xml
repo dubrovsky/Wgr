@@ -30,7 +30,7 @@
     <appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
         <connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
             <driverClass>oracle.jdbc.OracleDriver</driverClass>
-            <url>jdbc:oracle:thin:@10.50.100.197:1521:test2</url>
+            <url>jdbc:oracle:thin:@10.50.25.206:1521:test2</url>
             <user>wgr</user>
             <password>wgr2013</password>
         </connectionSource>

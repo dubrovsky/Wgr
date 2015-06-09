@@ -48,6 +48,12 @@
                 <param name="contentDisposition">attachment;filename="${fileName}"</param>
                 <param name="contentLength">${fileLength}</param>
             </result>
+
+            <result name="view-text" type="stream">
+                <param name="contentType">text/plain</param>
+                <param name="contentDisposition">attachment;filename="${fileName}"</param>
+                <param name="contentLength">${fileLength}</param>
+            </result>
         </action>
 
         <action name="Btlc_*" method="{1}" class="com.bivc.cimsmgs.actions.exchange.Btlc_A">

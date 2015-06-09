@@ -5,8 +5,8 @@ import com.bivc.cimsmgs.commons.myUser;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -522,7 +522,21 @@ public class CimSmgsInvoice implements Serializable {
     public void addInvoiceGruzItem(CimSmgsInvoiceGruz invg) {
         if (invg != null) {
             invg.setInvoice(this);
-            invoiceGruzs.put(invg.getHid(), invg);
+            Long key = invg.getHid();
+            if (key == null) {
+                if (invoiceGruzs.size() == 0) {
+                  key = 0L;
+                }
+                else {
+                    if (invoiceGruzs instanceof SortedMap) {
+                        key = ((SortedMap<Long, CimSmgsInvoiceGruz>) invoiceGruzs).lastKey() + 1;
+                    }
+                    else {
+                        key = new TreeSet<>(invoiceGruzs.keySet()).last() + 1;
+                    }
+                }
+            }
+            invoiceGruzs.put(key, invg);
         }
     }
 

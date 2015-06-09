@@ -1,8 +1,8 @@
 package com.bivc.cimsmgs.exchange;
 
-import org.apache.axis.MessageContext;
 import org.apache.log4j.Logger;
 import org.apache.log4j.NDC;
+import org.apache.axis.MessageContext;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;

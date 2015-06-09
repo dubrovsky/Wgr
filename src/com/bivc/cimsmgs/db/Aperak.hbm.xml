@@ -19,6 +19,7 @@
     <property column="DPRV" name="dprv" type="java.util.Date"/>
     <property column="TEXT" name="text" type="java.lang.String"/>
     <property column="DATTR" name="dattr" type="java.util.Date"/>
+    <property column="HID_IFTMIN_LOG" name="hid_iftmin_log" type="java.lang.Long"/>
     <set name="aperakDet" cascade="all" inverse="true" lazy="true">
       <key column="HID_MAIN"/>
       <one-to-many class="com.bivc.cimsmgs.db.AperakDet" />

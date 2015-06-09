@@ -20,6 +20,7 @@ public class Aperak  implements Serializable {
   private Date dprv;               // Дата приема груза к перевозке
   private Date dattr;              // Дата занесения сообщения в БД
   private String text = "";        // текст сообщения APERAK
+  private Long hid_iftmin_log;
   private Set<AperakDet> aperakDet = new HashSet<AperakDet>();
 
   public Aperak() {
@@ -138,5 +139,13 @@ public class Aperak  implements Serializable {
   public void addAperakDet(AperakDet det) {
      this.aperakDet.add(det);
      det.setMain(this);
+  }
+
+  public Long getHid_iftmin_log() {
+    return hid_iftmin_log;
+  }
+
+  public void setHid_iftmin_log(Long hid_iftmin_log) {
+    this.hid_iftmin_log = hid_iftmin_log;
   }
 }

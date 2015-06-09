@@ -316,7 +316,7 @@ public class FTSConvertor extends Convertor {
         goods.addElement("catpi_ru:CurrencyCode").addText(format(inv.getCux()));
         Element goodsMea = goods.addElement("catpi_ru:GoodsMeasureQuantity");
         goodsMea.addElement("catpi_ru:GoodsQuantity").addText(format(invGruz.getKole()));
-        goodsMea.addElement("catpi_ru:MeasureUnitQualifierName").addText(format(invGruz.getEizm()));
+        goodsMea.addElement("catpi_ru:MeasureUnitQualifierName").addText(format(invGruz.getCus_edizm()));
         Element goodsPack = goods.addElement("catpi_ru:GoodsPackaging");
         goodsPack.addElement("catpi_ru:PakageQuantity").addText(format(invGruz.getKolm()));
         goodsPack.addElement("catpi_ru:CargoCode").addText(format(invGruz.getNzyp()));

@@ -982,7 +982,7 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
 
     @SuppressWarnings("unchecked")
     public List<BIftminLog> findAperakText(Long id, String mes_name, String dir) {
-        final String query = "FROM BIftminLog ift LEFT JOIN FETCH ift.BAperakDets aperak  "
+        final String query = "FROM BIftminLog ift LEFT JOIN FETCH ift.BAperak aperak LEFT JOIN FETCH aperak.aperakDet aperakDet "
                 + "WHERE ift.hid_src = :id AND ift.mes_name=:mes_name AND lower(ift.dir)=lower(:dir) ORDER BY ift.dattr DESC";
 
         Query q = getSession().createQuery(query);

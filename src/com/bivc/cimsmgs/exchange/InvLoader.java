@@ -92,7 +92,7 @@ public class InvLoader {
 
           gruz.setNzyp("УПАКОВКА");
           gruz.setKypk("РК");
-          gruz.setEizm("ШТ");
+          gruz.setCus_edizm("ШТ");
           gruz.setType("Груз");
 
           inv.addInvoiceGruzItem(gruz);
@@ -158,7 +158,7 @@ public class InvLoader {
 //              invGruz.setNzgr(StringUtils.defaultString(gruz.getNzgr()).trim());
               invGruz.setNzyp("РАЗЛ. УПАКОВКИ");
               invGruz.setKypk("");
-              invGruz.setEizm("ШТ");
+              invGruz.setCus_edizm("ШТ");
               invGruz.setType("Груз");
             }
           }

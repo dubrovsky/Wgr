@@ -3,33 +3,34 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
   <class name="com.bivc.cimsmgs.db.BIftminLog" table="B_IFTMIN_LOG" dynamic-update="true" dynamic-insert="true">
-    <id name="hid" column="HID" type="java.lang.String">
-      <generator class="assigned"/>
+    <id name="hid" column="HID" type="java.lang.Long">
+      <generator class="sequence">
+        <param name="sequence">B_IFTMIN_LOG_HID</param>
+      </generator>
     </id>
     <!--many-to-one name="cimSmgs" class="com.bivc.cimsmgs.db.CimSmgs" fetch="select">
       <column name="HID_SRC" precision="20" scale="0" />
     </many-to-one-->
-    <property column="OUT_TEXT" name="out_text" type="java.lang.String"/>
-    <property column="IN_TEXT" name="in_text" type="java.lang.String"/>
+    <property column="TEXT" name="text" type="java.lang.String"/>
     <property column="MES_NAME" name="mes_name" type="java.lang.String"/>
     <property column="SRC" name="src" type="java.lang.String"/>
     <property column="HID_SRC" name="hid_src" type="java.lang.Long"/>
-    <property name="dattr" type="timestamp">
-            <column name="DATTR" length="7" />
-        </property>
+    <property column="DATTR" name="dattr" type="timestamp"/>
+    <property column="COD_DIR" name="cod_dir" type="java.lang.String"/>
     <property column="DIR" name="dir" type="java.lang.String"/>
+    <property column="ID" name="id" type="java.lang.String"/>
 
     <set name="BContrls" inverse="true" lazy="true" table="B_CONTRL" batch-size="50">
       <key>
-        <column name="ID_UNB_ORI" length="45" />
+        <column name="HID_IFTMIN_LOG" length="30" />
       </key>
       <one-to-many class="com.bivc.cimsmgs.db.Contrl" />
     </set>
-    <set name="BAperakDets" inverse="true" lazy="true" table="B_APERAK_DET" batch-size="50">
+    <set name="BAperak" inverse="true" lazy="true" table="B_APERAK" batch-size="50">
       <key>
-        <column name="ID_UNH_ORI" length="45" />
+        <column name="HID_IFTMIN_LOG" length="30" />
       </key>
-      <one-to-many class="com.bivc.cimsmgs.db.AperakDet" />
+      <one-to-many class="com.bivc.cimsmgs.db.Aperak" />
     </set>
   </class>
 </hibernate-mapping>

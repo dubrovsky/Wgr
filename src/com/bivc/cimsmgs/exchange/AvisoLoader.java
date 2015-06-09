@@ -63,7 +63,7 @@ public class AvisoLoader {
             if(gu != null && gu.length() > 0){
                 cs.setGu(new Byte(gu));
             }
-//            cs.setStatus((byte)2);
+//            cs.setKontStatus((byte)2);
 
             cs.setG1r(root.valueOf("Inst_LoadFromTitle"));
             cs.setG19r(root.valueOf("Inst_LoadFromAddress"));
@@ -100,6 +100,11 @@ public class AvisoLoader {
                 cs.setG162(sta.getStaName());
                 cs.setG163r(sta.getRoad().getRoadName());
                 cs.setG_16_33r(sta.getManagement().getMNameRus());
+            }
+            else {
+                String nsto = root.valueOf("Inst_StationFromTitle");
+                cs.setG162r(nsto);
+                cs.setG162(nsto);
             }
 
             String kstn = root.valueOf("Inst_StationToCode");
@@ -138,6 +143,11 @@ public class AvisoLoader {
             CimSmgsKonList kon = new CimSmgsKonList();
             kon.setSort((byte) 0);
             kon.setUtiN(Utils.ge(konArr, 0));
+            String vid = root.valueOf("Inst_WagonKontTypeShortTitle");
+            if (StringUtils.isNotBlank(vid)) {
+              vid = StringUtils.substringAfter(vid, "-");
+              kon.setVid(vid);
+            }
             kon.addCimSmgsGruzItem(gruz);
 
             CimSmgsCarList vag = new CimSmgsCarList();
@@ -186,7 +196,7 @@ public class AvisoLoader {
 
             HibernateUtil.getSession().save(pd);
 
-            /*Status status = new Status();
+            /*KontStatus status = new KontStatus();
             status.setDatBegin(d);
             status.setPackDoc(pd);
             status.setStatusDir(new StatusDir(new BigDecimal(2)));
@@ -417,12 +427,14 @@ public class AvisoLoader {
     }
 
     private Sta loadSta(String kst) {
+        Sta sta = null;
+        if  (StringUtils.isNotBlank(kst)) {
         @SuppressWarnings("unchecked")
         List<Sta> list = HibernateUtil.getSession().createCriteria(Sta.class).add(Restrictions.like("staNo", kst, MatchMode.START)).list();
         Iterator<Sta> it = list.iterator();
-        Sta sta = null;
         if (it.hasNext()) {
             sta = it.next();
+        }
         }
         return sta;
     }

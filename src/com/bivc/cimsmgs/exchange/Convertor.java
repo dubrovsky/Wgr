@@ -26,8 +26,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Properties;
 
-//import org.hibernate.engine.spi.SessionImplementor;
-
 public class Convertor {
 
   protected Transport sTr = null;
@@ -113,7 +111,7 @@ public class Convertor {
 
   protected long prepareMessageId(Session session) throws HibernateException, SQLException {
     long id = -1;
-    PreparedStatement pst = ((SessionImplementor)session).getBatcher().prepareSelectStatement("SELECT b_iftmin_log_hid.NEXTVAL FROM dual");
+    PreparedStatement pst = ((SessionImplementor)session).getBatcher().prepareSelectStatement("SELECT iftmin_id.NEXTVAL FROM dual");
     ResultSet rs = pst.executeQuery();
     if (rs.next()) {
       id = rs.getLong(1);
@@ -123,20 +121,6 @@ public class Convertor {
     log.debug("EDI ID=" + id);
     return id;
   }
-
-   /* protected long prepareMessageId(Session session) throws HibernateException, SQLException {
-        long id = -1;
-        PreparedStatement st = ((SessionImplementor)session).getTransactionCoordinator().getJdbcCoordinator().getStatementPreparer().prepareStatement("SELECT b_iftmin_log_hid.NEXTVAL FROM dual");
-//        PreparedStatement pst = ((SessionImplementor)session).getBatcher().prepareSelectStatement("SELECT b_iftmin_log_hid.NEXTVAL FROM dual");
-        ResultSet rs = st.executeQuery();
-        if (rs.next()) {
-          id = rs.getLong(1);
-        }
-        rs.close();
-        st.close();
-        return id;
-      }*/
-
 
 //  protected void saveLog(long id, String mesName, String text, Long hid_src) {
 //    Session session = null;
@@ -199,6 +183,26 @@ public class Convertor {
     return tmpDir;
   }
 
+  protected String format(Object str, int len) {
+    return Utils.format(str, len);
+  }
+
+  protected String format(Object str, int len, int count) {
+    return Utils.format(str, len, count);
+  }
+
+  protected String ge(String[] ar, int idx) {
+    return Utils.ge(ar, idx);
+  }
+
+  protected String[] split(String input, String regex, String meta) {
+    return Utils.split(input, regex, meta);
+  }
+
+  protected String[] split(String input, String regex) {
+    return Utils.split(input, regex);
+  }
+
   protected String format(String d) {
     return d != null ? d : "";
   }
@@ -212,6 +216,10 @@ public class Convertor {
   }
 
   protected String formatN(BigDecimal d) {
+    return d != null ? d.toString() : "0";
+  }
+
+  protected String formatN(Float d) {
     return d != null ? d.toString() : "0";
   }
 
@@ -232,6 +240,10 @@ public class Convertor {
   }
 
   protected String format(Byte d) {
+    return d != null ? d.toString() : "";
+  }
+
+  protected String format(Float d) {
     return d != null ? d.toString() : "";
   }
 

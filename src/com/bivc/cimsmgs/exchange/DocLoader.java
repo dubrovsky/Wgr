@@ -26,7 +26,7 @@ public class DocLoader {
   private static final SimpleDateFormat dateTimeFormater = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"); // 2009-04-29T14:42:24
   private static final SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd");
   private static final SimpleDateFormat dateTimeFormater1 = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-  final static private Logger log = LoggerFactory.getLogger(DocLoader.class);
+  private static final Logger log = LoggerFactory.getLogger(DocLoader.class);
   private TreeMap<String, TreeMap<String, String>> mmm = new TreeMap<String, TreeMap<String, String>>();
   private TreeMap<Character, Long> srcMap = new TreeMap<Character, Long>();
 

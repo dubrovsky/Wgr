@@ -285,6 +285,7 @@ public class CimSmgs extends ActionSupport implements Serializable {
     private Byte tdg_status2;
     private Set<BIftminLog> iftminLogsBtlc = new HashSet<BIftminLog>();
     private Set<BIftminLog> iftminLogs = new HashSet<BIftminLog>();
+    private Byte greenRail_status;
 
     public Set<BIftminLog> getIftminLogs() {
         return iftminLogs;
@@ -4129,6 +4130,14 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
 
     public void setTdgLog(Set<TdgLog> tdgLog) {
         this.tdgLog = tdgLog;
+    }
+
+    public Byte getGreenRail_status() {
+        return greenRail_status;
+    }
+
+    public void setGreenRail_status(Byte greenRail_status) {
+        this.greenRail_status = greenRail_status;
     }
 
     public boolean hasPackDoc() {

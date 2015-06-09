@@ -18,7 +18,8 @@ public class Contrl  implements Serializable {
   private Date dattr;                 // Дата занесения сообщения в БД
   private Date datUnb;                // Дата отправки сообщения
   private String idUnb;               // идентификатор сообщения из UNB
-  private BIftminLog BIftminLog;  // ID оригинального сообщения из сегмента UNB, на которое формируется CONTRL
+  private BIftminLog BIftminLog;      // ID оригинального сообщения из сегмента UNB, на которое формируется CONTRL
+  private Long hid_iftmin_log;
 
   public Contrl() {
   }
@@ -133,4 +134,12 @@ public class Contrl  implements Serializable {
     this.idUnhOri = idUnhOri;
   }
 */
+
+  public Long getHid_iftmin_log() {
+    return hid_iftmin_log;
+  }
+
+  public void setHid_iftmin_log(Long hid_iftmin_log) {
+    this.hid_iftmin_log = hid_iftmin_log;
+  }
 }

@@ -1,13 +1,13 @@
 package com.bivc.typeexchange;
 
-import java.util.Arrays;
-import java.util.TreeMap;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.log4j.Logger;
+
+import java.util.Arrays;
+import java.util.TreeMap;
 
 public class Table implements java.io.Serializable
 {

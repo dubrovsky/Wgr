@@ -1,4 +1,4 @@
-sencha app build -c production
+"D:\Program Files\Sencha\Cmd\4.0.5.87\sencha" app build production 
 
 rem sencha --debug app build >111
 

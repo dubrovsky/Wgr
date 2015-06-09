@@ -958,6 +958,9 @@
         <property name="ftsStatus" type="byte">
             <column name="FTS_STATUS" precision="2" scale="0" default="0"/>
         </property>
+        <property name="greenRail_status" type="byte">
+            <column name="GR_STATUS" precision="2" scale="0" default="0"/>
+        </property>
         <property name="index_p" type="string">
             <column name="INDEX_P" length="250"/>
         </property>

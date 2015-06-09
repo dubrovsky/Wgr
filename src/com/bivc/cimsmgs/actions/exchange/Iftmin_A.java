@@ -146,6 +146,16 @@ public class Iftmin_A extends CimSmgsSupport_A implements SmgsDAOAware, ServletC
         return "view";
     }
 
+    public String sendIftminDB() throws Exception {
+        log.info("sendIftminDB");
+        ExchangeServer server = new ExchangeServer();
+        String text = server.getIftminText(getHid_cs(), getUser().getUsr().getUn());
+        inputStream = new ByteArrayInputStream(text.getBytes("CP1250"));
+        fileName = String.format("IFTMIN-%s.txt", getHid_cs());
+        fileLength = text.length();
+        return "view-text";
+    }
+
     public String saveFts() throws Exception {
         log.info("saveFts");
         try {
@@ -186,7 +196,7 @@ public class Iftmin_A extends CimSmgsSupport_A implements SmgsDAOAware, ServletC
     public String iftminText() {
         log.info("iftminText");
         List<BIftminLog> iftmins = getSmgsDAO().findIftminText(getSearch().getHid(), getSearch().getDocType(), getSearch().getCode());
-        setJSONData(iftmins.size() > 0 ? iftmins.get(0).getOut_text().replace("\r\n", "<br/>") : "");
+        setJSONData(iftmins.size() > 0 ? iftmins.get(0).getText().replace("\r\n", "<br/>") : "");
 //        setJSONData(iftmins.size() > 0 ? iftmins.get(0).getOut_text() : "");
         return SUCCESS;
     }
@@ -194,7 +204,7 @@ public class Iftmin_A extends CimSmgsSupport_A implements SmgsDAOAware, ServletC
     public String aperakText() {
         log.info("aperakText");
         List<BIftminLog> iftmins = getSmgsDAO().findAperakText(getSearch().getHid(), getSearch().getDocType(), getSearch().getCode());
-        Set<AperakDet> set = iftmins.get(0).getBAperakDets();
+        Set<AperakDet> set = iftmins.get(0).getBAperakDetSet();
         setJSONData(Constants.convert2JSON_Aperak(set, set.size()));
         return SUCCESS;
     }

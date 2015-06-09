@@ -7,7 +7,7 @@
         <property name="hibernate.connection.password">wgr2013</property>
         <property name="hibernate.connection.username">wgr</property>
                   <!--<property name="hibernate.connection.url">jdbc:oracle:thin:@10.50.25.23:51521:trans</property>-->
-        <property name="hibernate.connection.url">jdbc:oracle:thin:@10.50.100.197:1521:test2</property>
+        <property name="hibernate.connection.url">jdbc:oracle:thin:@10.50.25.206:1521:test2</property>
         <property name="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</property>
         <!--<property name="hibernate.generate_statistics">true</property>-->
         <property name="hibernate.show_sql">false</property>

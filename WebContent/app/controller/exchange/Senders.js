@@ -25,6 +25,9 @@ Ext.define('TK.controller.exchange.Senders', {
             'docslist button[action="exchange"] menuitem[action="iftmin"]': {
                 click: this.sendIftmin
             },
+            'docslist button[action="exchange"] menuitem[action="iftmin_db"]': {
+                click: this.sendIftminDB
+            },
             'docslist button[action="exchange"] menuitem[action="fts"]': {
                 click: this.sendFts
             },
@@ -139,6 +142,20 @@ Ext.define('TK.controller.exchange.Senders', {
             '_self',''
         );
     },
+
+    sendIftminDB: function(btn){
+        var list = btn.up('grid');
+        if(!TK.Utils.isRowSelected(list)){
+            return;
+        }
+        var model = list.selModel.getLastSelected();
+        window.open(
+            'SmgsIftmin_sendIftminDB.do?' +
+            'hid_cs=' + model.get('hid'),
+            '_self',''
+        );
+    },
+
     sendTBCIn: function(btn1){
         var routeId = this.getMenutree().lastSelectedLeaf.id.split('_')[2],
             win = Ext.widget('window', {

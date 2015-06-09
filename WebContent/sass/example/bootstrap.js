@@ -296,9 +296,6 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.draw.engine.Svg": [],
   "Ext.draw.engine.SvgExporter": [],
   "Ext.draw.engine.Vml": [],
-  "Ext.env.Browser": [],
-  "Ext.env.FeatureDetector": [],
-  "Ext.env.OS": [],
   "Ext.flash.Component": [
     "Ext.FlashComponent"
   ],
@@ -631,14 +628,11 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.rtl.dom.Layer": [],
   "Ext.rtl.draw.Component": [],
   "Ext.rtl.draw.Sprite": [],
-  "Ext.rtl.form.Labelable": [],
   "Ext.rtl.form.field.Checkbox": [],
   "Ext.rtl.form.field.File": [],
-  "Ext.rtl.form.field.FileButton": [],
   "Ext.rtl.form.field.Spinner": [],
   "Ext.rtl.form.field.Trigger": [],
   "Ext.rtl.grid.CellEditor": [],
-  "Ext.rtl.grid.ColumnLayout": [],
   "Ext.rtl.grid.RowEditor": [],
   "Ext.rtl.grid.column.Column": [],
   "Ext.rtl.grid.feature.Summary": [],
@@ -1330,9 +1324,6 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.draw.engine.Svg": [],
   "Ext.draw.engine.SvgExporter": [],
   "Ext.draw.engine.Vml": [],
-  "Ext.env.Browser": [],
-  "Ext.env.FeatureDetector": [],
-  "Ext.env.OS": [],
   "Ext.flash.Component": [
     "widget.flash"
   ],
@@ -1746,14 +1737,11 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.rtl.dom.Layer": [],
   "Ext.rtl.draw.Component": [],
   "Ext.rtl.draw.Sprite": [],
-  "Ext.rtl.form.Labelable": [],
   "Ext.rtl.form.field.Checkbox": [],
   "Ext.rtl.form.field.File": [],
-  "Ext.rtl.form.field.FileButton": [],
   "Ext.rtl.form.field.Spinner": [],
   "Ext.rtl.form.field.Trigger": [],
   "Ext.rtl.grid.CellEditor": [],
-  "Ext.rtl.grid.ColumnLayout": [],
   "Ext.rtl.grid.RowEditor": [],
   "Ext.rtl.grid.column.Column": [],
   "Ext.rtl.grid.feature.Summary": [],
@@ -1831,9 +1819,7 @@ Ext.ClassManager.addNameAliasMappings({
     "widget.quicktip"
   ],
   "Ext.tip.QuickTipManager": [],
-  "Ext.tip.Tip": [
-    "widget.tip"
-  ],
+  "Ext.tip.Tip": [],
   "Ext.tip.ToolTip": [
     "widget.tooltip"
   ],
@@ -2287,7 +2273,7 @@ Ext.ClassManager.addNameAliasMappings({
     "widget.userlistprivs"
   ]
 });
-Ext.setVersion("ext-theme-base", "4.2.3.1477");
-Ext.setVersion("ext-theme-classic", "4.2.3.1477");
-Ext.setVersion("ext-theme-gray", "4.2.3.1477");
-Ext.setVersion("ext-theme-neutral", "4.2.3.1477");
+Ext.setVersion("ext-theme-base", "4.2.2");
+Ext.setVersion("ext-theme-classic", "4.2.2");
+Ext.setVersion("ext-theme-gray", "4.2.2");
+Ext.setVersion("ext-theme-neutral", "4.2.2");

@@ -1,7 +1,9 @@
 package com.bivc.cimsmgs.exchange;
 
+import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.auth.AuthScope;
@@ -13,9 +15,12 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -26,6 +31,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLContext;
+import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -161,6 +168,33 @@ public class TDGClient {
     }
   }
 
+  public void putFile(File file, String type, String name) throws Exception {
+    log.debug("pid = " + pid + ", name=" + name);
+    URI uri = new URIBuilder(url).setPath("/mp/packages/" + pid + "/files/" + name).build();                                       // пробел в имени файла меняется на %20
+    HttpPut request = new HttpPut(uri);
+//    HttpPut request = new HttpPut(url + "/mp/packages/" + pid + "/files/" + new URLCodec(TDGConvertor.ENCODING).encode(name));   // пробел в имени файла меняется на +
+
+    FileEntity fileEntity = new FileEntity(file, ContentType.create(type));
+
+    request.setEntity(fileEntity);
+
+    CloseableHttpResponse response = httpclient.execute(request);
+    try {
+      StatusLine status = response.getStatusLine();
+      int code = status.getStatusCode();
+      if (code == 200) {
+        log.debug("Sended");
+      }
+      else {
+        throw new Exception(status.toString());
+      }
+
+    }
+    finally {
+      response.close();
+    }
+  }
+
   public void postCommit() throws Exception {
     log.debug("PID = " + pid);
     HttpPost request = new HttpPost(url + "/mp/packages/" + pid + "?action=commit");
@@ -184,6 +218,36 @@ public class TDGClient {
   public String getPackageList() throws Exception {
     String res = null;
     HttpGet request = new HttpGet(url + "/mp/packages/");
+
+    CloseableHttpResponse response = httpclient.execute(request);
+    try {
+      StatusLine status = response.getStatusLine();
+      int code = status.getStatusCode();
+      if (code == 200) {
+        HttpEntity entity = response.getEntity();
+        if (entity != null) {
+          res = EntityUtils.toString(entity, TDGConvertor.ENCODING);
+          if (StringUtils.isBlank(res))
+            throw new Exception(EMPTY_RESPONSE);
+        }
+        else {
+          throw new Exception(EMPTY_RESPONSE);
+        }
+        EntityUtils.consume(entity);
+      }
+      else {
+        throw new Exception(status.toString());
+      }
+    }
+    finally {
+      response.close();
+    }
+    return res;
+  }
+
+  public String getPackageHistory(String parentPid) throws Exception {
+    String res = null;
+    HttpGet request = new HttpGet(url + "/mp/packages/?parentname=" + parentPid);
 
     CloseableHttpResponse response = httpclient.execute(request);
     try {

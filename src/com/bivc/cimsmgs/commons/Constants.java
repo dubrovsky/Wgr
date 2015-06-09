@@ -140,7 +140,7 @@ public class Constants {
                                 Contrl contrl = iftmin.getBContrls().iterator().next();
                                 buffer.append(contrl.getError().equals("1") ? "+" : "-");
                             }
-                            if (iftmin.getBAperakDets() != null && iftmin.getBAperakDets().size() > 0) {
+                            if (iftmin.getBAperak() != null && iftmin.getBAperak().size() > 0) {
                                 buffer.append(",Aperak");
                             }
                         }
@@ -164,7 +164,7 @@ public class Constants {
                                 Contrl contrl = iftmin.getBContrls().iterator().next();
                                 buffer.append(contrl.getError().equals("1") ? "+" : "-");
                             }
-                            if (iftmin.getBAperakDets() != null && iftmin.getBAperakDets().size() > 0) {
+                            if (iftmin.getBAperak() != null && iftmin.getBAperak().size() > 0) {
                                 buffer.append(",Aperak");
                             }
                         }
@@ -284,7 +284,7 @@ public class Constants {
                                 Contrl contrl = iftmin.getBContrls().iterator().next();
                                 buffer.append(contrl.getError().equals("1") ? "+" : "-");
                             }
-                            if (iftmin.getBAperakDets() != null && iftmin.getBAperakDets().size() > 0) {
+                            if (iftmin.getBAperak() != null && iftmin.getBAperak().size() > 0) {
                                 buffer.append(",Aperak");
                             }
                         }
@@ -308,7 +308,7 @@ public class Constants {
                                 Contrl contrl = iftmin.getBContrls().iterator().next();
                                 buffer.append(contrl.getError().equals("1") ? "+" : "-");
                             }
-                            if (iftmin.getBAperakDets() != null && iftmin.getBAperakDets().size() > 0) {
+                            if (iftmin.getBAperak() != null && iftmin.getBAperak().size() > 0) {
                                 buffer.append(",Aperak");
                             }
                         }

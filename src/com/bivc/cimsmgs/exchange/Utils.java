@@ -1,12 +1,11 @@
 package com.bivc.cimsmgs.exchange;
 
+import java.math.BigDecimal;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Utils {
 

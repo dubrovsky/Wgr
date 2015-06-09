@@ -138,8 +138,8 @@ Ext.define('TK.view.cimsmgs.List', {
 
             if(tkUser.hasPriv('CIM_IFTMIN')){
                 exchangeMenu.push(
-                    {text: this.btnExchBCh, action:'iftmin'}/*,
-                    {text: this.btnExchFTS, action:'fts'}*/
+                    {text: this.btnExchBCh, action:'iftmin'},
+                    {text: 'IFTMIN DB', action:'iftmin_db'}
                 );
             }
             if(tkUser.hasPriv('CIM_BTLC')){

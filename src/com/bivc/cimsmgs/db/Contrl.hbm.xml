@@ -22,5 +22,6 @@
     <property column="DATTR" name="dattr" type="java.util.Date"/>
     <property column="DAT_UNB" name="datUnb" type="java.util.Date"/>
     <property column="ID_UNB" name="idUnb" type="java.lang.String"/>
+    <property column="HID_IFTMIN_LOG" name="hid_iftmin_log" type="java.lang.Long"/>
   </class>
 </hibernate-mapping>

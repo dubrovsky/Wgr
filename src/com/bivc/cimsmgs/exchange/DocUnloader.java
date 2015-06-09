@@ -1,26 +1,14 @@
 package com.bivc.cimsmgs.exchange;
 
-import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import com.bivc.cimsmgs.commons.HibernateUtil;
-import com.bivc.cimsmgs.db.CimSmgs;
-import com.bivc.cimsmgs.db.CimSmgsCarList;
-import com.bivc.cimsmgs.db.CimSmgsDocs;
-import com.bivc.cimsmgs.db.CimSmgsGruz;
-import com.bivc.cimsmgs.db.CimSmgsInvoice;
-import com.bivc.cimsmgs.db.CimSmgsInvoiceGruz;
-import com.bivc.cimsmgs.db.CimSmgsKonList;
-import com.bivc.cimsmgs.db.PackDoc;
 import com.bivc.cimsmgs.db.Route;
-import com.bivc.cimsmgs.db.nsi.Countrys;
-import com.bivc.cimsmgs.db.nsi.Management;
 import com.bivc.typeexchange.Row;
 import com.bivc.typeexchange.Table;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -30,24 +18,15 @@ import org.slf4j.LoggerFactory;
 import sun.misc.BASE64Encoder;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.math.BigDecimal;
-import java.net.URI;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.UUID;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DocUnloader extends Convertor {
