@@ -33,6 +33,11 @@ Ext.define('TK.controller.docs.Epd', {
             var nsiGrid = this.getController('Nsi').nsiSta(form.getComponent('smgs.g162r').getValue()).getComponent(0);
             nsiGrid.on('itemdblclick', this.selectStaG162, form);
         }, this);
+
+        form.getComponent('smgs.g101r').onTriggerClick = Ext.bind(function(){
+            var nsiGrid = this.getController('Nsi').nsiSta(form.getComponent('smgs.g101r').getValue()).getComponent(0);
+            nsiGrid.on('itemdblclick', this.selectStaG101r, form);
+        }, this);
     },
     selectG1: function(view, record, item, index) {
         var data = record.data;
@@ -51,5 +56,12 @@ Ext.define('TK.controller.docs.Epd', {
         this.getComponent('smgs.g162r').setValue(data.staName);
         this.getComponent('smgs.g692').setValue(data.staNo);
         view.up('window').close();
+    },
+    selectStaG101r: function(view, record, item, index) {
+        var data = record.data;
+        this.getComponent("smgs.g101r").setValue(data['staName']);
+        this.getComponent("smgs.g121").setValue(data['staNo']);
+        view.up('window').close();
     }
+
 });

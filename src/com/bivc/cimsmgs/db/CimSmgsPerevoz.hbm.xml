@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 02.03.2009 10:02:25 by Hibernate Tools 3.2.4.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.CimSmgsPerevoz" table="CIM_SMGS_PEREVOZ" >
+        <id name="hid" type="long">
+            <column name="HID" precision="20" scale="0" />
+            <generator class="sequence">
+                <param name="sequence">CIM_SMGS_PEREVOZ_HID</param>
+            </generator>
+        </id>
+        <many-to-one name="cimSmgs" class="com.bivc.cimsmgs.db.CimSmgs" fetch="select">
+            <column name="HID_CS" precision="20" scale="0" />
+        </many-to-one>
+
+        <property name="sort" type="byte">
+            <column name="SORT" length="2" not-null="true"/>
+        </property>
+
+        <property name="namPer" type="string">
+            <column name="NAME_PER" length="24" />
+        </property>
+        <property name="stBeg" type="string">
+            <column name="ST_BEG" length="48" />
+        </property>
+        <property name="stEnd" type="string">
+            <column name="ST_END" length="48" />
+        </property>
+        <property name="codStBeg" type="string">
+            <column name="COD_ST_BEG" length="6" />
+        </property>
+        <property name="codStEnd" type="string">
+            <column name="COD_ST_END" length="6" />
+        </property>
+        <property name="admStBeg" type="string">
+            <column name="ADM_ST_BEG" length="2" />
+        </property>
+        <property name="admStEnd" type="string">
+            <column name="ADM_ST_END" length="2" />
+        </property>
+        <property name="codePer" type="string">
+            <column name="CODE_PER" length="4" />
+        </property>
+
+    </class>
+</hibernate-mapping>

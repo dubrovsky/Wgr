@@ -84,7 +84,7 @@ public class Invoice_A extends CimSmgsSupport_A implements InvoiceDAOAware, Smgs
         return SUCCESS;
     }
 
-    private void add() {
+    public void add() {
         if (invoice.hasPack()) { // пришли с др закладки, смгс еще нет, но пакет уже есть
             invoice = getInvoiceDAO().makePersistent(invoice);
         } else { // new smgs and new packDoc

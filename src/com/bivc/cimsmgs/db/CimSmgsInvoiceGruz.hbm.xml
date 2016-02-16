@@ -39,7 +39,7 @@
             <column name="NZGR" length="2500" />
         </property>
         <property name="cost" type="string">
-            <column name="COST" length="10"/>
+            <column name="COST" length="16"/>
         </property>
         <property name="itogo" type="string">
             <column name="ITOGO" length="20"/>
@@ -63,7 +63,7 @@
             <column name="TYPE" length="50" />
         </property>
         <property name="kole" type="big_decimal">
-            <column name="KOLE" precision="10" scale="0"/>
+            <column name="KOLE" precision="16" scale="6"/>
         </property>
         <property name="eizm" type="string">
             <column name="EIZM" length="10"/>

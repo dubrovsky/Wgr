@@ -1,5 +1,7 @@
 Ext.define('TK.controller.exchange.Viewers', {
     extend: 'Ext.app.Controller',
+    stores: ['Tbc1logs'],
+
     mixins: ['TK.controller.exchange.LockChecker'],
 
     iftminParam: 'IFTMIN',
@@ -14,6 +16,7 @@ Ext.define('TK.controller.exchange.Viewers', {
                 showComnt: this.getComntText,
                 showTbc: this.getTbcText,
                 showTdgFts: this.getTdgFts,
+                showTbc1: this.getTbc1,
                 smgsListStatusChanged: this.smgsListStatusChanged,
                 cimSmgsListStatusChanged: this.cimSmgsListStatusChanged
             }
@@ -383,6 +386,59 @@ Ext.define('TK.controller.exchange.Viewers', {
                 return '';
         }
     },
+    rendererTbc1: function(status, meta, rec) {
+        //return rec.data['tbc2log'] ? '<span style="white-space:normal;font-weight:bold;">' + rec.data['tbc2log'] + '</span>' : '';
+        return rec.data['tbc2log'] ? this.generateMarkup1(rec.data['tbc2log'], 'showTbc1', rec.get('hid')) : '';
+    },
+    getTbc1: function(hid) {
+        var win = Ext.widget('window',{
+            width: 600,
+            height: 400,
+            title:'История статусов',
+            y: 1,
+            modal: true,
+            maximizable: true,
+            autoShow: true,
+            autoScroll: true,
+            layout: 'anchor',
+            items:[{
+                xtype: 'grid',
+                store: 'Tbc1logs',
+                enableColumnHide:false,
+                enableColumnMove:false,
+                enableColumnResize:true,
+                sortableColumns:false,
+                viewConfig: {
+                    stripeRows: false,
+                    enableTextSelection: true
+                },
+                columns: [{
+                    text: 'Статус',
+                    flex: 1,
+                    dataIndex: 'status_txt',
+                    renderer: TK.Utils.renderLongStr
+                },{
+                    text: 'Текст',
+                    flex: 2,
+                    dataIndex: 'result_txt',
+                    renderer: TK.Utils.renderLongStr
+                },{
+                    text: 'Дата',
+                    dataIndex: 'date_tdg',
+                    flex: 1,
+                    renderer: TK.Utils.renderLongStr
+                }]
+            }],
+            buttons: [{
+                text: 'Закрыть',
+                handler: function (btn) {
+                    btn.up('window').close();
+                }
+            }]
+        });
+
+        win.child('grid').getStore().load({params:{'search.hid': hid}});
+    },
     getTbcText: function(packId){
         var me = this;
         var win = new Ext.Window({
@@ -443,6 +499,7 @@ Ext.define('TK.controller.exchange.Viewers', {
                 tag: 'div',
                 cls: 'view_tbc',
                 html: text,
+                style: 'white-space:normal; height: 100%',
                 onclick: Ext.String.format('Ext.ComponentQuery.query(\'docslist\')[0].fireEvent(\'{0}\', \'{1}\')',
                     fireEvent,
                     hid
@@ -453,6 +510,7 @@ Ext.define('TK.controller.exchange.Viewers', {
                 tag: 'div',
                 cls: 'view_tbc',
                 html: text,
+                style: 'white-space:normal; height: 100%',
                 onclick: Ext.String.format('Ext.ComponentQuery.query(\'docslist\')[0].fireEvent(\'{0}\', \'{1}\', \'{2}\', \'{3}\')',
                     fireEvent,
                     hid,

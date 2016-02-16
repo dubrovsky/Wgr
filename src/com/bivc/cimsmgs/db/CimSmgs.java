@@ -3,6 +3,7 @@ package com.bivc.cimsmgs.db;
 import com.bivc.cimsmgs.commons.money2str;
 import com.bivc.cimsmgs.commons.myUser;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.opensymphony.xwork2.ActionSupport;
 import org.apache.commons.collections4.MapUtils;
@@ -16,7 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 // ignore ActionSupport props
-@JsonIgnoreProperties({"iftminLogs","iftminLogsBtlc","tdgLog","csComnt","cimSmgs","cimSmgses","packDoc","route","statuses", "docType1", "type",
+@JsonIgnoreProperties({"iftminLogs","iftminLogsBtlc","tdgLog", "tbc2Logs", "csComnt","cimSmgs","cimSmgses","packDoc","route","statuses", "docType1", "type",
         "actionErrors", "actionMessages", "errorMessages", "fieldErrors", "errors", "texts", "locale"})
 @Entity
 public class CimSmgs extends ActionSupport implements Serializable {
@@ -265,13 +266,15 @@ public class CimSmgs extends ActionSupport implements Serializable {
     //	private List<CimSmgsCarList> vags = new ArrayList<CimSmgsCarList>();
     private Map<Byte, CimSmgsPlatel> cimSmgsPlatels = new TreeMap<Byte, CimSmgsPlatel>();
     private Map<Byte, CimSmgsPlomb> cimSmgsPlombs = new TreeMap<Byte, CimSmgsPlomb>();
+    private Map<Byte,CimSmgsPerevoz> cimSmgsPerevoz = new TreeMap<>();
 
     //	private Map<Byte, CimSmgsStatusAllowed> cimSmgsStatusAlloweds = new TreeMap<Byte, CimSmgsStatusAllowed>();
 //
 //	private Set<CimSmgsStatus> cimSmgsStatuses = new HashSet<CimSmgsStatus>(0);
 //	private Set<CimSmgsScan> cimSmgsScans = new HashSet<CimSmgsScan>(0);
 //    private Set<BIftminLog> BIftminLogs = new HashSet<BIftminLog>(0);
-    private Set<TdgLog> tdgLog = new HashSet<TdgLog>(0);
+    private Set<TdgLog> tdgLog = new HashSet<>(0);
+    private Set<Tbc2Log> tbc2Logs = new HashSet<>(0);
     //	private Set<CimSmgsInvoice> invoices = new HashSet<CimSmgsInvoice>(0);
     private Set<CsComnt> csComnt = /*new HashSet<CsComnt>(0)*/null;
     private Set<CimSmgs> cimSmgses = new HashSet<CimSmgs>(0);
@@ -286,6 +289,52 @@ public class CimSmgs extends ActionSupport implements Serializable {
     private Set<BIftminLog> iftminLogsBtlc = new HashSet<BIftminLog>();
     private Set<BIftminLog> iftminLogs = new HashSet<BIftminLog>();
     private Byte greenRail_status;
+    private String zayav_otpr;
+    private Byte zayav_otpr_c;
+    private Byte g141c;
+    private Byte g26c;
+
+    public Byte getG26c() {
+        return g26c;
+    }
+
+    public void setG26c(Byte g26c) {
+        this.g26c = g26c;
+    }
+
+    public Byte getG141c() {
+        return g141c;
+    }
+
+    public void setG141c(Byte g141c) {
+        this.g141c = g141c;
+    }
+
+    public Byte getZayav_otpr_c() {
+        return zayav_otpr_c;
+    }
+
+    public void setZayav_otpr_c(Byte zayav_otpr_c) {
+        this.zayav_otpr_c = zayav_otpr_c;
+    }
+
+    public String getZayav_otpr() {
+        return zayav_otpr;
+    }
+
+    public void setZayav_otpr(String zayav_otpr) {
+        this.zayav_otpr = zayav_otpr;
+    }
+
+    @JsonManagedReference
+    public Map<Byte,CimSmgsPerevoz> getCimSmgsPerevoz() {
+        return cimSmgsPerevoz;
+    }
+
+    @JsonManagedReference
+    public void setCimSmgsPerevoz(Map<Byte,CimSmgsPerevoz> cimSmgsPerevoz) {
+        this.cimSmgsPerevoz = cimSmgsPerevoz;
+    }
 
     public Set<BIftminLog> getIftminLogs() {
         return iftminLogs;
@@ -3494,6 +3543,11 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
             elem.setCimSmgs(this);
     }
 
+    public void addCimSmgsPerevoz() {
+        for (CimSmgsPerevoz elem : cimSmgsPerevoz.values())
+            elem.setCimSmgs(this);
+    }
+
     public void addCimSmgsDocses7() {
         for (CimSmgsDocs elem : cimSmgsDocses7.values())
             elem.setCimSmgs(this);
@@ -4163,6 +4217,14 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
 
     public CimSmgsKonList findOrCreateKont() {
         return hasKont() ? findOrCreateVag().getCimSmgsKonLists().values().iterator().next() : new CimSmgsKonList((byte) 0, findOrCreateVag());
+    }
+
+    public Set<Tbc2Log> getTbc2Logs() {
+        return tbc2Logs;
+    }
+
+    public void setTbc2Logs(Set<Tbc2Log> tbc2Logs) {
+        this.tbc2Logs = tbc2Logs;
     }
 
     private class Compare implements Comparator<CimSmgsDocs> {
@@ -6963,6 +7025,20 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
         }
     }
 
+    public void addCimSmgsPerevozItem(CimSmgsPerevoz csp) {
+        if (csp != null) {
+            csp.setCimSmgs(this);
+            cimSmgsPerevoz.put(csp.getSort(), csp);
+        }
+    }
+
+    public void addCimSmgsPlombItem(CimSmgsPlomb csp) {
+        if (csp != null) {
+            csp.setCimSmgs(this);
+            cimSmgsPlombs.put(csp.getSort(), csp);
+        }
+    }
+
     /*public void addInvoiceItem(CimSmgsInvoice inv) {
          if (inv != null) {
  //			inv.setCimSmgs(this);
@@ -7032,6 +7108,7 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
 //		addCimSmgsStatusAllowed();
         addCimSmgsPlatels();
         addCimSmgsPlombs();
+        addCimSmgsPerevoz();
 
 //        setDattr(new Date());
 //        setAltered(new Date());
@@ -7327,4 +7404,250 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
 //	}
 
 
+
+    //////////////////// Smgs2 print templates
+
+    public String buildG15Cs2Print(){
+        StringBuffer result = new StringBuffer();
+        for(CimSmgsCarList car: getCimSmgsCarLists().values()){
+            for(CimSmgsKonList kont: car.getCimSmgsKonLists().values()){
+                String prefix = "";
+                for(CimSmgsGruz gruz: kont.getCimSmgsGruzs().values()){
+                    result.append(prefix);
+                    prefix = " || ";
+                    result.append(StringUtils.defaultString(gruz.getKgvn()));
+                    if(StringUtils.isNotBlank(gruz.getKgvn()) || StringUtils.isNotBlank(gruz.getNzgr())){
+                        result.append(" ГНГ ");
+                    }
+                    result.append(StringUtils.defaultString(gruz.getNzgr()));
+                    result.append("\n");
+                    result.append(StringUtils.defaultString(gruz.getEkgvn()));
+                    if(StringUtils.isNotBlank(gruz.getEkgvn()) || StringUtils.isNotBlank(gruz.getEnzgr())){
+                        result.append(" ЕТСНГ ");
+                    }
+                    result.append(StringUtils.defaultString(gruz.getEnzgr()));
+
+                    result.append(prefix);
+
+                    result.append(StringUtils.defaultString(gruz.getUpak()) );
+
+                    result.append(prefix);
+
+                    result.append(gruz.getPlaces() != null ? gruz.getPlaces() : "");
+
+                    result.append(prefix);
+
+                    if(gruz.getMassa() != null){
+                        result.append("Н: ").append(gruz.getMassa());
+                    }
+                }
+            }
+        }
+        return result.toString();
+    }
+
+    public String buildG6Cs2Print() {
+        String _f13 = "";
+        for (CimSmgsDocs elem : cimSmgsDocses13.values()) {
+            _f13 = _f13 + (elem.getText() != null ? elem.getText() + "  " : "");
+            _f13 = _f13 + (elem.getText2() != null ? elem.getText2() + "  " : "");
+            _f13 = _f13 + (elem.getRoad_s_name_r() != null ? elem.getRoad_s_name_r() : "");
+            _f13 += " ";
+        }
+
+        return _f13;
+    }
+
+    public String buildG7Cs2Print(){
+        StringBuffer result = new StringBuffer();
+        String prefix = "";
+        for(CimSmgsCarList car: getCimSmgsCarLists().values()){
+            result.append(prefix);
+            prefix = " || ";
+            result.append(StringUtils.defaultString(car.getNvag()));
+            result.append(
+                    car.getScep() != null && StringUtils.isNotBlank(car.getRefSecNo()) || car.getRefSecKol() != null ?
+                            " PC" +
+                                    (StringUtils.isNotBlank(car.getRefSecNo()) ? " - " + car.getRefSecNo() : "") +
+                                    (car.getRefSecKol() != null ? "(" + car.getRefSecKol() + ")"  : "")
+                            :
+                            ""
+            );
+
+            result.append(prefix);
+            result.append(StringUtils.defaultString(car.getVagOtm()));
+
+            result.append(prefix);
+            result.append(car.getGrPod() != null ? car.getGrPod() : "");
+
+            result.append(prefix);
+            result.append(car.getKolOs() != null ? car.getKolOs() : "");
+
+            result.append(prefix);
+            result.append(car.getTaraVag() != null ? car.getTaraVag() : "");
+
+            result.append(prefix);
+            result.append(StringUtils.defaultString(car.getCicternType()));
+        }
+        return result.toString();
+    }
+
+    public String buildG19Cs2Print(){
+        StringBuffer result = new StringBuffer();
+        String prefix = "";
+        for(CimSmgsPlomb plomb: getCimSmgsPlombs().values()) {
+            result.append(prefix);
+            prefix = " || ";
+            result.append(plomb.getKpl() != null ? plomb.getKpl() : "");
+
+            result.append(prefix);
+            result.append(StringUtils.defaultString(plomb.getZnak()) );
+        }
+        return result.toString();
+    }
+
+    public String buildG20Cs2Print(){
+        if(getG22() == null){
+            return "";
+        } else {
+            return getG22() == 1 ? "отправитель" : "перевозчик";
+        }
+    }
+
+    public String buildGKontCs2Print() {
+        StringBuffer result = new StringBuffer();
+        for(CimSmgsCarList car: getCimSmgsCarLists().values()) {
+            String prefix = "";
+            for (CimSmgsKonList kont : car.getCimSmgsKonLists().values()) {
+                result.append(prefix);
+                prefix = " ";
+                result.append(StringUtils.defaultString(kont.getUtiN()));
+
+                if(StringUtils.isNotBlank(kont.getVid())){
+                    result.append(" - ").append(kont.getVid());
+                }
+
+                if(kont.getTaraKont() != null){
+                    result.append(" (").append(kont.getTaraKont()).append(")");
+                }
+            }
+        }
+        return result.toString();
+    }
+
+    public String buildG24TCs2Print(){
+        return getG24T() != null ? "Т: " + getG24T() : "";
+    }
+
+    public String buildG24BCs2Print(){
+        return getG24B() != null ? "Б: " + getG24B() : "";
+    }
+
+    public String buildG22Cs2Print() {
+        StringBuffer result = new StringBuffer();
+        String prefix = "";
+        for(CimSmgsPerevoz perevoz: getCimSmgsPerevoz().values()){
+            result.append(prefix);
+            prefix = " || ";
+            result.append(StringUtils.defaultString(perevoz.getNamPer()));
+
+            result.append(prefix);
+            result.append(StringUtils.defaultString(perevoz.getStBeg())).append("\n").append(StringUtils.defaultString((perevoz.getStEnd())));
+
+            result.append(prefix);
+            result.append(StringUtils.defaultString(perevoz.getCodStBeg())).append("\n").append(StringUtils.defaultString(perevoz.getCodStEnd()));
+        }
+        return result.toString();
+    }
+
+    public String buildG14_Print(){
+        return g14;
+    }
+
+    final public String DOP_LIST_PRINT_CS2 = "Смотри доп. лист";
+
+    public String buildZayav_otprCs2Print(){
+        return zayav_otpr_c != null && zayav_otpr_c == 1 ? DOP_LIST_PRINT_CS2 : getZayav_otpr();
+    }
+
+    public String buildG23Cs2Print(){
+        return g7c != null && g7c == 1 ? DOP_LIST_PRINT_CS2 : buildG4SmgsPrint();
+    }
+
+    public String buildG25Cs2Print(){
+        return g141c != null && g141c == 1 ? DOP_LIST_PRINT_CS2 : getG141();
+    }
+
+    public String buildG28Cs2Print(){
+        return g26c != null && g26c == 1 ? DOP_LIST_PRINT_CS2 : getG26();
+    }
+
+    ////// DOP LIST
+
+    public boolean hasDopList(){
+        switch (docType1.intValue()){
+            case 7:  // smgs2
+                return (zayav_otpr_c != null && zayav_otpr_c == 1) ||
+                        (g141c != null && g141c == 1) ||
+                        (g26c != null && g26c == 1) ||
+                        (g7c != null && g7c == 1);
+            default:
+                return false;
+        }
+    }
+
+    public String buildEmptyLinePrint(){
+        return "\n";
+    }
+
+    public String buildTitleDLPrint(){
+        return "Дополнительный лист";
+    }
+
+    public String buildGr3TitleDLPrint(){
+        return zayav_otpr_c != null && zayav_otpr_c == 1 ? "Графа 3. Заявления отправителя" : "";
+    }
+
+    public String buildGr3DLPrint(){
+        return zayav_otpr_c != null && zayav_otpr_c == 1 ? getZayav_otpr() : "";
+    }
+
+    public String buildGr23TitleDLPrint(){
+        return g7c != null && g7c == 1 ? "Графа 23. Уплата провозных платежей" :  "";
+    }
+
+    public String buildGr23DLPrint(){
+        return g7c != null && g7c == 1 ? buildG4SmgsPrint() : "";
+    }
+
+    public String buildGr25TitleDLPrint(){
+        return g141c != null && g141c == 1 ? "Графа 25. Информация, не предназначенная для перевозчика, № договора на поставку" : "";
+    }
+
+    public String buildGr25DLPrint(){
+        return g141c != null && g141c == 1 ? getG141() : "";
+    }
+
+    public String buildGr28TitleDLPrint(){
+        return g26c != null && g26c == 1 ? "Графа 28. Отметки для выполнения таможенных и других административных формальностей" : "";
+    }
+
+    public String buildGr28DLPrint(){
+        return g26c != null && g26c == 1 ? getG26() : "";
+    }
+
+    public String buildGr29TitleDLPrint(){
+        return "29. Отправка №";
+    }
+
+    public String buildGr29DLPrint(){
+        return getG694();
+    }
+
+    public String buildPerevozCs2Print() {
+        for(CimSmgsPerevoz perevoz: getCimSmgsPerevoz().values()){
+            return StringUtils.defaultString(perevoz.getNamPer());
+        }
+        return "";
+    }
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.Tbc2Status" table="TBC2_STATUS" dynamic-insert="true" dynamic-update="true">
+        <id name="hid" type="long">
+            <column name="HID" precision="30" scale="0"/>
+            <generator class="sequence">
+                <param name="sequence">TBC2_STATUS_HID</param>
+            </generator>
+        </id>
+        <property name="hid_pack" type="long" column="HID_PACK" precision="20" scale="0"/>
+        <property name="dattr" type="timestamp" column="DATTR" length="7"/>
+        <property name="changeDate" type="timestamp" column="CHANGE_DATE" length="7"/>
+        <property name="description" type="string" column="DESCRIPTION" length="250"/>
+        <property name="author" type="string" column="AUTHOR" length="250"/>
+        <property name="status" type="string" column="STATUS" length="2"/>
+        <property name="signComment" type="string" column="SIGNCOMMENT" length="1000"/>
+</class>
+</hibernate-mapping>

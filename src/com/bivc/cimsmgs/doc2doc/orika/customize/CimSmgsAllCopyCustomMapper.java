@@ -1,12 +1,12 @@
 package com.bivc.cimsmgs.doc2doc.orika.customize;
 
-import com.bivc.cimsmgs.db.CimSmgs;
-import com.bivc.cimsmgs.db.CimSmgsDocs;
-import com.bivc.cimsmgs.db.CimSmgsPlatel;
-import com.bivc.cimsmgs.db.CimSmgsPlomb;
+import com.bivc.cimsmgs.db.*;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MappingContext;
+import ma.glasnost.orika.metadata.TypeBuilder;
+import org.apache.commons.collections4.MapUtils;
 
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -34,6 +34,14 @@ public class CimSmgsAllCopyCustomMapper extends CustomMapper<CimSmgs, CimSmgs> {
 //        }
 //        if (MapUtils.isNotEmpty(cimSmgsDestination.getCimSmgsPlombs())) {
             cimSmgsDestination.setCimSmgsPlombs(new TreeMap<Byte, CimSmgsPlomb>(cimSmgsDestination.getCimSmgsPlombs()));
+
+        cimSmgsDestination.setCimSmgsPerevoz(new TreeMap<>(cimSmgsDestination.getCimSmgsPerevoz()));
+
+        if (MapUtils.isNotEmpty(cimSmgsSource.getCimSmgsCarLists())){
+            Map<Byte, CimSmgsCarList> carListMapSrc = cimSmgsSource.getCimSmgsCarLists();
+            Map<Byte, CimSmgsCarList> carListMapDest = mapperFacade.mapAsMap(carListMapSrc, new TypeBuilder<Map<Byte, CimSmgsCarList>>(){}.build(), new TypeBuilder<Map<Byte, CimSmgsCarList>>(){}.build());
+            cimSmgsDestination.setCimSmgsCarLists(new TreeMap<Byte, CimSmgsCarList>(carListMapDest));
+        }
 //        }
 
         /*if (MapUtils.isNotEmpty(cimSmgsSource.getCimSmgsCarLists())){

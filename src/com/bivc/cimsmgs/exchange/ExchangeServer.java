@@ -2,6 +2,7 @@ package com.bivc.cimsmgs.exchange;
 
 import com.bivc.cimsmgs.commons.HibernateUtil;
 import com.bivc.cimsmgs.db.*;
+import com.bivc.cimsmgs.exchange.tbc.DocTBC;
 import org.hibernate.Query;
 import org.hibernate.StatelessSession;
 import org.slf4j.Logger;
@@ -46,6 +47,48 @@ public class ExchangeServer {
         EDIConvertor97B conv = new EDIConvertor97B(EDIConvertor.EdiDir.DB);
         conv.sendIftmin(hid_cs);
         return conv.getIftminText();
+    }
+
+    public void getFTSXMLText(Long hid_cs, String user, ServletContext sc)  throws Exception {
+        if (log.isDebugEnabled()) log.debug("ID = " + hid_cs);
+
+        FTSExchange ftsExchange = new FTSExchange();
+
+        ftsExchange.sendDocs(hid_cs, sc);
+    }
+
+    public byte[] getFTSXMLFile(Long hid_cs, String user, ServletContext sc)  throws Exception {
+        if (log.isDebugEnabled()) log.debug("ID = " + hid_cs);
+
+        DocTBC docTBC = new DocTBC();
+
+        return docTBC.createDocDownload(hid_cs);
+    }
+
+    public void receiveIftminText(String iftmin, String un, String trans, Route route, UsrGroupsDir usrgrdir) {
+        if (log.isDebugEnabled()) log.debug("Start");
+
+        try {
+            EDIConvertor97B conv = new EDIConvertor97B(EDIConvertor.EdiDir.DB);
+            conv.receive(iftmin, un, trans, route, usrgrdir);
+            log.info("Complete");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public PackDoc receiveDBXML(File file, String un, String trans, Route route, UsrGroupsDir usrgrdir) {
+        if (log.isDebugEnabled()) log.debug("Start");
+        PackDoc res = null;
+        try {
+            DBXMLConvertor conv = new DBXMLConvertor();
+            res = conv.receive(file, un, trans, route, usrgrdir);
+            log.info("Complete");
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return res;
     }
 
     public boolean SendIftmin(Long hid_cs, String user, EDIConvertor.EdiDir dir) throws Exception {

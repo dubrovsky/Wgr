@@ -33,6 +33,7 @@ Ext.application({
         'exchange.LockChecker',
 
         'docs.Aviso',
+        'docs.Aviso2',
         'docs.Avisocimsmgs',
         'docs.Avisogu29k',
         'docs.Cim',
@@ -45,6 +46,7 @@ Ext.application({
         'docs.Invoice',
         'docs.Slovnakl',
         'docs.Smgs',
+        'docs.Smgs2',
 
         'print.PrintTemplates',
         'print.Print',

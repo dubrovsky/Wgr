@@ -2,6 +2,7 @@ package com.bivc.cimsmgs.doc2doc.orika.customize;
 
 import com.bivc.cimsmgs.db.CimSmgs;
 import com.bivc.cimsmgs.db.CimSmgsDocs;
+import com.bivc.cimsmgs.db.CimSmgsPerevoz;
 import com.bivc.cimsmgs.db.CimSmgsPlatel;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MappingContext;
@@ -37,6 +38,17 @@ public class CimSmgsAppendCustomMapper extends CustomMapper<CimSmgs, CimSmgs> {
             }
         } else if (MapUtils.isEmpty(cimSmgsDestination.getCimSmgsDocses13())){
             cimSmgsDestination.setCimSmgsDocses13(new TreeMap<Byte, CimSmgsDocs>());
+        }
+
+        if (MapUtils.isNotEmpty(cimSmgsSource.getCimSmgsPerevoz())) {
+            for(CimSmgsPerevoz perevozSource : cimSmgsSource.getCimSmgsPerevoz().values()){
+                CimSmgsPerevoz perevozDestination = mapperFacade.map(perevozSource, CimSmgsPerevoz.class);
+                sort = cimSmgsDestination.getCimSmgsPerevoz().size();
+                perevozDestination.setSort((byte)sort);
+                cimSmgsDestination.getCimSmgsPerevoz().put((byte) sort, perevozDestination);
+            }
+        } else if (MapUtils.isEmpty(cimSmgsDestination.getCimSmgsPerevoz())){
+            cimSmgsDestination.setCimSmgsPerevoz(new TreeMap<Byte, CimSmgsPerevoz>());
         }
     }
 }

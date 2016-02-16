@@ -16,8 +16,8 @@
             <file>file://$MODULE_DIR$/src/cimsmgs-default.xml</file>
             <file>file://$MODULE_DIR$/src/cimsmgs-support.xml</file>
             <file>file://$MODULE_DIR$/src/struts.xml</file>
-            <file>jar://$MODULE_DIR$/../LIBS/struts-2.x/struts-2.3.16.3/lib/struts2-spring-plugin-2.3.16.3.jar!/struts-plugin.xml</file>
-            <file>jar://$MODULE_DIR$/../LIBS/struts-2.x/struts-2.3.16.3/lib/struts2-core-2.3.16.3.jar!/struts-default.xml</file>
+            <file>jar://$MODULE_DIR$/../../LIBS/struts-2.x/struts-2.3.20/lib/struts2-core-2.3.20.jar!/struts-default.xml</file>
+            <file>jar://$MODULE_DIR$/../../LIBS/struts-2.x/struts-2.3.20/lib/struts2-spring-plugin-2.3.20.jar!/struts-plugin.xml</file>
           </fileset>
           <propertiesKeys disabled="false" />
         </configuration>
@@ -51,7 +51,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="PROVIDED" name="Tomcat 7" level="application_server_libraries" />
     <orderEntry type="library" name="aopalliance" level="application" />
     <orderEntry type="library" name="asm-4.x" level="application" />
     <orderEntry type="library" name="aspectj-1.x" level="application" />
@@ -93,6 +92,8 @@
     <orderEntry type="library" name="sync" level="application" />
     <orderEntry type="library" name="user-agent-utils-1.x" level="application" />
     <orderEntry type="library" name="xmlbeans-2.x" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="Tomcat 7.0.64" level="application_server_libraries" />
+    <orderEntry type="library" name="axis-2.x" level="application" />
   </component>
   <component name="org.twodividedbyzero.idea.findbugs">
     <option name="_basePreferences">

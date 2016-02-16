@@ -46,8 +46,8 @@ Ext.define('TK.view.smgs.List', {
                     {
                         text: this.headerExchTBC,
                         dataIndex: 'tbc',
-                        width: 40,
-                        renderer: this.rendererTbc
+                        width: 80,
+                        renderer: this.rendererTbc1
                     }, {
                         text: this.headerExchBch,
                         dataIndex: 'iftmin',
@@ -127,7 +127,13 @@ Ext.define('TK.view.smgs.List', {
                     ]
                 },'-',
                 {text: this.btnCreate,iconCls:'doc_new', action:'create'},'-',
-                {text: this.btnCopy,iconCls:'copy', action:'copy'},'-',
+                //{text: this.btnCopy,iconCls:'copy', action:'copy'},'-',
+                {xtype:'splitbutton', text: this.btnCopy, iconCls:'copy', action:'copy',
+                    menu: [
+                        {text: this.btnCopy, action:'copy', iconCls:'copy'},
+                        {text: 'Копия, выбрать...', action:'showCopySelectedWin', iconCls:'copySelected'}
+                    ]
+                },'-',
                 {text: this.btnEdit,iconCls:'edit', action:'edit'},'-'
 
             ]
@@ -152,6 +158,9 @@ Ext.define('TK.view.smgs.List', {
                     {text: this.btnExchTBC, action:'tbc'},
                     {text: 'Выгрузить ТБЦ', action:'tbc_out'},
                     {text: 'Загрузить ТБЦ', action:'tbc_in'},
+
+                    {text: 'ТБЦ новый', itemId: 'tdgFts_out', action:'tdgFts_out'},
+
                     {text: this.btnExchBCh, action:'iftmin'}
                 );
             }

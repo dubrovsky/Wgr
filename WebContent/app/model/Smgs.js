@@ -3,7 +3,7 @@ Ext.define('TK.model.Smgs', {
 
     fields: [
         'dattr','altered','un',
-        'numClaim', 'vags', 'konts', 'aviso', 'avisoId',
+        'numClaim', 'vags', 'konts', 'aviso', 'avisoId', 'tbc2log',
 		'g281',
         'g1', 'g4','src','print','locked','npoezd',
         {name:'hid', type:'int'},

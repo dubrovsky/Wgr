@@ -60,6 +60,8 @@ Ext.define('TK.controller.Menu', {
                     root.appendChild({text:this.btnPrnTmpl, iconCls:'print1', id:'print',
                         children:[
                             {text:"СМГС", leaf:true, id:'smgsPrnTmpl_1', iconCls:'print'},
+                            {text:"СМГС2", leaf:true, id:'smgsPrnTmpl_7', iconCls:'print'},
+                            {text:"Доп.лист", leaf:true, id:'smgsPrnTmpl_11', iconCls:'print'},
                            /* {text:"ГУ-29к", leaf:true, id:'gu29kPrnTmpl_10', iconCls:'print'},
                             {text:"ГУ-27в", leaf:true, id:'gu27vPrnTmpl_25', iconCls:'print'},*/
                             {text:"ЦИМ/СМГС", leaf:true, id:'cimsmgsPrnTmpl_4', iconCls:'print'},
@@ -154,11 +156,19 @@ Ext.define('TK.controller.Menu', {
                 gridParams = {'search.routeId':routeId, 'search.type':2, 'task':'list'};
 //                grid.initGrid({'search.routeId':routeId, 'search.type':2, 'task':'list'});
                 break;
+            case 'smgs2':
+                grid = Ext.widget('smgs2list', {inPack:false});
+                gridParams = {'search.routeId':routeId, 'search.type':12, 'task':'list'};
+                break;
             case 'aviso':
             case 'aviso1':
                 grid = Ext.widget('avisolist', {/*title:'Журнал Инструкций',*/ inPack:false});
                 gridParams = {'search.routeId':routeId, 'search.type':3, 'search.docId':tkUser.docs.get(doc)['hid'], 'task':'list'};
 //                grid.initGrid({'search.routeId':routeId, 'search.type':3, 'task':'list'});
+                break;
+            case 'aviso2':
+                grid = Ext.widget('aviso2list', {inPack:false});
+                gridParams = {'search.routeId':routeId, 'search.type':11, 'search.docId':tkUser.docs.get(doc)['hid'], 'task':'list'};
                 break;
             case 'avisogu29k':
             case 'avisogu29k1':
@@ -275,6 +285,8 @@ Ext.define('TK.controller.Menu', {
                 window.open('Report_instruction.do?search.kod=' + doc, '_self');
                 return;
             case 'smgsPrnTmpl_1':
+            case 'smgsPrnTmpl_7':
+            case 'smgsPrnTmpl_11':
             case 'gu29kPrnTmpl_10':
             case 'gu27vPrnTmpl_25':
             case 'cimsmgsPrnTmpl_4':

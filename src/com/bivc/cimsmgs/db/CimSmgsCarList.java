@@ -77,8 +77,53 @@ public class CimSmgsCarList implements Serializable {
     private PackDoc packDoc;
     private String prim;
     private BigDecimal count;
+	private String cicternType;
+	private Integer scep;
+	private String refSecNo;
+	private Integer refSecKol;
+	private String vagOtm;
 
-    public CimSmgsCarList(byte sort, CimSmgs parentCimSmgs) {
+	public String getVagOtm() {
+		return vagOtm;
+	}
+
+	public void setVagOtm(String vagOtm) {
+		this.vagOtm = vagOtm;
+	}
+
+	public Integer getRefSecKol() {
+		return refSecKol;
+	}
+
+	public void setRefSecKol(Integer refSecKol) {
+		this.refSecKol = refSecKol;
+	}
+
+	public String getRefSecNo() {
+		return refSecNo;
+	}
+
+	public void setRefSecNo(String refSecNo) {
+		this.refSecNo = refSecNo;
+	}
+
+	public Integer getScep() {
+		return scep;
+	}
+
+	public void setScep(Integer scep) {
+		this.scep = scep;
+	}
+
+	public String getCicternType() {
+		return cicternType;
+	}
+
+	public void setCicternType(String cicternType) {
+		this.cicternType = cicternType;
+	}
+
+	public CimSmgsCarList(byte sort, CimSmgs parentCimSmgs) {
         this.sort = sort;
         parentCimSmgs.addCimSmgsCarListItem(this);
     }

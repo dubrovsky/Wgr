@@ -1,4 +1,4 @@
-"D:\Program Files\Sencha\Cmd\4.0.5.87\sencha" app build production 
+java -jar "C:\Program Files (x86)\Sencha\Cmd\4.0.5.87\sencha.jar" app build production 
 
 rem sencha --debug app build >111
 

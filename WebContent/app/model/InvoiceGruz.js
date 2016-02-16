@@ -6,7 +6,7 @@ Ext.define('TK.model.InvoiceGruz', {
         {name: 'kolm', type: 'int', useNull:true},
         {name: 'mbrt', type: 'float', useNull:true},
         {name: 'mnet', type: 'float', useNull:true},
-        {name: 'kole', type: 'int', useNull:true},
+        {name: 'kole', type: 'float', useNull:true},
         'eizm',
         {name: 'cost', type: 'float', useNull:true},
         {name: 'itogo', type: 'float', useNull:true},

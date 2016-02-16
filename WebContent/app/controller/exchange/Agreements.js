@@ -92,6 +92,9 @@ Ext.define('TK.controller.exchange.Agreements', {
             smgs: {
                 smgsFormStatusChanged: this.smgsFormStatusChanged
             },
+            smgs2: {
+                smgsFormStatusChanged: this.smgsFormStatusChanged
+            },
             cimsmgs: {
                 cimSmgsFormStatusChanged: this.cimSmgsFormStatusChanged
             }

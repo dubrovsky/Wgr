@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.ArrayList;
+
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,7 +82,7 @@ public class Utils {
     int fNew = 0;
     StringBuffer sMatch = new StringBuffer("");
     Matcher match;
-    ArrayList list = new ArrayList();
+    ArrayList<String> list = new ArrayList<>();
     try {
       re = Pattern.compile(regex);
       match = re.matcher(input);
@@ -107,7 +109,74 @@ public class Utils {
     catch (Exception ex) {
       log.error(ex.toString());
     }
-    return (String[]) list.toArray(new String[list.size()]);
+    return list.toArray(new String[list.size()]);
+  }
+
+  public static Integer geI(String[] ar, int idx) {
+    Integer res = null;
+    try {
+      res = Integer.valueOf(ge(ar, idx));
+    }
+    catch (NumberFormatException nfex) {
+      log.warn(ge(ar, idx) + " : " + nfex);
+    }
+    return res;
+  }
+
+  public static Long geL(String[] ar, int idx) {
+    Long res = null;
+    try {
+      res = Long.valueOf(ge(ar, idx));
+    }
+    catch (NumberFormatException nfex) {
+      log.warn(ge(ar, idx) + " : " + nfex);
+    }
+    return res;
+  }
+
+  public static Long geLD(String[] ar, int idx) {
+    Long res = null;
+    BigDecimal dec = geD(ar, idx);
+    if ( dec != null)
+      res = dec.longValue();
+    return res;
+  }
+
+  public static BigDecimal geD(String[] ar, int idx) {
+    return makeBigDecimal(ge(ar, idx));
+  }
+
+  public static BigDecimal makeBigDecimal(String str) {
+    BigDecimal res = null;
+    try {
+      res = new BigDecimal(StringUtils.defaultString(str).trim().replace(",", "."));
+    }
+    catch (Exception ex) {
+      log.warn(ex.getMessage() + " for value " + str);
+    }
+    return res;
+  }
+
+  public static Short makeShort(String str) {
+    Short res = null;
+    try {
+      res = Short.valueOf(str);
+    }
+    catch (Exception ex) {
+      log.warn(ex.getMessage() + " for value " + str);
+    }
+    return res;
+  }
+
+  public static Byte makeByte(String str) {
+    Byte res = null;
+    try {
+      res = Byte.valueOf(str);
+    }
+    catch (Exception ex) {
+      log.warn(ex.getMessage() + " for value " + str);
+    }
+    return res;
   }
 
 }

@@ -3,7 +3,7 @@ Ext.define('TK.controller.Nsi', {
 
     views:['nsi.ListDir'],
     stores:['NsiDirs'],
-    models:['NsiDir', 'SmgsPlat', 'SmgsOtpr', 'NsiSta'],
+    models:['NsiDir', 'SmgsPlat', 'SmgsOtpr', 'NsiSta', 'NsiCarrier'],
     refs: [
         {
             ref: 'center',
@@ -854,6 +854,65 @@ Ext.define('TK.controller.Nsi', {
             rec = this.selModel.getLastSelected();
         rec.set('name', data.name);
         view.up('window').close();
+    },
+    nsiCarrier:function (query) {
+        var me = this,
+            win = Ext.widget('nsieditlist', {
+                width:1000,
+                prefix:'carrier',
+                editPrivileg:'CIM_DIR',
+                search:query,
+                buildTitle:function (config) {
+                    config.title = 'Справочник перевозчиков';
+                },
+                buildStoreModel:function () {
+                    return 'TK.model.NsiCarrier';
+                },
+                buildUrlPrefix:function () {
+                    return 'Carrier';
+                },
+                buildColModel:function (config) {
+                    config.items.columns = [
+                        {xtype:'actioncolumn', width:55,
+                            items:[
+                                {icon:'./resources/images/save.gif', tooltip:this.ttipSave, action:'save', handler:me.onSaveRecord, getClass:this.onGetClass, scope:this},
+                                {icon:'./resources/images/delete.png', tooltip:this.ttipDel, action:'del', handler:me.onDelRecord, getClass:this.onGetClass, scope:this}
+                            ]
+                        },
+                        {text:'станция', dataIndex:'countryNo', flex:1, editor:{xtype:'textfield', maxLength:3}},
+                        {text:'перевозчик, номер', dataIndex:'carrNo', flex:1, editor:{xtype:'textfield', maxLength:4}},
+                        {text:'перевозчик, короткое наимен', dataIndex:'carrNameShort', flex:1, editor:{xtype:'textfield', maxLength:48},  renderer:TK.Utils.renderLongStr},
+                        {text:'перевозчик, наимен.', dataIndex:'carrName', flex:3, editor:{xtype:'textfield', maxLength:128},  renderer:TK.Utils.renderLongStr}
+                    ];
+                },
+                newRecord:function () {
+                    return Ext.create('TK.model.NsiCarrier', {});
+                },
+                onBeforeEdit:function (editor, props) {
+                    if (!tkUser.hasPriv(this.editPrivileg)) { // switch off editing
+                        return false;
+                    }
+                },
+                onGetClass:function (value, meta, record) {
+                    if (!tkUser.hasPriv(this.editPrivileg)) {
+                        return 'hide_el';
+                    }
+                    /*if (record.get('ro') == '0') {
+                     return 'show_el';
+                     }*/
+                },
+                prepareData:function (rec) {
+                    var data = {};
+                    data[this.prefix + '.carrUn'] = rec.data['carrUn'];
+                    data[this.prefix + '.carrId'] = rec.data['carrId'];
+                    data[this.prefix + '.countryNo'] = rec.data['countryNo'];
+                    data[this.prefix + '.carrNo'] = rec.data['carrNo'];
+                    data[this.prefix + '.carrNameShort'] = rec.data['carrNameShort'];
+                    data[this.prefix + '.carrName'] = rec.data['carrName'];
+                    return data;
+                }
+            });
+        return win;
     },
     selectDocG23: function(view, record, item, index) {
         var data = record.data;

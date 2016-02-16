@@ -1,9 +1,9 @@
 Ext.define('TK.controller.print.PrintTemplates', {
     extend: 'Ext.app.Controller',
 
-    views: ['printtmpl.List', 'printtmpl.Form'],
+    views: ['printtmpl.List', 'printtmpl.Form', 'printtmpl.TableForm', 'printtmpl.PhraseForm'],
     stores: ['PrintTemplates','PrintTemplate','PrnTmplRouteItems','PrintBlanks'],
-    models: ['PrintTemplate','PrintData','PrintBlank'],
+    models: ['PrintTemplate','PrintData','PrintDataTable','PrintBlank','PrintDataPhrase'],
     refs: [
         {
             ref: 'center',
@@ -16,6 +16,9 @@ Ext.define('TK.controller.print.PrintTemplates', {
         {
             ref: 'list',
             selector: 'viewport > tabpanel > printTemplateList'
+        }, {
+            ref: 'printDataList',
+            selector: 'printTemplate > detailgrid#prnTemplData'
         }
     ],
     init: function() {
@@ -63,6 +66,16 @@ Ext.define('TK.controller.print.PrintTemplates', {
             },
             'docslist button[action="print"] menuitem[action="bindPrintTmpl"]': {
                 click: this.onBindUnPrintTempl
+            },
+            'detailgrid#prnTemplData' : {
+                needTable: this.onNeedTable,
+                needPhrases: this.onNeedPhrase
+            },
+            'printDataTable button[action="save"]' : {
+                click: this.onSaveTable
+            },
+            'printDataPhrase button[action="save"]' : {
+                click: this.onSavePhrase
             }
 
         });
@@ -800,5 +813,51 @@ Ext.define('TK.controller.print.PrintTemplates', {
                 }]
             });
 //            store.load();
+    },
+    onNeedTable: function(grid, record){
+        var win = Ext.widget('printDataTable'),
+            store = win.child('grid').getStore();
+
+        store.removeAll(true);
+        if(record.table().count() > 0){
+            store.add(record.table().getRange());
+        }
+
+        win['printDataRecord'] = record;
+    },
+    onSaveTable: function(btn){
+        var win = btn.up('window'),
+            printDataRecord  = win['printDataRecord'],
+            tableStore = win.child('grid').getStore();
+
+        printDataRecord.table().removeAll(true);
+        if(tableStore.count() > 0){
+            printDataRecord.table().add(tableStore.getRange());
+        }
+        this.getPrintDataList().getView().refresh();
+        win.close();
+    },
+    onNeedPhrase: function(grid, record){
+        var win = Ext.widget('printDataPhrase'),
+            store = win.child('grid').getStore();
+
+        store.removeAll(true);
+        if(record.phrases().count() > 0){
+            store.add(record.phrases().getRange());
+        }
+
+        win['printDataRecord'] = record;
+    },
+    onSavePhrase: function(btn){
+        var win = btn.up('window'),
+            printDataRecord  = win['printDataRecord'],
+            phraseStore = win.child('grid').getStore();
+
+        printDataRecord.phrases().removeAll(true);
+        if(phraseStore.count() > 0){
+            printDataRecord.phrases().add(phraseStore.getRange());
+        }
+        this.getPrintDataList().getView().refresh();
+        win.close();
     }
 });

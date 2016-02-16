@@ -25,8 +25,11 @@ Ext.define('TK.controller.exchange.Senders', {
             'docslist button[action="exchange"] menuitem[action="iftmin"]': {
                 click: this.sendIftmin
             },
-            'docslist button[action="exchange"] menuitem[action="iftmin_db"]': {
-                click: this.sendIftminDB
+            'docslist button[action="exchange"] menuitem[action="iftmin_db_out"]': {
+                click: this.sendIftminDBOut
+            },
+            'docslist button[action="exchange"] menuitem[action="iftmin_db_in"]': {
+                click: this.sendIftminDBIn
             },
             'docslist button[action="exchange"] menuitem[action="fts"]': {
                 click: this.sendFts
@@ -36,6 +39,9 @@ Ext.define('TK.controller.exchange.Senders', {
             },
             'docslist button[action="exchange"] menuitem[action="tdgFts"]': {
                 click: this.sendTdg
+            },
+            'docslist button[action="exchange"] menuitem[action="tdgFts_out"]': {
+                click: this.sendTdgOut
             } ,
             'docslist button[action="exchange"] menuitem[action="greenrail"]': {
                 click: this.sendGreenRail
@@ -143,17 +149,62 @@ Ext.define('TK.controller.exchange.Senders', {
         );
     },
 
-    sendIftminDB: function(btn){
+    sendIftminDBOut: function(btn){
         var list = btn.up('grid');
         if(!TK.Utils.isRowSelected(list)){
             return;
         }
         var model = list.selModel.getLastSelected();
         window.open(
-            'SmgsIftmin_sendIftminDB.do?' +
+            'SmgsIftmin_sendIftminDBOut.do?' +
             'hid_cs=' + model.get('hid'),
             '_self',''
         );
+    },
+
+    sendIftminDBIn: function(btn){
+        var list = btn.up('grid');
+         /*if(!TK.Utils.isRowSelected(list)){
+            return;
+        }
+        var model = list.selModel.getLastSelected();*/
+        var routeId = this.getMenutree().lastSelectedLeaf.id.split('_')[2],
+        win = Ext.widget('window', {
+            title: 'Загрузка Iftmin',
+            width: 500, y:0,
+            autoShow: true,
+            modal:true,
+            items: {
+                xtype:'form',
+                bodyPadding: 10,
+                items: [
+                    {xtype: 'filefield', emptyText: 'Выбор файла для загрузки...', fieldLabel: 'Файл', name: 'upload', buttonText: 'Обзор...', anchor: '100%', allowBlank: false, labelWidth: 50},
+                    {xtype: 'hidden', name:'route.hid', value: routeId}
+                ],
+                buttons: [{
+                    text: this.btnSave,
+                    handler: function(btn) {
+                        var form = btn.up('form').getForm();
+                        if(form.isValid()){
+                            form.submit({
+                                url: 'SmgsIftmin_sendIftminDBIn.do',
+                                waitMsg: 'Загрузка',
+                                scope: this,
+                                success: function(form, action) {
+                                    win.close();
+                                    Ext.Msg.show({title: 'Операция прошла успешно',msg: 'Iftmin успешно загружен', buttons: Ext.Msg.OK, icon: Ext.Msg.INFO});
+                                    list.getStore().reload();
+                                }
+                                ,failure: function(form, action) {
+                                    TK.Utils.makeErrMsg(action.response, this.errorMsg);
+                                }
+                            });
+                        }
+                    }
+                }]
+            }
+        });
+
     },
 
     sendTBCIn: function(btn1){
@@ -379,5 +430,34 @@ Ext.define('TK.controller.exchange.Senders', {
                 TK.Utils.makeErrMsg(response, this.errorMsg);
             }
         });
+    },
+    sendTdgOut: function(btn){
+        var list = btn.up('grid');
+        if(!TK.Utils.isRowSelected(list)){
+            return;
+        }
+        var model = list.selModel.getLastSelected();
+        this.getCenter().setLoading(true);
+        Ext.Ajax.request({
+            url: 'Tdg_sendOut.do',
+            params: {hid: model.get('hid')},
+            scope:this,
+            success: function (response, options) {
+                this.getCenter().setLoading(false);
+                Ext.Msg.show({title: 'Внимание',msg: 'Идет обрабока запроса',buttons: Ext.Msg.OK,icon: Ext.Msg.INFO,
+                    fn: function () {list.getStore().reload();}, scope:this
+                });
+            },
+            failure: function (response) {
+                this.getCenter().setLoading(false);
+                TK.Utils.makeErrMsg(response, this.errorMsg);
+            }
+        });
+
+        /*window.open(
+            Ext.String.format('Tdg_sendOut.do?hid={0}', model.get('hid')),
+            '_self'
+        );*/
     }
+
 });

@@ -49,6 +49,11 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
                 crit.add(Restrictions.eq("status", new Byte(search.getStatus())));
             }
         }
+
+        if (search.getHid() != null)
+            crit.add(Restrictions.eq("hid", search.getHid()));
+        if (StringUtils.isNotEmpty(search.getNum()))
+            crit.add(Restrictions.ilike("g694", search.getNum(), MatchMode.ANYWHERE));
         if (StringUtils.isNotEmpty(search.getZakazNo()))
             crit.add(Restrictions.eq("zakazNo", search.getZakazNo()));
         if (StringUtils.isNotEmpty(search.getUn()))

@@ -863,6 +863,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.controller.User": [],
   "TK.controller.Utils": [],
   "TK.controller.docs.Aviso": [],
+  "TK.controller.docs.Aviso2": [],
   "TK.controller.docs.Avisocimsmgs": [],
   "TK.controller.docs.Avisogu29k": [],
   "TK.controller.docs.Cim": [],
@@ -875,6 +876,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.controller.docs.Invoice": [],
   "TK.controller.docs.Slovnakl": [],
   "TK.controller.docs.Smgs": [],
+  "TK.controller.docs.Smgs2": [],
   "TK.controller.exchange.Agreements": [],
   "TK.controller.exchange.LockChecker": [],
   "TK.controller.exchange.Senders": [],
@@ -882,6 +884,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.controller.print.Print": [],
   "TK.controller.print.PrintTemplates": [],
   "TK.model.Aviso": [],
+  "TK.model.Aviso2": [],
   "TK.model.AvisoGu29k": [],
   "TK.model.Avisocimsmgs": [],
   "TK.model.Cim": [],
@@ -897,10 +900,13 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.model.Invoice": [],
   "TK.model.InvoiceGruz": [],
   "TK.model.Log": [],
+  "TK.model.NsiCarrier": [],
   "TK.model.NsiDir": [],
   "TK.model.NsiSta": [],
   "TK.model.PrintBlank": [],
   "TK.model.PrintData": [],
+  "TK.model.PrintDataPhrase": [],
+  "TK.model.PrintDataTable": [],
   "TK.model.PrintTemplate": [],
   "TK.model.Project": [],
   "TK.model.Route": [],
@@ -908,16 +914,19 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.model.Slovnakl": [],
   "TK.model.Smgs": [],
   "TK.model.SmgsKon": [],
+  "TK.model.SmgsKon2": [],
   "TK.model.SmgsOtpr": [],
   "TK.model.SmgsPlat": [],
   "TK.model.SmgsPlomb": [],
   "TK.model.Stat": [],
+  "TK.model.Tbc1log": [],
   "TK.model.User": [],
   "TK.model.UserGroup": [],
   "TK.model.UserPriv": [],
   "TK.store.AvisoGu29ks": [],
   "TK.store.Avisocimsmgss": [],
   "TK.store.Avisos": [],
+  "TK.store.Avisos2": [],
   "TK.store.CimSmgses": [],
   "TK.store.Cims": [],
   "TK.store.Cmrs": [],
@@ -941,6 +950,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.store.Slovnakls": [],
   "TK.store.Smgses": [],
   "TK.store.Stats": [],
+  "TK.store.Tbc1logs": [],
   "TK.store.Users": [],
   "TK.store.UsersGroups": [],
   "TK.store.UsersPrivs": [],
@@ -951,6 +961,8 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.view.aviso.Form": [],
   "TK.view.aviso.Form1": [],
   "TK.view.aviso.List": [],
+  "TK.view.aviso2.Form": [],
+  "TK.view.aviso2.List": [],
   "TK.view.avisocimsmgs.Form": [],
   "TK.view.avisocimsmgs.List": [],
   "TK.view.avisogu29k.Form": [],
@@ -981,12 +993,16 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.view.nsi.ListDir": [],
   "TK.view.printtmpl.Form": [],
   "TK.view.printtmpl.List": [],
+  "TK.view.printtmpl.PhraseForm": [],
+  "TK.view.printtmpl.TableForm": [],
   "TK.view.project.Form": [],
   "TK.view.project.List": [],
   "TK.view.slovnakl.Form": [],
   "TK.view.slovnakl.List": [],
   "TK.view.smgs.Form": [],
   "TK.view.smgs.List": [],
+  "TK.view.smgs2.Form": [],
+  "TK.view.smgs2.List": [],
   "TK.view.stat.Form": [],
   "TK.view.stat.List": [],
   "TK.view.user.Form": [],
@@ -2035,6 +2051,7 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.controller.User": [],
   "TK.controller.Utils": [],
   "TK.controller.docs.Aviso": [],
+  "TK.controller.docs.Aviso2": [],
   "TK.controller.docs.Avisocimsmgs": [],
   "TK.controller.docs.Avisogu29k": [],
   "TK.controller.docs.Cim": [],
@@ -2047,6 +2064,7 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.controller.docs.Invoice": [],
   "TK.controller.docs.Slovnakl": [],
   "TK.controller.docs.Smgs": [],
+  "TK.controller.docs.Smgs2": [],
   "TK.controller.exchange.Agreements": [],
   "TK.controller.exchange.LockChecker": [],
   "TK.controller.exchange.Senders": [],
@@ -2054,6 +2072,7 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.controller.print.Print": [],
   "TK.controller.print.PrintTemplates": [],
   "TK.model.Aviso": [],
+  "TK.model.Aviso2": [],
   "TK.model.AvisoGu29k": [],
   "TK.model.Avisocimsmgs": [],
   "TK.model.Cim": [],
@@ -2069,10 +2088,13 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.model.Invoice": [],
   "TK.model.InvoiceGruz": [],
   "TK.model.Log": [],
+  "TK.model.NsiCarrier": [],
   "TK.model.NsiDir": [],
   "TK.model.NsiSta": [],
   "TK.model.PrintBlank": [],
   "TK.model.PrintData": [],
+  "TK.model.PrintDataPhrase": [],
+  "TK.model.PrintDataTable": [],
   "TK.model.PrintTemplate": [],
   "TK.model.Project": [],
   "TK.model.Route": [],
@@ -2080,16 +2102,19 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.model.Slovnakl": [],
   "TK.model.Smgs": [],
   "TK.model.SmgsKon": [],
+  "TK.model.SmgsKon2": [],
   "TK.model.SmgsOtpr": [],
   "TK.model.SmgsPlat": [],
   "TK.model.SmgsPlomb": [],
   "TK.model.Stat": [],
+  "TK.model.Tbc1log": [],
   "TK.model.User": [],
   "TK.model.UserGroup": [],
   "TK.model.UserPriv": [],
   "TK.store.AvisoGu29ks": [],
   "TK.store.Avisocimsmgss": [],
   "TK.store.Avisos": [],
+  "TK.store.Avisos2": [],
   "TK.store.CimSmgses": [],
   "TK.store.Cims": [],
   "TK.store.Cmrs": [],
@@ -2113,6 +2138,7 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.store.Slovnakls": [],
   "TK.store.Smgses": [],
   "TK.store.Stats": [],
+  "TK.store.Tbc1logs": [],
   "TK.store.Users": [],
   "TK.store.UsersGroups": [],
   "TK.store.UsersPrivs": [],
@@ -2136,6 +2162,12 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "TK.view.aviso.List": [
     "widget.avisolist"
+  ],
+  "TK.view.aviso2.Form": [
+    "widget.aviso2"
+  ],
+  "TK.view.aviso2.List": [
+    "widget.aviso2list"
   ],
   "TK.view.avisocimsmgs.Form": [
     "widget.avisocimsmgs"
@@ -2233,6 +2265,12 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.view.printtmpl.List": [
     "widget.printTemplateList"
   ],
+  "TK.view.printtmpl.PhraseForm": [
+    "widget.printDataPhrase"
+  ],
+  "TK.view.printtmpl.TableForm": [
+    "widget.printDataTable"
+  ],
   "TK.view.project.Form": [
     "widget.project"
   ],
@@ -2250,6 +2288,12 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "TK.view.smgs.List": [
     "widget.smgslist"
+  ],
+  "TK.view.smgs2.Form": [
+    "widget.smgs2"
+  ],
+  "TK.view.smgs2.List": [
+    "widget.smgs2list"
   ],
   "TK.view.stat.Form": [
     "widget.stat"

@@ -63,6 +63,7 @@ Ext.define('TK.view.edit.DetailPanel', {
 		this.hide();
 		this.ownerCt.maskPanel(false);
         this.afterSave();
+        this.fireEvent('saveDetailPanelClick', this);
 	},
     onClose:function() {
 		this.hide();

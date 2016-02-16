@@ -48,7 +48,13 @@ Ext.define('TK.view.slovnakl.List', {
                     ]
                 },'-',
                 {text: this.btnCreate,iconCls:'doc_new', action:'create'},'-',
-                {text: this.btnCopy,iconCls:'copy', action:'copy'},'-',
+                //{text: this.btnCopy,iconCls:'copy', action:'copy'},'-',
+                {xtype:'splitbutton', text: this.btnCopy, iconCls:'copy', action:'copy',
+                    menu: [
+                        {text: this.btnCopy, action:'copy', iconCls:'copy'},
+                        {text: 'Копия, выбрать...', action:'showCopySelectedWin', iconCls:'copySelected'}
+                    ]
+                },'-',
                 {text: this.btnEdit,iconCls:'edit', action:'edit'},'-'
 
             ]

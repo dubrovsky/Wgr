@@ -36,6 +36,7 @@
         <!--<mapping resource="com/bivc/cimsmgs/db/CimSmgsActiveSession.hbm.xml"/>-->
         <!--<mapping resource="com/bivc/cimsmgs/db/CimSmgsScan.hbm.xml"/>-->
         <mapping resource="com/bivc/cimsmgs/db/CimSmgsPlatel.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/CimSmgsPerevoz.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/CimSmgsPlomb.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/CimSmgsInvoice.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/CimSmgsInvoiceGruz.hbm.xml"/>
@@ -46,6 +47,9 @@
         <mapping resource="com/bivc/cimsmgs/db/FtsLog.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/NsiDir.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/TbcLog.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/Tbc2Log.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/Tbc2Pack.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/Tbc2Status.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/TdgLog.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/Contrl.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/Aperak.hbm.xml"/>
@@ -65,6 +69,8 @@
         <mapping resource="com/bivc/cimsmgs/db/UsrPrivilegs.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/UsrPrivilegsDir.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/PrintData.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/PrintDataTable.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/PrintDataPhrase.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/PrintTemplates.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/RoutePrintTemplates.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/RouteUnPrintTemplates.hbm.xml"/>
@@ -120,6 +126,7 @@
         <mapping resource="com/bivc/cimsmgs/db/nsi/CargoGng.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/nsi/Cargo.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/nsi/NsiNhm.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Carrier.hbm.xml"/>
 
         <mapping resource="com/bivc/cimsmgs/db/LoggingEvent.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/LoggingEventException.hbm.xml"/>

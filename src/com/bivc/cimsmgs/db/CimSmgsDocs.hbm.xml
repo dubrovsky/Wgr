@@ -52,5 +52,8 @@
         <property name="text3" type="string">
           <column name="TEXT3" length="240" />
         </property>
+        <property name="road_s_name_r" type="string">
+            <column name="ROAD_S_NAME_R" length="24" />
+        </property>
     </class>
 </hibernate-mapping>

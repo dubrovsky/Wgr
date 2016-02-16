@@ -175,6 +175,23 @@
         <property name="count" type="big_decimal">
             <column name="COUNT" length="10" scale="0" />
         </property>
+
+        <property name="cicternType" type="string">
+            <column name="CICTERN_TYPE" length="24" />
+        </property>
+        <property name="scep" type="java.lang.Integer">
+            <column name="SCEP" precision="1" scale="0"/>
+        </property>
+        <property name="refSecNo" type="string">
+            <column name="REF_SEC_NO" length="24" />
+        </property>
+        <property name="refSecKol" type="java.lang.Integer">
+            <column name="REF_SEC_KOL" precision="3" scale="0" />
+        </property>
+        <property name="vagOtm" type="string">
+            <column name="VAG_OTM" length="1" />
+        </property>
+
         <map name="cimSmgsGruzs" cascade="all, delete-orphan" inverse="true" sort="natural" lazy="true" >
             <key>
                 <column name="HID_CAR" precision="20" scale="0"  not-null="true"/>

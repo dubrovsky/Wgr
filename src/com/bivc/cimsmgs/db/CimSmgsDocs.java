@@ -33,6 +33,15 @@ public class CimSmgsDocs implements Serializable {
     private Date dat;
     private Integer ncopy;
     private String text3;
+    private String road_s_name_r;
+
+    public String getRoad_s_name_r() {
+        return road_s_name_r;
+    }
+
+    public void setRoad_s_name_r(String road_s_name_r) {
+        this.road_s_name_r = road_s_name_r;
+    }
 
     public String getText3() {
         return text3;

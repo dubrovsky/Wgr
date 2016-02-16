@@ -43,6 +43,15 @@
         <property name="print" type="boolean">
             <column name="PRINT" precision="1" scale="0" not-null="true" />
         </property>
+        <property name="border" type="java.lang.Boolean">
+            <column name="BORDER" precision="1" scale="0" />
+        </property>
+        <property name="underline" type="java.lang.Boolean">
+            <column name="UNDERLINE" precision="1" scale="0" />
+        </property>
+        <!-- <property name="table" type="boolean">
+             <column name="TABULAR" precision="1" scale="0"/>
+         </property>-->
         <property name="fontFamily" type="string">
             <column name="FONT_FAMILY" length="30" />
         </property>
@@ -54,6 +63,9 @@
         </property>
         <property name="page" type="java.lang.Byte">
             <column name="PAGE" length="2" scale="0" not-null="true"/>
+        </property>
+        <property name="rotate" type="java.lang.Integer">
+            <column name="ROTATE" precision="3" scale="0" />
         </property>
         <!--<property name="x" type="int">
             <column name="X" precision="5" scale="0" not-null="true" />
@@ -87,5 +99,21 @@
         <property name="altered" type="timestamp" update="false">
             <column name="ALTERED" length="7" />
         </property>
+
+        <map name="printDataTables" table="PRINT_DATA_TABLE" inverse="true" cascade="all-delete-orphan" batch-size="50" sort="natural">
+            <key>
+                <column name="HID_PRINT_DATA" precision="22" scale="0" not-null="true" />
+            </key>
+            <map-key column="SORT" type="java.lang.Integer"/>
+            <one-to-many class="com.bivc.cimsmgs.db.PrintDataTable" />
+        </map>
+
+        <map name="printDataPhrases" table="PRINT_DATA_PHRASE" inverse="true" cascade="all-delete-orphan" batch-size="50" sort="natural">
+            <key>
+                <column name="HID_PRINT_DATA" precision="22" scale="0" not-null="true" />
+            </key>
+            <map-key column="SORT" type="java.lang.Integer"/>
+            <one-to-many class="com.bivc.cimsmgs.db.PrintDataPhrase" />
+        </map>
     </class>
 </hibernate-mapping>

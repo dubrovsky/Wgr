@@ -3,15 +3,15 @@ package com.bivc.cimsmgs.commons;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-public class StringArrayMap {
-  private TreeMap<String, ArrayList<String>> map;
+public class ArrayMap<K, V> {
+  private TreeMap<K, ArrayList<V>> map;
 
-  public StringArrayMap() {
+  public ArrayMap() {
     map = new TreeMap<>();
   }
 
-  public void add(String key, String value) {
-    ArrayList<String> list = map.get(key);
+  public void add(K key, V value) {
+    ArrayList<V> list = map.get(key);
     if (list == null) {
       list = new ArrayList<>();
       map.put(key, list);
@@ -19,7 +19,7 @@ public class StringArrayMap {
     list.add(value);
   }
 
-  public TreeMap<String, ArrayList<String>> getMap() {
+  public TreeMap<K, ArrayList<V>> getMap() {
     return map;
   }
 }

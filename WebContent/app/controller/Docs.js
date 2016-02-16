@@ -35,6 +35,21 @@ Ext.define('TK.controller.Docs', {
             'viewport > tabpanel > grid[inPack=false] button[action="copy"]': {
                 click: this.onCopy
             },
+            'viewport > tabpanel > grid[inPack=false] button[action="copy"] menuitem[action="copy"]': {
+                click: this.onCopy
+            },
+            'viewport > tabpanel > grid[inPack=true] button[action="copy"]': {
+                click: this.onCopyInPack
+            },
+            'viewport > tabpanel > grid[inPack=true] button[action="copy"] menuitem[action="copy"]': {
+                click: this.onCopyInPack
+            },
+            'viewport > tabpanel > grid[inPack=false] button[action="copy"] menuitem[action="showCopySelectedWin"]': {
+                click: this.showCopySelectedWin
+            },
+            'viewport > tabpanel > grid[inPack=true] button[action="copy"] menuitem[action="showCopySelectedWin"]': {
+                click: this.showCopySelectedWin
+            },
             'viewport > tabpanel > grid[inPack=false] button[action="del"]': {
                 click: this.onDelete
             },
@@ -50,6 +65,9 @@ Ext.define('TK.controller.Docs', {
 
             'viewport > tabpanel > grid button[action=upload]': {
                 click: this.onUpload
+            },
+            'viewport > tabpanel > grid button[action=uploadDB]': {
+                click: this.onUploadDB
             },
             'viewport > tabpanel > grid button[action=uploadGU]': {
                 click: this.onUploadGU
@@ -72,9 +90,7 @@ Ext.define('TK.controller.Docs', {
             'viewport > tabpanel > grid[inPack=true]': {
                 itemdblclick: this.onEditInPack
             },
-            'viewport > tabpanel > grid[inPack=true] button[action="copy"]': {
-                click: this.onCopyInPack
-            },
+
             'viewport > tabpanel grid[inPack=true] button[action="del"]': {
                 click: this.onDeleteInPack
             },
@@ -118,6 +134,9 @@ Ext.define('TK.controller.Docs', {
             },
             'viewport > tabpanel > form button[action="epd2DocRewrite"]': {
                 click: this.epd2DocRewrite
+            },
+            'window > grid button[action="copySelectedDocs"]': {
+                click: this.onCopySelected
             }
         });
     },
@@ -874,6 +893,12 @@ Ext.define('TK.controller.Docs', {
         }).show();
     },
     onUpload: function(btn){
+       this.uploadAviso(btn, 'File_uploadAviso.do');
+    },
+    onUploadDB: function(btn){
+        this.uploadAviso(btn, 'File_uploadAvisoDB.do');
+    },
+    uploadAviso: function(btn, url){
         var menuItem    = this.getMenutree().lastSelectedLeaf,
             routeId     = menuItem.id.split('_')[2],
             avisoType   = menuItem.id.split('_')[3],
@@ -901,7 +926,7 @@ Ext.define('TK.controller.Docs', {
                         var form = btn.up('form').getForm();
                         if(form.isValid()){
                             form.submit({
-                                url: 'File_uploadAviso.do',
+                                url: url,
                                 waitMsg: this.waitMsg,
                                 scope: this,
                                 success: function(form, action) {
@@ -914,7 +939,7 @@ Ext.define('TK.controller.Docs', {
                             });
                         }
                     },
-	                scope:this
+                    scope:this
                 }, {
                     text: this.btnClose,
                     handler: function(btn){btn.up('window').close();}
@@ -1865,5 +1890,121 @@ Ext.define('TK.controller.Docs', {
             }
         }
         return null;
+    },
+    showCopySelectedWin:function(btn){
+        var list = btn.up('grid');
+        if(!TK.Utils.isRowSelected(list)){
+            return false;
+        }
+        var menuItem = this.getMenutree().lastSelectedLeaf,
+            docName = menuItem.id.split('_')[3],
+            docsInPack = tkUser.docsInPack(docName, this.docsInRoute(menuItem));
+
+        var docs = docsInPack.filterBy(function(doc){
+            return doc['range'] == 'form' || doc['range'] == 'list&form'; // select docs forms and invoices, deselect - files forms (range - panel)
+        });
+
+        if(docs.getCount() > 0){
+            var store = Ext.data.StoreManager.lookup('docsForCopy');
+            if(!store) {
+                store = Ext.create('Ext.data.ArrayStore', {
+                    storeId: 'docsForCopy',
+                    fields: [
+                        'hid','descr'
+                    ]
+                });
+            }
+
+            store.loadData(docs.getRange());
+
+            Ext.widget('window', {
+                title: 'Список докуметов для копирования',
+                autoShow: true,
+                y: 0,
+                modal: true,
+                layout: 'anchor',
+                defaults: {
+                    anchor: '100%'
+                },
+                width: 400,
+                items: [{
+                    xtype: 'grid',
+                    enableColumnHide:false,
+                    enableColumnMove:false,
+                    enableColumnResize:true,
+                    sortableColumns:false,
+                    viewConfig: {
+                        stripeRows: true,
+                        singleSelect:true,
+                        emptyText: 'Нет данных'
+                    },
+                    selType: 'checkboxmodel',
+                    columns: {
+                        items:[
+                            {text:'Наименование', dataIndex:'descr', flex:1}
+                        ]
+                    },
+                    store: store,
+                    tbar: [
+                        {text: 'Копировать', iconCls:'copySelected', action:'copySelectedDocs'},'-'
+                    ]
+                }],
+                buttons: [{
+                    text: this.btnClose,
+                    scope: this,
+                    iconCls:'exit',
+                    handler: function (btn) {
+                        btn.up('window').close();
+                    }
+                }]
+            });
+
+        } else {
+            Ext.Msg.alert('Предупреждение', 'Список пуст.');
+        }
+
+    },
+    onCopySelected:function(btn){
+        var list = btn.up('grid'),
+            selected = list.getSelectionModel().getSelection();
+
+        if(selected.length == 0){
+            Ext.Msg.show({
+                title: 'Ошибка',
+                msg: 'Не выбраны документы',
+                buttons: Ext.Msg.OK,
+                icon: Ext.Msg.ERROR
+            });
+            return false;
+        }
+
+        list.setLoading(true);
+        var selectedHids = [];
+        for(var i = 0; i < selected.length; i++){
+            selectedHids.push(selected[i].get('hid'));
+        }
+
+        var mainList =  this.getCenter().getActiveTab(), // main grids or invoices in package
+            doc = mainList.getSelectionModel().getLastSelected();
+        Ext.Ajax.request({
+            url: 'Smgs_copySelectedDocs.do',
+            params: {jsonRequest: Ext.encode(selectedHids), 'search.packId': doc.get('packId'), 'type': doc.get('type')},
+            scope: this,
+            success: function (response, options) {
+                list.setLoading(false);
+                list.up('window').close();
+                mainList.getStore().reload();
+                Ext.Msg.show({
+                    title: 'Внимание',
+                    msg: 'Копирование выполнено успешно',
+                    buttons: Ext.Msg.OK,
+                    icon: Ext.Msg.INFO
+                });
+            },
+            failure: function (response, options) {
+                list.setLoading(false);
+                TK.Utils.makeErrMsg(response, 'Error!..');
+            }
+        });
     }
 });

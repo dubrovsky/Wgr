@@ -74,7 +74,10 @@ public class Aviso2SmgsGu implements Doc2Doc {
             } else if(action.getSearch().getType() == 3){  // aviso type=3
                 toSmgs.setType((byte) 2);
                 toSmgs.setDocType1(new BigDecimal(1));
-            } else if(action.getSearch().getType() == 10){ // avisocimsmgs
+            } else if(action.getSearch().getType() == 11){  // aviso2 type=11
+                toSmgs.setType((byte) 12);
+                toSmgs.setDocType1(new BigDecimal(7));
+            }else if(action.getSearch().getType() == 10){ // avisocimsmgs
                 toSmgs.setType((byte) 1);
                 toSmgs.setDocType1(new BigDecimal(4));
             } else {

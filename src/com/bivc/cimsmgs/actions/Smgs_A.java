@@ -1,12 +1,17 @@
 package com.bivc.cimsmgs.actions;
 
+import com.bivc.cimsmgs.commons.Constants;
 import com.bivc.cimsmgs.commons.JsonUtils;
 import com.bivc.cimsmgs.commons.Print;
 import com.bivc.cimsmgs.dao.*;
+import com.bivc.cimsmgs.dao.hibernate.InvoiceDAOHib;
+import com.bivc.cimsmgs.dao.hibernate.PackDocDAOHib;
 import com.bivc.cimsmgs.db.CimSmgs;
+import com.bivc.cimsmgs.db.CimSmgsInvoice;
 import com.bivc.cimsmgs.db.PackDoc;
 import com.bivc.cimsmgs.doc2doc.Mapper;
 import com.bivc.cimsmgs.exceptions.InfrastructureException;
+import com.bivc.cimsmgs.formats.json.Deserializer;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.config.entities.ResultConfig;
 import org.apache.commons.lang3.text.WordUtils;
@@ -35,11 +40,13 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
                 setJSONData(convert2JSON_CimSmgsList(smgslist, total, getUser()));
                 break;
             case 2:
+            case 12:
                 setJSONData(convert2JSON_SmgsList(smgslist, total, getUser()));
                 break;
             case 3:
             case 6:
             case 10:
+            case 11:
                 setJSONData(convert2JSON_AvisoList(smgslist, total));
                 break;
             case 8:
@@ -284,6 +291,76 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
         return epd;
     }
 
+    public String copySelectedDocs() throws IOException {
+        log.info("copySelectedDocs");
+        PackDoc packDoc = getPackDocDAO().findById(getSearch().getPackId(), false);
+
+        List<Long> docHids = defaultDeserializer.read(new ArrayList<Long>(){}.getClass().getGenericSuperclass(), jsonRequest);
+        PackDoc newPackDoc = null;
+        for(CimSmgs cimSmgs: packDoc.getCimSmgses()){
+            for(Long docHid: docHids){
+                if(cimSmgs.getDocType1().longValue() == docHid) {
+                    //copy and save smgs
+                    smgs = doc2docAllMapper.copy(cimSmgs, CimSmgs.class);
+                    if(newPackDoc != null){
+                        smgs.setPackDoc(newPackDoc);
+                    }
+                    smgs.setRoute(cimSmgs.getRoute());
+                    smgs.setType(cimSmgs.getType());
+                    smgs.setDocType1(cimSmgs.getDocType1());
+                    smgs.prepare4save();
+                    add();
+                    if(newPackDoc == null){
+                        newPackDoc = smgs.getPackDoc();
+                    }
+                    docHids.remove(docHid);
+                    break;
+                }
+            }
+            if(docHids.size() == 0){
+                break;
+            }
+        }
+
+        if(docHids.size() > 0){
+            for(CimSmgsInvoice inv: packDoc.getCsInvoices()){
+                for(Long docHid: docHids){
+                    if(inv.getDocType1().longValue() == docHid) {
+                        //copy and save invoice
+                        invoice = invice2InvoiceMapper.copy(inv, CimSmgsInvoice.class);
+
+                        if(newPackDoc != null){
+                            invoice.setPackDoc(newPackDoc);
+                        }
+                        invoice.setRoute(inv.getRoute());
+                        invoice.setDocType1(inv.getDocType1());
+                        invoice.prepare4save();
+
+                        Invoice_A invoice_a = new Invoice_A();
+                        invoice_a.setInvoice(invoice);
+                        invoice_a.setUser(getUser());
+                        invoice_a.setInvoiceDAO(new InvoiceDAOHib());
+                        invoice_a.setPackDocDAO(new PackDocDAOHib());
+                        invoice_a.add();
+
+                        if(newPackDoc == null){
+                            newPackDoc = invoice.getPackDoc();
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+        setJSONData(Constants.convert2JSON_True());
+        return SUCCESS;
+    }
+
+    private String jsonRequest;
+    private Deserializer defaultDeserializer;
+    private CimSmgsInvoice invoice;
+    private Mapper invice2InvoiceMapper;
+    private Mapper doc2docAllMapper;
     private Mapper mapper;
     private Mapper epd2DocUpdateMapper;
     private Mapper doc2EpdAddMapper;
@@ -302,6 +379,22 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
     private Print print;
     private UsrDAO usrDAO;
     private DocDirDAO docDirDAO;
+
+    public void setJsonRequest(String jsonRequest) {
+        this.jsonRequest = jsonRequest;
+    }
+
+    public void setDefaultDeserializer(Deserializer defaultDeserializer) {
+        this.defaultDeserializer = defaultDeserializer;
+    }
+
+    public void setInvice2InvoiceMapper(Mapper invice2InvoiceMapper) {
+        this.invice2InvoiceMapper = invice2InvoiceMapper;
+    }
+
+    public void setDoc2docAllMapper(Mapper doc2docAllMapper) {
+        this.doc2docAllMapper = doc2docAllMapper;
+    }
 
     enum EPD_ACTION {ADD, UPDATE}
 

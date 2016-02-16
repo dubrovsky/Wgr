@@ -41,10 +41,15 @@
         </action>
 
 
+        <action name="SmgsIftmin_sendIftminDBIn" method="sendIftminDBIn" class="com.bivc.cimsmgs.actions.exchange.Iftmin_A">
+            <result name="success" type="json"/>
+            <interceptor-ref name="fileUploadStack"/>
+        </action>
+
         <action name="SmgsIftmin_*" method="{1}" class="com.bivc.cimsmgs.actions.exchange.Iftmin_A">
             <result name="success" type="json"/>
             <result name="view" type="stream">
-                <param name="contentType">application/xml</param>
+                <param name="contentType">application/zip</param>
                 <param name="contentDisposition">attachment;filename="${fileName}"</param>
                 <param name="contentLength">${fileLength}</param>
             </result>
@@ -62,6 +67,11 @@
 
         <action name="Tdg_*" method="{1}" class="com.bivc.cimsmgs.actions.exchange.Tdg_A">
             <result name="success" type="json"/>
+            <result name="view" type="stream">
+                <param name="contentType">application/xml</param>
+                <param name="contentDisposition">attachment;filename="${fileName}"</param>
+                <param name="contentLength">${fileLength}</param>
+            </result>
         </action>
 
         <action name="GreenRail_*" method="{1}" class="com.bivc.cimsmgs.actions.exchange.GreenRail_A">
@@ -91,6 +101,10 @@
             <interceptor-ref name="fileUploadStack"/>
         </action>
         <action name="File_uploadAviso" method="uploadAviso" class="com.bivc.cimsmgs.actions.File_A">
+            <result name="success" type="json"/>
+            <interceptor-ref name="fileUploadStack"/>
+        </action>
+        <action name="File_uploadAvisoDB" method="uploadAvisoDB" class="com.bivc.cimsmgs.actions.File_A">
             <result name="success" type="json"/>
             <interceptor-ref name="fileUploadStack"/>
         </action>
@@ -218,6 +232,10 @@
         </action>
 
         <action name="Sta_*" method="{1}" class="com.bivc.cimsmgs.actions.nsi.Sta_A">
+            <result name="success" type="json"/>
+        </action>
+
+        <action name="Carrier_*" method="{1}" class="com.bivc.cimsmgs.actions.nsi.Carrier_A">
             <result name="success" type="json"/>
         </action>
 

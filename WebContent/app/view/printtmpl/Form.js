@@ -135,8 +135,43 @@ Ext.define('TK.view.printtmpl.Form', {
                             ]
                         },
 //                        {text: 'Таблица?', dataIndex: 'grps', width:60,editor:{xtype:'trigger',triggerCls:'dir',editable:false}/*, renderer: this.onRenderGroups*/},
+                        {text:'Поворот', dataIndex:'rotate', width:60, editor:{xtype:'numberfield', maxLength:3, minValue:-360, maxValue:360, decimalPrecision:0}},
+                        {text:'Граница?', xtype: 'checkcolumn', dataIndex:'border', width:65},
+                        {text:'Подчеркнуть?', xtype: 'checkcolumn', dataIndex:'underline', width:65},
                         {text:'Страница', dataIndex:'page', width:60, editor:{xtype:'numberfield', maxLength:2, minValue:1, maxValue:10, decimalPrecision:0}},
-                        {text:'Печатать?', xtype: 'checkcolumn', dataIndex:'print', width:65}
+                        {text:'Печатать?', xtype: 'checkcolumn', dataIndex:'print', width:65},
+                        {text:'Таблица?', /*dataIndex:'tableColumns',*/ width:65, renderer: function(val, meta, record){
+                            var count = record.table().count();
+                            return count == 0 ? '' : count;
+                        }},
+                        {
+                            xtype: 'actioncolumn',
+                            width: 30,
+                            items: [{
+                                icon: './resources/images/table.png',
+                                tooltip: 'Table',
+                                handler: function(view, rowIndex, colIndex) {
+                                    var grid = view.ownerCt;
+                                    grid.fireEvent('needTable', grid, grid.getStore().getAt(rowIndex));
+                                }
+                            }]
+                        },
+                        {text:'Фразы?', width:65, renderer: function(val, meta, record){
+                            var count = record.phrases().count();
+                            return count == 0 ? '' : count;
+                        }},
+                        {
+                            xtype: 'actioncolumn',
+                            width: 30,
+                            items: [{
+                                icon: './resources/images/table.png',
+                                tooltip: 'Table',
+                                handler: function(view, rowIndex, colIndex) {
+                                    var grid = view.ownerCt;
+                                    grid.fireEvent('needPhrases', grid, grid.getStore().getAt(rowIndex));
+                                }
+                            }]
+                        }
                     ];
 
                     if (tkUser.hasPriv('CIM_PRINT_TEMPLATES_ADMIN')){
@@ -170,6 +205,29 @@ Ext.define('TK.view.printtmpl.Form', {
                     var prnTmpls = Ext.getStore('PrintTemplate'),
                         prnTmpl = prnTmpls.first() || prnTmpls.add(Ext.create('TK.model.PrintTemplate'))[0];
                     this.reconfigure(prnTmpl.printData());
+                },
+                prepareData: function() {
+                    var data = {}, doc = this.doc, coll = this.coll;
+                    this.store.each(function(rec, ind, len){
+                        rec.fields.each(function(field, i, l){
+                            data[doc+'.'+coll+'['+ind+'].'+field.name] = rec.data[field.name];
+                        });
+                        if(rec.table().count() > 0){
+                            rec.table().each(function(rec, indx, len){
+                                rec.fields.each(function(field, i, l){
+                                    data[doc + '.' + coll + '[' + ind + '].printDataTables[' + indx + '].' + field.name] = rec.data[field.name];
+                                });
+                            },this);
+                        }
+                        if(rec.phrases().count() > 0){
+                            rec.phrases().each(function(rec, indx, len){
+                                rec.fields.each(function(field, i, l){
+                                    data[doc + '.' + coll + '[' + ind + '].printDataPhrases[' + indx + '].' + field.name] = rec.data[field.name];
+                                });
+                            },this);
+                        }
+                    }, this);
+                    return data;
                 }
             }
         ]

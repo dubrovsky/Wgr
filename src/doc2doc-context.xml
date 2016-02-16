@@ -8,11 +8,19 @@
     <bean id="smgsDAO" class="com.bivc.cimsmgs.dao.hibernate.SmgsDAOHib" />
     <bean id="invoiceDAO" class="com.bivc.cimsmgs.dao.hibernate.InvoiceDAOHib" />
 
+    <bean id="jacksonObjectMapper" class="com.fasterxml.jackson.databind.ObjectMapper" />
+    <bean id="defaultDeserializer" class="com.bivc.cimsmgs.formats.json.jackson.DeserializerImpl" >
+        <constructor-arg ref="jacksonObjectMapper"/>
+    </bean>
+
     <bean id="cimSmgsMapper" class="com.bivc.cimsmgs.doc2doc.orika.customize.CimSmgsCustomMapper"/>
     <bean id="cimSmgsAllCopyMapper" class="com.bivc.cimsmgs.doc2doc.orika.customize.CimSmgsAllCopyCustomMapper"/>
     <bean id="cimSmgsAppendMapper" class="com.bivc.cimsmgs.doc2doc.orika.customize.CimSmgsAppendCustomMapper"/>
     <bean id="cimSmgsCarListMapper" class="com.bivc.cimsmgs.doc2doc.orika.customize.CarListCustomMapper"/>
+    <bean id="cimSmgsCarListMapperAll" class="com.bivc.cimsmgs.doc2doc.orika.customize.CarListCustomMapperAll"/>
     <bean id="cimSmgsKonListMapper" class="com.bivc.cimsmgs.doc2doc.orika.customize.KonListCustomMapper"/>
+    <bean id="cimSmgsKonListMapperAll" class="com.bivc.cimsmgs.doc2doc.orika.customize.KonListCustomMapperAll"/>
+    <bean id="invoiceAllCopyCustomMapper" class="com.bivc.cimsmgs.doc2doc.orika.customize.InvoiceAllCopyCustomMapper"/>
 
     <bean id="avisoConfigMapper" class="com.bivc.cimsmgs.doc2doc.orika.CimSmgsConfigMapper" init-method="init"
         p:cimSmgsMapper-ref="cimSmgsMapper"
@@ -28,7 +36,7 @@
           p:cimSmgsMapper-ref="cimSmgsAppendMapper"
           p:cimSmgsKonListMapper-ref="cimSmgsKonListMapper"
           p:cimSmgsCarListMapper-ref="cimSmgsCarListMapper"
-          p:cimSmgsExcludes="cimSmgsDocses9,cimSmgsDocses136,cimSmgsDocses7,cimSmgsPlombs,cimSmgsCarLists,cimSmgsDocses13,cimSmgsPlatels"
+          p:cimSmgsExcludes="cimSmgsDocses9,cimSmgsDocses136,cimSmgsDocses7,cimSmgsPlombs,cimSmgsCarLists,cimSmgsDocses13,cimSmgsPlatels,cimSmgsPerevoz"
           p:cimSmgsCarListExcludes="cimSmgsKonLists"
           p:cimSmgsKonListExcludes="cimSmgsGruzs"
     />
@@ -39,12 +47,19 @@
 
     <bean id="smgsAllCopyConfigMapper" class="com.bivc.cimsmgs.doc2doc.orika.CimSmgsConfigMapper" init-method="init"
           p:cimSmgsMapper-ref="cimSmgsAllCopyMapper"
+          p:cimSmgsCarListMapper-ref="cimSmgsCarListMapperAll"
+          p:cimSmgsKonListMapper-ref="cimSmgsKonListMapperAll"
           p:cimSmgsExcludes="cimSmgsCarLists"
           p:cimSmgsCarListExcludes="cimSmgsKonLists"
           p:cimSmgsKonListExcludes="cimSmgsGruzs"
     />
-    <bean id="smgsAllCopyMapper" class="com.bivc.cimsmgs.doc2doc.orika.MapperImpl" p:mapper-ref="smgsAllCopyConfigMapper"/>
 
+    <bean id="invoiceAllCopyConfigMapper" class="com.bivc.cimsmgs.doc2doc.orika.InvoiceConfigMapper" init-method="init"
+          p:invoiceMapper-ref="invoiceAllCopyCustomMapper"
+    />
+
+    <bean id="smgsAllCopyMapper" class="com.bivc.cimsmgs.doc2doc.orika.MapperImpl" p:mapper-ref="smgsAllCopyConfigMapper"/>
+    <bean id="invoiceAllCopyMapper" class="com.bivc.cimsmgs.doc2doc.orika.MapperImpl" p:mapper-ref="invoiceAllCopyConfigMapper"/>
 
     <bean id="aviso2SmgsGu" class="com.bivc.cimsmgs.doc2doc.Aviso2SmgsGu">
         <constructor-arg ref="avisoMapper"/>
@@ -120,6 +135,9 @@
           p:doc2EpdAddMapper-ref="doc2EpdAddMapper"
           p:doc2EpdUpdateMapper-ref="doc2EpdUpdateMapper"
           p:epd2DocUpdateMapper-ref="epd2DocUpdateMapper"
+          p:doc2docAllMapper-ref="smgsAllCopyMapper"
+          p:invice2InvoiceMapper-ref="invoiceAllCopyMapper"
+          p:defaultDeserializer-ref="defaultDeserializer"
     />
 
     <bean id="epdAddConfig" class="com.bivc.cimsmgs.doc2doc.orika.epd.EpdInvoiceAddConfig" init-method="init">

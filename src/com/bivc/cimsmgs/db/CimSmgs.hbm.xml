@@ -78,7 +78,7 @@
             <column name="G_13" length="240"/>
         </property>
         <property name="g141" type="string">
-            <column name="G_14_1" length="40"/>
+            <column name="G_14_1" length="1024"/>
         </property>
         <property name="g142" type="string">
             <column name="G_14_2" length="32"/>
@@ -1003,6 +1003,18 @@
         <property name="src" type="char">
             <column name="SRC" length="1"/>
         </property>
+        <property name="zayav_otpr" type="string">
+            <column name="ZAYAV_OTPR" length="1024"/>
+        </property>
+        <property name="zayav_otpr_c" type="java.lang.Byte">
+            <column name="ZAYAV_OTPR_C" precision="1" scale="0"/>
+        </property>
+        <property name="g141c" type="java.lang.Byte">
+            <column name="G_14_1_C" precision="1" scale="0"/>
+        </property>
+        <property name="g26c" type="java.lang.Byte">
+            <column name="G_26_C" precision="1" scale="0"/>
+        </property>
 
         <map name="cimSmgsDocses7" cascade="all, delete-orphan" inverse="true" sort="natural" where="FIELD_NUM = '7'" lazy="true" batch-size="50">
             <key>
@@ -1061,6 +1073,14 @@
             <one-to-many class="com.bivc.cimsmgs.db.CimSmgsPlomb"/>
         </map>
 
+        <map name="cimSmgsPerevoz" cascade="all, delete-orphan" inverse="true" sort="natural" lazy="true" batch-size="50">
+            <key>
+                <column name="HID_CS" precision="20" scale="0" not-null="true"/>
+            </key>
+            <map-key column="SORT" type="byte"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsPerevoz"/>
+        </map>
+
         <set name="iftminLogs" inverse="true" lazy="true" table="B_IFTMIN_LOG" where="MES_NAME = 'IFTMIN' AND SRC = 'CIMSMGS' AND upper(DIR) = upper('bch')" order-by="DATTR DESC" batch-size="50">
             <key>
                 <column name="HID_SRC" precision="20" scale="0"/>
@@ -1080,6 +1100,13 @@
                 <column name="HID_CS" precision="20" scale="0"/>
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.TdgLog"/>
+        </set>
+
+        <set name="tbc2Logs" inverse="true" lazy="true" table="TBC2_LOG" order-by="DATTR DESC" batch-size="50">
+            <key>
+                <column name="HID_SRC" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.Tbc2Log"/>
         </set>
 
         <set name="csComnt" inverse="true" lazy="true" table="CS_COMNT" batch-size="50">

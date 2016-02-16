@@ -236,6 +236,10 @@ public class DaoInitInterceptor implements Interceptor {
         if (action instanceof MailSettingsDAOAware) {
             ((MailSettingsDAOAware) action).setMailSettingsDAO(new MailSettingsDAOHib());
         }
+
+        if (action instanceof NsiCarrierDAOAware) {
+            ((NsiCarrierDAOAware) action).setNsiCarrierDAO(new NsiCarrierDAOHib());
+        }
         return actionInvocation.invoke();
     }
 }

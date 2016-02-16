@@ -170,18 +170,15 @@ public class File_A extends CimSmgsSupport_A implements FileDAOAware, FileInfDAO
     }*/
     public String uploadAviso() throws Exception {
         log.info("uploadAviso");
-//        byte docType = -1;
-//        BigDecimal type = null;
-        /*if ("aviso".equals(getSearch().getDocType())) {
-            docType = 3;
-            type = new BigDecimal(3);
-        } else if ("avisogu29k".equals(getSearch().getDocType())) {
-            docType = 6;
-            type = new BigDecimal(20);
-        }*/
-//        AvisoLoader al = new AvisoLoader();
-//        PackDoc pack = al.loadXML(fileData.getAbsolutePath(), getUser().getUsername(), getUser().getUsr().getGroup().getName(), new Route(getSearch().getRouteId()), getUser().getUsr().getGroup(), docType, type, getSearch().getKod());
         PackDoc pack = new AvisoLoader().loadXML(fileData, getUser().getUsername(), getUser().getUsr().getGroup().getName(), new Route(getSearch().getRouteId()), getUser().getUsr().getGroup(), new BigDecimal(getSearch().getDocId()), getSearch().getType(), getSearch().getKod());
+        smgs = pack.getCimSmgses().iterator().next(); // for status log
+        setJSONData(Constants.convert2JSON_True());
+        return SUCCESS;
+    }
+
+    public String uploadAvisoDB() throws Exception {
+        log.info("uploadAvisoDB");
+        PackDoc pack = new ExchangeServer().receiveDBXML(fileData, getUser().getUsername(), getUser().getUsr().getGroup().getName(), new Route(getSearch().getRouteId()), getUser().getUsr().getGroup());
         smgs = pack.getCimSmgses().iterator().next(); // for status log
         setJSONData(Constants.convert2JSON_True());
         return SUCCESS;

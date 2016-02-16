@@ -178,15 +178,15 @@ Ext.define('TK.controller.Doc2Doc', {
                     if(form.isValid()){
                         form.submit({
                             url: 'Doc2Doc_download.do',
-                            params: {type: store.getAt(1).get('type'), docId: store.getAt(1).get('src'), 'search.routeId': store.getAt(1).get('routeId'), groupBy:groupBy},
+                            params: {type: store.getAt(0).get('type'), docId: store.getAt(0).get('src'), 'search.routeId': store.getAt(0).get('routeId'), groupBy:groupBy},
                             waitMsg: 'Загрузка',
                             scope: this,
                             success: function(form1, action) {
 
                                 window.open('Doc2Doc_download.do?' +
-                                    'search.npoezd=' + form1.findField('search.npoezd').getValue() + '&type=' + store.getAt(1).get('type')+
-                                    '&docId=' + store.getAt(1).get('src') + '&token=1&'+'groupBy=' + groupBy +
-                                    '&search.routeId=' + store.getAt(1).get('routeId') + '&search.docType=' + docType,
+                                    'search.npoezd=' + form1.findField('search.npoezd').getValue() + '&type=' + store.getAt(0).get('type')+
+                                    '&docId=' + store.getAt(0).get('src') + '&token=1&'+'groupBy=' + groupBy +
+                                    '&search.routeId=' + store.getAt(0).get('routeId') + '&search.docType=' + docType,
                                     '_self','');
                                 win.close();
                                 me.runProgressBar4LongOperation();
@@ -213,7 +213,7 @@ Ext.define('TK.controller.Doc2Doc', {
                     if(form.isValid()){
                         form.submit({
                             url: 'Doc2Doc.do',
-                            params: {'search.type': store.getAt(1).get('type'), 'search.docId': store.getAt(1).get('src'), 'search.routeId': store.getAt(1).get('routeId'), groupBy: groupBy, status:10},
+                            params: {'search.type': store.getAt(0).get('type'), 'search.docId': store.getAt(0).get('src'), 'search.routeId': store.getAt(0).get('routeId'), groupBy: groupBy, status:10},
                             waitMsg: 'Загрузка',
                             scope: this,
                             success: function(form, action) {
@@ -276,11 +276,11 @@ Ext.define('TK.controller.Doc2Doc', {
             hid = grid.selModel.getLastSelected().get('hid');
 
         window.open('Doc2Doc_downloadExcel.do?' +
-            'type=' + store.getAt(1).get('type')+
+            'type=' + store.getAt(0).get('type')+
             '&hid=' + hid +
-            '&docId=' + store.getAt(1).get('src') +
+            '&docId=' + store.getAt(0).get('src') +
             '&groupBy=' + groupBy +
-            '&search.routeId=' + store.getAt(1).get('routeId') +
+            '&search.routeId=' + store.getAt(0).get('routeId') +
             '&search.docType=' + docType,
             '_self','');
 

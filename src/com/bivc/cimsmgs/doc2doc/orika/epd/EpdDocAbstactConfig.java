@@ -40,6 +40,8 @@ public class EpdDocAbstactConfig extends ConfigurableMapper {
                         .field("g49r", "g49r")
                         .field("g162r", "g162r")
                         .field("g692", "g692")
+                        .field("g101r", "g101r")
+                        .field("g121", "g121")
                 ;
 
         classMapBuilder

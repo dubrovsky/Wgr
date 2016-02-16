@@ -14,8 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContext;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -136,17 +135,17 @@ public class Iftmin_A extends CimSmgsSupport_A implements SmgsDAOAware, ServletC
         log.info("sendTBCOut");
         ExchangeServer server = new ExchangeServer();
 
-        String[] result = server.SendTBC2File(getHid());
-        byte[] arr = result[0].getBytes("UTF-8");
-        inputStream = new ByteArrayInputStream(arr);
-        fileName = result[1] + ".xml";
-        fileLength = arr.length;
+        byte[] result = server.getFTSXMLFile(smgs.getHid(), getUser().getUsr().getUn(), servletContext);
+//        byte[] arr = result[0].getBytes("UTF-8");
+        inputStream = new ByteArrayInputStream(result);
+        fileName = result[1] + ".zip";
+        fileLength = result.length;
         smgs = getSmgsDAO().findById(smgs.getHid(), false); // 4 status logging
 
         return "view";
     }
 
-    public String sendIftminDB() throws Exception {
+    public String sendIftminDBOut() throws Exception {
         log.info("sendIftminDB");
         ExchangeServer server = new ExchangeServer();
         String text = server.getIftminText(getHid_cs(), getUser().getUsr().getUn());
@@ -154,6 +153,25 @@ public class Iftmin_A extends CimSmgsSupport_A implements SmgsDAOAware, ServletC
         fileName = String.format("IFTMIN-%s.txt", getHid_cs());
         fileLength = text.length();
         return "view-text";
+    }
+
+    public String sendIftminDBIn() throws IOException {
+        log.info("sendIftminDBIn");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileData), "CP1250"));
+        String line;
+        StringBuilder stringBuilder = new StringBuilder();
+        String ls = System.getProperty("line.separator");
+
+        while ((line = reader.readLine()) != null) {
+            stringBuilder.append(line);
+            stringBuilder.append(ls);
+        }
+        reader.close();
+
+        ExchangeServer server = new ExchangeServer();
+        server.receiveIftminText(stringBuilder.toString(), getUser().getUsername(), getUser().getUsr().getGroup().getName(), route, getUser().getUsr().getGroup());
+        setJSONData(Constants.convert2JSON_True());
+        return SUCCESS;
     }
 
     public String saveFts() throws Exception {
@@ -255,6 +273,34 @@ public class Iftmin_A extends CimSmgsSupport_A implements SmgsDAOAware, ServletC
     private InputStream inputStream;
     private String fileName;
     private int fileLength;
+    private File fileData;
+    private String contentType;
+    private String filename;
+    private Route route;
+
+    public void setUpload(File file) {
+        this.fileData = file;
+    }
+
+    public File getUpload() {
+        return this.fileData;
+    }
+    public void setUploadContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public String getUploadContentType() {
+        return this.contentType;
+    }
+
+    public void setUploadFileName(String filename) {
+        this.filename = filename;
+    }
+
+    public String getUploadFileName() {
+        return this.filename;
+    }
+
 
     public void setSmgsDAO(SmgsDAO dao) {
         smgsDAO = dao;
@@ -307,5 +353,13 @@ public class Iftmin_A extends CimSmgsSupport_A implements SmgsDAOAware, ServletC
 
     public void setFileLength(int fileLength) {
         this.fileLength = fileLength;
+    }
+
+    public Route getRoute() {
+        return route;
+    }
+
+    public void setRoute(Route route) {
+        this.route = route;
     }
 }

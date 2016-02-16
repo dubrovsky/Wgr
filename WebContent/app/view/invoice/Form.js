@@ -120,7 +120,7 @@ Ext.define('TK.view.invoice.Form', {
                     {xtype:'textarea', fieldLabel:this.labelNote,name: 'invoice.prim', itemId:'invoice.prim', maxLength:250,flex: 1}
                 ]
             },
-            {xtype:'detailgrid', title:this.labelCargo, itemId:'gruz',
+            {xtype:'detailgrid', title:this.labelCargo, itemId:'gruz', height: 200,
                 doc:'invoice',
                 coll:'invoiceGruzs',
                 features: [{
@@ -146,12 +146,12 @@ Ext.define('TK.view.invoice.Form', {
                                     {text: 'Код', dataIndex: 'kypk', editor:{xtype:'textfield', maxLength:5}}
                                 ]
                             },
-                            {text: this.headerPackNum, dataIndex: 'kolm', width:70, summaryType: 'sum', summaryRenderer: this.sumRenderer,editor:{xtype:'numberfield', maxLength:10, minValue: 0}},
-                            {text: this.headerBrutto, dataIndex: 'mbrt', width:70,  summaryType: 'sum', summaryRenderer: this.sumRenderer,editor:{xtype:'numberfield', maxLength:13, decimalPrecision:3,minValue: 0}},
-                            {text: this.headerNetto, dataIndex: 'mnet', width:70,  summaryType: 'sum', summaryRenderer: this.sumRenderer,editor:{xtype:'numberfield', maxLength:13, decimalPrecision:3,minValue: 0}},
-                            {text: this.headerQuantity, dataIndex: 'kole', width:70,  editor:{xtype:'numberfield', maxLength:10, minValue: 0}},
+                            {text: this.headerPackNum, dataIndex: 'kolm', width:70, summaryType: 'sum', summaryRenderer: this.sumRenderer, editor:{xtype:'numberfield', maxLength:10, decimalPrecision:0, minValue: 0}},
+                            {text: this.headerBrutto, dataIndex: 'mbrt', width:70,  summaryType: 'sum', summaryRenderer: this.sumRenderer, editor:{xtype:'numberfield', maxLength:13, decimalPrecision:3, minValue: 0}},
+                            {text: this.headerNetto, dataIndex: 'mnet', width:70,  summaryType: 'sum', summaryRenderer: this.sumRenderer, editor:{xtype:'numberfield', maxLength:13, decimalPrecision:3, minValue: 0}},
+                            {text: this.headerQuantity, dataIndex: 'kole', width:70,  editor:{xtype:'numberfield', maxLength:17, minValue: 0, decimalPrecision:6}},
                             {text: this.headerProdUnit, dataIndex: 'eizm', width:70, editor:{xtype:'textfield', maxLength:10, minValue: 0}},
-                            {text: this.headerProdPrice, dataIndex: 'cost', width:70,  editor:{xtype:'numberfield', maxLength:10, minValue: 0}},
+                            {text: this.headerProdPrice, dataIndex: 'cost', width:70,  editor:{xtype:'numberfield', maxLength:17, minValue: 0, decimalPrecision:6}},
                             {text: this.headerTotalValue, dataIndex: 'itogo', width:95,  summaryType: 'sum', summaryRenderer: this.sumRenderer,editor:{xtype:'numberfield', maxLength:20, minValue:0}},
                             {text: this.headerType, dataIndex: 'type', width:70, editor:{xtype:'combobox', maxLength:50, store: ['Груз','Доп.расходы','Другое'], typeAhead: true, forceSelection: true, triggerAction: 'all', selectOnFocus:true}}
                         ],
@@ -159,7 +159,7 @@ Ext.define('TK.view.invoice.Form', {
                     };
                 },
                 sumRenderer: function(value, summaryData, dataIndex){
-                    return value ? parseFloat(value.toFixed(2)) : value;
+                    return value ? parseFloat(value.toFixed(3)) : value;
                 },
                 newRecord: function(){
                     return Ext.create('TK.model.InvoiceGruz', {
@@ -167,9 +167,9 @@ Ext.define('TK.view.invoice.Form', {
                     });
                 },
                 copyValues2MainFlds:function(){
-                    var coll = this.bufData, rows = new Array();
+                    var coll = this.bufData, rows = [];
                     for(var index in coll){
-                        var row = new Array();
+                        var row = [];
                         row.push(coll[index].tnved ? coll[index].tnved : '');
                         row.push(coll[index].nzgr ? coll[index].nzgr : '');
                         row.push(coll[index].nzyp ? coll[index].nzyp : '');
@@ -194,10 +194,10 @@ Ext.define('TK.view.invoice.Form', {
                 onEdit: function(editor, e){
                     if(e.field == 'kole' || e.field == 'cost'){
                         var data = e.record.data,
-                            val1 = parseInt(data.kole),
-                            val2 = parseInt(data.cost);
+                            val1 = parseFloat(data.kole),
+                            val2 = parseFloat(data.cost);
                         if(val1 && val2){
-                            data.itogo = val1 * val2;
+                            data.itogo = (val1 * val2).toFixed(2);
                         } else {
                             data.itogo = null;
                         }

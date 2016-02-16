@@ -29,8 +29,6 @@ public class EDIConvertor97A extends EDIConvertor {
   final static private Logger log = LoggerFactory.getLogger(EDIConvertor97A.class);
   protected static final int SEL_LENGTH = 50;
 
-  protected static Pattern UNH = Pattern.compile("UNH\\+.{1,14}\\+.{1,6}(:|\\+)");
-
   protected static final SimpleDateFormat dateTimeFormater1 = new SimpleDateFormat("dd.MM.yyyy");
   private static final SimpleDateFormat comntDateTimeFormater = Convertor.dtf;
   protected static final String encoding = "Cp1251";

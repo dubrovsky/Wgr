@@ -18,16 +18,14 @@ Ext.define('TK.view.stat.Form', {
 		this.buildDockedItems(config);
 	},
 	buildItems      :function (config) {
-		config.items = [
-			{
+		config.items = [{
 				xtype   :'fieldset',
 				title   :this.lableDate,
 				defaults:{
 					anchor:'100%',
 					layout:{type:'hbox'}
 				},
-				items   :[
-					{
+				items   :[{
 						xtype        :'fieldcontainer',
 						fieldLabel   :this.lableDate1,
 						combineErrors:true,
@@ -39,8 +37,7 @@ Ext.define('TK.view.stat.Form', {
 							{xtype:'datefield', value:this.store.proxy.extraParams['search.date1'], name:'search.date1', width:80},
 							{xtype:'timefield', value:this.store.proxy.extraParams['search.date11'], format:'H:i', increment:5, name:'search.date11', width:70}
 						]
-					},
-					{
+					}, {
 						xtype        :'fieldcontainer',
 						fieldLabel   :this.lableDate2,
 						combineErrors:false,
@@ -52,7 +49,9 @@ Ext.define('TK.view.stat.Form', {
 							{xtype:'timefield', value:this.store.proxy.extraParams['search.date21'], format:'H:i', increment:5, name:'search.date21', width:70}
 						]
 					}
-				]},
+			]},
+			{fieldLabel:'ID', value:this.store.proxy.extraParams['search.hid'], name:'search.hid'},
+			{fieldLabel:'Номер накладной', value:this.store.proxy.extraParams['search.num'], name:'search.num'},
 			{fieldLabel:this.lableZakazNum, value:this.store.proxy.extraParams['search.zakazNo'], name:'search.zakazNo'},
 			{fieldLabel:this.lableStatus, xtype:'combo', value:this.store.proxy.extraParams['search.status'], name:'search.status', width:120, typeAhead:true, forceSelection:true, triggerAction:'all', selectOnFocus:true, queryMode:'local',
 				store  :[

@@ -73,13 +73,13 @@ Ext.define('TK.view.aviso.List', {
     renderStatus: function(val) {
         switch(val){
             case '3':
-                return '<span style="color:#daa520;white-space:normal;font-weight:bold;">'+ 'Для согласования'+ '</span>';
+                return '<span style="color:#daa520;white-space:normal;font-weight:bold;">'+ this.txtForApproval + '</span>';
             case '4':
-                return '<span style="color:green;white-space:normal;font-weight:bold;">'+ 'Согласована'+ '</span>';
+                return '<span style="color:green;white-space:normal;font-weight:bold;">'+ this.txtApproved + '</span>';
             case '6':
-                return '<span style="color:red;white-space:normal;font-weight:bold;">'+ 'НЕ Согласована'+ '</span>';
+                return '<span style="color:red;white-space:normal;font-weight:bold;">'+ this.txtNotApproved + '</span>';
             case '7':
-                return '<span style="color:#828a98;white-space:normal;font-weight:bold;">'+ 'Заблокирована'+ '</span>';
+                return '<span style="color:#828a98;white-space:normal;font-weight:bold;">'+ this.txtBlocked + '</span>';
         }
         return '';
     },

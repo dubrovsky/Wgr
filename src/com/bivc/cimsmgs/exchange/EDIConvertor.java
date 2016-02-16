@@ -8,6 +8,7 @@ import org.dom4j.io.SAXReader;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -23,9 +24,14 @@ public abstract class EDIConvertor extends Convertor {
   protected static final SimpleDateFormat dunb  = new SimpleDateFormat("yyMMddHHmm");
   protected static final SimpleDateFormat df203 = new SimpleDateFormat("yyyyMMddHHmm");
   protected static final SimpleDateFormat df204 = new SimpleDateFormat("yyyyMMddHHmmss");
+  protected static final SimpleDateFormat dg16   = new SimpleDateFormat("MM-dd-HH");
   protected static final Pattern prin_p = Pattern.compile("^[a-zA-Z]{4}");
   protected static final Pattern nkon_p = Pattern.compile("[0-9]{7,9}$");
   protected static final Pattern prinnkon_p = Pattern.compile("^[a-zA-Z]{4}[0-9]{7,9}$");
+  protected static final Pattern UNH = Pattern.compile("UNH\\+.{1,14}\\+.{1,6}(:|\\+)");
+
+  protected static final BigDecimal TWO = new BigDecimal(2);
+  protected static final BigDecimal THREE = new BigDecimal(3);
 
   protected EdiDir ediDir;
   protected String recipient = "IRC.RW.BY";

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.Tbc2Pack" table="TBC2_PACK" dynamic-insert="true" dynamic-update="true">
+        <id name="hid" type="long">
+            <column name="HID" precision="30" scale="0"/>
+            <generator class="sequence">
+                <param name="sequence">TBC2_PACK_HID</param>
+            </generator>
+        </id>
+        <property name="packId" type="string" column="PACK_ID" length="50"/>
+        <property name="dattr" type="timestamp" column="DATTR" length="7"/>
+
+        <set name="tbc2Status" inverse="true" lazy="true" table="TBC2_STATUS" order-by="CHANGE_DATE DESC" batch-size="50">
+            <key>
+                <column name="HID_PACK" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.Tbc2Status"/>
+        </set>
+    </class>
+</hibernate-mapping>

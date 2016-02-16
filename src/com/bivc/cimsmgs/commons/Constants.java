@@ -247,6 +247,40 @@ public class Constants {
         return buffer.toString();
     }
 
+    public static String convert2JSON_NsiCarrier(List<Carrier> data, Long total) {
+        StringBuffer buffer = new StringBuffer();
+        if (data != null && data.size() > 0) {
+            buffer.append("{total:" + total + ", rows: [");
+
+            for (Carrier carrier : data) {
+                buffer.append("{");
+                buffer.append("carrUn:'");
+                buffer.append(carrier.getCarrUn());
+                buffer.append("',carrId:'");
+                buffer.append(carrier.getCarrId());
+                buffer.append("',countryNo:'");
+                buffer.append(javascriptString(carrier.getCountryNo()));
+                buffer.append("',carrNo:'");
+                buffer.append(javascriptString(carrier.getCarrNo()));
+                buffer.append("',carrNameShort:'");
+                buffer.append(carrier.getCarrNameShort());
+                buffer.append("',carrName:'");
+                buffer.append(carrier.getCarrName());
+                buffer.append("',carrName:'");
+                buffer.append(carrier.getCarrName());
+                buffer.append("',carrName:'");
+                buffer.append(carrier.getCarrName());
+                buffer.append("'},");
+            }
+
+            buffer.replace(buffer.lastIndexOf(","), buffer.length(), "]}");
+        } else {
+            buffer.append("{total:0, rows:[]}");
+        }
+
+        return buffer.toString();
+    }
+
     public static String convert2JSON_SmgsList(List<CimSmgs> data, Long total, myUser usr) throws IllegalAccessException,
             InvocationTargetException, NoSuchMethodException {
         StringBuffer buffer = new StringBuffer();
@@ -291,6 +325,16 @@ public class Constants {
                         if (elem.getCsComnt() != null && elem.getCsComnt().size() > 0) {
                             buffer.append(",Comnt");
                             buffer.append(elem.getCsComnt().iterator().next().hasDetail() ? "-" : "+");
+                        }
+                    }
+                    buffer.append("'");
+
+                    buffer.append(",tbc2log:'");
+                    if(!elem.getTbc2Logs().isEmpty()){
+                        Tbc2Log tbc2Log = elem.getTbc2Logs().iterator().next();
+                        if(tbc2Log.getTbc2Pack() != null && !tbc2Log.getTbc2Pack().getTbc2Status().isEmpty()){
+                            Tbc2Status tbc2Status = tbc2Log.getTbc2Pack().getTbc2Status().iterator().next();
+                            buffer.append(javascriptString(tbc2Status.getDescription()));
                         }
                     }
                     buffer.append("'");
@@ -3205,5 +3249,35 @@ public class Constants {
 
     public static Object findObjectByFieldValue(Collection collection, String field, Object value) {
         return CollectionUtils.find(collection, new BeanPredicate(field, PredicateUtils.equalPredicate(value)));
+    }
+
+    public static String convert2JSON_Tbc2Logs(Set<Tbc2Log> tbc2Logs) {
+        StringBuilder buffer = new StringBuilder();
+        if (tbc2Logs != null && tbc2Logs.size() > 0) {
+            buffer.append("{rows: [");
+            String prefix = "";
+            for(Tbc2Log tbc2Log: tbc2Logs){
+                if(tbc2Log.getTbc2Pack() != null && !tbc2Log.getTbc2Pack().getTbc2Status().isEmpty()){
+                    for(Tbc2Status tbc2Status: tbc2Log.getTbc2Pack().getTbc2Status()){
+                        buffer.append(prefix);
+                        prefix = ",";
+                        buffer.append("{");
+                        buffer.append("hid:");
+                        buffer.append(tbc2Status.getHid());
+                        buffer.append(",status_txt:'");
+                        buffer.append(javascriptString(tbc2Status.getDescription()));
+                        buffer.append("',result_txt:'");
+                        buffer.append(javascriptString(tbc2Status.getSignComment()));
+                        buffer.append("',date_tdg:'");
+                        buffer.append(tbc2Status.getChangeDate() != null ? new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(tbc2Status.getChangeDate()) : "");
+                        buffer.append("'}");
+                    }
+                }
+            }
+            buffer.append("]}");
+        } else {
+            buffer.append("{rows:[]}");
+        }
+        return buffer.toString();
     }
 }

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 12.07.2012 14:46:29 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.PrintDataTable" table="PRINT_DATA_TABLE" batch-size="50">
+        <id name="hid" type="java.lang.Long">
+            <column name="HID" precision="22" scale="0" />
+            <generator class="sequence">
+                <param name="sequence">PRINT_DATA_TABLE_SEQ</param>
+            </generator>
+        </id>
+        <many-to-one name="printData" class="com.bivc.cimsmgs.db.PrintData" fetch="select">
+            <column name="HID_PRINT_DATA" precision="22" scale="0" not-null="true" />
+        </many-to-one>
+        <!--<property name="name" type="string">
+            <column name="NAME" length="20" not-null="true" />
+        </property>-->
+        <property name="descr" type="string">
+            <column name="DESCR" length="300" />
+        </property>
+        <property name="width" type="java.lang.Float">
+            <column name="WIDTH" precision="6" scale="1" not-null="true" />
+        </property>
+        <property name="sort" type="java.lang.Integer">
+            <column name="SORT" length="4" scale="0" not-null="true"/>
+        </property>
+
+    </class>
+</hibernate-mapping>

@@ -30,8 +30,9 @@ Ext.define('TK.view.invoice.List', {
                         width: 85
                     }]
                 },
-                {text:this.headerSenderName, dataIndex:'notd', flex:1, renderer:TK.Utils.renderLongStr},
-                {text:this.headerReceiverName, dataIndex:'npol', flex:1, renderer:TK.Utils.renderLongStr}
+                {text:'№', dataIndex:'invoice', flex:1, renderer:TK.Utils.renderLongStr},
+                {text:this.headerSenderName, dataIndex:'notd', flex:3, renderer:TK.Utils.renderLongStr},
+                {text:this.headerReceiverName, dataIndex:'npol', flex:3, renderer:TK.Utils.renderLongStr}
             ],
             defaults:{}
         };
@@ -46,7 +47,13 @@ Ext.define('TK.view.invoice.List', {
                 {text: this.btnStat, iconCls:'filter', action:'filter', itemId:'local'},'-',
                 {text: this.btnPrint, iconCls:'pdf_blank_off', action:'printInvoice'},'-',
                 {text: this.btnCreate,iconCls:'doc_new', action:'create'},'-',
-                {text: this.btnCopy,iconCls:'copy', action:'copy'},'-',
+                //{text: this.btnCopy,iconCls:'copy', action:'copy'},'-',
+                {xtype:'splitbutton', text: this.btnCopy, iconCls:'copy', action:'copy',
+                    menu: [
+                        {text: this.btnCopy, action:'copy', iconCls:'copy'},
+                        {text: 'Копия, выбрать...', action:'showCopySelectedWin', iconCls:'copySelected'}
+                    ]
+                },'-',
                 {text: this.btnEdit,iconCls:'edit', action:'edit'},'-'
 
             ]

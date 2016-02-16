@@ -15,6 +15,7 @@ public class CimSmgsConfigMapper extends ConfigurableMapper {
     private Mapper<CimSmgsDocs, CimSmgsDocs> cimSmgsDocsMapper;
     private Mapper<CimSmgsPlatel, CimSmgsPlatel> cimSmgsPlatelMapper;
     private Mapper<CimSmgsPlomb, CimSmgsPlomb> cimSmgsPlombMapper;
+    private Mapper<CimSmgsPerevoz, CimSmgsPerevoz> cimSmgsPerevozMapper;
     private String[] cimSmgsExcludes;
     private String[] cimSmgsKonListExcludes;
     private String[] cimSmgsCarListExcludes;
@@ -30,6 +31,8 @@ public class CimSmgsConfigMapper extends ConfigurableMapper {
         mapCimSmgsDocs(mapperFactory);
 
         mapCimSmgsPlomb(mapperFactory);
+
+        mapCimSmgsPerevoz(mapperFactory);
 
         mapCimSmgsCarList(mapperFactory);
 
@@ -80,6 +83,7 @@ public class CimSmgsConfigMapper extends ConfigurableMapper {
                 .exclude("iftminLogs")
                 .exclude("iftminLogsBtlc")
                 .exclude("tdgLog")
+                .exclude("tbc2Logs")
                 .exclude("csComnt")
                 .exclude("trans")
                 .exclude("un")
@@ -206,6 +210,17 @@ public class CimSmgsConfigMapper extends ConfigurableMapper {
                 .register();
     }
 
+    protected void mapCimSmgsPerevoz(MapperFactory mapperFactory) {
+        mapperFactory.classMap(CimSmgsPerevoz.class, CimSmgsPerevoz.class)
+                .exclude("hid")
+                .exclude("cimSmgs")
+                .exclude("dattr")
+                .constructorB()
+                .byDefault()
+                .customize(cimSmgsPerevozMapper)
+                .register();
+    }
+
     @Override
     protected void configureFactoryBuilder(DefaultMapperFactory.Builder factoryBuilder) {
         factoryBuilder.mapNulls(false);
@@ -278,5 +293,13 @@ public class CimSmgsConfigMapper extends ConfigurableMapper {
 
     public void setCimSmgsCarListExcludes(String[] cimSmgsCarListExcludes) {
         this.cimSmgsCarListExcludes = cimSmgsCarListExcludes;
+    }
+
+    public Mapper<CimSmgsPerevoz, CimSmgsPerevoz> getCimSmgsPerevozMapper() {
+        return cimSmgsPerevozMapper;
+    }
+
+    public void setCimSmgsPerevozMapper(Mapper<CimSmgsPerevoz, CimSmgsPerevoz> cimSmgsPerevozMapper) {
+        this.cimSmgsPerevozMapper = cimSmgsPerevozMapper;
     }
 }

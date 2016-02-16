@@ -136,8 +136,15 @@ public class PrintTemplates implements Serializable {
 //            printDatas.add(data);
 //        }
 
-        for (PrintData elem : printDatas.values())
-            elem.setPrintTemplates(this);
+        for (PrintData printData: printDatas.values()) {
+            printData.setPrintTemplates(this);
+            for(PrintDataTable printDataTable: printData.getPrintDataTables().values()){
+                printDataTable.setPrintData(printData);
+            }
+            for(PrintDataPhrase printDataPhrase: printData.getPrintDataPhrases().values()){
+                printDataPhrase.setPrintData(printData);
+            }
+        }
     }
 
 //    public void setPrintData(ArrayList<PrintData> printData){

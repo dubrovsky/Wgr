@@ -22,7 +22,7 @@ Ext.define('TK.view.Viewport', {
             cls: 'header-main',
             items: [{
                 xtype: "container",
-                cls:'header-items-main header-logo1',
+                //cls:'header-items-main header-logo1',
                 flex: 3
             },  {
                 xtype: "container",
@@ -104,7 +104,7 @@ Ext.define('TK.view.Viewport', {
                 combo.setValue(record.data.language);
 
                 var header = viewport.getComponent(0);
-                header.getComponent(0).el.update('<span>' + viewport.headerPortal + '</span>');
+                //header.getComponent(0).el.update('<span>' + viewport.headerPortal + '</span>');
                 viewport.doComponentLayout();
             };
         if (!params.lang) {

@@ -116,7 +116,13 @@ Ext.define('TK.view.cimsmgs.List', {
                     ]
                 },'-',
                 {text: this.btnCreate,iconCls:'doc_new', action:'create'},'-',
-                {text: this.btnCopy,iconCls:'copy', action:'copy'},'-',
+                //{text: this.btnCopy,iconCls:'copy', action:'copy'},'-',
+                {xtype:'splitbutton', text: this.btnCopy, iconCls:'copy', action:'copy',
+                    menu: [
+                        {text: this.btnCopy, action:'copy', iconCls:'copy'},
+                        {text: 'Копия, выбрать...', action:'showCopySelectedWin', iconCls:'copySelected'}
+                    ]
+                },
                 {text: this.btnEdit,iconCls:'edit', action:'edit'},'-'
 
             ]
@@ -139,7 +145,8 @@ Ext.define('TK.view.cimsmgs.List', {
             if(tkUser.hasPriv('CIM_IFTMIN')){
                 exchangeMenu.push(
                     {text: this.btnExchBCh, action:'iftmin'},
-                    {text: 'IFTMIN DB', action:'iftmin_db'}
+                    {text: 'IFTMIN DB OUT', action:'iftmin_db_out'},
+                    {text: 'IFTMIN DB IN', action:'iftmin_db_in'}
                 );
             }
             if(tkUser.hasPriv('CIM_BTLC')){

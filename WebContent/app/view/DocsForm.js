@@ -87,12 +87,14 @@ Ext.define('TK.view.DocsForm', {
         }
         return toObj;
     },
+    doStatus:function () {},
     initForm:function (prefix) {
 	    this.suspendLayouts();
         this.initBuffers();
         this.getForm().setValues(this.addPrefix(prefix));
         this.initCollections();
         this.initDisplayedFields();
+        this.doStatus();
 	    this.resumeLayouts(true);
     },
     maskPanel:function (mask) {

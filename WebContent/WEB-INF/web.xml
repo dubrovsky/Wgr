@@ -43,6 +43,60 @@
         <param-value>EkV8zEvV4j</param-value>
     </context-param>
 
+    <context-param>
+        <param-name>TBCKeyStoreName</param-name>
+        <param-value>JKS</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>TBCKeyAlias</param-name>
+        <param-value>test_lv</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>TBCKeyPassword</param-name>
+        <param-value>12345678</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>TBCCertStorePath</param-name>
+        <param-value>/keys/keystore</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>TBCCertStorePassword</param-name>
+        <param-value>12345678</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>TBCSoapHost</param-name>
+        <param-value>https://serv2.tbc.su:4443/ascnew/AscAscDocs.svc</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>TBCSoapLogin</param-name>
+        <param-value>aed_asc_asc</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>TBCSoapPass</param-name>
+        <param-value>3R5T7I6W</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>TBCSoapRepositoryPath</param-name>
+        <param-value>/repository</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>TBCDebugLevel</param-name>
+        <param-value>1</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>TBCFinalStatus</param-name>
+        <param-value>15</param-value>
+    </context-param>
     <!--<context-param>
         <param-name>log4jConfigLocation</param-name>
         <param-value>/WEB-INF/classes/log4j.xml</param-value>

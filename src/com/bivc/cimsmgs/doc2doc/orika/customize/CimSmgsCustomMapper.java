@@ -21,5 +21,7 @@ public class CimSmgsCustomMapper extends CustomMapper<CimSmgs, CimSmgs> {
 //        if (MapUtils.isNotEmpty(destination.getCimSmgsDocses13())) {
             destination.setCimSmgsDocses13(new TreeMap<Byte, CimSmgsDocs>(destination.getCimSmgsDocses13()));
 //        }
+
+        destination.setCimSmgsPerevoz(new TreeMap<>(destination.getCimSmgsPerevoz()));
     }
 }

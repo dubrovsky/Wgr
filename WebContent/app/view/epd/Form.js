@@ -23,7 +23,9 @@ Ext.define('TK.view.epd.Form', {
             {xtype:'trigger', fieldLabel:this.labelReceiverName,name:"smgs.g4r", itemId:'smgs.g4r',triggerCls:'dir', maxLength:512},
             {xtype:'textarea',  fieldLabel:this.labelReceiverAdress,name: 'smgs.g49r', itemId:'smgs.g49r', maxLength:250},
             {xtype:'trigger', fieldLabel:this.labelStnSenderName, name:"smgs.g162r", itemId:"smgs.g162r", maxLength:80, triggerCls:'dir'},
-            {xtype:'textfield', fieldLabel:this.labelStnSenderCode, name: 'smgs.g692', itemId:'smgs.g692', maxLength:6,anchor: '50%'},
+            {xtype:'textfield', fieldLabel:this.labelStnSenderCode, name: 'smgs.g692', itemId:'smgs.g692', maxLength:6, anchor: '50%'},
+            {xtype:'trigger', fieldLabel:this.labelStnReceiverName, name:"smgs.g101r", itemId:"smgs.g101r", maxLength:80, triggerCls:'dir'},
+            {xtype:'textfield', fieldLabel:this.labelStnReceiverCode, name: 'smgs.g121', itemId:'smgs.g121', maxLength:6, anchor: '50%'},
 
             {xtype:'hidden', name:'smgs.cimSmgsCarLists[0].hid', itemId:'smgs.cimSmgsCarLists[0].hid'},
             {xtype:'hidden', name:'smgs.cimSmgsCarLists[0].sort', itemId:'smgs.cimSmgsCarLists[0].sort', value:0 },
