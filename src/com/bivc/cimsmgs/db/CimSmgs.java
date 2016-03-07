@@ -4597,7 +4597,13 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
                     }*/
                     for (CimSmgsGruz gruz : kon.getCimSmgsGruzs().values()) {
                         sb.append("\n");
+                        String upak = gruz.upak4CimSmgs1();
+                        if(upak.length() > 0){
+                            sb.append(upak);
+                            sb.append("\n");
+                        }
                         sb.append(gruz.mesta4CimSmgs1());
+                        sb.append("\n");
                         sb.append("\n");
                     }
                 }

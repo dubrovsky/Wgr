@@ -22,6 +22,9 @@
         <property name="upak" type="string">
             <column name="UPAK" length="50" />
         </property>
+        <property name="upakForeign" type="string">
+            <column name="upak_foreign" length="50" />
+        </property>
         <property name="len" type="string">
             <column name="LEN" length="32" />
         </property>

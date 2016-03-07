@@ -37,7 +37,7 @@ public class Smgs2Smgs4ContList implements Doc2Doc{
 
         CimSmgs dest = mapper.copy(source, CimSmgs.class);
         Map summary = action.getSmgsDAO().findData4SummaryDoc(search.getNpoezd(), search.getType(), search.getRouteId()).iterator().next();
-        setParams(source, dest, search, summary);
+        setParams(source, dest, search, summary, smgsy);
         dest.prepare4save();
 
         Route route = action.getRouteDAO().findById(search.getRouteId(), false);
@@ -57,7 +57,7 @@ public class Smgs2Smgs4ContList implements Doc2Doc{
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    protected void setParams(CimSmgs source, CimSmgs dest, Search search, Map params){
+    protected void setParams(CimSmgs source, CimSmgs dest, Search search, Map params,  List<CimSmgs> smgsy){
 //        dest.setNpoezd("");
         dest.setType(search.getType());
         dest.setDocType1(BigDecimal.valueOf(search.getDocId()));

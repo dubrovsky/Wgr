@@ -750,6 +750,8 @@ Ext.define('TK.view.cimsmgs.Form', {
                                             {xtype:'trigger', fieldLabel:this.labelCodeEtsng, itemId:"ekgvn", maxLength:10/*, onTriggerClick: etsngSearch*/, triggerCls:'dir', width:100},
                                             {xtype:'textarea', fieldLabel:this.labelNameEtsng, itemId:"enzgr", maxLength:4000, width:250},
                                             {xtype:'numberfield', fieldLabel:this.labelMassa, itemId:'massa', maxLength:14, width:80, minValue:0, decimalPrecision:3},
+                                            {xtype:'textfield', fieldLabel:this.labelPackForeign, itemId:"upakForeign", maxLength:50, width:100},
+                                            {xtype:'textfield', fieldLabel:this.labelPack, itemId:"upak", maxLength:50, width:100},
                                             {xtype:'numberfield', fieldLabel:this.labelMesta, itemId:'places', maxLength:8, width:80, allowDecimals:false, minValue:0},
                                             {xtype:'hidden', itemId:"ohr"},
                                             {xtype:'hidden', itemId:"sort"},
@@ -931,6 +933,7 @@ Ext.define('TK.view.cimsmgs.Form', {
                                 _g19 += (tabVag.getComponent('nzgrEu').getValue() ? '\n' + tabVag.getComponent('nzgrEu').getValue() : '');
                                 _g19 += (tabVag.getComponent('kgvn').getValue() ? '\nГНГ- ' + tabVag.getComponent('kgvn').getValue() : '');
                                 _g19 += (tabVag.getComponent('ekgvn').getValue() ? '\nЕТ СНГ- ' + tabVag.getComponent('ekgvn').getValue() : '');
+                                _g19 += (tabVag.getComponent('upak').getValue() ? '\nУпаковка- ' + tabVag.getComponent('upak').getValue() : '');
                                 _g19 += (tabVag.getComponent('places').getValue() ? '\nМеста- ' + tabVag.getComponent('places').getValue() : '');
                                 _g19 += (tabVag.getComponent('massa').getValue() ? '\nМасса- ' + tabVag.getComponent('massa').getValue() + 'кг\n\n' : '');
                                 mass += tabVag.getComponent('massa').getValue();

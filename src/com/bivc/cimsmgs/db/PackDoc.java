@@ -248,7 +248,7 @@ public class PackDoc implements Serializable {
     }
 
     public boolean hasDocs() {
-        return CollectionUtils.isNotEmpty(getCimSmgses());
+        return org.apache.commons.collections4.CollectionUtils.isNotEmpty(getCimSmgses());
     }
 
 //    public void prepare4save(myUser user) {

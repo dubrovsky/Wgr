@@ -5,6 +5,7 @@ package com.bivc.cimsmgs.db;
 import com.bivc.cimsmgs.commons.money2str;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -41,6 +42,15 @@ public class CimSmgsGruz implements Serializable {
     private String nzgrRid;
     private String nzgrRidEu;
     private Boolean ohr;
+    private String upakForeign;
+
+    public String getUpakForeign() {
+        return upakForeign;
+    }
+
+    public void setUpakForeign(String upakForeign) {
+        this.upakForeign = upakForeign;
+    }
 
     public Boolean isOhr() {
         return ohr;
@@ -350,6 +360,16 @@ public class CimSmgsGruz implements Serializable {
             result.append("кг");
         }
 */
+        return result.toString();
+    }
+
+    public String upak4CimSmgs1() {
+        StringBuilder result = new StringBuilder("");
+        result.append(StringUtils.defaultString(upak));
+        if(StringUtils.isNotBlank(upak) && StringUtils.isNotBlank(upakForeign)){
+            result.append("/");
+        }
+        result.append(StringUtils.defaultString(upakForeign));
         return result.toString();
     }
     

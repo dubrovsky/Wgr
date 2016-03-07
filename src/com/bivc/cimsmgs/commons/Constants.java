@@ -481,7 +481,7 @@ public class Constants {
         if(usr.hasPrivileg("CIM_TDG") && (elem.getTdg_status1() != null && elem.getTdg_status1() == Tdg_A.TDG_SENDED_STATUS)){
             buffer.append(",tdgFts1:'");
             TdgLog tdgLog = null;
-            if(CollectionUtils.isNotEmpty(elem.getTdgLog())){
+            if(org.apache.commons.collections4.CollectionUtils.isNotEmpty(elem.getTdgLog())){
                 tdgLog = elem.getTdgLog().iterator().next();
                 buffer.append(javascriptString(tdgLog.getStatus_txt()));
             }

@@ -814,7 +814,8 @@ Ext.define('TK.view.aviso.Form1', {
                             {xtype:'textarea', fieldLabel:this.labelNameEtsng, itemId:"enzgr", maxLength:4000, width:250},
                             {xtype:'numberfield', fieldLabel:this.labelMassa, itemId:'massa', maxLength:8, width:80, minValue:0},
                             {xtype:'numberfield', fieldLabel:this.labelMesta, itemId:'places', maxLength:8, width:80, allowDecimals:false, minValue:0},
-                            {xtype:'textfield', fieldLabel:this.labelPack, itemId:"upak", maxLength:20, width:180},
+                            //{xtype:'textfield', fieldLabel:this.labelPackForeign, itemId:"upakForeign", maxLength:50, width:100},
+                            {xtype:'textfield', fieldLabel:this.labelPack, itemId:"upak", maxLength:50, width:100},
                             {xtype:'hidden', itemId:"ohr"},
                             {xtype:'hidden', itemId:"sort"},
                             {xtype:'hidden', itemId:"hid"}
@@ -851,6 +852,7 @@ Ext.define('TK.view.aviso.Form1', {
                             valG += (item.getComponent('nzgr').getValue() ? item.getComponent('nzgr').getValue() + '\n' : '');
                             valG += (item.getComponent('ekgvn').getValue() ? 'ЕТ СНГ- ' + item.getComponent('ekgvn').getValue() + '\n' : '');
                             valG += (item.getComponent('enzgr').getValue() ? item.getComponent('enzgr').getValue() + '\n' : '');
+                            valG += (item.getComponent('upak').getValue() ? 'Упаковка- ' + item.getComponent('upak').getValue() : '');
                         }
                     );
                     g.setValue(valG);

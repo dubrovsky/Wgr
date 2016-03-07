@@ -386,6 +386,9 @@ public class ExportContList2Excel extends Export2Excel {
         Font font = getWb().createFont();
         font.setFontHeightInPoints((short) 7);
 
+        Font font_8 = getWb().createFont();
+        font_8.setFontHeightInPoints((short) 8);
+
         Font font2 = getWb().createFont();
         font2.setFontHeightInPoints((short) 7);
         font2.setBoldweight(Font.BOLDWEIGHT_BOLD);
@@ -393,6 +396,10 @@ public class ExportContList2Excel extends Export2Excel {
         Font font3 = getWb().createFont();
         font3.setFontHeightInPoints((short) 7);
         font3.setBoldweight(Font.BOLDWEIGHT_BOLD);
+
+        Font font3_8 = getWb().createFont();
+        font3_8.setFontHeightInPoints((short) 8);
+        font3_8.setBoldweight(Font.BOLDWEIGHT_BOLD);
 
         CellStyle cs1 = getWb().createCellStyle();
         cs1.setWrapText(true);
@@ -427,11 +434,27 @@ public class ExportContList2Excel extends Export2Excel {
         cs2.setBorderRight(CellStyle.BORDER_MEDIUM);
         cs2.setBorderTop(CellStyle.BORDER_MEDIUM);
 
+        CellStyle cs2_8 = getWb().createCellStyle();
+        cs2_8.setWrapText(true);
+        cs2_8.setFont(font3_8);
+        cs2_8.setAlignment(CellStyle.ALIGN_LEFT);
+        cs2_8.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+        cs2_8.setBorderLeft(CellStyle.BORDER_MEDIUM);
+        cs2_8.setBorderBottom(CellStyle.BORDER_MEDIUM);
+        cs2_8.setBorderRight(CellStyle.BORDER_MEDIUM);
+        cs2_8.setBorderTop(CellStyle.BORDER_MEDIUM);
+
         CellStyle cs2_boder_none = getWb().createCellStyle();
         cs2_boder_none.setWrapText(true);
         cs2_boder_none.setFont(font3);
         cs2_boder_none.setAlignment(CellStyle.ALIGN_LEFT);
         cs2_boder_none.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+
+        CellStyle cs2_boder_none_8 = getWb().createCellStyle();
+        cs2_boder_none_8.setWrapText(true);
+        cs2_boder_none_8.setFont(font3_8);
+        cs2_boder_none_8.setAlignment(CellStyle.ALIGN_LEFT);
+        cs2_boder_none_8.setVerticalAlignment(CellStyle.VERTICAL_TOP);
 
         CellStyle cs2_boder_thin = getWb().createCellStyle();
         cs2_boder_thin.setWrapText(true);
@@ -450,6 +473,14 @@ public class ExportContList2Excel extends Export2Excel {
         cs3.setVerticalAlignment(CellStyle.VERTICAL_TOP);
         cs3.setBorderLeft(CellStyle.BORDER_THIN);
         cs3.setBorderRight(CellStyle.BORDER_THIN);
+
+        CellStyle cs3_8 = getWb().createCellStyle();
+        cs3_8.setWrapText(true);
+        cs3_8.setFont(font_8);
+        cs3_8.setAlignment(CellStyle.ALIGN_LEFT);
+        cs3_8.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+        cs3_8.setBorderLeft(CellStyle.BORDER_THIN);
+        cs3_8.setBorderRight(CellStyle.BORDER_THIN);
 
         CellStyle cs31 = getWb().createCellStyle();
         cs31.setWrapText(true);
@@ -805,14 +836,14 @@ public class ExportContList2Excel extends Export2Excel {
 
                 if (i == 0) {
                     if (kon != null) {
-                        CellUtil.createCell(row, columnIndex, StringUtils.isNotEmpty(kon.getUtiN()) ? kon.getUtiN() + " " + CONT_SUFFIX : "", cs2_boder_none);
+                        CellUtil.createCell(row, columnIndex, StringUtils.isNotEmpty(kon.getUtiN()) ? kon.getUtiN() + " " + CONT_SUFFIX : "", cs2_boder_none_8);
                     }
                 } else if (tableRowIndex - i == 2) {    // predlast itog strings
                     if (kon != null) {
-                        CellUtil.createCell(row, columnIndex, StringUtils.isNotEmpty(kon.getUtiN()) ? kon.getUtiN() + " " + CONT_SUFFIX : "", cs2);
+                        CellUtil.createCell(row, columnIndex, StringUtils.isNotEmpty(kon.getUtiN()) ? kon.getUtiN() + " " + CONT_SUFFIX : "", cs2_8);
                     }
                 } else if (tableRowIndex - i == 1) {    // last itog strings
-                    CellUtil.createCell(row, columnIndex, String.valueOf(index) + ". Wag/Bar.", cs2);
+                    CellUtil.createCell(row, columnIndex, String.valueOf(index) + ". Wag/Bar.", cs2_8);
                 }
                 /*else{
                     CellUtil.createCell(row, columnIndex, "", cs3);
@@ -846,7 +877,8 @@ public class ExportContList2Excel extends Export2Excel {
                         if (i % 2 == 0) {  //even string
                             sb.append(StringUtils.defaultString(gruz.getNzgrEu()));
                             if(gruz.getPlaces() != null){
-                                sb.append("; " + gruz.getPlaces() + " PALETTEN");
+//                                sb.append("; " + gruz.getPlaces() + " PALETTEN");
+                                sb.append("; " + gruz.getPlaces() + " " + StringUtils.defaultString(gruz.getUpakForeign()));
                             }
 
                             if (StringUtils.defaultString(gruz.getEkgvn()).length() > 0) {
@@ -857,7 +889,8 @@ public class ExportContList2Excel extends Export2Excel {
                         } else { // odd string
                             sb.append(StringUtils.defaultString(gruz.getNzgr()));
                             if(gruz.getPlaces() != null){
-                                sb.append("; " + gruz.getPlaces() + " ПОДДОНЫ");
+//                                sb.append("; " + gruz.getPlaces() + " ПОДДОНЫ");
+                                sb.append("; " + gruz.getPlaces() + " " + StringUtils.defaultString(gruz.getUpak()));
                             }
                             if (StringUtils.defaultString(gruz.getEkgvn()).length() > 0) {
                                 sb.append("; ЕТ СНГ ");
@@ -924,7 +957,7 @@ public class ExportContList2Excel extends Export2Excel {
                 //BEGIN g18
                 columnIndex++;
                 if (i == 0) {
-                    CellUtil.createCell(row, columnIndex, StringUtils.defaultString(doc.getG2012()), cs3);
+                    CellUtil.createCell(row, columnIndex, StringUtils.defaultString(doc.getG2012()), cs3_8);
                 } /*else if(tableRowIndex - i <= 2){    // 2 last itog strings
                     CellUtil.createCell(row, columnIndex, "", cs2);
                 }
@@ -982,9 +1015,9 @@ public class ExportContList2Excel extends Export2Excel {
                 columnIndex++;
                 if (car != null) {
                     if (i == 0) {
-                        CellUtil.createCell(row, columnIndex, StringUtils.defaultString(car.getNvag()), cs2_boder_none);
+                        CellUtil.createCell(row, columnIndex, StringUtils.defaultString(car.getNvag() + nl + " O"), cs2_boder_none_8);
                     } else if (tableRowIndex - i == 1) {    // last itog strings
-                        CellUtil.createCell(row, columnIndex, StringUtils.defaultString(car.getNvag()), cs2);
+                        CellUtil.createCell(row, columnIndex, StringUtils.defaultString(car.getNvag()), cs2_8);
                     }
                 }
                 ////END g20

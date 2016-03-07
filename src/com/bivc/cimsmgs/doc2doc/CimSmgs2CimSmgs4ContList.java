@@ -4,6 +4,8 @@ import com.bivc.cimsmgs.commons.Search;
 import com.bivc.cimsmgs.db.*;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -17,18 +19,47 @@ public class CimSmgs2CimSmgs4ContList extends Smgs2Smgs4ContList {
     }
 
     @Override
-    protected void setParams(CimSmgs source, CimSmgs dest, Search search, Map params){
+    protected void setParams(CimSmgs source, CimSmgs dest, Search search, Map params,  List<CimSmgs> smgsy){
         dest.setType(search.getType());
         dest.setDocType1(BigDecimal.valueOf(search.getDocId()));
         dest.setKind(1);
 
-        Map <Integer, CimSmgsGruz> gruzy = new TreeMap<Integer, CimSmgsGruz>();
-        for (CimSmgsCarList car : source.getCimSmgsCarLists().values()) {
-            for (CimSmgsKonList kon : car.getCimSmgsKonLists().values()) {
-                gruzy = mapper.copyMap(kon.getCimSmgsGruzs(), CimSmgsGruz.class);
+        Map <Integer, CimSmgsGruz> gruzy = new TreeMap<>();
+        Map <String, CimSmgsGruz> gruzTempMap = new HashMap<>();
+
+        for(CimSmgs cimSmgs: smgsy){
+            for (CimSmgsCarList car : cimSmgs.getCimSmgsCarLists().values()) {
+                for (CimSmgsKonList kon : car.getCimSmgsKonLists().values()) {
+                    for(CimSmgsGruz gruz: kon.getCimSmgsGruzs().values() ){
+                        CimSmgsGruz gruzTemp = gruzTempMap.get(gruz.getKgvn());
+                        if(gruzTemp == null){
+                            gruzTemp = mapper.copy(gruz, CimSmgsGruz.class);
+                            gruzTemp.setPlaces(0);
+                            gruzTemp.setMassa(BigDecimal.ZERO );
+                            gruzTempMap.put(gruz.getKgvn(), gruzTemp);
+                        }
+                        gruzTemp.setPlaces(
+                                (gruzTemp.getPlaces() == null ? 0 : gruzTemp.getPlaces()) +
+                                        (gruz.getPlaces()== null ? 0 : gruz.getPlaces())
+                        );
+                        gruzTemp.setMassa(
+                                (gruzTemp.getMassa() == null ? BigDecimal.ZERO : gruzTemp.getMassa())
+                                        .add(
+                                                gruz.getMassa() == null ? BigDecimal.ZERO : gruz.getMassa()
+                                        )
+                        );
+
+                    }
+                    break;
+                }
                 break;
             }
-            break;
+        }
+
+        int index = 0;
+        for(CimSmgsGruz gruz: gruzTempMap.values()){
+            gruz.setSort(index);
+            gruzy.put(index++, gruz);
         }
 
         Map <Byte, CimSmgsCarList> cars  = new TreeMap<Byte, CimSmgsCarList>();
@@ -45,7 +76,7 @@ public class CimSmgs2CimSmgs4ContList extends Smgs2Smgs4ContList {
         kons.put((byte)0, kon);
 
         kon.setCimSmgsGruzs(gruzy);
-        CimSmgsGruz gruz;
+        /*CimSmgsGruz gruz;
         if(gruzy.size() == 0) {
             gruz = new CimSmgsGruz();
             gruz.setCimSmgsKonList(kon);
@@ -53,11 +84,11 @@ public class CimSmgs2CimSmgs4ContList extends Smgs2Smgs4ContList {
             gruzy.put(0, gruz);
         } else {
             gruz = gruzy.values().iterator().next();
-        }
+        }*/
 
-        if(params.get("places") != null){
+        /*if(params.get("places") != null){
             gruz.setPlaces(Integer.valueOf(params.get("places").toString()));
-        }
+        }*/
 
         if(params.get("sumDocs") != null){
             dest.setG2012(params.get("sumDocs") + " x " + PLOMB);
@@ -65,7 +96,7 @@ public class CimSmgs2CimSmgs4ContList extends Smgs2Smgs4ContList {
         }
 
         if(params.get("netto") != null){
-            gruz.setMassa(new BigDecimal(params.get("netto").toString()));
+//            gruz.setMassa(new BigDecimal(params.get("netto").toString()));
             dest.setG24N(new BigDecimal(params.get("netto").toString()));
         }
         if(params.get("tara") != null){

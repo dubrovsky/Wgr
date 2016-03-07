@@ -693,7 +693,7 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
 
 //        crit.add(Restrictions.ne("kind", 1));
         crit.addOrder(Order.desc("dattr"));
-        crit.setFirstResult(0).setMaxResults(1);
+//        crit.setFirstResult(0).setMaxResults(1);
         return listAndCast(crit);
     }
 
