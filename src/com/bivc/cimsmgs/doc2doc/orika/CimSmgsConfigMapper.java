@@ -91,7 +91,18 @@ public class CimSmgsConfigMapper extends ConfigurableMapper {
                 .exclude("altered")
                 .exclude("iftminId")
                 .exclude("iftminOut")
-                .exclude("iftminIn");
+                .exclude("iftminIn")
+
+                .exclude("actionErrors")
+                .exclude("actionMessages")
+                .exclude("errorMessages")
+                .exclude("errors")
+                .exclude("fieldErrors")
+                .exclude("locale")
+                .exclude("text")
+                .exclude("formatted")
+                .exclude("texts")
+                .exclude("textProvider");
 
         addExcludes(classMapBuilder, cimSmgsExcludes);
 

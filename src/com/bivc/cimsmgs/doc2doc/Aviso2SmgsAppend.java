@@ -143,10 +143,12 @@ public class Aviso2SmgsAppend implements Doc2Doc {
 
     private static int findDocType(Search search) throws Exception {
         int type;
-        if(search.getType() == 3){
-            type = 2;
-        } else if (search.getType() == 10){
-            type = 1;
+        if(search.getType() == 3){ // aviso1
+            type = 2;   // smgs
+        } else if (search.getType() == 10){ //  avisocimsmgs
+            type = 1; // smgs
+        } else if (search.getType() == 11){   //  aviso2
+            type = 12; // smgs2
         } else {
             throw new Exception("Invalid document type - " + search.getType());
         }

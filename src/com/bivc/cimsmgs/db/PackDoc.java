@@ -4,7 +4,6 @@ package com.bivc.cimsmgs.db;
 
 import com.bivc.cimsmgs.commons.Constants;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.apache.commons.collections.CollectionUtils;
 
 import java.io.Serializable;
 import java.util.Date;
