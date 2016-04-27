@@ -5,6 +5,7 @@ package com.bivc.cimsmgs.db;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -898,5 +899,20 @@ public class CimSmgsKonList implements Serializable {
 
     public void setCimSmgsDocses9(Map<Byte, CimSmgsDocs> cimSmgsDocses9) {
         this.cimSmgsDocses9 = cimSmgsDocses9;
+    }
+
+    public String kont4CsPrint() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(sizeFoot != null ? "1x" + sizeFoot : "");
+
+        if(StringUtils.isNotBlank(utiN)) {
+            sb.append(StringUtils.isNotBlank(notes) ? " " + notes : "");
+            sb.append(" Container № ");
+            sb.append(utiN);
+        }
+
+        sb.append(sizeMm != null ? " (" + sizeMm + "mm)" : "");
+
+        return sb.toString();
     }
 }

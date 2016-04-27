@@ -363,6 +363,43 @@ public class CimSmgsGruz implements Serializable {
         }
         return result.toString();
     }
+
+    public String gruz4CimSmgsEu(int index) {
+        StringBuilder result = new StringBuilder("");
+
+        ///// DE
+        result.append("Inhalt ");
+        result.append(index + 1);
+        result.append(StringUtils.isNotBlank(kgvn) ? " : NHM: " + kgvn : "");
+        result.append(StringUtils.isNotBlank(nzgrEu) ? " - " + nzgrEu + ";" : "");
+        if(massa != null){
+            result.append(" Gewicht:" + massa + " kg;");
+        }
+        result.append(StringUtils.isNotBlank(ekgvn) ? " ET SNG: " + ekgvn + ";" : "");
+        if(places != null){
+            result.append(" " + places);
+        }
+        result.append(StringUtils.isNotBlank(upakForeign) ? " - " + upakForeign : "");
+        ////////// END DE
+        result.append("\n");
+
+        //// RU
+        result.append("Содержимое ");
+        result.append(index + 1);
+        result.append(StringUtils.isNotBlank(kgvn) ? " : ГНГ: " + kgvn : "");
+        result.append(StringUtils.isNotBlank(nzgr) ? " - " + nzgr + ";" : "");
+        if(massa != null){
+            result.append(" Масса:" + massa + " kg;");
+        }
+        result.append(StringUtils.isNotBlank(ekgvn) ? " ЕТ СНГ: " + ekgvn + ";" : "");
+        if(places != null){
+            result.append(" " + places);
+        }
+        result.append(StringUtils.isNotBlank(upak) ? " - " + upak : "");
+
+        /// END RU
+        return result.toString();
+    }
 	
 	public String mesta4CimSmgs() {
 		StringBuffer result = new StringBuffer("");

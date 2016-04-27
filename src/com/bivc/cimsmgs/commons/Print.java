@@ -212,6 +212,7 @@ public class Print {
         for (PrintDataPhrase printDataPhrase: printData.getPrintDataPhrases().values()){
             String text = getText(doc, printDataPhrase.getName());
             if (StringUtils.isNotEmpty(text)) {
+                text = text.replace("||", "");
                 Phrase phrase = getPhrase(printDataPhrase, text);
 //                column.addText( Chunk.NEWLINE );
                 column.addText(phrase);
@@ -227,6 +228,7 @@ public class Print {
     private void drawOnePhrase(PrintData printData, PdfContentByte content, Object doc) throws IllegalAccessException, InvocationTargetException, DocumentException {
         String text = getText(doc, printData.getName());
         if (StringUtils.isNotBlank(text) ) {
+            text = text.replace("||", "");
             Rectangle rectangle = drawRectangle(printData, content);
 
             Phrase phrase = getPhrase(printData, text);
@@ -238,7 +240,7 @@ public class Print {
                 column.addText(phrase);
                 column.setSimpleColumn(rectangle);
                 column.go();
-            } else {  // поворот
+            } else {  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                 ColumnText.showTextAligned(content, Element.ALIGN_CENTER, phrase, Utilities.millimetersToPoints(printData.getLlx()), Utilities.millimetersToPoints(printData.getLly()), printData.getRotate());
             }
         }

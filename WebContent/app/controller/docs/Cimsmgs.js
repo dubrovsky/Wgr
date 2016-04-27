@@ -370,7 +370,8 @@ Ext.define('TK.controller.docs.Cimsmgs', {
                 vagResult += (vag['taraVag'] ? 'Тара/Tara ' + vag['taraVag'] + '\n' : '');
                 vagResult += (vag['kolOs'] ? 'Оси/Achse ' + vag['kolOs'] + '\n' : '');
             } else {
-                vagResult += vag['nvag'] + '\n';
+                // vagResult += vag['nvag'] + '\n';
+                vagResult = 'Siehe Nachweisung\nсм. Ведомость';
             }
 
             conts = vag[this.getCimsmgs().getContCollectionName()];
@@ -414,10 +415,11 @@ Ext.define('TK.controller.docs.Cimsmgs', {
 
             contResult += (cont['sizeFoot'] ? '1x' + cont['sizeFoot'] : '');
             contResult += (cont['notes'] ? ' ' + cont['notes'] : '');
-            if(cont['utiN']){
+            contResult += (cont['utiN'] ? ' Container № ' + cont['utiN'] : '');
+            /*if(cont['utiN']){
                 var konConst = (cont['notes'] ? '' : 'HC Container №');
                 contResult += ' ' + konConst + '\n' + cont['utiN'];
-            }
+            }*/
             contResult += (cont['sizeMm'] ? '\n(' + cont['sizeMm'] + 'mm)' : '');
             contResult += '\n';
 
@@ -587,7 +589,10 @@ Ext.define('TK.controller.docs.Cimsmgs', {
     setG2012DataObj: function(){
         var vags = this.getCimsmgs().dataObj[this.getCimsmgs().getVagCollectionName()],
             plombsResult = '',
-            delim = '';
+            delim = '',
+            plombsCount = 0,
+            vagsCount = 0,
+            contsCount = 0;
 
         if(vags && !Ext.Object.isEmpty(vags)){
             for(var vagIndx in vags){
@@ -606,19 +611,28 @@ Ext.define('TK.controller.docs.Cimsmgs', {
                             for(var plombsIndx in plombs){
                                 var plomb = plombs[plombsIndx];
 
-                                plombsResult += delim;
-                                plombsResult += (plomb['kpl'] ? plomb['kpl'] + 'x  ' : '');
-                                plombsResult += (plomb['znak'] ? plomb['znak'] : '');
-                                delim = ', ';
+                                if(vagIndx == 0 && !vags[1] && contIndx == 0 && !conts[1] ){ // only 1 vag and 1 cont
+                                    plombsResult += delim;
+                                    plombsResult += (plomb['kpl'] ? plomb['kpl'] + 'x  ' : '');
+                                    plombsResult += (plomb['znak'] ? plomb['znak'] : '');
+                                    delim = ', ';
+                                }
+
+                                var kpl = parseInt(plomb['kpl']);
+                                plombsCount += isNaN(kpl) ? 0 : kpl;
                             }
                         }
-
+                        contsCount++;
                     }
-                }
 
+                }
+                vagsCount++;
             }
         }
 
+        if(vagsCount > 1 || contsCount > 1){
+            plombsResult = 'SEALED / пломбы ' + plombsCount + ' (см.ведомость)';
+        }
         this.getCimsmgs().dataObj['g2012'] = plombsResult;
     },
 

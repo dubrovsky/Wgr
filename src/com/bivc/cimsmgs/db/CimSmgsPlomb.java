@@ -3,6 +3,7 @@ package com.bivc.cimsmgs.db;
 // Generated 02.06.2011 10:05:03 by Hibernate Tools 3.4.0.CR1
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -188,6 +189,13 @@ public class CimSmgsPlomb implements Serializable {
                 .append(sort)
                 .append(type)
                 .toHashCode();
+    }
+
+    public String plomb4CsPrint() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getKpl() != null ? getKpl() + "x " : "");
+        sb.append(StringUtils.defaultString(getZnak()));
+        return sb.toString();
     }
 
 }

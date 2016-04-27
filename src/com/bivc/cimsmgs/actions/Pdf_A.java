@@ -47,7 +47,7 @@ public class Pdf_A extends CimSmgsSupport_A implements ServletResponseAware, Smg
         printTemplatesList.add(prnTempl);
 
         smgs = smgsDao.findById2(smgs);
-        if(smgs.hasDopList()){
+        if(smgs.hasDopList()){     // todo - group doplist by docs type: smgs, cimsmgs ...
             doc = new DocDir(new BigDecimal(11));
             printTemplatesList.add(checkDefaultTemplate());
         }

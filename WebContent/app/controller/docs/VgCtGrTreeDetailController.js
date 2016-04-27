@@ -325,6 +325,9 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
         var ownerDoc = this.getWin().getOwnerDoc();
         ownerDoc.dataObj[ownerDoc.getVagCollectionName()] = dataObj; // write results
         ownerDoc.fireEvent('onChangeVgCtGrDisplField', ownerDoc);
+        ownerDoc.fireEvent('onChangeDocs9DisplField', ownerDoc);
+        ownerDoc.fireEvent('onSavePlombsToDataObj', ownerDoc);
+        ownerDoc.fireEvent('onChangePlombsDisplField', ownerDoc);
     },
 
     saveVags: function(){
