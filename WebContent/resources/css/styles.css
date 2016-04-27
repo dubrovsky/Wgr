@@ -355,6 +355,22 @@ textarea.x-form-focus {
     background-image: url(./../images/conts.png) !important;
 }
 
+.cont2 {
+    background: url(./../images/cont2.png)  no-repeat !important;
+}
+
+.cont3 {
+    background: url(./../images/cont3.png)  no-repeat !important;
+}
+
+.vag {
+    background: url(./../images/vag.png)  no-repeat !important;
+}
+
+.gryz {
+    background: url(./../images/cargo.png)  no-repeat !important;
+}
+
 .comments {
     background-image: url(./../images/comments.png) !important;
 }

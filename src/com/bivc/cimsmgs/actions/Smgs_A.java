@@ -1,7 +1,6 @@
 package com.bivc.cimsmgs.actions;
 
 import com.bivc.cimsmgs.commons.Constants;
-import com.bivc.cimsmgs.commons.JsonUtils;
 import com.bivc.cimsmgs.commons.Print;
 import com.bivc.cimsmgs.dao.*;
 import com.bivc.cimsmgs.dao.hibernate.InvoiceDAOHib;
@@ -12,6 +11,7 @@ import com.bivc.cimsmgs.db.PackDoc;
 import com.bivc.cimsmgs.doc2doc.Mapper;
 import com.bivc.cimsmgs.exceptions.InfrastructureException;
 import com.bivc.cimsmgs.formats.json.Deserializer;
+import com.bivc.cimsmgs.formats.json.Serializer;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.config.entities.ResultConfig;
 import org.apache.commons.lang3.text.WordUtils;
@@ -102,7 +102,7 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
         return SUCCESS;
     }*/
 
-    public String save() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+    public String save() throws Exception {
         if(smgs.getRoute() == null){
             log.error("Route object is not initialized for CimSmgs table object with hid - {}", smgs.getHid());
             throw new InfrastructureException("Error. Please contact support team.");
@@ -119,7 +119,7 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
             saveEpd(smgs.getPackDoc(), EPD_ACTION.ADD);
         }
 
-        setJSONData(convert2JSON_Smgs_Save_Results(smgs, "smgs"));
+        setJSONData(convert2JSON_Smgs_Save_Results(smgs, "smgs", defaultSerializer.setLocale(getLocale()).write(smgs)));
         return SUCCESS;
     }
 
@@ -211,10 +211,10 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
                 log.info("copy");
 
                 CimSmgs smgsCopy = mapper.copy(smgs, CimSmgs.class);
-                result.append(JsonUtils.doJson(smgsCopy));
+                result.append(defaultSerializer.setLocale(getLocale()).write(smgsCopy));
 
             } else {
-                result.append(JsonUtils.doJson(smgs));
+                result.append(defaultSerializer.setLocale(getLocale()).write(smgs));
             }
             result.append("}");
         }
@@ -222,7 +222,7 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
         return result;
     }
 
-    public String doc2EpdRewrite() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    public String doc2EpdRewrite() throws Exception {
         PackDoc pack;
         if(!smgs.hasPackDoc()){
             log.info("DOC entity has empty PackDoc. Create new PackDoc.");
@@ -241,7 +241,7 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
 
 //        setJSONData(Constants.convert2JSON_True(epd.getHid().toString()));
 
-        setJSONData(convert2JSON_Smgs_Save_Results(epd, "smgs"));
+        setJSONData(convert2JSON_Smgs_Save_Results(epd, "smgs", defaultSerializer.setLocale(getLocale()).write(epd)));
         return SUCCESS;
     }
 
@@ -283,6 +283,7 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
 
         if(epd.getHid() == null){
             packDoc.addCimSmgsItem(epd);
+            epd.prepare4save();
             getSmgsDAO().makePersistent(epd);
             log.debug("Added a EPD entry with hid: {}", epd.getHid());
         } else {
@@ -358,6 +359,7 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
 
     private String jsonRequest;
     private Deserializer defaultDeserializer;
+    private Serializer defaultSerializer;
     private CimSmgsInvoice invoice;
     private Mapper invice2InvoiceMapper;
     private Mapper doc2docAllMapper;
@@ -386,6 +388,10 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
 
     public void setDefaultDeserializer(Deserializer defaultDeserializer) {
         this.defaultDeserializer = defaultDeserializer;
+    }
+
+    public void setDefaultSerializer(Serializer defaultSerializer) {
+        this.defaultSerializer = defaultSerializer;
     }
 
     public void setInvice2InvoiceMapper(Mapper invice2InvoiceMapper) {

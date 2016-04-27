@@ -12,6 +12,9 @@
     <bean id="defaultDeserializer" class="com.bivc.cimsmgs.formats.json.jackson.DeserializerImpl" >
         <constructor-arg ref="jacksonObjectMapper"/>
     </bean>
+    <bean id="defaultSerializer" class="com.bivc.cimsmgs.formats.json.jackson.SerializerImpl" >
+        <constructor-arg ref="jacksonObjectMapper"/>
+    </bean>
 
     <bean id="cimSmgsMapper" class="com.bivc.cimsmgs.doc2doc.orika.customize.CimSmgsCustomMapper"/>
     <bean id="cimSmgsAllCopyMapper" class="com.bivc.cimsmgs.doc2doc.orika.customize.CimSmgsAllCopyCustomMapper"/>
@@ -27,8 +30,8 @@
         p:cimSmgsKonListMapper-ref="cimSmgsKonListMapper"
         p:cimSmgsCarListMapper-ref="cimSmgsCarListMapper"
         p:cimSmgsExcludes="cimSmgsDocses9,cimSmgsDocses136,cimSmgsDocses7,cimSmgsPlombs,cimSmgsCarLists"
-        p:cimSmgsCarListExcludes="cimSmgsKonLists"
-        p:cimSmgsKonListExcludes="cimSmgsGruzs"
+        p:cimSmgsCarListExcludes="cimSmgsKonLists, cimSmgsGruzs, cimSmgsPlombs"
+        p:cimSmgsKonListExcludes="cimSmgsGruzs,cimSmgsDocses9,cimSmgsPlombs"
     />
     <bean id="avisoMapper" class="com.bivc.cimsmgs.doc2doc.orika.MapperImpl" p:mapper-ref="avisoConfigMapper"/>
 
@@ -37,8 +40,8 @@
           p:cimSmgsKonListMapper-ref="cimSmgsKonListMapper"
           p:cimSmgsCarListMapper-ref="cimSmgsCarListMapper"
           p:cimSmgsExcludes="cimSmgsDocses9,cimSmgsDocses136,cimSmgsDocses7,cimSmgsPlombs,cimSmgsCarLists,cimSmgsDocses13,cimSmgsPlatels,cimSmgsPerevoz"
-          p:cimSmgsCarListExcludes="cimSmgsKonLists"
-          p:cimSmgsKonListExcludes="cimSmgsGruzs"
+          p:cimSmgsCarListExcludes="cimSmgsKonLists, cimSmgsGruzs, cimSmgsPlombs"
+          p:cimSmgsKonListExcludes="cimSmgsGruzs,cimSmgsDocses9,cimSmgsPlombs"
     />
     <bean id="avisoMapperAppend" class="com.bivc.cimsmgs.doc2doc.orika.MapperImpl" p:mapper-ref="avisoConfigAppendMapper"/>
 
@@ -50,8 +53,8 @@
           p:cimSmgsCarListMapper-ref="cimSmgsCarListMapperAll"
           p:cimSmgsKonListMapper-ref="cimSmgsKonListMapperAll"
           p:cimSmgsExcludes="cimSmgsCarLists"
-          p:cimSmgsCarListExcludes="cimSmgsKonLists"
-          p:cimSmgsKonListExcludes="cimSmgsGruzs"
+          p:cimSmgsCarListExcludes="cimSmgsKonLists, cimSmgsGruzs, cimSmgsPlombs"
+          p:cimSmgsKonListExcludes="cimSmgsGruzs,cimSmgsDocses9,cimSmgsPlombs"
     />
 
     <bean id="invoiceAllCopyConfigMapper" class="com.bivc.cimsmgs.doc2doc.orika.InvoiceConfigMapper" init-method="init"
@@ -138,6 +141,7 @@
           p:doc2docAllMapper-ref="smgsAllCopyMapper"
           p:invice2InvoiceMapper-ref="invoiceAllCopyMapper"
           p:defaultDeserializer-ref="defaultDeserializer"
+          p:defaultSerializer-ref="defaultSerializer"
     />
 
     <bean id="epdAddConfig" class="com.bivc.cimsmgs.doc2doc.orika.epd.EpdInvoiceAddConfig" init-method="init">

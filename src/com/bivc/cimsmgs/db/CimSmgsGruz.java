@@ -3,7 +3,6 @@ package com.bivc.cimsmgs.db;
 // Generated 02.03.2009 10:02:24 by Hibernate Tools 3.2.4.CR1
 
 import com.bivc.cimsmgs.commons.money2str;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -108,12 +107,10 @@ public class CimSmgsGruz implements Serializable {
 		this.sort = sort;
 	}
 
-	@JsonBackReference
 	public CimSmgsCarList getCimSmgsCarList() {
 		return this.cimSmgsCarList;
 	}
 
-	@JsonBackReference
 	public void setCimSmgsCarList(CimSmgsCarList cimSmgsCarList) {
 		this.cimSmgsCarList = cimSmgsCarList;
 	}
@@ -125,12 +122,10 @@ public class CimSmgsGruz implements Serializable {
 	// public void setCimSmgs(CimSmgs cimSmgs) {
 	// this.cimSmgs = cimSmgs;
 	// }
-	@JsonBackReference
 	public CimSmgsKonList getCimSmgsKonList() {
 		return this.cimSmgsKonList;
 	}
 
-	@JsonBackReference
 	public void setCimSmgsKonList(CimSmgsKonList cimSmgsKonList) {
 		this.cimSmgsKonList = cimSmgsKonList;
 	}
@@ -267,22 +262,63 @@ public class CimSmgsGruz implements Serializable {
 		return (places != null) ? (new money2str(places.doubleValue(), "NONE").getMoney2str().toString().trim()) : "";
 	}
 
-	public int hashCode() {
-		// you pick a hard-coded, randomly chosen, non-zero, odd number
-		// ideally different for each class
-		return new HashCodeBuilder(17, 37).append(hid).toHashCode();
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
 
-	public boolean equals(Object obj) {
-		if (obj instanceof CimSmgsCarList == false) {
-			return false;
-		}
-		if (this == obj) {
-			return true;
-		}
-		CimSmgsCarList rhs = (CimSmgsCarList) obj;
-		return new EqualsBuilder().appendSuper(super.equals(obj)).append(hid, rhs.getHid()).isEquals();
-	}
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CimSmgsGruz that = (CimSmgsGruz) o;
+
+        return new EqualsBuilder()
+                .append(hid, that.hid)
+                .append(cimSmgsCarList, that.cimSmgsCarList)
+                .append(cimSmgsKonList, that.cimSmgsKonList)
+                .append(upak, that.upak)
+                .append(len, that.len)
+                .append(kgvn, that.kgvn)
+                .append(nzgr, that.nzgr)
+                .append(nzgrEu, that.nzgrEu)
+                .append(ekgvn, that.ekgvn)
+                .append(enzgr, that.enzgr)
+                .append(massa, that.massa)
+                .append(places, that.places)
+                .append(dattr, that.dattr)
+                .append(lang, that.lang)
+                .append(seq, that.seq)
+                .append(sort, that.sort)
+                .append(nzgrRid, that.nzgrRid)
+                .append(nzgrRidEu, that.nzgrRidEu)
+                .append(ohr, that.ohr)
+                .append(upakForeign, that.upakForeign)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(hid)
+                .append(cimSmgsCarList)
+                .append(cimSmgsKonList)
+                .append(upak)
+                .append(len)
+                .append(kgvn)
+                .append(nzgr)
+                .append(nzgrEu)
+                .append(ekgvn)
+                .append(enzgr)
+                .append(massa)
+                .append(places)
+                .append(dattr)
+                .append(lang)
+                .append(seq)
+                .append(sort)
+                .append(nzgrRid)
+                .append(nzgrRidEu)
+                .append(ohr)
+                .append(upakForeign)
+                .toHashCode();
+    }
 
 	public String toString() {
 		return new ToStringBuilder(this).append("hid", hid).append("name", nzgr).toString();

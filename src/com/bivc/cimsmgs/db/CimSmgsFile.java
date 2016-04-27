@@ -2,6 +2,9 @@ package com.bivc.cimsmgs.db;
 
 // Generated 01.11.2011 8:57:21 by Hibernate Tools 3.4.0.CR1
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.SQLException;
@@ -99,5 +102,35 @@ public class CimSmgsFile implements java.io.Serializable {
         }*/
 
 	}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CimSmgsFile that = (CimSmgsFile) o;
+
+        return new EqualsBuilder()
+                .append(hid, that.hid)
+                .append(cimSmgsFileInf, that.cimSmgsFileInf)
+                .append(files, that.files)
+                .append(fileName, that.fileName)
+                .append(contentType, that.contentType)
+                .append(length, that.length)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(hid)
+                .append(cimSmgsFileInf)
+                .append(files)
+                .append(fileName)
+                .append(contentType)
+                .append(length)
+                .toHashCode();
+    }
 
 }

@@ -3,7 +3,6 @@ package com.bivc.cimsmgs.db;
 import com.bivc.cimsmgs.commons.money2str;
 import com.bivc.cimsmgs.commons.myUser;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.opensymphony.xwork2.ActionSupport;
 import org.apache.commons.collections4.MapUtils;
@@ -326,12 +325,10 @@ public class CimSmgs extends ActionSupport implements Serializable {
         this.zayav_otpr = zayav_otpr;
     }
 
-    @JsonManagedReference
     public Map<Byte,CimSmgsPerevoz> getCimSmgsPerevoz() {
         return cimSmgsPerevoz;
     }
 
-    @JsonManagedReference
     public void setCimSmgsPerevoz(Map<Byte,CimSmgsPerevoz> cimSmgsPerevoz) {
         this.cimSmgsPerevoz = cimSmgsPerevoz;
     }
@@ -3573,6 +3570,7 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
             car.setCimSmgs(this);
             car.addCimSmgsGruzs();
             car.addCimSmgsKonLists();
+            car.addCimSmgsPlombs();
         }
     }
 
@@ -4784,7 +4782,7 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
 
     public String buildGuKodGrPrint() {
         Map<Byte, CimSmgsKonList> konList;
-        Map<Integer, CimSmgsGruz> gruzList;
+        Map<Byte, CimSmgsGruz> gruzList;
         String result = "";
         if (getCimSmgsCarLists().size() > 0 &&
                 (konList = getCimSmgsCarLists().values().iterator().next().getCimSmgsKonLists()).size() > 0 &&

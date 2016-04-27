@@ -3,7 +3,7 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 02.03.2009 10:02:25 by Hibernate Tools 3.2.4.CR1 -->
 <hibernate-mapping>
-    <class name="com.bivc.cimsmgs.db.CimSmgsGruz" table="CIM_SMGS_GRUZ" >
+    <class name="com.bivc.cimsmgs.db.CimSmgsGruz" table="CIM_SMGS_GRUZ" batch-size="50">
         <id name="hid" type="long">
             <column name="HID" precision="20" scale="0" />
             <generator class="sequence">

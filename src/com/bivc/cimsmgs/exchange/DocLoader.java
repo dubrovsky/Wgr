@@ -199,7 +199,7 @@ public class DocLoader {
         CimSmgsKonList csk = konMap.get(hid_kon);
         if(csk != null) {
           csk.addCimSmgsGruzItem(csg);
-          if (j == 0) {
+          if (j == 0 && (csg.getMassa() == null || BigDecimal.ZERO.compareTo(csg.getMassa()) == 0)) {
             csg.setMassa(csk.getMassSend());
           }
         }

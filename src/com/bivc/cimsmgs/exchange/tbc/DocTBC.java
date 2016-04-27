@@ -4,9 +4,11 @@ import com.bivc.cimsmgs.commons.HibernateUtil;
 import com.bivc.cimsmgs.db.CimSmgs;
 import com.bivc.cimsmgs.db.Tbc2Log;
 import com.bivc.cimsmgs.db.Tbc2Pack;
+import com.bivc.cimsmgs.db.Tbc2Status;
 import com.bivc.cimsmgs.exchange.FTSXMLCreate;
 import com.bivc.cimsmgs.exchange.tbc.xml.ECPWorker;
 import org.apache.commons.io.FileUtils;
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +21,9 @@ import java.util.zip.ZipOutputStream;
 public class DocTBC {
     final static private Logger log = LoggerFactory.getLogger(DocTBC.class);
     private static final String encoding = "utf-8";
+    private static String SMGS = "smgs";
+    private static String INVOICE = "invoice";
+
     List<String> containerDocs = new ArrayList<>();
 
     public String createDoc(Long hid_cs, String processId, Tbc2Pack tbc2Pack, boolean newProc) throws Exception {
@@ -40,19 +45,31 @@ public class DocTBC {
                 ECPWorker ecpWorker = new ECPWorker();
                 FTSXMLCreate ftsxmlCreate = new FTSXMLCreate();
                 Envelope envelope = new Envelope();
+                CheckXML checkXML = new CheckXML();
 
                 // create smgs xml and add to documents container
                 String  cimSmgsFtsXml = ftsxmlCreate.createFTSXML_5_8_0(cimSmgs, tbc2Pack, newProc);
+                // check smgs xml
+                String errorCheck = checkXML.checkSmgs(cimSmgsFtsXml, SMGS);
+
                 String cimSmgsFtsXmlSign =  ecpWorker.sign(cimSmgsFtsXml);
                 containerDocs.add(cimSmgsFtsXmlSign);
 
                 // create invoice xml and add to documents container
                 ArrayList<String> ftsInvoiceXmlList = ftsxmlCreate.createFTSInvoiceXML(cimSmgs.getHid(), tbc2Pack, newProc);
                 for (String ftsInvoiceXml: ftsInvoiceXmlList) {
+                    errorCheck += checkXML.checkSmgs(ftsInvoiceXml, INVOICE);
                     String ftsInvoiceXmlSign =  ecpWorker.sign(ftsInvoiceXml);
                     containerDocs.add(ftsInvoiceXmlSign);
                 }
 
+                if (errorCheck.trim().length() != 0) {
+                    Tbc2Status tbc2Status = new Tbc2Status(tbc2Pack.getHid(), new Date(), new Date(), "Ошибка формирования документа", "wgr", "-1", errorCheck);
+                    Session session = HibernateUtil.getSession();
+                    session.save(tbc2Status);
+                    log.debug("Неверный формат XML: " + errorCheck);
+                    return null;
+                }
                 // make envelope container
                 resultXML = envelope.makeEnvelope(null, UUID.randomUUID().toString(), newProc ? "TBC.20002" : "TBC.20008", "00", new Date(), containerDocs, processId);
 

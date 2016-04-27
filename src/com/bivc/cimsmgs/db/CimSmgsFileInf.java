@@ -3,7 +3,9 @@ package com.bivc.cimsmgs.db;
 // Generated 01.11.2011 8:57:21 by Hibernate Tools 3.4.0.CR1
 
 import com.bivc.cimsmgs.commons.myUser;
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -148,5 +150,37 @@ public class CimSmgsFileInf implements Serializable {
 		setTrans(user.getUsr().getGroup().getName());
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
 
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CimSmgsFileInf that = (CimSmgsFileInf) o;
+
+        return new EqualsBuilder()
+                .append(hid, that.hid)
+                .append(route, that.route)
+                .append(packDoc, that.packDoc)
+                .append(type, that.type)
+                .append(nkon, that.nkon)
+                .append(dattr, that.dattr)
+                .append(un, that.un)
+                .append(trans, that.trans)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(hid)
+                .append(route)
+                .append(packDoc)
+                .append(type)
+                .append(nkon)
+                .append(dattr)
+                .append(un)
+                .append(trans)
+                .toHashCode();
+    }
 }

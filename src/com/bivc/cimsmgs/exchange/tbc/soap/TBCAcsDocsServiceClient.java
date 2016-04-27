@@ -31,6 +31,7 @@ public class TBCAcsDocsServiceClient implements AutoCloseable {
   private AscAscDocsServiceStub stub;
   private Options options;
   private ServiceClient client;
+  private boolean executed = false;
 
   public TBCAcsDocsServiceClient(String addr, String user, String passwd) throws AxisFault, XMLStreamException, MalformedURLException {
     try {
@@ -69,6 +70,7 @@ public class TBCAcsDocsServiceClient implements AutoCloseable {
   }
 
   public String openProc(String envelop) throws RemoteException {
+    executed = true;
     AscAscDocsServiceStub.OpenProc openProc = new AscAscDocsServiceStub.OpenProc();
     openProc.setEnvelope(envelop);
     AscAscDocsServiceStub.OpenProcResponse res = stub.openProc(openProc);
@@ -76,6 +78,7 @@ public class TBCAcsDocsServiceClient implements AutoCloseable {
   }
 
   public String[] put(String[] envelopes) throws RemoteException {
+    executed = true;
     AscAscDocsServiceStub.Put put = new AscAscDocsServiceStub.Put();
     AscAscDocsServiceStub.ArrayOfstring inArray = new AscAscDocsServiceStub.ArrayOfstring();
     inArray.setString(envelopes);
@@ -85,6 +88,7 @@ public class TBCAcsDocsServiceClient implements AutoCloseable {
   }
 
   public String get(String envelop) throws RemoteException {
+    executed = true;
     AscAscDocsServiceStub.Get get = new AscAscDocsServiceStub.Get();
     get.setEnvelope(envelop);
     AscAscDocsServiceStub.GetResponse res = stub.get(get);
@@ -93,8 +97,10 @@ public class TBCAcsDocsServiceClient implements AutoCloseable {
 
   @Override
   public void close() throws Exception {
-    options.setProperty(RampartMessageData.CANCEL_REQUEST, Constants.VALUE_TRUE);
-    client.sendReceive(getDummy());
+    if (executed) {
+      options.setProperty(RampartMessageData.CANCEL_REQUEST, Constants.VALUE_TRUE);
+      client.sendReceive(getDummy());
+    }
   }
 
   private Policy loadPolicy(String name) throws XMLStreamException {

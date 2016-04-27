@@ -137,6 +137,9 @@ Ext.define('TK.controller.Docs', {
             },
             'window > grid button[action="copySelectedDocs"]': {
                 click: this.onCopySelected
+            },
+            'cimsmgs':{
+                prepareData4RemoteSave: this.onPrepareData4RemoteSave
             }
         });
     },
@@ -274,6 +277,7 @@ Ext.define('TK.controller.Docs', {
                 doc = this.getCenter().add({xtype:item.name, title:item.descr, closable:false});
                 doc.initServiceFields(initObj(item.prefix));
                 controller.initEvents(doc);
+                doc.dataObj = {};
                 if(docName == item.name){
                     focus = doc;
                 }
@@ -285,6 +289,7 @@ Ext.define('TK.controller.Docs', {
                 if(docName == item.name){
                     doc = this.getCenter().add({xtype:item.alias, title:item.descr, closable:false});
                     doc.initServiceFields(initObj(item.prefix));
+                    doc.dataObj = {};
                     controller.initEvents(doc);
                     focus = doc;
                 }
@@ -296,6 +301,7 @@ Ext.define('TK.controller.Docs', {
                     grids[i].getView().refresh();
                 }
                 doc.initServiceFields(initObj(item.prefix));
+                doc.dataObj = {};
                 if(docName == item.name){
                     focus = doc;
                 }
@@ -319,6 +325,7 @@ Ext.define('TK.controller.Docs', {
             },
             form = this.getCenter().add({xtype:doc.alias, title:doc.descr, closable:false});
         form.initServiceFields(initObj(doc.prefix));
+        form.dataObj = {};
         this.findController(doc.alias).initEvents(form);
 	  	this.getCenter().setActiveTab(form);
     },
@@ -1047,10 +1054,16 @@ Ext.define('TK.controller.Docs', {
             };
         if(panel.getForm().isValid() && panel.isGridDataValid()){
             buildStatus();
-	    	panel.getForm().submit({
+
+            var params = panel.prepareGridData4Save ? panel.prepareGridData4Save() : {};
+            // if(panel.prepareData4Save) {
+            panel.fireEvent('prepareData4RemoteSave', panel, params);
+            // }
+
+            panel.getForm().submit({
 			    waitMsg:this.waitMsg1,
 	            url: Ext.String.capitalize(doc.prefix) + '_save.do',
-                params: panel.prepareGridData4Save ? panel.prepareGridData4Save() : {},
+                params: params,
 	            scope:this,
 			    success: function(form, action) {
                     if(form.findField(doc.prefix+'.packDoc.hid')) {
@@ -1061,7 +1074,7 @@ Ext.define('TK.controller.Docs', {
                         this.setPackHids(action.result.hid[doc.prefix+'.hid']);
                     }*/
 
-                    panel.initServiceFields(action.result.hid, true);
+                    panel.initServiceFields(action.result.hid, true, action.result.doc);
                     if(form.findField('task') /*&& form.findField('task').getValue() == 'copy'*/){
                         form.findField('task').setRawValue('edit');
                     }
@@ -1103,10 +1116,16 @@ Ext.define('TK.controller.Docs', {
             };
     	if(panel.getForm().isValid() && panel.isGridDataValid()){
             buildStatus();
-	    	panel.getForm().submit({
+
+            var params = panel.prepareGridData4Save ? panel.prepareGridData4Save() : {};
+            // if(panel.prepareData4Save) {
+            panel.fireEvent('prepareData4RemoteSave', panel, params);
+            // }
+
+            panel.getForm().submit({
 			    waitMsg:this.waitMsg1,
 	            url: Ext.String.capitalize(doc.prefix) + '_save.do',
-                params: panel.prepareGridData4Save ? panel.prepareGridData4Save() : {},
+                params: params,
 	            scope:this,
 			    success: function(form, action) {
                     this.onExit(btn);
@@ -1133,10 +1152,17 @@ Ext.define('TK.controller.Docs', {
             };
         if(panel.getForm().isValid() && panel.isGridDataValid()){
             buildStatus();
-	    	panel.getForm().submit({
+
+            var params = panel.prepareGridData4Save ? panel.prepareGridData4Save() : {};
+            // if(panel.prepareData4Save) {
+            panel.fireEvent('prepareData4RemoteSave', panel, params);
+            // }
+            //
+
+            panel.getForm().submit({
 			    waitMsg:this.waitMsg1,
 	            url: Ext.String.capitalize(doc.prefix) + '_save.do',
-                params: panel.prepareGridData4Save ? panel.prepareGridData4Save() : {},
+                params: params,
 	            scope:this,
 			    success: function(form, action) {
                     if(form.findField(doc.prefix+'.packDoc.hid')) {
@@ -1147,7 +1173,7 @@ Ext.define('TK.controller.Docs', {
                         this.setPackHids(action.result.hid[doc.prefix+'.hid']);
                     }*/
 
-                    panel.initServiceFields(action.result.hid, true);
+                    panel.initServiceFields(action.result.hid, true, action.result.doc);
                     if(form.findField('task') /*&& form.findField('task').getValue() == 'copy'*/){
                         form.findField('task').setRawValue('edit');
                     }
@@ -1793,10 +1819,16 @@ Ext.define('TK.controller.Docs', {
             doc = tkUser.docs.getByKey(panel.xtype) || tkUser.docs.getByKey(panel.xtype+'list');
 
         if(panel.getForm().isValid() && panel.isGridDataValid()){
+
+            var params = panel.prepareGridData4Save ? panel.prepareGridData4Save() : {};
+            // if(panel.prepareData4Save) {
+            panel.fireEvent('prepareData4RemoteSave', panel, params);
+            // }
+
             panel.getForm().submit({
                 waitMsg:this.waitMsg1,
                 url: Ext.String.capitalize(doc.prefix) + '_doc2EpdRewrite.do',
-                params: panel.prepareGridData4Save ? panel.prepareGridData4Save() : {},
+                params: params,
                 scope:this,
                 success: function(form, action) {
 //                    var epdHid = action['result']['result'];
@@ -1832,11 +1864,15 @@ Ext.define('TK.controller.Docs', {
         var panel = btn.up('form'),
             doc = tkUser.docs.getByKey(panel.xtype) || tkUser.docs.getByKey(panel.xtype+'list');
 
+        var params = panel.prepareGridData4Save ? panel.prepareGridData4Save() : {};
+        // if(panel.prepareData4Save) {
+        panel.fireEvent('prepareData4RemoteSave', panel, params);
+        // }
 
         panel.getForm().submit({
             waitMsg:this.waitMsg1,
             url: Ext.String.capitalize(doc.prefix) + '_epd2DocRewrite.do',
-            params: panel.prepareGridData4Save ? panel.prepareGridData4Save() : {},
+            params: params,
             scope:this,
             success: function(form, action) {
                 panel.dataObj = action['result']['doc'];
@@ -2006,5 +2042,116 @@ Ext.define('TK.controller.Docs', {
                 TK.Utils.makeErrMsg(response, 'Error!..');
             }
         });
+    },
+    onPrepareData4RemoteSave: function(formPanel, objData) {
+        var vags = formPanel.dataObj[formPanel.getVagCollectionName()],
+            data = {};
+
+        if(vags && !Ext.Object.isEmpty(vags)){
+            data = this.prepareVags(formPanel, vags);
+        }
+
+        Ext.apply(objData, data);
+        // return data;
+    },
+
+    prepareVags: function(formPanel, vags){
+        var data = {};
+
+        for(var vagIndx in vags){
+            var vag = vags[vagIndx],
+                vagPath = formPanel.getPrefix() + '.' + formPanel.getVagCollectionName() + '[' + vagIndx + '].';
+
+            for(var vagPropName in vag){
+                if(vagPropName == formPanel.getContCollectionName()){
+                    var conts = vag[formPanel.getContCollectionName()];
+                    if(conts && !Ext.Object.isEmpty(conts)){
+                        var contsData = this.prepareConts(vagPath, formPanel, conts);
+                        Ext.apply(data, contsData);
+                    }
+                } else {
+                    data[vagPath + vagPropName] = vag[vagPropName];
+                }
+            }
+
+        }
+
+        return data;
+    },
+
+    prepareConts: function(vagPath, formPanel, conts){
+        var data = {};
+
+        for(var contIndx in conts){
+            var cont = conts[contIndx],
+                contPath = vagPath + formPanel.getContCollectionName() + '[' + contIndx + '].';
+
+            for(var contPropName in cont){
+                if(contPropName == formPanel.getGryzCollectionName()){
+                    var gryzy = cont[formPanel.getGryzCollectionName()];
+                    if(gryzy  && !Ext.Object.isEmpty(gryzy)){
+                        var gryzyData = this.prepareGryzy(contPath, formPanel, gryzy);
+                        Ext.apply(data, gryzyData);
+                    }
+                } else if(contPropName == formPanel.getDocs9CollectionName()){
+                    var docs9 = cont[formPanel.getDocs9CollectionName()];
+                    if(docs9 && !Ext.Object.isEmpty(docs9)){
+                        var docs9Data = this.prepareDosc9(contPath, formPanel, docs9);
+                        Ext.apply(data, docs9Data);
+                    }
+                } else if(contPropName == formPanel.getPlombsCollectionName()){
+                    var plombs = cont[formPanel.getPlombsCollectionName()];
+                    if(plombs && !Ext.Object.isEmpty(plombs)){
+                        var plombsData = this.preparePlombs(contPath, formPanel, plombs);
+                        Ext.apply(data, plombsData);
+                    }
+                } else {
+                    data[contPath + contPropName] = cont[contPropName];
+                }
+            }
+        }
+        return data;
+    },
+
+    prepareGryzy: function(contPath, formPanel, gryzy){
+        var data = {};
+
+        for(var gryzIndx in gryzy){
+            var gryz = gryzy[gryzIndx],
+                gryzPath = contPath + formPanel.getGryzCollectionName() + '[' + gryzIndx + '].';
+
+            for(var gryzPropName in gryz){
+                data[gryzPath + gryzPropName] = gryz[gryzPropName];
+            }
+        }
+        return data;
+    },
+
+    prepareDosc9: function(contPath, formPanel, docs9){
+        var data = {};
+
+        for(var docs9Indx in docs9){
+            var doc9 = docs9[docs9Indx],
+                docs9Path = contPath + formPanel.getDocs9CollectionName() + '[' + docs9Indx + '].';
+
+            for(var doc9PropName in doc9){
+                data[docs9Path + doc9PropName] = doc9[doc9PropName];
+            }
+        }
+        return data;
+    },
+
+    preparePlombs: function(contPath, formPanel, plombs){
+        var data = {};
+
+        for(var plombsIndx in plombs){
+            var plomb = plombs[plombsIndx],
+                plombsPath = contPath + formPanel.getPlombsCollectionName() + '[' + plombsIndx + '].';
+
+            for(var plombsPropName in plomb){
+                data[plombsPath + plombsPropName] = plomb[plombsPropName];
+            }
+        }
+        return data;
     }
 });

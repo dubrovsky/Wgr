@@ -833,7 +833,7 @@ public class TBCConvertor extends Convertor implements Comparator<Message> {
             for (int i = 0; it.hasNext(); i++) {
               Node nodeItem = it.next();
               CimSmgsGruz cs_gruz = new CimSmgsGruz();
-              cs_kontlist.getCimSmgsGruzs().put(i, cs_gruz);
+              cs_kontlist.getCimSmgsGruzs().put((byte)i, cs_gruz);
               cs_gruz.setCimSmgsKonList(cs_kontlist);
               cs_gruz.setSort(i);
               cs_gruz.setKgvn(nodeItem.valueOf("CODE"));

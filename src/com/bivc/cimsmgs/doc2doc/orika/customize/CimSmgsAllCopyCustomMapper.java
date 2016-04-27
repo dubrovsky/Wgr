@@ -1,6 +1,7 @@
 package com.bivc.cimsmgs.doc2doc.orika.customize;
 
-import com.bivc.cimsmgs.db.*;
+import com.bivc.cimsmgs.db.CimSmgs;
+import com.bivc.cimsmgs.db.CimSmgsCarList;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.metadata.TypeBuilder;
@@ -17,30 +18,30 @@ public class CimSmgsAllCopyCustomMapper extends CustomMapper<CimSmgs, CimSmgs> {
     public void mapAtoB(CimSmgs cimSmgsSource, CimSmgs cimSmgsDestination, MappingContext context) {
         ///
 //        if (MapUtils.isNotEmpty(cimSmgsDestination.getCimSmgsPlatels())) {
-            cimSmgsDestination.setCimSmgsPlatels(new TreeMap<Byte, CimSmgsPlatel>(cimSmgsDestination.getCimSmgsPlatels()));
+            cimSmgsDestination.setCimSmgsPlatels(new TreeMap<>(cimSmgsDestination.getCimSmgsPlatels()));
 //        }
 //        if (MapUtils.isNotEmpty(cimSmgsDestination.getCimSmgsDocses13())) {
-            cimSmgsDestination.setCimSmgsDocses13(new TreeMap<Byte, CimSmgsDocs>(cimSmgsDestination.getCimSmgsDocses13()));
+            cimSmgsDestination.setCimSmgsDocses13(new TreeMap<>(cimSmgsDestination.getCimSmgsDocses13()));
 //        }
 
 //        if (MapUtils.isNotEmpty(cimSmgsDestination.getCimSmgsDocses136())) {
-            cimSmgsDestination.setCimSmgsDocses136(new TreeMap<Byte, CimSmgsDocs>(cimSmgsDestination.getCimSmgsDocses136()));
+            cimSmgsDestination.setCimSmgsDocses136(new TreeMap<>(cimSmgsDestination.getCimSmgsDocses136()));
 //        }
 //        if (MapUtils.isNotEmpty(cimSmgsDestination.getCimSmgsDocses7())) {
-            cimSmgsDestination.setCimSmgsDocses7(new TreeMap<Byte, CimSmgsDocs>(cimSmgsDestination.getCimSmgsDocses7()));
+            cimSmgsDestination.setCimSmgsDocses7(new TreeMap<>(cimSmgsDestination.getCimSmgsDocses7()));
 //        }
 //        if (MapUtils.isNotEmpty(cimSmgsDestination.getCimSmgsDocses9())) {
-            cimSmgsDestination.setCimSmgsDocses9(new TreeMap<Byte, CimSmgsDocs>(cimSmgsDestination.getCimSmgsDocses9()));
+            cimSmgsDestination.setCimSmgsDocses9(new TreeMap<>(cimSmgsDestination.getCimSmgsDocses9()));
 //        }
 //        if (MapUtils.isNotEmpty(cimSmgsDestination.getCimSmgsPlombs())) {
-            cimSmgsDestination.setCimSmgsPlombs(new TreeMap<Byte, CimSmgsPlomb>(cimSmgsDestination.getCimSmgsPlombs()));
+            cimSmgsDestination.setCimSmgsPlombs(new TreeMap<>(cimSmgsDestination.getCimSmgsPlombs()));
 
         cimSmgsDestination.setCimSmgsPerevoz(new TreeMap<>(cimSmgsDestination.getCimSmgsPerevoz()));
 
         if (MapUtils.isNotEmpty(cimSmgsSource.getCimSmgsCarLists())){
             Map<Byte, CimSmgsCarList> carListMapSrc = cimSmgsSource.getCimSmgsCarLists();
             Map<Byte, CimSmgsCarList> carListMapDest = mapperFacade.mapAsMap(carListMapSrc, new TypeBuilder<Map<Byte, CimSmgsCarList>>(){}.build(), new TypeBuilder<Map<Byte, CimSmgsCarList>>(){}.build());
-            cimSmgsDestination.setCimSmgsCarLists(new TreeMap<Byte, CimSmgsCarList>(carListMapDest));
+            cimSmgsDestination.setCimSmgsCarLists(new TreeMap<>(carListMapDest));
         }
 //        }
 

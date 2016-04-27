@@ -183,12 +183,28 @@
         <property name="prim" type="string" >
             <column name="prim" length="512"/>
         </property>
-        <map name="cimSmgsGruzs" cascade="all, delete-orphan" inverse="true" sort="natural" lazy="true" batch-size="50"  >
+        <map name="cimSmgsGruzs" cascade="refresh" inverse="true" sort="natural" lazy="true" batch-size="50"  >
             <key>
                 <column name="HID_KON" precision="20" scale="0"  not-null="true"/>
             </key>
-            <map-key column="SORT" type="java.lang.Integer"/>
+            <map-key column="SORT" type="byte"/>
             <one-to-many class="com.bivc.cimsmgs.db.CimSmgsGruz" />
+        </map>
+
+        <map name="cimSmgsDocses9" cascade="refresh" inverse="true" sort="natural" where="FIELD_NUM = '9'" lazy="true" batch-size="50">
+            <key>
+                <column name="HID_KON" precision="20" scale="0" not-null="true"/>
+            </key>
+            <map-key column="SORT" type="byte"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsDocs"/>
+        </map>
+
+        <map name="cimSmgsPlombs" cascade="refresh" inverse="true" sort="natural" lazy="true" batch-size="50">
+            <key>
+                <column name="HID_KON" precision="20" scale="0" not-null="true"/>
+            </key>
+            <map-key column="SORT" type="byte"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsPlomb"/>
         </map>
     </class>
 </hibernate-mapping>

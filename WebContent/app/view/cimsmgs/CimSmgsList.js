@@ -1,4 +1,4 @@
-Ext.define('TK.view.cimsmgs.List', {
+Ext.define('TK.view.cimsmgs.CimSmgsList', {
     extend:'TK.view.DocsList',
     alias:'widget.cimsmgslist',
     mixins:{

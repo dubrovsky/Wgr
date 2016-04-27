@@ -16,9 +16,9 @@
         <many-to-one name="cimSmgs" class="com.bivc.cimsmgs.db.CimSmgs" fetch="select">
             <column name="HID_CS" precision="20" scale="0"  />
         </many-to-one>
-       <!-- <property name="dattr" type="date" update="false" insert="false">
+        <property name="dattr" type="date" update="false" insert="false">
             <column name="DATTR" length="7" />
-        </property>-->
+        </property>
        <!-- <property name="locked" type="date">
             <column name="LOCKED" length="7" />
         </property>
@@ -192,12 +192,20 @@
             <column name="VAG_OTM" length="1" />
         </property>
 
-        <map name="cimSmgsGruzs" cascade="all, delete-orphan" inverse="true" sort="natural" lazy="true" >
+        <map name="cimSmgsGruzs" cascade="all, delete-orphan" inverse="true" sort="natural" lazy="true" batch-size="50">
             <key>
                 <column name="HID_CAR" precision="20" scale="0"  not-null="true"/>
             </key>
             <map-key column="SORT" type="byte"/>
             <one-to-many class="com.bivc.cimsmgs.db.CimSmgsGruz" />
+        </map>
+
+        <map name="cimSmgsPlombs" cascade="refresh" inverse="true" sort="natural" lazy="true" batch-size="50">
+            <key>
+                <column name="HID_CAR" precision="20" scale="0" not-null="true"/>
+            </key>
+            <map-key column="SORT" type="byte"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsPlomb"/>
         </map>
 
         <map name="cimSmgsKonLists" cascade="all, delete-orphan" inverse="true" sort="natural" lazy="true" batch-size="50"  >

@@ -53,7 +53,7 @@ public class TBC2ReceiverTask extends AbstractTask {
 
             session = HibernateUtil.getSession();
             tx = session.beginTransaction();
-            Object tbc2StatusMaxDate = session.createSQLQuery("select max(st.change_date) from tbc2_status st where st.status != :x ").setString("x", TBCFinalStatus).uniqueResult();
+            Object tbc2StatusMaxDate = session.createSQLQuery("select max(st.change_date) from tbc2_status st where st.status != -1 ").uniqueResult();
             Date chDate = new Date();
             if (tbc2StatusMaxDate != null)
                 chDate = new Date(((Timestamp) tbc2StatusMaxDate).getTime());

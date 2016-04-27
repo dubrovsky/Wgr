@@ -168,13 +168,6 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.data.Types": [],
   "Ext.data.UuidGenerator": [],
   "Ext.data.XmlStore": [],
-  "Ext.data.amf.Encoder": [],
-  "Ext.data.amf.Packet": [],
-  "Ext.data.amf.Proxy": [],
-  "Ext.data.amf.Reader": [],
-  "Ext.data.amf.RemotingMessage": [],
-  "Ext.data.amf.XmlDecoder": [],
-  "Ext.data.amf.XmlEncoder": [],
   "Ext.data.association.Association": [
     "Ext.data.Association"
   ],
@@ -236,8 +229,6 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.data.reader.Xml": [
     "Ext.data.XmlReader"
   ],
-  "Ext.data.soap.Proxy": [],
-  "Ext.data.soap.Reader": [],
   "Ext.data.validations": [],
   "Ext.data.writer.Json": [
     "Ext.data.JsonWriter"
@@ -267,7 +258,6 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.dd.StatusProxy": [],
   "Ext.diag.layout.Context": [],
   "Ext.diag.layout.ContextItem": [],
-  "Ext.direct.AmfRemotingProvider": [],
   "Ext.direct.Event": [],
   "Ext.direct.ExceptionEvent": [],
   "Ext.direct.JsonProvider": [],
@@ -296,6 +286,9 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.draw.engine.Svg": [],
   "Ext.draw.engine.SvgExporter": [],
   "Ext.draw.engine.Vml": [],
+  "Ext.env.Browser": [],
+  "Ext.env.FeatureDetector": [],
+  "Ext.env.OS": [],
   "Ext.flash.Component": [
     "Ext.FlashComponent"
   ],
@@ -628,11 +621,14 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.rtl.dom.Layer": [],
   "Ext.rtl.draw.Component": [],
   "Ext.rtl.draw.Sprite": [],
+  "Ext.rtl.form.Labelable": [],
   "Ext.rtl.form.field.Checkbox": [],
   "Ext.rtl.form.field.File": [],
+  "Ext.rtl.form.field.FileButton": [],
   "Ext.rtl.form.field.Spinner": [],
   "Ext.rtl.form.field.Trigger": [],
   "Ext.rtl.grid.CellEditor": [],
+  "Ext.rtl.grid.ColumnLayout": [],
   "Ext.rtl.grid.RowEditor": [],
   "Ext.rtl.grid.column.Column": [],
   "Ext.rtl.grid.feature.Summary": [],
@@ -869,14 +865,17 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.controller.docs.Cim": [],
   "TK.controller.docs.Cimsmgs": [],
   "TK.controller.docs.Cmr": [],
+  "TK.controller.docs.Docs9TreeDetailController": [],
   "TK.controller.docs.Epd": [],
   "TK.controller.docs.File": [],
   "TK.controller.docs.Gu27v": [],
   "TK.controller.docs.Gu29k": [],
   "TK.controller.docs.Invoice": [],
+  "TK.controller.docs.PlombsTreeDetailController": [],
   "TK.controller.docs.Slovnakl": [],
   "TK.controller.docs.Smgs": [],
   "TK.controller.docs.Smgs2": [],
+  "TK.controller.docs.VgCtGrTreeDetailController": [],
   "TK.controller.exchange.Agreements": [],
   "TK.controller.exchange.LockChecker": [],
   "TK.controller.exchange.Senders": [],
@@ -891,6 +890,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.model.CimSmgs": [],
   "TK.model.CimSmgsOtpr": [],
   "TK.model.Cmr": [],
+  "TK.model.Docs9TreeNode": [],
   "TK.model.Epd": [],
   "TK.model.File": [],
   "TK.model.FileInf": [],
@@ -903,6 +903,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.model.NsiCarrier": [],
   "TK.model.NsiDir": [],
   "TK.model.NsiSta": [],
+  "TK.model.PlombsTreeNode": [],
   "TK.model.PrintBlank": [],
   "TK.model.PrintData": [],
   "TK.model.PrintDataPhrase": [],
@@ -923,6 +924,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.model.User": [],
   "TK.model.UserGroup": [],
   "TK.model.UserPriv": [],
+  "TK.model.VgCtGrTreeNode": [],
   "TK.store.AvisoGu29ks": [],
   "TK.store.Avisocimsmgss": [],
   "TK.store.Avisos": [],
@@ -930,6 +932,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.store.CimSmgses": [],
   "TK.store.Cims": [],
   "TK.store.Cmrs": [],
+  "TK.store.Docs9TreeNodes": [],
   "TK.store.Epdes": [],
   "TK.store.FileInfs": [],
   "TK.store.Files": [],
@@ -940,6 +943,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.store.Logs": [],
   "TK.store.MenuItems": [],
   "TK.store.NsiDirs": [],
+  "TK.store.PlombsTreeNodes": [],
   "TK.store.PrintBlanks": [],
   "TK.store.PrintTemplate": [],
   "TK.store.PrintTemplates": [],
@@ -954,6 +958,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.store.Users": [],
   "TK.store.UsersGroups": [],
   "TK.store.UsersPrivs": [],
+  "TK.store.VgCtGrTreeNodes": [],
   "TK.view.DocsForm": [],
   "TK.view.DocsList": [],
   "TK.view.MenuTree": [],
@@ -970,13 +975,20 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.view.avisogu29k.List": [],
   "TK.view.cim.Form": [],
   "TK.view.cim.List": [],
-  "TK.view.cimsmgs.Form": [],
-  "TK.view.cimsmgs.List": [],
+  "TK.view.cimsmgs.CimSmgsDocs9TreeFormWin": [],
+  "TK.view.cimsmgs.CimSmgsForm": [],
+  "TK.view.cimsmgs.CimSmgsList": [],
+  "TK.view.cimsmgs.CimSmgsPlombsTreeFormWin": [],
+  "TK.view.cimsmgs.CimSmgsVgCtGrTreeFormWin": [],
   "TK.view.cmr.Form": [],
   "TK.view.cmr.List": [],
   "TK.view.edit.DetailGrid": [],
   "TK.view.edit.DetailPanel": [],
   "TK.view.edit.DetailTabPanel": [],
+  "TK.view.edit.Docs9TreeFormWin": [],
+  "TK.view.edit.PlombsTreeFormWin": [],
+  "TK.view.edit.TreeFormWin": [],
+  "TK.view.edit.VgCtGrTreeFormWin": [],
   "TK.view.epd.Form": [],
   "TK.view.epd.List": [],
   "TK.view.file.Form": [],
@@ -1001,8 +1013,8 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.view.slovnakl.List": [],
   "TK.view.smgs.Form": [],
   "TK.view.smgs.List": [],
-  "TK.view.smgs2.Form": [],
-  "TK.view.smgs2.List": [],
+  "TK.view.smgs2.Smgs2Form": [],
+  "TK.view.smgs2.Smgs2List": [],
   "TK.view.stat.Form": [],
   "TK.view.stat.List": [],
   "TK.view.user.Form": [],
@@ -1192,25 +1204,6 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.data.XmlStore": [
     "store.xml"
   ],
-  "Ext.data.amf.Encoder": [
-    "data.amf.Encoder"
-  ],
-  "Ext.data.amf.Packet": [],
-  "Ext.data.amf.Proxy": [
-    "proxy.amf"
-  ],
-  "Ext.data.amf.Reader": [
-    "reader.amf"
-  ],
-  "Ext.data.amf.RemotingMessage": [
-    "data.amf.remotingmessage"
-  ],
-  "Ext.data.amf.XmlDecoder": [
-    "data.amf.xmldecoder"
-  ],
-  "Ext.data.amf.XmlEncoder": [
-    "data.amf.xmlencoder"
-  ],
   "Ext.data.association.Association": [],
   "Ext.data.association.BelongsTo": [
     "association.belongsto"
@@ -1262,12 +1255,6 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.data.reader.Xml": [
     "reader.xml"
   ],
-  "Ext.data.soap.Proxy": [
-    "proxy.soap"
-  ],
-  "Ext.data.soap.Reader": [
-    "reader.soap"
-  ],
   "Ext.data.validations": [],
   "Ext.data.writer.Json": [
     "writer.json"
@@ -1293,9 +1280,6 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.dd.StatusProxy": [],
   "Ext.diag.layout.Context": [],
   "Ext.diag.layout.ContextItem": [],
-  "Ext.direct.AmfRemotingProvider": [
-    "direct.amfremotingprovider"
-  ],
   "Ext.direct.Event": [
     "direct.event"
   ],
@@ -1340,6 +1324,9 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.draw.engine.Svg": [],
   "Ext.draw.engine.SvgExporter": [],
   "Ext.draw.engine.Vml": [],
+  "Ext.env.Browser": [],
+  "Ext.env.FeatureDetector": [],
+  "Ext.env.OS": [],
   "Ext.flash.Component": [
     "widget.flash"
   ],
@@ -1753,11 +1740,14 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.rtl.dom.Layer": [],
   "Ext.rtl.draw.Component": [],
   "Ext.rtl.draw.Sprite": [],
+  "Ext.rtl.form.Labelable": [],
   "Ext.rtl.form.field.Checkbox": [],
   "Ext.rtl.form.field.File": [],
+  "Ext.rtl.form.field.FileButton": [],
   "Ext.rtl.form.field.Spinner": [],
   "Ext.rtl.form.field.Trigger": [],
   "Ext.rtl.grid.CellEditor": [],
+  "Ext.rtl.grid.ColumnLayout": [],
   "Ext.rtl.grid.RowEditor": [],
   "Ext.rtl.grid.column.Column": [],
   "Ext.rtl.grid.feature.Summary": [],
@@ -1835,7 +1825,9 @@ Ext.ClassManager.addNameAliasMappings({
     "widget.quicktip"
   ],
   "Ext.tip.QuickTipManager": [],
-  "Ext.tip.Tip": [],
+  "Ext.tip.Tip": [
+    "widget.tip"
+  ],
   "Ext.tip.ToolTip": [
     "widget.tooltip"
   ],
@@ -2057,14 +2049,17 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.controller.docs.Cim": [],
   "TK.controller.docs.Cimsmgs": [],
   "TK.controller.docs.Cmr": [],
+  "TK.controller.docs.Docs9TreeDetailController": [],
   "TK.controller.docs.Epd": [],
   "TK.controller.docs.File": [],
   "TK.controller.docs.Gu27v": [],
   "TK.controller.docs.Gu29k": [],
   "TK.controller.docs.Invoice": [],
+  "TK.controller.docs.PlombsTreeDetailController": [],
   "TK.controller.docs.Slovnakl": [],
   "TK.controller.docs.Smgs": [],
   "TK.controller.docs.Smgs2": [],
+  "TK.controller.docs.VgCtGrTreeDetailController": [],
   "TK.controller.exchange.Agreements": [],
   "TK.controller.exchange.LockChecker": [],
   "TK.controller.exchange.Senders": [],
@@ -2079,6 +2074,7 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.model.CimSmgs": [],
   "TK.model.CimSmgsOtpr": [],
   "TK.model.Cmr": [],
+  "TK.model.Docs9TreeNode": [],
   "TK.model.Epd": [],
   "TK.model.File": [],
   "TK.model.FileInf": [],
@@ -2091,6 +2087,7 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.model.NsiCarrier": [],
   "TK.model.NsiDir": [],
   "TK.model.NsiSta": [],
+  "TK.model.PlombsTreeNode": [],
   "TK.model.PrintBlank": [],
   "TK.model.PrintData": [],
   "TK.model.PrintDataPhrase": [],
@@ -2111,6 +2108,7 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.model.User": [],
   "TK.model.UserGroup": [],
   "TK.model.UserPriv": [],
+  "TK.model.VgCtGrTreeNode": [],
   "TK.store.AvisoGu29ks": [],
   "TK.store.Avisocimsmgss": [],
   "TK.store.Avisos": [],
@@ -2118,6 +2116,7 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.store.CimSmgses": [],
   "TK.store.Cims": [],
   "TK.store.Cmrs": [],
+  "TK.store.Docs9TreeNodes": [],
   "TK.store.Epdes": [],
   "TK.store.FileInfs": [],
   "TK.store.Files": [],
@@ -2128,6 +2127,7 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.store.Logs": [],
   "TK.store.MenuItems": [],
   "TK.store.NsiDirs": [],
+  "TK.store.PlombsTreeNodes": [],
   "TK.store.PrintBlanks": [],
   "TK.store.PrintTemplate": [],
   "TK.store.PrintTemplates": [],
@@ -2142,6 +2142,7 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.store.Users": [],
   "TK.store.UsersGroups": [],
   "TK.store.UsersPrivs": [],
+  "TK.store.VgCtGrTreeNodes": [],
   "TK.view.DocsForm": [
     "widget.docsform"
   ],
@@ -2190,11 +2191,20 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.view.cim.List": [
     "widget.cimlist"
   ],
-  "TK.view.cimsmgs.Form": [
+  "TK.view.cimsmgs.CimSmgsDocs9TreeFormWin": [
+    "widget.cimsmgsDocs9TreeformWin"
+  ],
+  "TK.view.cimsmgs.CimSmgsForm": [
     "widget.cimsmgs"
   ],
-  "TK.view.cimsmgs.List": [
+  "TK.view.cimsmgs.CimSmgsList": [
     "widget.cimsmgslist"
+  ],
+  "TK.view.cimsmgs.CimSmgsPlombsTreeFormWin": [
+    "widget.cimsmgsPlombsTreeformWin"
+  ],
+  "TK.view.cimsmgs.CimSmgsVgCtGrTreeFormWin": [
+    "widget.cimsmgsVgCtGrTreeformWin"
   ],
   "TK.view.cmr.Form": [
     "widget.cmr"
@@ -2210,6 +2220,18 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "TK.view.edit.DetailTabPanel": [
     "widget.detailtabpanel"
+  ],
+  "TK.view.edit.Docs9TreeFormWin": [
+    "widget.docs9TreeFormWin"
+  ],
+  "TK.view.edit.PlombsTreeFormWin": [
+    "widget.plombsTreeFormWin"
+  ],
+  "TK.view.edit.TreeFormWin": [
+    "widget.treeFormWin"
+  ],
+  "TK.view.edit.VgCtGrTreeFormWin": [
+    "widget.vgCtGrTreeFormWin"
   ],
   "TK.view.epd.Form": [
     "widget.epd"
@@ -2289,10 +2311,10 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.view.smgs.List": [
     "widget.smgslist"
   ],
-  "TK.view.smgs2.Form": [
+  "TK.view.smgs2.Smgs2Form": [
     "widget.smgs2"
   ],
-  "TK.view.smgs2.List": [
+  "TK.view.smgs2.Smgs2List": [
     "widget.smgs2list"
   ],
   "TK.view.stat.Form": [
@@ -2317,10 +2339,10 @@ Ext.ClassManager.addNameAliasMappings({
     "widget.userlistprivs"
   ]
 });
-Ext.setVersion("ext-theme-base", "4.2.2");
-Ext.setVersion("ext-theme-classic", "4.2.2");
-Ext.setVersion("ext-theme-gray", "4.2.2");
-Ext.setVersion("ext-theme-neutral", "4.2.2");
+Ext.setVersion("ext-theme-base", "4.2.5.1763");
+Ext.setVersion("ext-theme-classic", "4.2.5.1763");
+Ext.setVersion("ext-theme-gray", "4.2.5.1763");
+Ext.setVersion("ext-theme-neutral", "4.2.5.1763");
 /**
  * Sencha Blink - Development
  * @author Jacky Nguyen <jacky@sencha.com>

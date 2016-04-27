@@ -1,4 +1,4 @@
-Ext.define('TK.view.smgs2.Form', {
+Ext.define('TK.view.smgs2.Smgs2Form', {
     extend: 'TK.view.DocsForm',
 
     alias:'widget.smgs2',

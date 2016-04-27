@@ -3,6 +3,8 @@ package com.bivc.cimsmgs.db;
 // Generated 19.05.2009 13:24:11 by Hibernate Tools 3.2.4.GA
 
 import com.bivc.cimsmgs.db.nsi.Company;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.Date;
 
@@ -11,119 +13,153 @@ import java.util.Date;
  */
 public class CimSmgsStatus implements java.io.Serializable {
 
-	private Long hid;
-  private CimSmgs cimSmgs;
-  private Date dattr;
-	private String loginName;
-	private Date arch;
-	private Byte status;
-	private Date statusDate;
-	private String statusText;
-  private Company company;
+    private Long hid;
+    private CimSmgs cimSmgs;
+    private Date dattr;
+    private String loginName;
+    private Date arch;
+    private Byte status;
+    private Date statusDate;
+    private String statusText;
+    private Company company;
 
-	public CimSmgsStatus() {
-	}
+    public CimSmgsStatus() {
+    }
 
-  public CimSmgsStatus(Byte status) {
-    this.status = status;
-	}
+    public CimSmgsStatus(Byte status) {
+        this.status = status;
+    }
 
-	public CimSmgsStatus(Long hid, CimSmgs cimSmgs, Company company, Date dattr,
-			Byte status, String loginName) {
-		this.hid = hid;
-		this.cimSmgs = cimSmgs;
-    this.company = company;
-		this.dattr = dattr;
-		this.status = status;
-    this.loginName = loginName;
-	}
+    public CimSmgsStatus(Long hid, CimSmgs cimSmgs, Company company, Date dattr,
+                         Byte status, String loginName) {
+        this.hid = hid;
+        this.cimSmgs = cimSmgs;
+        this.company = company;
+        this.dattr = dattr;
+        this.status = status;
+        this.loginName = loginName;
+    }
 
-	public CimSmgsStatus(Long hid, Company company, CimSmgs cimSmgs,
-			Date dattr, String loginName, Date arch, Byte status,
-			Date statusDate, String statusText) {
-		this.hid = hid;
-		this.company = company;
-		this.cimSmgs = cimSmgs;
-		this.dattr = dattr;
-		this.loginName = loginName;
-		this.arch = arch;
-		this.status = status;
-		this.statusDate = statusDate;
-		this.statusText = statusText;
-	}
+    public CimSmgsStatus(Long hid, Company company, CimSmgs cimSmgs,
+                         Date dattr, String loginName, Date arch, Byte status,
+                         Date statusDate, String statusText) {
+        this.hid = hid;
+        this.company = company;
+        this.cimSmgs = cimSmgs;
+        this.dattr = dattr;
+        this.loginName = loginName;
+        this.arch = arch;
+        this.status = status;
+        this.statusDate = statusDate;
+        this.statusText = statusText;
+    }
 
-	public Long getHid() {
-		return this.hid;
-	}
+    public Long getHid() {
+        return this.hid;
+    }
 
-	public void setHid(Long hid) {
-		this.hid = hid;
-	}
+    public void setHid(Long hid) {
+        this.hid = hid;
+    }
 
-  public CimSmgs getCimSmgs() {
-		return this.cimSmgs;
-	}
+    public CimSmgs getCimSmgs() {
+        return this.cimSmgs;
+    }
 
-	public void setCimSmgs(CimSmgs cimSmgs) {
-		this.cimSmgs = cimSmgs;
-	}
+    public void setCimSmgs(CimSmgs cimSmgs) {
+        this.cimSmgs = cimSmgs;
+    }
 
-	public Date getDattr() {
-		return this.dattr;
-	}
+    public Date getDattr() {
+        return this.dattr;
+    }
 
-	public void setDattr(Date dattr) {
-		this.dattr = dattr;
-	}
+    public void setDattr(Date dattr) {
+        this.dattr = dattr;
+    }
 
-	public String getLoginName() {
-		return this.loginName;
-	}
+    public String getLoginName() {
+        return this.loginName;
+    }
 
-	public void setLoginName(String loginName) {
-		this.loginName = loginName;
-	}
+    public void setLoginName(String loginName) {
+        this.loginName = loginName;
+    }
 
-	public Date getArch() {
-		return this.arch;
-	}
+    public Date getArch() {
+        return this.arch;
+    }
 
-	public void setArch(Date arch) {
-		this.arch = arch;
-	}
+    public void setArch(Date arch) {
+        this.arch = arch;
+    }
 
-	public Byte getStatus() {
-		return this.status;
-	}
+    public Byte getStatus() {
+        return this.status;
+    }
 
-	public void setStatus(Byte status) {
-		this.status = status;
-	}
+    public void setStatus(Byte status) {
+        this.status = status;
+    }
 
-	public Date getStatusDate() {
-		return this.statusDate;
-	}
+    public Date getStatusDate() {
+        return this.statusDate;
+    }
 
-	public void setStatusDate(Date statusDate) {
-		this.statusDate = statusDate;
-	}
+    public void setStatusDate(Date statusDate) {
+        this.statusDate = statusDate;
+    }
 
-	public String getStatusText() {
-		return this.statusText;
-	}
+    public String getStatusText() {
+        return this.statusText;
+    }
 
-  public Company getCompany()
-  {
-    return company;
-  }
+    public Company getCompany() {
+        return company;
+    }
 
-  public void setStatusText(String statusText) {
-		this.statusText = statusText;
-	}
+    public void setStatusText(String statusText) {
+        this.statusText = statusText;
+    }
 
-  public void setCompany(Company company)
-  {
-    this.company = company;
-  }
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CimSmgsStatus that = (CimSmgsStatus) o;
+
+        return new EqualsBuilder()
+                .append(hid, that.hid)
+                .append(cimSmgs, that.cimSmgs)
+                .append(dattr, that.dattr)
+                .append(loginName, that.loginName)
+                .append(arch, that.arch)
+                .append(status, that.status)
+                .append(statusDate, that.statusDate)
+                .append(statusText, that.statusText)
+                .append(company, that.company)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(hid)
+                .append(cimSmgs)
+                .append(dattr)
+                .append(loginName)
+                .append(arch)
+                .append(status)
+                .append(statusDate)
+                .append(statusText)
+                .append(company)
+                .toHashCode();
+    }
 
 }

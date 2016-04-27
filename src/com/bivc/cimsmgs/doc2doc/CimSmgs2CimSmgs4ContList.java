@@ -24,7 +24,7 @@ public class CimSmgs2CimSmgs4ContList extends Smgs2Smgs4ContList {
         dest.setDocType1(BigDecimal.valueOf(search.getDocId()));
         dest.setKind(1);
 
-        Map <Integer, CimSmgsGruz> gruzy = new TreeMap<>();
+        Map <Byte, CimSmgsGruz> gruzy = new TreeMap<>();
         Map <String, CimSmgsGruz> gruzTempMap = new HashMap<>();
 
         for(CimSmgs cimSmgs: smgsy){
@@ -59,7 +59,7 @@ public class CimSmgs2CimSmgs4ContList extends Smgs2Smgs4ContList {
         int index = 0;
         for(CimSmgsGruz gruz: gruzTempMap.values()){
             gruz.setSort(index);
-            gruzy.put(index++, gruz);
+            gruzy.put((byte)index++, gruz);
         }
 
         Map <Byte, CimSmgsCarList> cars  = new TreeMap<Byte, CimSmgsCarList>();

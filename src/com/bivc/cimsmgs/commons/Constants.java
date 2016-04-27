@@ -2078,7 +2078,12 @@ public class Constants {
     }
 
     public static String convert2JSON_Smgs_Save_Results(Object smgs, String name) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        return "{success: true, 'hid':" + findHids(smgs, name) + "}";
+        return convert2JSON_Smgs_Save_Results(smgs, name, null);
+    }
+
+    public static String convert2JSON_Smgs_Save_Results(Object smgs, String name, String doc) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        doc = doc != null ? (",doc:" + doc) : "";
+        return "{success: true, hid:" + findHids(smgs, name) + doc + "}";
     }
 
     public static String convert2JSON_Hid(CimSmgs smgs) {

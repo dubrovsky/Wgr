@@ -4,7 +4,6 @@ package com.bivc.cimsmgs.db;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -64,8 +63,9 @@ public class CimSmgsCarList implements Serializable {
 	private String g1317;
 	private String g1317r;
 	private Long massGross;
-	private Map<Integer, CimSmgsGruz> cimSmgsGruzs = new TreeMap<Integer, CimSmgsGruz>();
-	private Map<Byte, CimSmgsKonList> cimSmgsKonLists = new TreeMap<Byte, CimSmgsKonList>();
+	private Map<Byte, CimSmgsGruz> cimSmgsGruzs = new TreeMap<>();
+	private Map<Byte, CimSmgsKonList> cimSmgsKonLists = new TreeMap<>();
+    private Map<Byte, CimSmgsPlomb> cimSmgsPlombs = new TreeMap<>();
 	private Byte sort;
 	private Byte kodSob;
 	private Byte otmKSob;
@@ -144,11 +144,9 @@ public class CimSmgsCarList implements Serializable {
         this.prim = prim;
     }
 
-    @JsonBackReference
     public PackDoc getPackDoc() {
         return packDoc;
     }
-    @JsonBackReference
     public void setPackDoc(PackDoc packDoc) {
         this.packDoc = packDoc;
     }
@@ -187,7 +185,7 @@ public class CimSmgsCarList implements Serializable {
 			Long priceAll, String notes, String g131, String g132, String g132r, String g133, String g134, String g135, String g136, String g136r,
 			String g137, String g137r, String g138, String g139, String g139r, String g1310, String g1311, String g1311r, String g1312, String g1313,
 			String g1314, String g1314r, String g1315, String g1316, String g1317, String g1317r, Long massGross,
-			Map<Integer, CimSmgsGruz> cimSmgsGruzs, Map<Byte, CimSmgsKonList> cimSmgsKonLists, Byte sort, Byte kodSob, Byte otmKSob, BigDecimal grPod,
+			Map<Byte, CimSmgsGruz> cimSmgsGruzs, Map<Byte, CimSmgsKonList> cimSmgsKonLists, Byte sort, Byte kodSob, Byte otmKSob, BigDecimal grPod,
 			BigDecimal taraVag, Byte kolOs) {
 		this.hid = hid;
 		this.kodSob = kodSob;
@@ -607,17 +605,14 @@ public class CimSmgsCarList implements Serializable {
 		this.massGross = massGross;
 	}
 
-	@JsonManagedReference
-	public Map<Integer, CimSmgsGruz> getCimSmgsGruzs() {
+	public Map<Byte, CimSmgsGruz> getCimSmgsGruzs() {
 		return this.cimSmgsGruzs;
 	}
 
-	@JsonManagedReference
-	public void setCimSmgsGruzs(Map<Integer, CimSmgsGruz> cimSmgsGruzs) {
+	public void setCimSmgsGruzs(Map<Byte, CimSmgsGruz> cimSmgsGruzs) {
 		this.cimSmgsGruzs = cimSmgsGruzs;
 	}
 
-	@JsonManagedReference
 	public Map<Byte, CimSmgsKonList> getCimSmgsKonLists() {
 		return this.cimSmgsKonLists;
 	}
@@ -646,7 +641,6 @@ public class CimSmgsCarList implements Serializable {
 		return kolOs;
 	}
 
-	@JsonManagedReference
 	public void setCimSmgsKonLists(Map<Byte, CimSmgsKonList> cimSmgsKonLists) {
 		this.cimSmgsKonLists = cimSmgsKonLists;
 	}
@@ -675,23 +669,6 @@ public class CimSmgsCarList implements Serializable {
 		this.kolOs = kolOs;
 	}
 
-	public int hashCode() {
-		// you pick a hard-coded, randomly chosen, non-zero, odd number
-		// ideally different for each class
-		return new HashCodeBuilder(17, 37).append(hid).toHashCode();
-	}
-
-	public boolean equals(Object obj) {
-		if (obj instanceof CimSmgsCarList == false) {
-			return false;
-		}
-		if (this == obj) {
-			return true;
-		}
-		CimSmgsCarList rhs = (CimSmgsCarList) obj;
-		return new EqualsBuilder().appendSuper(super.equals(obj)).append(hid, rhs.getHid()).isEquals();
-	}
-
 	public String toString() {
 		return new ToStringBuilder(this).append("hid", hid).append("name", nvag).toString();
 	}
@@ -706,8 +683,23 @@ public class CimSmgsCarList implements Serializable {
 		for (CimSmgsKonList kon : cimSmgsKonLists.values()) {
 			kon.setCimSmgsCarList(this);
 			kon.addCimSmgsGruzs();
+            kon.addCimSmgsDocs9();
+            kon.addCimSmgsPlombs();
 		}
 	}
+
+    void addCimSmgsPlombs() {
+        CimSmgs cimSmgs = this.getCimSmgs();
+
+        for (CimSmgsPlomb plomb : cimSmgsPlombs.values()) {
+            byte index = (byte) cimSmgs.getCimSmgsPlombs().size();
+            plomb.setSort(index);
+            plomb.setCimSmgsCarList(this);
+
+            plomb.setCimSmgs(cimSmgs);
+            cimSmgs.getCimSmgsPlombs().put(index, plomb);
+        }
+    }
 
 	public void addCimSmgsKonListItem(CimSmgsKonList csk) {
 		if (csk != null) {
@@ -719,7 +711,7 @@ public class CimSmgsCarList implements Serializable {
 	public void addCimSmgsGruzItem(CimSmgsGruz csg) {
 		if (csg != null) {
 			csg.setCimSmgsCarList(this);
-			cimSmgsGruzs.put(csg.getSort(), csg);
+			cimSmgsGruzs.put(csg.getSort().byteValue(), csg);
 		}
 	}
 
@@ -755,4 +747,147 @@ public class CimSmgsCarList implements Serializable {
     public CimSmgsKonList findOrCreateKont() {
         return hasKont() ? getCimSmgsKonLists().values().iterator().next() : new CimSmgsKonList((byte) 0, this);
     }
+
+    public Map<Byte, CimSmgsPlomb> getCimSmgsPlombs() {
+        return cimSmgsPlombs;
+    }
+
+    public void setCimSmgsPlombs(Map<Byte, CimSmgsPlomb> cimSmgsPlombs) {
+        this.cimSmgsPlombs = cimSmgsPlombs;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CimSmgsCarList that = (CimSmgsCarList) o;
+
+        return new EqualsBuilder()
+                .append(hid, that.hid)
+                .append(cimSmgs, that.cimSmgs)
+                .append(dattr, that.dattr)
+                .append(trans, that.trans)
+                .append(un, that.un)
+                .append(num, that.num)
+                .append(nvag, that.nvag)
+                .append(nhmNames, that.nhmNames)
+                .append(nhmCodes, that.nhmCodes)
+                .append(rid, that.rid)
+                .append(plombs, that.plombs)
+                .append(massSend, that.massSend)
+                .append(massCalc, that.massCalc)
+                .append(price, that.price)
+                .append(priceAdd, that.priceAdd)
+                .append(priceAll, that.priceAll)
+                .append(notes, that.notes)
+                .append(g131, that.g131)
+                .append(g132, that.g132)
+                .append(g132r, that.g132r)
+                .append(g133, that.g133)
+                .append(g134, that.g134)
+                .append(g135, that.g135)
+                .append(g136, that.g136)
+                .append(g136r, that.g136r)
+                .append(g137, that.g137)
+                .append(g137r, that.g137r)
+                .append(g138, that.g138)
+                .append(g139, that.g139)
+                .append(g139r, that.g139r)
+                .append(g1310, that.g1310)
+                .append(g1311, that.g1311)
+                .append(g1311r, that.g1311r)
+                .append(g1312, that.g1312)
+                .append(g1313, that.g1313)
+                .append(g1314, that.g1314)
+                .append(g1314r, that.g1314r)
+                .append(g1315, that.g1315)
+                .append(g1316, that.g1316)
+                .append(g1317, that.g1317)
+                .append(g1317r, that.g1317r)
+                .append(massGross, that.massGross)
+                .append(sort, that.sort)
+                .append(kodSob, that.kodSob)
+                .append(otmKSob, that.otmKSob)
+                .append(grPod, that.grPod)
+                .append(taraVag, that.taraVag)
+                .append(kolOs, that.kolOs)
+                .append(rod, that.rod)
+                .append(speed, that.speed)
+                .append(packDoc, that.packDoc)
+                .append(prim, that.prim)
+                .append(count, that.count)
+                .append(cicternType, that.cicternType)
+                .append(scep, that.scep)
+                .append(refSecNo, that.refSecNo)
+                .append(refSecKol, that.refSecKol)
+                .append(vagOtm, that.vagOtm)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(hid)
+                .append(cimSmgs)
+                .append(dattr)
+                .append(trans)
+                .append(un)
+                .append(num)
+                .append(nvag)
+                .append(nhmNames)
+                .append(nhmCodes)
+                .append(rid)
+                .append(plombs)
+                .append(massSend)
+                .append(massCalc)
+                .append(price)
+                .append(priceAdd)
+                .append(priceAll)
+                .append(notes)
+                .append(g131)
+                .append(g132)
+                .append(g132r)
+                .append(g133)
+                .append(g134)
+                .append(g135)
+                .append(g136)
+                .append(g136r)
+                .append(g137)
+                .append(g137r)
+                .append(g138)
+                .append(g139)
+                .append(g139r)
+                .append(g1310)
+                .append(g1311)
+                .append(g1311r)
+                .append(g1312)
+                .append(g1313)
+                .append(g1314)
+                .append(g1314r)
+                .append(g1315)
+                .append(g1316)
+                .append(g1317)
+                .append(g1317r)
+                .append(massGross)
+                .append(sort)
+                .append(kodSob)
+                .append(otmKSob)
+                .append(grPod)
+                .append(taraVag)
+                .append(kolOs)
+                .append(rod)
+                .append(speed)
+                .append(packDoc)
+                .append(prim)
+                .append(count)
+                .append(cicternType)
+                .append(scep)
+                .append(refSecNo)
+                .append(refSecKol)
+                .append(vagOtm)
+                .toHashCode();
+    }
+
 }

@@ -402,6 +402,7 @@ public class FTSXMLCreate {
 
 
 //            ftsxml = doc.asXML();
+
             OutputFormat format = new OutputFormat("  ", true, encoding);
             format.setExpandEmptyElements(false);
             StringWriter out = new StringWriter();
@@ -494,15 +495,15 @@ public class FTSXMLCreate {
 
             DecimalFormatSymbols symbols = new DecimalFormatSymbols();
             symbols.setDecimalSeparator('.');
-            DecimalFormat df = new DecimalFormat("###.##", symbols);
+            DecimalFormat ddf = new DecimalFormat("###.##", symbols);
 //            df.setMaximumFractionDigits(2);
 //            df.setGroupingUsed(false);
 //            DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
 //            decimalFormatSymbols.setDecimalSeparator('.');
 //            df.setd
 
-            root.addElement("inv:GCost").addText(df.format(gcost));
-            root.addElement("inv:TotalCost").addText(df.format(gcost));
+            root.addElement("inv:GCost").addText(ddf.format(gcost));
+            root.addElement("inv:TotalCost").addText(ddf.format(gcost));
 
             Element buyer = root.addElement("inv:Buyer");
             buyer.addElement("catComFin_ru:Name").addText(StringUtils.defaultString(csi.getNbuy()));
@@ -561,7 +562,7 @@ public class FTSXMLCreate {
             if (StringUtils.isNotEmpty(csi.getInvoice()))
                 registration.addElement("cat_ru:PrDocumentNumber").addText(StringUtils.defaultString(csi.getInvoice()));
             if (csi.getDat_inv() != null)
-                registration.addElement("cat_ru:PrDocumentDate").addText(StringUtils.defaultString(df.format(csi.getDat_inv())));
+                registration.addElement("cat_ru:PrDocumentDate").addText(csi.getDat_inv() != null ? df.format(csi.getDat_inv()) : "");
 
 //            ftsxml = doc.asXML();
             OutputFormat format = new OutputFormat("  ", true, encoding);

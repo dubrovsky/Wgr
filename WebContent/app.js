@@ -47,6 +47,9 @@ Ext.application({
         'docs.Slovnakl',
         'docs.Smgs',
         'docs.Smgs2',
+        'docs.VgCtGrTreeDetailController',
+        'docs.Docs9TreeDetailController',
+        'docs.PlombsTreeDetailController',
 
         'print.PrintTemplates',
         'print.Print',

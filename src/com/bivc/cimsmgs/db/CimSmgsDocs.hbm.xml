@@ -3,7 +3,7 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 02.03.2009 10:02:25 by Hibernate Tools 3.2.4.CR1 -->
 <hibernate-mapping>
-    <class name="com.bivc.cimsmgs.db.CimSmgsDocs" table="CIM_SMGS_DOCS" >
+    <class name="com.bivc.cimsmgs.db.CimSmgsDocs" table="CIM_SMGS_DOCS" batch-size="50">
         <id name="hid" type="long">
             <column name="HID" precision="20" scale="0" />
             <generator class="sequence">
@@ -12,6 +12,9 @@
         </id>
         <many-to-one name="cimSmgs" class="com.bivc.cimsmgs.db.CimSmgs" fetch="select" >
             <column name="HID_CS" precision="20" scale="0" not-null="true"/>
+        </many-to-one>
+        <many-to-one name="cimSmgsKonList" class="com.bivc.cimsmgs.db.CimSmgsKonList" fetch="select">
+            <column name="HID_KON" precision="20" scale="0"  />
         </many-to-one>
         <property name="code" type="string">
             <column name="CODE" length="3" />

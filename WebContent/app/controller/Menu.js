@@ -360,7 +360,7 @@ Ext.define('TK.controller.Menu', {
             center.add(grid);
         }
 
-        grid = center.getComponent(0);
+        grid = center.setActiveTab(0) || center.getComponent(0);
 
         if(reloadStore){
             Ext.apply(grid.getStore().getProxy().extraParams, gridParams);

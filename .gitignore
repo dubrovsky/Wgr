@@ -27,7 +27,8 @@ $RECYCLE.BIN/
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -53,8 +54,15 @@ classes
 out/production
 out/artifacts
 WebContent/ext2
-WebContent/ext
-WebContent/build
+/WebContent/ext/*.js
+/WebContent/ext/*.xml
+/WebContent/ext/*.txt
+/WebContent/ext/builds
+/WebContent/ext/cmd
+/WebContent/ext/packages
+/WebContent/ext/src
+/WebContent/build
+/resources
 .classpath
 .project
 CimSmgs2.eml
@@ -68,4 +76,4 @@ src/com/isc/leechdictionary
 src/com/isc/nsiintegration
 src/com/isc/nsiintegration2
 src/NSI_VAG.sql
-./Wgr.iml
+Wgr.iml

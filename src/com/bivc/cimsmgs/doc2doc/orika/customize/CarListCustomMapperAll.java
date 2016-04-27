@@ -19,7 +19,7 @@ public class CarListCustomMapperAll extends CustomMapper<CimSmgsCarList, CimSmgs
         if (MapUtils.isNotEmpty(source.getCimSmgsKonLists())){
             Map<Byte, CimSmgsKonList> konListMapSrc = source.getCimSmgsKonLists();
             Map<Byte, CimSmgsKonList> konListMapDest = mapperFacade.mapAsMap(konListMapSrc, new TypeBuilder<TreeMap<Byte, CimSmgsKonList>>(){}.build(), new TypeBuilder<TreeMap<Byte, CimSmgsKonList>>(){}.build());
-            destination.setCimSmgsKonLists(new TreeMap<Byte, CimSmgsKonList>(konListMapDest));
+            destination.setCimSmgsKonLists(new TreeMap<>(konListMapDest));
         }
     }
 }

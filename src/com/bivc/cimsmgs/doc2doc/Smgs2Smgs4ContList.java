@@ -72,7 +72,7 @@ public class Smgs2Smgs4ContList implements Doc2Doc{
         dest.setTdg_status2(null);
 //        dest.setVagPrim(PRILOZHENIE_13);
 
-        Map <Integer, CimSmgsGruz> gruzy = new TreeMap<Integer, CimSmgsGruz>();
+        Map <Byte, CimSmgsGruz> gruzy = new TreeMap<>();
         for (CimSmgsCarList car : source.getCimSmgsCarLists().values()) {
             for (CimSmgsKonList kon : car.getCimSmgsKonLists().values()) {
 //                gruzy = mapper.copyGruzMap(kon.getCimSmgsGruzs());
@@ -102,7 +102,7 @@ public class Smgs2Smgs4ContList implements Doc2Doc{
             gruz = new CimSmgsGruz();
             gruz.setCimSmgsKonList(kon);
             gruz.setSort(0);
-            gruzy.put(0, gruz);
+            gruzy.put((byte)0, gruz);
         } else {
             gruz = gruzy.values().iterator().next();
         }

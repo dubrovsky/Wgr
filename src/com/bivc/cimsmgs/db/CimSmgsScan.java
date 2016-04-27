@@ -1,5 +1,8 @@
 package com.bivc.cimsmgs.db;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Blob;
@@ -109,6 +112,45 @@ public class CimSmgsScan implements Serializable {
 
     public void setLength(BigDecimal length) {
         this.length = length;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CimSmgsScan that = (CimSmgsScan) o;
+
+        return new EqualsBuilder()
+                .append(hid, that.hid)
+                .append(cimSmgs, that.cimSmgs)
+                .append(files, that.files)
+                .append(fileName, that.fileName)
+                .append(un, that.un)
+                .append(dattr, that.dattr)
+                .append(contentType, that.contentType)
+                .append(length, that.length)
+                .append(route, that.route)
+                .append(packDoc, that.packDoc)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(hid)
+                .append(cimSmgs)
+                .append(files)
+                .append(fileName)
+                .append(un)
+                .append(dattr)
+                .append(contentType)
+                .append(length)
+                .append(route)
+                .append(packDoc)
+                .toHashCode();
     }
 
 }

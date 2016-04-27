@@ -22,7 +22,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class EDIConvertor97A extends EDIConvertor {
 
@@ -589,7 +588,7 @@ public class EDIConvertor97A extends EDIConvertor {
       Map<Byte, CimSmgsKonList> csk = cscOb.getCimSmgsKonLists();
       for (CimSmgsKonList cskOb : csk.values()) {
         isKont = true;
-        Map<Integer, CimSmgsGruz> csg = cskOb.getCimSmgsGruzs();
+        Map<Byte, CimSmgsGruz> csg = cskOb.getCimSmgsGruzs();
         isManyGruz = csg.size() > 1;
         for (CimSmgsGruz csgOb : csg.values()) {
           /** @todo Нужен код упаковки */

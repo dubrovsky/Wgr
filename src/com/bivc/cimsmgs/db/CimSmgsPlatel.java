@@ -4,6 +4,8 @@ package com.bivc.cimsmgs.db;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -217,5 +219,58 @@ public class CimSmgsPlatel implements Serializable {
 
     public void setPrimR1(String primR1) {
         this.primR1 = primR1;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CimSmgsPlatel that = (CimSmgsPlatel) o;
+
+        return new EqualsBuilder()
+                .append(sort, that.sort)
+                .append(flag, that.flag)
+                .append(hid, that.hid)
+                .append(cimSmgs, that.cimSmgs)
+                .append(dor, that.dor)
+                .append(plat, that.plat)
+                .append(prim, that.prim)
+                .append(dattr, that.dattr)
+                .append(kplat, that.kplat)
+                .append(kplat1, that.kplat1)
+                .append(kplat2, that.kplat2)
+                .append(kplat3, that.kplat3)
+                .append(dorR, that.dorR)
+                .append(platR, that.platR)
+                .append(primR, that.primR)
+                .append(strana, that.strana)
+                .append(primR1, that.primR1)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(hid)
+                .append(cimSmgs)
+                .append(dor)
+                .append(plat)
+                .append(prim)
+                .append(dattr)
+                .append(sort)
+                .append(kplat)
+                .append(kplat1)
+                .append(kplat2)
+                .append(kplat3)
+                .append(dorR)
+                .append(platR)
+                .append(primR)
+                .append(strana)
+                .append(flag)
+                .append(primR1)
+                .toHashCode();
     }
 }

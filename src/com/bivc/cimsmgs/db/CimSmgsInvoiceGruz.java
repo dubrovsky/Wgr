@@ -2,6 +2,8 @@ package com.bivc.cimsmgs.db;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -235,6 +237,62 @@ public class CimSmgsInvoiceGruz implements Serializable {
 
     public String getNzyp() {
         return nzyp;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CimSmgsInvoiceGruz that = (CimSmgsInvoiceGruz) o;
+
+        return new EqualsBuilder()
+                .append(hid, that.hid)
+                .append(hid_csinv, that.hid_csinv)
+                .append(znak, that.znak)
+                .append(kolm, that.kolm)
+                .append(mbrt, that.mbrt)
+                .append(mnet, that.mnet)
+                .append(klms, that.klms)
+                .append(cus_kolm, that.cus_kolm)
+                .append(tnved, that.tnved)
+                .append(cus_edizm, that.cus_edizm)
+                .append(nzgr, that.nzgr)
+                .append(cost, that.cost)
+                .append(itogo, that.itogo)
+                .append(invoice, that.invoice)
+                .append(nzyp, that.nzyp)
+                .append(type, that.type)
+                .append(kole, that.kole)
+                .append(eizm, that.eizm)
+                .append(kypk, that.kypk)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(hid)
+                .append(hid_csinv)
+                .append(znak)
+                .append(kolm)
+                .append(mbrt)
+                .append(mnet)
+                .append(klms)
+                .append(cus_kolm)
+                .append(tnved)
+                .append(cus_edizm)
+                .append(nzgr)
+                .append(cost)
+                .append(itogo)
+                .append(invoice)
+                .append(nzyp)
+                .append(type)
+                .append(kole)
+                .append(eizm)
+                .append(kypk)
+                .toHashCode();
     }
 
     /*public String toString() {

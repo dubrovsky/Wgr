@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -766,5 +768,117 @@ public class CimSmgsInvoice implements Serializable {
 
     public boolean hasRoute() {
         return getRoute() != null && getRoute().getHid() != null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CimSmgsInvoice that = (CimSmgsInvoice) o;
+
+        return new EqualsBuilder()
+                .append(hid, that.hid)
+                .append(notd, that.notd)
+                .append(adres_o, that.adres_o)
+                .append(n_dog, that.n_dog)
+                .append(npol, that.npol)
+                .append(adres_p, that.adres_p)
+                .append(kod_pol, that.kod_pol)
+                .append(itogo, that.itogo)
+                .append(invoice, that.invoice)
+                .append(nsel, that.nsel)
+                .append(adres_s, that.adres_s)
+                .append(nbuy, that.nbuy)
+                .append(adres_b, that.adres_b)
+                .append(kod_b, that.kod_b)
+                .append(kod_del, that.kod_del)
+                .append(ndel, that.ndel)
+                .append(prim, that.prim)
+                .append(fio_otv, that.fio_otv)
+                .append(un, that.un)
+                .append(dat_dog, that.dat_dog)
+                .append(dat_inv, that.dat_inv)
+                .append(trans, that.trans)
+                .append(dattr, that.dattr)
+                .append(cux, that.cux)
+                .append(invoicId, that.invoicId)
+                .append(invoicOut, that.invoicOut)
+                .append(invoicIn, that.invoicIn)
+                .append(invoicId2, that.invoicId2)
+                .append(invoicOut2, that.invoicOut2)
+                .append(invoicIn2, that.invoicIn2)
+                .append(route, that.route)
+                .append(packDoc, that.packDoc)
+                .append(postavka, that.postavka)
+                .append(postavkaPunkt, that.postavkaPunkt)
+                .append(notpr, that.notpr)
+                .append(nvag, that.nvag)
+                .append(utiN, that.utiN)
+                .append(country_o, that.country_o)
+                .append(zip_o, that.zip_o)
+                .append(city_o, that.city_o)
+                .append(country_p, that.country_p)
+                .append(zip_p, that.zip_p)
+                .append(city_p, that.city_p)
+                .append(altered, that.altered)
+                .append(status, that.status)
+                .append(docType1, that.docType1)
+                .append(docType, that.docType)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(hid)
+                .append(notd)
+                .append(adres_o)
+                .append(n_dog)
+                .append(npol)
+                .append(adres_p)
+                .append(kod_pol)
+                .append(itogo)
+                .append(invoice)
+                .append(nsel)
+                .append(adres_s)
+                .append(nbuy)
+                .append(adres_b)
+                .append(kod_b)
+                .append(kod_del)
+                .append(ndel)
+                .append(prim)
+                .append(fio_otv)
+                .append(un)
+                .append(dat_dog)
+                .append(dat_inv)
+                .append(trans)
+                .append(dattr)
+                .append(cux)
+                .append(invoicId)
+                .append(invoicOut)
+                .append(invoicIn)
+                .append(invoicId2)
+                .append(invoicOut2)
+                .append(invoicIn2)
+                .append(route)
+                .append(packDoc)
+                .append(postavka)
+                .append(postavkaPunkt)
+                .append(notpr)
+                .append(nvag)
+                .append(utiN)
+                .append(country_o)
+                .append(zip_o)
+                .append(city_o)
+                .append(country_p)
+                .append(zip_p)
+                .append(city_p)
+                .append(altered)
+                .append(status)
+                .append(docType1)
+                .append(docType)
+                .toHashCode();
     }
 }

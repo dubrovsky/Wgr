@@ -1,6 +1,8 @@
 package com.bivc.cimsmgs.db;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 
@@ -104,5 +106,39 @@ public class CimSmgsPerevoz implements Serializable {
 
     public void setCodePer(String codePer) {
         this.codePer = codePer;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CimSmgsPerevoz that = (CimSmgsPerevoz) o;
+
+        return new EqualsBuilder()
+                .append(hid, that.hid)
+                .append(cimSmgs, that.cimSmgs)
+                .append(sort, that.sort)
+                .append(namPer, that.namPer)
+                .append(stBeg, that.stBeg)
+                .append(stEnd, that.stEnd)
+                .append(codStBeg, that.codStBeg)
+                .append(codStEnd, that.codStEnd)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(hid)
+                .append(cimSmgs)
+                .append(sort)
+                .append(namPer)
+                .append(stBeg)
+                .append(stEnd)
+                .append(codStBeg)
+                .append(codStEnd)
+                .toHashCode();
     }
 }

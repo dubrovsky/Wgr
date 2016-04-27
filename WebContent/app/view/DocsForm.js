@@ -9,6 +9,16 @@ Ext.define('TK.view.DocsForm', {
     border:false,
     layout:'absolute',
     defaultType:'textfield',
+
+    config: {
+        prefix: 'smgs',
+        vagCollectionName: 'cimSmgsCarLists',
+        contCollectionName: 'cimSmgsKonLists',
+        gryzCollectionName: 'cimSmgsGruzs',
+        docs9CollectionName: 'cimSmgsDocses9',
+        plombsCollectionName: 'cimSmgsPlombs'
+    },
+
     initComponent:function () {
         this.buildVTypes();
         var config = {};

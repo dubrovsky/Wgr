@@ -1,7 +1,7 @@
 Ext.define('TK.controller.docs.Smgs2', {
     extend: 'Ext.app.Controller',
 
-    views: ['smgs2.List', 'smgs2.Form'],
+    views: ['smgs2.Smgs2List', 'smgs2.Smgs2Form'],
     stores: ['Smgses'],
     models: ['Smgs','SmgsPlat','SmgsOtpr','SmgsPlomb'],
     refs: [

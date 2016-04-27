@@ -1,4 +1,4 @@
-Ext.define('TK.view.cimsmgs.Form', {
+Ext.define('TK.view.cimsmgs.CimSmgsForm', {
     extend: 'TK.view.DocsForm',
     /*mixins: [
         'TK.controller.exchange.FormStatus',
@@ -64,10 +64,13 @@ Ext.define('TK.view.cimsmgs.Form', {
                 xtype:'button',
                 text:this.btnChange,
                 x:905, y:287,
-                action:'change',
-//        	handler: this.onChangeData,
-//        	scope:this,
-                itemId:'g9_'
+                action:'changeDocs9'
+            },
+            {
+                xtype:'button',
+                text:this.btnChange,
+                x:40, y:1129,
+                action:'changePlombs'
             },
             {xtype:'textarea',x:16, y:585, width:423, height:83, readOnly:true, name:'disp.g13', itemId:'disp.g13', submitValue:false},
             {
@@ -75,12 +78,10 @@ Ext.define('TK.view.cimsmgs.Form', {
                 text:this.btnChange,
                 x:441, y:645,
                 action:'change',
-//        	handler: this.onChangeData,
-//        	scope:this,
                 itemId:'g13_'
             },
             {xtype:'textarea',x:696, y:667, width:273, height:76, readOnly:true, name:'disp.g19v', itemId:'disp.g19v', submitValue:false},
-            {
+            /*{
                 xtype:'button',
                 text:this.btnChangeWagen,
                 x:835, y:645,
@@ -88,9 +89,9 @@ Ext.define('TK.view.cimsmgs.Form', {
 //        	handler: this.onChangeData,
 //        	scope:this,
                 itemId:'g19v_'
-            },
+            },*/
             {xtype:'textarea',x:16, y:815, width:100, height:238, readOnly:true, name:'disp.g19k', itemId:'disp.g19k', submitValue:false},
-            {
+            /*{
                 xtype:'button',
                 text:this.btnChangeCont,
                 x:16, y:770,
@@ -98,9 +99,9 @@ Ext.define('TK.view.cimsmgs.Form', {
 //        	handler: this.onChangeData,
 //        	scope:this,
                 itemId:'g19k_'
-            },
+            },*/
             {xtype:'textarea',x:118, y:815, width:735, height:238, readOnly:true, name:'disp.g19g', itemId:'disp.g19g', submitValue:false},
-            {
+            /*{
                 xtype:'button',
                 text:this.btnChangeGr,
                 x:380, y:791,
@@ -108,6 +109,12 @@ Ext.define('TK.view.cimsmgs.Form', {
 //        	handler: this.onChangeData,
 //        	scope:this,
                 itemId:'g19g_'
+            },*/
+            {
+                xtype:'button',
+                text:'Вагон/Контейнер/Груз',
+                x:380, y:791,
+                action:'changeVgCtGr'
             },
             {x:512, y:60, name: 'smgs.npoezd',fieldLabel:this.labelWagenNum, labelStyle:'font-weight:bold;', itemId:'smgs.npoezd', maxLength:32, width:250},
             {x:16, y:1053, xtype:'textarea', name:'smgs.g11_prim', itemId:'smgs.g11_prim', maxLength:1024, width:835, height:60},
@@ -179,7 +186,7 @@ Ext.define('TK.view.cimsmgs.Form', {
             {x:865, y:970, xtype:'textarea', name: 'smgs.g26', itemId:'smgs.g26', maxLength:128, width:260, height:70},
             {x:1150, y:970, xtype:'textarea', name: 'smgs.g27', itemId:'smgs.g27', maxLength:64, width:120, height:70},
             {x:1150, y:1075, xtype:'textarea', name: 'smgs.g39', itemId:'smgs.g39', maxLength:50, width:120, height:70},
-            {x:16, y:1128, name: 'smgs.g2012', itemId:'smgs.g2012', maxLength:160, width:838},
+            {x:135, y:1113, xtype:'textarea', name: 'smgs.g2012', itemId:'smgs.g2012', maxLength:160, width:720, height:40, readOnly: true},
             {x:802, y:1193, name: 'smgs.g591', itemId:'smgs.g591', maxLength:2, width:44},
             {x:855, y:1193, name: 'smgs.g592', itemId:'smgs.g592', maxLength:2, width:44},
             {x:902, y:1193, name: 'smgs.g593', itemId:'smgs.g593', maxLength:2, width:44},
@@ -392,6 +399,7 @@ Ext.define('TK.view.cimsmgs.Form', {
                             {xtype:'textarea', fieldLabel:this.labelPaymentRu, itemId:"primR",  maxLength:70, width:250},
                             {xtype:'textfield', fieldLabel:this.labelPayerKod1, maxLength:50, itemId:"kplat", width:200},
                             {xtype:'textfield', fieldLabel:this.labelPayerKod2, itemId:"kplat1", maxLength:50, width:200},
+                            {xtype:'hidden', itemId:"strana"},
                             {xtype:'hidden', itemId:"sort"},
                             {xtype:'hidden', itemId:"hid"}
                         ]
@@ -492,25 +500,25 @@ Ext.define('TK.view.cimsmgs.Form', {
                     this.bufData['g7c'] = this.ownerCt.dataObj['g7c'];
                 }
             },
-            {
+           /* {
                 xtype:'detailpanel',
                 x:290, y:250, width:400,
                 itemId:'g9_panel',
                 title:this.labelSenderDocs,
                 items:[
                     {
-                        /*xtype:'detailtabpanel',
+                        /!*xtype:'detailtabpanel',
                         tabCollectionName:'cimSmgsDocses9',
                         itemId:'g9_panel_tab_9',
                         tabItems:[
-                            {xtype:'trigger', fieldLabel:this.labelCodeDoc, itemId:"code", maxLength:3*//*, onTriggerClick: fieldsOptSearch*//*, triggerCls:'dir', width:50 },
+                            {xtype:'trigger', fieldLabel:this.labelCodeDoc, itemId:"code", maxLength:3*!//!*, onTriggerClick: fieldsOptSearch*!//!*, triggerCls:'dir', width:50 },
                             {xtype:'textarea', fieldLabel:this.labelTextRu, itemId:"text", maxLength:500, width:200},
                             {xtype:'textarea', fieldLabel:this.labelText, itemId:"text2", maxLength:240, width:200},
                             {xtype:'hidden', itemId:"fieldNum", value:'9'},
                             {xtype:'hidden', itemId:"dat"},
                             {xtype:'hidden', itemId:"sort"},
                             {xtype:'hidden', itemId:"hid"}
-                        ]*/
+                        ]*!/
                         xtype:'detailtabpanel',
                         tabCollectionName:'cimSmgsDocses9',
                         itemId:'g9_panel_tab_9',
@@ -587,7 +595,7 @@ Ext.define('TK.view.cimsmgs.Form', {
                     this.bufData[tCN] = this.ownerCt.dataObj[tCN];
                     this.bufData['g9c'] = this.ownerCt.dataObj['g9c'];
                 }
-            },
+            },*/
             {
                 xtype:'detailpanel',
                 x:450, y:560, width:400,
@@ -705,7 +713,8 @@ Ext.define('TK.view.cimsmgs.Form', {
                     this.bufData[tCN] = this.ownerCt.dataObj[tCN];
                     this.bufData['g13c'] = this.ownerCt.dataObj['g13c'];
                 }
-            },
+            }
+            /*,
             {
                 xtype:'detailpanel',
                 x:280, y:630, width:400,
@@ -744,10 +753,10 @@ Ext.define('TK.view.cimsmgs.Form', {
                                         itemId:'g19g_panel_tab',
                                         hasParentCollection:true,
                                         tabItems:[
-                                            {xtype:'trigger', fieldLabel:this.labelCodeGng, itemId:"kgvn", maxLength:10/*, onTriggerClick: gngSearch1*/, triggerCls:'dir', width:100 },
+                                            {xtype:'trigger', fieldLabel:this.labelCodeGng, itemId:"kgvn", maxLength:10/!*, onTriggerClick: gngSearch1*!/, triggerCls:'dir', width:100 },
                                             {xtype:'textarea', fieldLabel:this.labelNameRuGng, itemId:"nzgr", maxLength:4000, width:250},
                                             {xtype:'textarea', fieldLabel:this.labelName1, itemId:"nzgrEu", maxLength:4000, width:250},
-                                            {xtype:'trigger', fieldLabel:this.labelCodeEtsng, itemId:"ekgvn", maxLength:10/*, onTriggerClick: etsngSearch*/, triggerCls:'dir', width:100},
+                                            {xtype:'trigger', fieldLabel:this.labelCodeEtsng, itemId:"ekgvn", maxLength:10/!*, onTriggerClick: etsngSearch*!/, triggerCls:'dir', width:100},
                                             {xtype:'textarea', fieldLabel:this.labelNameEtsng, itemId:"enzgr", maxLength:4000, width:250},
                                             {xtype:'numberfield', fieldLabel:this.labelMassa, itemId:'massa', maxLength:14, width:80, minValue:0, decimalPrecision:3},
                                             {xtype:'textfield', fieldLabel:this.labelPackForeign, itemId:"upakForeign", maxLength:50, width:100},
@@ -883,11 +892,11 @@ Ext.define('TK.view.cimsmgs.Form', {
                             break;
                     }
                 },
-                /*onChangeData:function(btn){
+                /!*onChangeData:function(btn){
                  this.mode = btn.itemId;
                  this.changeCmpVisibility(btn.itemId);
                  //				this.show();
-                 },*/
+                 },*!/
                 setDisplayedField:function(){
                     var _g19 = '',
                         g = this.ownerCt.getComponent('disp.g19v'),
@@ -1052,7 +1061,7 @@ Ext.define('TK.view.cimsmgs.Form', {
                     var tCN = this.getComponent('g19v_panel_tab').tabCollectionName;
                     this.bufData[tCN] = this.ownerCt.dataObj[tCN];
                 }
-            }
+            }*/
         ];
 
         if(tkUser.hasPriv('CIM_CONTS_LIST')){
@@ -1190,32 +1199,41 @@ Ext.define('TK.view.cimsmgs.Form', {
         this.initButtons();
         this.resumeLayouts(true);
     },
-    initServiceFields: function(data){
+    initServiceFields: function(data, initGrid, dataObj){
         this.getForm().setValues(data);
         if (this.form.findField('task').getValue() == 'copy' || this.form.findField('task').getValue() == 'create') {
             this.form.findField('smgs.g21').setValue("1");
+        }
+        if(dataObj){
+            this.dataObj = dataObj;
         }
     },
     initBuffers: function(){
         this.getComponent('g1_panel').initBuf();
         this.getComponent('g4_panel').initBuf();
         this.getComponent('g7_panel').initBuf();
-        this.getComponent('g9_panel').initBuf();
+        // this.getComponent('g9_panel').initBuf();
         this.getComponent('g13_panel').initBuf();
-        this.getComponent('g19v_panel').initBuf();
+        // this.getComponent('g19v_panel').initBuf();
     },
     initCollections: function(){
         this.getComponent('g7_panel').copyValues2MainFlds();
-        this.getComponent('g9_panel').copyValues2MainFlds();
+        // this.getComponent('g9_panel').copyValues2MainFlds();
         this.getComponent('g13_panel').copyValues2MainFlds();
-        this.getComponent('g19v_panel').copyValues2MainFlds();
+        // this.getComponent('g19v_panel').copyValues2MainFlds();
     },
     initDisplayedFields:function(){
         this.getComponent('g1_panel').setDisplayedField();
         this.getComponent('g4_panel').setDisplayedField();
         this.getComponent('g7_panel').setDisplayedField();
-        this.getComponent('g9_panel').setDisplayedField();
+        // this.getComponent('g9_panel').setDisplayedField();
         this.getComponent('g13_panel').setDisplayedField();
-        this.getComponent('g19v_panel').setDisplayedField();
-    }
+        this.fireEvent('onChangeVgCtGrDisplField', this);
+        this.fireEvent('onChangeDocs9DisplField', this);
+        this.fireEvent('onChangePlombsDisplField', this);
+
+        // this.getComponent('g19v_panel').setDisplayedField();
+    }/*,
+
+    prepareVgCtGrData4Save: function () {} // only marker, look into controller for implementation*/
 });

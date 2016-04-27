@@ -2,13 +2,22 @@ Ext.define('TK.controller.docs.Cimsmgs', {
     extend:'Ext.app.Controller',
     mixins: [
         'TK.controller.Utils'
-//        'TK.controller.exchange.ListStatus',
-//        'TK.controller.exchange.LockChecker'
     ],
 
-    views:['cimsmgs.List', 'cimsmgs.Form'],
-    stores:['CimSmgses'],
-    models:['CimSmgs', 'CimSmgsOtpr'],
+    views:[
+        'cimsmgs.CimSmgsList',
+        'cimsmgs.CimSmgsForm',
+        'cimsmgs.CimSmgsVgCtGrTreeFormWin',
+        'cimsmgs.CimSmgsDocs9TreeFormWin',
+        'cimsmgs.CimSmgsPlombsTreeFormWin'
+    ],
+    stores:[
+        'CimSmgses'
+    ],
+    models:[
+        'CimSmgs',
+        'CimSmgsOtpr'
+    ],
     refs:[
         {
             ref:'list',
@@ -21,12 +30,30 @@ Ext.define('TK.controller.docs.Cimsmgs', {
         {
             ref:'center',
             selector:'viewport > tabpanel'
+        }, {
+            ref:'cimsmgs',
+            selector:'viewport > tabpanel > cimsmgs'
         }
     ],
     init:function () {
         this.control({
             'cimsmgslist':{
                 select: this.onRowclick
+            },
+            'cimsmgs button[action=changeVgCtGr]': {
+                click: this.onCimSmgsVgCtGrWinShow
+            },
+            'cimsmgs button[action=changeDocs9]': {
+                click: this.onCimSmgsDocs9WinShow
+            },
+            'cimsmgs button[action=changePlombs]': {
+                click: this.onCimSmgsPlombsWinShow
+            },
+            'cimsmgs': {
+                onChangeVgCtGrDisplField: this.setDisplayedVgCtGrFields,
+                onChangeDocs9DisplField: this.setDisplayedDocs9Fields,
+                onChangePlombsDisplField: this.setDisplayedPlombsFields,
+                onSavePlombsToDataObj: this.setG2012DataObj
             }
         });
     },
@@ -57,14 +84,14 @@ Ext.define('TK.controller.docs.Cimsmgs', {
             },
             this
         );
-        form.down('detailtabpanel[itemId=g9_panel_tab_9]').on(
+        /*form.down('detailtabpanel[itemId=g9_panel_tab_9]').on(
             'add',
             function (tabpanel, tab, inx) {
                 if (tabpanel.isXType('detailtabpanel', true)) {
-                    /*tab.getComponent('code').onTriggerClick = Ext.bind(function () {
+                    /!*tab.getComponent('code').onTriggerClick = Ext.bind(function () {
                         var nsiGrid = this.getController('Nsi').nsiDocG9().getComponent(0);
                         nsiGrid.on('itemdblclick', this.selectDoc, tab);
-                    }, this);*/
+                    }, this);*!/
                     tab.getComponent('ncas').onTriggerClick = Ext.bind(function(){
                         var nsiGrid = this.getController('Nsi').nsiDocG23().getComponent(0);
                         nsiGrid.on('itemdblclick', this.getController('Nsi').selectDocG23, tab);
@@ -72,7 +99,7 @@ Ext.define('TK.controller.docs.Cimsmgs', {
                 }
             },
             this
-        );
+        );*/
         form.down('detailtabpanel[itemId=g13_panel_tab_13]').on(
             'add',
             function (tabpanel, tab, inx) {
@@ -109,7 +136,7 @@ Ext.define('TK.controller.docs.Cimsmgs', {
             },
             this
         );
-        form.down('detailtabpanel[itemId=g19v_panel_tab]').on(
+        /*form.down('detailtabpanel[itemId=g19v_panel_tab]').on(
             'add',
             function (vags, vag, inx) {
                 if (vags.isXType('detailtabpanel', true) && vag.getComponent('g19k_panel_tab')) {
@@ -132,7 +159,7 @@ Ext.define('TK.controller.docs.Cimsmgs', {
                 }
             },
             this
-        );
+        );*/
     },
     selectGng:function (view, record, item, index) {
         var data = record.data;
@@ -141,7 +168,6 @@ Ext.define('TK.controller.docs.Cimsmgs', {
         this.getComponent('ohr').setValue(data['ohr']);
         view.up('window').close();
     },
-
     selectEtsng:function (view, record, item, index) {
         var data = record.data;
         this.getComponent('ekgvn').setValue(data.code);
@@ -154,12 +180,12 @@ Ext.define('TK.controller.docs.Cimsmgs', {
         if (btn.itemId.indexOf('g19') == -1) {
             panel = this.getComponent(btn.itemId + 'panel');
         }
-        else {
+        /*else {
             panel = this.getComponent('g19v_panel');
 //    		panel.onChangeData(btn);
             panel.mode = btn.itemId;
             panel.changeCmpVisibility(btn.itemId);
-        }
+        }*/
         tabpanels = panel.query('detailtabpanel');
         for (var i = 0; i < tabpanels.length; i++) {
             if (tabpanels[i].items.getCount() == 0) {  // add tab by default if noone exists
@@ -293,5 +319,310 @@ Ext.define('TK.controller.docs.Cimsmgs', {
         }*/
 
         this.getCenter().resumeLayouts();
+    },
+    onCimSmgsVgCtGrWinShow: function(btn){
+        this.fireEvent('showVgCtGrWin', 'cimsmgsVgCtGrTreeformWin', btn.up('docsform'));
+    },
+
+    onCimSmgsDocs9WinShow: function(btn){
+        this.fireEvent('showDocs9Win', 'cimsmgsDocs9TreeformWin', btn.up('docsform'));
+    },
+
+    onCimSmgsPlombsWinShow: function(btn){
+        this.fireEvent('showPlombsWin', 'cimsmgsPlombsTreeformWin', btn.up('docsform'));
+    },
+
+    setDisplayedVgCtGrFields: function(){
+        var vags = this.getCimsmgs().dataObj[this.getCimsmgs().getVagCollectionName()],
+            vagDisplField = this.getCimsmgs().getComponent('disp.g19v');
+
+        if(vags){
+            this.setDisplayedVagFields(vags, vagDisplField);
+        } else {
+            vagDisplField.setValue('');
+            this.getCimsmgs().getComponent('disp.g19k').setValue('');
+            this.getCimsmgs().getComponent('disp.g19g').setValue('');
+        }
+
+    },
+
+    setDisplayedVagFields: function(vags, vagDisplField){
+        var vagResult = '',
+            contResult = '',
+            gryzResult = '',
+            gryzyGngMap = new Ext.util.MixedCollection(),
+            contsGryzyResult = {},
+            vag,
+            conts,
+        // gryzyCount = 0,
+        // gryzyMassa = 0,
+            contsMassa = 0,
+            contDisplField = this.getCimsmgs().getComponent('disp.g19k'),
+            gryzDisplField = this.getCimsmgs().getComponent('disp.g19g')/*,
+         g11PrimResult = ''*/;
+
+        for(var vagIndx in vags){
+            vag = vags[vagIndx];
+
+            if(vagIndx == '0' && !vags['1']) {  // only 1 vag
+                vagResult = (vag['nvag'] ? '№ вагона/Wagen Nr ' + vag['nvag'] + '\n' : '');
+                vagResult += (vag['grPod'] ? 'Тоннаж/Tragwagenfaeigkeith ' + vag['grPod'] + '\n' : '');
+                vagResult += (vag['taraVag'] ? 'Тара/Tara ' + vag['taraVag'] + '\n' : '');
+                vagResult += (vag['kolOs'] ? 'Оси/Achse ' + vag['kolOs'] + '\n' : '');
+            } else {
+                vagResult += vag['nvag'] + '\n';
+            }
+
+            conts = vag[this.getCimsmgs().getContCollectionName()];
+            if(conts){
+                contsGryzyResult = this.setDisplayedContFields(conts, /*g11PrimResult,*/ gryzyGngMap);
+                contResult += contsGryzyResult['contResult'];
+                // gryzResult += contsGryzyResult['gryzResult'];
+                // gryzyCount += contsGryzyResult['gryzyCount'];
+                // gryzyMassa += contsGryzyResult['gryzyMassa'];
+                contsMassa += contsGryzyResult['contsMassa'];
+                // g11PrimResult = contsGryzyResult['g11PrimResult'];
+            }
+        }
+
+        vagDisplField.setValue(vagResult);
+        contDisplField.setValue(contResult);
+        this.getCimsmgs().getComponent('smgs.g24N').setValue(gryzyGngMap.sum('massa'));
+        this.getCimsmgs().getComponent('smgs.g24T').setValue(contsMassa);
+
+        if(gryzyGngMap.getCount() > 0){
+            if(gryzyGngMap.getCount() > 1){
+                gryzResult = 'Сборный груз: Sammelgut:\n\n'/* + gryzResult*/;
+            }
+            gryzResult += this.setDisplayedGryzFields(gryzyGngMap);
+            gryzDisplField.setValue(gryzResult);
+        } else {
+            gryzDisplField.setValue('');
+        }
+    },
+
+    setDisplayedContFields: function(conts, /*g11PrimResult,*/ gryzyGngMap){
+        var contResult = '',
+        // gryzResult = '',
+        // gryzyResult = {},
+        // gryzyMassa = 0,
+        // gryzyCount = 0,
+            contsMassa = 0;
+
+        for(var contIndx in conts){
+            var cont = conts[contIndx];
+
+            contResult += (cont['sizeFoot'] ? '1x' + cont['sizeFoot'] : '');
+            contResult += (cont['notes'] ? ' ' + cont['notes'] : '');
+            if(cont['utiN']){
+                var konConst = (cont['notes'] ? '' : 'HC Container №');
+                contResult += ' ' + konConst + '\n' + cont['utiN'];
+            }
+            contResult += (cont['sizeMm'] ? '\n(' + cont['sizeMm'] + 'mm)' : '');
+            contResult += '\n';
+
+            var contMassa = parseInt(cont['taraKont']);
+            contsMassa += isNaN(contMassa) ? 0 : contMassa;
+
+            var gryzy = cont[this.getCimsmgs().getGryzCollectionName()];
+            if(gryzy){
+                // gryzyResult = this.setDisplayedGryzFields(gryzy, gryzyCount, g11PrimResult);
+                this.groupGruzByKgvn(gryzy, gryzyGngMap);
+                // gryzResult += gryzyResult['gryzResult'];
+                // gryzyCount += gryzyResult['gryzyCount'];
+                // gryzyMassa += gryzyResult['gryzyMassa'];
+                // g11PrimResult = gryzyResult['g11PrimResult'];
+            }
+        }
+
+        return {
+            contResult: contResult,
+            // gryzResult: gryzResult,
+            // gryzyCount: gryzyCount,
+            // gryzyMassa: gryzyMassa,
+            contsMassa: contsMassa/*,
+             g11PrimResult: g11PrimResult*/
+        };
+    },
+
+    groupGruzByKgvn: function(gryzy, gryzMap){
+        for(var gryzIndx in gryzy) {
+            var gryz = gryzy[gryzIndx],
+                gruzTemp = gryzMap.get(gryz['kgvn'].trim());
+
+            if(!gruzTemp){
+                gruzTemp = Ext.clone(gryz);
+                gruzTemp['places'] = 0;
+                gruzTemp['massa'] = 0;
+                gryzMap.add(gryz['kgvn'] ? gryz['kgvn'].trim() : Ext.Number.randomInt(1, 100000), gruzTemp);
+            }
+
+            var massa = 0;
+            if(gryz['massa']){
+                massa = parseFloat(gryz['massa']);
+                gruzTemp['massa'] += isNaN(massa) ? 0 : massa;
+            }
+
+            var places = 0;
+            if(gryz['places']){
+                places = parseInt(gryz['places']);
+                gruzTemp['places'] += isNaN(places) ? 0 : places;
+            }
+        }
+    },
+
+    setDisplayedGryzFields: function(/*gryzy, g11PrimResult*/gryzyGngMap){
+        var gryzResult = '',
+            g11PrimResult = ''/*,
+         gryzyMassa = 0,
+         gryzyCount = 0*/;
+
+        gryzyGngMap.each(function(gryz, gryzIndx) {
+                gryzResult += (gryz['nzgr'] ? gryz['nzgr'] : '');
+                gryzResult += (gryz['nzgrEu'] ? '\n' + gryz['nzgrEu'] : '');
+                gryzResult += (gryz['kgvn'] ? '\nГНГ- ' + gryz['kgvn'] : '');
+                gryzResult += (gryz['ekgvn'] ? '\nЕТ СНГ- ' + gryz['ekgvn'] : '');
+                gryzResult += (gryz['upak'] ? '\nУпаковка- ' + gryz['upak'] : '');
+                gryzResult += (gryz['places'] ? '\nМеста- ' + gryz['places'] : '');
+                gryzResult += (gryz['massa'] ? '\nМасса- ' + gryz['massa'].toFixed(3) + 'кг\n\n' : '');
+
+                // gryzyCount++;
+                /*var gryzMassa = parseFloat(gryz['massa']);
+                 gryzyMassa += isNaN(gryzMassa) ? 0 : gryzMassa;*/
+                if(!g11PrimResult && gryz['ohr']){
+                    g11PrimResult = 'Груз подлежит охране';
+
+                    var g11PrimDisplField = this.getCimsmgs().getComponent('smgs.g11_prim');
+                    if(!g11PrimDisplField.getValue()){     // empty
+                        g11PrimDisplField.setValue(g11PrimResult);
+                    } else {
+                        var re = new RegExp(g11PrimResult,'gi');
+                        if(g11PrimDisplField.getValue().search(re) == -1){
+                            g11PrimDisplField.setValue(g11PrimDisplField.getValue() + ' ' + g11PrimResult);
+                        }
+                    }
+                }
+            },
+            this
+        );
+
+        /*for(var gryzIndx in gryzy) {
+         var gryz = gryzy[gryzIndx];
+
+         gryzResult += (gryz['nzgr'] ? gryz['nzgr'] : '');
+         gryzResult += (gryz['nzgrEu'] ? '\n' + gryz['nzgrEu'] : '');
+         gryzResult += (gryz['kgvn'] ? '\nГНГ- ' + gryz['kgvn'] : '');
+         gryzResult += (gryz['ekgvn'] ? '\nЕТ СНГ- ' + gryz['ekgvn'] : '');
+         gryzResult += (gryz['upak'] ? '\nУпаковка- ' + gryz['upak'] : '');
+         gryzResult += (gryz['places'] ? '\nМеста- ' + gryz['places'] : '');
+         gryzResult += (gryz['massa'] ? '\nМасса- ' + gryz['massa'] + 'кг\n\n' : '');
+
+         // gryzyCount++;
+         /!*var gryzMassa = parseFloat(gryz['massa']);
+         gryzyMassa += isNaN(gryzMassa) ? 0 : gryzMassa;*!/
+         if(!g11PrimResult && gryz['ohr']){
+         g11PrimResult = 'Груз подлежит охране';
+
+         var g11PrimDisplField = this.getCimsmgs().getComponent('smgs.g11_prim');
+         if(!g11PrimDisplField.getValue()){     // empty
+         g11PrimDisplField.setValue(g11PrimResult);
+         } else {
+         var re = new RegExp(g11PrimResult,'gi');
+         if(g11PrimDisplField.getValue().search(re) == -1){
+         g11PrimDisplField.setValue(g11PrimDisplField.getValue() + ' ' + g11PrimResult);
+         }
+         }
+         }
+         }*/
+
+        return gryzResult;
+        /*return {
+         gryzResult: gryzResult,
+         // gryzyCount: gryzyCount,
+         // gryzyMassa: gryzyMassa,
+         g11PrimResult: g11PrimResult
+         };*/
+    },
+
+    setDisplayedDocs9Fields: function(){
+        var vags = this.getCimsmgs().dataObj[this.getCimsmgs().getVagCollectionName()],
+            docs9DisplField = this.getCimsmgs().getComponent('disp.g9'),
+            docs9Result = '';
+
+        if(vags && !Ext.Object.isEmpty(vags)){
+            for(var vagIndx in vags){
+
+                var vag = vags[vagIndx],
+                    conts = vag[this.getCimsmgs().getContCollectionName()];
+
+                if(conts && !Ext.Object.isEmpty(conts)){
+
+                    for(var contIndx in conts){
+                        var cont = conts[contIndx],
+                            docs9 = cont[this.getCimsmgs().getDocs9CollectionName()];
+
+                        if(docs9 && !Ext.Object.isEmpty(docs9)){
+
+                            for(var docs9Indx in docs9){
+                                var doc9 = docs9[docs9Indx];
+
+                                docs9Result += (doc9['text'] ? doc9['text'] + '  ' : '');
+                                docs9Result += (doc9['text2'] ? doc9['text2'] + '  ' : '');
+                                docs9Result += (doc9['ndoc'] ? doc9['ndoc'] + '  ' : '');
+                                docs9Result += (doc9['dat'] ? 'от ' + doc9['dat'] + '  ' : '');
+                                docs9Result += (doc9['ncopy'] ? doc9['ncopy'] + ' экз '  : '');
+                                docs9Result += '\n';
+                            }
+                        }
+
+                    }
+                }
+
+            }
+        }
+
+        docs9DisplField.setValue(docs9Result);
+    },
+
+    setG2012DataObj: function(){
+        var vags = this.getCimsmgs().dataObj[this.getCimsmgs().getVagCollectionName()],
+            plombsResult = '',
+            delim = '';
+
+        if(vags && !Ext.Object.isEmpty(vags)){
+            for(var vagIndx in vags){
+
+                var vag = vags[vagIndx],
+                    conts = vag[this.getCimsmgs().getContCollectionName()];
+
+                if(conts && !Ext.Object.isEmpty(conts)){
+
+                    for(var contIndx in conts){
+                        var cont = conts[contIndx],
+                            plombs = cont[this.getCimsmgs().getPlombsCollectionName()];
+
+                        if(plombs && !Ext.Object.isEmpty(plombs)){
+
+                            for(var plombsIndx in plombs){
+                                var plomb = plombs[plombsIndx];
+
+                                plombsResult += delim;
+                                plombsResult += (plomb['kpl'] ? plomb['kpl'] + 'x  ' : '');
+                                plombsResult += (plomb['znak'] ? plomb['znak'] : '');
+                                delim = ', ';
+                            }
+                        }
+
+                    }
+                }
+
+            }
+        }
+
+        this.getCimsmgs().dataObj['g2012'] = plombsResult;
+    },
+
+    setDisplayedPlombsFields: function(){
+        this.getCimsmgs().getComponent('smgs.g2012').setValue(this.getCimsmgs().dataObj['g2012']);
     }
 });

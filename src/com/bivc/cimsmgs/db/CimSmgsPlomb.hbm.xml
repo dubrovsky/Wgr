@@ -13,6 +13,12 @@
         <many-to-one class="com.bivc.cimsmgs.db.CimSmgs" fetch="select" name="cimSmgs">
             <column name="HID_CS" precision="20" scale="0"/>
         </many-to-one>
+        <many-to-one class="com.bivc.cimsmgs.db.CimSmgsKonList" name="cimSmgsKonList" fetch="select">
+            <column name="HID_KON" precision="20" scale="0"  />
+        </many-to-one>
+        <many-to-one class="com.bivc.cimsmgs.db.CimSmgsCarList" name="cimSmgsCarList" fetch="select">
+            <column name="HID_CAR" precision="20" scale="0"/>
+        </many-to-one>
         <property name="kpl" type="java.lang.Short">
             <column name="KPL" precision="3" scale="0"/>
         </property>
@@ -22,7 +28,7 @@
         <property name="type" type="string">
             <column length="32" name="TYPE"/>
         </property>
-        <property name="dattr" type="date">
+       <!-- <property name="dattr" type="date">
             <column length="7" name="DATTR"/>
         </property>
         <property name="locked" type="date">
@@ -36,7 +42,7 @@
         </property>
         <property name="hidKon" type="big_decimal">
             <column name="HID_KON" precision="20" scale="0"/>
-        </property>
+        </property>-->
         <property name="sort" type="byte">
             <column name="SORT" not-null="true" precision="2" scale="0"/>
         </property>

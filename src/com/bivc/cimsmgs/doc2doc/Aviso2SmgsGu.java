@@ -29,7 +29,7 @@ public class Aviso2SmgsGu implements Doc2Doc {
         action.setSmgs(action.getSmgsDAO().findById(action.getSearch().getHid(), false));  // 4 status logging
 
         CimSmgsCarList[] srcVag = new CimSmgsCarList[0];
-        Map<Integer, CimSmgsGruz> srcGruzs = null;
+        Map<Byte, CimSmgsGruz> srcGruzs = null;
 
         if (action.getSmgs().getCimSmgsCarLists().size() > 0) {
             srcVag = action.getSmgs().getCimSmgsCarLists().values().toArray(srcVag);

@@ -44,7 +44,6 @@ public class FTSExchange {
         try {
             session = HibernateUtil.getSession();
             tx = session.beginTransaction();
-
             if (getStatus(hid_cs).equals("0") || getStatus(hid_cs).equals("6")) {
                 initParam(sc);
                 try (TBCAcsDocsServiceClient client = new TBCAcsDocsServiceClient(TBCSoapHost, TBCSoapLogin, TBCSoapPass, TBCSoapRepositoryPath)) {
@@ -59,7 +58,7 @@ public class FTSExchange {
                         boolean newProc = true;
 
                         @SuppressWarnings("unchecked")
-                        List<Tbc2Log> tbc2LogList = HibernateUtil.getSession().createQuery("from Tbc2Log where hid_src = :h and doc_type = 'SMGS' order by dattr desc").setLong("h", hid_cs).list();
+                        List<Tbc2Log> tbc2LogList = HibernateUtil.getSession().createQuery("from Tbc2Log where hid_src = :h and doc_type = 'SMGS' and result is not null order by dattr desc").setLong("h", hid_cs).list();
                         if (tbc2LogList.size() == 0) {
                             ReqOpenProcTBC reqOpenProcTBC = new ReqOpenProcTBC();
                             String openProc = reqOpenProcTBC.createReqOpenProc(hid_cs);
@@ -85,67 +84,81 @@ public class FTSExchange {
                         String doc = docTBC.createDoc(cimSmgs, procedureID, tbc2Pack, newProc);
                         debug(doc);
 
-                        log.debug("Send " + doc.length() + " documents.");
-                        String[] docResults = client.put(new String[]{doc});
+                        if (doc != null) {
+                            log.debug("Send " + doc.length() + " bytes.");
+                            String[] docResults = client.put(new String[]{doc});
 
-                        for (String docResult : docResults) {
-                            debug(docResult);
-                        }
-
-                        Document documentResult = reader.read(new ByteArrayInputStream(docResults[0].getBytes(encoding)));
-                        @SuppressWarnings("unchecked")
-                        List<Node> resultList = documentResult.selectNodes("//*[name()='Result']");
-                        for (Node resultInformation : resultList) {
-                            Node RefDocumentIDNode = resultInformation.selectSingleNode("*[name()='Response']/*[name()='RefDocumentID']");
-                            String resultCode = resultInformation.selectSingleNode("*[name()='Response']/*[name()='ResultInformation']/*[name()='ResultCode']").getText();
-
-                            if (RefDocumentIDNode != null) {
-                                String RefDocumentID = RefDocumentIDNode.getText();
-                                List<Tbc2Log> tbc2Logs = HibernateUtil.getSession().createQuery("from Tbc2Log where docId = :h order by dattr desc").setString("h", RefDocumentID).list();
-                                if (tbc2Logs.size() != 0) {
-                                    Tbc2Log tbc2Log = tbc2Logs.get(0);
-                                    tbc2Log.setResult(resultInformation.asXML());
-                                    session.update(tbc2Log);
-//                                    tx.commit();
-                                }
+                            for (String docResult : docResults) {
+                                debug(docResult);
                             }
 
-                            if (!ResultCodeSucess.equals(resultCode)) {
-                                @SuppressWarnings("unchecked")
-                                List<Node> resultDescriptionList = resultInformation.selectNodes("*[name()='Response']/*[name()='ResultInformation']/*[name()='ResultDescription']");
-                                for (Node descr : resultDescriptionList)
-                                    log.debug(descr.getText());
-                                parseSuccess = false;
-                            }
-                        }
-
-                        if (!parseSuccess) {
-                            throw new Exception("Ошибка обработки сообщения.");
-                        } else {
-                            CreateActionTBC createActionTBC = new CreateActionTBC();
-                            String createActionTBCXml = createActionTBC.create(procedureID);
-                            debug(createActionTBCXml);
-
-                            String[] createActionTBCResponce = client.put(new String[]{createActionTBCXml});
-                            debug(createActionTBCResponce[0]);
-
-                            Document documentCreateActionTBCResult = reader.read(new ByteArrayInputStream(createActionTBCResponce[0].getBytes(encoding)));
-                            resultList = documentCreateActionTBCResult.selectNodes("//*[name()='Result']");
+                            Document documentResult = reader.read(new ByteArrayInputStream(docResults[0].getBytes(encoding)));
+                            @SuppressWarnings("unchecked")
+                            List<Node> resultList = documentResult.selectNodes("//*[name()='Result']");
+                            String parseError = "";
                             for (Node resultInformation : resultList) {
+                                Node RefDocumentIDNode = resultInformation.selectSingleNode("*[name()='Response']/*[name()='RefDocumentID']");
                                 String resultCode = resultInformation.selectSingleNode("*[name()='Response']/*[name()='ResultInformation']/*[name()='ResultCode']").getText();
+
+                                if (RefDocumentIDNode != null) {
+                                    String RefDocumentID = RefDocumentIDNode.getText();
+                                    List<Tbc2Log> tbc2Logs = HibernateUtil.getSession().createQuery("from Tbc2Log where docId = :h order by dattr desc").setString("h", RefDocumentID).list();
+                                    if (tbc2Logs.size() != 0) {
+                                        Tbc2Log tbc2Log = tbc2Logs.get(0);
+                                        tbc2Log.setResult(resultInformation.asXML());
+                                        session.update(tbc2Log);
+//                                    tx.commit();
+                                    }
+                                }
+
                                 if (!ResultCodeSucess.equals(resultCode)) {
                                     @SuppressWarnings("unchecked")
                                     List<Node> resultDescriptionList = resultInformation.selectNodes("*[name()='Response']/*[name()='ResultInformation']/*[name()='ResultDescription']");
-                                    for (Node descr : resultDescriptionList)
-                                        log.debug(descr.getText());
-                                    throw new Exception("Ошибка отправки данных менеджеру ТБЦ.");
+                                    for (Node descr : resultDescriptionList) {
+                                        parseError += descr.getText() + "<br>";
+                                    }
+                                    parseSuccess = false;
                                 }
                             }
-                            log.debug("Documents from pack(" + procedureID + ") sended to manager");
 
-                            // Get current pack status from TBC
+                            if (!parseSuccess) {
+                                Tbc2Status tbc2Status = new Tbc2Status(tbc2Pack.getHid(), new Date(), null, "Ошибка обработки сообщения", "Responce error", "-1", parseError);
+                                session.save(tbc2Status);
+                                log.debug("Ошибка обработки сообщения: " + parseError);
+                            } else {
+                                CreateActionTBC createActionTBC = new CreateActionTBC();
+                                String createActionTBCXml = createActionTBC.create(procedureID);
+                                debug(createActionTBCXml);
+
+                                String[] createActionTBCResponce = client.put(new String[]{createActionTBCXml});
+                                debug(createActionTBCResponce[0]);
+
+                                Document documentCreateActionTBCResult = reader.read(new ByteArrayInputStream(createActionTBCResponce[0].getBytes(encoding)));
+                                resultList = documentCreateActionTBCResult.selectNodes("//*[name()='Result']");
+                                for (Node resultInformation : resultList) {
+                                    String resultCode = resultInformation.selectSingleNode("*[name()='Response']/*[name()='ResultInformation']/*[name()='ResultCode']").getText();
+                                    if (!ResultCodeSucess.equals(resultCode)) {
+                                        @SuppressWarnings("unchecked")
+                                        List<Node> resultDescriptionList = resultInformation.selectNodes("*[name()='Response']/*[name()='ResultInformation']/*[name()='ResultDescription']");
+                                        for (Node descr : resultDescriptionList)
+                                            parseError += descr.getText() + "<br>";
+//                                            log.debug(descr.getText());
+//                                        throw new Exception("Ошибка отправки данных менеджеру ТБЦ.");
+                                        parseSuccess = false;
+                                    }
+                                }
+                                if (!parseSuccess) {
+                                    Tbc2Status tbc2Status = new Tbc2Status(tbc2Pack.getHid(), new Date(), null, "Ошибка отправки данных менеджеру ТБЦ", "Responce error", "-1", parseError);
+                                    session.save(tbc2Status);
+                                    log.debug("Ошибка отправки данных менеджеру ТБЦ: " + parseError);
+                                }
+
+                                log.debug("Documents from pack(" + procedureID + ") sended to manager");
+
+                                // Get current pack status from TBC
 
 //                        HibernateUtil.commitTransaction();
+                            }
                         }
 //                }
 //                else {
