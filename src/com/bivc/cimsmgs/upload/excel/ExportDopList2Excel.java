@@ -29,6 +29,7 @@ public class ExportDopList2Excel extends Export2Excel {
     }
 
     public void makeCimSmgsDopList_de() {
+        sheet.setRepeatingRows(CellRangeAddress.valueOf("1:12"));
         Cell cell;
         //Страна
         if(StringUtils.isNotBlank(doc.getG691())) {
@@ -110,9 +111,14 @@ public class ExportDopList2Excel extends Export2Excel {
         // Номер накладной
         int rowInd = 5;
         int colInd = 0;
-        cell = CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(doc.getG694()), cs);
+        cell = CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(doc.getGa662()), cs);
         CellUtil.setCellStyleProperty(cell, getWb(), CellUtil.BORDER_LEFT, CellStyle.BORDER_THIN);
         CellUtil.setCellStyleProperty(cell, getWb(), CellUtil.BORDER_BOTTOM, CellStyle.BORDER_THIN);
+
+        // Дата
+        colInd = 5;
+        cell = CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, doc.buildG281CsEuPrint(), cs);
+
 
         // Отправитель
         rowInd = 7;
@@ -226,9 +232,20 @@ public class ExportDopList2Excel extends Export2Excel {
             rowInd = region.getLastRow();
         }
         //Поле 20
-        if (isSatisfiedToCreateRegion(doc.getG20c(), doc.buildG20Cs())) {
-            region = createDataRegion(doc.buildG20Cs(), rowInd, "20");
-            rowInd = region.getLastRow();
+        if (isSatisfiedToCreateRegion(doc.getG20c())) {
+            String text = doc.buildG20_2CsEuPrint(true);
+            if(StringUtils.isNotBlank(text)){
+                String[] strArr  = text.split("\n");
+
+                region = createDataRegion(strArr[0], rowInd, "20");
+                rowInd = region.getLastRow();
+
+                for(int i = 1; i < strArr.length; i++){
+                    region = createDataRegion(strArr[i], rowInd, null);
+                    rowInd = region.getLastRow();
+                }
+            }
+
         }
 
         // Apply last Row style
@@ -239,7 +256,11 @@ public class ExportDopList2Excel extends Export2Excel {
     }
 
     private boolean isSatisfiedToCreateRegion(Byte checked, String text) {
-        return checked != null && checked == 1 && StringUtils.isNotBlank(text);
+        return isSatisfiedToCreateRegion(checked) && StringUtils.isNotBlank(text);
+    }
+
+    private boolean isSatisfiedToCreateRegion(Byte checked) {
+        return checked != null && checked == 1;
     }
 
     private int getLastRowInd(int rowInd, CellRangeAddress region) {
@@ -266,6 +287,17 @@ public class ExportDopList2Excel extends Export2Excel {
         setRowHeight(cell, SHEET_MAX_WIDTH_PX);
         return region;
     }
+
+    private int countCharInStr(String src, char s){
+        int count = 0;
+        for(int i = 0; i < src.length(); i++){
+            if(src.charAt(i) == s){
+                count++;
+            }
+        }
+        return count;
+    }
+
 
     private CellRangeAddress createDataRegion(String text, int rowInd) {
         return createDataRegion(text, rowInd, null);

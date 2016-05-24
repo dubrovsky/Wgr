@@ -294,6 +294,24 @@ public class CimSmgs extends ActionSupport implements Serializable {
     private Byte zayav_otpr_c;
     private Byte g141c;
     private Byte g26c;
+    private String ga661;
+    private String ga662;
+
+    public String getGa662() {
+        return ga662;
+    }
+
+    public void setGa662(String ga662) {
+        this.ga662 = ga662;
+    }
+
+    public String getGa661() {
+        return ga661;
+    }
+
+    public void setGa661(String ga661) {
+        this.ga661 = ga661;
+    }
 
     public Byte getG26c() {
         return g26c;
@@ -4468,7 +4486,7 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
                         sb.append(plomb.plomb4CsPrint());
                         delim = ", ";
                     }
-                    plombsCount += plomb.getKpl();
+                    plombsCount += plomb.getKpl() != null ? plomb.getKpl() : 0;
                 }
                 contsCount++;
             }
@@ -4577,9 +4595,13 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
     }
 
     public String buildG20_2CsEuPrint() {
+        return buildG20_2CsEuPrint(false);
+    }
+
+    public String buildG20_2CsEuPrint(boolean forDoplist) {
         StringBuilder sb = new StringBuilder();
         int contsCount = 0;
-        boolean withDopList = getG20c() != null && getG20c() ==  1;
+        boolean withDopList = !forDoplist && getG20c() != null && getG20c() ==  1 ;
         CimSmgsKonList firstCont = null;
         Map <String, CimSmgsGruz> gruzTempMap = new TreeMap<>();
 
@@ -7062,6 +7084,20 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
             }
         }
         return _ga66;
+    }
+
+    public String buildGa66Print() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(StringUtils.defaultString(ga66));
+        if(sb.length() > 0){
+            sb.append(" ");
+        }
+        sb.append(StringUtils.defaultString(ga661));
+        if(sb.length() > 0){
+            sb.append(" ");
+        }
+        sb.append(StringUtils.defaultString(ga662));
+        return sb.toString();
     }
 
     public String g28Disp4Print() {

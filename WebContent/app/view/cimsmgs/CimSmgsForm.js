@@ -210,7 +210,11 @@ Ext.define('TK.view.cimsmgs.CimSmgsForm', {
             {x:364, y:1528, xtype:'textarea', name: 'smgs.g65', itemId:'smgs.g65', maxLength:200, width:412, height:89},
             {x:782, y:1525, xtype:'textarea', name: 'smgs.g651', itemId:'smgs.g651', maxLength:160, width:402, height:91},
             {x:1187, y:1524, xtype:'textarea', name: 'smgs.g652', itemId:'smgs.g652', maxLength:30, width:90, height:92},
-            {x:17, y:1639, xtype:'textarea', name: 'smgs.ga66', itemId:'smgs.ga66', maxLength:100, width:342, height:77},
+
+            {x:17, y:1639, xtype:'textarea', name: 'smgs.ga66', itemId:'smgs.ga66', maxLength:100, width:342, height:55},
+            {x:17, y:1690, name: 'smgs.ga661', itemId:'smgs.ga661', maxLength:48, width:170 },
+            {x:187, y:1690, name: 'smgs.ga662', itemId:'smgs.ga662', maxLength:48, width:170},
+
             {x:380, y:1639, xtype:'datefield', name: 'smgs.g67', itemId:'smgs.g67', width:80},
             {x:336, y:1737, xtype:'checkbox', name:'smgs.gb661', inputValue:'1', itemId:'smgs.gb661'},
             {x:270, y:1818, name: 'smgs.gb662', itemId:'smgs.gb662', maxLength:4, width:90},

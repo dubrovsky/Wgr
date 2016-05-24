@@ -377,6 +377,672 @@ public class ExportContList2Excel extends Export2Excel {
     }
 
     public void makeCimSmgsContList_de() {
+        Row row;
+
+        Font font = getWb().createFont();
+        font.setFontHeightInPoints((short) 7);
+
+        Font font_8 = getWb().createFont();
+        font_8.setFontHeightInPoints((short) 8);
+
+        Font font2 = getWb().createFont();
+        font2.setFontHeightInPoints((short) 7);
+        font2.setBoldweight(Font.BOLDWEIGHT_BOLD);
+
+        Font font3 = getWb().createFont();
+        font3.setFontHeightInPoints((short) 7);
+        font3.setBoldweight(Font.BOLDWEIGHT_BOLD);
+
+        Font font3_8 = getWb().createFont();
+        font3_8.setFontHeightInPoints((short) 8);
+        font3_8.setBoldweight(Font.BOLDWEIGHT_BOLD);
+
+        CellStyle cs1 = getWb().createCellStyle();
+        cs1.setWrapText(true);
+        cs1.setFont(font);
+        cs1.setAlignment(CellStyle.ALIGN_LEFT);
+        cs1.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+
+        CellStyle cs11 = getWb().createCellStyle();
+        cs11.setWrapText(true);
+        cs11.setFont(font);
+        cs11.setAlignment(CellStyle.ALIGN_LEFT);
+        cs11.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+        cs11.setBorderLeft(CellStyle.BORDER_MEDIUM);
+
+        CellStyle cs12 = getWb().createCellStyle();
+        cs12.setWrapText(true);
+        cs12.setFont(font);
+        cs12.setAlignment(CellStyle.ALIGN_LEFT);
+        cs12.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+        cs12.setBorderRight(CellStyle.BORDER_MEDIUM);
+        cs12.setBorderLeft(CellStyle.BORDER_THIN);
+        cs12.setBorderBottom(CellStyle.BORDER_THIN);
+        cs12.setBorderTop(CellStyle.BORDER_THIN);
+
+        CellStyle cs2 = getWb().createCellStyle();
+        cs2.setWrapText(true);
+        cs2.setFont(font3);
+        cs2.setAlignment(CellStyle.ALIGN_LEFT);
+        cs2.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+        cs2.setBorderLeft(CellStyle.BORDER_MEDIUM);
+        cs2.setBorderBottom(CellStyle.BORDER_MEDIUM);
+        cs2.setBorderRight(CellStyle.BORDER_MEDIUM);
+        cs2.setBorderTop(CellStyle.BORDER_MEDIUM);
+
+        CellStyle cs2_8 = getWb().createCellStyle();
+        cs2_8.setWrapText(true);
+        cs2_8.setFont(font3_8);
+        cs2_8.setAlignment(CellStyle.ALIGN_LEFT);
+        cs2_8.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+        cs2_8.setBorderLeft(CellStyle.BORDER_MEDIUM);
+        cs2_8.setBorderBottom(CellStyle.BORDER_MEDIUM);
+        cs2_8.setBorderRight(CellStyle.BORDER_MEDIUM);
+        cs2_8.setBorderTop(CellStyle.BORDER_MEDIUM);
+
+        CellStyle cs2_boder_none = getWb().createCellStyle();
+        cs2_boder_none.setWrapText(true);
+        cs2_boder_none.setFont(font3);
+        cs2_boder_none.setAlignment(CellStyle.ALIGN_LEFT);
+        cs2_boder_none.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+
+        CellStyle cs2_boder_none_8 = getWb().createCellStyle();
+        cs2_boder_none_8.setWrapText(true);
+        cs2_boder_none_8.setFont(font3_8);
+        cs2_boder_none_8.setAlignment(CellStyle.ALIGN_LEFT);
+        cs2_boder_none_8.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+
+        CellStyle cs2_boder_thin = getWb().createCellStyle();
+        cs2_boder_thin.setWrapText(true);
+        cs2_boder_thin.setFont(font);
+        cs2_boder_thin.setAlignment(CellStyle.ALIGN_LEFT);
+        cs2_boder_thin.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+        cs2_boder_thin.setBorderLeft(CellStyle.BORDER_THIN);
+        cs2_boder_thin.setBorderBottom(CellStyle.BORDER_THIN);
+        cs2_boder_thin.setBorderRight(CellStyle.BORDER_THIN);
+        cs2_boder_thin.setBorderTop(CellStyle.BORDER_THIN);
+
+        CellStyle cs3 = getWb().createCellStyle();
+        cs3.setWrapText(true);
+        cs3.setFont(font);
+        cs3.setAlignment(CellStyle.ALIGN_LEFT);
+        cs3.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+        cs3.setBorderLeft(CellStyle.BORDER_THIN);
+        cs3.setBorderRight(CellStyle.BORDER_THIN);
+
+        CellStyle cs3_8 = getWb().createCellStyle();
+        cs3_8.setWrapText(true);
+        cs3_8.setFont(font_8);
+        cs3_8.setAlignment(CellStyle.ALIGN_LEFT);
+        cs3_8.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+        cs3_8.setBorderLeft(CellStyle.BORDER_THIN);
+        cs3_8.setBorderRight(CellStyle.BORDER_THIN);
+
+        CellStyle cs31 = getWb().createCellStyle();
+        cs31.setWrapText(true);
+        cs31.setFont(font);
+        cs31.setAlignment(CellStyle.ALIGN_LEFT);
+        cs31.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+        cs31.setBorderLeft(CellStyle.BORDER_MEDIUM);
+        cs31.setBorderRight(CellStyle.BORDER_THIN);
+
+        CellStyle cs32 = getWb().createCellStyle();
+        cs32.setWrapText(true);
+        cs32.setFont(font);
+        cs32.setAlignment(CellStyle.ALIGN_LEFT);
+        cs32.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+        cs32.setBorderLeft(CellStyle.BORDER_THIN);
+        cs32.setBorderRight(CellStyle.BORDER_MEDIUM);
+        int tableRowIndex = 0;
+        String prefix;
+        String nl = "\n";
+        String space = " ";
+        StringBuilder sb;
+        int rowIndex = 0;
+        int columnIndex;
+        BigDecimal massa = new BigDecimal(0);
+
+        int smgsIndex = 1;
+        int carIndex = 1;
+        int konIndex = 1;
+
+        for (CimSmgs smgs : docs) {
+            // shapka
+            if (smgsIndex == 1) {
+                // g1
+                int colInd = 0;
+                int rowInd = 4;
+                sb = new StringBuilder();
+                if (StringUtils.isNotEmpty(smgs.getG1())) {
+                    sb.append(smgs.getG1()).append(nl);
+                }
+                if (StringUtils.isNotEmpty(smgs.getG19_1())) {
+                    sb.append(smgs.getG19_1()).append(space);
+                }
+                if (StringUtils.isNotEmpty(smgs.getG17_1())) {
+                    sb.append(smgs.getG17_1()).append(space);
+                }
+                sb.append(StringUtils.defaultString(smgs.getG18_1()));
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, sb.toString(), cs11);
+
+                rowInd = 6;
+                sb = new StringBuilder();
+                if (StringUtils.isNotEmpty(smgs.getG1r())) {
+                    sb.append(smgs.getG1r()).append(nl);
+                }
+                if (StringUtils.isNotEmpty(smgs.getG19r())) {
+                    sb.append(smgs.getG19r()).append(space);
+                }
+                if (StringUtils.isNotEmpty(smgs.getG17_1())) {
+                    sb.append(smgs.getG17_1()).append(space);
+                }
+                sb.append(StringUtils.defaultString(smgs.getG18r_1()));
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, sb.toString(), cs11);
+
+                colInd = 4;
+                rowInd = 1;
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(smgs.getG2()), cs2_boder_thin);
+
+                colInd = 4;
+                rowInd = 8;
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(smgs.getG12_1()), cs1);
+
+                colInd = 4;
+                rowInd = 9;
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(smgs.getG13_1()), cs1);
+
+                // g2
+                colInd = 0;
+                rowInd = 13;
+                sb = new StringBuilder();
+                if (StringUtils.isNotEmpty(smgs.getG4())) {
+                    sb.append(smgs.getG4()).append(nl);
+                }
+                if (StringUtils.isNotEmpty(smgs.getG49())) {
+                    sb.append(smgs.getG49()).append(space);
+                }
+                if (StringUtils.isNotEmpty(smgs.getG47_1())) {
+                    sb.append(smgs.getG47_1()).append(space);
+                }
+                sb.append(StringUtils.defaultString(smgs.getG48_1()));
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, sb.toString(), cs11);
+
+                rowInd = 15;
+                sb = new StringBuilder();
+                if (StringUtils.isNotEmpty(smgs.getG4r())) {
+                    sb.append(smgs.getG4r()).append(nl);
+                }
+                if (StringUtils.isNotEmpty(smgs.getG49r())) {
+                    sb.append(smgs.getG49r()).append(space);
+                }
+                if (StringUtils.isNotEmpty(smgs.getG47_1())) {
+                    sb.append(smgs.getG47_1()).append(space);
+                }
+                sb.append(StringUtils.defaultString(smgs.getG48r()));
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, sb.toString(), cs11);
+
+                colInd = 4;
+                rowInd = 10;
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(smgs.getG5()), cs2_boder_thin);
+
+                colInd = 4;
+                rowInd = 17;
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(smgs.getG42_1()), cs1);
+
+                colInd = 4;
+                rowInd = 18;
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(smgs.getG43_1()), cs1);
+
+                //  g3
+                colInd = 7;
+                rowInd = 4;
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(smgs.getG162()), cs1);
+
+                colInd = 7;
+                rowInd = 5;
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(smgs.getG162r()), cs1);
+
+                colInd = 10;
+                rowInd = 4;
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(smgs.getG163()), cs1);
+
+                colInd = 10;
+                rowInd = 5;
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(smgs.getG163r()), cs1);
+
+                colInd = 10;
+                rowInd = 1;
+                sb = new StringBuilder();
+                prefix = "";
+                if (StringUtils.isNotEmpty(smgs.getG161())) {
+                    for (char ch : smgs.getG161().toCharArray()) {
+                        sb.append(prefix);
+                        prefix = "   ";
+                        sb.append(ch);
+                    }
+                }
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, sb.toString(), cs2_boder_thin);
+
+                //  g4
+                colInd = 10;
+                rowInd = 8;
+                sb = new StringBuilder();
+                prefix = "";
+                if (StringUtils.isNotEmpty(smgs.getG611())) {
+                    for (char ch : smgs.getG611().toCharArray()) {
+                        sb.append(prefix);
+                        prefix = "   ";
+                        sb.append(ch);
+                    }
+                }
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd++, sb.toString());
+
+                colInd = 11;
+                rowInd = 8;
+                sb = new StringBuilder();
+                prefix = "";
+                if (StringUtils.isNotEmpty(smgs.getG612())) {
+                    for (char ch : smgs.getG612().toCharArray()) {
+                        sb.append(prefix);
+                        prefix = " ";
+                        sb.append(ch);
+                    }
+                }
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd++, sb.toString());
+
+                //  g6
+                colInd = 9;
+                rowInd = 11;
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(smgs.getG11()));
+
+
+                //g7
+                colInd = 10;
+                rowInd = 11;
+                sb = new StringBuilder();
+                prefix = "";
+                if (StringUtils.isNotEmpty(smgs.getG12())) {
+                    for (char ch : smgs.getG12().toCharArray()) {
+                        sb.append(prefix);
+                        prefix = " ";
+                        sb.append(ch);
+                    }
+                }
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd++, sb.toString());
+
+                colInd = 11;
+                rowInd = 11;
+                sb = new StringBuilder();
+                prefix = "";
+                if (StringUtils.isNotEmpty(smgs.getG121())) {
+                    for (char ch : smgs.getG121().toCharArray()) {
+                        sb.append(prefix);
+                        prefix = " ";
+                        sb.append(ch);
+                    }
+                }
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd++, sb.toString());
+
+                //  g5
+                colInd = 7;
+                rowInd = 15;
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(smgs.getG101()), cs1);
+
+                colInd = 7;
+                rowInd = 16;
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(smgs.getG101r()), cs1);
+
+                colInd = 10;
+                rowInd = 15;
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(smgs.getG102()), cs1);
+
+                colInd = 10;
+                rowInd = 16;
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(smgs.getG102r()), cs1);
+
+                // g8
+
+                colInd = 14;
+                rowInd = 2;
+                sb = new StringBuilder();
+                prefix = "";
+                /*if (StringUtils.isNotEmpty(smgs.getG691())) {
+                    for (char ch : smgs.getG691().toCharArray()) {
+                        sb.append(prefix);
+                        prefix = "   ";
+                        sb.append(ch);
+                    }
+                }*/
+                if (StringUtils.isNotEmpty(smgs.getG171())) {
+                    for (char ch : smgs.getG171().toCharArray()) {
+                        sb.append(prefix);
+                        prefix = "   ";
+                        sb.append(ch);
+                    }
+                }
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd++, sb.toString());
+
+                colInd = 16;
+                rowInd = 2;
+                sb = new StringBuilder();
+                prefix = "";
+                /*if (StringUtils.isNotEmpty(smgs.getG692())) {
+                    for (char ch : smgs.getG692().toCharArray()) {
+                        sb.append(prefix);
+                        prefix = "   ";
+                        sb.append(ch);
+                    }
+                }*/
+                if (StringUtils.isNotEmpty(smgs.getG17())) {
+                    for (char ch : smgs.getG17().toCharArray()) {
+                        sb.append(prefix);
+                        prefix = "   ";
+                        sb.append(ch);
+                    }
+                }
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd++, sb.toString(), cs12);
+
+                colInd = 14;
+                rowInd = 6;
+                sb = new StringBuilder();
+                prefix = "";
+                if (StringUtils.isNotEmpty(smgs.getG693())) {
+                    for (char ch : smgs.getG693().toCharArray()) {
+                        sb.append(prefix);
+                        prefix = "   ";
+                        sb.append(ch);
+                    }
+                }
+                /*if (StringUtils.isNotEmpty(smgs.getGb662())) {
+                    for (char ch : smgs.getGb662().toCharArray()) {
+                        sb.append(prefix);
+                        prefix = "   ";
+                        sb.append(ch);
+                    }
+                }*/
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd++, sb.toString());
+
+                colInd = 16;
+                rowInd = 6;
+                sb = new StringBuilder();
+                prefix = "";
+                if (StringUtils.isNotEmpty(smgs.getG694())) {
+                    for (char ch : smgs.getG694().toCharArray()) {
+                        sb.append(prefix);
+                        prefix = "   ";
+                        sb.append(ch);
+                    }
+                }
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd++, sb.toString(), cs12);
+
+                // g9
+                colInd = 12;
+                rowInd = 10;
+                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(smgs.getG60()), cs1);
+
+            }
+            ///// END SHAPKA
+
+            int tableDataColumnIndex = 18;
+
+            for (CimSmgsCarList car : smgs.getCimSmgsCarLists().values()) {
+
+                int konInCarIndex = 1;
+                BigDecimal nettoInVag = BigDecimal.ZERO;
+                BigDecimal taraInVag = BigDecimal.ZERO;
+                for (CimSmgsKonList kon : car.getCimSmgsKonLists().values()) {
+                    rowIndex = sheet.getLastRowNum() + 1;
+
+                    ///////////////////// How many rows in one row of data -- all info about container
+                    tableRowIndex = 1;
+                    if (kon.getCimSmgsGruzs().size() > 0) {
+                        tableRowIndex = kon.getCimSmgsGruzs().size() * 2;      // 2 lang
+                    }
+                    else if (kon.getCimSmgsDocses9().size() > 0) {
+                        tableRowIndex = 2;
+                    }
+                    int itogStringCount = car.getCimSmgsKonLists().size() == 1 || car.getCimSmgsKonLists().size() == konInCarIndex ? 2 : 1;
+                    tableRowIndex += itogStringCount; // itog
+                    ///////////////////////
+
+                    int gruzCount = kon.getCimSmgsGruzs().size();
+                    BigDecimal netto = new BigDecimal(0);
+                    BigDecimal tara = kon.getTaraKont() != null ? new BigDecimal(kon.getTaraKont()) : BigDecimal.ZERO;
+                    taraInVag = taraInVag.add(tara);
+
+                    for (int i = 0; i < tableRowIndex; i++) {
+                        columnIndex = 0;
+                        row = sheet.createRow(rowIndex + i);
+
+                        // BEGIN draw all cells in rows
+                        for (int y = 0; y < tableDataColumnIndex; y++) {
+                            if (tableRowIndex - i <= itogStringCount) {    // 2 last itog strings
+                                CellUtil.createCell(row, y, "", cs2);
+                            } else {
+                                if(tableDataColumnIndex - y != 1){
+                                    CellUtil.createCell(row, y, "", cs3);
+                                } else {
+                                    CellUtil.createCell(row, y, "", cs32); // last column
+                                }
+                            }
+                        }
+                        /// END draw all cells in rows
+
+                        // BEGIN g11
+                        if (i == 0) {
+                            CellUtil.createCell(row, columnIndex, String.valueOf(konIndex), cs31);
+                        } else if(tableRowIndex - i > itogStringCount){    // NOT 2 last itog strings
+                            CellUtil.createCell(row, columnIndex, "", cs31);
+                        }
+                        //// END g11
+
+                        //BEGIN g12
+                        columnIndex++;
+
+                        if (i == 0) {
+                            CellUtil.createCell(row, columnIndex, StringUtils.isNotEmpty(kon.getUtiN()) ? kon.getUtiN() + " " + CONT_SUFFIX : "", cs2_boder_none_8);
+                        } else if (tableRowIndex - i == itogStringCount){ // last or predlast itog string
+                            CellUtil.createCell(row, columnIndex, StringUtils.isNotEmpty(kon.getUtiN()) ? kon.getUtiN() + " " + CONT_SUFFIX : "", cs2_8);
+                        } else if (tableRowIndex - i == itogStringCount - 1) {  // last itog string
+                            CellUtil.createCell(row, columnIndex, String.valueOf(carIndex) + ". Wag/Bar.", cs2_8);
+                        }
+
+                        ////END g12
+
+                        //BEGIN g13
+                        columnIndex++;
+                        if (i == 0) {
+                            CellUtil.createCell(row, columnIndex, kon.getSizeFoot() != null ? kon.getSizeFoot().toString() : "", cs3);
+                        }
+                        ////END g13
+
+                        //BEGIN g14
+                        columnIndex++;
+                        if (tableRowIndex - i == itogStringCount) {    //  last or predlast itog string
+                            CellUtil.createCell(row, columnIndex, gruzCount + " Ladung\n" + gruzCount + " Груз", cs2);
+                        } else if (tableRowIndex - i == itogStringCount - 1) {    // last itog strings
+                            int konCount = car.getCimSmgsKonLists().size();
+                            CellUtil.createCell(row, columnIndex, konCount + " Container\n"+ konCount + " Контейнер", cs2);
+                        } else {
+                            if (gruzCount > 0) {
+//                                CimSmgsGruz gruz = kon.getCimSmgsGruzs().get((byte)(i / 2));
+                                CimSmgsGruz gruz = findGruzInKont(kon, (byte)(i / 2));
+
+                                sb = new StringBuilder();
+                                if (i % 2 == 0) {  //even string
+                                    sb.append(StringUtils.defaultString(gruz.getNzgrEu()));
+                                    if(gruz.getPlaces() != null){
+                                        sb.append("; " + gruz.getPlaces() + " " + StringUtils.defaultString(gruz.getUpakForeign()));
+                                    }
+
+                                    if (StringUtils.defaultString(gruz.getEkgvn()).length() > 0) {
+                                        sb.append("; ET SNG ");
+                                        sb.append(StringUtils.defaultString(gruz.getEkgvn()));
+                                    }
+                                    CellUtil.createCell(row, columnIndex, sb.length() > 0 ? sb.append("\n").toString() : "", cs3);
+                                } else { // odd string
+                                    sb.append(StringUtils.defaultString(gruz.getNzgr()));
+                                    if(gruz.getPlaces() != null){
+                                        sb.append("; " + gruz.getPlaces() + " " + StringUtils.defaultString(gruz.getUpak()));
+                                    }
+                                    if (StringUtils.defaultString(gruz.getEkgvn()).length() > 0) {
+                                        sb.append("; ЕТ СНГ ");
+                                        sb.append(StringUtils.defaultString(gruz.getEkgvn()));
+                                    }
+                                    CellUtil.createCell(row, columnIndex, sb.length() > 0 ? sb.append("\n").toString() : "", cs3);
+
+                                }
+                            }
+                        }
+                        ////END g14
+
+                        //BEGIN g15
+                        columnIndex++;
+
+                        if (tableRowIndex - i > itogStringCount) { // ne itog
+                            if (kon.getCimSmgsGruzs().size() > 0) {
+                                CimSmgsGruz gruz = findGruzInKont(kon, (byte)(i / 2));
+                                if (i % 2 == 0) {  //even string
+                                    CellUtil.createCell(row, columnIndex, StringUtils.defaultString(gruz.getKgvn()), cs3);
+                                }
+                            }
+                        }
+                        ////END g15
+
+                        //BEGIN g16
+                        columnIndex++;
+                        ////END g16
+
+                        //BEGIN g17
+                        columnIndex++;
+                        if (tableRowIndex - i == itogStringCount) {    //  last or predlast itog string
+                            sb = new StringBuilder();
+                            sb.append(NETTO + " " + netto);
+                            sb.append("\n");
+                            sb.append(TARA + " " + tara);
+                            CellUtil.createCell(row, columnIndex, sb.toString(), cs2);
+                            nettoInVag = nettoInVag.add(netto);
+                        } else if (tableRowIndex - i == itogStringCount - 1) {    // last itog strings
+                            CellUtil.createCell(row, columnIndex, BRUTTO + " " + BigDecimal.ZERO.add(taraInVag).add(nettoInVag), cs2);
+//                            massa = massa.add(smgs.getG24B() != null ? smgs.getG24B() : BigDecimal.ZERO);
+                        } else {
+                            if (kon.getCimSmgsGruzs().size() > 0) {
+                                CimSmgsGruz gruz = findGruzInKont(kon, (byte)(i / 2));
+                                if (i % 2 == 0) {  //even string
+                                    CellUtil.createCell(row, columnIndex, gruz.getMassa() != null ? gruz.getMassa().toString() : "", cs3);
+                                    netto = netto.add(gruz.getMassa() != null ? gruz.getMassa() : BigDecimal.ZERO);
+                                }
+                            }
+                        }
+                        ////END g17
+
+                        //BEGIN g18
+                        columnIndex++;
+                        if (i == 0) {
+                            StringBuilder plombsString = new StringBuilder();
+                            String suffix = "";
+                            for(CimSmgsPlomb plomb: kon.getCimSmgsPlombs().values()){
+                                plombsString.append(suffix);
+                                suffix = "\n";
+                                plombsString.append(plomb.getKpl() != null ? plomb.getKpl() : 0);
+                                plombsString.append(" X SEALED ");
+                                plombsString.append(StringUtils.defaultString(plomb.getZnak()));
+                            }
+                            CellUtil.createCell(row, columnIndex, plombsString.toString(), cs3_8);
+                        }
+                        ////END g18
+
+                        //BEGIN g19
+                        columnIndex++;
+                        sb = new StringBuilder();
+                        prefix = "";
+                        if (i == 0) {
+                            for (CimSmgsDocs dc : kon.getCimSmgsDocses9().values()) {
+                                if (StringUtils.defaultString(dc.getText2()).length() > 0) {
+                                    sb.append(prefix);
+                                    sb.append(StringUtils.defaultString(dc.getText2()));
+                                }
+                                if(dc.getDat() != null){
+                                    sb.append(",");
+                                    sb.append(new SimpleDateFormat("dd.MM.yyyy").format(dc.getDat()));
+                                }
+                                if(StringUtils.isNotBlank(dc.getNdoc())){
+                                    sb.append(",");
+                                    sb.append(dc.getNdoc());
+                                }
+                                prefix = ",";
+                            }
+                            if(sb.length() > 0){
+                                CellUtil.createCell(row, columnIndex, sb.toString(), cs3);
+                            }
+                        } else if (i == 1) {
+                            for (CimSmgsDocs dc : kon.getCimSmgsDocses9().values()) {
+                                if (StringUtils.defaultString(dc.getText()).length() > 0) {
+                                    sb.append(prefix);
+                                    sb.append(StringUtils.defaultString(dc.getText()));
+                                }
+                                if(dc.getDat() != null){
+                                    sb.append(",");
+                                    sb.append(new SimpleDateFormat("dd.MM.yyyy").format(dc.getDat()));
+                                }
+                                if(StringUtils.isNotBlank(dc.getNdoc())){
+                                    sb.append(",");
+                                    sb.append(dc.getNdoc());
+                                }
+                                prefix = ",";
+                            }
+                            if(sb.length() > 0){
+                                CellUtil.createCell(row, columnIndex, sb.toString(), cs3);
+                            }
+                        }
+                        ////END g19
+
+                        //BEGIN g20
+                        columnIndex++;
+                        if (car != null) {
+                            if (i == 0) {
+                                CellUtil.createCell(row, columnIndex, StringUtils.defaultString(car.getNvag()) + nl + " O", cs2_boder_none_8);
+                            } else if (tableRowIndex - i == 1) {    // last itog strings
+                                CellUtil.createCell(row, columnIndex, StringUtils.defaultString(car.getNvag()), cs2_8);
+                            }
+                        }
+                        ////END g20
+
+                    }
+
+                    konInCarIndex++;
+                    konIndex++;
+                }
+                carIndex++;
+            }
+            smgsIndex++;
+            massa = massa.add(smgs.getG24B() != null ? smgs.getG24B() : BigDecimal.ZERO);
+        }
+
+        rowIndex = sheet.getLastRowNum();
+        row = sheet.createRow(++rowIndex);
+        row.setHeightInPoints((2*sheet.getDefaultRowHeightInPoints()));
+        CellUtil.createCell(row, 0, "31", cs2_boder_thin);
+        CellUtil.createCell(row, 1, "Общая масса отправки\nGesamtmasse der Sendung", cs2_boder_thin);
+        int regIndex = sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 1, 5));
+        RegionUtil.setBorderBottom(CellStyle.BORDER_THIN, sheet.getMergedRegion(regIndex), sheet, getWb());
+        RegionUtil.setBorderLeft(CellStyle.BORDER_THIN, sheet.getMergedRegion(regIndex), sheet, getWb());
+        RegionUtil.setBorderRight(CellStyle.BORDER_THIN, sheet.getMergedRegion(regIndex), sheet, getWb());
+        CellUtil.createCell(row, 6, massa.toString(), cs2_boder_thin);
+    }
+
+    private CimSmgsGruz findGruzInKont(CimSmgsKonList kon, byte index) {
+        int inx = 0;
+        for(CimSmgsGruz gruz: kon.getCimSmgsGruzs().values()){
+            if(inx == index){
+                return gruz;
+            }
+            inx++;
+        }
+        return null;
+    }
+
+    /*public void makeCimSmgsContList_de() {
         final int tableDataRowIndex = 21;
         Row row;
 //        Cell cell;
@@ -707,13 +1373,13 @@ public class ExportContList2Excel extends Export2Excel {
                 rowInd = 2;
                 sb = new StringBuilder();
                 prefix = "";
-                /*if (StringUtils.isNotEmpty(doc.getG691())) {
+                *//*if (StringUtils.isNotEmpty(doc.getG691())) {
                     for (char ch : doc.getG691().toCharArray()) {
                         sb.append(prefix);
                         prefix = "   ";
                         sb.append(ch);
                     }
-                }*/
+                }*//*
                 if (StringUtils.isNotEmpty(doc.getG171())) {
                     for (char ch : doc.getG171().toCharArray()) {
                         sb.append(prefix);
@@ -727,13 +1393,13 @@ public class ExportContList2Excel extends Export2Excel {
                 rowInd = 2;
                 sb = new StringBuilder();
                 prefix = "";
-                /*if (StringUtils.isNotEmpty(doc.getG692())) {
+                *//*if (StringUtils.isNotEmpty(doc.getG692())) {
                     for (char ch : doc.getG692().toCharArray()) {
                         sb.append(prefix);
                         prefix = "   ";
                         sb.append(ch);
                     }
-                }*/
+                }*//*
                 if (StringUtils.isNotEmpty(doc.getG17())) {
                     for (char ch : doc.getG17().toCharArray()) {
                         sb.append(prefix);
@@ -754,13 +1420,13 @@ public class ExportContList2Excel extends Export2Excel {
                         sb.append(ch);
                     }
                 }
-                /*if (StringUtils.isNotEmpty(doc.getGb662())) {
+                *//*if (StringUtils.isNotEmpty(doc.getGb662())) {
                     for (char ch : doc.getGb662().toCharArray()) {
                         sb.append(prefix);
                         prefix = "   ";
                         sb.append(ch);
                     }
-                }*/
+                }*//*
                 CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd++, sb.toString());
 
                 colInd = 16;
@@ -784,7 +1450,7 @@ public class ExportContList2Excel extends Export2Excel {
             }
             ///// END SHAPKA
 
-            rowIndex = sheet.getLastRowNum() + 1 /*+ tableDataRowIndex + tableRowIndex*/;
+            rowIndex = sheet.getLastRowNum() + 1 *//*+ tableDataRowIndex + tableRowIndex*//*;
 
             ///////////////////// How many rows in one row of data
             tableRowIndex = 1;
@@ -845,9 +1511,9 @@ public class ExportContList2Excel extends Export2Excel {
                 } else if (tableRowIndex - i == 1) {    // last itog strings
                     CellUtil.createCell(row, columnIndex, String.valueOf(index) + ". Wag/Bar.", cs2_8);
                 }
-                /*else{
+                *//*else{
                     CellUtil.createCell(row, columnIndex, "", cs3);
-                }*/
+                }*//*
                 ////END g12
 
                 //BEGIN g13
@@ -856,12 +1522,12 @@ public class ExportContList2Excel extends Export2Excel {
                     if (kon != null) {
                         CellUtil.createCell(row, columnIndex, kon.getSizeFoot() != null ? kon.getSizeFoot().toString() : "", cs3);
                     }
-                } /*else if(tableRowIndex - i <= 2){    // 2 last itog strings
+                } *//*else if(tableRowIndex - i <= 2){    // 2 last itog strings
                     CellUtil.createCell(row, columnIndex, "", cs2);
                 }
                 else{
                     CellUtil.createCell(row, columnIndex, "", cs3);
-                }*/
+                }*//*
                 ////END g13
 
                 //BEGIN g14
@@ -871,8 +1537,8 @@ public class ExportContList2Excel extends Export2Excel {
                 } else if (tableRowIndex - i == 1) {    // last itog strings
                     CellUtil.createCell(row, columnIndex, "1 Container\n1 Контейнер", cs2);
                 } else {
-                    if (kon != null && kon.getCimSmgsGruzs().size() > 0/*(i == 0 || i % 2 == 0)*/) {
-                        CimSmgsGruz gruz = kon.getCimSmgsGruzs().get(new Integer(i / 2));
+                    if (kon != null && kon.getCimSmgsGruzs().size() > 0*//*(i == 0 || i % 2 == 0)*//*) {
+                        CimSmgsGruz gruz = kon.getCimSmgsGruzs().get((byte) (i / 2)) ;
                         sb = new StringBuilder();
                         if (i % 2 == 0) {  //even string
                             sb.append(StringUtils.defaultString(gruz.getNzgrEu()));
@@ -905,17 +1571,17 @@ public class ExportContList2Excel extends Export2Excel {
 
                 //BEGIN g15
                 columnIndex++;
-                /*if(tableRowIndex - i <= 2){    // 2 last itog strings
+                *//*if(tableRowIndex - i <= 2){    // 2 last itog strings
                     CellUtil.createCell(row, columnIndex, "", cs2);
-                } else {*/
+                } else {*//*
                 if (tableRowIndex - i > 2) {
                     if (kon != null && kon.getCimSmgsGruzs().size() > 0) {
-                        CimSmgsGruz gruz = kon.getCimSmgsGruzs().get(new Integer(i / 2));
+                        CimSmgsGruz gruz = kon.getCimSmgsGruzs().get((byte)(i / 2));
                         if (i % 2 == 0) {  //even string
                             CellUtil.createCell(row, columnIndex, StringUtils.defaultString(gruz.getKgvn()), cs3);
-                        } /*else {
+                        } *//*else {
                             CellUtil.createCell(row, columnIndex, "", cs3);
-                        }*/
+                        }*//*
                     }
                 }
 //                }
@@ -923,11 +1589,11 @@ public class ExportContList2Excel extends Export2Excel {
 
                 //BEGIN g16
                 columnIndex++;
-                /*if(tableRowIndex - i <= 2){    // 2 last itog strings
+                *//*if(tableRowIndex - i <= 2){    // 2 last itog strings
                     CellUtil.createCell(row, columnIndex, "", cs2);
                 } else {
                     CellUtil.createCell(row, columnIndex, "", cs3);
-                }*/
+                }*//*
                 ////END g16
 
                 //BEGIN g17
@@ -944,12 +1610,12 @@ public class ExportContList2Excel extends Export2Excel {
                     massa = massa.add(doc.getG24B() != null ? doc.getG24B() : BigDecimal.ZERO);
                 } else {
                     if (kon != null && kon.getCimSmgsGruzs().size() > 0) {
-                        CimSmgsGruz gruz = kon.getCimSmgsGruzs().get(new Integer(i / 2));
+                        CimSmgsGruz gruz = kon.getCimSmgsGruzs().get((byte)(i / 2));
                         if (i % 2 == 0) {  //even string
                             CellUtil.createCell(row, columnIndex, gruz.getMassa() != null ? gruz.getMassa().toString() : "", cs3);
-                        } /*else {
+                        } *//*else {
                             CellUtil.createCell(row, columnIndex, "", cs3);
-                        }*/
+                        }*//*
                     }
                 }
                 ////END g17
@@ -958,12 +1624,12 @@ public class ExportContList2Excel extends Export2Excel {
                 columnIndex++;
                 if (i == 0) {
                     CellUtil.createCell(row, columnIndex, StringUtils.defaultString(doc.getG2012()), cs3_8);
-                } /*else if(tableRowIndex - i <= 2){    // 2 last itog strings
+                } *//*else if(tableRowIndex - i <= 2){    // 2 last itog strings
                     CellUtil.createCell(row, columnIndex, "", cs2);
                 }
                 else{
                     CellUtil.createCell(row, columnIndex, "", cs3);
-                }*/
+                }*//*
                 ////END g18
 
                 //BEGIN g19
@@ -1037,7 +1703,7 @@ public class ExportContList2Excel extends Export2Excel {
         RegionUtil.setBorderLeft(CellStyle.BORDER_THIN, sheet.getMergedRegion(regIndex), sheet, getWb());
         RegionUtil.setBorderRight(CellStyle.BORDER_THIN, sheet.getMergedRegion(regIndex), sheet, getWb());
         CellUtil.createCell(row, 6, massa.toString(), cs2_boder_thin);
-    }
+    }*/
 
     private void addBorderedMergedRegion(int rowIndex, int columnIndex, int columnInterval) {
         int regIndex = sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, columnIndex, columnIndex + columnInterval - 1));
