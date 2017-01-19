@@ -114,7 +114,7 @@
             <column name="G_22" precision="1" scale="0"/>
         </property>
         <property name="g23" type="string">
-            <column name="G_23" length="20"/>
+            <column name="G_23" length="80"/>
         </property>
         <property name="g24" type="string">
             <column name="G_24" length="80"/>

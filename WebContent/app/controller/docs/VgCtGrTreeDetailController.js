@@ -41,6 +41,9 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
     },{
         ref: 'saveBtn',
         selector: 'vgCtGrTreeFormWin button[action=save]'
+    },{
+        ref: 'langCombo',
+        selector: 'viewport #localeCombo #langCombo'
     }],
 
     init:function () {
@@ -79,6 +82,12 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
             },
             'vgCtGrTreeFormWin > tabpanel > #gryz > trigger[name=ekgvn]': {
                 ontriggerclick: this.onEkgvnClick
+            },
+            'vgCtGrTreeFormWin > tabpanel > #gryz > trigger[name=upakForeign]': {
+                ontriggerclick: this.onUpakClick
+            },
+            'vgCtGrTreeFormWin > tabpanel > #gryz > trigger[name=upak]': {
+                ontriggerclick: this.onUpakClick
             }
         });
     },
@@ -390,14 +399,23 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
         }, this);
     },
 
-    onKgvnClick: function (field) {
-        var nsiGrid = this.getController('Nsi').nsiGng(field.getValue()).getComponent(0);
-        nsiGrid.on('itemdblclick', this.onSelectGng, this.getGryzpanel(), {single: true});
+    onKgvnClick: function(field) {
+        var lang = this.getLangCombo().getValue(),
+            nsiGrid;
+        switch(lang) {
+            case 'de':
+                nsiGrid = this.getController('Nsi').nsiGngDe(field.getValue()).getComponent(0);
+                nsiGrid.on('itemdblclick', this.onSelectGngDe, this, {single: true});
+                break;
+            default:
+                nsiGrid = this.getController('Nsi').nsiGng(field.getValue()).getComponent(0);
+                nsiGrid.on('itemdblclick', this.onSelectGng, this, {single: true});
+        }
     },
 
     onSelectGng: function(view, record){
         var data = record.data,
-            form = this.getForm(),
+            form = this.getGryzpanel().getForm(),
             field;
 
         field = form.findField('kgvn');
@@ -418,12 +436,62 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
             field.fireEvent('blur', field);
         }
 
+        this.findMoreGng(data['code'], 'nzgrEu');
+
         view.up('window').close();
+    },
+
+    onSelectGngDe: function(view, record){
+        var data = record.data,
+            form = this.getGryzpanel().getForm(),
+            field;
+
+        field = form.findField('kgvn');
+        if(field){
+            field.setValue(data['kgvn']);
+            field.fireEvent('blur', field);
+        }
+
+        field = form.findField('nzgrEu');
+        if(field){
+            field.setValue(data['nzgr']);
+            field.fireEvent('blur', field);
+        }
+
+        this.findMoreGng(data['kgvn'], 'nzgr');
+
+        view.up('window').close();
+    },
+
+    findMoreGng: function(kgvnVal, fieldName){
+        Ext.Ajax.request({
+            url: 'Nsi_gngWithCode_view.do',
+            params: {query: kgvnVal},
+            scope:this,
+            success: function(response) {
+                var respObj = Ext.decode(response.responseText);
+                if(respObj['nzgr']){
+                    var field = this.getGryzpanel().getForm().findField(fieldName);
+                    if(field){
+                        field.setValue(respObj['nzgr']);
+                        field.fireEvent('blur', field);
+                    }
+                }
+            },
+            failure: function(response) {
+                TK.Utils.makeErrMsg(response, 'Error...');
+            }
+        });
     },
 
     onEkgvnClick: function (field) {
         var nsiGrid = this.getController('Nsi').nsiEtsng(field.getValue()).getComponent(0);
         nsiGrid.on('itemdblclick', this.onSelectEtsng, this.getGryzpanel(), {single: true});
+    },
+
+    onUpakClick: function (field) {
+        var nsiGrid = this.getController('Nsi').nsiUpak(field.getValue()).getComponent(0);
+        nsiGrid.on('itemdblclick', this.onSelectUpak, this.getGryzpanel(), {single: true});
     },
 
     onSelectEtsng:function (view, record) {
@@ -446,6 +514,26 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
         field = form.findField('ohr');
         if(field){
             field.setValue(data['ohr']);
+            field.fireEvent('blur', field);
+        }
+
+        view.up('window').close();
+    },
+
+    onSelectUpak: function (view, record) {
+        var data = record.data,
+            form = this.getForm(),
+            field;
+
+        field = form.findField('upakForeign');
+        if(field){
+            field.setValue(data['nameDe']);
+            field.fireEvent('blur', field);
+        }
+
+        field = form.findField('upak');
+        if(field){
+            field.setValue(data['name']);
             field.fireEvent('blur', field);
         }
 

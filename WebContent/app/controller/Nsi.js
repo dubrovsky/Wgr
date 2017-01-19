@@ -445,6 +445,28 @@ Ext.define('TK.controller.Nsi', {
             }
         });
     },
+    nsiGngDe:function (query) {
+        return Ext.widget('nsilist', {
+//            title:'Поиск по справочнику кодов ГНГ',
+            width:700,
+            search:query,
+            buildTitle:function (config) {
+                config.title = this.titleGng;
+            },
+            buildStoreModel:function () {
+                return ['kgvn', 'nzgr'];
+            },
+            buildUrlPrefix:function () {
+                return 'Nsi_gngDe';
+            },
+            buildColModel:function (config) {
+                config.items.columns = [
+                    {text:this.headerCode, dataIndex:'kgvn'},
+                    {text:this.headerName, dataIndex:'nzgr', flex:1, renderer:TK.Utils.renderLongStr}
+                ];
+            }
+        });
+    },
     cargoGng:function (query) {
         return Ext.widget('nsilist', {
 //            title:'Поиск по справочнику кодов ГНГ',
@@ -771,7 +793,7 @@ Ext.define('TK.controller.Nsi', {
                 config.title = this.titleUpak;
             },
             buildStoreModel:function () {
-                return ['hid', 'kod', 'kypk', 'name'];
+                return ['hid', 'kod', 'kypk', 'name', 'nameDe'];
             },
             buildUrlPrefix:function () {
                 return 'Nsi_upak';
@@ -779,7 +801,8 @@ Ext.define('TK.controller.Nsi', {
             buildColModel:function (config) {
                 config.items.columns = [
                     {text:this.headerCode, dataIndex:'kod'},
-                    {text:this.headerDescr, dataIndex:'name', flex:1, renderer:TK.Utils.renderLongStr}
+                    {text:this.headerDescr + ' RU', dataIndex:'name', flex:1, renderer:TK.Utils.renderLongStr},
+                    {text:this.headerDescr+' DE', dataIndex:'nameDe', flex:1, renderer:TK.Utils.renderLongStr}
                 ];
             }
         });

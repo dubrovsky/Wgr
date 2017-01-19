@@ -6,12 +6,14 @@ import com.bivc.cimsmgs.commons.JSONAware;
 import com.bivc.cimsmgs.dao.*;
 import com.bivc.cimsmgs.db.*;
 import com.bivc.cimsmgs.db.nsi.*;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Locale;
 
-public class Nsi_A extends CimSmgsSupport_A implements JSONAware, NsiSmgsGngDAOAware, NsiSmgsStEuDAOAware, NsiSmgsStCisDAOAware,
+public class Nsi_A extends CimSmgsSupport_A implements JSONAware, NsiSmgsGngDAOAware, NsiGngDeDAOAware, NsiSmgsStEuDAOAware, NsiSmgsStCisDAOAware,
         NsiSmgsFieldsOptDAOAware, NsiSmgsCompanyDAOAware, NsiSmgsEtsngcodeDAOAware, NsiCountriesDAOAware, /*NsiStaDAOAware,*/ NsiCurrencyDAOAware,
         NsiTnvedDAOAware, NsiDelivDAOAware, NsiUpakDAOAware, UsrGroupsDirDAOAware, RouteDocsDAOAware, NsiDirDAOAware, RoadDAOAware,
         ManagementDAOAware, KarantinDAOAware, VeterinDAOAware, DangCodeDAOAware, CargoGngDAOAware, RouteDAOAware, ProjectDAOAware {
@@ -46,6 +48,31 @@ public class Nsi_A extends CimSmgsSupport_A implements JSONAware, NsiSmgsGngDAOA
         List<CargoGng> gng = gngDAO.findAll(getLimit(), getStart(), getQuery(), getUser().getUsr());
         Long total = gngDAO.countAll(getQuery());
         jsonData = Constants.convert2JSON_NsiSmgsGng(gng, total);
+        return SUCCESS;
+    }
+
+    public String gngDe() {
+        log.info("gng DE");
+        List<NsiGngDe> gng = gngDeDAO.findAll(getLimit(), getStart(), getQuery());
+        Long total = gngDeDAO.countAll(getQuery());
+        jsonData = Constants.convert2JSON_NsiGngDe(gng, total);
+        return SUCCESS;
+    }
+
+    public String gngWithCode() {
+        log.info("gng with code " + getQuery());
+        if(StringUtils.isBlank(getQuery())){
+            throw new IllegalArgumentException("Empty code gng");
+        }
+
+        if(getLocale().equals(Locale.GERMAN)){
+            List<CargoGng> gng = gngDAO.findAll(getQuery());
+            jsonData = Constants.convert2JSON_NsiGng(gng);
+        } else {
+            List<NsiGngDe> gng = gngDeDAO.findAll(getQuery());
+            jsonData = Constants.convert2JSON_NsiGngDe(gng);
+        }
+
         return SUCCESS;
     }
 
@@ -230,6 +257,7 @@ public class Nsi_A extends CimSmgsSupport_A implements JSONAware, NsiSmgsGngDAOA
     private RouteDAO routeDAO;
     private ProjectDAO projectDAO;
     private NsiSmgsGngDAO gngDAO;
+    private NsiGngDeDAO gngDeDAO;
     private NsiSmgsStEuDAO stEuDAO;
     private NsiSmgsStCisDAO stCisDAO;
     private NsiSmgsFieldsOptDAO fieldsOptDAO;
@@ -402,5 +430,10 @@ public class Nsi_A extends CimSmgsSupport_A implements JSONAware, NsiSmgsGngDAOA
 
     public void setProjectDAO(ProjectDAO projectDAO) {
         this.projectDAO = projectDAO;
+    }
+
+    @Override
+    public void setNsiGngDeDAO(NsiGngDeDAO dao) {
+        this.gngDeDAO = dao;
     }
 }

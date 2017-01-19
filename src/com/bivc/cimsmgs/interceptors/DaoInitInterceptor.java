@@ -233,6 +233,10 @@ public class DaoInitInterceptor implements Interceptor {
             ((CargoGngDAOAware) action).setCargoGngDAO(new CargoGngDAOHib());
         }
 
+        if (action instanceof NsiGngDeDAOAware) {
+            ((NsiGngDeDAOAware) action).setNsiGngDeDAO(new NsiGngDeDAOHib());
+        }
+
         if (action instanceof MailSettingsDAOAware) {
             ((MailSettingsDAOAware) action).setMailSettingsDAO(new MailSettingsDAOHib());
         }

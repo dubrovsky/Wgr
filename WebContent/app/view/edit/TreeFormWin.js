@@ -39,18 +39,18 @@ Ext.define('TK.view.edit.TreeFormWin', {
         return this.
             buildTreeToolbarItems().
             concat({
-                text: 'Удалить',
+                text: this.btnDel,
                 action: 'del',
                 iconCls: 'del'
             },{
                 xtype: 'tbfill',  // ->
                 hidden: false
             },{
-                text: 'Сохранить',
+                text: this.btnSave,
                 iconCls: 'save',
                 action: 'save'
             }, {
-                text: 'Закрыть',
+                text: this.btnClose,
                 iconCls: 'exit',
                 hidden: false,
                 handler: this.close.bind(this)

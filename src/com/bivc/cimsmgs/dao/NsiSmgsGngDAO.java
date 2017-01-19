@@ -7,9 +7,11 @@ import com.bivc.cimsmgs.exceptions.InfrastructureException;
 import java.util.List;
 
 public interface NsiSmgsGngDAO extends GenericDAO<CargoGng, Long> {
-    public List<CargoGng> findAll(Integer limit, Integer start, String query, Usr usr) throws InfrastructureException;
+    List<CargoGng> findAll(Integer limit, Integer start, String query, Usr usr) throws InfrastructureException;
 
-    public Long countAll(String search);
+    Long countAll(String search);
 
-    public List<CargoGng> findAll() throws InfrastructureException;
+    List<CargoGng> findAll() throws InfrastructureException;
+
+    List<CargoGng> findAll(String kgvn);
 }

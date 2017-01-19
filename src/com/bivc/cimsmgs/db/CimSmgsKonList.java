@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -650,8 +651,9 @@ public class CimSmgsKonList implements Serializable {
 
     public void addCimSmgsGruzItem(CimSmgsGruz gruz) {
         if (gruz != null) {
+			gruz.setCimSmgsKonList(this);
             cimSmgsGruzs.put(gruz.getSort().byteValue(), gruz);
-            addCimSmgsGruzs();
+//            addCimSmgsGruzs();
         }
     }
 
@@ -682,7 +684,24 @@ public class CimSmgsKonList implements Serializable {
         }
     }
 
-    @Override
+	public void addCimSmgsPlombItem(CimSmgsPlomb plomb) {
+		if (plomb != null) {
+			plomb.setCimSmgsKonList(this);
+			cimSmgsPlombs.put(plomb.getSort(), plomb);
+		}
+	}
+
+	public void addCimSmgsDocsItem(CimSmgsDocs csd) {
+		if (csd != null) {
+			csd.setCimSmgsKonList(this);
+			if (csd.getSort() == null) {
+				csd.setSort((byte) cimSmgsDocses9.size());
+			}
+			cimSmgsDocses9.put(sort, csd);
+		}
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) return true;
 

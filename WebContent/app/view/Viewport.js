@@ -72,6 +72,7 @@ Ext.define('TK.view.Viewport', {
 
                 comboCt.items.add(Ext.create('Ext.Component',{html:viewport.headerLangLbl}));
                 combo = comboCt.items.add(Ext.create('Ext.form.field.ComboBox', {
+                    itemId: 'langCombo',
                     store:Ext.create('Ext.data.ArrayStore', {
                         fields:['code', 'language'],
                         data:[
@@ -81,7 +82,8 @@ Ext.define('TK.view.Viewport', {
                             ['de', 'Deutsch']
                         ]
                     }),
-                    displayField:'language',
+                    displayField: 'language',
+                    valueField: 'code',
                     queryMode:'local',
 //                    cls:'lang-combo',
                     width:90,
@@ -101,7 +103,7 @@ Ext.define('TK.view.Viewport', {
                     }
                 }));
                 record = combo.getStore().findRecord('code', params.lang, null, null, null, true);
-                combo.setValue(record.data.language);
+                combo.setValue(record.data.code);
 
                 var header = viewport.getComponent(0);
                 //header.getComponent(0).el.update('<span>' + viewport.headerPortal + '</span>');

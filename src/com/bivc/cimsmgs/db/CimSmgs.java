@@ -7166,18 +7166,22 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
         if (csd != null) {
             csd.setCimSmgs(this);
             Byte sort = csd.getSort();
-            String fn = StringUtils.trim(csd.getFieldNum());
+            String fn = StringUtils.defaultString(csd.getFieldNum()).trim();
 
             Map<Byte, CimSmgsDocs> m;
-            if ("7".equals(fn)) {
-                m = cimSmgsDocses7;
-            } else if ("9".equals(fn)) {
-                m = cimSmgsDocses9;
-            } else if ("13".equals(fn)) {
-                m = cimSmgsDocses13;
-            } else {
-                LoggerFactory.getLogger(CimSmgs.class).warn("field_num is not defined. Use \"7\"");
-                m = cimSmgsDocses7;
+            switch (fn) {
+                case "7" :
+                    m = cimSmgsDocses7;
+                    break;
+                case "9" :
+                    m = cimSmgsDocses9;
+                    break;
+                case "13" :
+                    m = cimSmgsDocses13;
+                    break;
+                default :
+                    LoggerFactory.getLogger(CimSmgs.class).warn("field_num is not defined. Use \"7\"");
+                    m = cimSmgsDocses7;
             }
 
             if (sort == null) {
@@ -7679,7 +7683,7 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
     }
 
     public String buildG7Cs2Print(){
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         String prefix = "";
         for(CimSmgsCarList car: getCimSmgsCarLists().values()){
             result.append(prefix);
@@ -7693,6 +7697,9 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
                             :
                             ""
             );
+            result.append(StringUtils.isNotBlank(car.getRod()) ? " " + car.getRod() : "");
+            result.append(StringUtils.isNotBlank(car.getKlientName()) ? ", " + car.getKlientName() : "");
+            result.append(StringUtils.isNotBlank(car.getNameSob()) ? ", " + car.getNameSob() : "");
 
             result.append(prefix);
             result.append(StringUtils.defaultString(car.getVagOtm()));

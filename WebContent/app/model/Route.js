@@ -4,7 +4,7 @@ Ext.define('TK.model.Route', {
     fields: [
         {name:'hid', type:'int', useNull:true},
         'name',
-        'grps', 'dcs','tbc_st_code','customCode',
+        'grps', 'dcs','tbc_st_code','customCode', 'emailMask',
         {name:'project_hid', type:'int', useNull:true}/*,
         {name:'prnTmpl_hid', type:'int', useNull:true}*/
     ],

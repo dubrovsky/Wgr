@@ -430,7 +430,12 @@ Ext.define("TK.locale.en.view.printtmpl.List", {
     title       :'Printing templates',
     headerName  :'Name',
     headerRoutes:'Routes',
-    headerDefault:'Default?'
+    headerDefault:'Default?',
+    headerBlank: 'With blank?',
+
+    btnBindToRoute: 'Bind to route',
+    btnBindToBlank: 'Bind to blank',
+    btnBlanks: 'Blanks'
 });
 
 Ext.define("TK.locale.en.stat.List", {
@@ -592,7 +597,10 @@ Ext.define("TK.locale.en.view.user.List", {
     headerEmail   :'E-mail',
     btnCreate     :'Create',
     btnEdit       :'Edit',
-    btnRefresh    :'Refresh'
+    btnRefresh    :'Refresh',
+
+    textYes: 'yes',
+    textNo: 'no'
 });
 
 Ext.define("TK.locale.en.view.user.ListGroups", {
@@ -677,6 +685,8 @@ Ext.define("TK.locale.en.view.edit.DetailGrid", {
     headerRoutesGr     :'Groups',
     headerRoutesDocs   :'Documents',
     headerRoutesCodeTbc:'TBC code',
+    headerRoutesCodeCustoms:'Customs code',
+    headerRoutesEmailMask: 'Email, mask',
     headerContNum      :'Number',
     headerContSize     :'Size',
     headerContVid      :'Type',
@@ -684,6 +694,9 @@ Ext.define("TK.locale.en.view.edit.DetailGrid", {
     headerContSize1    :'Size',
     headerContVid1     :'Type',
     headerCodeTNVED    :'TNVED code',
+    headerPack: 'Package',
+    headerPackVid: 'Type',
+    headerPackKod: 'Code',
     headerGoodsDescr   :'Goods description',
     headerPackage      :'Package type',
     headerPackNum      :'quantity of pack./places',
@@ -694,7 +707,25 @@ Ext.define("TK.locale.en.view.edit.DetailGrid", {
     headerProdPrice    :'Goods unit price',
     headerTotalValue   :'total value',
     headerType         :'type',
-    headerTotal        :'Total:'
+    headerTotal        :'Total:',
+
+    titleColumn: 'Column',
+    titleDesc: 'Description',
+    titleCoordLeft: 'Coordinates of left<br/>bottom angle, mm',
+    titleCoordRight: 'Coordinates of right<br/>upper angle, mm',
+    titleColumnFont: 'Font for column',
+    titleColumnFontName: 'Name',
+    titleColumnFontSize: 'Size',
+    titleColumnFontBold: 'Bold?',
+    titleColumnFontUpper: 'Upper?',
+    titleColumnFontSpace: 'Line spacing',
+    titleRotate: 'Rotate',
+    titleBorder: 'Border?',
+    titleStroke: 'Underline?',
+    titlePage: 'Page',
+    titlePrint: 'Print?',
+    titleTable: 'Table?',
+    titlePhrases: 'Phrases?'
 });
 
 Ext.define("TK.locale.en.view.edit.DetailPanel", {
@@ -849,6 +880,7 @@ Ext.define("TK.locale.en.view.DocsForm", {
     labelCustomsCode :'Customs code',
     labelDocNum      :'Document No.',
     labelCommercTerms:'Commercial terms',
+    labelPogrStn: 'Выходные пограничные станции',
 
     labelWagons       :'Wagons',
     labelWagonNum     :'Wagon No.',
@@ -863,7 +895,13 @@ Ext.define("TK.locale.en.view.DocsForm", {
     labelFileSearch       :'Review...',
     labelWagenNum         :'Train number:',
     labelDocSort         :'Serial number:',
-    labelDocSummary :'Consolidated:'
+    labelDocSummary :'Consolidated:',
+
+    labelTGNL: 'Code TGNL:',
+    labelOKPO: 'Code OKPO:',
+    labelINN: 'Code INN:',
+
+    labelVagKontGruz: 'Car/Container/Cargo'
 
 });
 
@@ -1029,7 +1067,13 @@ Ext.define("TK.locale.en.view.invoice.Form", {
     labelDeliveryCode   :'Code of delivery terms',
     labelDeliveryPlace  :'Point of delivery',
     labelCurrency       :'Invoice currency',
-    labelNote           :'Note'
+    labelNote           :'Note',
+
+    lableCombo1: 'Invoice',
+    lableCombo2: 'Счет-фактура',
+    lableCombo3: 'Приложение к инвойсу',
+    lableCombo4: 'Грузовая ведомость',
+    lableCombo5: 'Манифест'
 });
 
 Ext.define("TK.locale.en.view.nsi.EditList", {
@@ -1081,9 +1125,16 @@ Ext.define("TK.locale.en.view.stat.Form", {
     lableCargoName     :'Description of cargo',
     lableContSize      :'Container`s size type',
     lablePayer         :'Payer for tariff and service',
+    lableKontNum         :'# container',
 
     btnFind :'Find',
-    btnClose:'Close'
+    btnClose:'Close',
+    btnReset:'Reset',
+    lableCombo1: 'Инстр. для согл. агентом',
+    lableCombo2: 'Инстр. согл-на агентом',
+    lableCombo3: 'Инстр. НЕсогл-на агентом',
+    lableCombo4: 'Инстр. blocked',
+    lableCombo5: 'Printed'
 });
 
 Ext.define("TK.locale.en.controller.exchange.Senders", {
@@ -1390,6 +1441,85 @@ Ext.define("TK.locale.en.view.nsi.List", {
     ttipDel :'Delete',
     btnClose:'Close'
 });
+
+Ext.define("TK.locale.en.controller.print.Print", {
+    override: "TK.controller.print.Print",
+    titlePrint: "Print settings",
+    labelBlank: "With blank?",
+    textPrint: "Print",
+    textPages: 'Pages for print',
+    textPage: 'Page ',
+    textPageBack: '(back)'
+});
+
+Ext.define("TK.locale.en.controller.print.PrintTemplates", {
+    override: "TK.controller.print.PrintTemplates",
+
+    titleText: 'Bind print template',
+    columnText: 'Name',
+    btnBindText: 'Bind'
+});
+
+Ext.define("TK.locale.en.view.printtmpl.Form", {
+    override    :"TK.view.printtmpl.Form",
+    title       :'Print templates',
+    btnSave       :'Save',
+    btnSaveExit   :'Seve & Exit',
+    btnClose      :'Close',
+
+    fieldLabelName: 'Name',
+    fieldLabelDef: 'By default',
+    fieldLabelPageSize: 'Page size, mm',
+    fieldLabelWidth: 'Width',
+    fieldLabelHeight: 'Height',
+    fieldLabelFont: 'Font for all document ',
+    fieldLabelFontName: 'Name',
+    fieldLabelFontSize: 'Size',
+    fieldLabelFontSpace: 'Line spacing',
+    fieldLabelSyncXY: 'Sync changes on X or Y',
+    fieldLabelMoveHor: 'Move all horizontally, mm',
+    fieldLabelMoveVert: 'Move all vertically, mm',
+    titleData: 'Data'
+});
+
+Ext.define("TK.locale.en.view.edit.TreeFormWin", {
+    override: "TK.view.edit.TreeFormWin",
+
+    titleVag: 'Car',
+    titleCont: 'Container',
+    titleCargo: 'Cargo',
+
+    btnDel: 'Delete',
+    btnClose: 'Close',
+    btnSave: 'Save',
+    btnVagText: '+ Car',
+    btnContText: '+ Container',
+    btnCargoText: '+ Cargo',
+    btnDocText: '+ Doc',
+    btnPlombText: '+ Plomb'
+});
+
+Ext.define("TK.locale.en.view.cimsmgs.CimSmgsDocs9TreeFormWin", {
+    override: "TK.view.cimsmgs.CimSmgsDocs9TreeFormWin",
+
+    title: 'Docs, from senders'
+});
+
+Ext.define("TK.locale.en.view.cimsmgs.CimSmgsVgCtGrTreeFormWin", {
+    override: "TK.view.cimsmgs.CimSmgsVgCtGrTreeFormWin",
+
+    title: 'Car/Container/Cargo'
+});
+
+Ext.define("TK.locale.en.view.cimsmgs.CimSmgsPlombsTreeFormWin", {
+    override: "TK.view.cimsmgs.CimSmgsPlombsTreeFormWin",
+
+    title: 'Plombs'
+});
+
+
+
+
 
 
 

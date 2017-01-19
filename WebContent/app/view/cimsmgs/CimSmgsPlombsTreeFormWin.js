@@ -2,7 +2,7 @@ Ext.define('TK.view.cimsmgs.CimSmgsPlombsTreeFormWin', {
     extend: 'TK.view.edit.PlombsTreeFormWin',
     alias: 'widget.cimsmgsPlombsTreeformWin',
 
-    title: 'Пломбы',
+    // title: 'Пломбы',
 
     buildFormItems: function(){
         return [
@@ -20,7 +20,7 @@ Ext.define('TK.view.cimsmgs.CimSmgsPlombsTreeFormWin', {
 
     buildTreeToolbarItems: function () {
         return [{
-            text: '+ Пломба',
+            text: this.btnPlombText,
             action: 'add',
             iconCls: 'doc_new'
         }];

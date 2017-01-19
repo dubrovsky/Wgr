@@ -56,11 +56,11 @@ Ext.define('TK.view.stat.Form', {
 			{fieldLabel:this.lableStatus, xtype:'combo', value:this.store.proxy.extraParams['search.status'], name:'search.status', width:120, typeAhead:true, forceSelection:true, triggerAction:'all', selectOnFocus:true, queryMode:'local',
 				store  :[
 					['', '---'],
-					['3', 'Инстр. для согл. агентом'],
-					['4', 'Инстр. согл-на агентом'],
-					['6', 'Инстр. НЕсогл-на агентом'],
-					['7', 'Инстр. заблокирована'],
-					['17', 'Распечатана']
+					['3', this.lableCombo1],
+					['4', this.lableCombo2],
+					['6', this.lableCombo3],
+					['7', this.lableCombo4],
+					['17', this.lableCombo5]
 				]
 			},
 			{fieldLabel:this.lableUser, value:this.store.proxy.extraParams['search.un'], name:'search.un'},
@@ -74,7 +74,7 @@ Ext.define('TK.view.stat.Form', {
 			{fieldLabel:this.lableCargoName, xtype:'trigger', triggerCls:'dir', value:this.store.proxy.extraParams['search.naimGrz'], name:'search.naimGrz', itemId:'nzgr'},
 			{fieldLabel:this.lableContSize, value:this.store.proxy.extraParams['search.tipRazmKont'], name:'search.tipRazmKont'},
 			{fieldLabel:this.lablePayer, xtype:'trigger', triggerCls:'dir', value:this.store.proxy.extraParams['search.plat'], name:'search.plat', itemId:'plat'},
-            {fieldLabel:'Номер контейнера', value:this.store.proxy.extraParams['search.nkon'], name:'search.nkon', itemId:'nkon'}
+            {fieldLabel:this.lableKontNum, value:this.store.proxy.extraParams['search.nkon'], name:'search.nkon', itemId:'nkon'}
 
 		];
 
@@ -134,7 +134,7 @@ Ext.define('TK.view.stat.Form', {
 						btn.up('window').close();
 					}
 				}, '-',{
-                    text   :'Сброс',
+                    text   :this.btnReset,
                     handler:function (btn) {
                         btn.up('form').getForm().getFields().each(function(field){
                             field.setValue('');

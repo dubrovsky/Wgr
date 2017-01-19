@@ -83,18 +83,18 @@ Ext.define('TK.view.user.List', {
         if (colIndex == 6) { //usr.locked
             if (value) {
                 metaData.style = 'color:red;';
-                value = 'да';
+                value = this.textYes;
             } else {
                 metaData.style = 'color:green;';
-                value = 'нет';
+                value = this.textNo;
             }
         } else {
             if (!value) {
                 metaData.style = 'color:red;';
-                value = 'нет';
+                value = this.textNo;
             } else {
                 metaData.style = 'color:green;';
-                value = 'да';
+                value = this.textYes;
             }
         }
         return value;

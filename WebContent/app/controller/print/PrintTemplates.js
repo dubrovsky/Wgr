@@ -712,7 +712,7 @@ Ext.define('TK.controller.print.PrintTemplates', {
                 }
             }),
             win =  Ext.widget('window', {
-                title: 'Привязать шаблон печати',
+                title: this.titleText,
                 y:1,
                 modal:true,
                 layout: 'fit',
@@ -736,7 +736,7 @@ Ext.define('TK.controller.print.PrintTemplates', {
                     },
                     store: store,
                     columns: [
-                        {text:'Наименование', dataIndex:'name', flex:1, renderer:TK.Utils.renderLongStr}
+                        {text: this.columnText, dataIndex:'name', flex:1, renderer:TK.Utils.renderLongStr}
                     ],
                     dockedItems: [{
                         dock: 'bottom',
@@ -769,7 +769,7 @@ Ext.define('TK.controller.print.PrintTemplates', {
                     items: [
                         '->',
                         '-', {
-                            text: 'Привязать',
+                            text: this.btnBindText,
                             handler: function(btn) {
                                 var grid = win.getComponent(0),
                                     params = {

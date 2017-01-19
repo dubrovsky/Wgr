@@ -55,6 +55,13 @@ public class NsiSmgsGngDAOHib extends GenericHibernateDAO<CargoGng, Long> implem
         return listAndCast(crit);
     }
 
+    @Override
+    public List<CargoGng> findAll(String kgvn) {
+        Criteria crit = getSession().createCriteria(getPersistentClass());
+        crit.add(Restrictions.eq("cargo_group", kgvn.trim()));
+        return listAndCast(crit);
+    }
+
 //public class NsiSmgsGngDAOHib extends GenericHibernateDAO<Gngcode, BigDecimal> implements NsiSmgsGngDAO {
 //    @SuppressWarnings("unchecked")
 //    public List<Gngcode> findAll(Integer limit, Integer start, String query) throws InfrastructureException {

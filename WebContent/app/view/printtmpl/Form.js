@@ -21,8 +21,8 @@ Ext.define('TK.view.printtmpl.Form', {
             {xtype:'hidden', name:'prnTempl.hid', itemId:'prnTempl.hid'},
             {xtype:'hidden', name:'prnTempl.docDir.hid', itemId:'prnTempl.docDir.hid'},
             {xtype:'hidden', name:'task', itemId:'task'},
-            {xtype:'textfield', fieldLabel:"Наименование", name:'prnTempl.name', itemId:'prnTempl.name', maxLength:300, anchor:'75%'},
-            {xtype:'checkbox', fieldLabel:"По умолчанию", name:'prnTempl.defaults', itemId:'prnTempl.defaults', inputValue:true, hidden: true},
+            {xtype:'textfield', fieldLabel: this.fieldLabelName, name:'prnTempl.name', itemId:'prnTempl.name', maxLength:300, anchor:'75%'},
+            {xtype:'checkbox', fieldLabel:this.fieldLabelDef, name:'prnTempl.defaults', itemId:'prnTempl.defaults', inputValue:true, hidden: true},
             {
                 xtype:'container',
                 anchor:'100%',
@@ -31,10 +31,10 @@ Ext.define('TK.view.printtmpl.Form', {
                     columns: 2
                 },
                 items:[
-                    {xtype:'fieldset', title: 'Размер бумаги, мм', defaultType: 'numberfield', defaults: {anchor: '100%', minValue:1, maxLength:6, decimalPrecision:1, allowBlank:false}, /*anchor:'50%',*/width:260,
+                    {xtype:'fieldset', title: this.fieldLabelPageSize, defaultType: 'numberfield', defaults: {anchor: '100%', minValue:1, maxLength:6, decimalPrecision:1, allowBlank:false}, /*anchor:'50%',*/width:260,
                         items :[
-                            {fieldLabel: 'Ширина', name: 'prnTempl.paperWidth', itemId:'prnTempl.paperWidth'},
-                            {fieldLabel: 'Высота', name: 'prnTempl.paperHeight', itemId:'prnTempl.paperHeight'}
+                            {fieldLabel: this.fieldLabelWidth, name: 'prnTempl.paperWidth', itemId:'prnTempl.paperWidth'},
+                            {fieldLabel: this.fieldLabelHeight, name: 'prnTempl.paperHeight', itemId:'prnTempl.paperHeight'}
                         ]
                     },
                     {
@@ -48,17 +48,17 @@ Ext.define('TK.view.printtmpl.Form', {
                             borderStyle: 'solid'
                         }
                     },
-                    {xtype:'fieldset', title: 'Шрифт, по умолчанию для всего документа', defaults: {anchor: '100%'}, /*anchor:'25%',*/  width:260,
+                    {xtype:'fieldset', title: this.fieldLabelFont, defaults: {anchor: '100%'}, /*anchor:'25%',*/  width:260,
                         items :[
-                            {xtype:'combobox',fieldLabel: 'Наименование', name: 'prnTempl.fontFamily',itemId:'prnTempl.fontFamily', maxLength:30, allowBlank:false, typeAhead: true, forceSelection: true, triggerAction: 'all', selectOnFocus:true,queryMode:'local',
+                            {xtype:'combobox',fieldLabel: this.fieldLabelFontName, name: 'prnTempl.fontFamily',itemId:'prnTempl.fontFamily', maxLength:30, allowBlank:false, typeAhead: true, forceSelection: true, triggerAction: 'all', selectOnFocus:true,queryMode:'local',
                                 store:[
                                     ['arial','Arial'],
                                     ['courier new','Courier New'],
                                     ['times new roman','Times New Roman']
                                 ]
                             },
-                            {xtype:'numberfield',fieldLabel: 'Размер', name: 'prnTempl.fontSize', itemId:'prnTempl.fontSize', minValue:6, maxValue:20, maxLength:2, decimalPrecision:0, allowBlank:false},
-                            {xtype:'numberfield',fieldLabel: 'Межстрочный интервал', name: 'prnTempl.leading', itemId:'prnTempl.leading', minValue:1, maxValue:20, maxLength:2, decimalPrecision:0, allowBlank:false}
+                            {xtype:'numberfield',fieldLabel: this.fieldLabelFontSize, name: 'prnTempl.fontSize', itemId:'prnTempl.fontSize', minValue:6, maxValue:20, maxLength:2, decimalPrecision:0, allowBlank:false},
+                            {xtype:'numberfield',fieldLabel: this.fieldLabelFontSpace, name: 'prnTempl.leading', itemId:'prnTempl.leading', minValue:1, maxValue:20, maxLength:2, decimalPrecision:0, allowBlank:false}
                         ]
                     }
 
@@ -70,10 +70,10 @@ Ext.define('TK.view.printtmpl.Form', {
                 margin:'10 0 7 0',
                 defaults:{labelWidth: 175},
                 items: [
-                    {xtype:'checkbox', fieldLabel:"Синхронизировать изменения по X или Y", name:'prnTempl.sync', itemId:'prnTempl.sync', inputValue:true, margin:'0 20 0 0'},
-                    {xtype: 'numberfield', fieldLabel:"Сдвинуть все по горизонтали, мм", width:230, margin:'0 5 0 0', submitValue:false, name:'hShift'},
+                    {xtype:'checkbox', fieldLabel:this.fieldLabelSyncXY, name:'prnTempl.sync', itemId:'prnTempl.sync', inputValue:true, margin:'0 20 0 0'},
+                    {xtype: 'numberfield', fieldLabel:this.fieldLabelMoveHor, width:230, margin:'0 5 0 0', submitValue:false, name:'hShift'},
                     {xtype: 'button', text:'Ok', margin:'0 20 0 0', action:'hShift'},
-                    {xtype: 'numberfield', fieldLabel:"Сдвинуть все по вертикали, мм", width:230, margin:'0 5 0 0', submitValue:false, name:'vShift'},
+                    {xtype: 'numberfield', fieldLabel:this.fieldLabelMoveVert, width:230, margin:'0 5 0 0', submitValue:false, name:'vShift'},
                     {xtype: 'button', text:'Ok', action:'vShift'}
                 ]
             },
@@ -82,31 +82,31 @@ Ext.define('TK.view.printtmpl.Form', {
                 itemId:'prnTemplData',
                 doc:'prnTempl',
                 coll:'printDatas',
-                title:'Данные',
+                title:this.titleData,
                 height:700,
                 buildColModel:function (config) {
                     config.columns = [
                         {xtype:'rownumberer'},
 //                        {text:'Колонка', dataIndex:'name', width:80, editor:{xtype:'textfield', maxLength:20, allowBlank:false}},
-                        {text:'Описание', dataIndex:'descr', flex:1, editor:{xtype:'textfield', maxLength:300}, renderer: TK.Utils.renderLongStr},
+                        {text:this.titleDesc, dataIndex:'descr', flex:1, editor:{xtype:'textfield', maxLength:300}, renderer: TK.Utils.renderLongStr},
                         {
-                            text:'Координаты левого<br/>нижнего угла, мм',
+                            text:this.titleCoordLeft,
                             columns:[
                                 {text:'X1', dataIndex:'llx', width:70, editor:{xtype:'numberfield', maxLength:5, minValue:0, allowBlank:false, decimalPrecision:0, allowDecimals:false, listeners: {change: function(f, nVal, oVal){this.up('printTemplate').fireEvent('x_y_change', f, nVal, oVal);}} }},
                                 {text:'Y1', dataIndex:'lly', width:70, editor:{xtype:'numberfield', maxLength:5, minValue:0, allowBlank:false, decimalPrecision:0, allowDecimals:false, listeners: {change: function(f, nVal, oVal){this.up('printTemplate').fireEvent('x_y_change', f, nVal, oVal);}} }}
                             ]
                         },
                         {
-                            text:'Координаты правого<br/>верхнего угла, мм',
+                            text:this.titleCoordRight,
                             columns:[
                                 {text:'X2', dataIndex:'urx', width:70, editor:{xtype:'numberfield', maxLength:5, minValue:0, allowBlank:false, decimalPrecision:0, allowDecimals:false, listeners: {change: function(f, nVal, oVal){this.up('printTemplate').fireEvent('x_y_change', f, nVal, oVal);}} }},
                                 {text:'Y2', dataIndex:'ury', width:70, editor:{xtype:'numberfield', maxLength:5, minValue:0, allowBlank:false, decimalPrecision:0, allowDecimals:false, listeners: {change: function(f, nVal, oVal){this.up('printTemplate').fireEvent('x_y_change', f, nVal, oVal);}} }}
                             ]
                         },
                         {
-                            text:'Шрифт для конкретной колонки',
+                            text:this.titleColumnFont,
                             columns:[
-                                {text: 'Наименование', dataIndex: 'fontFamily', width:89,
+                                {text: this.titleColumnFontName, dataIndex: 'fontFamily', width:89,
                                     editor:{xtype:'combobox', maxLength:30, typeAhead: true, forceSelection: true, triggerAction: 'all', selectOnFocus:true, queryMode:'local',
                                         store:[
                                             ['','---'],
@@ -128,19 +128,19 @@ Ext.define('TK.view.printtmpl.Form', {
                                         }
                                     }
                                 },
-                                {text:'Размер', dataIndex:'fontSize', width:65, editor:{xtype:'numberfield', maxLength:2, minValue:6, maxValue:20, decimalPrecision:0}},
-                                {text:'Жирным?', xtype: 'checkcolumn', dataIndex:'bold', width:70},
-                                {text:'Заглавными?', xtype: 'checkcolumn', dataIndex:'uppercase', width:80},
-                                {text:'Межстрочный интервал', dataIndex: 'leading', width:87, editor:{xtype:'numberfield', maxLength:2, minValue:1, maxValue:20, decimalPrecision:0}}
+                                {text:this.titleColumnFontSize, dataIndex:'fontSize', width:65, editor:{xtype:'numberfield', maxLength:2, minValue:6, maxValue:20, decimalPrecision:0}},
+                                {text:this.titleColumnFontBold, xtype: 'checkcolumn', dataIndex:'bold', width:70},
+                                {text:this.titleColumnFontUpper, xtype: 'checkcolumn', dataIndex:'uppercase', width:80},
+                                {text:this.titleColumnFontSpace, dataIndex: 'leading', width:87, editor:{xtype:'numberfield', maxLength:2, minValue:1, maxValue:20, decimalPrecision:0}}
                             ]
                         },
 //                        {text: 'Таблица?', dataIndex: 'grps', width:60,editor:{xtype:'trigger',triggerCls:'dir',editable:false}/*, renderer: this.onRenderGroups*/},
-                        {text:'Поворот', dataIndex:'rotate', width:60, editor:{xtype:'numberfield', maxLength:3, minValue:-360, maxValue:360, decimalPrecision:0}},
-                        {text:'Граница?', xtype: 'checkcolumn', dataIndex:'border', width:65},
-                        {text:'Подчеркнуть?', xtype: 'checkcolumn', dataIndex:'underline', width:65},
-                        {text:'Страница', dataIndex:'page', width:60, editor:{xtype:'numberfield', maxLength:2, minValue:1, maxValue:10, decimalPrecision:0}},
-                        {text:'Печатать?', xtype: 'checkcolumn', dataIndex:'print', width:65},
-                        {text:'Таблица?', /*dataIndex:'tableColumns',*/ width:65, renderer: function(val, meta, record){
+                        {text:this.titleRotate, dataIndex:'rotate', width:60, editor:{xtype:'numberfield', maxLength:3, minValue:-360, maxValue:360, decimalPrecision:0}},
+                        {text:this.titleBorder, xtype: 'checkcolumn', dataIndex:'border', width:65},
+                        {text:this.titleStroke, xtype: 'checkcolumn', dataIndex:'underline', width:65},
+                        {text:this.titlePage, dataIndex:'page', width:60, editor:{xtype:'numberfield', maxLength:2, minValue:1, maxValue:10, decimalPrecision:0}},
+                        {text:this.titlePrint, xtype: 'checkcolumn', dataIndex:'print', width:65},
+                        {text:this.titleTable, /*dataIndex:'tableColumns',*/ width:65, renderer: function(val, meta, record){
                             var count = record.table().count();
                             return count == 0 ? '' : count;
                         }},
@@ -156,7 +156,7 @@ Ext.define('TK.view.printtmpl.Form', {
                                 }
                             }]
                         },
-                        {text:'Фразы?', width:65, renderer: function(val, meta, record){
+                        {text:this.titlePhrases, width:65, renderer: function(val, meta, record){
                             var count = record.phrases().count();
                             return count == 0 ? '' : count;
                         }},
@@ -175,7 +175,7 @@ Ext.define('TK.view.printtmpl.Form', {
                     ];
 
                     if (tkUser.hasPriv('CIM_PRINT_TEMPLATES_ADMIN')){
-                        config.columns.splice(1, 0, {text:'Колонка', dataIndex:'name', width:80, editor:{xtype:'textfield', maxLength:20, allowBlank:false}});
+                        config.columns.splice(1, 0, {text:this.titleColumn, dataIndex:'name', width:80, editor:{xtype:'textfield', maxLength:20, allowBlank:false}});
                     }
                 },
                 buildDockedItems: function(config) {

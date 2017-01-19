@@ -546,7 +546,13 @@ Ext.define("TK.locale.ru.view.printtmpl.List", {
     title       :'Список шаблонов печати',
     headerName  :'Наименование',
     headerRoutes:'Маршруты',
-    headerDefault:'По умолчанию?'
+    headerDefault:'По умолчанию?',
+    headerBlank: 'С бланком?',
+    
+    btnBindToRoute: 'Привязать к маршруту',
+    btnBindToBlank: 'Привязать к бланку',
+    btnBlanks: 'Бланки'
+    
 });
 
 Ext.define("TK.locale.ru.view.printtmpl.Form", {
@@ -554,7 +560,21 @@ Ext.define("TK.locale.ru.view.printtmpl.Form", {
     title       :'Шаблон печати',
     btnSave       :'Сохранить',
     btnSaveExit   :'Сохр-ть и Выйти',
-    btnClose      :'Закрыть'
+    btnClose      :'Закрыть',
+
+    fieldLabelName: 'Наименование',
+    fieldLabelDef: 'По умолчанию',
+    fieldLabelPageSize: 'Размер бумаги, мм',
+    fieldLabelWidth: 'Ширина',
+    fieldLabelHeight: 'Высота',
+    fieldLabelFont: 'Шрифт, по умолчанию для всего документа',
+    fieldLabelFontName: 'Наименование',
+    fieldLabelFontSize: 'Размер',
+    fieldLabelFontSpace: 'Межстрочный интервал',
+    fieldLabelSyncXY: 'Синхронизировать изменения по X или Y',
+    fieldLabelMoveHor: 'Сдвинуть все по горизонтали, мм',
+    fieldLabelMoveVert: 'Сдвинуть все по вертикали, мм',
+    titleData: 'Данные'
 });
 
 Ext.define("TK.locale.ru.view.user.List", {
@@ -570,7 +590,10 @@ Ext.define("TK.locale.ru.view.user.List", {
     headerEmail   :'Эл.почта',
     btnCreate     :'Создать',
     btnEdit       :'Редактировать',
-    btnRefresh    :'Обновить'
+    btnRefresh    :'Обновить',
+
+    textYes: 'да',
+    textNo: 'нет'
 });
 
 Ext.define("TK.locale.ru.view.user.ListGroups", {
@@ -655,6 +678,8 @@ Ext.define("TK.locale.ru.view.edit.DetailGrid", {
     headerRoutesGr     :'Группы',
     headerRoutesDocs   :'Документы',
     headerRoutesCodeTbc:'Код ТБЦ',
+    headerRoutesCodeCustoms:'Код таможни',
+    headerRoutesEmailMask: 'Email, маска',
     headerContNum      :'Номер',
     headerContSize     :'Размер',
     headerContVid      :'Вид',
@@ -662,6 +687,9 @@ Ext.define("TK.locale.ru.view.edit.DetailGrid", {
     headerContSize1    :'Размер',
     headerContVid1     :'Вид',
     headerCodeTNVED    :'код ТНВЭД',
+    headerPack: 'Упаковка',
+    headerPackVid: 'Вид',
+    headerPackKod: 'Код',
     headerGoodsDescr   :'описание товара',
     headerPackage      :'вид уп-ки',
     headerPackNum      :'число уп./мест',
@@ -672,7 +700,26 @@ Ext.define("TK.locale.ru.view.edit.DetailGrid", {
     headerProdPrice    :'цена ед. товара',
     headerTotalValue   :'общая стоимость',
     headerType         :'тип',
-    headerTotal        :'Итого:'
+    headerTotal        :'Итого:',
+
+
+    titleColumn: 'Колонка',
+    titleDesc: 'Описание',
+    titleCoordLeft: 'Координаты левого<br/>нижнего угла, мм',
+    titleCoordRight: 'Координаты правого<br/>верхнего угла, мм',
+    titleColumnFont: 'Шрифт для конкретной колонки',
+    titleColumnFontName: 'Наименование',
+    titleColumnFontSize: 'Размер',
+    titleColumnFontBold: 'Жирным?',
+    titleColumnFontUpper: 'Заглавными?',
+    titleColumnFontSpace: 'Межстрочный интервал',
+    titleRotate: 'Поворот',
+    titleBorder: 'Граница?',
+    titleStroke: 'Подчеркнуть?',
+    titlePage: 'Страница',
+    titlePrint: 'Печатать?',
+    titleTable: 'Таблица?',
+    titlePhrases: 'Фразы?'
 });
 
 Ext.define("TK.locale.ru.view.edit.DetailPanel", {
@@ -826,6 +873,7 @@ Ext.define("TK.locale.ru.view.DocsForm", {
     labelCustomsCode :'Таможенный код',
     labelDocNum      :'№ док-та',
     labelCommercTerms:'Коммерческие условия',
+    labelPogrStn: 'Выходные пограничные станции',
 
     labelWagons       :'Вагоны',
     labelWagonNum     :'№ вагона',
@@ -840,7 +888,13 @@ Ext.define("TK.locale.ru.view.DocsForm", {
     labelFileSearch       :'Обзор...',
     labelWagenNum         :'Номер поезда:',
     labelDocSort         :'Порядковый номер:',
-    labelDocSummary         :'Сводная:'
+    labelDocSummary         :'Сводная:',
+    
+    labelTGNL: 'Код ТГНЛ:',
+    labelOKPO: 'Код ОКПО:',
+    labelINN: 'Код ИНН:',
+
+    labelVagKontGruz: 'Вагон/Контейнер/Груз'
 
 });
 
@@ -1006,7 +1060,14 @@ Ext.define("TK.locale.ru.view.invoice.Form", {
     labelDeliveryCode   :'Код условий поставки',
     labelDeliveryPlace  :'Пункт поставки',
     labelCurrency       :'Валюта инвойса',
-    labelNote           :'Примечание'
+    labelNote           :'Примечание',
+
+    lableCombo1: 'Инвойс',
+    lableCombo2: 'Счет-фактура',
+    lableCombo3: 'Приложение к инвойсу',
+    lableCombo4: 'Грузовая ведомость',
+    lableCombo5: 'Манифест'
+    
 });
 
 Ext.define("TK.locale.ru.view.nsi.EditList", {
@@ -1058,9 +1119,16 @@ Ext.define("TK.locale.ru.view.stat.Form", {
     lableCargoName     :'Наименование груза',
     lableContSize      :'Тип размер контейнера',
     lablePayer         :'Плательщик за тариф и услуги',
+    lableKontNum         :'Номер контейнера',
 
     btnFind :'Найти',
-    btnClose:'Закрыть'
+    btnClose:'Закрыть',
+    btnReset:'Сброс',
+    lableCombo1: 'Инстр. для согл. агентом',
+    lableCombo2: 'Инстр. согл-на агентом',
+    lableCombo3: 'Инстр. НЕсогл-на агентом',
+    lableCombo4: 'Инстр. заблокирована',
+    lableCombo5: 'Распечатана'
 });
 
 Ext.define("TK.locale.ru.controller.exchange.Senders", {
@@ -1367,3 +1435,55 @@ Ext.define("TK.locale.ru.view.nsi.List", {
     btnClose:'Закрыть'
 });
 
+Ext.define("TK.locale.ru.controller.print.Print", {
+    override: "TK.controller.print.Print",
+    titlePrint: "Настройка печати",
+    labelBlank: "С бланком?",
+    textPrint: "Печать",
+    textPages: 'Страницы на печать',
+    textPage: 'Страница ',
+    textPageBack: '(оборот)'
+});
+
+Ext.define("TK.locale.ru.controller.print.PrintTemplates", {
+    override: "TK.controller.print.PrintTemplates",
+    
+    titleText: 'Привязать шаблон печати',
+    columnText: 'Наименование',
+    btnBindText: 'Привязать'
+});
+
+Ext.define("TK.locale.ru.view.edit.TreeFormWin", {
+    override: "TK.view.edit.TreeFormWin",
+
+    titleVag: 'Вагон',
+    titleCont: 'Контейнер',
+    titleCargo: 'Груз',
+
+    btnDel: 'Удалить',
+    btnClose: 'Закрыть',
+    btnSave: 'Сохранить',
+    btnVagText: '+ Вагон',
+    btnContText: '+ Контейнер',
+    btnCargoText: '+ Груз',
+    btnDocText: '+ Документ',
+    btnPlombText: '+ Пломба'
+});
+
+Ext.define("TK.locale.ru.view.cimsmgs.CimSmgsDocs9TreeFormWin", {
+    override: "TK.view.cimsmgs.CimSmgsDocs9TreeFormWin",
+
+    title: 'Документы, приложенные отправителем'
+});
+
+Ext.define("TK.locale.ru.view.cimsmgs.CimSmgsVgCtGrTreeFormWin", {
+    override: "TK.view.cimsmgs.CimSmgsVgCtGrTreeFormWin",
+
+    title: 'Вагон/Контейнер/Груз'
+});
+
+Ext.define("TK.locale.ru.view.cimsmgs.CimSmgsPlombsTreeFormWin", {
+    override: "TK.view.cimsmgs.CimSmgsPlombsTreeFormWin",
+
+    title: 'Пломбы'
+});

@@ -878,7 +878,7 @@ Ext.define('TK.controller.Docs', {
                 columnLines: true,
                 columns: [
                     {text: this.headerData, dataIndex: 'datBegin', sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false, renderer: TK.Utils.renderLongStr},
-                    {text: this.headerMsg, dataIndex: 'status', flex:1,    sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false},
+                    {text: this.headerMsg, dataIndex: 'status', flex:1, sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false},
                     {text: this.headerWho, dataIndex: 'user', sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false}
                 ],
                 store: Ext.create('Ext.data.Store', {

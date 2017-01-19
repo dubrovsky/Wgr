@@ -112,7 +112,7 @@ Ext.define('TK.view.cimsmgs.CimSmgsForm', {
             },*/
             {
                 xtype:'button',
-                text:'Вагон/Контейнер/Груз',
+                text:this.labelVagKontGruz,
                 x:380, y:791,
                 action:'changeVgCtGr'
             },
@@ -169,9 +169,9 @@ Ext.define('TK.view.cimsmgs.CimSmgsForm', {
             {x:805, y:1158, xtype:'radio', name:'smgs.g25', inputValue:'1', itemId:'smgs.g25_v'},
             {x:945, y:1158, xtype:'radio', name:'smgs.g25', inputValue:'2', itemId:'smgs.g25_k', checked:true},
             {x:865, y:770, xtype:'label', text:this.labelCodeGng, style: 'font-weight:bold;'},
-            {x:865, y:785, name: 'smgs.g23', itemId:'smgs.g23', maxLength:20, width:120},
-            {x:865, y:815, xtype:'label', text:this.labelCodeEtsng, style: 'font-weight:bold;'},
-            {x:865, y:830, name: 'smgs.g23b', itemId:'smgs.g23b', maxLength:20, width:120},
+            {x:865, y:785, xtype:'textarea', name: 'smgs.g23', itemId:'smgs.g23', maxLength:80, width:120},
+            {x:865, y:855, xtype:'label', text:this.labelCodeEtsng, style: 'font-weight:bold;'},
+            {x:865, y:870, xtype:'textarea', name: 'smgs.g23b', itemId:'smgs.g23b', maxLength:20, width:120},
 //        {x:865, y:865, name: 'smgs.g23a', itemId:'smgs.g23a', maxLength:20, width:120},
             {x:1001, y:785, xtype:'label', text:this.labelNetto, style: 'font-weight:bold;'},
             {x:1047, y:780, xtype:'numberfield', name: 'smgs.g24N', itemId:'smgs.g24N', maxLength:14, width:92, minValue:0, decimalPrecision:3},
@@ -620,7 +620,7 @@ Ext.define('TK.view.cimsmgs.CimSmgsForm', {
                             {xtype:'hidden', itemId:"hid"}
                         ]
                     },
-                    {xtype:'label', text: 'Выходные пограничные станции', cls:'th'},
+                    {xtype:'label', text: this.labelPogrStn, cls:'th'},
                     {
                         xtype:'detailtabpanel',
                         tabCollectionName:'cimSmgsDocses136',

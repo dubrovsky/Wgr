@@ -12,7 +12,7 @@ Ext.define('TK.view.printtmpl.List', {
                 {text: this.headerName, dataIndex: 'name', flex:1, renderer: TK.Utils.renderLongStr},
                 {text: this.headerDefault, dataIndex: 'defaults', renderer: this.defaultRenderer},
                 {text: this.headerRoutes, dataIndex: 'routes', flex:1, renderer: this.routesRenderer},
-                {text: 'С бланком?', dataIndex: 'blanks', renderer: this.blanksRenderer}
+                {text: this.headerBlank, dataIndex: 'blanks', renderer: this.blanksRenderer}
             ],
             defaults:{}
         };
@@ -32,16 +32,16 @@ Ext.define('TK.view.printtmpl.List', {
         config.dockedItems[0].items.push(
             {text: this.btnCopy,iconCls:'copy', action:'copyTmpl'},'-',
             {text: this.btnEdit,iconCls:'edit', action:'editTmpl'},'-',
-            {text: 'Привязать к маршруту',iconCls:'bind', action:'bindTmplToRoutes',itemId:'bindRoutes'},'-'
+            {text: this.btnBindToRoute,iconCls:'bind', action:'bindTmplToRoutes',itemId:'bindRoutes'},'-'
         );
         if(tkUser.hasPriv('CIM_PRINT_TEMPLATES_ADMIN')){
             config.dockedItems[0].items.push(
-                {text: 'Бланки',iconCls:'download', action:'editBlanks'},'-'
+                {text: this.btnBlanks,iconCls:'download', action:'editBlanks'},'-'
             );
         }
         if(tkUser.hasPriv('CIM_PRINT_TEMPLATES_USER')){
             config.dockedItems[0].items.push(
-                {text: 'Привязать к бланку',iconCls:'bind1', action:'bindBlanks'},'-'
+                {text: this.btnBindToBlank,iconCls:'bind1', action:'bindBlanks'},'-'
             );
         }
         if(tkUser.hasPriv('CIM_DELETE')){

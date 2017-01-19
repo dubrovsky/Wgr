@@ -913,6 +913,13 @@ Ext.define('TK.view.smgs2.Smgs2Form', {
                             {xtype:'checkbox', fieldLabel:'Сцеп?', itemId:'scep', inputValue:'1', uncheckedValue:0},
                             {xtype:'textfield', fieldLabel:'Номер рефсекции', itemId:"refSecNo", maxLength:24, width:100},
                             {xtype:'numberfield', fieldLabel:'Кол. ваг. в рефсекции', itemId:"refSecKol", maxLength:3, width:100, allowDecimals:false, minValue:0},
+                            {xtype:'textfield', fieldLabel:'Номер рефсекции', itemId:"refSecNo", maxLength:24, width:100},
+                            {xtype:'textfield', fieldLabel:'Админ. приписки', itemId:"nameSob", maxLength:124, width:100},
+                            {xtype:'numberfield', fieldLabel:'Админ. приписки, код', itemId:"kodSob", maxLength:2, width:50, decimalPrecision:0},
+                            {xtype:'textfield', fieldLabel:'Код владельца вагона', itemId:"klientCode", maxLength:12, width:100},
+                            {xtype:'textfield', fieldLabel:'Владелец вагона', itemId:"klientName", maxLength:124, width:100},
+                            {xtype:'textfield', fieldLabel:'Род вагона', itemId:"rod", maxLength:20, width:100},
+
                             {xtype:'hidden', itemId:"sort"},
                             {xtype:'hidden', itemId:"hid"},
                             {xtype:'label', text:this.labelConts, itemId:"g7k_label", cls:'th'},
@@ -1069,7 +1076,11 @@ Ext.define('TK.view.smgs2.Smgs2Form', {
                             ' PC' +
                             (vagTab.getComponent('refSecNo').getValue() ? ' - ' + vagTab.getComponent('refSecNo').getValue() : '') +
                             (vagTab.getComponent('refSecKol').getValue() ? '(' + vagTab.getComponent('refSecKol').getValue() + ')' : '') :
-                                '');
+                                '') +
+                            (vagTab.getComponent('rod').getValue() ? " " +  vagTab.getComponent('rod').getValue() : '') +
+                            (vagTab.getComponent('klientName').getValue() ? ', ' +  vagTab.getComponent('klientName').getValue() : '') +
+                            (vagTab.getComponent('nameSob').getValue() ? ', ' +  vagTab.getComponent('nameSob').getValue() : '');
+                        ;
 
                         cell = row.insertCell(-1);
                         cell.className = 'td smgs2-vag-g8';

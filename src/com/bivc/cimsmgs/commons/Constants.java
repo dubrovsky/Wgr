@@ -1375,6 +1375,60 @@ public class Constants {
         return buffer.toString();
     }
 
+    public static String convert2JSON_NsiGngDe(List<NsiGngDe> data, Long total) {
+        StringBuffer buffer = new StringBuffer();
+        if (data != null && data.size() > 0) {
+            buffer.append("{'total':" + total + ", 'rows': [");
+
+            for (NsiGngDe elem : data) {
+                buffer.append("{");
+                buffer.append("kgvn:'");
+                buffer.append(javascriptString(elem.getKgvn()));
+                buffer.append("',nzgr:'");
+                buffer.append(javascriptString(elem.getNzgr()));
+                buffer.append("'},");
+            }
+
+            buffer.replace(buffer.lastIndexOf(","), buffer.length(), "]}");
+        } else {
+            buffer.append("{'total':0, 'rows':[]}");
+        }
+
+        return buffer.toString();
+    }
+
+    public static String convert2JSON_NsiGngDe(List<NsiGngDe> data) {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("{");
+        if (CollectionUtils.isNotEmpty(data)) {
+            NsiGngDe elem = data.iterator().next();
+            buffer.append("kgvn:'");
+            buffer.append(javascriptString(elem.getKgvn()));
+            buffer.append("', nzgr:'");
+            buffer.append(javascriptString(elem.getNzgr()));
+            buffer.append("'");
+        }
+
+        buffer.append("}");
+        return buffer.toString();
+    }
+
+    public static String convert2JSON_NsiGng(List<CargoGng> data) {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("{");
+        if (CollectionUtils.isNotEmpty(data)) {
+            CargoGng elem = data.iterator().next();
+            buffer.append("kgvn:'");
+            buffer.append(javascriptString(elem.getCargo_group()));
+            buffer.append("',nzgr:'");
+            buffer.append(javascriptString(elem.getCargo_fullname()));
+            buffer.append("'");
+        }
+
+        buffer.append("}");
+        return buffer.toString();
+    }
+
     public static String convert2JSON_NsiSmgsEtsng(List<Cargo> data, Long total) {
         StringBuffer buffer = new StringBuffer();
         if (data != null && data.size() > 0) {
@@ -2516,6 +2570,8 @@ public class Constants {
                 buffer.append(javascriptString(upak.getKypk()));
                 buffer.append("',name:'");
                 buffer.append(javascriptString(upak.getNzypRu()));
+                buffer.append("',nameDe:'");
+                buffer.append(javascriptString(upak.getNzypDe()));
                 buffer.append("'}");
             }
             buffer.append("]}");

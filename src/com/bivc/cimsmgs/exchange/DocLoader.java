@@ -5,7 +5,6 @@ import com.bivc.cimsmgs.db.*;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
-import org.dom4j.Element;
 import org.dom4j.Node;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -27,11 +26,11 @@ public class DocLoader {
   private static final SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd");
   private static final SimpleDateFormat dateTimeFormater1 = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
   private static final Logger log = LoggerFactory.getLogger(DocLoader.class);
-  private TreeMap<String, TreeMap<String, String>> mmm = new TreeMap<String, TreeMap<String, String>>();
-  private TreeMap<Character, Long> srcMap = new TreeMap<Character, Long>();
+  private TreeMap<String, TreeMap<String, String>> mmm = new TreeMap<>();
+  private TreeMap<Character, Long> srcMap = new TreeMap<>();
 
   public DocLoader() {
-    Session session = null;
+    Session session;
     Transaction tx = null;
     try {
       session = HibernateUtil.getSession();
@@ -53,12 +52,13 @@ public class DocLoader {
 
   public CimSmgs load(Document doc, String un, String trans, long[] routes) {
     Date d = new Date();
-    TreeMap<Long, CimSmgsCarList> carMap = new TreeMap<Long, CimSmgsCarList>();
-    TreeMap<Long, CimSmgsKonList> konMap = new TreeMap<Long, CimSmgsKonList>();
-    TreeMap<Long, CimSmgsInvoice> invMap = new TreeMap<Long, CimSmgsInvoice>();
+    TreeMap<Long, CimSmgsCarList> carMap = new TreeMap<>();
+    TreeMap<Long, CimSmgsKonList> konMap = new TreeMap<>();
+    TreeMap<Long, CimSmgsInvoice> invMap = new TreeMap<>();
 
     log.debug("Processing CIM_SMGS");
-    List scFields = doc.selectNodes("/doc/cim_smgs/*");
+    @SuppressWarnings("unchecked")
+    List<Node> scFields = doc.selectNodes("/doc/cim_smgs/*");
     CimSmgs cs = new CimSmgs();
     cs = processNode(scFields, cs);
     cs.setHid(null);
@@ -85,7 +85,24 @@ public class DocLoader {
       route = StringUtils.indexOf(cs.getG4r(), "БМВ") < 0 ? routes[0] : routes[1];
     }
 
-    Route r = new Route(route);
+    Route r = null;
+    Session session;
+    Transaction tx = null;
+    try {
+      session = HibernateUtil.getSession();
+      tx = session.beginTransaction();
+      r = (Route) HibernateUtil.getSession().get(Route.class, route);
+      tx.commit();
+    }
+    catch (Exception ex) {
+      log.error(ex.getMessage(), ex);
+      if (tx != null)
+        tx.rollback();
+    }
+
+//    Route r = new Route(route);
+    if (r == null)
+      throw new RuntimeException("route " + route + " not found");
     log.debug("route=" + route);
     cs.setRoute(r);
 
@@ -94,28 +111,14 @@ public class DocLoader {
     pd.setRoute(r);
     pd.addCimSmgsItem(cs);
 
-    log.debug("Processing CIM_SMGS_DOC");
-    @SuppressWarnings("unchecked")
-    List<Node> csdNodes = doc.selectNodes("/doc/cim_smgs_docs");
-    byte i = 0;
-    for (Node csdNode : csdNodes) {
-      log.debug("CIM_SMGS_DOC[" + (i++) + "]");
-      List scdFields = csdNode.selectNodes("*");
-      CimSmgsDocs csd = new CimSmgsDocs();
-      csd = processNode(scdFields, csd);
-      csd.setHid(null);
-      csd.setDattr(d);
-      csd.setSort(null);
-      cs.addCimSmgsDocsItem(csd);
-    }
-
     log.debug("Processing CIM_SMGS_PLATEL");
     @SuppressWarnings("unchecked")
     List<Node> cspNodes = doc.selectNodes("/doc/cim_smgs_platel", "sort/text()");
-    i = 0;
+    byte i = 0;
     for (Node cspNode : cspNodes) {
       log.debug("CIM_SMGS_PLATEL[" + i + "]");
-      List scpFields = cspNode.selectNodes("*");
+      @SuppressWarnings("unchecked")
+      List<Node> scpFields = cspNode.selectNodes("*");
       CimSmgsPlatel csp = new CimSmgsPlatel();
       csp = processNode(scpFields, csp);
       csp.setHid(null);
@@ -124,13 +127,29 @@ public class DocLoader {
       cs.addCimSmgsPlatelItem(csp);
     }
 
+    log.debug("Processing CIM_SMGS_PEREVOZ");
+    @SuppressWarnings("unchecked")
+    List<Node> cspeNodes = doc.selectNodes("/doc/cim_smgs_perevoz", "sort/text()");
+    i = 0;
+    for (Node cspNode : cspeNodes) {
+      log.debug("CIM_SMGS_PEREVOZ[" + i + "]");
+      @SuppressWarnings("unchecked")
+      List<Node> scpFields = cspNode.selectNodes("*");
+      CimSmgsPerevoz csp = new CimSmgsPerevoz();
+      csp = processNode(scpFields, csp);
+      csp.setHid(null);
+      csp.setSort(i++);
+      cs.addCimSmgsPerevozItem(csp);
+    }
+
     log.debug("Processing CIM_SMGS_CAR_LIST");
     @SuppressWarnings("unchecked")
     List<Node> cscNodes = doc.selectNodes("/doc/cim_smgs_car_list");
     i = 0;
     for (Node cscNode : cscNodes) {
       log.debug("CIM_SMGS_CAR_LIST[" + i + "]");
-      List sccFields = cscNode.selectNodes("*");
+      @SuppressWarnings("unchecked")
+      List<Node> sccFields = cscNode.selectNodes("*");
       CimSmgsCarList csc = new CimSmgsCarList();
       csc = processNode(sccFields, csc);
       carMap.put(csc.getHid(), csc); /******/
@@ -146,7 +165,8 @@ public class DocLoader {
     i = 0;
     for (Node cskNode : cskNodes) {
       log.debug("CIM_SMGS_KON_LIST[" + i + "]");
-      List sckFields = cskNode.selectNodes("*");
+      @SuppressWarnings("unchecked")
+      List<Node> sckFields = cskNode.selectNodes("*");
       CimSmgsKonList csk = new CimSmgsKonList();
       csk = processNode(sckFields, csk);
 
@@ -173,13 +193,14 @@ public class DocLoader {
     int j = 0;
     for (Node csgNode : csgNodes) {
       log.debug("CIM_SMGS_GRUZ[" + j + "]");
-      List scgFields = csgNode.selectNodes("*");
+      @SuppressWarnings("unchecked")
+      List<Node> scgFields = csgNode.selectNodes("*");
       CimSmgsGruz csg = new CimSmgsGruz();
       csg = processNode(scgFields, csg);
 
       csg.setHid(null);
       csg.setDattr(d);
-      if (j == 0) {
+      if (j == 0 && StringUtils.isEmpty(cs.getG23())) {
         cs.setG23(csg.getKgvn());
         cs.setG23b(csg.getEkgvn());
       }
@@ -188,23 +209,105 @@ public class DocLoader {
       String hidCarStr = csgNode.selectSingleNode("hid_car").getText();
       if (hidCarStr != null && hidCarStr.trim().length() > 0) {
         Long hid_car = Long.valueOf(hidCarStr);
-        CimSmgsCarList csc = carMap.get(hid_car);
-        if(csc != null)
-          csc.addCimSmgsGruzItem(csg);
+        if (hid_car != 0) {
+          CimSmgsCarList csc = carMap.get(hid_car);
+          if (csc != null)
+            csc.addCimSmgsGruzItem(csg);
+        }
       }
 
       String hidKonStr = csgNode.selectSingleNode("hid_kon").getText();
       if (hidKonStr != null && hidKonStr.trim().length() > 0) {
         Long hid_kon = Long.valueOf(hidKonStr);
-        CimSmgsKonList csk = konMap.get(hid_kon);
-        if(csk != null) {
-          csk.addCimSmgsGruzItem(csg);
-          if (j == 0 && (csg.getMassa() == null || BigDecimal.ZERO.compareTo(csg.getMassa()) == 0)) {
-            csg.setMassa(csk.getMassSend());
+        if (hid_kon != 0) {
+          CimSmgsKonList csk = konMap.get(hid_kon);
+          if (csk != null) {
+            csk.addCimSmgsGruzItem(csg);
+            if (j == 0 && (csg.getMassa() == null || BigDecimal.ZERO.compareTo(csg.getMassa()) == 0)) {
+              csg.setMassa(csk.getMassSend());
+            }
+            CimSmgsCarList csc = csk.getCimSmgsCarList();
+            if (!csc.getCimSmgsGruzs().containsValue(csg)) {
+              csc.addCimSmgsGruzItem(csg);
+            }
           }
         }
       }
       j++;
+    }
+
+    log.debug("Processing CIM_SMGS_DOC");
+    @SuppressWarnings("unchecked")
+    List<Node> csdNodes = doc.selectNodes("/doc/cim_smgs_docs");
+    i = 0;
+    for (Node csdNode : csdNodes) {
+      log.debug("CIM_SMGS_DOC[" + (i++) + "]");
+      @SuppressWarnings("unchecked")
+      List<Node> scdFields = csdNode.selectNodes("*");
+      CimSmgsDocs csd = new CimSmgsDocs();
+      csd = processNode(scdFields, csd);
+
+      csd.setHid(null);
+      csd.setDattr(d);
+      csd.setSort(null);
+      cs.addCimSmgsDocsItem(csd);
+
+//      String hidCarStr = csdNode.selectSingleNode("hid_car").getText();
+//      if (hidCarStr != null && hidCarStr.trim().length() > 0) {
+//        Long hid_car = Long.valueOf(hidCarStr);
+//        if (hid_car != 0) {
+//          CimSmgsCarList csc = carMap.get(hid_car);
+//          if (csc != null)
+//            csc.addCimSmgsPlombItem(csd);
+//        }
+//      }
+
+      String hidKonStr = csdNode.selectSingleNode("hid_kon").getText();
+      if (hidKonStr != null && hidKonStr.trim().length() > 0) {
+        Long hid_kon = Long.valueOf(hidKonStr);
+        if (hid_kon != 0) {
+          CimSmgsKonList csk = konMap.get(hid_kon);
+          if (csk != null) {
+            csk.addCimSmgsDocsItem(csd);
+          }
+        }
+      }
+    }
+
+    log.debug("Processing CIM_SMGS_PLOMB");
+    @SuppressWarnings("unchecked")
+    List<Node> csplNodes = doc.selectNodes("/doc/cim_smgs_plomb");
+    i = 0;
+    for (Node csplNode : csplNodes) {
+      log.debug("CIM_SMGS_PLOMB[" + i + "]");
+      @SuppressWarnings("unchecked")
+      List<Node> scplFields = csplNode.selectNodes("*");
+      CimSmgsPlomb cspl = new CimSmgsPlomb();
+      cspl = processNode(scplFields, cspl);
+
+      cspl.setHid(null);
+      cspl.setSort(i++);
+
+      String hidCarStr = csplNode.selectSingleNode("hid_car").getText();
+      if (hidCarStr != null && hidCarStr.trim().length() > 0) {
+        Long hid_car = Long.valueOf(hidCarStr);
+        if (hid_car != 0) {
+          CimSmgsCarList csc = carMap.get(hid_car);
+          if (csc != null)
+            csc.addCimSmgsPlombItem(cspl);
+        }
+      }
+
+      String hidKonStr = csplNode.selectSingleNode("hid_kon").getText();
+      if (hidKonStr != null && hidKonStr.trim().length() > 0) {
+        Long hid_kon = Long.valueOf(hidKonStr);
+        if (hid_kon != 0) {
+          CimSmgsKonList csk = konMap.get(hid_kon);
+          if (csk != null) {
+            csk.addCimSmgsPlombItem(cspl);
+          }
+        }
+      }
     }
 
     log.debug("Processing CS_INVOICE");
@@ -213,7 +316,8 @@ public class DocLoader {
     i = 0;
     for (Node invNode : invNodes) {
       log.debug("CS_INVOICE[" + (i++) + "]");
-      List invFields = invNode.selectNodes("*");
+      @SuppressWarnings("unchecked")
+      List<Node> invFields = invNode.selectNodes("*");
       CimSmgsInvoice inv = new CimSmgsInvoice();
       inv = processNode(invFields, inv);
       invMap.put(inv.getHid(), inv); /******/
@@ -232,7 +336,8 @@ public class DocLoader {
     j = 0;
     for (Node invgNode : invgNodes) {
       log.debug("CS_INVOICE_GRUZ[" + (j++) + "]");
-      List invgFields = invgNode.selectNodes("*");
+      @SuppressWarnings("unchecked")
+      List<Node> invgFields = invgNode.selectNodes("*");
       CimSmgsInvoiceGruz invg = new CimSmgsInvoiceGruz();
       invg = processNode(invgFields, invg);
 
@@ -244,8 +349,6 @@ public class DocLoader {
       invg.setHid(null);
     }
 
-    Session session = null;
-    Transaction tx = null;
     try {
       session = HibernateUtil.getSession();
       tx = session.beginTransaction();
@@ -272,18 +375,16 @@ public class DocLoader {
     return cs;
   }
 
-  private <T> T processNode(List fields, T ob) {
+  private <T> T processNode(List<Node> fields, T ob) {
     String className = ob.getClass().getName();
     Map<String, String> map = prepareMaping(className);
 
-    for (Iterator it = fields.iterator(); it.hasNext(); ) {
-      Element el = (Element) it.next();
-
+    for (Node el : fields) {
       String elName = el.getName();
       String cn = map.get(el.getName());
       String data = el.getText();
       try  {
-        Class propertyType = PropertyUtils.getPropertyType(ob, cn);
+        Class<?> propertyType = PropertyUtils.getPropertyType(ob, cn);
         if(propertyType == null) {
           String errMsg = "Property " + cn + "(" +elName + ") not found in table " + ob.getClass().getName();
           throw new java.lang.IllegalArgumentException(errMsg);
@@ -293,7 +394,7 @@ public class DocLoader {
           PropertyUtils.setProperty(ob, cn, null);
         }
         else if (propertyType.isAssignableFrom(java.lang.Long.class)) {// если тип колонки Long
-          Long lv = null;
+          Long lv;
           try {
             lv = Long.valueOf(data);
           }
@@ -355,7 +456,7 @@ public class DocLoader {
     }
 
     log.debug("Building");
-    res = new TreeMap<String, String>();
+    res = new TreeMap<>();
     Configuration cfg = HibernateUtil.getConfiguration();
     PersistentClass cl = cfg.getClassMapping(className);
     Iterator it = cl.getPropertyIterator();
@@ -369,31 +470,28 @@ public class DocLoader {
     }
     res.put("hid", "hid");
 
-    if ("com.bivc.cimsmgs.db.CimSmgsDocs".equals(className)) {
-      res.remove("hid_cs");
+    switch (className) {
+      case "com.bivc.cimsmgs.db.CimSmgsCarList" :
+      case "com.bivc.cimsmgs.db.CimSmgsPlatel" :
+      case "com.bivc.cimsmgs.db.CimSmgsPerevoz" :
+      case "com.bivc.cimsmgs.db.CimSmgsInvoice" :
+        res.remove("hid_cs");
+        break;
+      case "com.bivc.cimsmgs.db.CimSmgsKonList" :
+        res.remove("hid_cs");
+        res.remove("hid_car");
+        break;
+      case "com.bivc.cimsmgs.db.CimSmgsDocs" :
+      case "com.bivc.cimsmgs.db.CimSmgsGruz" :
+      case "com.bivc.cimsmgs.db.CimSmgsPlomb" :
+        res.remove("hid_cs");
+        res.remove("hid_car");
+        res.remove("hid_kon");
+        break;
+      case "com.bivc.cimsmgs.db.CimSmgsInvoiceGruz" :
+        res.remove("hid_csinv");
+        break;
     }
-    else if ("com.bivc.cimsmgs.db.CimSmgsCarList".equals(className)) {
-      res.remove("hid_cs");
-    }
-    else if ("com.bivc.cimsmgs.db.CimSmgsPlatel".equals(className)) {
-      res.remove("hid_cs");
-    }
-    else if ("com.bivc.cimsmgs.db.CimSmgsKonList".equals(className)) {
-      res.remove("hid_cs");
-      res.remove("hid_car");
-    }
-    else if ("com.bivc.cimsmgs.db.CimSmgsGruz".equals(className)) {
-      res.remove("hid_cs");
-      res.remove("hid_car");
-      res.remove("hid_kon");
-    }
-    else if ("com.bivc.cimsmgs.db.CimSmgsInvoice".equals(className)) {
-      res.remove("hid_cs");
-    }
-    else if ("com.bivc.cimsmgs.db.CimSmgsInvoiceGruz".equals(className)) {
-      res.remove("hid_csinv");
-    }
-
     mmm.put(className, res);
     log.debug("Done");
     return res;

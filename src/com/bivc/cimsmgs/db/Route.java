@@ -42,6 +42,15 @@ public class Route implements Serializable, Comparable<Route> {
     private List<DocDir> dcs = new ArrayList<DocDir>();
     private Set<Doc2docTemplsRouteUnRefs> doc2docTemplsRouteUnRefses = new HashSet<Doc2docTemplsRouteUnRefs>();
     private Set<Doc2docTemplsRouteRefs> doc2docTemplsRouteRefses = new HashSet<Doc2docTemplsRouteRefs>();
+    private String emailMask;
+
+    public String getEmailMask() {
+        return emailMask;
+    }
+
+    public void setEmailMask(String emailMask) {
+        this.emailMask = emailMask;
+    }
 
     public Set<Doc2docTemplsRouteRefs> getDoc2docTemplsRouteRefses() {
         return doc2docTemplsRouteRefses;

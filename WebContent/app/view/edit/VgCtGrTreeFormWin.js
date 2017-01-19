@@ -1,7 +1,7 @@
 Ext.define('TK.view.edit.VgCtGrTreeFormWin', {
     extend: 'TK.view.edit.TreeFormWin',
     alias: 'widget.vgCtGrTreeFormWin',
-    title: 'Вагон/Контейнер/Груз',
+    // title: this.titleVagContGruz,
 
     buildMainPanel: function(){
         return [{
@@ -35,16 +35,16 @@ Ext.define('TK.view.edit.VgCtGrTreeFormWin', {
 
     buildTreeToolbarItems: function () {
         return [{
-            text: '+ Вагон',
+            text: this.btnVagText,
             action: 'addVag',
             iconCls: 'vag',
             hidden: false
         },{
-            text: '+ Контейнер',
+            text: this.btnContText,
             action: 'addCont',
             iconCls: 'cont3'
         },{
-            text: '+ Груз',
+            text: this.btnCargoText,
             action: 'addGryz',
             iconCls: 'gryz'
         }];

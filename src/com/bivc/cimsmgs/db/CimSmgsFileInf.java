@@ -160,8 +160,8 @@ public class CimSmgsFileInf implements Serializable {
 
         return new EqualsBuilder()
                 .append(hid, that.hid)
-                .append(route, that.route)
-                .append(packDoc, that.packDoc)
+                .append(route, route != null ? route.getHid() : "")
+                .append(packDoc, packDoc != null ? packDoc.getHid() : "")
                 .append(type, that.type)
                 .append(nkon, that.nkon)
                 .append(dattr, that.dattr)
@@ -174,8 +174,8 @@ public class CimSmgsFileInf implements Serializable {
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
                 .append(hid)
-                .append(route)
-                .append(packDoc)
+                .append(route != null ? route.getHid() : "")
+                .append(packDoc != null ? packDoc.getHid() : "")
                 .append(type)
                 .append(nkon)
                 .append(dattr)

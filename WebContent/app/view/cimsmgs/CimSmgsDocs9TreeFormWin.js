@@ -2,7 +2,7 @@ Ext.define('TK.view.cimsmgs.CimSmgsDocs9TreeFormWin', {
     extend: 'TK.view.edit.Docs9TreeFormWin',
     alias: 'widget.cimsmgsDocs9TreeformWin',
 
-    title: 'Документы, приложенные отправителем',
+    // title: this.titleDocs,
 
     buildFormItems: function(){
         return [
@@ -24,13 +24,13 @@ Ext.define('TK.view.cimsmgs.CimSmgsDocs9TreeFormWin', {
 
     buildTreePanelStore: function () {
         return 'Docs9TreeNodes';
-    },
+    }/*,
 
     buildTreeToolbarItems: function () {
         return [{
-            text: '+ Документ',
+            text: this.btnDocText,
             action: 'add',
             iconCls: 'doc_new'
         }];
-    }
+    }*/
 });

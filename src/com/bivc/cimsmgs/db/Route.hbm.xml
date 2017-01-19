@@ -28,6 +28,9 @@
         <property name="customCode" type="string">
             <column length="20" name="CUSTOM_CODE"/>
         </property>
+        <property name="emailMask" type="string">
+            <column length="20" name="EMAIL_MASK"/>
+        </property>
         <!--<property name="locked" type="date">
             <column length="7" name="LOCKED"/>
         </property>

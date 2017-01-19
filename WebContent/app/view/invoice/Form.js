@@ -13,7 +13,7 @@ Ext.define('TK.view.invoice.Form', {
                 items: [
                     {xtype:'combo', fieldLabel:this.labelType,  name:'invoice.docType', itemId:"invoice.docType", maxLength:100,
                         typeAhead: true, forceSelection: true, triggerAction: 'all', selectOnFocus:true, margin: '0 5 0 0',
-                        store: ['Инвойс','Счет-фактура','Приложение к инвойсу','Грузовая ведомость', 'Манифест'], value:'Инвойс'},
+                        store: [this.lableCombo1, this.lableCombo2, this.lableCombo3, this.lableCombo4, this.lableCombo5], value: this.lableCombo1},
                     {xtype:'textfield', fieldLabel:'№', name:'invoice.invoice', itemId:'invoice.invoice', maxLength:20, margin: '0 5 0 0'},
                     {xtype:'datefield', fieldLabel:this.labelDate, name:'invoice.dat_inv', itemId:'invoice.dat_inv', maxLength:10}
                 ]
@@ -140,10 +140,10 @@ Ext.define('TK.view.invoice.Form', {
                             {text: this.headerGoodsDescr, dataIndex: 'nzgr', flex: 1,minWidth:300,editor:{xtype:'textarea', maxLength:2500}, renderer: TK.Utils.renderLongStr, summaryType: 'count', summaryRenderer: function() {return this.headerTotal;}},
 //                            {text: this.headerPackage, dataIndex: 'nzyp', width:70, editor:{xtype:'trigger', maxLength:30,triggerCls:'dir'}},
                             {
-                                text:'Упаковка',
+                                text:this.headerPack,
                                 columns: [
-                                    {text: "Вид", dataIndex: 'nzyp', editor:{xtype:'trigger', maxLength:30, triggerCls:'dir'}},
-                                    {text: 'Код', dataIndex: 'kypk', editor:{xtype:'textfield', maxLength:5}}
+                                    {text: this.headerPackVid, dataIndex: 'nzyp', editor:{xtype:'trigger', maxLength:30, triggerCls:'dir'}},
+                                    {text: this.headerPackKod, dataIndex: 'kypk', editor:{xtype:'textfield', maxLength:5}}
                                 ]
                             },
                             {text: this.headerPackNum, dataIndex: 'kolm', width:70, summaryType: 'sum', summaryRenderer: this.sumRenderer, editor:{xtype:'numberfield', maxLength:10, decimalPrecision:0, minValue: 0}},

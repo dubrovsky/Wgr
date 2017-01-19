@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.bivc.cimsmgs.db.nsi.NsiGngDe" table="NSI_GNG_DE">
+        <id name="kgvn" type="string">
+            <column name="KGVN"/>
+            <generator class="assigned"/>
+        </id>
+
+        <property name="nzgr" type="string">
+            <column name="NZGR"/>
+        </property>
+        <property name="descr" type="string">
+            <column name="DESCR"/>
+        </property>
+    </class>
+</hibernate-mapping>

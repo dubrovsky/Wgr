@@ -145,10 +145,10 @@ Ext.define('TK.view.avisogu29k.Form', {
                     },
                     {fieldLabel:this.labelCity, name:'smgs.g18r_1', itemId:'smgs.g18r_1', maxLength:32},
                     {fieldLabel:this.labelAdress, xtype:'textarea', name:'smgs.g19r', itemId:'smgs.g19r', maxLength:250},
-                    {fieldLabel:'Код ТГНЛ', name:'smgs.g2_1', itemId:'smgs.g2_1', maxLength:32},
+                    {fieldLabel:this.labelTGNL, name:'smgs.g2_1', itemId:'smgs.g2_1', maxLength:32},
                     {
                         xtype:'fieldcontainer',
-                        fieldLabel:'Код ОКПО',
+                        fieldLabel:this.labelOKPO,
                         layout:'hbox',
                         itemId:'code_p1',
                         items:[
@@ -247,10 +247,10 @@ Ext.define('TK.view.avisogu29k.Form', {
                     },
                     {fieldLabel:this.labelCity, name:'smgs.g48r', itemId:'smgs.g18r_1_1', maxLength:32},
                     {fieldLabel:this.labelAdress, xtype:'textarea', name:'smgs.g49r', itemId:'smgs.g19r_1', maxLength:250},
-                    {fieldLabel:'Код ТГНЛ', name:'smgs.g5_1', itemId:'smgs.g5_1', maxLength:32},
+                    {fieldLabel:this.labelTGNL, name:'smgs.g5_1', itemId:'smgs.g5_1', maxLength:32},
                     {
                         xtype:'fieldcontainer',
-                        fieldLabel:'Код ОКПО',
+                        fieldLabel:this.labelOKPO,
                         layout:'hbox',
                         itemId:'code_p5',
                         items:[

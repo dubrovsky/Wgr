@@ -21,8 +21,12 @@ public class NsiUpakDAOHib extends GenericHibernateDAO<NsiUpak, BigDecimal> impl
         crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 20 : limit);
         crit.addOrder(Order.asc("nzypRu"));
         if (query != null && query.trim().length() > 0) {
-            crit.add(Restrictions.or(Restrictions.ilike("nzypRu", query.trim(), MatchMode.ANYWHERE),
-                    Restrictions.ilike("kodOon", query.trim(), MatchMode.ANYWHERE)));
+            crit.add(
+                Restrictions.disjunction()
+                        .add(Restrictions.ilike("nzypRu", query.trim(), MatchMode.ANYWHERE))
+                        .add(Restrictions.ilike("nzypDe", query.trim(), MatchMode.ANYWHERE))
+                        .add(Restrictions.ilike("kodOon", query.trim(), MatchMode.ANYWHERE))
+            );
         }
         return listAndCast(crit);
     }
@@ -31,8 +35,12 @@ public class NsiUpakDAOHib extends GenericHibernateDAO<NsiUpak, BigDecimal> impl
         Criteria crit = getSession().createCriteria(getPersistentClass());
         crit.setProjection(Projections.rowCount());
         if (query != null && query.trim().length() > 0) {
-            crit.add(Restrictions.or(Restrictions.ilike("nzypRu", query.trim(), MatchMode.ANYWHERE),
-                    Restrictions.ilike("kodOon", query.trim(), MatchMode.ANYWHERE)));
+            crit.add(
+                    Restrictions.disjunction()
+                            .add(Restrictions.ilike("nzypRu", query.trim(), MatchMode.ANYWHERE))
+                            .add(Restrictions.ilike("nzypDe", query.trim(), MatchMode.ANYWHERE))
+                            .add(Restrictions.ilike("kodOon", query.trim(), MatchMode.ANYWHERE))
+            );
         }
         return (Long) crit.uniqueResult();
     }

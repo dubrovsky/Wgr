@@ -82,6 +82,33 @@ public class CimSmgsCarList implements Serializable {
 	private String refSecNo;
 	private Integer refSecKol;
 	private String vagOtm;
+    private String nameSob;
+    private String klientName;
+    private String klientCode;
+
+    public String getKlientCode() {
+        return klientCode;
+    }
+
+    public void setKlientCode(String klientCode) {
+        this.klientCode = klientCode;
+    }
+
+    public String getKlientName() {
+        return klientName;
+    }
+
+    public void setKlientName(String klientName) {
+        this.klientName = klientName;
+    }
+
+    public String getNameSob() {
+        return nameSob;
+    }
+
+    public void setNameSob(String nameSob) {
+        this.nameSob = nameSob;
+    }
 
 	public String getVagOtm() {
 		return vagOtm;
@@ -712,6 +739,13 @@ public class CimSmgsCarList implements Serializable {
 		if (csg != null) {
 			csg.setCimSmgsCarList(this);
 			cimSmgsGruzs.put(csg.getSort().byteValue(), csg);
+		}
+	}
+
+	public void addCimSmgsPlombItem(CimSmgsPlomb plomb) {
+		if (plomb != null) {
+			plomb.setCimSmgsCarList(this);
+			cimSmgsPlombs.put(plomb.getSort(), plomb);
 		}
 	}
 

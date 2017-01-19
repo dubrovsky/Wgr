@@ -16,6 +16,9 @@ Ext.define('TK.controller.docs.Invoice', {
         {
             ref: 'center',
             selector: 'viewport > tabpanel'
+        },{
+            ref: 'langCombo',
+            selector: 'viewport #localeCombo #langCombo'
         }
     ],
     /*init: function() {
@@ -118,11 +121,19 @@ Ext.define('TK.controller.docs.Invoice', {
         view.up('window').close();
     },
     selectUpak: function(view, record, item, index) {
-        var data = record.data;
-        var rec = this.selModel.getLastSelected();
-        rec.set('nzyp', data['name']);
+        var lang = Ext.ComponentQuery.query('viewport #localeCombo #langCombo')[0].getValue(),
+            data = record.data, 
+            rec = this.selModel.getLastSelected();
+        
+        switch(lang) {
+            case 'de':
+                rec.set('nzyp', data['nameDe']);
+                break;
+            default:
+                rec.set('nzyp', data['name']);
+        }
+        
         rec.set('kypk', data['kod']);
-//        this.doLayout();
         view.up('window').close();
     },
     onCopyEpd: function(btn){

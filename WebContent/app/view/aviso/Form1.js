@@ -183,15 +183,15 @@ Ext.define('TK.view.aviso.Form1', {
                     },
                     {fieldLabel:this.labelCity, name:'smgs.g18r_1', itemId:'smgs.g18r_1', maxLength:32},
                     {fieldLabel:this.labelAdress, xtype:'textarea', name:'smgs.g19r', itemId:'smgs.g19r', maxLength:250},
-                    {fieldLabel:'Код ТГНЛ', name:'smgs.g2_1', itemId:'smgs.g2_1', maxLength:32},
+                    {fieldLabel:this.labelTGNL, name:'smgs.g2_1', itemId:'smgs.g2_1', maxLength:32},
                     {
                         xtype:'fieldcontainer',
-                        fieldLabel:'Код ОКПО',
+                        fieldLabel:this.labelOKPO,
                         layout:'hbox',
                         itemId:'code_p1',
                         items:[
                             {xtype:'textfield', name:'smgs.g2', itemId:'smgs.g2', maxLength:32, flex:7},
-                            {xtype:'label', text:'Код ИИН:', flex:6, margins:'0 0 0 10'},
+                            {xtype:'label', text:this.labelINN, flex:6, margins:'0 0 0 10'},
                             {xtype:'textfield', name:'smgs.g_2inn', itemId:'smgs.g_2inn', maxLength:32, flex:8, margins:'0 0 0 5'}
                         ]
                     },
@@ -364,15 +364,15 @@ Ext.define('TK.view.aviso.Form1', {
                     },
                     {fieldLabel:this.labelCity, name:'smgs.g48r', itemId:'smgs.g18r_1_1', maxLength:32},
                     {fieldLabel:this.labelAdress, xtype:'textarea', name:'smgs.g49r', itemId:'smgs.g19r_1', maxLength:250},
-                    {fieldLabel:'Код ТГНЛ', name:'smgs.g5_1', itemId:'smgs.g5_1', maxLength:32},
+                    {fieldLabel:this.labelTGNL, name:'smgs.g5_1', itemId:'smgs.g5_1', maxLength:32},
                     {
                         xtype:'fieldcontainer',
-                        fieldLabel:'Код ОКПО',
+                        fieldLabel:this.labelOKPO,
                         layout:'hbox',
                         itemId:'code_p5',
                         items:[
                             {xtype:'textfield', name:'smgs.g5', itemId:'smgs.g5', maxLength:32, flex:7},
-                            {xtype:'label', text:'Код ИИН:', flex:6, margins:'0 0 0 10'},
+                            {xtype:'label', text:this.labelINN, flex:6, margins:'0 0 0 10'},
                             {xtype:'textfield', name:'smgs.g_5inn', itemId:'smgs.g_5inn', maxLength:32, flex:8, margins:'0 0 0 5'}
                         ]
                     },

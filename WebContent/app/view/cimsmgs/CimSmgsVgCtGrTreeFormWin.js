@@ -3,7 +3,7 @@ Ext.define('TK.view.cimsmgs.CimSmgsVgCtGrTreeFormWin', {
     alias: 'widget.cimsmgsVgCtGrTreeformWin',
     buildTabPanelItems: function(){
         return [{
-            title: 'Вагон',
+            title: this.titleVag,
             itemId: 'vag',
             items: [
                 {xtype:'textfield', fieldLabel:this.labelWagonNum, name:"nvag", maxLength:160, width:150},
@@ -14,7 +14,7 @@ Ext.define('TK.view.cimsmgs.CimSmgsVgCtGrTreeFormWin', {
                 {xtype:'hidden', name:"hid"}
             ]
         },{
-            title: 'Контейнер',
+            title: this.titleCont,
             itemId: 'cont',
             items: [
                 {xtype:'textfield', fieldLabel:this.labelNotes, name:"notes", maxLength:80, width:100},
@@ -26,7 +26,7 @@ Ext.define('TK.view.cimsmgs.CimSmgsVgCtGrTreeFormWin', {
                 {xtype:'hidden', name:"hid"}
             ]
         },{
-            title: 'Груз',
+            title: this.titleCargo,
             itemId: 'gryz',
             items: [
                 {xtype:'trigger', fieldLabel:this.labelCodeGng, name:"kgvn", maxLength:10, triggerCls:'dir', width:100,
@@ -43,8 +43,18 @@ Ext.define('TK.view.cimsmgs.CimSmgsVgCtGrTreeFormWin', {
                 },
                 {xtype:'textarea', fieldLabel:this.labelNameEtsng, name:"enzgr", maxLength:4000, width:250},
                 {xtype:'numberfield', fieldLabel:this.labelMassa, name:'massa', maxLength:14, width:80, minValue:0, decimalPrecision:3},
-                {xtype:'textfield', fieldLabel:this.labelPackForeign, name:"upakForeign", maxLength:50, width:100},
-                {xtype:'textfield', fieldLabel:this.labelPack, name:"upak", maxLength:50, width:100},
+                {xtype:'trigger', fieldLabel:this.labelPackForeign, name:"upakForeign", maxLength:50, triggerCls:'dir', width:100,
+                    onTriggerClick: function(e){
+                        this.fireEvent("ontriggerclick", this, e);
+                    }
+                },
+                // {xtype:'textfield', fieldLabel:this.labelPackForeign, name:"upakForeign", maxLength:50, width:100},
+                // {xtype:'textfield', fieldLabel:this.labelPack, name:"upak", maxLength:50, width:100},
+                {xtype:'trigger', fieldLabel:this.labelPack, name:"upak", maxLength:50, triggerCls:'dir', width:100,
+                    onTriggerClick: function(e){
+                        this.fireEvent("ontriggerclick", this, e);
+                    }
+                },
                 {xtype:'numberfield', fieldLabel:this.labelMesta, name:'places', maxLength:8, width:80, allowDecimals:false, minValue:0},
                 {xtype:'hidden', name:"ohr"},
                 {xtype:'hidden', name:"sort"},

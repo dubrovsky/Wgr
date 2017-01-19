@@ -19,6 +19,10 @@ public class DateTimeUtils {
     public static final String EN_DATETIME_FORMAT = "MM/dd/yy h:mm a";
     public static final String EN_TIME_FORMAT = "h:mm a";
 
+    public static final String DE_DATE_FORMAT = "MM/dd/yy";
+    public static final String DE_DATETIME_FORMAT = "MM/dd/yy h:mm a";
+    public static final String DE_TIME_FORMAT = "h:mm a";
+
     public static final String ZH_DATE_FORMAT = "yy/MM/dd";
     public static final String ZH_DATETIME_FORMAT = "yy/MM/dd h:mm a";
     public static final String ZH_TIME_FORMAT = "h:mm a";
@@ -26,6 +30,7 @@ public class DateTimeUtils {
     public enum Parser {
         ru(new String[]{RU_DATE_FORMAT, RU_DATETIME_FORMAT, RU_TIME_FORMAT}),
         en(new String[]{EN_DATE_FORMAT, EN_DATETIME_FORMAT, EN_TIME_FORMAT}),
+        de(new String[]{DE_DATE_FORMAT, DE_DATETIME_FORMAT, DE_TIME_FORMAT}),
         zh(new String[]{ZH_DATE_FORMAT, ZH_DATETIME_FORMAT, ZH_TIME_FORMAT});
 
         private final String[] formats;
@@ -59,6 +64,7 @@ public class DateTimeUtils {
     public enum FormaterDate {
         ru(RU_DATE_FORMAT),
         en(EN_DATE_FORMAT),
+        de(DE_DATE_FORMAT),
         zh(ZH_DATE_FORMAT);
 
         private final String format;
@@ -75,6 +81,7 @@ public class DateTimeUtils {
     public enum FormaterDateTime {
         ru(RU_DATETIME_FORMAT),
         en(EN_DATETIME_FORMAT),
+        de(DE_DATETIME_FORMAT),
         zh(ZH_DATETIME_FORMAT);
 
         private final String format;
@@ -95,6 +102,7 @@ public class DateTimeUtils {
     public enum FormaterTime {
         ru(RU_TIME_FORMAT),
         en(EN_TIME_FORMAT),
+        de(DE_TIME_FORMAT),
         zh(ZH_TIME_FORMAT);
 
         private final String format;

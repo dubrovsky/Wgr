@@ -49,8 +49,10 @@ Ext.define('TK.controller.print.Print', {
                 'doc.hid': datas['docId'],
                 'route.hid': datas['routeId']
             },
+            scope: this,
             success: function(response, options) {
-                var winParams = Ext.decode(response.responseText),
+                var me = this,
+                    winParams = Ext.decode(response.responseText),
                     pagesArr = winParams['pages'],
                     nBlanks = winParams['nBlanks'],
 //                    data = {},
@@ -69,16 +71,16 @@ Ext.define('TK.controller.print.Print', {
                 if(pagesArr.length == 1 && nBlanks == 0){
                     window.open('Pdf.do?' + Ext.Object.toQueryString(pdfParams),'_blank','');
                 } else {
-                    var formItems = new Array(),
+                    var formItems = [],
                         isEven = function(num) {return (num%2)==0;};
                     if(pagesArr.length > 1){
                         var checkboxItems = new Array(pagesArr.length);
                         for(var i = 0; i < pagesArr.length; i++){
-                            checkboxItems.push({boxLabel: 'Страница ' + pagesArr[i] + (isEven(pagesArr[i]) ? '(оборот)' : ''), name: 'print.pages', inputValue: pagesArr[i]});
+                            checkboxItems.push({boxLabel: this.textPage + pagesArr[i] + (isEven(pagesArr[i]) ? this.textPageBack : ''), name: 'print.pages', inputValue: pagesArr[i]});
                         }
                         formItems.push({
                             xtype: 'checkboxgroup',
-                            fieldLabel: 'Страницы на печать',
+                            fieldLabel: this.textPages,
                             vertical: true,
                             columns: 1,
                             allowBlank: false,
@@ -87,10 +89,10 @@ Ext.define('TK.controller.print.Print', {
                         });
                     }
                     if(nBlanks > 0){
-                        formItems.push({xtype:'checkbox', boxLabel:'С бланком?', name:'print.useBlanks', inputValue:true, uncheckedValue:false});
+                        formItems.push({xtype:'checkbox', boxLabel: me.labelBlank, name:'print.useBlanks', inputValue:true, uncheckedValue:false});
                     }
                     Ext.create('Ext.window.Window',{
-                        title: 'Настройка печати',
+                        title: me.titlePrint,
                         width: 280,
                         autoShow: true,
                         modal:true,
@@ -103,7 +105,7 @@ Ext.define('TK.controller.print.Print', {
                             xtype: 'toolbar',
                             dock: 'bottom',
                             items: ['->','-',{
-                                text: 'Печать',
+                                text: this.textPrint,
                                 handler: function(btn){
                                     var panel = btn.up('window').down('form');
                                     if(panel.getForm().isValid()){

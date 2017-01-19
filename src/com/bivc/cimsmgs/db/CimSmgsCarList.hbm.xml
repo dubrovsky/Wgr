@@ -192,6 +192,16 @@
             <column name="VAG_OTM" length="1" />
         </property>
 
+        <property name="nameSob" type="string">
+            <column name="NAME_SOB" length="124" />
+        </property>
+        <property name="klientName" type="string">
+            <column name="KLIENT_NAME" length="124" />
+        </property>
+        <property name="klientCode" type="string">
+            <column name="KLIENT_CODE" length="12" />
+        </property>
+
         <map name="cimSmgsGruzs" cascade="all, delete-orphan" inverse="true" sort="natural" lazy="true" batch-size="50">
             <key>
                 <column name="HID_CAR" precision="20" scale="0"  not-null="true"/>

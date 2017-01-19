@@ -54,7 +54,8 @@ Ext.define('TK.view.project.Form', {
                         {text: this.headerRoutesGr, dataIndex: 'grps', flex:1,editor:{xtype:'trigger',triggerCls:'dir',editable:false}, renderer: this.onRenderGroups},
                         {text: this.headerRoutesDocs, dataIndex: 'dcs',flex:1, editor:{xtype:'trigger',triggerCls:'dir',editable:false}, renderer: this.onRenderDocs},
                         {text: this.headerRoutesCodeTbc, dataIndex: 'tbc_st_code',width:80, editor:{xtype:'textfield',maxLength:20}},
-                        {text: 'Код таможни', dataIndex: 'customCode',width:80, editor:{xtype:'textfield',maxLength:20}}
+                        {text: this.headerRoutesCodeCustoms, dataIndex: 'customCode',width:80, editor:{xtype:'textfield',maxLength:20}},
+                        {text: this.headerRoutesEmailMask, dataIndex: 'emailMask',width:120, editor:{xtype:'textfield',maxLength:128}}
                     ];
                 },
                 newRecord: function(){
@@ -87,6 +88,7 @@ Ext.define('TK.view.project.Form', {
                         data['project.rts['+ind+'].hid'] = route.get('hid');
                         data['project.rts['+ind+'].tbc_st_code'] = route.get('tbc_st_code');
                         data['project.rts['+ind+'].customCode'] = route.get('customCode');
+                        data['project.rts['+ind+'].emailMask'] = route.get('emailMask');
                         route.groups().each(function(group, ix){
                             data['project.rts['+ind+'].grps['+ix+'].name'] = group.get('name');
                         });

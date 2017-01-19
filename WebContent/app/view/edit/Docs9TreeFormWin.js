@@ -22,7 +22,7 @@ Ext.define('TK.view.edit.Docs9TreeFormWin', {
 
     buildTreeToolbarItems: function () {
         return [{
-            text: '+ Документ',
+            text: this.btnDocText,
             action: 'add',
             iconCls: 'doc_new'
         }];

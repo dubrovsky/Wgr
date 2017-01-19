@@ -124,6 +124,7 @@
         <mapping resource="com/bivc/cimsmgs/db/Status.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/StatusDir.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/nsi/CargoGng.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/NsiGngDe.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/nsi/Cargo.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/nsi/NsiNhm.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/nsi/Carrier.hbm.xml"/>
