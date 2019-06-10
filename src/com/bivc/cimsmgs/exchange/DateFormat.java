@@ -11,6 +11,10 @@ public class DateFormat {
     "'{ts '''yyyy-MM-dd HH:mm:ss'''}'" };
 
   static final public SimpleDateFormat dateFormater = new SimpleDateFormat("d.MM.yyyy");
+  static final public SimpleDateFormat dateFormaterDay = new SimpleDateFormat("d");
+  static final public SimpleDateFormat dateFormaterMonth = new SimpleDateFormat("M");
+  static final public SimpleDateFormat dateFormaterPrint = new SimpleDateFormat("dd/MM/yyyy");
+  static final public SimpleDateFormat dateFormaterPrintFull = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
   static final public SimpleDateFormat dateTimeFormater = new SimpleDateFormat("d.MM.yyyy HH:mm:ss");
   static final public SimpleDateFormat DBDateFormat = new SimpleDateFormat("'{d '''yyyy-MM-dd'''}'");
   static final public SimpleDateFormat DBTimeFormat = new SimpleDateFormat("'{t '''HH:mm:ss'''}'");

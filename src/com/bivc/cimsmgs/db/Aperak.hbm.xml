@@ -4,9 +4,10 @@
 <hibernate-mapping>
   <class name="com.bivc.cimsmgs.db.Aperak" table="B_APERAK" dynamic-update="true" dynamic-insert="true">
     <id name="hid" type="long" column="HID">
-       <generator class="sequence">
+       <!--<generator class="sequence">
          <param name="sequence">B_APERAK_HID</param>
-       </generator>
+       </generator>-->
+        <generator class="native" />
     </id>
     <property column="ID_UNB" name="idUnb" type="java.lang.String"/>
     <property column="DAT_UNB" name="datUnb" type="java.util.Date"/>

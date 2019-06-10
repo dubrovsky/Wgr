@@ -1,10 +1,9 @@
 package com.bivc.cimsmgs.db;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 @JsonIgnoreProperties({ "cimSmgs"})
 public class CimSmgsPerevoz implements Serializable {
@@ -111,34 +110,23 @@ public class CimSmgsPerevoz implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-
         if (o == null || getClass() != o.getClass()) return false;
-
         CimSmgsPerevoz that = (CimSmgsPerevoz) o;
-
-        return new EqualsBuilder()
-                .append(hid, that.hid)
-                .append(cimSmgs, that.cimSmgs)
-                .append(sort, that.sort)
-                .append(namPer, that.namPer)
-                .append(stBeg, that.stBeg)
-                .append(stEnd, that.stEnd)
-                .append(codStBeg, that.codStBeg)
-                .append(codStEnd, that.codStEnd)
-                .isEquals();
+        return Objects.equals(hid, that.hid) &&
+                Objects.equals(cimSmgs != null ? cimSmgs.getHid() : "", that.cimSmgs != null ? that.cimSmgs.getHid() : "") &&
+                Objects.equals(sort, that.sort) &&
+                Objects.equals(namPer, that.namPer) &&
+                Objects.equals(stBeg, that.stBeg) &&
+                Objects.equals(stEnd, that.stEnd) &&
+                Objects.equals(codStBeg, that.codStBeg) &&
+                Objects.equals(codStEnd, that.codStEnd) &&
+                Objects.equals(admStBeg, that.admStBeg) &&
+                Objects.equals(admStEnd, that.admStEnd) &&
+                Objects.equals(codePer, that.codePer);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(hid)
-                .append(cimSmgs)
-                .append(sort)
-                .append(namPer)
-                .append(stBeg)
-                .append(stEnd)
-                .append(codStBeg)
-                .append(codStEnd)
-                .toHashCode();
+        return Objects.hash(hid, cimSmgs != null ? cimSmgs.getHid() : "", sort, namPer, stBeg, stEnd, codStBeg, codStEnd, admStBeg, admStEnd, codePer);
     }
 }

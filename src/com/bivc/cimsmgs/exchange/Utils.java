@@ -1,6 +1,9 @@
 package com.bivc.cimsmgs.exchange;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.ArrayList;
@@ -146,6 +149,26 @@ public class Utils {
     return makeBigDecimal(ge(ar, idx));
   }
 
+  public static BigDecimal geD0(String[] ar, int idx) {
+    return makeBigDecimal0(ge(ar, idx));
+  }
+
+  public static Date geT(String [] ar, int idx, SimpleDateFormat mask) {
+    Date res = null;
+    String s = ge(ar, idx);
+
+    if (StringUtils.isBlank(s) || mask == null)
+      return null;
+
+    try {
+      res = mask.parse(s);
+    }
+    catch (ParseException ignore) {
+    }
+
+    return res;
+  }
+
   public static BigDecimal makeBigDecimal(String str) {
     BigDecimal res = null;
     try {
@@ -154,6 +177,13 @@ public class Utils {
     catch (Exception ex) {
       log.warn(ex.getMessage() + " for value " + str);
     }
+    return res;
+  }
+
+  public static BigDecimal makeBigDecimal0(String str) {
+    BigDecimal res = makeBigDecimal(str);
+    if (res == null)
+      res = BigDecimal.ZERO;
     return res;
   }
 
@@ -179,4 +209,11 @@ public class Utils {
     return res;
   }
 
+  public static String normNvagNkonStr(String str) {
+    String res = "";
+    if (str != null) {
+      res = str.replaceAll(" ", "").replaceAll("-", "");
+    }
+    return res;
+  }
 }

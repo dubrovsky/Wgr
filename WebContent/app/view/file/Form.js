@@ -1,7 +1,18 @@
 Ext.define('TK.view.file.Form', {
     extend: 'Ext.panel.Panel',
     alias: ['widget.filesmgs','widget.filegu29k','widget.fileinvoice','widget.fileaviso','widget.fileavisogu29k','widget.filecimsmgs','widget.files'],
-	requires:['TK.view.DocsForm'],
+    requires: [
+        'Ext.data.StoreManager',
+        'Ext.form.field.Checkbox',
+        'Ext.form.field.File',
+        'Ext.form.field.Hidden',
+        'Ext.form.field.Text',
+        'Ext.layout.container.Anchor',
+        'Ext.toolbar.Separator',
+        'TK.store.Files',
+        'TK.view.DocsForm',
+        'TK.view.DocsList'
+    ],
     closable: false,
     bodyPadding: 5,
 
@@ -130,11 +141,22 @@ Ext.define('TK.view.file.Form', {
                     xtype: 'toolbar',
                     itemId: 'top',
                     items: [
-                        {text: this.btnView,iconCls:'doc_view',itemId:'view', action:'view'},{xtype: 'tbseparator'}
+                        {text: this.btnView,iconCls:'doc_view',itemId:'view', action:'view', forDeleted: true, forPresent: true},{xtype: 'tbseparator', forDeleted: true, forPresent: true}
                     ]
                 });
                 if(tkUser.hasPriv('CIM_DELETE')){
-                    config.dockedItems[0].items.push({text: this.btnDelete,iconCls:'del',itemId:'del', action:'deleteFile'},{xtype: 'tbseparator', itemId:'del1'});
+                    config.dockedItems[0].items.push(
+                        {text: this.btnDelete,iconCls:'del',itemId:'del', action:'deleteFile'},{xtype: 'tbseparator', itemId:'del1'});
+                }
+                if(tkUser.hasPriv('CIM_ADMIN_DELETE')){
+                    config.dockedItems[0].items.push(
+                        {boxLabel:this.lableDeleted, xtype:'checkbox', inputValue:1, uncheckedValue: 0, itemId:'viewDeleted', action:'viewDeletedFiles', hideLabel: true, forDeleted: true, forPresent: true},
+                        {xtype: 'tbseparator', itemId:'viewDeleted1', forDeleted: true, forPresent: true},
+                        {text: this.btnRestore,iconCls:'restore',itemId:'restore', action:'restoreFile', forDeleted: true, hidden: true},
+                        {xtype: 'tbseparator', itemId:'restore1', forDeleted: true, hidden: true},
+                        {text: this.btnDestroy,iconCls:'del',itemId:'destroy', action:'destroyFile', forDeleted: true, hidden: true},
+                        {xtype: 'tbseparator', itemId:'destroy1', forDeleted: true, hidden: true}
+                    );
                 }
             },
             buildView: function(config) {

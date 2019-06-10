@@ -15,6 +15,8 @@
         <sec:protect-pointcut expression="execution(* com.bivc.cimsmgs.actions.User_A.*())" access="CIM_USR_ADMIN"/>
         <sec:protect-pointcut expression="execution(* com.bivc.cimsmgs.actions.*_A.save*())" access="CIM_SAVE"/>
         <sec:protect-pointcut expression="execution(* com.bivc.cimsmgs.actions.*_A.delete*())" access="CIM_DELETE"/>
+        <sec:protect-pointcut expression="execution(* com.bivc.cimsmgs.actions.*_A.restore*())" access="CIM_ADMIN_DELETE"/>
+        <sec:protect-pointcut expression="execution(* com.bivc.cimsmgs.actions.*_A.destroy*())" access="CIM_ADMIN_DELETE"/>
     </sec:global-method-security>
     <aop:aspectj-autoproxy proxy-target-class="true"/>
 
@@ -27,6 +29,7 @@
     <sec:http pattern="/resources/**" security="none"/>
     <sec:http pattern="/Login.jsp" security="none"/>
     <sec:http pattern="/Locale.do" security="none"/>
+    <sec:http pattern="/TestDB.do" security="none"/>
 
     <sec:http auto-config="false" access-decision-manager-ref="accessDecisionManager">
         <sec:intercept-url pattern="/*.do" access="IS_AUTHENTICATED_FULLY"/>

@@ -22,4 +22,8 @@ public class ArrayMap<K, V> {
   public TreeMap<K, ArrayList<V>> getMap() {
     return map;
   }
+
+  public ArrayList<V> getArray(K key) {
+    return map.get(key);
+  }
 }

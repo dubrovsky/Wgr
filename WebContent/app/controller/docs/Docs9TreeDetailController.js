@@ -1,6 +1,10 @@
 Ext.define('TK.controller.docs.Docs9TreeDetailController', {
     extend: 'Ext.app.Controller',
 
+    requires: [
+        'TK.model.Docs9TreeNode'
+    ],
+
     stores:[
         'Docs9TreeNodes'
     ],
@@ -27,13 +31,23 @@ Ext.define('TK.controller.docs.Docs9TreeDetailController', {
     },{
         ref: 'saveBtn',
         selector: 'docs9TreeFormWin button[action=save]'
+    },{
+        ref: 'langCombo',
+        selector: 'viewport #localeCombo #langCombo'
+    },{
+        ref: 'searchBtn',
+        selector: 'docs9TreeFormWin button[action=search]'
+    },{
+        ref: 'searchField',
+        selector: 'docs9TreeFormWin textfield#searchField'
     }],
 
     init:function () {
         this.listen({
             controller: {
                 '*': {
-                    showDocs9Win: this.onDocs9WinShow
+                    showDocs9Win: this.onDocs9WinShow,
+                    displayedDocs9Fields: this.setDisplayedDocs9Fields
                 }
             }
         });
@@ -54,10 +68,26 @@ Ext.define('TK.controller.docs.Docs9TreeDetailController', {
             'docs9TreeFormWin button[action=save]': {
                 click: this.onSaveClick
             },
+            'docs9TreeFormWin button[action=search]': {
+                click: this.onSearchClick
+            },
+            'docs9TreeFormWin button[action=expandAll]': {
+                click: this.onExpandAllClick
+            },
+            'docs9TreeFormWin button[action=collapseAll]': {
+                click: this.onCollapseAllClick
+            },
+            'docs9TreeFormWin textfield#searchField': {
+                keypress: this.onSearchFieldKeyPress
+            },
             'docs9TreeFormWin > form > trigger[name=ncas]': {
                 ontriggerclick: this.onNcasClick
             }
         });
+    },
+
+    isContOtpr: function () {
+        return this.getController("docs.VgCtGrTreeDetailController").isContOtpr();
     },
 
     onTreeNodeClick: function(treepanel, record, item, index){
@@ -82,6 +112,7 @@ Ext.define('TK.controller.docs.Docs9TreeDetailController', {
                 }
                 break;
             case 'cont':
+            case 'vag':
                 if(this.getAddBtn().isHidden()){
                     this.getAddBtn().show();
                 }
@@ -98,12 +129,18 @@ Ext.define('TK.controller.docs.Docs9TreeDetailController', {
     onDocs9FormUpdateData: function(field){
         var rec = this.getDocs9panel().getRecord(),
             oldVal = rec.get(field.getName()),
-            newVal = field.getSubmitValue();
+            newVal = field.getSubmitValue(),
+            lang = this.getLangCombo().getValue();
 
         if(oldVal != newVal){
             rec.set(field.getName(), newVal);
-            if( field.getName() == 'text1'){
-                rec.set('text', newVal);
+            var textFieldName = (lang == 'de' ? 'text2' : 'text1');
+            if(field.getName() == textFieldName || field.getName() == 'ndoc'){
+                rec.set(
+                    'text',
+                    rec.get(textFieldName) +
+                    (rec.get('ndoc') ? ' ' + rec.get('ndoc') : '')
+                );
             }
         }
     },
@@ -114,6 +151,7 @@ Ext.define('TK.controller.docs.Docs9TreeDetailController', {
 
         switch (selectedModelNode.get('who')){
             case 'cont':
+            case 'vag':
                 parentModelNode = selectedModelNode;
                 break;
             case 'docs9':
@@ -152,29 +190,78 @@ Ext.define('TK.controller.docs.Docs9TreeDetailController', {
         }
     },
 
+    onSearchFieldKeyPress:function(field, event){
+        if(event.getKey() == event.ENTER) {
+            this.getSearchBtn().fireEvent('click', this.getSearchBtn());
+        }
+    },
+
+    onSearchClick: function(btn){
+        var rootNode = this.getTreepanel().getRootNode(),
+            searchVal = this.getSearchField().getValue(),
+            foundNode;
+        
+        if(rootNode.hasChildNodes() && searchVal){
+            var nodeToStart = this.getTreepanel().getSelectionModel().getLastSelected() || rootNode;
+
+            if(nodeToStart){
+                var isPassed = nodeToStart.isRoot();
+
+                foundNode = rootNode.findChildBy(function(node) {
+                    if(!isPassed && (nodeToStart == node)){
+                        isPassed = true;
+                        return false;
+                    }
+                    if(isPassed && (node.get('text').indexOf(searchVal) != -1) ) {
+                        return true;
+                    }
+                    return false;
+                }, this, true);
+            }
+        }
+        
+        if(foundNode){
+            this.getTreepanel().getSelectionModel().select(foundNode);
+            foundNode.expand();
+            if(foundNode.parentNode) {
+                foundNode.parentNode.expand();
+            }
+            this.getTreepanel().fireEvent('itemclick', this.getTreepanel(), foundNode);
+        }
+
+        this.getSearchField().focus();
+    },
+
+    onExpandAllClick: function(btn){
+        this.fireEvent('expandAllClick', this.getTreepanel(), this.getWin());
+    },
+
+    onCollapseAllClick: function(btn){
+        this.fireEvent('collapseAllClick', this.getTreepanel(), this.getWin());
+    },
+
     saveDocs9: function(){
 
-        this.getTreepanel().getRootNode().eachChild(function(contNodeModel) {
-            if(contNodeModel.hasChildNodes()){
+        this.getTreepanel().getRootNode().eachChild(function(parentNodeModel) {
+            if(parentNodeModel.hasChildNodes()){
                 var docs9Index = 0,
-                    contDataObj = contNodeModel.getContObj();
-                    // contDataObj = this.findContInDataObj(contModel.getVagIndx(), contModel.getContIndx());
+                    parentDataObj = (this.isContOtpr() ? parentNodeModel.getContObj() : parentNodeModel.getVagObj());
 
-                if(contDataObj && !Ext.Object.isEmpty(contDataObj)){
+                if(parentDataObj && !Ext.Object.isEmpty(parentDataObj)){
 
-                    contDataObj[this.getWin().getOwnerDoc().getDocs9CollectionName()] = {};
+                    parentDataObj[this.getWin().getOwnerDoc().getDocs9CollectionName()] = {};
 
-                    contNodeModel.eachChild(function(docs9Model) {
-                        contDataObj[this.getWin().getOwnerDoc().getDocs9CollectionName()][docs9Index] = {};
+                    parentNodeModel.eachChild(function(docs9Model) {
+                        parentDataObj[this.getWin().getOwnerDoc().getDocs9CollectionName()][docs9Index] = {};
 
                         this.getDocs9panel().items.each(function(docs9Item,index,length){
                             if(docs9Item.getName() == 'text1') {
-                                contDataObj[this.getWin().getOwnerDoc().getDocs9CollectionName()][docs9Index]['text'] = docs9Model.get(docs9Item.getName());
+                                parentDataObj[this.getWin().getOwnerDoc().getDocs9CollectionName()][docs9Index]['text'] = docs9Model.get(docs9Item.getName());
                             } else {
-                                contDataObj[this.getWin().getOwnerDoc().getDocs9CollectionName()][docs9Index][docs9Item.getName()] = docs9Model.get(docs9Item.getName());
+                                parentDataObj[this.getWin().getOwnerDoc().getDocs9CollectionName()][docs9Index][docs9Item.getName()] = docs9Model.get(docs9Item.getName());
                             }
                         }, this);
-                        contDataObj[this.getWin().getOwnerDoc().getDocs9CollectionName()][docs9Index]['sort'] = docs9Index;
+                        parentDataObj[this.getWin().getOwnerDoc().getDocs9CollectionName()][docs9Index]['sort'] = docs9Index;
                         docs9Index++;
                     }, this);
                 }
@@ -215,18 +302,22 @@ Ext.define('TK.controller.docs.Docs9TreeDetailController', {
         if(vags && !Ext.Object.isEmpty(vags)){
             for(var vagIndx in vags){
 
-                var vag = vags[vagIndx],
-                    conts = vag[this.getWin().getOwnerDoc().getContCollectionName()];
+                var vag = vags[vagIndx];
 
-                if(conts && !Ext.Object.isEmpty(conts)){
+                if(this.isContOtpr()) {
+                    var conts = vag[this.getWin().getOwnerDoc().getContCollectionName()];
 
-                    for(var contIndx in conts){
-                        var cont = conts[contIndx];
+                    if (conts && !Ext.Object.isEmpty(conts)) {
 
-                        cont[this.getWin().getOwnerDoc().getDocs9CollectionName()] = {};
+                        for (var contIndx in conts) {
+                            var cont = conts[contIndx];
+
+                            cont[this.getWin().getOwnerDoc().getDocs9CollectionName()] = {};
+                        }
                     }
+                } else {
+                    vag[this.getWin().getOwnerDoc().getDocs9CollectionName()] = {};
                 }
-
             }
         }
     },
@@ -237,6 +328,10 @@ Ext.define('TK.controller.docs.Docs9TreeDetailController', {
             treeStore = tree.getStore(),
             rootNode = treeStore.getRootNode();
 
+        //проверка является ли форма документа вложеной или все компоненты находятся на формe
+        if(ownerDoc.ownerCt.ownerCt.xtype&&ownerDoc.ownerCt.ownerCt.xtype==='tabpanel')
+            ownerDoc=ownerDoc.ownerCt;
+
         win.setOwnerDoc(ownerDoc);
 
         rootNode.removeAll();
@@ -244,7 +339,11 @@ Ext.define('TK.controller.docs.Docs9TreeDetailController', {
         //// fill tree
         var vags = ownerDoc.dataObj[ownerDoc.getVagCollectionName()];
         if(vags && !Ext.Object.isEmpty(vags)){
-            this.loopVagsNodes(vags, rootNode);
+            if(this.isContOtpr()) {
+                this.loopVagsNodes(vags, rootNode);
+            } else {
+                this.initVagsNodes(vags, rootNode);
+            }
         }
         /// END fill tree
 
@@ -274,8 +373,6 @@ Ext.define('TK.controller.docs.Docs9TreeDetailController', {
                     expanded: vagIndx == 0 && docs9 && docs9['0'] && contIndx == 0
                 });
 
-            // contModel.setVagIndx(vagIndx);
-            // contModel.setContIndx(contIndx);
             contModel.setContObj(cont);
             rootNode.appendChild(contModel);
 
@@ -285,12 +382,36 @@ Ext.define('TK.controller.docs.Docs9TreeDetailController', {
         }
     },
 
-    initDocs9Nodes: function(docs9, contModel){
+    initVagsNodes: function(vags, rootNode){
+        for(var vagIndx in vags){
+            var vag = vags[vagIndx],
+                docs9 = vag[this.getWin().getOwnerDoc().getDocs9CollectionName()],
+                vagModel = Ext.create('TK.model.Docs9TreeNode', {
+                    who: 'vag',
+                    text: vag['nvag'],
+                    iconCls: 'vag',
+                    leaf: docs9 && docs9['0'] ? false : true,
+                    expanded:  docs9 && docs9['0'] && vagIndx == 0
+                });
+
+            vagModel.setVagObj(vag);
+            rootNode.appendChild(vagModel);
+
+            if(docs9 && !Ext.Object.isEmpty(docs9)){
+                this.initDocs9Nodes(docs9, vagModel);
+            }
+        }
+    },
+
+    initDocs9Nodes: function(docs9, parentModel){
+        var lang = this.getLangCombo().getValue();
+
         for(var doc9Indx in docs9){
             var doc9 = docs9[doc9Indx],
                 doc9Model = Ext.create('TK.model.Docs9TreeNode', {
                     who: 'docs9',
-                    text: doc9['text'],
+                    text:   (lang == 'de' ? (doc9['text2'] ? doc9['text2'] : '') : (doc9['text'] ? doc9['text'] : '')) +
+                            (doc9['ndoc'] ? ' ' + doc9['ndoc'] : ''),
                     iconCls: 'doc_new',
                     leaf: true
                 });
@@ -303,7 +424,7 @@ Ext.define('TK.controller.docs.Docs9TreeDetailController', {
                 }
             });
 
-            contModel.appendChild(doc9Model);
+            parentModel.appendChild(doc9Model);
         }
     },
 
@@ -337,10 +458,65 @@ Ext.define('TK.controller.docs.Docs9TreeDetailController', {
 
         field = form.findField('text2');
         if(field){
-            field.setValue(data['nsiFDsc3']);
+            field.setValue(data['nsiFDsc2']);
             field.fireEvent('blur', field);
         }
 
         view.up('window').close();
+    },
+
+    setDisplayedDocs9Fields: function(controller, docForm){
+        docForm=docForm.title?docForm:docForm.ownerCt;
+
+        var vags = docForm.dataObj[docForm.getVagCollectionName()],
+            // docs9DisplField = this.getCimsmgs().getComponent('disp.g9'),
+
+            docs9DisplField = controller.getDoc9DispField(),
+            docs9Result = '';
+
+        if(vags && !Ext.Object.isEmpty(vags)){
+            for(var vagIndx in vags){
+
+                var vag = vags[vagIndx],
+                    docs9;
+
+                if(this.isContOtpr()) {
+                    var conts = vag[docForm.getContCollectionName()];
+
+                    if (conts && !Ext.Object.isEmpty(conts)) {
+
+                        for (var contIndx in conts) {
+                            var cont = conts[contIndx];
+
+                            docs9 = cont[docForm.getDocs9CollectionName()];
+                            docs9Result += this.buildDisplayedDocs9String(docs9);
+                        }
+                    }
+                } else {
+                    docs9 = vag[docForm.getDocs9CollectionName()];
+                    docs9Result += this.buildDisplayedDocs9String(docs9);
+                }
+            }
+        }
+
+        docs9DisplField.setValue(docs9Result);
+    },
+
+    buildDisplayedDocs9String: function(docs9) {
+        var docs9Result = '';
+        if(docs9 && !Ext.Object.isEmpty(docs9)){
+
+            for(var docs9Indx in docs9){
+                var doc9 = docs9[docs9Indx];
+
+                docs9Result += (doc9['text'] ? doc9['text'] + '  ' : '');
+                docs9Result += (doc9['text2'] ? doc9['text2'] + '  ' : '');
+                docs9Result += (doc9['ndoc'] ? doc9['ndoc'] + '  ' : '');
+                docs9Result += (doc9['dat'] ? 'от ' + doc9['dat'] + '  ' : '');
+                docs9Result += (doc9['ncopy'] ? doc9['ncopy'] + ' экз '  : '');
+                docs9Result += '\n';
+            }
+        }
+        return docs9Result;
     }
 });

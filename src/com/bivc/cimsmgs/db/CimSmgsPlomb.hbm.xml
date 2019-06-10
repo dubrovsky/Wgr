@@ -9,6 +9,7 @@
             <generator class="sequence">
               <param name="sequence">CIM_SMGS_PLOMB_HID</param>
             </generator>
+            <!--<generator class="native"/>-->
         </id>
         <many-to-one class="com.bivc.cimsmgs.db.CimSmgs" fetch="select" name="cimSmgs">
             <column name="HID_CS" precision="20" scale="0"/>

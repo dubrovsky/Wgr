@@ -1,5 +1,11 @@
 Ext.define('TK.store.Smgses', {
 	extend: 'Ext.data.Store',
+
+    requires: [
+        'TK.Utils',
+        'TK.model.Smgs'
+    ],
+
     model: 'TK.model.Smgs',
     pageSize: 20,
 	proxy: {
@@ -7,8 +13,8 @@ Ext.define('TK.store.Smgses', {
 		url: 'Smgs_list.do',
         reader: {
             type: 'json',
-            root: 'rows',
-            idProperty: 'hid'
+            root: 'rows'
+            // idProperty: 'hid'
         },
         actionMethods: {
                             create : 'POST',

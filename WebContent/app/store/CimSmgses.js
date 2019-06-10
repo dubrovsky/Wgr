@@ -1,5 +1,11 @@
 Ext.define('TK.store.CimSmgses', {
     extend:'Ext.data.Store',
+
+    requires: [
+        'TK.Utils',
+        'TK.model.CimSmgs'
+    ],
+
     model:'TK.model.CimSmgs',
     pageSize:20,
     proxy:{

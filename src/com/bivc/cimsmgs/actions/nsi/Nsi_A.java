@@ -16,7 +16,7 @@ import java.util.Locale;
 public class Nsi_A extends CimSmgsSupport_A implements JSONAware, NsiSmgsGngDAOAware, NsiGngDeDAOAware, NsiSmgsStEuDAOAware, NsiSmgsStCisDAOAware,
         NsiSmgsFieldsOptDAOAware, NsiSmgsCompanyDAOAware, NsiSmgsEtsngcodeDAOAware, NsiCountriesDAOAware, /*NsiStaDAOAware,*/ NsiCurrencyDAOAware,
         NsiTnvedDAOAware, NsiDelivDAOAware, NsiUpakDAOAware, UsrGroupsDirDAOAware, RouteDocsDAOAware, NsiDirDAOAware, RoadDAOAware,
-        ManagementDAOAware, KarantinDAOAware, VeterinDAOAware, DangCodeDAOAware, CargoGngDAOAware, RouteDAOAware, ProjectDAOAware {
+        ManagementDAOAware, KarantinDAOAware, VeterinDAOAware, DangCodeDAOAware, CargoGngDAOAware, RouteDAOAware, ProjectDAOAware, NsiCargoDanVDAOAware, NsiCargoDanGVDAOAware, NsiCargoDanDeDAOAware {
 
     private static final long serialVersionUID = 5694050199844701896L;
     final static private Logger log = LoggerFactory.getLogger(Nsi_A.class);
@@ -43,6 +43,23 @@ public class Nsi_A extends CimSmgsSupport_A implements JSONAware, NsiSmgsGngDAOA
         return SUCCESS;
     }
 
+    public String cargoDanV() {
+        log.info("CargoDanV");
+        List<CargoDanV> cargoDanVList = cargoDanVDAO.findAll(getLimit(), getStart(), getQuery(), getUser().getUsr());
+        Long total = cargoDanVDAO.countAll(getQuery());
+        List<CargoDanGV> cargoDanGVList = cargoDanGVDAO.findAll();
+        jsonData = Constants.convert2JSON_NsiCargoDanV(cargoDanVList, total, cargoDanGVList);
+        return SUCCESS;
+    }
+
+    public String cargoDanDe() {
+        log.info("cargoDanDe");
+        List<CargoDanDe> cargoDanDeList = cargoDanDeDAO.findAll(getLimit(), getStart(), getQuery(), getUser().getUsr());
+        Long total = cargoDanDeDAO.countAll(getQuery());
+        jsonData = Constants.convert2JSON_NsiCargoDanDe(cargoDanDeList, total);
+        return SUCCESS;
+    }
+
     public String gng() {
         log.info("gng");
         List<CargoGng> gng = gngDAO.findAll(getLimit(), getStart(), getQuery(), getUser().getUsr());
@@ -62,15 +79,17 @@ public class Nsi_A extends CimSmgsSupport_A implements JSONAware, NsiSmgsGngDAOA
     public String gngWithCode() {
         log.info("gng with code " + getQuery());
         if(StringUtils.isBlank(getQuery())){
-            throw new IllegalArgumentException("Empty code gng");
+           // throw new IllegalArgumentException("Empty code gng");
+            jsonData = Constants.convert2JSON_NsiGng(null);
         }
-
-        if(getLocale().equals(Locale.GERMAN)){
-            List<CargoGng> gng = gngDAO.findAll(getQuery());
-            jsonData = Constants.convert2JSON_NsiGng(gng);
-        } else {
-            List<NsiGngDe> gng = gngDeDAO.findAll(getQuery());
-            jsonData = Constants.convert2JSON_NsiGngDe(gng);
+        else {
+            if (getLocale().equals(Locale.GERMAN)) {
+                List<CargoGng> gng = gngDAO.findAll(getQuery());
+                jsonData = Constants.convert2JSON_NsiGng(gng);
+            } else {
+                List<NsiGngDe> gng = gngDeDAO.findAll(getQuery());
+                jsonData = Constants.convert2JSON_NsiGngDe(gng);
+            }
         }
 
         return SUCCESS;
@@ -257,6 +276,9 @@ public class Nsi_A extends CimSmgsSupport_A implements JSONAware, NsiSmgsGngDAOA
     private RouteDAO routeDAO;
     private ProjectDAO projectDAO;
     private NsiSmgsGngDAO gngDAO;
+    private NsiCargoDanVDAO cargoDanVDAO;
+    private NsiCargoDanGVDAO cargoDanGVDAO;
+    private NsiCargoDanDeDAO cargoDanDeDAO;
     private NsiGngDeDAO gngDeDAO;
     private NsiSmgsStEuDAO stEuDAO;
     private NsiSmgsStCisDAO stCisDAO;
@@ -435,5 +457,20 @@ public class Nsi_A extends CimSmgsSupport_A implements JSONAware, NsiSmgsGngDAOA
     @Override
     public void setNsiGngDeDAO(NsiGngDeDAO dao) {
         this.gngDeDAO = dao;
+    }
+
+    @Override
+    public void setNsiCargoDanVDAO(NsiCargoDanVDAO dao) {
+        this.cargoDanVDAO = dao;
+    }
+
+    @Override
+    public void setNsiCargoDanGVDAO(NsiCargoDanGVDAO dao) {
+        this.cargoDanGVDAO = dao;
+    }
+
+    @Override
+    public void setNsiCargoDanDeDAO(NsiCargoDanDeDAO dao) {
+        this.cargoDanDeDAO = dao;
     }
 }

@@ -1,7 +1,9 @@
 package com.bivc.cimsmgs.commons;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Search implements Serializable {
     private String gruz;
@@ -55,6 +57,25 @@ public class Search implements Serializable {
     private boolean flag;
     private String scope;
     private byte docId = 0;
+    private Byte deleted = 0;
+    private List<Long> ids = new ArrayList<>();
+    private List<Long> routeIds = new ArrayList<>();
+
+    public List<Long> getRouteIds() {
+        return routeIds;
+    }
+
+    public void setRouteIds(List<Long> routeIds) {
+        this.routeIds = routeIds;
+    }
+
+    public List<Long> getIds() {
+        return ids;
+    }
+
+    public void setIds(List<Long> ids) {
+        this.ids = ids;
+    }
 
     public String getTipRazmKont() {
         return tipRazmKont;
@@ -515,5 +536,14 @@ public class Search implements Serializable {
 
     public void setDocId(byte docId) {
         this.docId = docId;
+    }
+
+
+    public Byte getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Byte deleted) {
+        this.deleted = deleted;
     }
 }

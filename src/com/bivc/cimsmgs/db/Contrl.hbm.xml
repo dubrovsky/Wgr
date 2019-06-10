@@ -5,9 +5,10 @@
   <class name="com.bivc.cimsmgs.db.Contrl" table="B_CONTRL" dynamic-update="true" dynamic-insert="true">
     <id name="hid" type="long">
        <column name="HID" precision="20" scale="0" />
-         <generator class="sequence">
+         <!--<generator class="sequence">
            <param name="sequence">B_CONTRL_HID</param>
-         </generator>
+         </generator>-->
+        <generator class="native"/>
     </id>
     <!--many-to-one name="BIftminLog" class="com.bivc.cimsmgs.db.BIftminLog" fetch="select">
             <column name="ID_UNB_ORI" length="45" />

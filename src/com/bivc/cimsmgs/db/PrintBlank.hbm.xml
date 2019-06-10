@@ -9,6 +9,7 @@
             <generator class="sequence">
                 <param name="sequence">PRINT_BLANK_HID</param>
             </generator>
+            <!--<generator class="native"/>-->
         </id>
         <many-to-one name="docDir" class="com.bivc.cimsmgs.db.DocDir" fetch="select">
             <column name="HID_DOC" precision="22" scale="0" not-null="true"/>
@@ -45,6 +46,9 @@
         </property>
         <property name="length" type="big_decimal">
             <column name="LENGTH" precision="22" scale="0"/>
+        </property>
+        <property name="preview" type="java.lang.Boolean">
+            <column name="PREVIEW" precision="1" scale="0" />
         </property>
         <!--<map name="printBlankTemplRefs" cascade="all, delete-orphan" inverse="true" sort="natural" lazy="true">
             <key>

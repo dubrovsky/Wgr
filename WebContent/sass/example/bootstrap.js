@@ -846,11 +846,15 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.window.Window": [
     "Ext.Window"
   ],
+  "TK.SearchFieldLocal": [],
   "TK.User": [],
   "TK.Utils": [],
+  "TK.VTypes": [],
+  "TK.Validators": [],
   "TK.controller.Ajax": [],
   "TK.controller.Doc2Doc": [],
   "TK.controller.Docs": [],
+  "TK.controller.FilterUtils": [],
   "TK.controller.Logs": [],
   "TK.controller.Menu": [],
   "TK.controller.Nsi": [],
@@ -860,6 +864,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.controller.Utils": [],
   "TK.controller.docs.Aviso": [],
   "TK.controller.docs.Aviso2": [],
+  "TK.controller.docs.Avisocim": [],
   "TK.controller.docs.Avisocimsmgs": [],
   "TK.controller.docs.Avisogu29k": [],
   "TK.controller.docs.Cim": [],
@@ -875,15 +880,29 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.controller.docs.Slovnakl": [],
   "TK.controller.docs.Smgs": [],
   "TK.controller.docs.Smgs2": [],
+  "TK.controller.docs.Ved": [],
   "TK.controller.docs.VgCtGrTreeDetailController": [],
   "TK.controller.exchange.Agreements": [],
   "TK.controller.exchange.LockChecker": [],
   "TK.controller.exchange.Senders": [],
   "TK.controller.exchange.Viewers": [],
+  "TK.controller.ky.Avto": [],
+  "TK.controller.ky.Gruz": [],
+  "TK.controller.ky.Kont": [],
+  "TK.controller.ky.NsiAvto": [],
+  "TK.controller.ky.NsiKont": [],
+  "TK.controller.ky.NsiOwner": [],
+  "TK.controller.ky.NsiVag": [],
+  "TK.controller.ky.Plomb": [],
+  "TK.controller.ky.Poezd": [],
+  "TK.controller.ky.Report": [],
+  "TK.controller.ky.Vagon": [],
+  "TK.controller.ky.Yard": [],
   "TK.controller.print.Print": [],
   "TK.controller.print.PrintTemplates": [],
   "TK.model.Aviso": [],
   "TK.model.Aviso2": [],
+  "TK.model.AvisoCim": [],
   "TK.model.AvisoGu29k": [],
   "TK.model.Avisocimsmgs": [],
   "TK.model.Cim": [],
@@ -903,6 +922,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.model.NsiCarrier": [],
   "TK.model.NsiDir": [],
   "TK.model.NsiSta": [],
+  "TK.model.PackDoc": [],
   "TK.model.PlombsTreeNode": [],
   "TK.model.PrintBlank": [],
   "TK.model.PrintData": [],
@@ -924,7 +944,62 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.model.User": [],
   "TK.model.UserGroup": [],
   "TK.model.UserPriv": [],
+  "TK.model.Ved": [],
+  "TK.model.VedVag": [],
+  "TK.model.VedVagSmgs": [],
   "TK.model.VgCtGrTreeNode": [],
+  "TK.model.ky.AvtoBase": [],
+  "TK.model.ky.AvtoInto": [],
+  "TK.model.ky.AvtoOut": [],
+  "TK.model.ky.AvtoOutDir": [],
+  "TK.model.ky.GruzBase": [],
+  "TK.model.ky.GruzInAvtoInto": [],
+  "TK.model.ky.GruzInAvtoOut": [],
+  "TK.model.ky.GruzInPoezdInto": [],
+  "TK.model.ky.GruzInPoezdOut": [],
+  "TK.model.ky.GruzInYard": [],
+  "TK.model.ky.GruzNoTrasp": [],
+  "TK.model.ky.KontAbstract": [],
+  "TK.model.ky.KontAllDir": [],
+  "TK.model.ky.KontBase": [],
+  "TK.model.ky.KontInAvtoInto": [],
+  "TK.model.ky.KontInAvtoIntoDir": [],
+  "TK.model.ky.KontInAvtoOut": [],
+  "TK.model.ky.KontInAvtoPoezdYardIntoOut": [],
+  "TK.model.ky.KontInPoezdInto": [],
+  "TK.model.ky.KontInPoezdOut": [],
+  "TK.model.ky.KontInTransp": [],
+  "TK.model.ky.KontInTranspInto": [],
+  "TK.model.ky.KontInTranspOut": [],
+  "TK.model.ky.KontInYard": [],
+  "TK.model.ky.KontIntoDir": [],
+  "TK.model.ky.KontNoTranspDir": [],
+  "TK.model.ky.KontNoTrasp": [],
+  "TK.model.ky.ListForAvto": [],
+  "TK.model.ky.ListForPoezd": [],
+  "TK.model.ky.NsiAvto": [],
+  "TK.model.ky.NsiKont": [],
+  "TK.model.ky.NsiOwner": [],
+  "TK.model.ky.NsiVagShir": [],
+  "TK.model.ky.NsiVagUzky": [],
+  "TK.model.ky.PlombBase": [],
+  "TK.model.ky.PlombInAvtoInto": [],
+  "TK.model.ky.PlombInAvtoOut": [],
+  "TK.model.ky.PlombInPoezdInto": [],
+  "TK.model.ky.PlombInPoezdOut": [],
+  "TK.model.ky.PlombInYard": [],
+  "TK.model.ky.PlombNoTrasp": [],
+  "TK.model.ky.PoezdBase": [],
+  "TK.model.ky.PoezdInto": [],
+  "TK.model.ky.PoezdOut": [],
+  "TK.model.ky.VagonBase": [],
+  "TK.model.ky.VagonInto": [],
+  "TK.model.ky.VagonOut": [],
+  "TK.model.ky.VagonOutDir": [],
+  "TK.model.ky.Yard": [],
+  "TK.model.ky.YardBase": [],
+  "TK.model.ky.YardSector": [],
+  "TK.store.AvisoCims": [],
   "TK.store.AvisoGu29ks": [],
   "TK.store.Avisocimsmgss": [],
   "TK.store.Avisos": [],
@@ -942,7 +1017,11 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.store.InvoicesInPack": [],
   "TK.store.Logs": [],
   "TK.store.MenuItems": [],
+  "TK.store.MenuPart": [],
   "TK.store.NsiDirs": [],
+  "TK.store.PeregruzMap2Base": [],
+  "TK.store.PeregruzPoezdSelectStore": [],
+  "TK.store.PeregruzSmgsSelectStore": [],
   "TK.store.PlombsTreeNodes": [],
   "TK.store.PrintBlanks": [],
   "TK.store.PrintTemplate": [],
@@ -953,12 +1032,62 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.store.RouteDocs": [],
   "TK.store.Slovnakls": [],
   "TK.store.Smgses": [],
+  "TK.store.Smgses4Ved": [],
   "TK.store.Stats": [],
   "TK.store.Tbc1logs": [],
   "TK.store.Users": [],
   "TK.store.UsersGroups": [],
   "TK.store.UsersPrivs": [],
+  "TK.store.Ved": [],
+  "TK.store.VedSmgses": [],
+  "TK.store.VedVagFilters": [],
+  "TK.store.VedVagSmgses": [],
+  "TK.store.VedVags": [],
+  "TK.store.Veds": [],
   "TK.store.VgCtGrTreeNodes": [],
+  "TK.store.ky.AvtosBase": [],
+  "TK.store.ky.AvtosInto": [],
+  "TK.store.ky.AvtosOut": [],
+  "TK.store.ky.AvtosOutDir": [],
+  "TK.store.ky.GruzsInAvtoInto": [],
+  "TK.store.ky.GruzsInAvtoOut": [],
+  "TK.store.ky.GruzsInPoezdInto": [],
+  "TK.store.ky.GruzsInPoezdOut": [],
+  "TK.store.ky.GruzsInYard": [],
+  "TK.store.ky.GruzsNoTrasp": [],
+  "TK.store.ky.KontsAllDir": [],
+  "TK.store.ky.KontsInAvtoInto": [],
+  "TK.store.ky.KontsInAvtoIntoDir": [],
+  "TK.store.ky.KontsInAvtoOut": [],
+  "TK.store.ky.KontsInAvtoPoezdYardIntoOut": [],
+  "TK.store.ky.KontsInPoezdInto": [],
+  "TK.store.ky.KontsInPoezdOut": [],
+  "TK.store.ky.KontsIntoDir": [],
+  "TK.store.ky.KontsListInPoezdInto": [],
+  "TK.store.ky.KontsListInPoezdOut": [],
+  "TK.store.ky.KontsNoTransp": [],
+  "TK.store.ky.KontsNoTranspDir": [],
+  "TK.store.ky.KontsYardDir": [],
+  "TK.store.ky.NsiAvtos": [],
+  "TK.store.ky.NsiKonts": [],
+  "TK.store.ky.NsiOwners": [],
+  "TK.store.ky.NsiVagsShir": [],
+  "TK.store.ky.NsiVagsUzky": [],
+  "TK.store.ky.PlombsInAvtoInto": [],
+  "TK.store.ky.PlombsInAvtoOut": [],
+  "TK.store.ky.PlombsInPoezdInto": [],
+  "TK.store.ky.PlombsInPoezdOut": [],
+  "TK.store.ky.PlombsInYard": [],
+  "TK.store.ky.PlombsNoTrasp": [],
+  "TK.store.ky.PoezdsBase": [],
+  "TK.store.ky.PoezdsInto": [],
+  "TK.store.ky.PoezdsOut": [],
+  "TK.store.ky.VagonsInto": [],
+  "TK.store.ky.VagonsOut": [],
+  "TK.store.ky.VagonsOutDir": [],
+  "TK.store.ky.YardSectors": [],
+  "TK.store.ky.Yards": [],
+  "TK.store.ky.YardsDir": [],
   "TK.view.DocsForm": [],
   "TK.view.DocsList": [],
   "TK.view.MenuTree": [],
@@ -966,15 +1095,29 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.view.aviso.Form": [],
   "TK.view.aviso.Form1": [],
   "TK.view.aviso.List": [],
+  "TK.view.aviso2.AvisoSmgs2Docs9TreeFormWin": [],
+  "TK.view.aviso2.AvisoSmgs2Form": [],
+  "TK.view.aviso2.AvisoSmgs2List": [],
+  "TK.view.aviso2.AvisoSmgs2PlombsTreeFormWin": [],
+  "TK.view.aviso2.AvisoSmgs2VgCtGrTreeFormWin": [],
   "TK.view.aviso2.Form": [],
-  "TK.view.aviso2.List": [],
+  "TK.view.avisocim.AvisoCimForm": [],
+  "TK.view.avisocim.AvisoCimList": [],
+  "TK.view.avisocimsmgs.AvisoCimSmgsDocs9TreeFormWin": [],
+  "TK.view.avisocimsmgs.AvisoCimSmgsForm": [],
+  "TK.view.avisocimsmgs.AvisoCimSmgsList": [],
+  "TK.view.avisocimsmgs.AvisoCimSmgsPlombsTreeFormWin": [],
+  "TK.view.avisocimsmgs.AvisoCimSmgsVgCtGrTreeFormWin": [],
   "TK.view.avisocimsmgs.Form": [],
-  "TK.view.avisocimsmgs.List": [],
   "TK.view.avisogu29k.Form": [],
   "TK.view.avisogu29k.Form1": [],
   "TK.view.avisogu29k.List": [],
-  "TK.view.cim.Form": [],
-  "TK.view.cim.List": [],
+  "TK.view.cim.CimDocs9TreeFormWin": [],
+  "TK.view.cim.CimForm": [],
+  "TK.view.cim.CimFormPanel": [],
+  "TK.view.cim.CimList": [],
+  "TK.view.cim.CimPlombsTreeFormWin": [],
+  "TK.view.cim.CimVgCtGrTreeFormWin": [],
   "TK.view.cimsmgs.CimSmgsDocs9TreeFormWin": [],
   "TK.view.cimsmgs.CimSmgsForm": [],
   "TK.view.cimsmgs.CimSmgsList": [],
@@ -982,12 +1125,24 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.view.cimsmgs.CimSmgsVgCtGrTreeFormWin": [],
   "TK.view.cmr.Form": [],
   "TK.view.cmr.List": [],
+  "TK.view.components.PagingSizeChangerPlugin": [],
+  "TK.view.components.SearchFieldLocal": [],
+  "TK.view.edit.Cim_g1_detailpanel": [],
+  "TK.view.edit.Cim_g4_detailpanel": [],
+  "TK.view.edit.Cimsmgs_g1_detailpanel": [],
+  "TK.view.edit.Cimsmgs_g4_detailpanel": [],
   "TK.view.edit.DetailGrid": [],
   "TK.view.edit.DetailPanel": [],
   "TK.view.edit.DetailTabPanel": [],
   "TK.view.edit.Docs9TreeFormWin": [],
+  "TK.view.edit.OtpavitelEdit": [],
   "TK.view.edit.PlombsTreeFormWin": [],
+  "TK.view.edit.Smgs2_g1_detailpanel": [],
+  "TK.view.edit.Smgs2_g4_detailpanel": [],
   "TK.view.edit.TreeFormWin": [],
+  "TK.view.edit.UploadDoc9FormWin": [],
+  "TK.view.edit.UploadFormWin": [],
+  "TK.view.edit.UploadPogruzListFormWin": [],
   "TK.view.edit.VgCtGrTreeFormWin": [],
   "TK.view.epd.Form": [],
   "TK.view.epd.List": [],
@@ -999,10 +1154,164 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.view.gu29k.List": [],
   "TK.view.invoice.Form": [],
   "TK.view.invoice.List": [],
+  "TK.view.ky.AbstractForm": [],
+  "TK.view.ky.AbstractList": [],
+  "TK.view.ky.AbstractWindow": [],
+  "TK.view.ky.BaseAvtosOutDir": [],
+  "TK.view.ky.BaseAvtosOutDirFilter": [],
+  "TK.view.ky.BaseEditableList": [],
+  "TK.view.ky.BaseGruzForm": [],
+  "TK.view.ky.BaseGruzList": [],
+  "TK.view.ky.BaseKontForm": [],
+  "TK.view.ky.BaseKontIntoForm": [],
+  "TK.view.ky.BaseKontIntoList": [],
+  "TK.view.ky.BaseKontList": [],
+  "TK.view.ky.BaseKontOutForm": [],
+  "TK.view.ky.BaseKontOutList": [],
+  "TK.view.ky.BaseKontsAllDir": [],
+  "TK.view.ky.BaseKontsAllDirFilter": [],
+  "TK.view.ky.BaseKontsAllDirForOut": [],
+  "TK.view.ky.BaseKontsAllDirForYard": [],
+  "TK.view.ky.BaseKontsInAvtoIntoDir": [],
+  "TK.view.ky.BaseKontsInAvtoIntoDirFilter": [],
+  "TK.view.ky.BaseKontsInAvtoIntoDirForOut": [],
+  "TK.view.ky.BaseKontsInAvtoIntoDirForYard": [],
+  "TK.view.ky.BaseKontsInPoezdIntoDir": [],
+  "TK.view.ky.BaseKontsInPoezdIntoDirFilter": [],
+  "TK.view.ky.BaseKontsInPoezdIntoDirForOut": [],
+  "TK.view.ky.BaseKontsInPoezdIntoDirForYard": [],
+  "TK.view.ky.BaseKontsNoTranspDir": [],
+  "TK.view.ky.BaseKontsNoTranspDirFilter": [],
+  "TK.view.ky.BaseKontsYardDir": [],
+  "TK.view.ky.BaseKontsYardDirFilter": [],
+  "TK.view.ky.BaseList": [],
+  "TK.view.ky.BasePlombList": [],
+  "TK.view.ky.BasePoezdsOutDir": [],
+  "TK.view.ky.BasePoezdsOutDirFilter": [],
+  "TK.view.ky.BaseYardDir": [],
+  "TK.view.ky.BaseYardDirFilter": [],
+  "TK.view.ky.KontIntoOutList": [],
+  "TK.view.ky.KontSearchForm": [],
+  "TK.view.ky.KontSearchList": [],
+  "TK.view.ky.avto.AvtoFilter": [],
+  "TK.view.ky.avto.BaseAvtoForm": [],
+  "TK.view.ky.avto.BaseAvtoList": [],
+  "TK.view.ky.avto.into.Form": [],
+  "TK.view.ky.avto.into.List": [],
+  "TK.view.ky.avto.into.kont.AvtosOutDir": [],
+  "TK.view.ky.avto.into.kont.Form": [],
+  "TK.view.ky.avto.into.kont.List": [],
+  "TK.view.ky.avto.into.kont.PoezdsOutDir": [],
+  "TK.view.ky.avto.into.kont.YardCancelDir": [],
+  "TK.view.ky.avto.into.kont.YardDir": [],
+  "TK.view.ky.avto.into.kont.gruz.Form": [],
+  "TK.view.ky.avto.into.kont.gruz.List": [],
+  "TK.view.ky.avto.into.kont.plomb.List": [],
+  "TK.view.ky.avto.out.Form": [],
+  "TK.view.ky.avto.out.List": [],
+  "TK.view.ky.avto.out.kont.Form": [],
+  "TK.view.ky.avto.out.kont.KontsAllDir": [],
+  "TK.view.ky.avto.out.kont.KontsInAvtoIntoDir": [],
+  "TK.view.ky.avto.out.kont.KontsInPoezdIntoDir": [],
+  "TK.view.ky.avto.out.kont.KontsNoTranspDir": [],
+  "TK.view.ky.avto.out.kont.KontsYardDir": [],
+  "TK.view.ky.avto.out.kont.List": [],
+  "TK.view.ky.avto.out.kont.YardCancelDir": [],
+  "TK.view.ky.avto.out.kont.gruz.Form": [],
+  "TK.view.ky.avto.out.kont.gruz.List": [],
+  "TK.view.ky.avto.out.kont.plomb.List": [],
+  "TK.view.ky.kontnotransp.AvtosOutDir": [],
+  "TK.view.ky.kontnotransp.Form": [],
+  "TK.view.ky.kontnotransp.List": [],
+  "TK.view.ky.kontnotransp.PoezdsOutDir": [],
+  "TK.view.ky.kontnotransp.YardDir": [],
+  "TK.view.ky.kontnotransp.gruz.Form": [],
+  "TK.view.ky.kontnotransp.gruz.List": [],
+  "TK.view.ky.kontnotransp.plomb.List": [],
+  "TK.view.ky.nsi.BaseFilter": [],
+  "TK.view.ky.nsi.BaseForm": [],
+  "TK.view.ky.nsi.BaseList": [],
+  "TK.view.ky.nsi.avto.Filter": [],
+  "TK.view.ky.nsi.avto.Form": [],
+  "TK.view.ky.nsi.avto.List": [],
+  "TK.view.ky.nsi.kont.Filter": [],
+  "TK.view.ky.nsi.kont.Form": [],
+  "TK.view.ky.nsi.kont.List": [],
+  "TK.view.ky.nsi.owner.Filter": [],
+  "TK.view.ky.nsi.owner.Form": [],
+  "TK.view.ky.nsi.owner.List": [],
+  "TK.view.ky.nsi.vagon.Filter": [],
+  "TK.view.ky.nsi.vagon.shir.Form": [],
+  "TK.view.ky.nsi.vagon.shir.List": [],
+  "TK.view.ky.nsi.vagon.uzky.Form": [],
+  "TK.view.ky.nsi.vagon.uzky.List": [],
+  "TK.view.ky.poezd.BaseKontList": [],
+  "TK.view.ky.poezd.BaseListForPoezd": [],
+  "TK.view.ky.poezd.BasePoezdForm": [],
+  "TK.view.ky.poezd.BasePoezdList": [],
+  "TK.view.ky.poezd.BaseVagonForm": [],
+  "TK.view.ky.poezd.BaseVagonList": [],
+  "TK.view.ky.poezd.PoezdFilter": [],
+  "TK.view.ky.poezd.into.Form": [],
+  "TK.view.ky.poezd.into.KontList": [],
+  "TK.view.ky.poezd.into.List": [],
+  "TK.view.ky.poezd.into.ListForPoezd": [],
+  "TK.view.ky.poezd.into.vagon.Form": [],
+  "TK.view.ky.poezd.into.vagon.List": [],
+  "TK.view.ky.poezd.into.vagon.kont.AvtosOutDir": [],
+  "TK.view.ky.poezd.into.vagon.kont.Form": [],
+  "TK.view.ky.poezd.into.vagon.kont.List": [],
+  "TK.view.ky.poezd.into.vagon.kont.PoezdsOutDir": [],
+  "TK.view.ky.poezd.into.vagon.kont.YardCancelDir": [],
+  "TK.view.ky.poezd.into.vagon.kont.YardDir": [],
+  "TK.view.ky.poezd.into.vagon.kont.gruz.Form": [],
+  "TK.view.ky.poezd.into.vagon.kont.gruz.List": [],
+  "TK.view.ky.poezd.into.vagon.kont.plomb.List": [],
+  "TK.view.ky.poezd.out.Form": [],
+  "TK.view.ky.poezd.out.KontList": [],
+  "TK.view.ky.poezd.out.List": [],
+  "TK.view.ky.poezd.out.ListForPoezd": [],
+  "TK.view.ky.poezd.out.vagon.Form": [],
+  "TK.view.ky.poezd.out.vagon.List": [],
+  "TK.view.ky.poezd.out.vagon.kont.Form": [],
+  "TK.view.ky.poezd.out.vagon.kont.KontsAllDir": [],
+  "TK.view.ky.poezd.out.vagon.kont.KontsInAvtoIntoDir": [],
+  "TK.view.ky.poezd.out.vagon.kont.KontsInPoezdIntoDir": [],
+  "TK.view.ky.poezd.out.vagon.kont.KontsNoTranspDir": [],
+  "TK.view.ky.poezd.out.vagon.kont.KontsYardDir": [],
+  "TK.view.ky.poezd.out.vagon.kont.List": [],
+  "TK.view.ky.poezd.out.vagon.kont.YardCancelDir": [],
+  "TK.view.ky.poezd.out.vagon.kont.gruz.Form": [],
+  "TK.view.ky.poezd.out.vagon.kont.gruz.List": [],
+  "TK.view.ky.poezd.out.vagon.kont.plomb.List": [],
+  "TK.view.ky.reports.Report1": [],
+  "TK.view.ky.reports.Report2": [],
+  "TK.view.ky.reports.Report3": [],
+  "TK.view.ky.reports.Report4": [],
+  "TK.view.ky.reports.Report5": [],
+  "TK.view.ky.reports.Report6": [],
+  "TK.view.ky.yard.AvtosOutDir": [],
+  "TK.view.ky.yard.Filter": [],
+  "TK.view.ky.yard.Form": [],
+  "TK.view.ky.yard.Graf": [],
+  "TK.view.ky.yard.KontsAllDir": [],
+  "TK.view.ky.yard.KontsInAvtoIntoDir": [],
+  "TK.view.ky.yard.KontsInPoezdIntoDir": [],
+  "TK.view.ky.yard.KontsNoTranspDir": [],
+  "TK.view.ky.yard.List": [],
+  "TK.view.ky.yard.PoezdsOutDir": [],
+  "TK.view.ky.yard.YardDir": [],
+  "TK.view.ky.yard.kont.Form": [],
+  "TK.view.ky.yard.kont.gruz.Form": [],
+  "TK.view.ky.yard.kont.gruz.List": [],
+  "TK.view.ky.yard.kont.plomb.List": [],
   "TK.view.logs.List": [],
   "TK.view.nsi.EditList": [],
   "TK.view.nsi.List": [],
   "TK.view.nsi.ListDir": [],
+  "TK.view.pogruz.Map2BaseSelectForm": [],
+  "TK.view.pogruz.PoezdSelectForm": [],
+  "TK.view.pogruz.SmgsSelectForm": [],
   "TK.view.printtmpl.Form": [],
   "TK.view.printtmpl.List": [],
   "TK.view.printtmpl.PhraseForm": [],
@@ -1013,15 +1322,22 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.view.slovnakl.List": [],
   "TK.view.smgs.Form": [],
   "TK.view.smgs.List": [],
+  "TK.view.smgs2.Smgs2Docs9TreeFormWin": [],
   "TK.view.smgs2.Smgs2Form": [],
   "TK.view.smgs2.Smgs2List": [],
+  "TK.view.smgs2.Smgs2PlombsTreeFormWin": [],
+  "TK.view.smgs2.Smgs2VgCtGrTreeFormWin": [],
   "TK.view.stat.Form": [],
   "TK.view.stat.List": [],
   "TK.view.user.Form": [],
   "TK.view.user.FormGroups": [],
   "TK.view.user.List": [],
   "TK.view.user.ListGroups": [],
-  "TK.view.user.ListPrivs": []
+  "TK.view.user.ListPrivs": [],
+  "TK.view.ved.Form": [],
+  "TK.view.ved.List": [],
+  "TK.view.ved.MenuPart": [],
+  "TK.view.ved.VagsList": []
 });
 Ext.ClassManager.addNameAliasMappings({
   "Comments": [],
@@ -2028,13 +2344,19 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.window.Window": [
     "widget.window"
   ],
+  "TK.SearchFieldLocal": [
+    "widget.searchfieldlocal"
+  ],
   "TK.User": [
     "widget.userprofile"
   ],
   "TK.Utils": [],
+  "TK.VTypes": [],
+  "TK.Validators": [],
   "TK.controller.Ajax": [],
   "TK.controller.Doc2Doc": [],
   "TK.controller.Docs": [],
+  "TK.controller.FilterUtils": [],
   "TK.controller.Logs": [],
   "TK.controller.Menu": [],
   "TK.controller.Nsi": [],
@@ -2044,6 +2366,7 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.controller.Utils": [],
   "TK.controller.docs.Aviso": [],
   "TK.controller.docs.Aviso2": [],
+  "TK.controller.docs.Avisocim": [],
   "TK.controller.docs.Avisocimsmgs": [],
   "TK.controller.docs.Avisogu29k": [],
   "TK.controller.docs.Cim": [],
@@ -2059,15 +2382,29 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.controller.docs.Slovnakl": [],
   "TK.controller.docs.Smgs": [],
   "TK.controller.docs.Smgs2": [],
+  "TK.controller.docs.Ved": [],
   "TK.controller.docs.VgCtGrTreeDetailController": [],
   "TK.controller.exchange.Agreements": [],
   "TK.controller.exchange.LockChecker": [],
   "TK.controller.exchange.Senders": [],
   "TK.controller.exchange.Viewers": [],
+  "TK.controller.ky.Avto": [],
+  "TK.controller.ky.Gruz": [],
+  "TK.controller.ky.Kont": [],
+  "TK.controller.ky.NsiAvto": [],
+  "TK.controller.ky.NsiKont": [],
+  "TK.controller.ky.NsiOwner": [],
+  "TK.controller.ky.NsiVag": [],
+  "TK.controller.ky.Plomb": [],
+  "TK.controller.ky.Poezd": [],
+  "TK.controller.ky.Report": [],
+  "TK.controller.ky.Vagon": [],
+  "TK.controller.ky.Yard": [],
   "TK.controller.print.Print": [],
   "TK.controller.print.PrintTemplates": [],
   "TK.model.Aviso": [],
   "TK.model.Aviso2": [],
+  "TK.model.AvisoCim": [],
   "TK.model.AvisoGu29k": [],
   "TK.model.Avisocimsmgs": [],
   "TK.model.Cim": [],
@@ -2087,6 +2424,7 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.model.NsiCarrier": [],
   "TK.model.NsiDir": [],
   "TK.model.NsiSta": [],
+  "TK.model.PackDoc": [],
   "TK.model.PlombsTreeNode": [],
   "TK.model.PrintBlank": [],
   "TK.model.PrintData": [],
@@ -2108,7 +2446,62 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.model.User": [],
   "TK.model.UserGroup": [],
   "TK.model.UserPriv": [],
+  "TK.model.Ved": [],
+  "TK.model.VedVag": [],
+  "TK.model.VedVagSmgs": [],
   "TK.model.VgCtGrTreeNode": [],
+  "TK.model.ky.AvtoBase": [],
+  "TK.model.ky.AvtoInto": [],
+  "TK.model.ky.AvtoOut": [],
+  "TK.model.ky.AvtoOutDir": [],
+  "TK.model.ky.GruzBase": [],
+  "TK.model.ky.GruzInAvtoInto": [],
+  "TK.model.ky.GruzInAvtoOut": [],
+  "TK.model.ky.GruzInPoezdInto": [],
+  "TK.model.ky.GruzInPoezdOut": [],
+  "TK.model.ky.GruzInYard": [],
+  "TK.model.ky.GruzNoTrasp": [],
+  "TK.model.ky.KontAbstract": [],
+  "TK.model.ky.KontAllDir": [],
+  "TK.model.ky.KontBase": [],
+  "TK.model.ky.KontInAvtoInto": [],
+  "TK.model.ky.KontInAvtoIntoDir": [],
+  "TK.model.ky.KontInAvtoOut": [],
+  "TK.model.ky.KontInAvtoPoezdYardIntoOut": [],
+  "TK.model.ky.KontInPoezdInto": [],
+  "TK.model.ky.KontInPoezdOut": [],
+  "TK.model.ky.KontInTransp": [],
+  "TK.model.ky.KontInTranspInto": [],
+  "TK.model.ky.KontInTranspOut": [],
+  "TK.model.ky.KontInYard": [],
+  "TK.model.ky.KontIntoDir": [],
+  "TK.model.ky.KontNoTranspDir": [],
+  "TK.model.ky.KontNoTrasp": [],
+  "TK.model.ky.ListForAvto": [],
+  "TK.model.ky.ListForPoezd": [],
+  "TK.model.ky.NsiAvto": [],
+  "TK.model.ky.NsiKont": [],
+  "TK.model.ky.NsiOwner": [],
+  "TK.model.ky.NsiVagShir": [],
+  "TK.model.ky.NsiVagUzky": [],
+  "TK.model.ky.PlombBase": [],
+  "TK.model.ky.PlombInAvtoInto": [],
+  "TK.model.ky.PlombInAvtoOut": [],
+  "TK.model.ky.PlombInPoezdInto": [],
+  "TK.model.ky.PlombInPoezdOut": [],
+  "TK.model.ky.PlombInYard": [],
+  "TK.model.ky.PlombNoTrasp": [],
+  "TK.model.ky.PoezdBase": [],
+  "TK.model.ky.PoezdInto": [],
+  "TK.model.ky.PoezdOut": [],
+  "TK.model.ky.VagonBase": [],
+  "TK.model.ky.VagonInto": [],
+  "TK.model.ky.VagonOut": [],
+  "TK.model.ky.VagonOutDir": [],
+  "TK.model.ky.Yard": [],
+  "TK.model.ky.YardBase": [],
+  "TK.model.ky.YardSector": [],
+  "TK.store.AvisoCims": [],
   "TK.store.AvisoGu29ks": [],
   "TK.store.Avisocimsmgss": [],
   "TK.store.Avisos": [],
@@ -2126,7 +2519,13 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.store.InvoicesInPack": [],
   "TK.store.Logs": [],
   "TK.store.MenuItems": [],
+  "TK.store.MenuPart": [],
   "TK.store.NsiDirs": [],
+  "TK.store.PeregruzMap2Base": [],
+  "TK.store.PeregruzPoezdSelectStore": [
+    "store.poezdselectstore"
+  ],
+  "TK.store.PeregruzSmgsSelectStore": [],
   "TK.store.PlombsTreeNodes": [],
   "TK.store.PrintBlanks": [],
   "TK.store.PrintTemplate": [],
@@ -2137,12 +2536,62 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.store.RouteDocs": [],
   "TK.store.Slovnakls": [],
   "TK.store.Smgses": [],
+  "TK.store.Smgses4Ved": [],
   "TK.store.Stats": [],
   "TK.store.Tbc1logs": [],
   "TK.store.Users": [],
   "TK.store.UsersGroups": [],
   "TK.store.UsersPrivs": [],
+  "TK.store.Ved": [],
+  "TK.store.VedSmgses": [],
+  "TK.store.VedVagFilters": [],
+  "TK.store.VedVagSmgses": [],
+  "TK.store.VedVags": [],
+  "TK.store.Veds": [],
   "TK.store.VgCtGrTreeNodes": [],
+  "TK.store.ky.AvtosBase": [],
+  "TK.store.ky.AvtosInto": [],
+  "TK.store.ky.AvtosOut": [],
+  "TK.store.ky.AvtosOutDir": [],
+  "TK.store.ky.GruzsInAvtoInto": [],
+  "TK.store.ky.GruzsInAvtoOut": [],
+  "TK.store.ky.GruzsInPoezdInto": [],
+  "TK.store.ky.GruzsInPoezdOut": [],
+  "TK.store.ky.GruzsInYard": [],
+  "TK.store.ky.GruzsNoTrasp": [],
+  "TK.store.ky.KontsAllDir": [],
+  "TK.store.ky.KontsInAvtoInto": [],
+  "TK.store.ky.KontsInAvtoIntoDir": [],
+  "TK.store.ky.KontsInAvtoOut": [],
+  "TK.store.ky.KontsInAvtoPoezdYardIntoOut": [],
+  "TK.store.ky.KontsInPoezdInto": [],
+  "TK.store.ky.KontsInPoezdOut": [],
+  "TK.store.ky.KontsIntoDir": [],
+  "TK.store.ky.KontsListInPoezdInto": [],
+  "TK.store.ky.KontsListInPoezdOut": [],
+  "TK.store.ky.KontsNoTransp": [],
+  "TK.store.ky.KontsNoTranspDir": [],
+  "TK.store.ky.KontsYardDir": [],
+  "TK.store.ky.NsiAvtos": [],
+  "TK.store.ky.NsiKonts": [],
+  "TK.store.ky.NsiOwners": [],
+  "TK.store.ky.NsiVagsShir": [],
+  "TK.store.ky.NsiVagsUzky": [],
+  "TK.store.ky.PlombsInAvtoInto": [],
+  "TK.store.ky.PlombsInAvtoOut": [],
+  "TK.store.ky.PlombsInPoezdInto": [],
+  "TK.store.ky.PlombsInPoezdOut": [],
+  "TK.store.ky.PlombsInYard": [],
+  "TK.store.ky.PlombsNoTrasp": [],
+  "TK.store.ky.PoezdsBase": [],
+  "TK.store.ky.PoezdsInto": [],
+  "TK.store.ky.PoezdsOut": [],
+  "TK.store.ky.VagonsInto": [],
+  "TK.store.ky.VagonsOut": [],
+  "TK.store.ky.VagonsOutDir": [],
+  "TK.store.ky.YardSectors": [],
+  "TK.store.ky.Yards": [],
+  "TK.store.ky.YardsDir": [],
   "TK.view.DocsForm": [
     "widget.docsform"
   ],
@@ -2164,17 +2613,47 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.view.aviso.List": [
     "widget.avisolist"
   ],
-  "TK.view.aviso2.Form": [
+  "TK.view.aviso2.AvisoSmgs2Docs9TreeFormWin": [
+    "widget.avisosmgs2Docs9TreeformWin"
+  ],
+  "TK.view.aviso2.AvisoSmgs2Form": [
     "widget.aviso2"
   ],
-  "TK.view.aviso2.List": [
+  "TK.view.aviso2.AvisoSmgs2List": [
     "widget.aviso2list"
   ],
-  "TK.view.avisocimsmgs.Form": [
+  "TK.view.aviso2.AvisoSmgs2PlombsTreeFormWin": [
+    "widget.avisosmgs2PlombsTreeformWin"
+  ],
+  "TK.view.aviso2.AvisoSmgs2VgCtGrTreeFormWin": [
+    "widget.avisosmgs2VgCtGrTreeformWin"
+  ],
+  "TK.view.aviso2.Form": [
+    "widget.aviso2_1"
+  ],
+  "TK.view.avisocim.AvisoCimForm": [
+    "widget.avisocim"
+  ],
+  "TK.view.avisocim.AvisoCimList": [
+    "widget.avisocimlist"
+  ],
+  "TK.view.avisocimsmgs.AvisoCimSmgsDocs9TreeFormWin": [
+    "widget.avisoCimsmgsDocs9TreeformWin"
+  ],
+  "TK.view.avisocimsmgs.AvisoCimSmgsForm": [
     "widget.avisocimsmgs"
   ],
-  "TK.view.avisocimsmgs.List": [
+  "TK.view.avisocimsmgs.AvisoCimSmgsList": [
     "widget.avisocimsmgslist"
+  ],
+  "TK.view.avisocimsmgs.AvisoCimSmgsPlombsTreeFormWin": [
+    "widget.avisoCimsmgsPlombsTreeformWin"
+  ],
+  "TK.view.avisocimsmgs.AvisoCimSmgsVgCtGrTreeFormWin": [
+    "widget.avisoCimsmgsVgCtGrTreeformWin"
+  ],
+  "TK.view.avisocimsmgs.Form": [
+    "widget.avisocimsmgs1"
   ],
   "TK.view.avisogu29k.Form": [
     "widget.avisogu29k"
@@ -2185,11 +2664,23 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.view.avisogu29k.List": [
     "widget.avisogu29klist"
   ],
-  "TK.view.cim.Form": [
+  "TK.view.cim.CimDocs9TreeFormWin": [
+    "widget.cimDocs9TreeformWin"
+  ],
+  "TK.view.cim.CimForm": [
     "widget.cim"
   ],
-  "TK.view.cim.List": [
+  "TK.view.cim.CimFormPanel": [
+    "widget.cimpanel"
+  ],
+  "TK.view.cim.CimList": [
     "widget.cimlist"
+  ],
+  "TK.view.cim.CimPlombsTreeFormWin": [
+    "widget.cimPlombsTreeformWin"
+  ],
+  "TK.view.cim.CimVgCtGrTreeFormWin": [
+    "widget.cimVgCtGrTreeformWin"
   ],
   "TK.view.cimsmgs.CimSmgsDocs9TreeFormWin": [
     "widget.cimsmgsDocs9TreeformWin"
@@ -2212,6 +2703,24 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.view.cmr.List": [
     "widget.cmrlist"
   ],
+  "TK.view.components.PagingSizeChangerPlugin": [
+    "plugin.pagingsizechangerplugin"
+  ],
+  "TK.view.components.SearchFieldLocal": [
+    "widget.searchfieldlocal"
+  ],
+  "TK.view.edit.Cim_g1_detailpanel": [
+    "widget.cim_g1_detailpanel"
+  ],
+  "TK.view.edit.Cim_g4_detailpanel": [
+    "widget.cim_g4_detailpanel"
+  ],
+  "TK.view.edit.Cimsmgs_g1_detailpanel": [
+    "widget.cimsmgs_g1_detailpanel"
+  ],
+  "TK.view.edit.Cimsmgs_g4_detailpanel": [
+    "widget.cimsmgs_g4_detailpanel"
+  ],
   "TK.view.edit.DetailGrid": [
     "widget.detailgrid"
   ],
@@ -2224,11 +2733,29 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.view.edit.Docs9TreeFormWin": [
     "widget.docs9TreeFormWin"
   ],
+  "TK.view.edit.OtpavitelEdit": [
+    "widget.otpaviteledit"
+  ],
   "TK.view.edit.PlombsTreeFormWin": [
     "widget.plombsTreeFormWin"
   ],
+  "TK.view.edit.Smgs2_g1_detailpanel": [
+    "widget.smgs2_g1_detailpanel"
+  ],
+  "TK.view.edit.Smgs2_g4_detailpanel": [
+    "widget.smgs2_g4_detailpanel"
+  ],
   "TK.view.edit.TreeFormWin": [
     "widget.treeFormWin"
+  ],
+  "TK.view.edit.UploadDoc9FormWin": [
+    "widget.uploadDoc9FormWin"
+  ],
+  "TK.view.edit.UploadFormWin": [
+    "widget.uploadFormWin"
+  ],
+  "TK.view.edit.UploadPogruzListFormWin": [
+    "widget.uploadPogruzListFormWin"
   ],
   "TK.view.edit.VgCtGrTreeFormWin": [
     "widget.vgCtGrTreeFormWin"
@@ -2269,6 +2796,457 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.view.invoice.List": [
     "widget.invoicelist"
   ],
+  "TK.view.ky.AbstractForm": [
+    "widget.kyabstractform"
+  ],
+  "TK.view.ky.AbstractList": [
+    "widget.kyabstractlist"
+  ],
+  "TK.view.ky.AbstractWindow": [],
+  "TK.view.ky.BaseAvtosOutDir": [
+    "widget.kybaseavtosoutdir"
+  ],
+  "TK.view.ky.BaseAvtosOutDirFilter": [
+    "widget.kybaseavtosoutdirfilter"
+  ],
+  "TK.view.ky.BaseEditableList": [
+    "widget.kybaseeditablelist"
+  ],
+  "TK.view.ky.BaseGruzForm": [
+    "widget.kybasegruzform"
+  ],
+  "TK.view.ky.BaseGruzList": [
+    "widget.kybasegruzlist"
+  ],
+  "TK.view.ky.BaseKontForm": [
+    "widget.kybasekontform"
+  ],
+  "TK.view.ky.BaseKontIntoForm": [
+    "widget.kybasekontintoform"
+  ],
+  "TK.view.ky.BaseKontIntoList": [
+    "widget.kybasekontintolist"
+  ],
+  "TK.view.ky.BaseKontList": [
+    "widget.kybasekontlist"
+  ],
+  "TK.view.ky.BaseKontOutForm": [
+    "widget.kybasekontoutform"
+  ],
+  "TK.view.ky.BaseKontOutList": [
+    "widget.kybasekontoutlist"
+  ],
+  "TK.view.ky.BaseKontsAllDir": [
+    "widget.kybasekontsalldir"
+  ],
+  "TK.view.ky.BaseKontsAllDirFilter": [
+    "widget.kybasekontsalldirfilter"
+  ],
+  "TK.view.ky.BaseKontsAllDirForOut": [
+    "widget.kybasekontsalldirforout"
+  ],
+  "TK.view.ky.BaseKontsAllDirForYard": [
+    "widget.kybasekontsalldirforyard"
+  ],
+  "TK.view.ky.BaseKontsInAvtoIntoDir": [
+    "widget.kybasekontsinavtointodir"
+  ],
+  "TK.view.ky.BaseKontsInAvtoIntoDirFilter": [
+    "widget.kybasekontsinavtointodirfilter"
+  ],
+  "TK.view.ky.BaseKontsInAvtoIntoDirForOut": [
+    "widget.kybasekontsinavtointodirforout"
+  ],
+  "TK.view.ky.BaseKontsInAvtoIntoDirForYard": [
+    "widget.kybasekontsinavtointodirforyard"
+  ],
+  "TK.view.ky.BaseKontsInPoezdIntoDir": [
+    "widget.kybasekontsinpoezdintodir"
+  ],
+  "TK.view.ky.BaseKontsInPoezdIntoDirFilter": [
+    "widget.kybasekontsinpoezdintodirfilter"
+  ],
+  "TK.view.ky.BaseKontsInPoezdIntoDirForOut": [
+    "widget.kybasekontsinpoezdintodirforout"
+  ],
+  "TK.view.ky.BaseKontsInPoezdIntoDirForYard": [
+    "widget.kybasekontsinpoezdintodirforyard"
+  ],
+  "TK.view.ky.BaseKontsNoTranspDir": [
+    "widget.kybasekontsnotranspdir"
+  ],
+  "TK.view.ky.BaseKontsNoTranspDirFilter": [
+    "widget.kybasekontsnotranspdirfilter"
+  ],
+  "TK.view.ky.BaseKontsYardDir": [
+    "widget.kybasekontsyarddir"
+  ],
+  "TK.view.ky.BaseKontsYardDirFilter": [
+    "widget.kybasekontsyarddirfilter"
+  ],
+  "TK.view.ky.BaseList": [
+    "widget.kybaselist"
+  ],
+  "TK.view.ky.BasePlombList": [
+    "widget.kybaseplomblist"
+  ],
+  "TK.view.ky.BasePoezdsOutDir": [
+    "widget.kybasepoezdsoutdir"
+  ],
+  "TK.view.ky.BasePoezdsOutDirFilter": [
+    "widget.kybasepoezdsoutdirfilter"
+  ],
+  "TK.view.ky.BaseYardDir": [
+    "widget.kybaseyarddir"
+  ],
+  "TK.view.ky.BaseYardDirFilter": [
+    "widget.kybaseyarddirfilter"
+  ],
+  "TK.view.ky.KontIntoOutList": [
+    "widget.kykontintooutlist"
+  ],
+  "TK.view.ky.KontSearchForm": [
+    "widget.kykontsearchform"
+  ],
+  "TK.view.ky.KontSearchList": [
+    "widget.kykontsearchlist"
+  ],
+  "TK.view.ky.avto.AvtoFilter": [
+    "widget.kyavtofilter"
+  ],
+  "TK.view.ky.avto.BaseAvtoForm": [
+    "widget.kybaseavtoform"
+  ],
+  "TK.view.ky.avto.BaseAvtoList": [
+    "widget.kybaseavtolist"
+  ],
+  "TK.view.ky.avto.into.Form": [
+    "widget.kyavtointoform"
+  ],
+  "TK.view.ky.avto.into.List": [
+    "widget.kyavtointolist"
+  ],
+  "TK.view.ky.avto.into.kont.AvtosOutDir": [
+    "widget.kyavtosoutavtointodir"
+  ],
+  "TK.view.ky.avto.into.kont.Form": [
+    "widget.kykontinavtointoform"
+  ],
+  "TK.view.ky.avto.into.kont.List": [
+    "widget.kykontinavtointolist"
+  ],
+  "TK.view.ky.avto.into.kont.PoezdsOutDir": [
+    "widget.kypoezdsoutavtointodir"
+  ],
+  "TK.view.ky.avto.into.kont.YardCancelDir": [
+    "widget.kyyardcancelforavtointodir"
+  ],
+  "TK.view.ky.avto.into.kont.YardDir": [
+    "widget.kyyardforavtointodir"
+  ],
+  "TK.view.ky.avto.into.kont.gruz.Form": [
+    "widget.kygruzinavtointoform"
+  ],
+  "TK.view.ky.avto.into.kont.gruz.List": [
+    "widget.kygruzinavtointolist"
+  ],
+  "TK.view.ky.avto.into.kont.plomb.List": [
+    "widget.kyplombinavtointolist"
+  ],
+  "TK.view.ky.avto.out.Form": [
+    "widget.kyavtooutform"
+  ],
+  "TK.view.ky.avto.out.List": [
+    "widget.kyavtooutlist"
+  ],
+  "TK.view.ky.avto.out.kont.Form": [
+    "widget.kykontinavtooutform"
+  ],
+  "TK.view.ky.avto.out.kont.KontsAllDir": [
+    "widget.kykontsallforavtooutdir"
+  ],
+  "TK.view.ky.avto.out.kont.KontsInAvtoIntoDir": [
+    "widget.kykontsavtointoforavtooutdir"
+  ],
+  "TK.view.ky.avto.out.kont.KontsInPoezdIntoDir": [
+    "widget.kykontspoezdintoforavtooutdir"
+  ],
+  "TK.view.ky.avto.out.kont.KontsNoTranspDir": [
+    "widget.kykontsnoforavtooutdir"
+  ],
+  "TK.view.ky.avto.out.kont.KontsYardDir": [
+    "widget.kykontsyardavtooutdir"
+  ],
+  "TK.view.ky.avto.out.kont.List": [
+    "widget.kykontinavtooutlist"
+  ],
+  "TK.view.ky.avto.out.kont.YardCancelDir": [
+    "widget.kyyardcancelforavtooutdir"
+  ],
+  "TK.view.ky.avto.out.kont.gruz.Form": [
+    "widget.kygruzinavtooutform"
+  ],
+  "TK.view.ky.avto.out.kont.gruz.List": [
+    "widget.kygruzinavtooutlist"
+  ],
+  "TK.view.ky.avto.out.kont.plomb.List": [
+    "widget.kyplombinavtooutlist"
+  ],
+  "TK.view.ky.kontnotransp.AvtosOutDir": [
+    "widget.kyavtosoutnotranspdir"
+  ],
+  "TK.view.ky.kontnotransp.Form": [
+    "widget.kykontnotranspform"
+  ],
+  "TK.view.ky.kontnotransp.List": [
+    "widget.kykontnotransplist"
+  ],
+  "TK.view.ky.kontnotransp.PoezdsOutDir": [
+    "widget.kypoezdsoutnotranspdir"
+  ],
+  "TK.view.ky.kontnotransp.YardDir": [
+    "widget.kyyardnodir"
+  ],
+  "TK.view.ky.kontnotransp.gruz.Form": [
+    "widget.kygruznotranspform"
+  ],
+  "TK.view.ky.kontnotransp.gruz.List": [
+    "widget.kygruznotransplist"
+  ],
+  "TK.view.ky.kontnotransp.plomb.List": [
+    "widget.kyplombnotransplist"
+  ],
+  "TK.view.ky.nsi.BaseFilter": [
+    "widget.kybasensifilter"
+  ],
+  "TK.view.ky.nsi.BaseForm": [
+    "widget.kybasensiform"
+  ],
+  "TK.view.ky.nsi.BaseList": [
+    "widget.kybasensilist"
+  ],
+  "TK.view.ky.nsi.avto.Filter": [
+    "widget.kynsiavtofilter"
+  ],
+  "TK.view.ky.nsi.avto.Form": [
+    "widget.kynsiavtoform"
+  ],
+  "TK.view.ky.nsi.avto.List": [
+    "widget.kynsiavtolist"
+  ],
+  "TK.view.ky.nsi.kont.Filter": [
+    "widget.kynsikontfilter"
+  ],
+  "TK.view.ky.nsi.kont.Form": [
+    "widget.kynsikontform"
+  ],
+  "TK.view.ky.nsi.kont.List": [
+    "widget.kynsikontlist"
+  ],
+  "TK.view.ky.nsi.owner.Filter": [
+    "widget.kynsiownerfilter"
+  ],
+  "TK.view.ky.nsi.owner.Form": [
+    "widget.kynsiownerform"
+  ],
+  "TK.view.ky.nsi.owner.List": [
+    "widget.kynsiownerlist"
+  ],
+  "TK.view.ky.nsi.vagon.Filter": [
+    "widget.kynsivagonfilter"
+  ],
+  "TK.view.ky.nsi.vagon.shir.Form": [
+    "widget.kynsivagonshirform"
+  ],
+  "TK.view.ky.nsi.vagon.shir.List": [
+    "widget.kynsivagonshirlist"
+  ],
+  "TK.view.ky.nsi.vagon.uzky.Form": [
+    "widget.kynsivagonuzkyform"
+  ],
+  "TK.view.ky.nsi.vagon.uzky.List": [
+    "widget.kynsivagonuzkylist"
+  ],
+  "TK.view.ky.poezd.BaseKontList": [
+    "widget.kybasekontlistforpoezd"
+  ],
+  "TK.view.ky.poezd.BaseListForPoezd": [
+    "widget.kybaselistforpoezd"
+  ],
+  "TK.view.ky.poezd.BasePoezdForm": [
+    "widget.kybasepoezdform"
+  ],
+  "TK.view.ky.poezd.BasePoezdList": [
+    "widget.kybasepoezdlist"
+  ],
+  "TK.view.ky.poezd.BaseVagonForm": [
+    "widget.kybasevagonform"
+  ],
+  "TK.view.ky.poezd.BaseVagonList": [
+    "widget.kybasevagonlist"
+  ],
+  "TK.view.ky.poezd.PoezdFilter": [
+    "widget.kypoezdfilter"
+  ],
+  "TK.view.ky.poezd.into.Form": [
+    "widget.kypoezdintoform"
+  ],
+  "TK.view.ky.poezd.into.KontList": [
+    "widget.kykontlistforpoezdinto"
+  ],
+  "TK.view.ky.poezd.into.List": [
+    "widget.kypoezdintolist"
+  ],
+  "TK.view.ky.poezd.into.ListForPoezd": [
+    "widget.kylistforpoezdinto"
+  ],
+  "TK.view.ky.poezd.into.vagon.Form": [
+    "widget.kyvagonintoform"
+  ],
+  "TK.view.ky.poezd.into.vagon.List": [
+    "widget.kyvagonintolist"
+  ],
+  "TK.view.ky.poezd.into.vagon.kont.AvtosOutDir": [
+    "widget.kyavtosoutpoezdintodir"
+  ],
+  "TK.view.ky.poezd.into.vagon.kont.Form": [
+    "widget.kykontinpoezdintoform"
+  ],
+  "TK.view.ky.poezd.into.vagon.kont.List": [
+    "widget.kykontinpoezdintolist"
+  ],
+  "TK.view.ky.poezd.into.vagon.kont.PoezdsOutDir": [
+    "widget.kypoezdsoutpoezdintodir"
+  ],
+  "TK.view.ky.poezd.into.vagon.kont.YardCancelDir": [
+    "widget.kyyardcancelforpoezdintodir"
+  ],
+  "TK.view.ky.poezd.into.vagon.kont.YardDir": [
+    "widget.kyyardforpoezdintodir"
+  ],
+  "TK.view.ky.poezd.into.vagon.kont.gruz.Form": [
+    "widget.kygruzinpoezdintoform"
+  ],
+  "TK.view.ky.poezd.into.vagon.kont.gruz.List": [
+    "widget.kygruzinpoezdintolist"
+  ],
+  "TK.view.ky.poezd.into.vagon.kont.plomb.List": [
+    "widget.kyplombinpoezdintolist"
+  ],
+  "TK.view.ky.poezd.out.Form": [
+    "widget.kypoezdoutform"
+  ],
+  "TK.view.ky.poezd.out.KontList": [
+    "widget.kykontlistforpoezdout"
+  ],
+  "TK.view.ky.poezd.out.List": [
+    "widget.kypoezdoutlist"
+  ],
+  "TK.view.ky.poezd.out.ListForPoezd": [
+    "widget.kylistforpoezdout"
+  ],
+  "TK.view.ky.poezd.out.vagon.Form": [
+    "widget.kyvagonoutform"
+  ],
+  "TK.view.ky.poezd.out.vagon.List": [
+    "widget.kyvagonoutlist"
+  ],
+  "TK.view.ky.poezd.out.vagon.kont.Form": [
+    "widget.kykontinpoezdoutform"
+  ],
+  "TK.view.ky.poezd.out.vagon.kont.KontsAllDir": [
+    "widget.kykontsallforoutdir"
+  ],
+  "TK.view.ky.poezd.out.vagon.kont.KontsInAvtoIntoDir": [
+    "widget.kykontsavtointoforoutdir"
+  ],
+  "TK.view.ky.poezd.out.vagon.kont.KontsInPoezdIntoDir": [
+    "widget.kykontspoezdintoforoutdir"
+  ],
+  "TK.view.ky.poezd.out.vagon.kont.KontsNoTranspDir": [
+    "widget.kykontsnoforoutdir"
+  ],
+  "TK.view.ky.poezd.out.vagon.kont.KontsYardDir": [
+    "widget.kykontsyardoutdir"
+  ],
+  "TK.view.ky.poezd.out.vagon.kont.List": [
+    "widget.kykontinpoezdoutlist"
+  ],
+  "TK.view.ky.poezd.out.vagon.kont.YardCancelDir": [
+    "widget.kyyardcancelforpoezdoutdir"
+  ],
+  "TK.view.ky.poezd.out.vagon.kont.gruz.Form": [
+    "widget.kygruzinpoezdoutform"
+  ],
+  "TK.view.ky.poezd.out.vagon.kont.gruz.List": [
+    "widget.kygruzinpoezdoutlist"
+  ],
+  "TK.view.ky.poezd.out.vagon.kont.plomb.List": [
+    "widget.kyplombinpoezdoutlist"
+  ],
+  "TK.view.ky.reports.Report1": [
+    "widget.kyreport1"
+  ],
+  "TK.view.ky.reports.Report2": [
+    "widget.kyreport2"
+  ],
+  "TK.view.ky.reports.Report3": [
+    "widget.kyreport3"
+  ],
+  "TK.view.ky.reports.Report4": [
+    "widget.kyreport4"
+  ],
+  "TK.view.ky.reports.Report5": [
+    "widget.kyreport5"
+  ],
+  "TK.view.ky.reports.Report6": [
+    "widget.kyreport6"
+  ],
+  "TK.view.ky.yard.AvtosOutDir": [
+    "widget.kyavtosoutyarddir"
+  ],
+  "TK.view.ky.yard.Filter": [
+    "widget.kyyardfilter"
+  ],
+  "TK.view.ky.yard.Form": [
+    "widget.kyyardform"
+  ],
+  "TK.view.ky.yard.Graf": [
+    "widget.kygrafyardform"
+  ],
+  "TK.view.ky.yard.KontsAllDir": [
+    "widget.kykontsallyarddir"
+  ],
+  "TK.view.ky.yard.KontsInAvtoIntoDir": [
+    "widget.kykontsinavtointoyarddir"
+  ],
+  "TK.view.ky.yard.KontsInPoezdIntoDir": [
+    "widget.kykontsinpoezdintoyarddir"
+  ],
+  "TK.view.ky.yard.KontsNoTranspDir": [
+    "widget.kykontsnotranspyarddir"
+  ],
+  "TK.view.ky.yard.List": [
+    "widget.kyyardlist"
+  ],
+  "TK.view.ky.yard.PoezdsOutDir": [
+    "widget.kypoezdsoutyarddir"
+  ],
+  "TK.view.ky.yard.YardDir": [
+    "widget.kyyardinyarddir"
+  ],
+  "TK.view.ky.yard.kont.Form": [
+    "widget.kykontinyardform"
+  ],
+  "TK.view.ky.yard.kont.gruz.Form": [
+    "widget.kygruzinyardform"
+  ],
+  "TK.view.ky.yard.kont.gruz.List": [
+    "widget.kygruzinyardlist"
+  ],
+  "TK.view.ky.yard.kont.plomb.List": [
+    "widget.kyplombinyardlist"
+  ],
   "TK.view.logs.List": [
     "widget.logslist"
   ],
@@ -2280,6 +3258,13 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "TK.view.nsi.ListDir": [
     "widget.nsilistdir"
+  ],
+  "TK.view.pogruz.Map2BaseSelectForm": [],
+  "TK.view.pogruz.PoezdSelectForm": [
+    "widget.poezdselectform"
+  ],
+  "TK.view.pogruz.SmgsSelectForm": [
+    "widget.smgsselectform"
   ],
   "TK.view.printtmpl.Form": [
     "widget.printTemplate"
@@ -2311,11 +3296,20 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.view.smgs.List": [
     "widget.smgslist"
   ],
+  "TK.view.smgs2.Smgs2Docs9TreeFormWin": [
+    "widget.smgs2Docs9TreeformWin"
+  ],
   "TK.view.smgs2.Smgs2Form": [
     "widget.smgs2"
   ],
   "TK.view.smgs2.Smgs2List": [
     "widget.smgs2list"
+  ],
+  "TK.view.smgs2.Smgs2PlombsTreeFormWin": [
+    "widget.smgs2PlombsTreeformWin"
+  ],
+  "TK.view.smgs2.Smgs2VgCtGrTreeFormWin": [
+    "widget.smgs2VgCtGrTreeformWin"
   ],
   "TK.view.stat.Form": [
     "widget.stat"
@@ -2337,9 +3331,20 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "TK.view.user.ListPrivs": [
     "widget.userlistprivs"
+  ],
+  "TK.view.ved.Form": [
+    "widget.ved"
+  ],
+  "TK.view.ved.List": [
+    "widget.vedlist"
+  ],
+  "TK.view.ved.MenuPart": [
+    "widget.menupart"
+  ],
+  "TK.view.ved.VagsList": [
+    "widget.ved-vags-list"
   ]
 });
-Ext.setVersion("ext-theme-base", "4.2.5.1763");
-Ext.setVersion("ext-theme-classic", "4.2.5.1763");
-Ext.setVersion("ext-theme-gray", "4.2.5.1763");
-Ext.setVersion("ext-theme-neutral", "4.2.5.1763");
+Ext.setVersion("ext-theme-base", "4.2.6.1811");
+Ext.setVersion("ext-theme-classic", "4.2.6.1811");
+Ext.setVersion("ext-theme-neutral", "4.2.6.1811");

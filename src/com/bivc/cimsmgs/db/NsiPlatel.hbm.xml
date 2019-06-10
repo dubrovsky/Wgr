@@ -6,9 +6,10 @@
     <class name="com.bivc.cimsmgs.db.NsiPlatel" table="NSI_PLATEL">
         <id name="hid" type="long">
             <column name="HID" precision="20" scale="0" />
-            <generator class="sequence">
+            <!--<generator class="sequence">
               <param name="sequence">NSI_PLATEL_HID</param>
-            </generator>
+            </generator>-->
+            <generator class="native"/>
         </id>
         <property name="dor" type="string">
             <column name="DOR" length="5" />

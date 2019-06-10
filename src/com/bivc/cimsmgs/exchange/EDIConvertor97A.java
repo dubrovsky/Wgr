@@ -28,10 +28,9 @@ public class EDIConvertor97A extends EDIConvertor {
   final static private Logger log = LoggerFactory.getLogger(EDIConvertor97A.class);
   protected static final int SEL_LENGTH = 50;
 
-  protected static final SimpleDateFormat dateTimeFormater1 = new SimpleDateFormat("dd.MM.yyyy");
   private static final SimpleDateFormat comntDateTimeFormater = Convertor.dtf;
   protected static final String encoding = "Cp1251";
-  private static final HashMap<Byte, String> otmksobMap = new HashMap<Byte, String>();
+  private static final HashMap<Byte, String> otmksobMap = new HashMap<>();
 
   private final String folder = "EDI_Failed";
 
@@ -414,12 +413,12 @@ public class EDIConvertor97A extends EDIConvertor {
     text += "BGM+" + ((typeOb != null && typeOb.intValue() == 1) ? "701" : "720" ) + "+" +
             (g693 != null ? format(g693, 4) + "-" : "") + format(smgsOb.getG694(), 30) + "+" + (oldId == null ? "9" : "4") + nl;
     Date d = smgsOb.buildG16Date();
-    text += "DTM+143:" + format((d != null ? df203.format(d) : "00000000"), 35) + ":203" + nl;
+    text += "DTM+143:" + format(EDIDateFormat.DF203.format(d), 35) + ":203" + nl;
     d = smgsOb.getG281();
-    text += "DTM+137:" + format((d != null ? df203.format(d) : "00000000"), 35) + ":203" + nl;
+    text += "DTM+137:" + format(EDIDateFormat.DF203.format(d), 35) + ":203" + nl;
     text += "TSR++" + format("4", 3) + ":::4+3" + nl; /** @todo уточнит кем осуществляется погрузка */
 
-    Map<Byte, CimSmgsDocs> csd7 = smgsOb.getCimSmgsDocses7();
+    Map<Integer, CimSmgsDocs> csd7 = smgsOb.getCimSmgsDocses7();
     for (CimSmgsDocs csdOb : csd7.values()) {
       String s = csdOb.getText();
       if (StringUtils.isNotBlank(s) || StringUtils.isNotBlank(csdOb.getNdoc()))
@@ -429,7 +428,7 @@ public class EDIConvertor97A extends EDIConvertor {
 
     /** @todo Навести порядок со переходными станциями */
     String rqrStr = "";
-    Map<Byte, CimSmgsDocs> csd13 = smgsOb.getCimSmgsDocses13();
+    Map<Integer, CimSmgsDocs> csd13 = smgsOb.getCimSmgsDocses13();
     for (CimSmgsDocs csdOb : csd13.values()) {
       String code = csdOb.getCode();
 //  Теперь передают по одной строке на код, а будут по одной станции на строку
@@ -458,10 +457,10 @@ public class EDIConvertor97A extends EDIConvertor {
 //
 
     /** @todo Заполнить коды документов в справочнике */
-    Map<Byte, CimSmgsDocs> csd9 = smgsOb.getCimSmgsDocses9();
+    Map<Integer, CimSmgsDocs> csd9 = smgsOb.getCimSmgsDocses9();
     for (CimSmgsDocs csdOb : csd9.values()) {
       d = csdOb.getDat();
-      text += "DOC+" + format(csdOb.getCode(), 3) + ":::" + format(csdOb.getText(), 35) + "+" + format(csdOb.getNdoc(), 35) + ":2:" + format(d != null ? dateTimeFormater1.format(d) : "", 35)  + nl;
+      text += "DOC+" + format(csdOb.getCode(), 3) + ":::" + format(csdOb.getText(), 35) + "+" + format(csdOb.getNdoc(), 35) + ":2:" + format(d != null ? ddoc.format(d) : "", 35)  + nl;
     }
     for (CimSmgsInvoice invOb : smgsOb.getPackDoc().getCsInvoices()) {
       text += "DOC+380:::Инвойс+" +format(invOb.getInvoice(), 35) + ":4" + nl;
@@ -588,7 +587,7 @@ public class EDIConvertor97A extends EDIConvertor {
       Map<Byte, CimSmgsKonList> csk = cscOb.getCimSmgsKonLists();
       for (CimSmgsKonList cskOb : csk.values()) {
         isKont = true;
-        Map<Byte, CimSmgsGruz> csg = cskOb.getCimSmgsGruzs();
+        Map<Integer, CimSmgsGruz> csg = cskOb.getCimSmgsGruzs();
         isManyGruz = csg.size() > 1;
         for (CimSmgsGruz csgOb : csg.values()) {
           /** @todo Нужен код упаковки */
@@ -740,7 +739,7 @@ public class EDIConvertor97A extends EDIConvertor {
     Object ob = invOb.getInvoicId();
     text += "BGM+380+" + format(invOb.getInvoice(), 35) + "+" + (ob == null ? "9" : "4") + nl;
     Date d = invOb.getDat_inv();
-    text += "DTM+137:" + format((d != null ? df203.format(d) : "00000000"), 35) + ":203" + nl;
+    text += "DTM+137:" + format(EDIDateFormat.DF203.format(d), 35) + ":203" + nl;
 //    text += "RFF+CT:" + format(invOb.getN_dog(), 35) + nl;
     if (cs == null) {
       for (CimSmgs csOb : invOb.getPackDoc().getCimSmgses()) {
@@ -960,10 +959,7 @@ public class EDIConvertor97A extends EDIConvertor {
       Date d = null;
       String df = ge(el, 2);
       try {
-        if ("203".equals(df))
-          d = df203.parse(ge(el, 1));
-        else if ("204".equals(df))
-          d = df204.parse(ge(el, 1));
+        d = EDIDateFormat.getEnum(df).parse(ge(el, 1));
       }
       catch (Exception ex) {
         log.warn(ex.getMessage());
@@ -990,10 +986,7 @@ public class EDIConvertor97A extends EDIConvertor {
       Date d = null;
       String df = ge(el, 2);
       try {
-        if ("203".equals(df))
-          d = df203.parse(ge(el, 1));
-        else if ("204".equals(df))
-          d = df204.parse(ge(el, 1));
+        d = EDIDateFormat.getEnum(df).parse(ge(el, 1));
       }
       catch (Exception ex) {
         log.warn(ex.getMessage());

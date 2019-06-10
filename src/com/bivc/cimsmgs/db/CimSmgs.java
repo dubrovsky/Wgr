@@ -2,8 +2,11 @@ package com.bivc.cimsmgs.db;
 
 import com.bivc.cimsmgs.commons.money2str;
 import com.bivc.cimsmgs.commons.myUser;
+import com.bivc.cimsmgs.formats.json.JsonViews;
+import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.opensymphony.xwork2.ActionSupport;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +21,7 @@ import java.util.*;
 // ignore ActionSupport props
 @JsonIgnoreProperties({"iftminLogs","iftminLogsBtlc","tdgLog", "tbc2Logs", "csComnt","cimSmgs","cimSmgses","packDoc","route","statuses", "docType1", "type",
         "actionErrors", "actionMessages", "errorMessages", "fieldErrors", "errors", "texts", "locale"})
+@JsonFilter("cimSmgsPropertyFilter")
 @Entity
 public class CimSmgs extends ActionSupport implements Serializable {
     public static final BigDecimal EPD_DOC_TYPE_HID = new BigDecimal(0);
@@ -27,7 +31,8 @@ public class CimSmgs extends ActionSupport implements Serializable {
     public final static String LIST_DOP_RU = "см. Лист дополнений";
 //    public final static String LIST_DOP_RU = "см. Лист доплнений";
 
-    @JsonSerialize(include = JsonSerialize.Inclusion.ALWAYS)
+//    @JsonSerialize(include = JsonSerialize.Inclusion.ALWAYS)
+    @JsonInclude
     private Long hid;
 
     private CimSmgs cimSmgs;
@@ -259,13 +264,21 @@ public class CimSmgs extends ActionSupport implements Serializable {
     private String g2018r;
     private String g_10_3r;
     private String g_16_33r;
+    private String g1_dop_info;
+    private String g4_dop_info;
+    private String vagVedNum;
 
-    private Map<Byte, CimSmgsDocs> cimSmgsDocses7 = new TreeMap<Byte, CimSmgsDocs>();
-    private Map<Byte, CimSmgsDocs> cimSmgsDocses9 = new TreeMap<Byte, CimSmgsDocs>();
-    private Map<Byte, CimSmgsDocs> cimSmgsDocses13 = new TreeMap<Byte, CimSmgsDocs>();
+    private Map<Integer, CimSmgsDocs> cimSmgsDocses7 = new TreeMap<>();
+
+    @JsonView(JsonViews.DefaultPerevozView.class)
+    private Map<Integer, CimSmgsDocs> cimSmgsDocses9 = new TreeMap<>();
+
+    private Map<Integer, CimSmgsDocs> cimSmgsDocses13 = new TreeMap<>();
     private Map<Byte, CimSmgsCarList> cimSmgsCarLists = new TreeMap<Byte, CimSmgsCarList>();
     //	private List<CimSmgsCarList> vags = new ArrayList<CimSmgsCarList>();
     private Map<Byte, CimSmgsPlatel> cimSmgsPlatels = new TreeMap<Byte, CimSmgsPlatel>();
+
+    @JsonView(JsonViews.DefaultPerevozView.class)
     private Map<Byte, CimSmgsPlomb> cimSmgsPlombs = new TreeMap<Byte, CimSmgsPlomb>();
     private Map<Byte,CimSmgsPerevoz> cimSmgsPerevoz = new TreeMap<>();
 
@@ -296,6 +309,14 @@ public class CimSmgs extends ActionSupport implements Serializable {
     private Byte g26c;
     private String ga661;
     private String ga662;
+
+    public String getVagVedNum() {
+        return vagVedNum;
+    }
+
+    public void setVagVedNum(String vagVedNum) {
+        this.vagVedNum = vagVedNum;
+    }
 
     public String getGa662() {
         return ga662;
@@ -393,6 +414,8 @@ public class CimSmgs extends ActionSupport implements Serializable {
         this.btlc_status = btlc_status;
     }
 
+
+
     //    private String g23a;
     private String g23b;
     private String g74_1;
@@ -479,7 +502,7 @@ public class CimSmgs extends ActionSupport implements Serializable {
     private String g_2inn;
     private String g_5inn;
     private String ftsDocId;
-    private Map<Byte, CimSmgsDocs> cimSmgsDocses136 = new TreeMap<Byte, CimSmgsDocs>();
+    private Map<Integer, CimSmgsDocs> cimSmgsDocses136 = new TreeMap<>();
     private String g_24_bcn;
     private String g36;
     private String g25Txt;
@@ -589,11 +612,11 @@ public class CimSmgs extends ActionSupport implements Serializable {
         this.g_24_bcn = g_24_bcn;
     }
 
-    public Map<Byte, CimSmgsDocs> getCimSmgsDocses136() {
+    public Map<Integer, CimSmgsDocs> getCimSmgsDocses136() {
         return cimSmgsDocses136;
     }
 
-    public void setCimSmgsDocses136(Map<Byte, CimSmgsDocs> cimSmgsDocses136) {
+    public void setCimSmgsDocses136(Map<Integer, CimSmgsDocs> cimSmgsDocses136) {
         this.cimSmgsDocses136 = cimSmgsDocses136;
     }
 
@@ -1038,6 +1061,22 @@ public class CimSmgs extends ActionSupport implements Serializable {
         this.guInf = guInf;
     }
 
+
+    public String getG1_dop_info() {
+        return g1_dop_info;
+    }
+
+    public String getG4_dop_info() {
+        return g4_dop_info;
+    }
+
+    public void setG1_dop_info(String g1_dop_info) {
+        this.g1_dop_info = g1_dop_info;
+    }
+
+    public void setG4_dop_info(String g4_dop_info) {
+        this.g4_dop_info = g4_dop_info;
+    }
     /*public Set<CimSmgsInvoiceBrief> getInvoicesBrief() {
         return invoicesBrief;
     }*/
@@ -1513,16 +1552,21 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
     }
 
     public String buildG15_cs() {
-        return this.g15;
+        return StringUtils.defaultString(this.g15);
     }
 
     public String buildG15_csPrint() {
+        StringBuilder sb = new StringBuilder();
         if(getG15c() != null && getG15c() ==  1){
 //            return LIST_DOP_RU;
-          return getText("form.labelDopList");
+            sb.append(getText("form.labelDopList"));
         } else {
-            return buildG15_cs();
+            sb.append(buildG15_cs());
+            sb.append("\n");
+            sb.append(buildG15r_cs());
         }
+
+        return sb.toString();
     }
 
     public void setG15(String g15) {
@@ -1639,6 +1683,10 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
     public void setG25(Byte g25) {
         this.g25 = g25;
     }
+
+    /*public void setG25(VidOtpr g25) {
+        this.g25 = g25.getG25();
+    }*/
 
     public String getG26() {
         return this.g26;
@@ -2721,7 +2769,7 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
     }
 
     public String buildG15r_cs() {
-        return this.g15r;
+        return StringUtils.defaultString(this.g15r);
     }
 
     public String buildG15r_csPrint() {
@@ -3307,19 +3355,19 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
     // public void setCimSmgsGruzs(Map<Byte, CimSmgsGruz> cimSmgsGruzs) {
     // this.cimSmgsGruzs = cimSmgsGruzs;
     // }
-    public Map<Byte, CimSmgsDocs> getCimSmgsDocses7() {
+    public Map<Integer, CimSmgsDocs> getCimSmgsDocses7() {
         return this.cimSmgsDocses7;
     }
 
-    public void setCimSmgsDocses7(Map<Byte, CimSmgsDocs> cimSmgsDocses7) {
+    public void setCimSmgsDocses7(Map<Integer, CimSmgsDocs> cimSmgsDocses7) {
         this.cimSmgsDocses7 = cimSmgsDocses7;
     }
 
-    public Map<Byte, CimSmgsDocs> getCimSmgsDocses9() {
+    public Map<Integer, CimSmgsDocs> getCimSmgsDocses9() {
         return this.cimSmgsDocses9;
     }
 
-    public void setCimSmgsDocses9(Map<Byte, CimSmgsDocs> cimSmgsDocses9) {
+    public void setCimSmgsDocses9(Map<Integer, CimSmgsDocs> cimSmgsDocses9) {
         this.cimSmgsDocses9 = cimSmgsDocses9;
     }
 
@@ -3331,7 +3379,7 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
         return g44_1;
     }
 
-    public Map<Byte, CimSmgsDocs> getCimSmgsDocses13() {
+    public Map<Integer, CimSmgsDocs> getCimSmgsDocses13() {
         return cimSmgsDocses13;
     }
 
@@ -3401,7 +3449,7 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
         this.g44_1 = g44_1;
     }
 
-    public void setCimSmgsDocses13(Map<Byte, CimSmgsDocs> cimSmgsDocses13) {
+    public void setCimSmgsDocses13(Map<Integer, CimSmgsDocs> cimSmgsDocses13) {
         this.cimSmgsDocses13 = cimSmgsDocses13;
     }
 
@@ -3589,8 +3637,9 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
         for (CimSmgsCarList car : cimSmgsCarLists.values()) {
             car.setCimSmgs(this);
             car.addCimSmgsGruzs();
-            car.addCimSmgsKonLists();
+            car.addCimSmgsDocs9();
             car.addCimSmgsPlombs();
+            car.addCimSmgsKonLists();
         }
     }
 
@@ -3712,6 +3761,11 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
         }
         return g.toString();
     }*/
+
+    /**
+     * Generates print string for g1 smgs2.
+     * @return print string
+     */
     public String buildG1Print() {
         StringBuilder result = new StringBuilder();
         StringBuilder row1 = new StringBuilder();
@@ -3719,52 +3773,91 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
         StringBuilder row3 = new StringBuilder();
 
         // 1 row
+        //name ru
         row1.append(StringUtils.isNotBlank(g1r) ? g1r : "");
 
-        if (StringUtils.isNotBlank(g2_1)) {
-            row1.append(row1.length() > 0 ? " " : "");
-            row1.append("ТГНЛ ").append(g2_1);
+        // 2 row
+        // adress ru
+        if (StringUtils.isNotBlank(g19r)) {
+            row2.append(g19r);
         }
-        row1.append(row1.length() > 0 ? ";" : "");
-
+        //city
+        if (StringUtils.isNotBlank(g18r_1)) {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append(g18r_1);
+        }
+        //country
+        if (StringUtils.isNotBlank(g16r)) {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append(g16r);
+        }
+        //index
+        if (StringUtils.isNotBlank(g17_1)) {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append(g17_1);
+        }
+        //ОКПО
         if (StringUtils.isNotBlank(g2)) {
-            row1.append(row1.length() > 0 ? " " : "");
-            row1.append("ОКПО ").append(g2);
-            row1.append(row1.length() > 0 ? ";" : "");
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append("ОКПО ").append(g2);
         }
+        //ИИН
+        if (StringUtils.isNotBlank(g_2inn))
+        {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append("ИИН ").append(g_2inn);
+        }
+
+        //row 3
+        // dop_info
+        if(StringUtils.isNotBlank(g1_dop_info))
+        {
+            row3.append(g1_dop_info);
+        }
+
+//        if (StringUtils.isNotBlank(g2_1)) {
+//            row1.append(row1.length() > 0 ? " " : "");
+//            row1.append("ТГНЛ ").append(g2_1);
+//        }
+//        row1.append(row1.length() > 0 ? ";" : "");
+
+
 
         // 2 row
-        row2.append(StringUtils.isNotBlank(g_2inn) ? "ИИН " + g_2inn : "");
+
 
         // 3 row
-        row3.append(StringUtils.isNotBlank(g15_1) ? g15_1 : "");
+     //   row3.append(StringUtils.isNotBlank(g15_1) ? g15_1 : "");
 
-        if (StringUtils.isNotBlank(g16r)) {
-            row3.append(row3.length() > 0 ? " " : "");
-            row3.append(g16r);
-        }
-        row3.append(row3.length() > 0 ? ";" : "");
+//
+//        row3.append(row3.length() > 0 ? ";" : "");
+//
+//        if (StringUtils.isNotBlank(g18r_1)) {
+//            row3.append(row3.length() > 0 ? " " : "");
+//            row3.append(g18r_1);
+//            row3.append(row3.length() > 0 ? ";" : "");
+//        }
 
-        if (StringUtils.isNotBlank(g18r_1)) {
-            row3.append(row3.length() > 0 ? " " : "");
-            row3.append(g18r_1);
-            row3.append(row3.length() > 0 ? ";" : "");
-        }
 
-        if (StringUtils.isNotBlank(g19r)) {
-            row3.append(row3.length() > 0 ? " " : "");
-            row3.append(g19r);
-        }
+        // g1_dop_info
+
 
         // result
-        result.append(row1.length() > 0 ? row1 : "");
-        if (row2.length() > 0) {
-            result.append(result.length() > 0 ? "\n" : "");
-            result.append(row2);
+        if (row1.length() > 0)
+        {
+            result.append(row1);
+            result.append("\n");
         }
-
+        if (row2.length() > 0) {
+            result.append(row2);
+            result.append("\n");
+        }
         if (row3.length() > 0) {
-            result.append(result.length() > 0 ? "\n" : "");
             result.append(row3);
         }
 
@@ -3772,22 +3865,145 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
     }
 
     public String buildG1CsPrint() {
-        String _g1a = (g1 != null ? g1 : "");
-        String _g1b = (g19_1 != null ? g19_1 : "") +
-                // (g15_1 != null ? g15_1 : "") + " " +
-                (g17_1 != null ? " " + g17_1 : "") + (g18_1 != null ? " " + g18_1 : "");
-        String _g1c = (g16_1 != null ? g16_1 : "") + (g110 != null ? " " + g110 : "");
-        String _g1 = _g1a + (_g1a != null && _g1a.trim().length() > 0 ? "\n" : "") + _g1b
-                + (_g1b != null && _g1b.trim().length() > 0 ? "\n" : "") + _g1c + (_g1c != null && _g1c.trim().length() > 0 ? "\n" : "");
+        if(getG1c() != null && getG1c() ==  1){
+            return getText("form.labelDopList");
+        } else {
+            return buildG1Cs();
+        }
+    }
 
-        String _g1ra = (g1r != null ? g1r : "");
-        String _g1rb = (g19r != null ? g19r : "") +
-                // (g15_1 != null ? g15_1 : "") + " " +
-                (g17_1 != null ? " " + g17_1 : "") + (g18r_1 != null ? " " + g18r_1 : "") + (g2_1 != null ? "\n" + g2_1 : "");
-        String _g1rc = (g16r != null ? g16r : "") + (g110 != null ? " " + g110 : "");
-        String _g1r = _g1ra + (_g1ra != null && _g1ra.trim().length() > 0 ? "\n" : "") + _g1rb
-                + (_g1rb != null && _g1rb.trim().length() > 0 ? "\n" : "") + _g1rc;
-        return (_g1.length() > 0 ? _g1 : "") + _g1r;
+    /**
+     * Generates print string for g1 CIM/SMGS.
+     * @return print string
+     */
+    public String buildG1Cs() {
+        StringBuilder result = new StringBuilder();
+        StringBuilder _g1 = new StringBuilder();
+        StringBuilder _g1r = new StringBuilder();
+        StringBuilder row1 = new StringBuilder();
+        StringBuilder row2 = new StringBuilder();
+        StringBuilder row3 = new StringBuilder();
+// non-ru part
+        // 1 row
+        //name
+        row1.append(StringUtils.isNotBlank(g1) ? g1 : "");
+        // 2 row
+        // adress
+        if (StringUtils.isNotBlank(g19_1)) {
+            row2.append(g19_1);
+        }
+        //city
+        if (StringUtils.isNotBlank(g18_1)) {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append(g18_1);
+        }
+        //country
+        if (StringUtils.isNotBlank(g16_1)) {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append(g16_1);
+        }
+        //index
+        if (StringUtils.isNotBlank(g17_1)) {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append(g17_1);
+        }
+        //VAT
+        if (StringUtils.isNotBlank(g110))
+        {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append("VAT ").append(g110);
+        }
+
+        if (row1.length() > 0)
+        {
+            _g1.append(row1);
+            _g1.append("\n");
+        }
+        if (row2.length() > 0) {
+            _g1.append(row2);
+        }
+        row1.setLength(0);
+        row2.setLength(0);
+        // ru part
+        // 1 row
+        //name
+        row1.append(StringUtils.isNotBlank(g1r) ? g1r : "");
+        // 2 row
+        // adress
+        if (StringUtils.isNotBlank(g19r)) {
+            row2.append(g19r);
+        }
+        //city
+        if (StringUtils.isNotBlank(g18r_1)) {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append(g18r_1);
+        }
+        //country
+        if (StringUtils.isNotBlank(g16r)) {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append(g16r);
+        }
+        //index
+        if (StringUtils.isNotBlank(g17_1)) {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append(g17_1);
+        }
+        //VAT
+        if (StringUtils.isNotBlank(g110))
+        {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append("VAT ").append(g110);
+        }
+        //row 3
+        // dop_info
+        if(StringUtils.isNotBlank(g1_dop_info))
+        {
+            row3.append(g1_dop_info);
+        }
+        if (row1.length() > 0)
+        {
+            _g1r.append(row1);
+            _g1r.append("\n");
+        }
+        if (row2.length() > 0) {
+            _g1r.append(row2);
+            _g1r.append("\n");
+        }
+        if (row3.length() > 0) {
+            _g1r.append(row3);
+        }
+        result.append("");
+        if(_g1.length()>0)
+            result.append(_g1).append("\n");
+        if(_g1r.length()>0)
+            result.append(_g1r);
+
+        return  result.toString();
+
+//        String _g1a = (g1 != null ? g1 : "");
+//        String _g1b = (g19_1 != null ? g19_1 : "") +
+//                // (g15_1 != null ? g15_1 : "") + " " +
+//                (g17_1 != null ? " " + g17_1 : "") + (g18_1 != null ? " " + g18_1 : "");
+//        String _g1c = (g16_1 != null ? g16_1 : "") + (g110 != null ? " " + g110 : "");
+//        String _g1 = _g1a + (_g1a != null && _g1a.trim().length() > 0 ? "\n" : "") + _g1b
+//                + (_g1b != null && _g1b.trim().length() > 0 ? "\n" : "") + _g1c + (_g1c != null && _g1c.trim().length() > 0 ? "\n" : "");
+//
+//        String _g1ra = (g1r != null ? g1r : "");
+//        String _g1rb = (g19r != null ? g19r : "") +
+//                // (g15_1 != null ? g15_1 : "") + " " +
+//                (g17_1 != null ? " " + g17_1 : "") + (g18r_1 != null ? " " + g18r_1 : "") + (g2_1 != null ? "\n" + g2_1 : "");
+//        String _g1rc = (g16r != null ? g16r : "") + (g110 != null ? " " + g110 : "");
+//        String _g1r = _g1ra + (_g1ra != null && _g1ra.trim().length() > 0 ? "\n" : "") + _g1rb
+//                + (_g1rb != null && _g1rb.trim().length() > 0 ? "\n" : "") + _g1rc;
+//        return (_g1.length() > 0 ? _g1 : "") + _g1r +" "+ g1_dop_info;
     }
 
     public String buildGuG2Print() {
@@ -3839,13 +4055,73 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
         return naim + strn + addr;
     }
 
+    /**
+     * generates print string for g1 CIM.
+     * @return print string
+     */
     public String buildG1CimPrint() {
-        String naim, strn, addr, nl = "\n";
-        naim = getG1() != null ? getG1() + nl : "";
-        strn = (getG_1_5k() != null ? getG_1_5k() + " " : "") + (getG16_1() != null ? getG16_1() : "");
-        if (strn.length() > 0) strn += nl;
-        addr = (getG18_1() != null ? getG18_1() + " " : "") + (getG19_1() != null ? getG19_1() : "");
-        return naim + strn + addr;
+        StringBuilder result = new StringBuilder();
+        StringBuilder row1 = new StringBuilder();
+        StringBuilder row2 = new StringBuilder();
+        StringBuilder row3 = new StringBuilder();
+
+        // 1 row
+        //name
+        row1.append(StringUtils.isNotBlank(g1) ? g1 : "");
+        // 2 row
+        // adress
+        if (StringUtils.isNotBlank(g19_1)) {
+            row2.append(g19_1);
+        }
+        //city
+        if (StringUtils.isNotBlank(g18_1)) {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append(g18_1);
+        }
+        //country
+        if (StringUtils.isNotBlank(g16_1)) {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append(g16_1);
+        }
+        //index
+        if (StringUtils.isNotBlank(g17_1)) {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append(g17_1);
+        }
+        //VAT
+        if (StringUtils.isNotBlank(g110)) {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append("ОКПО ").append(g110);
+        }
+        //row 3
+        // dop_info
+        if(StringUtils.isNotBlank(g1_dop_info))
+        {
+            row3.append(g1_dop_info);
+        }
+        if (row1.length() > 0)
+        {
+            result.append(row1);
+            result.append("\n");
+        }
+        if (row2.length() > 0) {
+            result.append(row2);
+            result.append("\n");
+        }
+        if (row3.length() > 0) {
+            result.append(row3);
+        }
+        return result.toString();
+//        String naim, strn, addr, nl = "\n";
+//        naim = getG1() != null ? getG1() + nl : "";
+//        strn = (getG_1_5k() != null ? getG_1_5k() + " " : "") + (getG16_1() != null ? getG16_1() : "");
+//        if (strn.length() > 0) strn += nl;
+//        addr = (getG18_1() != null ? getG18_1() + " " : "") + (getG19_1() != null ? getG19_1() : "");
+//        return naim + strn + addr;
     }
 
     public String buildG1SlovNPrint() {
@@ -3882,13 +4158,73 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
         return naim + strn + addr;
     }
 
+    /**
+     * generates print string for g4 CIM
+     * @return print string
+     */
     public String buildG4CimPrint() {
-        String naim, strn, addr, nl = "\n";
-        naim = getG4() != null ? getG4() + nl : "";
-        strn = (getG_4_5k() != null ? getG_4_5k() + " " : "") + (getG46_1() != null ? getG46_1() : "");
-        if (strn.length() > 0) strn += nl;
-        addr = (getG48_1() != null ? getG48_1() + " " : "") + (getG49() != null ? getG49() : "");
-        return naim + strn + addr;
+        StringBuilder result = new StringBuilder();
+        StringBuilder row1 = new StringBuilder();
+        StringBuilder row2 = new StringBuilder();
+        StringBuilder row3 = new StringBuilder();
+
+        // 1 row
+        //name
+        row1.append(StringUtils.isNotBlank(g4) ? g4 : "");
+        // 2 row
+        // adress
+        if (StringUtils.isNotBlank(g49)) {
+            row2.append(g49);
+        }
+        //city
+        if (StringUtils.isNotBlank(g48_1)) {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append(g48_1);
+        }
+        //country
+        if (StringUtils.isNotBlank(g46_1)) {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append(g46_1);
+        }
+        //index
+        if (StringUtils.isNotBlank(g47_1)) {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append(g47_1);
+        }
+        //VAT
+        if (StringUtils.isNotBlank(g410)) {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append("ОКПО ").append(g410);
+        }
+        //row 3
+        // dop_info
+        if(StringUtils.isNotBlank(g4_dop_info))
+        {
+            row3.append(g4_dop_info);
+        }
+        if (row1.length() > 0)
+        {
+            result.append(row1);
+            result.append("\n");
+        }
+        if (row2.length() > 0) {
+            result.append(row2);
+            result.append("\n");
+        }
+        if (row3.length() > 0) {
+            result.append(row3);
+        }
+        return result.toString();
+//        String naim, strn, addr, nl = "\n";
+//        naim = getG4() != null ? getG4() + nl : "";
+//        strn = (getG_4_5k() != null ? getG_4_5k() + " " : "") + (getG46_1() != null ? getG46_1() : "");
+//        if (strn.length() > 0) strn += nl;
+//        addr = (getG48_1() != null ? getG48_1() + " " : "") + (getG49() != null ? getG49() : "");
+//        return naim + strn + addr;
     }
 
     public String buildG5SlovNPrint() {
@@ -3979,6 +4315,11 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
          }
          return g.toString();
      }*/
+
+    /**
+     * Generates print string for g4 smgs2.
+     * @return print string
+     */
     public String buildG4Print() {
         StringBuilder result = new StringBuilder();
         StringBuilder row1 = new StringBuilder();
@@ -3986,42 +4327,64 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
         StringBuilder row3 = new StringBuilder();
 
         // 1 row
+        //name ru
         row1.append(StringUtils.isNotBlank(g4r) ? g4r : "");
 
-        if (StringUtils.isNotBlank(g5_1)) {
-            row1.append(row1.length() > 0 ? " " : "");
-            row1.append("ТГНЛ ").append(g5_1);
-        }
-        row1.append(row1.length() > 0 ? ";" : "");
-
-        if (StringUtils.isNotBlank(g5)) {
-            row1.append(row1.length() > 0 ? " " : "");
-            row1.append("ОКПО ").append(g5);
-            row1.append(row1.length() > 0 ? ";" : "");
-        }
-
         // 2 row
-        row2.append(StringUtils.isNotBlank(g_5inn) ? "ИИН " + g_5inn : "");
+        // adress ru
+        if (StringUtils.isNotBlank(g49r)) {
+            row2.append(g49r);
+        }
+        //city
+        if (StringUtils.isNotBlank(g48r)) {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append(g48r);
+        }
+        //country
+        if (StringUtils.isNotBlank(g46r)) {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append(g46r);
+        }
+        //index
+        if (StringUtils.isNotBlank(g47_1)) {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append(g47_1);
+        }
+        //ОКПО
+        if (StringUtils.isNotBlank(g5)) {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append("ОКПО ").append(g5);
+        }
+        //ИИН
+        if (StringUtils.isNotBlank(g_5inn))
+        {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append("ИИН ").append(g_5inn);
+        }
+        //row 3
+        // g4_dop_info
+        if(StringUtils.isNotBlank(g4_dop_info))
+        {
+            row3.append(g4_dop_info);
+        }
+
+//        if (StringUtils.isNotBlank(g5_1)) {
+//            row1.append(row1.length() > 0 ? " " : "");
+//            row1.append("ТГНЛ ").append(g5_1);
+//        }
+//        row1.append(row1.length() > 0 ? ";" : "");
 
         // 3 row
-        row3.append(StringUtils.isNotBlank(g45_1) ? g45_1 : "");
+     //   row3.append(StringUtils.isNotBlank(g45_1) ? g45_1 : "");
 
-        if (StringUtils.isNotBlank(g46r)) {
-            row3.append(row3.length() > 0 ? " " : "");
-            row3.append(g46r);
-        }
-        row3.append(row3.length() > 0 ? ";" : "");
 
-        if (StringUtils.isNotBlank(g48r)) {
-            row3.append(row3.length() > 0 ? " " : "");
-            row3.append(g48r);
-            row3.append(row3.length() > 0 ? ";" : "");
-        }
+//        row3.append(row3.length() > 0 ? ";" : "");
 
-        if (StringUtils.isNotBlank(g49r)) {
-            row3.append(row3.length() > 0 ? " " : "");
-            row3.append(g49r);
-        }
 
         // result
         result.append(row1.length() > 0 ? row1 : "");
@@ -4039,20 +4402,142 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
     }
 
     public String buildG4CsPrint() {
-        String _g4a = (g4 != null ? g4 : "");
-        String _g4b = (g49 != null ? g49 : "") + (g45_1 != null ? " " + g45_1 : "") + (g47_1 != null ? " " + g47_1 : "")
-                + (g48_1 != null ? " " + g48_1 : "");
-        String _g4c = (g46_1 != null ? g46_1 : "") + (g410 != null ? " " + g410 : "");
-        String _g4 = _g4a + (_g4a != null && _g4a.trim().length() > 0 ? "\n" : "") + _g4b
-                + (_g4b != null && _g4b.trim().length() > 0 ? "\n" : "") + _g4c + (_g4c != null && _g4c.trim().length() > 0 ? "\n" : "");
+        if(getG4c() != null && getG4c() ==  1){
+            return getText("form.labelDopList");
+        } else {
+            return buildG4Cs();
+        }
+    }
 
-        String _g4ra = (g4r != null ? g4r : "");
-        String _g4rb = (g49r != null ? g49r : "") + (g45_1 != null ? " " + g45_1 : "") + (g47_1 != null ? " " + g47_1 : "")
-                + (g48r != null ? " " + g48r : "") + (g5_1 != null ? "\n" + g5_1 : "");
-        String _g4rc = (g46r != null ? g46r : "") + (g410 != null ? " " + g410 : "");
-        String _g4r = _g4ra + (_g4ra != null && _g4ra.trim().length() > 0 ? "\n" : "") + _g4rb
-                + (_g4rb != null && _g4rb.trim().length() > 0 ? "\n" : "") + _g4rc;
-        return (_g4.length() > 0 ? _g4 : "") + _g4r;
+    /**
+     * Generates print string for g4 CIM/SMGS.
+     * @return
+     */
+    public String buildG4Cs() {
+        StringBuilder result = new StringBuilder();
+        StringBuilder _g4 = new StringBuilder();
+        StringBuilder _g4r = new StringBuilder();
+        StringBuilder row1 = new StringBuilder();
+        StringBuilder row2 = new StringBuilder();
+        StringBuilder row3 = new StringBuilder();
+
+// non-ru part
+        // 1 row
+        //name
+        row1.append(StringUtils.isNotBlank(g4) ? g4 : "");
+        // 2 row
+        // adress
+        if (StringUtils.isNotBlank(g49)) {
+            row2.append(g49);
+        }
+        //city
+        if (StringUtils.isNotBlank(g48_1)) {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append(g48_1);
+        }
+        //country
+        if (StringUtils.isNotBlank(g46_1)) {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append(g46_1);
+        }
+        //index
+        if (StringUtils.isNotBlank(g47_1)) {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append(g47_1);
+        }
+        //VAT
+        if (StringUtils.isNotBlank(g410))
+        {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append("VAT ").append(g410);
+        }
+        if (row1.length() > 0)
+        {
+            _g4.append(row1);
+            _g4.append("\n");
+        }
+        if (row2.length() > 0) {
+            _g4.append(row2);
+        }
+        row1.setLength(0);
+        row2.setLength(0);
+        // ru part
+        // 1 row
+        //name
+        row1.append(StringUtils.isNotBlank(g4r) ? g4r : "");
+        // 2 row
+        // adress
+        if (StringUtils.isNotBlank(g49r)) {
+            row2.append(g49r);
+        }
+        //city
+        if (StringUtils.isNotBlank(g48r)) {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append(g48r);
+        }
+        //country
+        if (StringUtils.isNotBlank(g46r)) {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append(g46r);
+        }
+        //index
+        if (StringUtils.isNotBlank(g47_1)) {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append(g47_1);
+        }
+        //VAT
+        if (StringUtils.isNotBlank(g410))
+        {
+            if (StringUtils.isNotBlank(row2))
+                row2.append(", ");
+            row2.append("VAT ").append(g410);
+        }
+        //row 3
+        // dop_info
+        if(StringUtils.isNotBlank(g4_dop_info))
+        {
+            row3.append(g4_dop_info);
+        }
+        if (row1.length() > 0)
+        {
+            _g4r.append(row1);
+            _g4r.append("\n");
+        }
+        if (row2.length() > 0) {
+            _g4r.append(row2);
+            _g4r.append("\n");
+        }
+        if (row3.length() > 0) {
+            _g4r.append(row3);
+        }
+        result.append("");
+        if(_g4.length()>0)
+            result.append(_g4).append("\n");
+        if(_g4r.length()>0)
+            result.append(_g4r);
+
+        return  result.toString();
+//        String _g4a = (g4 != null ? g4 : "");
+//        String _g4b = (g49 != null ? g49 : "") + (g45_1 != null ? " " + g45_1 : "") + (g47_1 != null ? " " + g47_1 : "")
+//                + (g48_1 != null ? " " + g48_1 : "");
+//        String _g4c = (g46_1 != null ? g46_1 : "") + (g410 != null ? " " + g410 : "");
+//        String _g4 = _g4a + (_g4a != null && _g4a.trim().length() > 0 ? "\n" : "") + _g4b
+//                + (_g4b != null && _g4b.trim().length() > 0 ? "\n" : "") + _g4c + (_g4c != null && _g4c.trim().length() > 0 ? "\n" : "");
+//
+//        String _g4ra = (g4r != null ? g4r : "");
+//        String _g4rb = (g49r != null ? g49r : "") + (g45_1 != null ? " " + g45_1 : "") + (g47_1 != null ? " " + g47_1 : "")
+//                + (g48r != null ? " " + g48r : "") + (g5_1 != null ? "\n" + g5_1 : "");
+//        String _g4rc = (g46r != null ? g46r : "") + (g410 != null ? " " + g410 : "");
+//        String _g4r = _g4ra + (_g4ra != null && _g4ra.trim().length() > 0 ? "\n" : "") + _g4rb
+//                + (_g4rb != null && _g4rb.trim().length() > 0 ? "\n" : "") + _g4rc;
+//        return (_g4.length() > 0 ? _g4 : "") + _g4r+" "+ g4_dop_info;
     }
 
     public String buildG10CsPrint() {
@@ -4318,11 +4803,14 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
             _f7.append(elem.getText() != null ? " " + elem.getText() : "");
             _f7.append(elem.getText() != null && elem.getText2() != null ? " /" : "");
             _f7.append(elem.getText2() != null ? " " + elem.getText2() : "");
-            _f7.append("\n");
+            _f7.append(" ");
         }
 
         StringBuffer _f722 = new StringBuffer();
-        if (cimSmgsPlatels.size() > 0) _f722.append("22.");
+        if (cimSmgsPlatels.size() > 0) {
+            _f722.append("22.");
+        }
+        
         for (CimSmgsPlatel elem : cimSmgsPlatels.values()) {
             _f722.append(" Оплата по ");
             _f722.append(elem.getDorR() != null ? elem.getDorR() : "");
@@ -4340,8 +4828,9 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
             _f722.append(elem.getKplat1() != null ? " п/к " + elem.getKplat1() : "");
             _f722.append(";");
         }
-        if (cimSmgsPlatels.size() > 0)
+        if (cimSmgsPlatels.size() > 0) {
             _f722.append("\n");
+        }
         _f722.append(getG4prim() != null ? getG4prim() : "");
 
         _f7.append(_f722);
@@ -4460,15 +4949,69 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
     }
 
     public String buildG19CsPrint() {
+        final String text = "Siehe Nachweisung\nсм. Ведомость";
+
         switch (getCimSmgsCarLists().size()){
             case 1:
-                return getCimSmgsCarLists().values().iterator().next().vag4CimSmgs1();
+                if(countConts() > 1) {
+                    return text;
+                } else {
+                    return getCimSmgsCarLists().values().iterator().next().vag4CimSmgs1();
+                }
             case 0:
                 return "";
             default:
-                return "Siehe Nachweisung\nсм. Ведомость";
+                return text;
         }
 //        return getCimSmgsCarLists().size() > 0 ? getCimSmgsCarLists().values().iterator().next().vag4CimSmgs1() : "";
+    }
+
+    public String buildG19GrPdCsPrint() {
+        String result = "";
+        if(getCimSmgsCarLists().size() > 0 && !isGroupContOtpr()){
+            CimSmgsCarList vag = getCimSmgsCarLists().values().iterator().next();
+            result = vag.getGrPod() != null && vag.getGrPod().intValue() > 0 ? vag.getGrPod().toString() : "";
+        }
+        return result;
+    }
+
+    public String buildG19KlOsCsPrint() {
+        String result = "";
+        if(getCimSmgsCarLists().size() > 0 && !isGroupContOtpr()){
+            CimSmgsCarList vag = getCimSmgsCarLists().values().iterator().next();
+            result = vag.getKolOs() != null && vag.getKolOs() > 0 ? vag.getKolOs().toString() : "";
+        }
+        return result;
+    }
+
+    public String buildG19TrVgCsPrint() {
+        String result = "";
+        if(getCimSmgsCarLists().size() > 0 && !isGroupContOtpr()){
+            CimSmgsCarList vag = getCimSmgsCarLists().values().iterator().next();
+            result = vag.getTaraVag() != null && vag.getTaraVag().intValue() > 0 ? vag.getTaraVag().toString() : "";
+        }
+        return result;
+    }
+
+    public String buildG9CsPrint() {
+        final String text = "Siehe Nachweisung\nсм. Ведомость";
+
+        if(getG9c() != null && getG9c() ==  1){
+            return getText("form.labelDopList");
+        } else {
+            switch (getCimSmgsCarLists().size()){
+                case 1:
+                    if(countConts() > 1) {
+                        return text;
+                    } else {
+                        return buildG9Cs();
+                    }
+                case 0:
+                    return "";
+                default:
+                    return text;
+            }
+        }
     }
 
     public String buildG2012CsPrint(){
@@ -4479,24 +5022,35 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
         String delim = "";
 
         for(CimSmgsCarList vag: getCimSmgsCarLists().values()){
-            for(CimSmgsKonList cont: vag.getCimSmgsKonLists().values()){
-                for(CimSmgsPlomb plomb: cont.getCimSmgsPlombs().values()){
-                    if(vagsCount == 1 && vag.getCimSmgsKonLists().size() == 1){
+            if(isContOtpr()) {
+                for (CimSmgsKonList cont : vag.getCimSmgsKonLists().values()) {
+                    for (CimSmgsPlomb plomb : cont.getCimSmgsPlombs().values()) {
+                        if (vagsCount == 1 && vag.getCimSmgsKonLists().size() == 1) {
+                            sb.append(delim);
+                            sb.append(plomb.plomb4CsPrint());
+                            delim = ", ";
+                        }
+                        plombsCount += plomb.getKpl() != null ? plomb.getKpl() : 0;
+                    }
+                    contsCount++;
+                }
+            } else {
+                for (CimSmgsPlomb plomb : vag.getCimSmgsPlombs().values()) {
+                    if (vagsCount == 1) {
                         sb.append(delim);
                         sb.append(plomb.plomb4CsPrint());
                         delim = ", ";
                     }
                     plombsCount += plomb.getKpl() != null ? plomb.getKpl() : 0;
                 }
-                contsCount++;
             }
         }
 
-        if(vagsCount > 1 || contsCount > 1){
+        if(isGroupContOtpr()){
             sb
-                    .append("SEALED / пломбы ")
+                    .append("verschlüsse / пломбы ")
                     .append(plombsCount)
-                    .append(" (см.ведомость)");
+                    .append(" (Siehe Nachweisung / см.ведомость)");
         }
         return sb.toString();
     }
@@ -4544,6 +5098,10 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
             return res.toString();
         }
         return "";
+    }
+
+    public String buildG30CsPrint() {
+        return StringUtils.defaultString(getG30());
     }
 
     public String buildG20_1CsPrint() {
@@ -4606,45 +5164,27 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
         Map <String, CimSmgsGruz> gruzTempMap = new TreeMap<>();
 
         for (CimSmgsCarList car : getCimSmgsCarLists().values()) {
-            for (CimSmgsKonList cont : car.getCimSmgsKonLists().values()) {
-                if(!withDopList) {
-                    // group grys by code gng
-                    for (CimSmgsGruz gruz : cont.getCimSmgsGruzs().values()) {
-                        CimSmgsGruz gruzTemp = gruzTempMap.get(gruz.getKgvn());
-                        if (gruzTemp == null) {
-                            gruzTemp = new CimSmgsGruz();
-
-                            gruzTemp.setEkgvn(gruz.getEkgvn());
-                            gruzTemp.setEnzgr(gruz.getEnzgr());
-                            gruzTemp.setKgvn(gruz.getKgvn());
-                            gruzTemp.setMassa(gruz.getMassa());
-                            gruzTemp.setNzgr(gruz.getNzgr());
-                            gruzTemp.setNzgrEu(gruz.getNzgrEu());
-                            gruzTemp.setPlaces(gruz.getPlaces());
-                            gruzTemp.setUpak(gruz.getUpak());
-                            gruzTemp.setUpakForeign(gruz.getUpakForeign());
-                            gruzTemp.setPlaces(0);
-                            gruzTemp.setMassa(BigDecimal.ZERO);
-
-                            gruzTempMap.put(gruz.getKgvn(), gruzTemp);
+            if(isContOtpr()) {
+                for (CimSmgsKonList cont : car.getCimSmgsKonLists().values()) {
+                    if (!withDopList) {
+                        // group grys by code gng
+                        for (CimSmgsGruz gruz : cont.getCimSmgsGruzs().values()) {
+                            buildCsGruzPrint(gruzTempMap, gruz);
                         }
-                        gruzTemp.setPlaces(
-                                (gruzTemp.getPlaces() == null ? 0 : gruzTemp.getPlaces()) +
-                                        (gruz.getPlaces() == null ? 0 : gruz.getPlaces())
-                        );
-                        gruzTemp.setMassa(
-                                (gruzTemp.getMassa() == null ? BigDecimal.ZERO : gruzTemp.getMassa())
-                                        .add(
-                                                gruz.getMassa() == null ? BigDecimal.ZERO : gruz.getMassa()
-                                        )
-                        );
+                    }
+
+                    if (firstCont == null) {
+                        firstCont = cont;
+                    }
+                    contsCount++;
+                }
+            } else {
+                if (!withDopList) {
+                    // group grys by code gng
+                    for (CimSmgsGruz gruz : car.getCimSmgsGruzs().values()) {
+                        buildCsGruzPrint(gruzTempMap, gruz);
                     }
                 }
-
-                if(firstCont == null){
-                    firstCont = cont;
-                }
-                contsCount++;
             }
         }
 
@@ -4660,7 +5200,7 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
             int index = 0;
             for(CimSmgsGruz gruz: gruzTempMap.values()){
                 sb.append("\n");
-                sb.append(gruz.gruz4CimSmgsEu(index));
+                sb.append(gruz.gruz4CimSmgsEu(index, isGroupContOtpr(), gruzTempMap.size()));
                 index++;
             }
 
@@ -4669,26 +5209,58 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
         }
 
         return sb.toString();
-        /*if(getG20c() != null && getG20c() ==  1){
-            return LIST_DOP_RU;
-        } else {
+    }
 
-            for (CimSmgsCarList vag : getCimSmgsCarLists().values()) {
-                for (CimSmgsKonList kon : vag.getCimSmgsKonLists().values()) {
-                    if (kon.getCimSmgsGruzs() != null && kon.getCimSmgsGruzs().size() > 0) {
-                        if (kon.getCimSmgsGruzs().size() > 1) {
-                            sb.append("Сборный груз: Sammelgut:\n");
-                        }
-                        for (CimSmgsGruz gruz : kon.getCimSmgsGruzs().values()) {
-                            sb.append(gruz.gruz4CimSmgs1());
-                            sb.append("\n");
-                        }
-                    }
+    private void buildCsGruzPrint(Map<String, CimSmgsGruz> gruzTempMap, CimSmgsGruz gruz) {
+        String kgvn = String.valueOf(StringUtils.isNotBlank(gruz.getKgvn()) ? gruz.getKgvn() : -1);
+        CimSmgsGruz gruzTemp = gruzTempMap.get(kgvn);
+        if (gruzTemp == null) {
+            gruzTemp = new CimSmgsGruz();
 
-                }
-            }
-            return sb.toString();
-        }*/
+            gruzTemp.setEkgvn(gruz.getEkgvn());
+            gruzTemp.setEnzgr(gruz.getEnzgr());
+            gruzTemp.setKgvn(kgvn);
+            gruzTemp.setMassa(gruz.getMassa());
+            gruzTemp.setNzgr(gruz.getNzgr());
+            gruzTemp.setNzgrEu(gruz.getNzgrEu());
+            gruzTemp.setPlaces(gruz.getPlaces());
+            gruzTemp.setUpak(gruz.getUpak());
+            gruzTemp.setUpakForeign(gruz.getUpakForeign());
+            gruzTemp.setPlaces(0);
+            gruzTemp.setMassa(BigDecimal.ZERO);
+            gruzTemp.upakGroupsDe(new HashMap<String, Integer>());
+            gruzTemp.upakGroupsRu(new HashMap<String, Integer>());
+            gruzTemp.setCimSmgsDanGruzs(gruz.getCimSmgsDanGruzs());
+
+            gruzTempMap.put(kgvn, gruzTemp);
+        }
+
+        Integer places = gruz.getPlaces() == null ? 0 : gruz.getPlaces();
+        gruzTemp.setPlaces(
+                (gruzTemp.getPlaces() == null ? 0 : gruzTemp.getPlaces()) + places
+        );
+        gruzTemp.setMassa(
+                (gruzTemp.getMassa() == null ? BigDecimal.ZERO : gruzTemp.getMassa())
+                        .add(
+                                gruz.getMassa() == null ? BigDecimal.ZERO : gruz.getMassa()
+                        )
+        );
+
+        String upak = StringUtils.isNotBlank(gruz.getUpak()) && StringUtils.isNotBlank(gruz.getUpak().trim()) ? gruz.getUpak().trim() : "Место";
+        Integer tempPlaces = gruzTemp.upakGroupsRu().get(upak);
+        if(tempPlaces == null){
+            tempPlaces = 0;
+            gruzTemp.upakGroupsRu().put(upak, tempPlaces);
+        }
+        gruzTemp.upakGroupsRu().put(upak, tempPlaces + places);
+
+        upak = StringUtils.isNotBlank(gruz.getUpakForeign()) && StringUtils.isNotBlank(gruz.getUpakForeign().trim()) ? gruz.getUpakForeign().trim() : "Kolli";
+        tempPlaces = gruzTemp.upakGroupsDe().get(upak);
+        if(tempPlaces == null){
+            tempPlaces = 0;
+            gruzTemp.upakGroupsDe().put(upak, tempPlaces);
+        }
+        gruzTemp.upakGroupsDe().put(upak, tempPlaces + places);
     }
 
     public String buildG20Cs() {
@@ -4937,7 +5509,7 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
 
     public String buildGuKodGrPrint() {
         Map<Byte, CimSmgsKonList> konList;
-        Map<Byte, CimSmgsGruz> gruzList;
+        Map<Integer, CimSmgsGruz> gruzList;
         String result = "";
         if (getCimSmgsCarLists().size() > 0 &&
                 (konList = getCimSmgsCarLists().values().iterator().next().getCimSmgsKonLists()).size() > 0 &&
@@ -5396,11 +5968,7 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
         }*/
 
         for (CimSmgsDocs elem : cimSmgsDocses9.values()) {
-            _f9.append(elem.getText() != null ? elem.getText() + " " : "");
-            _f9.append(elem.getText2() != null ? elem.getText2() + " " : "");
-            _f9.append(elem.getNdoc() != null ? elem.getNdoc() + " " : "");
-            _f9.append(elem.getDat() != null ? "от " + new SimpleDateFormat("dd.MM.yyyy").format(elem.getDat()) + " " : "");
-            _f9.append(elem.getNcopy() != null ? elem.getNcopy() + " экз " : "");
+            _f9.append(buildG9Cs(elem));
             _f9.append("\n");
         }
 
@@ -5410,14 +5978,44 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
         return _f9.toString();
     }
 
-    public String buildG9CsPrint() {
-        if(getG9c() != null && getG9c() ==  1){
-//            return LIST_DOP_RU;
-          return getText("form.labelDopList");
-        } else {
-            return buildG9Cs();
-        }
+    public String buildG9Cs(CimSmgsDocs elem) {
+        StringBuffer _f9 = new StringBuffer();
+        _f9.append(elem.getText() != null ? elem.getText() + " " : "");
+        _f9.append(elem.getText2() != null ? elem.getText2() + " " : "");
+        _f9.append(elem.getNdoc() != null ? elem.getNdoc() + " " : "");
+        _f9.append(elem.getDat() != null ? "от " + new SimpleDateFormat("dd.MM.yyyy").format(elem.getDat()) + " " : "");
+        _f9.append(elem.getNcopy() != null ? elem.getNcopy() + " экз " : "");
+        return _f9.toString();
+
     }
+
+    /*
+    switch (getCimSmgsCarLists().size()){
+            case 1:
+                return getCimSmgsCarLists().values().iterator().next().vag4CimSmgs1();
+            case 0:
+                return "";
+            default:
+                return "Siehe Nachweisung\nсм. Ведомость";
+        }
+
+    * */
+
+    public int countConts(){
+        int count = 0;
+        if(getCimSmgsCarLists() != null) {
+            for (CimSmgsCarList vag : getCimSmgsCarLists().values()) {
+                count += vag.getCimSmgsKonLists().size();
+            }
+        }
+
+        return count;
+    }
+
+    public boolean isGroupContOtpr(){
+        return isContOtpr() && ((cimSmgsCarLists != null && cimSmgsCarLists.size() > 1) || countConts() > 1);
+    }
+
 
     public String g9Disp4PrintSmgs() {
         String _f9 = "";
@@ -5957,7 +6555,7 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
             _f13.append(item.getText() != null ? item.getText() : "");
             _f13.append(item.getText() != null && item.getText2() != null ? " / " : "");
             _f13.append(item.getText2() != null ? item.getText2() : "");
-            _f13.append("\n");
+            _f13.append(" ");
         }
 
         if (cimSmgsDocses136.size() > 0) _f13.append("6.");
@@ -7090,7 +7688,7 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
         StringBuilder sb = new StringBuilder();
         sb.append(StringUtils.defaultString(ga66));
         if(sb.length() > 0){
-            sb.append(" ");
+            sb.append("\n");
         }
         sb.append(StringUtils.defaultString(ga661));
         if(sb.length() > 0){
@@ -7121,6 +7719,16 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
         }
         return _g28;
     }*/
+
+    public String buildGCopyTextPrint() {
+        for(Status status: getStatuses()) {
+            if (status.getStatusDir().getHid().intValue() == 17) {
+                return "Kopie";
+            }
+        }
+
+        return "";
+    }
 
     public String buildG28CsPrint() {
         return StringUtils.defaultString(g28);
@@ -7165,10 +7773,10 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
     public void addCimSmgsDocsItem(CimSmgsDocs csd) {
         if (csd != null) {
             csd.setCimSmgs(this);
-            Byte sort = csd.getSort();
+            Integer sort = csd.getSort();
             String fn = StringUtils.defaultString(csd.getFieldNum()).trim();
 
-            Map<Byte, CimSmgsDocs> m;
+            Map<Integer, CimSmgsDocs> m;
             switch (fn) {
                 case "7" :
                     m = cimSmgsDocses7;
@@ -7185,7 +7793,7 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
             }
 
             if (sort == null) {
-                sort = (byte) m.size();
+                sort = m.size();
                 csd.setSort(sort);
             }
             m.put(sort, csd);
@@ -7285,11 +7893,14 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
         addCimSmgsDocses9();
         addCimSmgsDocses13();
         addCimSmgsDocses136();
+        addCimSmgsPlombs();
+        addCimSmgsPlatels();
+        addCimSmgsPerevoz();
         addCimSmgsCarLists();
 //		addCimSmgsStatusAllowed();
-        addCimSmgsPlatels();
-        addCimSmgsPlombs();
-        addCimSmgsPerevoz();
+
+
+
 
 //        setDattr(new Date());
 //        setAltered(new Date());
@@ -7545,17 +8156,17 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
     public String buildG24CsPrint() {
         StringBuffer result = new StringBuffer("");
         if (g24N != null) {
-            result.append("Нетто/Netto ");
+            result.append("N: ");
             result.append(g24N);
         }
         if (g24T != null) {
             result.append("\n");
-            result.append("Тара/Tara ");
+            result.append("T: ");
             result.append(g24T);
         }
         if (g24B != null) {
             result.append("\n");
-            result.append("Брутто/Brutto ");
+            result.append("B: ");
             result.append(g24B);
             result.append("\n");
             result.append(g24BDisp4Print());
@@ -7802,7 +8413,7 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
     }
 
     public String buildG25Cs2Print(){
-        return g141c != null && g141c == 1 ? DOP_LIST_PRINT_CS2 : getG141();
+        return g141c != null && g141c == 1 ? DOP_LIST_PRINT_CS2 : getG15r();
     }
 
     public String buildG28Cs2Print(){
@@ -7852,7 +8463,7 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
     }
 
     public String buildGr25DLPrint(){
-        return g141c != null && g141c == 1 ? getG141() : "";
+        return g141c != null && g141c == 1 ? getG15r() : "";
     }
 
     public String buildGr28TitleDLPrint(){
@@ -7876,5 +8487,370 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
             return StringUtils.defaultString(perevoz.getNamPer());
         }
         return "";
+    }
+
+    public boolean isContOtpr(){
+        return getG25() == null || getG25() == 2;
+    }
+
+    public boolean notForDefaultView() {
+    	return getType() == 1 || getType() == 10 || getType() == 7 || getType() == 12 || getType() == 11 || getType() == 14;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CimSmgs cimSmgs1 = (CimSmgs) o;
+        return Objects.equals(hid, cimSmgs1.hid) &&
+                Objects.equals(g1, cimSmgs1.g1) &&
+                Objects.equals(g2, cimSmgs1.g2) &&
+                Objects.equals(g3, cimSmgs1.g3) &&
+                Objects.equals(g4, cimSmgs1.g4) &&
+                Objects.equals(g5, cimSmgs1.g5) &&
+                Objects.equals(g6, cimSmgs1.g6) &&
+                Objects.equals(g7, cimSmgs1.g7) &&
+                Objects.equals(g8, cimSmgs1.g8) &&
+                Objects.equals(g9, cimSmgs1.g9) &&
+                Objects.equals(g10, cimSmgs1.g10) &&
+                Objects.equals(g11, cimSmgs1.g11) &&
+                Objects.equals(g12, cimSmgs1.g12) &&
+                Objects.equals(g13, cimSmgs1.g13) &&
+                Objects.equals(g141, cimSmgs1.g141) &&
+                Objects.equals(g142, cimSmgs1.g142) &&
+                Objects.equals(g15, cimSmgs1.g15) &&
+                Objects.equals(g16, cimSmgs1.g16) &&
+                Objects.equals(g161, cimSmgs1.g161) &&
+                Objects.equals(g17, cimSmgs1.g17) &&
+                Objects.equals(g18, cimSmgs1.g18) &&
+                Objects.equals(g181, cimSmgs1.g181) &&
+                Objects.equals(g19, cimSmgs1.g19) &&
+                Objects.equals(g20, cimSmgs1.g20) &&
+                Objects.equals(g21, cimSmgs1.g21) &&
+                Objects.equals(g21_, cimSmgs1.g21_) &&
+                Objects.equals(g22, cimSmgs1.g22) &&
+                Objects.equals(g22_, cimSmgs1.g22_) &&
+                Objects.equals(g23, cimSmgs1.g23) &&
+                Objects.equals(g24, cimSmgs1.g24) &&
+                Objects.equals(g25, cimSmgs1.g25) &&
+                Objects.equals(g26, cimSmgs1.g26) &&
+                Objects.equals(g27, cimSmgs1.g27) &&
+                Objects.equals(g28, cimSmgs1.g28) &&
+                Objects.equals(g281, cimSmgs1.g281) &&
+                Objects.equals(g29, cimSmgs1.g29) &&
+                Objects.equals(g30, cimSmgs1.g30) &&
+                Objects.equals(g301, cimSmgs1.g301) &&
+                Objects.equals(un, cimSmgs1.un) &&
+                Objects.equals(trans, cimSmgs1.trans) &&
+                Objects.equals(g40, cimSmgs1.g40) &&
+                Objects.equals(g44, cimSmgs1.g44) &&
+                Objects.equals(g191, cimSmgs1.g191) &&
+                Objects.equals(g192, cimSmgs1.g192) &&
+                Objects.equals(g193, cimSmgs1.g193) &&
+                Objects.equals(g48, cimSmgs1.g48) &&
+                Objects.equals(g41, cimSmgs1.g41) &&
+                Objects.equals(g45, cimSmgs1.g45) &&
+                Objects.equals(ga491, cimSmgs1.ga491) &&
+                Objects.equals(gb491, cimSmgs1.gb491) &&
+                Objects.equals(ga492, cimSmgs1.ga492) &&
+                Objects.equals(gb492, cimSmgs1.gb492) &&
+                Objects.equals(ga493, cimSmgs1.ga493) &&
+                Objects.equals(gb493, cimSmgs1.gb493) &&
+                Objects.equals(ga494, cimSmgs1.ga494) &&
+                Objects.equals(gb494, cimSmgs1.gb494) &&
+                Objects.equals(ga50, cimSmgs1.ga50) &&
+                Objects.equals(gb50, cimSmgs1.gb50) &&
+                Objects.equals(ga52, cimSmgs1.ga52) &&
+                Objects.equals(gb52, cimSmgs1.gb52) &&
+                Objects.equals(ga51, cimSmgs1.ga51) &&
+                Objects.equals(gb51, cimSmgs1.gb51) &&
+                Objects.equals(ga53, cimSmgs1.ga53) &&
+                Objects.equals(gb53, cimSmgs1.gb53) &&
+                Objects.equals(ga54, cimSmgs1.ga54) &&
+                Objects.equals(gb54, cimSmgs1.gb54) &&
+                Objects.equals(ga55, cimSmgs1.ga55) &&
+                Objects.equals(gb55, cimSmgs1.gb55) &&
+                Objects.equals(ga56, cimSmgs1.ga56) &&
+                Objects.equals(gb56, cimSmgs1.gb56) &&
+                Objects.equals(ga57, cimSmgs1.ga57) &&
+                Objects.equals(gb57, cimSmgs1.gb57) &&
+                Objects.equals(g591, cimSmgs1.g591) &&
+                Objects.equals(g592, cimSmgs1.g592) &&
+                Objects.equals(g593, cimSmgs1.g593) &&
+                Objects.equals(g594, cimSmgs1.g594) &&
+                Objects.equals(g595, cimSmgs1.g595) &&
+                Objects.equals(g596, cimSmgs1.g596) &&
+                Objects.equals(g597, cimSmgs1.g597) &&
+                Objects.equals(g598, cimSmgs1.g598) &&
+                Objects.equals(g60, cimSmgs1.g60) &&
+                Objects.equals(g61, cimSmgs1.g61) &&
+                Objects.equals(g611, cimSmgs1.g611) &&
+                Objects.equals(g612, cimSmgs1.g612) &&
+                Objects.equals(g43, cimSmgs1.g43) &&
+                Objects.equals(g47, cimSmgs1.g47) &&
+                Objects.equals(g63, cimSmgs1.g63) &&
+                Objects.equals(g64, cimSmgs1.g64) &&
+                Objects.equals(g65, cimSmgs1.g65) &&
+                Objects.equals(g651, cimSmgs1.g651) &&
+                Objects.equals(g652, cimSmgs1.g652) &&
+                Objects.equals(ga66, cimSmgs1.ga66) &&
+                Objects.equals(gb661, cimSmgs1.gb661) &&
+                Objects.equals(gb662, cimSmgs1.gb662) &&
+                Objects.equals(g67, cimSmgs1.g67) &&
+                Objects.equals(g691, cimSmgs1.g691) &&
+                Objects.equals(g692, cimSmgs1.g692) &&
+                Objects.equals(g693, cimSmgs1.g693) &&
+                Objects.equals(g694, cimSmgs1.g694) &&
+                Objects.equals(g68, cimSmgs1.g68) &&
+                Objects.equals(g62, cimSmgs1.g62) &&
+                Objects.equals(g621, cimSmgs1.g621) &&
+                Objects.equals(g622, cimSmgs1.g622) &&
+                Objects.equals(g38, cimSmgs1.g38) &&
+                Objects.equals(g39, cimSmgs1.g39) &&
+                Objects.equals(g18B1, cimSmgs1.g18B1) &&
+                Objects.equals(g18B2, cimSmgs1.g18B2) &&
+                Objects.equals(ga581, cimSmgs1.ga581) &&
+                Objects.equals(gb581, cimSmgs1.gb581) &&
+                Objects.equals(ga582, cimSmgs1.ga582) &&
+                Objects.equals(gb582, cimSmgs1.gb582) &&
+                Objects.equals(ga583, cimSmgs1.ga583) &&
+                Objects.equals(gb583, cimSmgs1.gb583) &&
+                Objects.equals(ga584, cimSmgs1.ga584) &&
+                Objects.equals(gb584, cimSmgs1.gb584) &&
+                Objects.equals(ga585, cimSmgs1.ga585) &&
+                Objects.equals(gb585, cimSmgs1.gb585) &&
+                Objects.equals(ga586, cimSmgs1.ga586) &&
+                Objects.equals(gb586, cimSmgs1.gb586) &&
+                Objects.equals(g20100, cimSmgs1.g20100) &&
+                Objects.equals(g42, cimSmgs1.g42) &&
+                Objects.equals(g46, cimSmgs1.g46) &&
+                Objects.equals(g11_1, cimSmgs1.g11_1) &&
+                Objects.equals(g12_1, cimSmgs1.g12_1) &&
+                Objects.equals(g13_1, cimSmgs1.g13_1) &&
+                Objects.equals(g41_1, cimSmgs1.g41_1) &&
+                Objects.equals(g42_1, cimSmgs1.g42_1) &&
+                Objects.equals(g43_1, cimSmgs1.g43_1) &&
+                Objects.equals(hidCim, cimSmgs1.hidCim) &&
+                Objects.equals(hidIcf, cimSmgs1.hidIcf) &&
+                Objects.equals(hidSp, cimSmgs1.hidSp) &&
+                Objects.equals(hidSmgs, cimSmgs1.hidSmgs) &&
+                Objects.equals(iftminId, cimSmgs1.iftminId) &&
+                Objects.equals(iftminOut, cimSmgs1.iftminOut) &&
+                Objects.equals(iftminIn, cimSmgs1.iftminIn) &&
+                Objects.equals(iftminId2, cimSmgs1.iftminId2) &&
+                Objects.equals(iftminOut2, cimSmgs1.iftminOut2) &&
+                Objects.equals(iftminIn2, cimSmgs1.iftminIn2) &&
+                Objects.equals(g121, cimSmgs1.g121) &&
+                Objects.equals(g24N, cimSmgs1.g24N) &&
+                Objects.equals(g24T, cimSmgs1.g24T) &&
+                Objects.equals(g24B, cimSmgs1.g24B) &&
+                Objects.equals(statusBr, cimSmgs1.statusBr) &&
+                Objects.equals(altered, cimSmgs1.altered) &&
+                Objects.equals(g1r, cimSmgs1.g1r) &&
+                Objects.equals(g14, cimSmgs1.g14) &&
+                Objects.equals(g4r, cimSmgs1.g4r) &&
+                Objects.equals(g7r, cimSmgs1.g7r) &&
+                Objects.equals(g9r, cimSmgs1.g9r) &&
+                Objects.equals(g101, cimSmgs1.g101) &&
+                Objects.equals(g101r, cimSmgs1.g101r) &&
+                Objects.equals(g102, cimSmgs1.g102) &&
+                Objects.equals(g102r, cimSmgs1.g102r) &&
+                Objects.equals(g13r, cimSmgs1.g13r) &&
+                Objects.equals(g15r, cimSmgs1.g15r) &&
+                Objects.equals(g162, cimSmgs1.g162) &&
+                Objects.equals(g162r, cimSmgs1.g162r) &&
+                Objects.equals(g163, cimSmgs1.g163) &&
+                Objects.equals(g163r, cimSmgs1.g163r) &&
+                Objects.equals(g18r, cimSmgs1.g18r) &&
+                Objects.equals(g29r, cimSmgs1.g29r) &&
+                Objects.equals(profile, cimSmgs1.profile) &&
+                Objects.equals(targGr, cimSmgs1.targGr) &&
+                Objects.equals(avFields, cimSmgs1.avFields) &&
+                Objects.equals(g1c, cimSmgs1.g1c) &&
+                Objects.equals(g4c, cimSmgs1.g4c) &&
+                Objects.equals(g7c, cimSmgs1.g7c) &&
+                Objects.equals(g9c, cimSmgs1.g9c) &&
+                Objects.equals(g13c, cimSmgs1.g13c) &&
+                Objects.equals(g15c, cimSmgs1.g15c) &&
+                Objects.equals(g18c, cimSmgs1.g18c) &&
+                Objects.equals(g20c, cimSmgs1.g20c) &&
+                Objects.equals(numClaim, cimSmgs1.numClaim) &&
+                Objects.equals(g15_1, cimSmgs1.g15_1) &&
+                Objects.equals(g16_1, cimSmgs1.g16_1) &&
+                Objects.equals(g16r, cimSmgs1.g16r) &&
+                Objects.equals(g17_1, cimSmgs1.g17_1) &&
+                Objects.equals(g18_1, cimSmgs1.g18_1) &&
+                Objects.equals(g18r_1, cimSmgs1.g18r_1) &&
+                Objects.equals(g19_1, cimSmgs1.g19_1) &&
+                Objects.equals(g19r, cimSmgs1.g19r) &&
+                Objects.equals(g45_1, cimSmgs1.g45_1) &&
+                Objects.equals(g46_1, cimSmgs1.g46_1) &&
+                Objects.equals(g46r, cimSmgs1.g46r) &&
+                Objects.equals(g47_1, cimSmgs1.g47_1) &&
+                Objects.equals(g48_1, cimSmgs1.g48_1) &&
+                Objects.equals(g48r, cimSmgs1.g48r) &&
+                Objects.equals(g49, cimSmgs1.g49) &&
+                Objects.equals(g49r, cimSmgs1.g49r) &&
+                Objects.equals(g201, cimSmgs1.g201) &&
+                Objects.equals(g202, cimSmgs1.g202) &&
+                Objects.equals(g202r, cimSmgs1.g202r) &&
+                Objects.equals(g203, cimSmgs1.g203) &&
+                Objects.equals(g204, cimSmgs1.g204) &&
+                Objects.equals(g205, cimSmgs1.g205) &&
+                Objects.equals(g206, cimSmgs1.g206) &&
+                Objects.equals(g206r, cimSmgs1.g206r) &&
+                Objects.equals(g207, cimSmgs1.g207) &&
+                Objects.equals(g207r, cimSmgs1.g207r) &&
+                Objects.equals(g208, cimSmgs1.g208) &&
+                Objects.equals(g209, cimSmgs1.g209) &&
+                Objects.equals(g209r, cimSmgs1.g209r) &&
+                Objects.equals(g2010, cimSmgs1.g2010) &&
+                Objects.equals(g2011, cimSmgs1.g2011) &&
+                Objects.equals(g2012, cimSmgs1.g2012) &&
+                Objects.equals(g2013, cimSmgs1.g2013) &&
+                Objects.equals(g2014, cimSmgs1.g2014) &&
+                Objects.equals(g2014r, cimSmgs1.g2014r) &&
+                Objects.equals(g2015, cimSmgs1.g2015) &&
+                Objects.equals(g2016, cimSmgs1.g2016) &&
+                Objects.equals(g2017, cimSmgs1.g2017) &&
+                Objects.equals(g2017r, cimSmgs1.g2017r) &&
+                Objects.equals(g2011r, cimSmgs1.g2011r) &&
+                Objects.equals(g110, cimSmgs1.g110) &&
+                Objects.equals(g111, cimSmgs1.g111) &&
+                Objects.equals(g112, cimSmgs1.g112) &&
+                Objects.equals(g410, cimSmgs1.g410) &&
+                Objects.equals(g411, cimSmgs1.g411) &&
+                Objects.equals(g412, cimSmgs1.g412) &&
+                Objects.equals(ready, cimSmgs1.ready) &&
+                Objects.equals(g171, cimSmgs1.g171) &&
+                Objects.equals(g2018, cimSmgs1.g2018) &&
+                Objects.equals(g2018r, cimSmgs1.g2018r) &&
+                Objects.equals(g_10_3r, cimSmgs1.g_10_3r) &&
+                Objects.equals(g_16_33r, cimSmgs1.g_16_33r) &&
+                Objects.equals(g44_1, cimSmgs1.g44_1) &&
+                Objects.equals(status, cimSmgs1.status) &&
+                Objects.equals(btlc_status, cimSmgs1.btlc_status) &&
+                Objects.equals(tdg_status1, cimSmgs1.tdg_status1) &&
+                Objects.equals(tdg_status2, cimSmgs1.tdg_status2) &&
+                Objects.equals(greenRail_status, cimSmgs1.greenRail_status) &&
+                Objects.equals(zayav_otpr, cimSmgs1.zayav_otpr) &&
+                Objects.equals(zayav_otpr_c, cimSmgs1.zayav_otpr_c) &&
+                Objects.equals(g141c, cimSmgs1.g141c) &&
+                Objects.equals(g26c, cimSmgs1.g26c) &&
+                Objects.equals(ga661, cimSmgs1.ga661) &&
+                Objects.equals(ga662, cimSmgs1.ga662) &&
+                Objects.equals(g23b, cimSmgs1.g23b) &&
+                Objects.equals(g74_1, cimSmgs1.g74_1) &&
+                Objects.equals(g74_2, cimSmgs1.g74_2) &&
+                Objects.equals(type, cimSmgs1.type) &&
+                Objects.equals(gs_48, cimSmgs1.gs_48) &&
+                Objects.equals(gs_22, cimSmgs1.gs_22) &&
+                Objects.equals(gs_24, cimSmgs1.gs_24) &&
+                Objects.equals(gs_141_1, cimSmgs1.gs_141_1) &&
+                Objects.equals(gs_141_2, cimSmgs1.gs_141_2) &&
+                Objects.equals(gs_66_1, cimSmgs1.gs_66_1) &&
+                Objects.equals(g18B1a, cimSmgs1.g18B1a) &&
+                Objects.equals(g18B1b, cimSmgs1.g18B1b) &&
+                Objects.equals(g18B1c, cimSmgs1.g18B1c) &&
+                Objects.equals(g18B1d, cimSmgs1.g18B1d) &&
+                Objects.equals(amount, cimSmgs1.amount) &&
+                Objects.equals(aviso_num, cimSmgs1.aviso_num) &&
+                Objects.equals(aviso_dat, cimSmgs1.aviso_dat) &&
+                Objects.equals(aviso_cod_dat, cimSmgs1.aviso_cod_dat) &&
+                Objects.equals(aviso_stavka, cimSmgs1.aviso_stavka) &&
+                Objects.equals(g11_prim, cimSmgs1.g11_prim) &&
+                Objects.equals(g_1_5k, cimSmgs1.g_1_5k) &&
+                Objects.equals(g_4_5k, cimSmgs1.g_4_5k) &&
+                Objects.equals(route != null ? route.getHid() : "", cimSmgs1.route != null ? cimSmgs1.route.getHid() : "") &&
+                Objects.equals(packDoc != null ? packDoc.getHid() : "", cimSmgs1.packDoc != null ? cimSmgs1.packDoc.getHid() : "") &&
+                Objects.equals(g4prim, cimSmgs1.g4prim) &&
+                Objects.equals(guInf, cimSmgs1.guInf) &&
+                Objects.equals(perevozchik, cimSmgs1.perevozchik) &&
+                Objects.equals(tarifShema, cimSmgs1.tarifShema) &&
+                Objects.equals(tarifVOtpr, cimSmgs1.tarifVOtpr) &&
+                Objects.equals(platezhKm, cimSmgs1.platezhKm) &&
+                Objects.equals(platezhRub, cimSmgs1.platezhRub) &&
+                Objects.equals(platezhKop, cimSmgs1.platezhKop) &&
+                Objects.equals(provozPlata, cimSmgs1.provozPlata) &&
+                Objects.equals(zpuInfo, cimSmgs1.zpuInfo) &&
+                Objects.equals(trueInfo, cimSmgs1.trueInfo) &&
+                Objects.equals(vizaNo, cimSmgs1.vizaNo) &&
+                Objects.equals(perevozSign, cimSmgs1.perevozSign) &&
+                Objects.equals(perevozDate, cimSmgs1.perevozDate) &&
+                Objects.equals(sborCennost1, cimSmgs1.sborCennost1) &&
+                Objects.equals(sborCennost2, cimSmgs1.sborCennost2) &&
+                Objects.equals(otprItogo, cimSmgs1.otprItogo) &&
+                Objects.equals(tbcNomer, cimSmgs1.tbcNomer) &&
+                Objects.equals(tbcStatus, cimSmgs1.tbcStatus) &&
+                Objects.equals(zakazNo, cimSmgs1.zakazNo) &&
+                Objects.equals(cim, cimSmgs1.cim) &&
+                Objects.equals(incoterms, cimSmgs1.incoterms) &&
+                Objects.equals(kodUslPost, cimSmgs1.kodUslPost) &&
+                Objects.equals(frankofracht, cimSmgs1.frankofracht) &&
+                Objects.equals(otmPoluch, cimSmgs1.otmPoluch) &&
+                Objects.equals(vidKontOtpr, cimSmgs1.vidKontOtpr) &&
+                Objects.equals(platform, cimSmgs1.platform) &&
+                Objects.equals(docNum, cimSmgs1.docNum) &&
+                Objects.equals(tehUslG12, cimSmgs1.tehUslG12) &&
+                Objects.equals(grOtpFio, cimSmgs1.grOtpFio) &&
+                Objects.equals(g104, cimSmgs1.g104) &&
+                Objects.equals(g164, cimSmgs1.g164) &&
+                Objects.equals(npoezd, cimSmgs1.npoezd) &&
+                Objects.equals(vagPrim, cimSmgs1.vagPrim) &&
+                Objects.equals(nettoPref, cimSmgs1.nettoPref) &&
+                Objects.equals(taraPref, cimSmgs1.taraPref) &&
+                Objects.equals(bruttoPref, cimSmgs1.bruttoPref) &&
+                Objects.equals(kontKol, cimSmgs1.kontKol) &&
+                Objects.equals(g2_1, cimSmgs1.g2_1) &&
+                Objects.equals(g5_1, cimSmgs1.g5_1) &&
+                Objects.equals(docType1, cimSmgs1.docType1) &&
+                Objects.equals(plat, cimSmgs1.plat) &&
+                Objects.equals(plat1, cimSmgs1.plat1) &&
+                Objects.equals(gu, cimSmgs1.gu) &&
+                Objects.equals(sborCennost11, cimSmgs1.sborCennost11) &&
+                Objects.equals(sborCennost21, cimSmgs1.sborCennost21) &&
+                Objects.equals(sborCennost22, cimSmgs1.sborCennost22) &&
+                Objects.equals(ftsNomer, cimSmgs1.ftsNomer) &&
+                Objects.equals(ftsStatus, cimSmgs1.ftsStatus) &&
+                Objects.equals(zpuInfo1, cimSmgs1.zpuInfo1) &&
+                Objects.equals(index_p, cimSmgs1.index_p) &&
+                Objects.equals(n_ppv, cimSmgs1.n_ppv) &&
+                Objects.equals(nppr, cimSmgs1.nppr) &&
+                Objects.equals(dprb, cimSmgs1.dprb) &&
+                Objects.equals(g_2inn, cimSmgs1.g_2inn) &&
+                Objects.equals(g_5inn, cimSmgs1.g_5inn) &&
+                Objects.equals(ftsDocId, cimSmgs1.ftsDocId) &&
+                Objects.equals(g_24_bcn, cimSmgs1.g_24_bcn) &&
+                Objects.equals(g36, cimSmgs1.g36) &&
+                Objects.equals(g25Txt, cimSmgs1.g25Txt) &&
+                Objects.equals(g2_, cimSmgs1.g2_) &&
+                Objects.equals(g5_, cimSmgs1.g5_) &&
+                Objects.equals(n_packet, cimSmgs1.n_packet) &&
+                Objects.equals(g7_, cimSmgs1.g7_) &&
+                Objects.equals(g3_, cimSmgs1.g3_) &&
+                Objects.equals(sort, cimSmgs1.sort) &&
+                Objects.equals(kind, cimSmgs1.kind) &&
+                Objects.equals(send_br, cimSmgs1.send_br) &&
+                Objects.equals(src, cimSmgs1.src)&&
+                Objects.equals(src, cimSmgs1.g1_dop_info)&&
+                Objects.equals(src, cimSmgs1.g4_dop_info);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(hid, g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11, g12, g13, g141, g142, g15, g16, g161, g17, g18, g181, g19, g20, g21, g21_, g22, g22_, g23, g24, g25,
+                g26, g27, g28, g281, g29, g30, g301, un, trans, g40, g44, g191, g192, g193, g48, g41, g45, ga491, gb491, ga492, gb492, ga493, gb493, ga494, gb494, ga50, gb50, ga52,
+                gb52, ga51, gb51, ga53, gb53, ga54, gb54, ga55, gb55, ga56, gb56, ga57, gb57, g591, g592, g593, g594, g595, g596, g597, g598, g60, g61, g611, g612, g43, g47, g63, g64,
+                g65, g651, g652, ga66, gb661, gb662, g67, g691, g692, g693, g694, g68, g62, g621, g622, g38, g39, g18B1, g18B2, ga581, gb581, ga582, gb582, ga583, gb583, ga584, gb584,
+                ga585, gb585, ga586, gb586, g20100, g42, g46, g11_1, g12_1, g13_1, g41_1, g42_1, g43_1, hidCim, hidIcf, hidSp, hidSmgs, iftminId, iftminOut, iftminIn, iftminId2, iftminOut2,
+                iftminIn2, g121, g24N, g24T, g24B, statusBr, altered, g1r, g14, g4r, g7r, g9r, g101, g101r, g102, g102r, g13r, g15r, g162, g162r, g163, g163r, g18r, g29r, profile, targGr,
+                avFields, g1c, g4c, g7c, g9c, g13c, g15c, g18c, g20c, numClaim, g15_1, g16_1, g16r, g17_1, g18_1, g18r_1, g19_1, g19r, g45_1, g46_1, g46r, g47_1, g48_1, g48r, g49, g49r, g201,
+                g202, g202r, g203, g204, g205, g206, g206r, g207, g207r, g208, g209, g209r, g2010, g2011, g2012, g2013, g2014, g2014r, g2015, g2016, g2017, g2017r, g2011r, g110, g111, g112,
+                g410, g411, g412, ready, g171, g2018, g2018r, g_10_3r, g_16_33r, g44_1, status, btlc_status, tdg_status1, tdg_status2, greenRail_status, zayav_otpr, zayav_otpr_c, g141c, g26c,
+                ga661, ga662, g23b, g74_1, g74_2, type, gs_48, gs_22, gs_24, gs_141_1, gs_141_2, gs_66_1, g18B1a, g18B1b, g18B1c, g18B1d, amount, aviso_num, aviso_dat, aviso_cod_dat, aviso_stavka,
+                g11_prim, g_1_5k, g_4_5k, route != null ? route.getHid() : "", packDoc != null ? packDoc.getHid() : "", g4prim, guInf, perevozchik, tarifShema, tarifVOtpr, platezhKm, platezhRub, platezhKop, provozPlata, zpuInfo, trueInfo, vizaNo, perevozSign,
+                perevozDate, sborCennost1, sborCennost2, otprItogo, tbcNomer, tbcStatus, zakazNo, cim, incoterms, kodUslPost, frankofracht, otmPoluch, vidKontOtpr, platform, docNum, tehUslG12,
+                grOtpFio, g104, g164, npoezd, vagPrim, nettoPref, taraPref, bruttoPref, kontKol, g2_1, g5_1, docType1, plat, plat1, gu, sborCennost11, sborCennost21, sborCennost22, ftsNomer,
+                ftsStatus, zpuInfo1, index_p, n_ppv, nppr, dprb, g_2inn, g_5inn, ftsDocId, g_24_bcn, g36, g25Txt, g2_, g5_, n_packet, g7_, g3_, sort, kind, send_br, src,g1_dop_info,g4_dop_info);
     }
 }

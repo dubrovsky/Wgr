@@ -6,7 +6,7 @@
     <class name="com.bivc.cimsmgs.db.NsiNhm" table="_NSI_NHM" >
         <id name="hid" type="big_decimal">
             <column name="HID" precision="20" scale="0" />
-            <generator class="assigned" />
+            <generator class="native" />
         </id>
         <property name="kgvn" type="string">
             <column name="KGVN" length="9" />

@@ -1,6 +1,11 @@
 Ext.define('TK.view.user.ListGroups', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.userlistgroups',
+
+    requires: [
+        'Ext.toolbar.Separator'
+    ],
+
     enableColumnResize: false,
     columnLines: true,
 //    forceFit: true,
@@ -19,7 +24,7 @@ Ext.define('TK.view.user.ListGroups', {
     },
     buildSelModel:function(config) {
         this.selType = 'checkboxmodel';
-        this.selModel = {mode : this.ownerBtn.action == 'groups' ? 'MULTI' : 'SINGLE'};
+        this.selModel = {mode: (this.ownerBtn && this.ownerBtn.action == 'groups') ? 'MULTI' : 'SINGLE'};
     },
     buildDockedItems: function(config) {
     	config.dockedItems = [{

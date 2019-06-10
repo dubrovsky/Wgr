@@ -10,10 +10,12 @@ import com.bivc.cimsmgs.db.CimSmgs;
 import com.bivc.cimsmgs.db.CimSmgsFileInf;
 import com.bivc.cimsmgs.exceptions.BusinessException;
 import com.bivc.cimsmgs.upload.excel.Export2Excel;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Doc2ExcelContList implements OutputStreamWriters {
@@ -28,7 +30,14 @@ public class Doc2ExcelContList implements OutputStreamWriters {
         Search search = action.getSearch();
         CimSmgs doc;
         // Look for Svodn vedomost'
-        List<CimSmgs> docs = action.getSmgsDAO().findKontVedByNPoezd(search.getNpoezd(), action.getType().byteValue(), search.getRouteId());
+        List<CimSmgs> docs;
+        if(StringUtils.isNotBlank(search.getNpoezd())){
+            docs = action.getSmgsDAO().findKontVedByNPoezd(search.getNpoezd(), action.getType().byteValue(), search.getRouteId());
+        } else {
+            docs = new ArrayList<>(1);
+            docs.add(action.getSmgsDAO().getById(action.getHid(), false));
+        }
+
         if (docs.size() > 0) {
             doc = docs.iterator().next();
         } else {
@@ -60,7 +69,7 @@ public class Doc2ExcelContList implements OutputStreamWriters {
             fileInf.setPackDoc(doc.getPackDoc());
             fileInf.setRoute(doc.getRoute());
             fileInf.setType(search.getDocType());
-            fileInf.setNkon(OUTPUT_FILE + " " + search.getNpoezd());
+            fileInf.setNkon(OUTPUT_FILE + " " + StringUtils.defaultString(search.getNpoezd()));
         }
         file_a.setFile(fileInf);
 
@@ -90,37 +99,4 @@ public class Doc2ExcelContList implements OutputStreamWriters {
     public void writeTo(OutputStream os) throws IOException {
         doc2Excel.getWb().write(os);
     }
-
-   /* private File writeFile(Export2Excel doc2Excel) throws IOException {
-        FileOutputStream fop = null;
-        File file;
-
-        try {
-
-            file = new File("OUTPUT_FILE");
-            fop = new FileOutputStream(file);
-
-            // if file doesnt exists, then create it
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-
-            doc2Excel.getWb().write(fop);
-            fop.flush();
-            fop.close();
-            return file;
-        } catch (FileNotFoundException e) {
-            throw e;  //To change body of catch statement use File | Settings | File Templates.
-        } catch (IOException e) {
-            throw e;  //To change body of catch statement use File | Settings | File Templates.
-        } finally {
-            try {
-                if (fop != null) {
-                    fop.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }*/
 }

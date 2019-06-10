@@ -1,6 +1,10 @@
 Ext.define('TK.controller.docs.PlombsTreeDetailController', {
     extend: 'Ext.app.Controller',
 
+    requires: [
+        'TK.model.PlombsTreeNode'
+    ],
+
     stores:[
         'PlombsTreeNodes'
     ],
@@ -27,13 +31,21 @@ Ext.define('TK.controller.docs.PlombsTreeDetailController', {
     },{
         ref: 'saveBtn',
         selector: 'plombsTreeFormWin button[action=save]'
+    },{
+        ref: 'searchBtn',
+        selector: 'plombsTreeFormWin button[action=search]'
+    },{
+        ref: 'searchField',
+        selector: 'plombsTreeFormWin textfield#searchField'
     }],
 
     init:function () {
         this.listen({
             controller: {
                 '*': {
-                    showPlombsWin: this.onPlombsWinShow
+                    showPlombsWin: this.onPlombsWinShow,
+                    displayedPlombsFields: this.setDisplayedPlombsFields,
+                    savePlombsToDataObj: this.setG2012DataObj
                 }
             }
         });
@@ -51,10 +63,26 @@ Ext.define('TK.controller.docs.PlombsTreeDetailController', {
             'plombsTreeFormWin button[action=add]': {
                 click: this.onAddClick
             },
+            'plombsTreeFormWin button[action=search]': {
+                click: this.onSearchClick
+            },
+            'plombsTreeFormWin button[action=expandAll]': {
+                click: this.onExpandAllClick
+            },
+            'plombsTreeFormWin button[action=collapseAll]': {
+                click: this.onCollapseAllClick
+            },
+            'plombsTreeFormWin textfield#searchField': {
+                keypress: this.onSearchFieldKeyPress
+            },
             'plombsTreeFormWin button[action=save]': {
                 click: this.onSaveClick
             }
         });
+    },
+
+    isContOtpr: function () {
+        return this.getController("docs.VgCtGrTreeDetailController").isContOtpr();
     },
 
     onPlombsWinShow: function(widget, ownerDoc){
@@ -63,6 +91,10 @@ Ext.define('TK.controller.docs.PlombsTreeDetailController', {
             treeStore = tree.getStore(),
             rootNode = treeStore.getRootNode();
 
+        //проверка является ли форма документа вложеной или все компоненты находятся на формe
+        if(ownerDoc.ownerCt.ownerCt.xtype&&ownerDoc.ownerCt.ownerCt.xtype==='tabpanel')
+            ownerDoc=ownerDoc.ownerCt;
+
         win.setOwnerDoc(ownerDoc);
 
         rootNode.removeAll();
@@ -70,7 +102,11 @@ Ext.define('TK.controller.docs.PlombsTreeDetailController', {
         //// fill tree
         var vags = ownerDoc.dataObj[ownerDoc.getVagCollectionName()];
         if(vags && !Ext.Object.isEmpty(vags)){
-            this.loopVagsNodes(vags, rootNode);
+            if(this.isContOtpr()) {
+                this.loopVagsNodes(vags, rootNode);
+            } else {
+                this.initVagsNodes(vags, rootNode);
+            }
         }
         /// END fill tree
 
@@ -105,6 +141,27 @@ Ext.define('TK.controller.docs.PlombsTreeDetailController', {
 
             if(plombs && !Ext.Object.isEmpty(plombs)){
                 this.initPlombsNodes(plombs, contModel);
+            }
+        }
+    },
+
+    initVagsNodes: function(vags, rootNode){
+        for(var vagIndx in vags){
+            var vag = vags[vagIndx],
+                plombs = vag[this.getWin().getOwnerDoc().getPlombsCollectionName()],
+                vagModel = Ext.create('TK.model.PlombsTreeNode', {
+                    who: 'vag',
+                    text: vag['nvag'],
+                    iconCls: 'vag',
+                    leaf: plombs && plombs['0'] ? false : true,
+                    expanded:  plombs && plombs['0'] && vagIndx == 0
+                });
+
+            vagModel.setVagObj(vag);
+            rootNode.appendChild(vagModel);
+
+            if(plombs && !Ext.Object.isEmpty(plombs)){
+                this.initPlombsNodes(plombs, vagModel);
             }
         }
     },
@@ -149,6 +206,7 @@ Ext.define('TK.controller.docs.PlombsTreeDetailController', {
                 }
                 break;
             case 'cont':
+            case 'vag':
                 if(this.getAddBtn().isHidden()){
                     this.getAddBtn().show();
                 }
@@ -181,6 +239,7 @@ Ext.define('TK.controller.docs.PlombsTreeDetailController', {
 
         switch (selectedModelNode.get('who')){
             case 'cont':
+            case 'vag':
                 parentModelNode = selectedModelNode;
                 break;
             case 'plombs':
@@ -208,6 +267,55 @@ Ext.define('TK.controller.docs.PlombsTreeDetailController', {
         this.getAddBtn().hide();
     },
 
+    onSearchFieldKeyPress:function(field, event){
+        if(event.getKey() == event.ENTER) {
+            this.getSearchBtn().fireEvent('click', this.getSearchBtn());
+        }
+    },
+
+    onSearchClick: function(btn){
+        var rootNode = this.getTreepanel().getRootNode(),
+            searchVal = this.getSearchField().getValue(),
+            foundNode;
+
+        if(rootNode.hasChildNodes() && searchVal){
+            var nodeToStart = this.getTreepanel().getSelectionModel().getLastSelected() || rootNode;
+
+            if(nodeToStart){
+                var isPassed = nodeToStart.isRoot();
+
+                foundNode = rootNode.findChildBy(function(node) {
+                    if(!isPassed && (nodeToStart == node)){
+                        isPassed = true;
+                        return false;
+                    }
+                    if(isPassed && (node.get('text').indexOf(searchVal) != -1) ) {
+                        return true;
+                    }
+                    return false;
+                }, this, true);
+            }
+        }
+
+        if(foundNode){
+            this.getTreepanel().getSelectionModel().select(foundNode);
+            foundNode.expand();
+            if(foundNode.parentNode) {
+                foundNode.parentNode.expand();
+            }
+            this.getTreepanel().fireEvent('itemclick', this.getTreepanel(), foundNode);
+        }
+        this.getSearchField().focus();
+    },
+
+    onExpandAllClick: function(btn){
+        this.fireEvent('expandAllClick', this.getTreepanel(), this.getWin());
+    },
+
+    onCollapseAllClick: function(btn){
+        this.fireEvent('collapseAllClick', this.getTreepanel(), this.getWin());
+    },
+
     onSaveClick: function(btn){
         var ownerDoc = this.getWin().getOwnerDoc(),
             dataObj = ownerDoc.dataObj[ownerDoc.getVagCollectionName()];
@@ -220,25 +328,23 @@ Ext.define('TK.controller.docs.PlombsTreeDetailController', {
     },
 
     savePlombs: function(){
-        // var g2012DataObj = '';
 
-        // this.getCimsmgs().dataObj['g2012']
-        this.getTreepanel().getRootNode().eachChild(function(contNodeModel) {
-            if(contNodeModel.hasChildNodes()){
+        this.getTreepanel().getRootNode().eachChild(function(parentNodeModel) {
+            if(parentNodeModel.hasChildNodes()){
                 var plombsIndex = 0,
-                    contDataObj = contNodeModel.getContObj();
+                    parentDataObj = (this.isContOtpr() ? parentNodeModel.getContObj() : parentNodeModel.getVagObj());
 
-                if(contDataObj && !Ext.Object.isEmpty(contDataObj)){
+                if(parentDataObj && !Ext.Object.isEmpty(parentDataObj)){
 
-                    contDataObj[this.getWin().getOwnerDoc().getPlombsCollectionName()] = {};
+                    parentDataObj[this.getWin().getOwnerDoc().getPlombsCollectionName()] = {};
 
-                    contNodeModel.eachChild(function(plombsModel) {
-                        contDataObj[this.getWin().getOwnerDoc().getPlombsCollectionName()][plombsIndex] = {};
+                    parentNodeModel.eachChild(function(plombsModel) {
+                        parentDataObj[this.getWin().getOwnerDoc().getPlombsCollectionName()][plombsIndex] = {};
 
                         this.getPlombspanel().items.each(function(plombsItem,index,length){
-                            contDataObj[this.getWin().getOwnerDoc().getPlombsCollectionName()][plombsIndex][plombsItem.getName()] = plombsModel.get(plombsItem.getName());
+                            parentDataObj[this.getWin().getOwnerDoc().getPlombsCollectionName()][plombsIndex][plombsItem.getName()] = plombsModel.get(plombsItem.getName());
                         }, this);
-                        contDataObj[this.getWin().getOwnerDoc().getPlombsCollectionName()][plombsIndex]['sort'] = plombsIndex;
+                        parentDataObj[this.getWin().getOwnerDoc().getPlombsCollectionName()][plombsIndex]['sort'] = plombsIndex;
                         plombsIndex++;
                     }, this);
                 }
@@ -246,7 +352,6 @@ Ext.define('TK.controller.docs.PlombsTreeDetailController', {
         }, this);
 
         this.getWin().getOwnerDoc().fireEvent('onSavePlombsToDataObj', this.getWin().getOwnerDoc());
-        // this.getWin().getOwnerDoc().dataObj['']
     },
 
     clearAllPlombsInDataObj: function() {
@@ -256,19 +361,99 @@ Ext.define('TK.controller.docs.PlombsTreeDetailController', {
         if(vags && !Ext.Object.isEmpty(vags)){
             for(var vagIndx in vags){
 
-                var vag = vags[vagIndx],
-                    conts = vag[this.getWin().getOwnerDoc().getContCollectionName()];
+                var vag = vags[vagIndx];
 
-                if(conts && !Ext.Object.isEmpty(conts)){
+                if(this.isContOtpr()) {
+                    var conts = vag[this.getWin().getOwnerDoc().getContCollectionName()];
 
-                    for(var contIndx in conts){
-                        var cont = conts[contIndx];
+                    if (conts && !Ext.Object.isEmpty(conts)) {
 
-                        cont[this.getWin().getOwnerDoc().getPlombsCollectionName()] = {};
+                        for (var contIndx in conts) {
+                            var cont = conts[contIndx];
+
+                            cont[this.getWin().getOwnerDoc().getPlombsCollectionName()] = {};
+                        }
                     }
+                } else {
+                    vag[this.getWin().getOwnerDoc().getPlombsCollectionName()] = {};
                 }
-
             }
         }
+    },
+
+    setDisplayedPlombsFields: function(controller, docForm){
+        controller.getDocForm().getComponent('smgs.g2012').setValue(docForm.dataObj['g2012']);
+    },
+
+    setG2012DataObj: function(controller, docForm){
+        var vags = docForm.dataObj[docForm.getVagCollectionName()],
+            plombsResult = '',
+            delim = '',
+            plombsCount = 0,
+            vagsCount = 0,
+            contsCount = 0;
+
+        if(vags && !Ext.Object.isEmpty(vags)){
+            for(var vagIndx in vags){
+
+                var vag = vags[vagIndx],
+                    plombs,
+                    plomb;
+
+                if(this.isContOtpr()) {
+                    var conts = vag[docForm.getContCollectionName()];
+                    if (conts && !Ext.Object.isEmpty(conts)) {
+
+                        for (var contIndx in conts) {
+                            var cont = conts[contIndx];
+
+                            plombs = cont[docForm.getPlombsCollectionName()];
+                            if(plombs && !Ext.Object.isEmpty(plombs)) {
+
+                                for (var plombsIndx in plombs) {
+                                    plomb = plombs[plombsIndx];
+
+                                    if (vagIndx == 0 && !vags[1] && contIndx == 0 && !conts[1]) { // only 1 vag and 1 cont
+                                        plombsResult += delim;
+                                        plombsResult += (plomb['kpl'] ? plomb['kpl'] + 'x  ' : '');
+                                        plombsResult += (plomb['znak'] ? plomb['znak'] : '');
+                                        delim = ', ';
+                                    }
+
+                                    var kpl = parseInt(plomb['kpl']);
+                                    plombsCount += isNaN(kpl) ? 0 : kpl;
+                                }
+                            }
+                            contsCount++;
+                        }
+
+                    }
+                } else {
+                    plombs = vag[docForm.getPlombsCollectionName()];
+                    if (plombs && !Ext.Object.isEmpty(plombs)) {
+
+                        for (var plombsIndx in plombs) {
+                            plomb = plombs[plombsIndx];
+
+                            if (vagIndx == 0 && !vags[1]) { // only 1 vag
+                                plombsResult += delim;
+                                plombsResult += (plomb['kpl'] ? plomb['kpl'] + 'x  ' : '');
+                                plombsResult += (plomb['znak'] ? plomb['znak'] : '');
+                                delim = ', ';
+                            }
+
+                            var kpl = parseInt(plomb['kpl']);
+                            plombsCount += isNaN(kpl) ? 0 : kpl;
+                        }
+                    }
+                }
+                vagsCount++;
+            }
+        }
+
+        if(vagsCount > 1 || contsCount > 1){
+            plombsResult = 'verschlüsse / пломбы ' + plombsCount + ' (Siehe Nachweisung / см.ведомость)';
+        }
+        docForm.dataObj['g2012'] = plombsResult;
     }
 });

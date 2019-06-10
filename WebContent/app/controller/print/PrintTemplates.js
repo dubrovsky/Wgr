@@ -1,6 +1,35 @@
 Ext.define('TK.controller.print.PrintTemplates', {
     extend: 'Ext.app.Controller',
 
+    requires: [
+        'Ext.data.Errors',
+        'Ext.data.Store',
+        'Ext.data.proxy.Ajax',
+        'Ext.data.reader.Json',
+        'Ext.form.Panel',
+        'Ext.form.field.Checkbox',
+        'Ext.form.field.File',
+        'Ext.form.field.Hidden',
+        'Ext.form.field.Number',
+        'Ext.form.field.Text',
+        'Ext.grid.Panel',
+        'Ext.grid.column.Action',
+        'Ext.grid.column.Check',
+        'Ext.grid.column.Number',
+        'Ext.grid.plugin.CellEditing',
+        'Ext.layout.container.Anchor',
+        'Ext.layout.container.Fit',
+        'Ext.selection.CheckboxModel',
+        'Ext.toolbar.Fill',
+        'Ext.toolbar.Paging',
+        'Ext.toolbar.Separator',
+        'Ext.toolbar.Toolbar',
+        'Ext.tree.Panel',
+        'Ext.ux.form.ItemSelector',
+        'Ext.window.Window',
+        'TK.Utils'
+    ],
+
     views: ['printtmpl.List', 'printtmpl.Form', 'printtmpl.TableForm', 'printtmpl.PhraseForm'],
     stores: ['PrintTemplates','PrintTemplate','PrnTmplRouteItems','PrintBlanks'],
     models: ['PrintTemplate','PrintData','PrintDataTable','PrintBlank','PrintDataPhrase'],
@@ -66,6 +95,9 @@ Ext.define('TK.controller.print.PrintTemplates', {
             },
             'docslist button[action="print"] menuitem[action="bindPrintTmpl"]': {
                 click: this.onBindUnPrintTempl
+            },
+            'docslist button[action="print"] menuitem[action="selectPrintTmpl"]': {
+                click: this.onSelectPrintTempl
             },
             'detailgrid#prnTemplData' : {
                 needTable: this.onNeedTable,
@@ -147,7 +179,10 @@ Ext.define('TK.controller.print.PrintTemplates', {
                     callback: function(records, operation, success) {
                         win = Ext.create('Ext.window.Window', {
                             title: 'Загрузка и редактирование подложек/бланков',
-                            width: 800, /*autoHeight:true, */ y:1, modal:true,
+                            width: 800, /*autoHeight:true, */
+                            height: 800,
+                            y:1,
+                            modal:true,
                             layout: 'anchor',
                             autoShow:true ,
                             maximizable:true,
@@ -162,6 +197,7 @@ Ext.define('TK.controller.print.PrintTemplates', {
                                     {xtype:'textfield', fieldLabel: 'Описание', name:'blank.name', maxLength:'300', allowBlank: false},
                                     {xtype:'numberfield', fieldLabel: 'Страница', name:'blank.page', maxLength:'2', allowBlank: false, minValue:1, maxValue:99, decimalPrecision:0, anchor: '50%'},
                                     {xtype:'numberfield', fieldLabel: 'Копия', name:'blank.ncopy', maxLength:'2', allowBlank: false, minValue:1, maxValue:99, decimalPrecision:0, anchor: '50%'},
+                                    {xtype:'checkbox', fieldLabel: 'Для просмотра?', name:'blank.preview', inputValue:true},
                                     {xtype:'filefield', fieldLabel: 'Файл', name: 'upload',  allowBlank: false, buttonText: 'Загрузить'}
                                 ],
                                 dockedItems: {
@@ -200,13 +236,12 @@ Ext.define('TK.controller.print.PrintTemplates', {
                             },{
                                 xtype: 'grid',
                                 title:'Загруженные',
-//                                height: 300,
+                                height: 530,
                                 margin: '10 0 0 0',
                                 enableColumnHide:false,
                                 enableColumnMove:false,
                                 sortableColumns:false,
                                 columnLines: true,
-//                    frame: true,
                                 viewConfig: {
                                     stripeRows: true,
                                     singleSelect:true
@@ -224,6 +259,7 @@ Ext.define('TK.controller.print.PrintTemplates', {
                                     {header: 'Наименование',  dataIndex: 'name', editor: {xtype: 'textfield',allowBlank: false, maxLength:300}, flex:1, renderer: TK.Utils.renderLongStr},
                                     {header: 'Страница', dataIndex: 'page', editor: {xtype: 'numberfield', maxLength:'2', allowBlank: false, minValue:1, maxValue:99, decimalPrecision:0}, width: 60},
                                     {header: 'Копия', dataIndex: 'ncopy', editor: {xtype: 'numberfield', maxLength:'2', allowBlank: false, minValue:1, maxValue:99, decimalPrecision:0}, width: 60},
+                                    {header: 'Для просмотра', dataIndex: 'preview', xtype: 'checkcolumn', width: 60},
                                     {
                                         text:"Файл",
                                         columns: [{
@@ -257,10 +293,11 @@ Ext.define('TK.controller.print.PrintTemplates', {
                                                 if(errors.isValid()){
                                                     var rec = grid.getStore().getAt(rowIndex),
                                                         params = {
-                                                            'blank.hid':rec.get('hid'),
-                                                            'blank.name':rec.get('name'),
-                                                            'blank.ncopy':rec.get('ncopy'),
-                                                            'blank.page':rec.get('page')
+                                                            'blank.hid': rec.get('hid'),
+                                                            'blank.name': rec.get('name'),
+                                                            'blank.ncopy': rec.get('ncopy'),
+                                                            'blank.page': rec.get('page'),
+                                                            'blank.preview': rec.get('preview')
                                                         };
                                                     Ext.Ajax.request({
                                                         url: 'PrintTemplates_updateBlank.do',
@@ -813,6 +850,139 @@ Ext.define('TK.controller.print.PrintTemplates', {
                 }]
             });
 //            store.load();
+    },
+    onSelectPrintTempl: function (btn) {
+        var list = btn.up('grid');
+        if(!TK.Utils.isRowSelected(list)){
+            return;
+        }
+
+        var model = list.getStore().first(),
+            store = Ext.create('Ext.data.Store', {
+                pageSize: 10,
+                fields:['name', 'hid', 'docId'],
+                proxy: {
+                    type: 'ajax',
+                    url: 'PrintTemplates_templs_view_print.do',
+                    reader: {
+                        type: 'json',
+                        root: 'rows',
+                        totalProperty: 'total'
+                    },
+                    extraParams: {
+                        'search.docType': model.get('src'),
+                        'search.routeId': model.get('routeId')
+                    },
+                    listeners: {exception: function(proxy, response, operation) {TK.Utils.makeErrMsg(response, 'Внимание! Ошибка загрузки списка...');}}
+                }
+            }),
+            win =  Ext.widget('window', {
+                title: this.titleSelectText,
+                y:1,
+                modal:true,
+                layout: 'fit',
+                autoShow: true,
+                width:500, height:500,
+                maximizable:true,
+                items: {
+                    xtype:'grid',
+                    selModel:Ext.create('Ext.selection.CheckboxModel',{
+                        mode:'SINGLE',
+                        showHeaderCheckbox: false,
+                        allowDeselect:true
+                    }),
+                    enableColumnHide:false,
+                    enableColumnMove:false,
+                    sortableColumns:false,
+                    columnLines: true,
+                    viewConfig: {
+                        stripeRows: true,
+                        singleSelect:true
+                    },
+                    store: store,
+                    columns: [
+                        {text: this.columnText, dataIndex:'name', flex:1, renderer:TK.Utils.renderLongStr}
+                    ],
+                    dockedItems: [{
+                        dock: 'bottom',
+                        xtype: 'pagingtoolbar',
+                        store: store,
+                        displayInfo: true
+                    }],
+                    listeners:{
+                        render: function(grid){
+                            grid.getStore().load();
+                        }
+                    }
+                },
+                dockedItems: [{
+                    dock: 'bottom',
+                    xtype: 'toolbar',
+                    items: [
+                        '->',
+                        '-', {
+                            text: this.btnBindPrintText,
+                            scope: this,
+                            handler: function(winBtn) {
+                                var grid = win.getComponent(0),
+                                    templHid;
+
+                                if(grid.getSelectionModel().getSelection().length > 0){
+                                    templHid = grid.getSelectionModel().getSelection()[0].get('hid');
+                                } else {
+                                    Ext.Msg.show({
+                                        title: this.msgTitle,
+                                        msg: this.msgMsg,
+                                        buttons: Ext.MessageBox.OK,
+                                        icon: Ext.MessageBox.WARNING
+                                    });
+                                    return false;
+                                }
+
+                                btn.fireEvent('printWithTempl', list, templHid);
+                                win.close();
+
+                               /* var grid = win.getComponent(0),
+                                    params = {
+                                        'search.routeId': model.get('routeId'),
+                                        'search.docId': model.get('src')
+                                    };
+
+                                if(grid.getSelectionModel().getSelection().length > 0){
+                                    params['hid'] =  grid.selModel.getSelection()[0].get('hid');
+                                } else {
+                                    Ext.Msg.show({
+                                        title: this.msgTitle,
+                                        msg: this.msgMsg,
+                                        buttons: Ext.MessageBox.OK,
+                                        icon: Ext.MessageBox.WARNING
+                                    });
+                                    return false;
+                                }
+
+                                Ext.Ajax.request({
+                                    url: 'PrintTemplates_bindUnRoutes.do',
+                                    params: params,
+                                    scope:this,
+                                    success: function (response, options) {
+                                        win.close();
+                                    },
+                                    failure: function (response, options) {
+                                        TK.Utils.makeErrMsg(response, this.errorMsg);
+                                    }
+                                });*/
+                            }
+                        },
+                        '-', {
+                            text: this.btnClose,
+                            scope: this,
+                            handler: function() {
+                                win.close();
+                            }
+                        }
+                    ]
+                }]
+            });
     },
     onNeedTable: function(grid, record){
         var win = Ext.widget('printDataTable'),

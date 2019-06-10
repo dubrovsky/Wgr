@@ -19,8 +19,10 @@ public class NsiCountriesDAOHib extends GenericHibernateDAO<NsiCountries, String
         crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 10 : limit);
         crit.addOrder(Order.asc("naim"));
         if (query != null && query.trim().length() > 0) {
-            crit.add(Restrictions.or(Restrictions.ilike("naim", query.trim(), MatchMode.ANYWHERE),
-                    Restrictions.ilike("abc2", query.trim(), MatchMode.ANYWHERE)));
+            crit.add(Restrictions.or(
+                    Restrictions.or(Restrictions.ilike("krnaim", query.trim(), MatchMode.ANYWHERE),
+                            Restrictions.ilike("abc2", query.trim(), MatchMode.ANYWHERE)),
+                    Restrictions.ilike("anaim", query.trim(), MatchMode.ANYWHERE)));
         }
         List<NsiCountries> list = crit.list();
 //    getSession().clear();
@@ -32,8 +34,12 @@ public class NsiCountriesDAOHib extends GenericHibernateDAO<NsiCountries, String
         Criteria crit = getSession().createCriteria(getPersistentClass());
         crit.setProjection(Projections.rowCount());
         if (query != null && query.trim().length() > 0) {
-            crit.add(Restrictions.or(Restrictions.ilike("naim", query.trim(), MatchMode.ANYWHERE),
-                    Restrictions.ilike("abc2", query.trim(), MatchMode.ANYWHERE)));
+//            crit.add(Restrictions.or(Restrictions.ilike("naim", query.trim(), MatchMode.ANYWHERE),
+//                    Restrictions.ilike("abc2", query.trim(), MatchMode.ANYWHERE)));
+            crit.add(Restrictions.or(
+                    Restrictions.or(Restrictions.ilike("krnaim", query.trim(), MatchMode.ANYWHERE),
+                            Restrictions.ilike("abc2", query.trim(), MatchMode.ANYWHERE)),
+                    Restrictions.ilike("anaim", query.trim(), MatchMode.ANYWHERE)));
         }
         return (Long) crit.uniqueResult();
     }

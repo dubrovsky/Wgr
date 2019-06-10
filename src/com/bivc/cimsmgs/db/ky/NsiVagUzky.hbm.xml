@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.bivc.cimsmgs.db.ky.NsiVagUzky" table="NSI_VAG_UZKY">
+        <id name="hid" type="java.lang.Long">
+            <column name="HID" precision="20" scale="0"/>
+            <generator class="sequence">
+                <param name="sequence">NSI_VAG_SHIR_HID</param>
+            </generator>
+        </id>
+        <many-to-one class="com.bivc.cimsmgs.db.ky.NsiKyOwners" fetch="select" name="owner">
+            <column name="HID_OWNER" precision="20" scale="0"/>
+        </many-to-one>
+        <property name="nvaguf">
+            <column name="NVAGUF" sql-type="varchar2" length="64"/>
+        </property>
+        <property name="nvagu">
+            <column name="NVAGU" sql-type="varchar2" length="7"/>
+        </property>
+        <property name="dexpB">
+            <column name="DEXP_B" sql-type="date"/>
+        </property>
+        <property name="dexpEnd">
+            <column name="DEXP_END" sql-type="date"/>
+        </property>
+        <property name="podtv">
+            <column name="PODTV" sql-type="char" length="1"/>
+        </property>
+        <property name="koddor">
+            <column name="KODDOR" sql-type="varchar2" length="8"/>
+        </property>
+        <property name="kodadm">
+            <column name="KODADM" sql-type="varchar2" length="8"/>
+        </property>
+        <property name="sobs">
+            <column name="SOBS" sql-type="varchar2" length="450"/>
+        </property>
+        <property name="vidkod">
+            <column name="VIDKOD" sql-type="varchar2" length="10"/>
+        </property>
+        <property name="aktnvagu">
+            <column name="AKTNVAGU" sql-type="char" length="1"/>
+        </property>
+        <property name="kodownvag">
+            <column name="KODOWNVAG" sql-type="varchar2" length="10"/>
+        </property>
+        <property name="dparkIn">
+            <column name="DPARK_IN" sql-type="date"/>
+        </property>
+        <property name="osi">
+            <column name="OSI" sql-type="number" precision="2"/>
+        </property>
+        <property name="razvor">
+            <column name="RAZVOR" sql-type="number" precision="2"/>
+        </property>
+        <property name="mnetvag">
+            <column name="MNETVAG" sql-type="number" precision="10" scale="2"/>
+        </property>
+        <property name="grpodvag">
+            <column name="GRPODVAG" sql-type="number" precision="10" scale="2"/>
+        </property>
+        <property name="dlvag">
+            <column name="DLVAG" sql-type="number" precision="10" scale="2"/>
+        </property>
+        <property name="typevag">
+            <column name="TYPEVAG" sql-type="varchar2" length="10"/>
+        </property>
+        <property name="un" type="string" update="false">
+            <column length="20" name="UN"/>
+        </property>
+        <property name="dattr" type="timestamp">
+            <column length="7" name="DATTR"/>
+        </property>
+        <property name="trans" type="string" update="false">
+            <column length="20" name="TRANS"/>
+        </property>
+        <property name="altered" type="timestamp" update="false">
+            <column length="7" name="ALTERED"/>
+        </property>
+        <property name="hidOwn">
+            <column name="HID_OWN" sql-type="number" precision="20"/>
+        </property>
+        <property name="dLastrem">
+            <column name="D_LASTREM" sql-type="date"/>
+        </property>
+        <property name="dPlanrem">
+            <column name="D_PLANREM" sql-type="date"/>
+        </property>
+    </class>
+</hibernate-mapping>

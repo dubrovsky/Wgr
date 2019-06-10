@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.nsi.NsiBahnhof" table="NSI_BAHNHOF">
+        <id name="nr" type="string">
+            <column name="NR" length="6" />
+            <generator class="assigned"/>
+        </id>
+        <property name="land" type="java.lang.Long">
+            <column name="LAND" precision="2" scale="0" />
+        </property>
+        <property name="name" type="string">
+            <column name="NAME" length="100"/>
+        </property>
+        <property name="vz" type="string">
+            <column name="VZ" length="20"/>
+        </property>
+        <property name="tag" type="string">
+            <column name="TAG" length="16"/>
+        </property>
+        <property name="name_cyrillic" type="string">
+            <column name="NAME_CYRILLIC" length="100"/>
+        </property>
+    </class>
+</hibernate-mapping>

@@ -3,6 +3,11 @@ Ext.define('TK.controller.exchange.Agreements', {
     mixins: [
         'TK.controller.exchange.LockChecker'
     ],
+
+    requires: [
+        'TK.Utils'
+    ],
+
     refs: [
         {
             ref: 'center',

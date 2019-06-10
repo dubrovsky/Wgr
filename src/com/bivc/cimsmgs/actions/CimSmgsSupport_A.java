@@ -2,6 +2,8 @@ package com.bivc.cimsmgs.actions;
 
 import com.bivc.cimsmgs.commons.*;
 import com.bivc.cimsmgs.dao.*;
+import com.bivc.cimsmgs.db.CimSmgs;
+import com.bivc.cimsmgs.db.PackDoc;
 import com.opensymphony.xwork2.ActionSupport;
 
 import java.math.BigDecimal;
@@ -158,7 +160,7 @@ public class CimSmgsSupport_A extends ActionSupport implements JSONAware, UserAw
     private Integer start;
     private Integer type;
     private Search search;
-    private Filter filter;
+//    private Filter filter;
     private String query;
     private String query1;
     private Long hid_cs;
@@ -198,9 +200,9 @@ public class CimSmgsSupport_A extends ActionSupport implements JSONAware, UserAw
         return query1;
     }
 
-    public Filter getFilter() {
-        return filter;
-    }
+//    public Filter getFilter() {
+//        return filter;
+//    }
 
     public Long getHid() {
         return hid;
@@ -243,9 +245,9 @@ public class CimSmgsSupport_A extends ActionSupport implements JSONAware, UserAw
         this.query1 = query1;
     }
 
-    public void setFilter(Filter filter) {
-        this.filter = filter;
-    }
+//    public void setFilter(Filter filter) {
+//        this.filter = filter;
+//    }
 
     public void setHid(Long hid) {
         this.hid = hid;
@@ -323,5 +325,19 @@ public class CimSmgsSupport_A extends ActionSupport implements JSONAware, UserAw
 
     public void setDocId(BigDecimal docId) {
         this.docId = docId;
+    }
+
+    void afterDocDestoroy(PackDoc packDoc){
+        // check and delete packDoc
+        if(packDoc.getCimSmgsFileInfs().size() == 0 && packDoc.getCsInvoices().size() == 0){
+            if(packDoc.getCimSmgses().size() == 0) {
+                getPackDocDAO().makeTransient(packDoc);
+            } else if(packDoc.getCimSmgses().size() == 1){
+                CimSmgs cimSmgs = packDoc.getCimSmgses().iterator().next();
+                if(cimSmgs.isEpd()){
+                    getPackDocDAO().makeTransient(packDoc);
+                }
+            }
+        }
     }
 }

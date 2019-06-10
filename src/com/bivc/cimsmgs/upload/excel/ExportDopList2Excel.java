@@ -2,6 +2,7 @@ package com.bivc.cimsmgs.upload.excel;
 
 import com.bivc.cimsmgs.commons.TextToLinesSplitter;
 import com.bivc.cimsmgs.db.CimSmgs;
+import com.bivc.cimsmgs.db.CimSmgsDocs;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
@@ -202,16 +203,35 @@ public class ExportDopList2Excel extends Export2Excel {
 
         rowInd = 11;
         CellRangeAddress region = null;
+
+        //Поле 1
+        if (isSatisfiedToCreateRegion(doc.getG1c(), doc.buildG1Cs())) {
+            region = createDataRegion(doc.buildG1Cs(), rowInd, "1");
+            rowInd = region.getLastRow();
+        }
+
+        //Поле 4
+        if (isSatisfiedToCreateRegion(doc.getG4c(), doc.buildG4Cs())) {
+            region = createDataRegion(doc.buildG4Cs(), rowInd, "4");
+            rowInd = region.getLastRow();
+        }
+
         //Поле 7
         if (isSatisfiedToCreateRegion(doc.getG7c(), doc.buildG7Cs())) {
             region = createDataRegion(doc.buildG7Cs(), rowInd, "7");
             rowInd = region.getLastRow();
         }
+
         //Поле 9
-        if (isSatisfiedToCreateRegion(doc.getG9c(), doc.buildG9Cs())) {
-            region = createDataRegion(doc.buildG9Cs(), rowInd, "9");
-            rowInd = region.getLastRow();
+        if (isSatisfiedToCreateRegion(doc.getG9c(), doc.getCimSmgsDocses9() != null && !doc.getCimSmgsDocses9().isEmpty())) {
+            int index = 0;
+            for (CimSmgsDocs elem : doc.getCimSmgsDocses9().values()) {
+                region = createDataRegion(doc.buildG9Cs(elem), rowInd, index == 0 ? "9" : null);
+                rowInd = region.getLastRow();
+                index++;
+            }
         }
+
         //Поле 13
         if (isSatisfiedToCreateRegion(doc.getG13c(), doc.buildG13Cs())) {
             region = createDataRegion(doc.buildG13Cs(), rowInd, "13");
@@ -257,6 +277,10 @@ public class ExportDopList2Excel extends Export2Excel {
 
     private boolean isSatisfiedToCreateRegion(Byte checked, String text) {
         return isSatisfiedToCreateRegion(checked) && StringUtils.isNotBlank(text);
+    }
+
+    private boolean isSatisfiedToCreateRegion(Byte checked, boolean hasData) {
+        return isSatisfiedToCreateRegion(checked) && hasData;
     }
 
     private boolean isSatisfiedToCreateRegion(Byte checked) {

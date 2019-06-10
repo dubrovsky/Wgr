@@ -22,13 +22,18 @@ public class FileInfDAOHib extends GenericHibernateDAO<CimSmgsFileInf, Long> imp
     public List<CimSmgsFileInf> findAll(Integer limit, Integer start, Search search, Usr usr) throws InfrastructureException {
 		Criteria crit = getSession().createCriteria(getPersistentClass());
         crit.add(Restrictions.eq("type", search.getDocType()));
-        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans()));
-        crit.createAlias("route", "route").add(Restrictions.eq("route.hid", search.getRouteId()));
+        crit.createAlias("packDoc", "pack").
+                createAlias("pack.usrGroupsDir", "gr").
+                add(Restrictions.in("gr.name", usr.getTrans())).
+                add(Restrictions.eq("pack.deleted", search.getDeleted() != 0));
+
+        crit.createAlias("route", "route").
+                add(Restrictions.eq("route.hid", search.getRouteId()));
 		crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 20 : limit);
 		crit.addOrder(Order.desc("dattr"));
-        if(search.getPackId() != null){
+        /*if(search.getPackId() != null){
             crit.add(Restrictions.eq("pack.hid", search.getPackId()));
-        }
+        }*/
 
         if (search != null) {
 			if (search.getHid() != null && search.getHid() != 0)
@@ -71,11 +76,12 @@ public class FileInfDAOHib extends GenericHibernateDAO<CimSmgsFileInf, Long> imp
 	public Long countAll(Search search, Usr usr) {
 		Criteria crit = getSession().createCriteria(getPersistentClass());
         crit.add(Restrictions.eq("type", search.getDocType()));
-        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans()));
+        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans())).
+                add(Restrictions.eq("pack.deleted", search.getDeleted() != 0));
         crit.createAlias("route", "route").add(Restrictions.eq("route.hid", search.getRouteId()));
-        if(search.getPackId() != null){
+        /*if(search.getPackId() != null){
             crit.add(Restrictions.eq("pack.hid", search.getPackId()));
-        }
+        }*/
 		crit.setProjection(Projections.rowCount());
         if (search != null) {
 			if (search.getHid() != null && search.getHid() != 0)
@@ -118,6 +124,7 @@ public class FileInfDAOHib extends GenericHibernateDAO<CimSmgsFileInf, Long> imp
     public CimSmgsFileInf findById2(CimSmgsFileInf file) {
         Criteria crit = getSession().createCriteria(getPersistentClass()).
                         createAlias("packDoc", "pack").
+              //  add(Restrictions.eq("pack.deleted", false)).
                         createAlias("route", "route");
         if(file.getHid() != null) {
             crit.add(Restrictions.eq("hid", file.getHid()));
@@ -131,7 +138,8 @@ public class FileInfDAOHib extends GenericHibernateDAO<CimSmgsFileInf, Long> imp
     @Override
     public Long countAll(PackDoc packDoc) {
         Criteria crit = getSession().createCriteria(getPersistentClass());
-        crit.add(Restrictions.eq("packDoc", packDoc));
+        crit.add(Restrictions.eq("packDoc", packDoc)).
+                add(Restrictions.eq("packDoc.deleted", false));
 
         crit.setProjection(Projections.countDistinct("hid"));
         return (Long) crit.uniqueResult();

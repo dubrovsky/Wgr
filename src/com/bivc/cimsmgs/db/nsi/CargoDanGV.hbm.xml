@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 08.04.2011 10:06:33 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+
+    <class name="com.bivc.cimsmgs.db.nsi.CargoDanGV" table="CARGO_DANG_V" where="SYSDATE() &gt;= `CAR_D#BGN` and SYSDATE() &lt; `CAR_D#END`">
+        <!--<class name="com.bivc.cimsmgs.db.nsi.CargoDanV" table="CARGO_DAN_V">-->
+        <id name="carDUn" type="java.lang.Long">
+            <column name="[CAR_D#UN]"/>
+            <!--<generator class="assigned"/>-->
+            <generator class="native"/>
+        </id>
+        <property name="carDId" type="java.lang.Long">
+            <column name="[CAR_D#ID]"/>
+        </property>
+        <property name="carDCode" type="string">
+            <column name="CAR_D_CODE"/>
+        </property>
+        <property name="carDName" type="string">
+            <column name="CAR_D_NAME"/>
+        </property>
+       
+
+
+
+        <property name="carDBgn" type="date">
+            <column name="[CAR_D#BGN]"/>
+        </property>
+        <property name="carDEnd" type="date">
+            <column name="[CAR_D#END]"/>
+        </property>
+
+    </class>
+</hibernate-mapping>

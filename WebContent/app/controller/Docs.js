@@ -4,14 +4,51 @@ Ext.define('TK.controller.Docs', {
         'TK.controller.Utils',
         'TK.controller.print.Print'
     ],
+
+    requires: [
+        'Ext.data.ArrayStore',
+        'Ext.data.Errors',
+        'Ext.data.Store',
+        'Ext.data.proxy.Ajax',
+        'Ext.data.reader.Json',
+        'Ext.form.FieldContainer',
+        'Ext.form.FieldSet',
+        'Ext.form.Panel',
+        'Ext.form.RadioGroup',
+        'Ext.form.field.ComboBox',
+        'Ext.form.field.Date',
+        'Ext.form.field.File',
+        'Ext.form.field.Hidden',
+        'Ext.form.field.Text',
+        'Ext.form.field.TextArea',
+        'Ext.form.field.Time',
+        'Ext.grid.Panel',
+        'Ext.grid.column.Action',
+        'Ext.grid.plugin.CellEditing',
+        'Ext.layout.container.Anchor',
+        'Ext.layout.container.Fit',
+        'Ext.layout.container.HBox',
+        'Ext.layout.container.VBox',
+        'Ext.toolbar.Fill',
+        'Ext.toolbar.Paging',
+        'Ext.toolbar.Separator',
+        'Ext.toolbar.Toolbar',
+        'Ext.util.MixedCollection',
+        'Ext.window.Window',
+        'TK.Utils',
+        'TK.view.stat.Form'
+    ],
+
     refs: [
         {
             ref: 'center',
             selector: 'viewport > tabpanel'
-        },
-        {
+        }, {
             ref: 'menutree',
             selector: 'viewport > menutree'
+        }, {
+            ref: 'langCombo',
+            selector: 'viewport #localeCombo #langCombo'
         }
     ],
     init: function() {
@@ -24,13 +61,21 @@ Ext.define('TK.controller.Docs', {
         this.prefixDir = 'docs';
         this.control({
             'viewport > tabpanel > grid[inPack=false] button[action="create"]': {
-                click: this.onCreate
+                click: this.onCreateCont
+            },
+            'viewport > tabpanel > grid[inPack=false] button[action="create"] menuitem[action="createCont"]': {
+                click: this.onCreateCont
+            },
+            'viewport > tabpanel > grid[inPack=false] button[action="create"] menuitem[action="createVag"]': {
+                click: this.onCreateVag
             },
             'viewport > tabpanel > grid[inPack=false] button[action="edit"]': {
                 click: this.onEdit
             },
             'viewport > tabpanel > grid[inPack=false]': {
-                itemdblclick: this.onEdit
+                itemdblclick: this.onEdit,
+                render: this.onPrepareGridToRender,
+                prepareGridToRender: this.onPrepareGridToRender
             },
             'viewport > tabpanel > grid[inPack=false] button[action="copy"]': {
                 click: this.onCopy
@@ -52,6 +97,12 @@ Ext.define('TK.controller.Docs', {
             },
             'viewport > tabpanel > grid[inPack=false] button[action="del"]': {
                 click: this.onDelete
+            },
+            'viewport > tabpanel > grid[inPack=false] button[action="restore"]': {
+                click: this.onRestore
+            },
+            'viewport > tabpanel > grid[inPack=false] button[action="destroy"]': {
+                click: this.onDestroy
             },
             /*'docslist button[action="print"]': {
                 click: this.onPrint1
@@ -88,11 +139,21 @@ Ext.define('TK.controller.Docs', {
                 click: this.onEditInPack
             },
             'viewport > tabpanel > grid[inPack=true]': {
-                itemdblclick: this.onEditInPack
+                itemdblclick: this.onEditInPack,
+                prepareGridToRender: this.onPrepareGridToRender
+            },
+            'viewport > tabpanel > panel > grid[inPack=true]': {
+                prepareGridToRender: this.onPrepareGridToRender
             },
 
             'viewport > tabpanel grid[inPack=true] button[action="del"]': {
                 click: this.onDeleteInPack
+            },
+            'viewport > tabpanel grid[inPack=true] button[action="restore"]': {
+                click: this.onRestoreInPack
+            },
+            'viewport > tabpanel grid[inPack=true] button[action="destroy"]': {
+                click: this.onDestroyInPack
             },
             'viewport > tabpanel > docsform button[action="save"]': {
                 click: this.onSave
@@ -120,6 +181,9 @@ Ext.define('TK.controller.Docs', {
             'viewport > tabpanel > docsform button[action="comments"]': {
                 click: this.onComments
             },
+            'viewport > tabpanel > grid button[action="aviso2cimsmgs"]': {
+                click: this.onAviso2CimSmgs
+            },
             'viewport > tabpanel > grid button[action="aviso2smgs"]': {
                 click: this.onAviso2Smgs
             },
@@ -139,6 +203,21 @@ Ext.define('TK.controller.Docs', {
                 click: this.onCopySelected
             },
             'cimsmgs':{
+                prepareData4RemoteSave: this.onPrepareData4RemoteSave
+            },
+            'cim':{
+                prepareData4RemoteSave: this.onPrepareData4RemoteSave
+            },
+            'avisocimsmgs':{
+                prepareData4RemoteSave: this.onPrepareData4RemoteSave
+            },
+            'smgs2':{
+                prepareData4RemoteSave: this.onPrepareData4RemoteSave
+            },
+            'aviso2':{
+                prepareData4RemoteSave: this.onPrepareData4RemoteSave
+            },
+            'avisocim':{
                 prepareData4RemoteSave: this.onPrepareData4RemoteSave
             }
         });
@@ -170,7 +249,6 @@ Ext.define('TK.controller.Docs', {
         if(form.findField('status') && form.findField('status').getValue()){
             params['status'] = form.findField('status').getValue();
         }
-
         Ext.Ajax.request({
             url: Ext.String.capitalize(doc.prefix) + '_view1.do',
             params: params,
@@ -255,7 +333,14 @@ Ext.define('TK.controller.Docs', {
     findController: function(controller){
         return this.getController(this.prefixDir + '.' + Ext.String.capitalize(controller));
     },
-    onCreate: function(btn){
+    onCreateCont: function(btn) {
+        this.create(btn, 2);
+    },
+    onCreateVag: function(btn) {
+        this.create(btn, 1);
+    },
+    // создание формы документа
+    create: function(btn, perevozType){
         this.getCenter().getEl().mask('Request ...','x-mask-loading');
         var focus,
             doc,
@@ -267,12 +352,15 @@ Ext.define('TK.controller.Docs', {
             initObj = function(prefix){
                 var initObj = {task:'create'};
                 initObj[prefix + '.route.hid'] = routeId;
+                initObj[prefix + '.g25'] = (perevozType ? perevozType : 2);
 //                initObj[prefix + '.status'] = 15;
                 return initObj;
             };
+
         this.getCenter().suspendLayouts();
         docsInPack.each(function(item,index,length){
             controller = this.findController(item.alias);
+
             if(item.range == 'form'){
                 doc = this.getCenter().add({xtype:item.name, title:item.descr, closable:false});
                 doc.initServiceFields(initObj(item.prefix));
@@ -510,30 +598,49 @@ Ext.define('TK.controller.Docs', {
         form.on('activate', this.onActivateForm, this);
         this.getCenter().setActiveTab(form);
     },
+    initDelRstrObj: function(prefix, list,operation)
+    {
+        var initObj = {task:operation},data= {packId:'',hid:''},
+        sel_data = list.selModel.getSelection();
+        Ext.Array.each(list.selModel.getSelection(), function (item) {
+
+            if(data.packId.length>0)
+                data.packId+=',';
+            data.packId+=item.data.packId;
+
+            if(data.hid.length>0)
+                data.hid+=',';
+            data.hid+=item.data.hid;
+        });
+        if(sel_data.length>1)
+        {
+            initObj['query'] = data.packId;
+            initObj['query1'] = data.hid;
+        }
+        else
+        {
+            initObj[prefix + '.packDoc.hid'] = data.packId;
+            initObj[prefix + '.hid'] = data.hid;
+        }
+        return initObj;
+    },
     onDelete: function(btn){
         var list = btn.up('grid');
   		if(!TK.Utils.isRowSelected(list)){
   			return;
   		}
-  		var data = list.selModel.getLastSelected().data,
-            doc = tkUser.docs.getByKey(this.getMenutree().lastSelectedLeaf.id.split('_')[3]),
-            initObj = function(prefix, data){
-                var initObj = {task:'delete'};
-                initObj[prefix + '.packDoc.hid'] = data.packId;
-                initObj[prefix + '.hid'] = data.hid;
-                return initObj;
-            };
-		Ext.Msg.show({title:this.delTitle, msg: this.delMsg, buttons: Ext.Msg.YESNO,
+  		var doc = tkUser.docs.getByKey(this.getMenutree().lastSelectedLeaf.id.split('_')[3]);
+        console.log(Ext.String.capitalize(doc.prefix) + '_delete.do');
+		Ext.Msg.show({title:this.delTitle, msg: this.delMsg+'('+list.selModel.getSelection().length+')', buttons: Ext.Msg.YESNO,
 		    closable: false, icon: Ext.Msg.QUESTION, scope: this,
 		    fn: function(buttonId) {
-				if(buttonId == 'yes')
+				if(buttonId === 'yes')
 			    {
 			        Ext.Ajax.request({
 				    	url: Ext.String.capitalize(doc.prefix) + '_delete.do',
-				        params: initObj(doc.prefix, data),
+				        params: this.initDelRstrObj(doc.prefix, list,'delete'),
 				        scope: list,
 				        success: function(response, options) {
-				            var text = Ext.decode(response.responseText);
 				            this.store.load();
 				        },
 				        failure: function(response){
@@ -544,6 +651,96 @@ Ext.define('TK.controller.Docs', {
 		    }
 		});
     },
+    onDestroy: function(btn){
+        var list = btn.up('grid');
+        if(!TK.Utils.isRowSelected(list)){
+            return;
+        }
+        var data = list.selModel.getLastSelected().data,
+            doc = tkUser.docs.getByKey(this.getMenutree().lastSelectedLeaf.id.split('_')[3]),
+            initObj = function(prefix, data){
+                var initObj = {task:'destroy'};
+                initObj[prefix + '.packDoc.hid'] = data.packId;
+                initObj[prefix + '.hid'] = data.hid;
+                return initObj;
+            };
+        Ext.Msg.show({title:this.delTitle, msg: this.delMsg, buttons: Ext.Msg.YESNO,
+            closable: false, icon: Ext.Msg.QUESTION, scope: this,
+            fn: function(buttonId) {
+                if(buttonId === 'yes')
+                {
+                    Ext.Ajax.request({
+                        url: Ext.String.capitalize(doc.prefix) + '_destroy.do',
+                        params: initObj(doc.prefix, data),
+                        scope: list,
+                        success: function(response, options) {
+                            // var text = Ext.decode(response.responseText);
+                            this.getStore().reload();
+                        },
+                        failure: function(response){
+                            TK.Utils.makeErrMsg(response, 'Error...');
+                        }
+                    });
+                }
+            }
+        });
+    },
+    onRestore: function(btn){
+        var list = btn.up('grid');
+        if(!TK.Utils.isRowSelected(list)){
+            return;
+        }
+        var doc = tkUser.docs.getByKey(this.getMenutree().lastSelectedLeaf.id.split('_')[3]);
+        // var data = list.selModel.getLastSelected().data,
+        //     doc = tkUser.docs.getByKey(this.getMenutree().lastSelectedLeaf.id.split('_')[3]),
+        //     initObj = function(prefix, data){
+        //         var initObj = {task:'restore'};
+        //         initObj[prefix + '.packDoc.hid'] = data.packId;
+        //         initObj[prefix + '.hid'] = data.hid;
+        //         return initObj;
+        //     };
+        console.log(Ext.String.capitalize(doc.prefix) + '_restore.do');
+        Ext.Ajax.request({
+            url: Ext.String.capitalize(doc.prefix) + '_restore.do',
+            // params: initObj(doc.prefix, data),
+            params: this.initDelRstrObj(doc.prefix, list,'restore'),
+            scope: list,
+            success: function(response, options) {
+                // var text = Ext.decode(response.responseText);
+                this.getStore().reload();
+            },
+            failure: function(response){
+                TK.Utils.makeErrMsg(response, 'Error...');
+            }
+        });
+    },
+    onRestoreInPack: function(btn){
+        var list = btn.up('grid');
+        if(!TK.Utils.isRowSelected(list)){
+            return;
+        }
+        var data = list.selModel.getLastSelected().data,
+            doc = tkUser.docs.getByKey(this.getMenutree().lastSelectedLeaf.id.split('_')[3]),
+            initObj = function(prefix, data){
+                var initObj = {task:'restoreInPack'};
+                initObj[prefix + '.packDoc.hid'] = data.packId;
+                initObj[prefix + '.hid'] = data.hid;
+                return initObj;
+            };
+
+        Ext.Ajax.request({
+            url: Ext.String.capitalize(doc.prefix) + '_restore.do',
+            params: initObj(doc.prefix, data),
+            scope: list,
+            success: function(response, options) {
+                // var text = Ext.decode(response.responseText);
+                this.getStore().reload();
+            },
+            failure: function(response){
+                TK.Utils.makeErrMsg(response, 'Error...');
+            }
+        });
+    },
     onDeleteInPack:function(btn){
         var list = btn.up('grid');
   		if(!TK.Utils.isRowSelected(list)){
@@ -552,14 +749,14 @@ Ext.define('TK.controller.Docs', {
   		var data = list.selModel.getLastSelected().data,
             doc = tkUser.docs.getByKey(list.xtype) || tkUser.docs.getByKey(list.ownerCt.xtype),  // for graph panels
             initObj = function(prefix, data){
-                var initObj = {task:'delete'};
+                var initObj = {task:'deleteInPack'};
                 initObj[prefix + '.hid'] = data.hid;
                 return initObj;
             };
 		Ext.Msg.show({title:this.delTitle, msg: this.delMsg, buttons: Ext.Msg.YESNO,
 		    closable: false, icon: Ext.Msg.QUESTION, scope: this,
 		    fn: function(buttonId) {
-				if(buttonId == 'yes')
+				if(buttonId === 'yes')
 			    {
 			        Ext.Ajax.request({
 				    	url: Ext.String.capitalize(doc.prefix) + '_delete.do',
@@ -583,6 +780,46 @@ Ext.define('TK.controller.Docs', {
 			    }
 		    }
 		});
+    },
+    onDestroyInPack:function(btn){
+        var list = btn.up('grid');
+        if(!TK.Utils.isRowSelected(list)){
+            return;
+        }
+        var data = list.selModel.getLastSelected().data,
+            doc = tkUser.docs.getByKey(list.xtype) || tkUser.docs.getByKey(list.ownerCt.xtype),  // for graph panels
+            initObj = function(prefix, data){
+                var initObj = {task:'destroyInPack'};
+                initObj[prefix + '.hid'] = data.hid;
+                return initObj;
+            };
+        Ext.Msg.show({title:this.delTitle, msg: this.delMsg, buttons: Ext.Msg.YESNO,
+            closable: false, icon: Ext.Msg.QUESTION, scope: this,
+            fn: function(buttonId) {
+                if(buttonId === 'yes')
+                {
+                    Ext.Ajax.request({
+                        url: Ext.String.capitalize(doc.prefix) + '_destroy.do',
+                        params: initObj(doc.prefix, data),
+                        scope: this,
+                        success: function(response) {
+                            list.getStore().reload();
+                            var forms = this.getCenter().query(doc.alias);
+                            for(var i = 0; i < forms.length; i++){
+                                var field = forms[i].getForm().findField(doc.prefix+'.hid');
+                                if(field.getValue() === data.hid){
+                                    this.getCenter().remove(forms[i], true);
+                                    break;
+                                }
+                            }
+                        },
+                        failure: function(response){
+                            TK.Utils.makeErrMsg(response, 'Error...');
+                        }
+                    });
+                }
+            }
+        });
     },
    /* doPrintGU: function(doc, datas){
         var data = {};
@@ -764,7 +1001,7 @@ Ext.define('TK.controller.Docs', {
         }
     },*/
     onFilter: function(btn){
-        var store = btn.up('gridpanel').store,
+        var grid = btn.up('gridpanel'),
 //            doc = tkUser.docs.getByKey(this.getMenutree().lastSelectedLeaf.id.split('_')[3]),
             win = Ext.create('Ext.window.Window',{
                 title: this.titletStat,
@@ -773,11 +1010,13 @@ Ext.define('TK.controller.Docs', {
                 layout:'fit',
 	            items: {
 		            xtype:'stat',
-	                store:store,
+	                store:grid.getStore(),
+                    grid:grid,
 		            scope: (btn.itemId && btn.itemId == 'global' ? 'global' : 'local')
 	            }
 
-            })
+            });
+
         win.show();
 	    this.getController('Stat').initEvents(win.getComponent(0));
     },
@@ -861,7 +1100,22 @@ Ext.define('TK.controller.Docs', {
         if(!TK.Utils.isRowSelected(list)){
             return;
         }
-        var data = list.selModel.getLastSelected().data;
+        var data = list.selModel.getLastSelected().data,
+            lang = this.getLangCombo().getValue();
+
+        var columns = [
+            {text: this.headerData, dataIndex: 'datBegin', sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false, renderer: TK.Utils.renderLongStr},
+            {text: this.headerWho, dataIndex: 'user', sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false}
+        ];
+
+        switch(lang) {
+            case 'de':
+                columns.splice(1, 0, {text: this.headerMsg, dataIndex: 'statusDe', flex:1, sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false});
+                break;
+            default:
+                columns.splice(1, 0, {text: this.headerMsg, dataIndex: 'status', flex:1, sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false});
+        }
+
         Ext.create('Ext.window.Window', {
             title: this.titleHistory,
             height: 500,
@@ -876,13 +1130,9 @@ Ext.define('TK.controller.Docs', {
                     singleSelect:true
                 },
                 columnLines: true,
-                columns: [
-                    {text: this.headerData, dataIndex: 'datBegin', sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false, renderer: TK.Utils.renderLongStr},
-                    {text: this.headerMsg, dataIndex: 'status', flex:1, sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false},
-                    {text: this.headerWho, dataIndex: 'user', sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false}
-                ],
+                columns: columns,
                 store: Ext.create('Ext.data.Store', {
-                    fields:['hid', 'datBegin', 'status', 'user'],
+                    fields:['hid', 'datBegin', 'status', 'user', 'statusDe'],
                     autoLoad:true,
                     proxy: {
                         type: 'ajax',
@@ -1037,6 +1287,7 @@ Ext.define('TK.controller.Docs', {
             }
          }
     },
+    // сохранение документа
     onSave:function(btn){
         var panel = btn.up('form'),
             doc =   tkUser.docs.getByKey(panel.xtype) ||
@@ -1052,6 +1303,8 @@ Ext.define('TK.controller.Docs', {
                     statusFid.setRawValue(13);
                 }
             };
+
+
         if(panel.getForm().isValid() && panel.isGridDataValid()){
             buildStatus();
 
@@ -1665,7 +1918,14 @@ Ext.define('TK.controller.Docs', {
                 }]
         });
     },
+    onAviso2CimSmgs: function (btn) {
+       this.aviso2Doc(btn, 10);
+    },
     onAviso2Smgs: function(btn){
+        // var groupBy = btn.itemId === 'aviso2smgsAppend' ? 4 : 2;
+        this.aviso2Doc(btn, 10);
+    },
+    aviso2Doc: function(btn, groupBy){
         var grid = btn.up('grid'),
             record,
             data,
@@ -1675,10 +1935,11 @@ Ext.define('TK.controller.Docs', {
         }
         record = grid.selModel.getLastSelected();
         data = record.data;
-        if(btn.itemId == 'aviso2smgsAppend'){ // add data to smgs, don't create new
+
+        if(btn.itemId === 'aviso2smgsAppend'){ // add data to smgs, don't create new
             if(data['npoezd']){
                 params['search.npoezd'] = data['npoezd'];
-                params['groupBy'] = '4';
+                params['groupBy'] = groupBy;
             } else {
                 Ext.Msg.show({
                     title: 'Внимание, ошибка!',
@@ -1689,9 +1950,9 @@ Ext.define('TK.controller.Docs', {
                 return;
             }
         } else {
-            params['groupBy'] = '2';
+            params['groupBy'] = groupBy;
         }
-        Ext.apply(params, {'search.hid': data['hid'],'search.type': data['type'], 'status':'7', /*'typeFrom': data['type'], 'typeTo':2,*/ 'search.routeId':data['routeId']});
+        Ext.apply(params, {'search.hid': data['hid'],'search.type': data['type'], 'status': '7', 'search.routeId':data['routeId']});
         this.getCenter().getEl().mask(this.maskMsg);
         Ext.Ajax.request({
             url: 'Doc2Doc.do',
@@ -1954,7 +2215,7 @@ Ext.define('TK.controller.Docs', {
             store.loadData(docs.getRange());
 
             Ext.widget('window', {
-                title: 'Список докуметов для копирования',
+                title: this.titleDocsCopy,
                 autoShow: true,
                 y: 0,
                 modal: true,
@@ -1977,12 +2238,12 @@ Ext.define('TK.controller.Docs', {
                     selType: 'checkboxmodel',
                     columns: {
                         items:[
-                            {text:'Наименование', dataIndex:'descr', flex:1}
+                            {text:this.headerName, dataIndex:'descr', flex:1}
                         ]
                     },
                     store: store,
                     tbar: [
-                        {text: 'Копировать', iconCls:'copySelected', action:'copySelectedDocs'},'-'
+                        {text: this.btnCopy, iconCls:'copySelected', action:'copySelectedDocs'},'-'
                     ]
                 }],
                 buttons: [{
@@ -2044,6 +2305,7 @@ Ext.define('TK.controller.Docs', {
         });
     },
     onPrepareData4RemoteSave: function(formPanel, objData) {
+
         var vags = formPanel.dataObj[formPanel.getVagCollectionName()],
             data = {};
 
@@ -2055,19 +2317,40 @@ Ext.define('TK.controller.Docs', {
         // return data;
     },
 
+    isContOtpr: function () {
+        return this.getController('docs.VgCtGrTreeDetailController').isContOtpr();
+    },
+
     prepareVags: function(formPanel, vags){
         var data = {};
-
         for(var vagIndx in vags){
             var vag = vags[vagIndx],
                 vagPath = formPanel.getPrefix() + '.' + formPanel.getVagCollectionName() + '[' + vagIndx + '].';
 
             for(var vagPropName in vag){
-                if(vagPropName == formPanel.getContCollectionName()){
+                if (this.isContOtpr() && vagPropName == formPanel.getContCollectionName()) {
                     var conts = vag[formPanel.getContCollectionName()];
-                    if(conts && !Ext.Object.isEmpty(conts)){
+                    if (conts && !Ext.Object.isEmpty(conts)) {
                         var contsData = this.prepareConts(vagPath, formPanel, conts);
                         Ext.apply(data, contsData);
+                    }
+                } else if(!this.isContOtpr() && vagPropName == formPanel.getDocs9CollectionName()){
+                    var docs9 = vag[formPanel.getDocs9CollectionName()];
+                    if(docs9 && !Ext.Object.isEmpty(docs9)){
+                        var docs9Data = this.prepareDosc9(vagPath, formPanel, docs9);
+                        Ext.apply(data, docs9Data);
+                    }
+                } else if(!this.isContOtpr() && vagPropName == formPanel.getPlombsCollectionName()){
+                    var plombs = vag[formPanel.getPlombsCollectionName()];
+                    if(plombs && !Ext.Object.isEmpty(plombs)){
+                        var plombsData = this.preparePlombs(vagPath, formPanel, plombs);
+                        Ext.apply(data, plombsData);
+                    }
+                } else if(!this.isContOtpr() && vagPropName == formPanel.getGryzCollectionName()){
+                    var gryzy = vag[formPanel.getGryzCollectionName()];
+                    if(gryzy  && !Ext.Object.isEmpty(gryzy)){
+                        var gryzyData = this.prepareGryzy(vagPath, formPanel, gryzy);
+                        Ext.apply(data, gryzyData);
                     }
                 } else {
                     data[vagPath + vagPropName] = vag[vagPropName];
@@ -2121,7 +2404,29 @@ Ext.define('TK.controller.Docs', {
                 gryzPath = contPath + formPanel.getGryzCollectionName() + '[' + gryzIndx + '].';
 
             for(var gryzPropName in gryz){
-                data[gryzPath + gryzPropName] = gryz[gryzPropName];
+                if(gryzPropName == formPanel.getDanGryzCollectionName()){
+                    var danGryzy = gryz[formPanel.getDanGryzCollectionName()];
+                    if(danGryzy && !Ext.Object.isEmpty(danGryzy)){
+                        var danGryzyData = this.prepareDanGryzy(gryzPath, formPanel, danGryzy);
+                        Ext.apply(data, danGryzyData);
+                    }
+                } else {
+                    data[gryzPath + gryzPropName] = gryz[gryzPropName];
+                }
+            }
+        }
+        return data;
+    },
+
+    prepareDanGryzy: function(gruzPath, formPanel, danGryzy){
+        var data = {};
+
+        for(var danGryzIndx in danGryzy){
+            var danGryz = danGryzy[danGryzIndx],
+                danGryzPath = gruzPath + formPanel.getDanGryzCollectionName() + '[' + danGryzIndx + '].';
+
+            for(var danGryzPropName in danGryz){
+                data[danGryzPath + danGryzPropName] = danGryz[danGryzPropName];
             }
         }
         return data;
@@ -2153,5 +2458,32 @@ Ext.define('TK.controller.Docs', {
             }
         }
         return data;
+    },
+
+    onPrepareGridToRender: function (grid) {
+        var toolbar = grid.getDockedItems('toolbar[dock="top"]')[0],
+            extraParams = grid.getStore().getProxy().extraParams || {},
+            showDeleted = extraParams['search.deleted'] === undefined || extraParams['search.deleted'] === null ? 0 : extraParams['search.deleted'];
+
+        toolbar.items.each(function(item) {
+            if(item.forPresent === undefined && item.forDeleted === undefined){
+                item.forPresent = true;
+                item.forDeleted = false;
+            }
+
+            var forPresentOnly = item.forPresent && !item.forDeleted,
+                forDeleteOnly = item.forDeleted && !item.forPresent,
+                forAll = item.forDeleted && item.forPresent;
+
+            if(showDeleted === 0){ // show present docs
+                item.setVisible(forPresentOnly || forAll);
+            } else {  // show deleted docs
+                item.setVisible(forDeleteOnly || forAll);
+            }
+
+        })
+    },
+    dragTabs:function () {
+        console.log('drug');
     }
 });

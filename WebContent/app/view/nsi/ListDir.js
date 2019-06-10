@@ -1,10 +1,7 @@
 Ext.define('TK.view.nsi.ListDir', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.nsilistdir',
-    requires: [
-        'TK.view.nsi.List',
-        'TK.view.nsi.EditList'
-    ],
+    requires: [],
     closable: false,
     autoScroll: true,
     enableColumnResize: false,
@@ -67,6 +64,8 @@ Ext.define('TK.view.nsi.ListDir', {
         {text: 'Наименование', dataIndex: 'descr', flex:1, sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false, renderer: this.rendererName1}
     ],*/
     rendererName1: function(val, meta, rec) {
+        // локализация списка справочников
+        val=this[rec.data.name]?this[rec.data.name]:val;
         switch(rec.data.name)
         {
             case 'gruzyLink':

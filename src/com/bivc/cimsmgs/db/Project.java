@@ -3,7 +3,7 @@ package com.bivc.cimsmgs.db;
 // Generated 13.05.2011 15:11:19 by Hibernate Tools 3.4.0.CR1
 
 import com.bivc.cimsmgs.commons.myUser;
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
 import java.util.*;
@@ -155,11 +155,11 @@ public class Project implements Serializable {
             routes.add(route);
         }
     }
-    @JsonManagedReference
+//    @JsonManagedReference
 	public Set<ProjectGroups> getProjectGroupses() {
 		return this.projectGroupses;
 	}
-    @JsonManagedReference
+//    @JsonManagedReference
 	public void setProjectGroupses(Set<ProjectGroups> projectGroupses) {
 		this.projectGroupses = projectGroupses;
 	}
@@ -228,5 +228,19 @@ public class Project implements Serializable {
         for(Route route: routes){
             route.prepareDocs4Save();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Project project = (Project) o;
+        return Objects.equals(hid, project.hid) &&
+                Objects.equals(name, project.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(hid, name);
     }
 }

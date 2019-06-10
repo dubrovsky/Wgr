@@ -6,7 +6,8 @@
     <class name="com.bivc.cimsmgs.db.nsi.Customunit" table="CUSTOMUNIT">
         <id name="id" type="big_decimal">
             <column name="ID" precision="22" scale="0" />
-            <generator class="assigned" />
+            <!--<generator class="assigned" />-->
+            <generator class="native"/>
         </id>
         <property name="code" type="string">
             <column name="CODE" length="20" not-null="true" />

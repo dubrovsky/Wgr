@@ -2,9 +2,17 @@ Ext.define('TK.view.project.Form', {
     extend: 'Ext.form.Panel',
     alias:['widget.project'],
     requires: [
-        'TK.view.edit.DetailGrid',
-        'Ext.ux.form.ItemSelector',
-        'TK.view.nsi.List'
+        'Ext.form.field.Hidden',
+        'Ext.form.field.Text',
+        'Ext.form.field.Trigger',
+        'Ext.grid.column.RowNumberer',
+        'Ext.toolbar.Fill',
+        'Ext.toolbar.Separator',
+        'TK.Utils',
+        'TK.model.Group',
+        'TK.model.Project',
+        'TK.model.Route',
+        'TK.view.edit.DetailGrid'
     ],
     closable: true,
 	border: false,
@@ -56,6 +64,8 @@ Ext.define('TK.view.project.Form', {
                         {text: this.headerRoutesCodeTbc, dataIndex: 'tbc_st_code',width:80, editor:{xtype:'textfield',maxLength:20}},
                         {text: this.headerRoutesCodeCustoms, dataIndex: 'customCode',width:80, editor:{xtype:'textfield',maxLength:20}},
                         {text: this.headerRoutesEmailMask, dataIndex: 'emailMask',width:120, editor:{xtype:'textfield',maxLength:128}}
+                        // ,
+                        // {text: this.headerRoutesForDeleted, dataIndex: 'forDeleted', xtype: 'checkcolumn', width: 100}
                     ];
                 },
                 newRecord: function(){
@@ -89,6 +99,7 @@ Ext.define('TK.view.project.Form', {
                         data['project.rts['+ind+'].tbc_st_code'] = route.get('tbc_st_code');
                         data['project.rts['+ind+'].customCode'] = route.get('customCode');
                         data['project.rts['+ind+'].emailMask'] = route.get('emailMask');
+                        // data['project.rts['+ind+'].forDeleted'] = route.get('forDeleted');
                         route.groups().each(function(group, ix){
                             data['project.rts['+ind+'].grps['+ix+'].name'] = group.get('name');
                         });

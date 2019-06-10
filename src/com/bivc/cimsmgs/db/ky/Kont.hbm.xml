@@ -1,0 +1,177 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 19.02.2014 14:19:48 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.ky.Kont" table="KY_KONT">
+        <id name="hid" type="java.lang.Long">
+            <column name="HID" precision="20" scale="0"/>
+            <generator class="sequence">
+                <param name="sequence">KY_KONT_HID</param>
+            </generator>
+        </id>
+
+        <many-to-one class="com.bivc.cimsmgs.db.ky.Poezd" fetch="select" name="poezdOut">
+            <column name="HID_POEZD_OUT" precision="20" scale="0"/>
+        </many-to-one>
+        <many-to-one class="com.bivc.cimsmgs.db.ky.Vagon" fetch="select" name="vagonInto">
+            <column name="HID_VAGON_INTO" precision="20" scale="0"/>
+        </many-to-one>
+        <many-to-one class="com.bivc.cimsmgs.db.ky.Yard" fetch="select" name="yard" unique="true">
+            <column name="HID_KY" precision="20" scale="0"/>
+        </many-to-one>
+        <many-to-one class="com.bivc.cimsmgs.db.ky.Vagon" fetch="select" name="vagonOut">
+            <column name="HID_VAGON_OUT" precision="20" scale="0"/>
+        </many-to-one>
+        <many-to-one class="com.bivc.cimsmgs.db.ky.Poezd" fetch="select" name="poezdInto">
+            <column name="HID_POEZD_INTO" precision="20" scale="0"/>
+        </many-to-one>
+
+        <many-to-one class="com.bivc.cimsmgs.db.ky.Avto" fetch="select" name="avtoOut">
+          <column name="HID_AVTO_OUT" precision="20" scale="0"/>
+        </many-to-one>
+        <many-to-one class="com.bivc.cimsmgs.db.ky.Avto" fetch="select" name="avtoInto">
+          <column name="HID_AVTO_INTO" precision="20" scale="0"/>
+        </many-to-one>
+        <many-to-one class="com.bivc.cimsmgs.db.ky.NsiKyOwners" fetch="select" name="owner">
+            <column name="HID_OWNER" precision="20" scale="0"/>
+        </many-to-one>
+
+        <property name="status" column="STATUS" not-null="true">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">com.bivc.cimsmgs.db.ky.KontStatus</param>
+            </type>
+        </property>
+
+        <property name="prevStatus" column="PREV_STATUS">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">com.bivc.cimsmgs.db.ky.KontStatus</param>
+            </type>
+        </property>
+
+        <property name="trans" type="string" update="false">
+            <column length="60" name="TRANS"/>
+        </property>
+        <property name="dattr" type="timestamp">
+            <column length="7" name="DATTR"/>
+        </property>
+        <property name="un" type="string" update="false">
+            <column length="60" name="UN"/>
+        </property>
+        <property name="altered" type="timestamp" update="false">
+            <column length="7" name="ALTERED"/>
+        </property>
+        <property name="nkon" type="string">
+            <column length="14" name="NKON"/>
+        </property>
+        <property name="dprb" type="timestamp">
+            <column length="7" name="DPRB"/>
+        </property>
+        <property name="dotp" type="timestamp">
+            <column length="7" name="DOTP"/>
+        </property>
+        <property name="dyard" type="timestamp">
+            <column length="7" name="DYARD"/>
+        </property>
+
+        <property name="massa_tar" type="java.lang.Long">
+            <column precision="20" scale="0" name="MASSA_TAR"/>
+        </property>
+        <property name="pod_sila" type="java.lang.Float">
+            <column precision="20" scale="2" name="POD_SILA"/>
+        </property>
+        <property name="type" type="string">
+            <column length="4" name="TYPE"/>
+        </property>
+        <property name="vid" type="string">
+            <column length="28" name="VID"/>
+        </property>
+        <property name="prizn_sob" type="string">
+            <column length="128" name="PRIZN_SOB"/>
+        </property>
+        <property name="naim_sob" type="string">
+            <column length="128" name="NAIM_SOB"/>
+        </property>
+        <property name="gruzotpr" type="string">
+            <column length="128" name="GRUZOTPR"/>
+        </property>
+        <property name="teh_obsl" type="date">
+            <column length="7" name="TEH_OBSL"/>
+        </property>
+
+        <!--<property name="dateYard" type="timestamp">
+            <column length="7" name="DATE_YARD"/>
+        </property>
+        <property name="dateCancel" type="timestamp">
+            <column length="7" name="DATE_CANCEL"/>
+        </property>
+        <property name="dateNoTransp" type="timestamp">
+            <column length="7" name="DATE_NO_TRANSP"/>
+        </property>
+        <property name="datePoezdInto" type="timestamp">
+            <column length="7" name="DATE_POEZD_INTO"/>
+        </property>
+        <property name="datePoezdOut" type="timestamp">
+            <column length="7" name="DATE_POEZD_OUT"/>
+        </property>
+        <property name="dateAvtoInto" type="timestamp">
+            <column length="7" name="DATE_AVTO_INTO"/>
+        </property>
+        <property name="dateAvtoOut" type="timestamp">
+            <column length="7" name="DATE_AVTO_OUT"/>
+        </property>-->
+
+        <property name="storeKy" type="string">
+            <column length="20" name="STORE_KY"/>
+        </property>
+        <property name="poruz" type="java.lang.Boolean">
+            <column name="PORUZ" precision="1" scale="0"/>
+        </property>
+        <property name="sort" type="java.lang.Byte">
+            <column name="SORT" precision="2" scale="0"/>
+        </property>
+
+        <property name="ky_x" type="java.lang.Long">
+            <column name="KY_X" precision="10" scale="0"/>
+        </property>
+        <property name="ky_y" type="java.lang.Long">
+            <column name="KY_Y" precision="10" scale="0"/>
+        </property>
+        <property name="ky_z" type="java.lang.Long">
+            <column name="KY_Z" precision="10" scale="0"/>
+        </property>
+
+        <property name="ky_sector" type="string">
+            <column name="KY_SECTOR" length="20"/>
+        </property>
+
+        <property name="prim" type="string">
+            <column length="128" name="PRIM"/>
+        </property>
+        <property name="punkt_otpr" type="string">
+            <column length="96" name="PUNKT_OTPR"/>
+        </property>
+        <property name="punkt_nazn" type="string">
+            <column length="96" name="PUNKT_NAZN"/>
+        </property>
+
+        <set fetch="select" inverse="true" lazy="true" name="gruzs" sort="natural" table="KY_GRUZ" batch-size="50" cascade="delete">
+            <key>
+                <column name="HID_KONT" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.Gruz"/>
+        </set>
+        <set fetch="select" inverse="true" lazy="true" name="plombs" sort="natural" table="KY_PLOMB" batch-size="50" cascade="delete">
+            <key>
+                <column name="HID_KONT" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.Plomb"/>
+        </set>
+        <set fetch="select" inverse="true" lazy="true" name="kontStatusHistory" sort="natural" table="KY_KONT_STATUS_HISTORY" batch-size="50" cascade="delete">
+            <key>
+                <column name="HID_KONT" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.KontStatusHistory"/>
+        </set>
+    </class>
+</hibernate-mapping>

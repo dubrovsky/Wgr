@@ -6,9 +6,10 @@
     <class name="com.bivc.cimsmgs.db.NsiCsG1" table="NSI_CS_G1" >
         <id name="hid" type="long">
             <column name="HID" precision="20" scale="0" />
-            <generator class="sequence">
+            <!--<generator class="sequence">
               <param name="sequence">NSI_CS_G1_HID</param>
-            </generator>
+            </generator>-->
+            <generator class="native"/>
         </id>
         <property name="dattr" type="timestamp">
             <column name="DATTR" length="7" not-null="true" />
@@ -93,6 +94,9 @@
         </property>
         <property name="g_2inn" type="string">
             <column name="G_2INN" length="32"/>
+        </property>
+        <property name="dop_info" type="string">
+            <column name="dop_info" length="512"/>
         </property>
     </class>
 </hibernate-mapping>

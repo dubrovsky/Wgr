@@ -31,7 +31,7 @@ public class Aviso2SmgsAppend implements Doc2Doc {
 
     private static synchronized Integer append(Aviso2SmgsAppend _this) throws Exception {
         Integer appended = 0;
-        Map<Byte, CimSmgsGruz> grusy = new TreeMap<>();
+        Map<Integer, CimSmgsGruz> grusy = new TreeMap<>();
         String nvag = null;
         try {
             HibernateUtil.beginTransaction();
@@ -74,7 +74,7 @@ public class Aviso2SmgsAppend implements Doc2Doc {
                                             CimSmgsGruz destination = _this.getMapper().copy(gruz, CimSmgsGruz.class);
                                             int sort = targetKon.getCimSmgsGruzs().size();
                                             destination.setSort(sort);
-                                            targetKon.getCimSmgsGruzs().put((byte)sort, destination);
+                                            targetKon.getCimSmgsGruzs().put(sort, destination);
                                         }
 
 //                                        _this.getMapper().copyGruzMap(grusy, targetKon.getCimSmgsGruzs());

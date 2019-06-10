@@ -1,7 +1,18 @@
 Ext.define('TK.view.nsi.List', {
     extend: 'Ext.window.Window',
     alias: 'widget.nsilist',
-    requires: ['Ext.ux.form.SearchField'],
+    requires: [
+        'Ext.data.Store',
+        'Ext.data.proxy.Ajax',
+        'Ext.data.reader.Json',
+        'Ext.grid.Panel',
+        'Ext.layout.container.Fit',
+        'Ext.toolbar.Fill',
+        'Ext.toolbar.Paging',
+        'Ext.toolbar.Separator',
+        'Ext.ux.form.SearchField',
+        'TK.Utils'
+    ],
     y:1,
     modal:true,
     layout: 'fit',

@@ -1,6 +1,19 @@
 Ext.define('TK.view.printtmpl.TableForm', {
     extend: 'Ext.window.Window',
     alias: 'widget.printDataTable',
+
+    requires: [
+        'Ext.data.ArrayStore',
+        'Ext.form.field.Number',
+        'Ext.form.field.Text',
+        'Ext.grid.column.RowNumberer',
+        'Ext.layout.container.Anchor',
+        'Ext.toolbar.Separator',
+        'TK.Utils',
+        'TK.model.PrintDataTable',
+        'TK.view.edit.DetailGrid'
+    ],
+
     bodyPadding: 5,
     title: 'Настройки колонок таблицы',
     autoShow: true,

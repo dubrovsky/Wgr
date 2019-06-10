@@ -2,20 +2,24 @@ package com.bivc.cimsmgs.db;
 
 // Generated 02.03.2009 10:02:24 by Hibernate Tools 3.2.4.CR1
 
+import com.bivc.cimsmgs.formats.json.JsonViews;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
-@JsonIgnoreProperties({ "cimSmgsGruzs","packDoc","cimSmgs" })
+@JsonIgnoreProperties({"packDoc","cimSmgs", "handler", "hibernateLazyInitializer"})
+@JsonFilter("vagPropertyFilter")
 public class CimSmgsCarList implements Serializable {
 
 	private Long hid;
@@ -63,9 +67,18 @@ public class CimSmgsCarList implements Serializable {
 	private String g1317;
 	private String g1317r;
 	private Long massGross;
-	private Map<Byte, CimSmgsGruz> cimSmgsGruzs = new TreeMap<>();
-	private Map<Byte, CimSmgsKonList> cimSmgsKonLists = new TreeMap<>();
+
+    @JsonView(JsonViews.VagPerevozView.class)
+	private Map<Integer, CimSmgsGruz> cimSmgsGruzs = new TreeMap<>();
+
+    private Map<Byte, CimSmgsKonList> cimSmgsKonLists = new TreeMap<>();
+
+    @JsonView(JsonViews.VagPerevozView.class)
     private Map<Byte, CimSmgsPlomb> cimSmgsPlombs = new TreeMap<>();
+
+    @JsonView(JsonViews.VagPerevozView.class)
+    private Map<Integer, CimSmgsDocs> cimSmgsDocses9 = new TreeMap<>();
+
 	private Byte sort;
 	private Byte kodSob;
 	private Byte otmKSob;
@@ -212,7 +225,7 @@ public class CimSmgsCarList implements Serializable {
 			Long priceAll, String notes, String g131, String g132, String g132r, String g133, String g134, String g135, String g136, String g136r,
 			String g137, String g137r, String g138, String g139, String g139r, String g1310, String g1311, String g1311r, String g1312, String g1313,
 			String g1314, String g1314r, String g1315, String g1316, String g1317, String g1317r, Long massGross,
-			Map<Byte, CimSmgsGruz> cimSmgsGruzs, Map<Byte, CimSmgsKonList> cimSmgsKonLists, Byte sort, Byte kodSob, Byte otmKSob, BigDecimal grPod,
+			Map<Integer, CimSmgsGruz> cimSmgsGruzs, Map<Byte, CimSmgsKonList> cimSmgsKonLists, Byte sort, Byte kodSob, Byte otmKSob, BigDecimal grPod,
 			BigDecimal taraVag, Byte kolOs) {
 		this.hid = hid;
 		this.kodSob = kodSob;
@@ -632,11 +645,11 @@ public class CimSmgsCarList implements Serializable {
 		this.massGross = massGross;
 	}
 
-	public Map<Byte, CimSmgsGruz> getCimSmgsGruzs() {
+	public Map<Integer, CimSmgsGruz> getCimSmgsGruzs() {
 		return this.cimSmgsGruzs;
 	}
 
-	public void setCimSmgsGruzs(Map<Byte, CimSmgsGruz> cimSmgsGruzs) {
+	public void setCimSmgsGruzs(Map<Integer, CimSmgsGruz> cimSmgsGruzs) {
 		this.cimSmgsGruzs = cimSmgsGruzs;
 	}
 
@@ -703,8 +716,42 @@ public class CimSmgsCarList implements Serializable {
 	public void addCimSmgsGruzs() {
 		for (CimSmgsGruz gruz : cimSmgsGruzs.values()) {
 			gruz.setCimSmgsCarList(this);
+            gruz.addCimSmgsDanGruzs();
 		}
 	}
+
+    public void addCimSmgsDocs9() {
+        CimSmgs cimSmgs = this.getCimSmgs();
+        for (CimSmgsDocs doc : cimSmgsDocses9.values()) {
+            int index = cimSmgs.getCimSmgsDocses9().size();
+            doc.setSort(index);
+            doc.setCimSmgsCarList(this);
+            doc.setCimSmgs(cimSmgs);
+            cimSmgs.getCimSmgsDocses9().put(index, doc);
+        }
+    }
+
+    void addCimSmgsPlombs() {
+        CimSmgs cimSmgs = this.getCimSmgs();
+        for (CimSmgsPlomb plomb : cimSmgsPlombs.values()) {
+            byte index = (byte) cimSmgs.getCimSmgsPlombs().size();
+            plomb.setSort(index);
+            plomb.setCimSmgsCarList(this);
+            plomb.setCimSmgs(cimSmgs);
+            cimSmgs.getCimSmgsPlombs().put(index, plomb);
+        }
+    }
+
+     /*void addCimSmgsDocs9() {
+        CimSmgs cimSmgs = this.getCimSmgsCarList().getCimSmgs();
+        for (CimSmgsDocs doc : cimSmgsDocses9.values()) {
+            byte index = (byte) cimSmgs.getCimSmgsDocses9().size();
+            doc.setSort(index);
+            doc.setCimSmgsKonList(this);
+            doc.setCimSmgs(cimSmgs);
+            cimSmgs.getCimSmgsDocses9().put(index, doc);
+        }
+    }*/
 
 	public void addCimSmgsKonLists() {
 		for (CimSmgsKonList kon : cimSmgsKonLists.values()) {
@@ -714,19 +761,6 @@ public class CimSmgsCarList implements Serializable {
             kon.addCimSmgsPlombs();
 		}
 	}
-
-    void addCimSmgsPlombs() {
-        CimSmgs cimSmgs = this.getCimSmgs();
-
-        for (CimSmgsPlomb plomb : cimSmgsPlombs.values()) {
-            byte index = (byte) cimSmgs.getCimSmgsPlombs().size();
-            plomb.setSort(index);
-            plomb.setCimSmgsCarList(this);
-
-            plomb.setCimSmgs(cimSmgs);
-            cimSmgs.getCimSmgsPlombs().put(index, plomb);
-        }
-    }
 
 	public void addCimSmgsKonListItem(CimSmgsKonList csk) {
 		if (csk != null) {
@@ -738,7 +772,7 @@ public class CimSmgsCarList implements Serializable {
 	public void addCimSmgsGruzItem(CimSmgsGruz csg) {
 		if (csg != null) {
 			csg.setCimSmgsCarList(this);
-			cimSmgsGruzs.put(csg.getSort().byteValue(), csg);
+			cimSmgsGruzs.put(csg.getSort(), csg);
 		}
 	}
 
@@ -746,6 +780,16 @@ public class CimSmgsCarList implements Serializable {
 		if (plomb != null) {
 			plomb.setCimSmgsCarList(this);
 			cimSmgsPlombs.put(plomb.getSort(), plomb);
+		}
+	}
+
+	public void addCimSmgsDocsItem(CimSmgsDocs csd) {
+		if (csd != null) {
+			csd.setCimSmgsCarList(this);
+			if (csd.getSort() == null) {
+				csd.setSort(cimSmgsDocses9.size());
+			}
+			cimSmgsDocses9.put(csd.getSort(), csd);
 		}
 	}
 
@@ -767,10 +811,28 @@ public class CimSmgsCarList implements Serializable {
 
     public String vag4CimSmgs1() {
         StringBuffer result = new StringBuffer("");
-        result.append(nvag != null ? "№ вагона/Wagen Nr   " + nvag + "\n" : "");
-        result.append(grPod != null ? "Тоннаж/Tragwagenfaeigkeit   " + grPod + "\n" : "");
-        result.append(taraVag != null ? "Тара/Tara   " + taraVag + "\n" : "");
-        result.append(kolOs != null ? "Оси/Achse   " + kolOs : "");
+        result.append(nvag != null ? nvag : "");
+        if(StringUtils.isNotBlank(rod)){
+            if(result.length() > 0){
+                result.append("; ");
+            }
+            result.append(rod);
+        }
+
+        if(StringUtils.isNotBlank(klientName)){
+            if(result.length() > 0){
+                result.append("; ");
+            }
+            result.append(klientName);
+        }
+
+        if(StringUtils.isNotBlank(vagOtm)){
+            if(result.length() > 0){
+                result.append("; ");
+            }
+            result.append(vagOtm);
+        }
+
         return result.toString();
     }
 
@@ -793,135 +855,82 @@ public class CimSmgsCarList implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-
         if (o == null || getClass() != o.getClass()) return false;
-
         CimSmgsCarList that = (CimSmgsCarList) o;
-
-        return new EqualsBuilder()
-                .append(hid, that.hid)
-                .append(cimSmgs, that.cimSmgs)
-                .append(dattr, that.dattr)
-                .append(trans, that.trans)
-                .append(un, that.un)
-                .append(num, that.num)
-                .append(nvag, that.nvag)
-                .append(nhmNames, that.nhmNames)
-                .append(nhmCodes, that.nhmCodes)
-                .append(rid, that.rid)
-                .append(plombs, that.plombs)
-                .append(massSend, that.massSend)
-                .append(massCalc, that.massCalc)
-                .append(price, that.price)
-                .append(priceAdd, that.priceAdd)
-                .append(priceAll, that.priceAll)
-                .append(notes, that.notes)
-                .append(g131, that.g131)
-                .append(g132, that.g132)
-                .append(g132r, that.g132r)
-                .append(g133, that.g133)
-                .append(g134, that.g134)
-                .append(g135, that.g135)
-                .append(g136, that.g136)
-                .append(g136r, that.g136r)
-                .append(g137, that.g137)
-                .append(g137r, that.g137r)
-                .append(g138, that.g138)
-                .append(g139, that.g139)
-                .append(g139r, that.g139r)
-                .append(g1310, that.g1310)
-                .append(g1311, that.g1311)
-                .append(g1311r, that.g1311r)
-                .append(g1312, that.g1312)
-                .append(g1313, that.g1313)
-                .append(g1314, that.g1314)
-                .append(g1314r, that.g1314r)
-                .append(g1315, that.g1315)
-                .append(g1316, that.g1316)
-                .append(g1317, that.g1317)
-                .append(g1317r, that.g1317r)
-                .append(massGross, that.massGross)
-                .append(sort, that.sort)
-                .append(kodSob, that.kodSob)
-                .append(otmKSob, that.otmKSob)
-                .append(grPod, that.grPod)
-                .append(taraVag, that.taraVag)
-                .append(kolOs, that.kolOs)
-                .append(rod, that.rod)
-                .append(speed, that.speed)
-                .append(packDoc, that.packDoc)
-                .append(prim, that.prim)
-                .append(count, that.count)
-                .append(cicternType, that.cicternType)
-                .append(scep, that.scep)
-                .append(refSecNo, that.refSecNo)
-                .append(refSecKol, that.refSecKol)
-                .append(vagOtm, that.vagOtm)
-                .isEquals();
+        return Objects.equals(hid, that.hid) &&
+                Objects.equals(cimSmgs != null ? cimSmgs.getHid() : "", that.cimSmgs != null ? that.cimSmgs.getHid() : "") &&
+                Objects.equals(trans, that.trans) &&
+                Objects.equals(un, that.un) &&
+                Objects.equals(num, that.num) &&
+                Objects.equals(nvag, that.nvag) &&
+                Objects.equals(nhmNames, that.nhmNames) &&
+                Objects.equals(nhmCodes, that.nhmCodes) &&
+                Objects.equals(rid, that.rid) &&
+                Objects.equals(plombs, that.plombs) &&
+                Objects.equals(massSend, that.massSend) &&
+                Objects.equals(massCalc, that.massCalc) &&
+                Objects.equals(price, that.price) &&
+                Objects.equals(priceAdd, that.priceAdd) &&
+                Objects.equals(priceAll, that.priceAll) &&
+                Objects.equals(notes, that.notes) &&
+                Objects.equals(g131, that.g131) &&
+                Objects.equals(g132, that.g132) &&
+                Objects.equals(g132r, that.g132r) &&
+                Objects.equals(g133, that.g133) &&
+                Objects.equals(g134, that.g134) &&
+                Objects.equals(g135, that.g135) &&
+                Objects.equals(g136, that.g136) &&
+                Objects.equals(g136r, that.g136r) &&
+                Objects.equals(g137, that.g137) &&
+                Objects.equals(g137r, that.g137r) &&
+                Objects.equals(g138, that.g138) &&
+                Objects.equals(g139, that.g139) &&
+                Objects.equals(g139r, that.g139r) &&
+                Objects.equals(g1310, that.g1310) &&
+                Objects.equals(g1311, that.g1311) &&
+                Objects.equals(g1311r, that.g1311r) &&
+                Objects.equals(g1312, that.g1312) &&
+                Objects.equals(g1313, that.g1313) &&
+                Objects.equals(g1314, that.g1314) &&
+                Objects.equals(g1314r, that.g1314r) &&
+                Objects.equals(g1315, that.g1315) &&
+                Objects.equals(g1316, that.g1316) &&
+                Objects.equals(g1317, that.g1317) &&
+                Objects.equals(g1317r, that.g1317r) &&
+                Objects.equals(massGross, that.massGross) &&
+                Objects.equals(sort, that.sort) &&
+                Objects.equals(kodSob, that.kodSob) &&
+                Objects.equals(otmKSob, that.otmKSob) &&
+                Objects.equals(grPod, that.grPod) &&
+                Objects.equals(taraVag, that.taraVag) &&
+                Objects.equals(kolOs, that.kolOs) &&
+                Objects.equals(rod, that.rod) &&
+                Objects.equals(speed, that.speed) &&
+                Objects.equals(packDoc != null ? packDoc.getHid() : "", that.packDoc != null ?  that.packDoc.getHid() : "") &&
+                Objects.equals(prim, that.prim) &&
+                Objects.equals(count, that.count) &&
+                Objects.equals(cicternType, that.cicternType) &&
+                Objects.equals(scep, that.scep) &&
+                Objects.equals(refSecNo, that.refSecNo) &&
+                Objects.equals(refSecKol, that.refSecKol) &&
+                Objects.equals(vagOtm, that.vagOtm) &&
+                Objects.equals(nameSob, that.nameSob) &&
+                Objects.equals(klientName, that.klientName) &&
+                Objects.equals(klientCode, that.klientCode);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(hid)
-                .append(cimSmgs)
-                .append(dattr)
-                .append(trans)
-                .append(un)
-                .append(num)
-                .append(nvag)
-                .append(nhmNames)
-                .append(nhmCodes)
-                .append(rid)
-                .append(plombs)
-                .append(massSend)
-                .append(massCalc)
-                .append(price)
-                .append(priceAdd)
-                .append(priceAll)
-                .append(notes)
-                .append(g131)
-                .append(g132)
-                .append(g132r)
-                .append(g133)
-                .append(g134)
-                .append(g135)
-                .append(g136)
-                .append(g136r)
-                .append(g137)
-                .append(g137r)
-                .append(g138)
-                .append(g139)
-                .append(g139r)
-                .append(g1310)
-                .append(g1311)
-                .append(g1311r)
-                .append(g1312)
-                .append(g1313)
-                .append(g1314)
-                .append(g1314r)
-                .append(g1315)
-                .append(g1316)
-                .append(g1317)
-                .append(g1317r)
-                .append(massGross)
-                .append(sort)
-                .append(kodSob)
-                .append(otmKSob)
-                .append(grPod)
-                .append(taraVag)
-                .append(kolOs)
-                .append(rod)
-                .append(speed)
-                .append(packDoc)
-                .append(prim)
-                .append(count)
-                .append(cicternType)
-                .append(scep)
-                .append(refSecNo)
-                .append(refSecKol)
-                .append(vagOtm)
-                .toHashCode();
+        return Objects.hash(hid, cimSmgs != null ? cimSmgs.getHid() : "", trans, un, num, nvag, nhmNames, nhmCodes, rid, plombs, massSend, massCalc, price, priceAdd, priceAll, notes, g131, g132,
+                g132r, g133, g134, g135, g136, g136r, g137, g137r, g138, g139, g139r, g1310, g1311, g1311r, g1312, g1313, g1314, g1314r, g1315, g1316, g1317, g1317r, massGross, sort,
+                kodSob, otmKSob, grPod, taraVag, kolOs, rod, speed, packDoc != null ? packDoc.getHid() : "", prim, count, cicternType, scep, refSecNo, refSecKol, vagOtm, nameSob, klientName, klientCode);
     }
 
+    public Map<Integer, CimSmgsDocs> getCimSmgsDocses9() {
+        return cimSmgsDocses9;
+    }
+
+    public void setCimSmgsDocses9(Map<Integer, CimSmgsDocs> cimSmgsDocses9) {
+        this.cimSmgsDocses9 = cimSmgsDocses9;
+    }
 }

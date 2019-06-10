@@ -3,10 +3,11 @@
                                    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 08.04.2011 10:06:33 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
-	<class name="com.bivc.cimsmgs.db.nsi.Sta" table="STA" where="SYSDATE &gt;= ST_BGN and SYSDATE &lt; ST_END">
+	<class name="com.bivc.cimsmgs.db.nsi.Sta" table="STA" where="SYSDATE() &gt;= `ST_BGN` and SYSDATE() &lt; `ST_END`">
 		<id name="stUn" type="java.lang.Long">
 			<column name="ST_UN" precision="10" scale="0" />
-			<generator class="assigned" />
+			<!--<generator class="assigned" />-->
+            <generator class="native"/>
 		</id>
 		<many-to-one name="road" class="com.bivc.cimsmgs.db.nsi.Road" fetch="join" property-ref="roadNo" >
             <column name="ROAD_NO" precision="5" scale="0"/>

@@ -3,6 +3,7 @@ package com.bivc.cimsmgs.commons;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 
 public class JsonUtils {
@@ -18,6 +19,11 @@ public class JsonUtils {
     public static String doJson(Object dataObject) throws IOException {
 //        mapper.getSerializationConfig().setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
         return mapper.writeValueAsString(dataObject);
+    }
+
+    public static String doJson(Object dataObject, String pattern) throws IOException {
+  //        mapper.getSerializationConfig().setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
+      return mapper.writer().with(new SimpleDateFormat(pattern)).writeValueAsString(dataObject);
     }
 
     public static ObjectMapper getMapper() {

@@ -31,6 +31,7 @@ public class NsiCsG4 implements java.io.Serializable {
 	private String g410;
 	private String g411;
 	private String g412;
+	private String dop_info;
 
 	public NsiCsG4() {
 	}
@@ -292,4 +293,11 @@ public class NsiCsG4 implements java.io.Serializable {
 		this.g412 = g412;
 	}
 
+	public String getDop_info() {
+		return dop_info;
+	}
+
+	public void setDop_info(String dop_info) {
+		this.dop_info = dop_info;
+	}
 }

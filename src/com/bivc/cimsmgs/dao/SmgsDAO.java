@@ -2,10 +2,12 @@ package com.bivc.cimsmgs.dao;
 
 import com.bivc.cimsmgs.commons.Search;
 import com.bivc.cimsmgs.db.*;
+import com.bivc.cimsmgs.dto.CimSmgsTrainDateDTO;
 import com.bivc.cimsmgs.exceptions.InfrastructureException;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -81,4 +83,11 @@ public interface SmgsDAO extends GenericDAO<CimSmgs, Long> {
     public void changeTdgStatus(Byte tdg_status, Long aLong);
 
     public CimSmgs findDocInPackDoc(Long packDocHid, BigDecimal docTypeHid);
+
+    public List<CimSmgs> findByIds(List<Long> ids);
+
+    public List<CimSmgsTrainDateDTO> findTrainDate(Integer limit, Integer start, Search search, Usr usr);
+
+    public List<CimSmgs> findSmgsTrainDate(Integer limit, Integer start, Search search, Usr usr);
+
 }

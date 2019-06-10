@@ -7,6 +7,7 @@
         <id name="un" type="string">
             <column name="UN" length="20"/>
             <generator class="assigned"/>
+            <!--<generator class="native"/>-->
         </id>
         <many-to-one name="group" class="com.bivc.cimsmgs.db.UsrGroupsDir" fetch="select">
             <column name="GROUP_ID" length="64" not-null="true"/>
@@ -34,6 +35,9 @@
         </property>
         <property name="un1" type="string">
             <column name="UN1" length="20" not-null="true"/>
+        </property>
+        <property name="datpw" type="timestamp">
+            <column name="DATPW"/>
         </property>
         <set name="groups" table="USR_GROUPS" inverse="true" lazy="true"  batch-size="50" cascade="all, delete-orphan">
             <key>

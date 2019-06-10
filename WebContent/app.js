@@ -50,6 +50,8 @@ Ext.application({
         'docs.VgCtGrTreeDetailController',
         'docs.Docs9TreeDetailController',
         'docs.PlombsTreeDetailController',
+        'docs.Ved',
+        'docs.Avisocim',
 
         'print.PrintTemplates',
         'print.Print',
@@ -57,7 +59,23 @@ Ext.application({
         'Logs',
 
         'Project',
-        'User'
+        'User',
+        'FilterUtils',
+        'ky.Poezd',
+        'ky.Vagon',
+        'ky.Kont',
+        'ky.Gruz',
+        'ky.Plomb',
+        'ky.Yard',
+        'ky.Report',
+        'ky.Avto',
+        'ky.NsiVag',
+        'ky.NsiKont',
+        'ky.NsiAvto',
+        'ky.NsiOwner',
+
+        'ky2.Poezd',
+        'ky2.Vagon'
     ],
 
     requires:[
@@ -82,7 +100,11 @@ Ext.application({
         'Ext.tab.Panel',
         'Ext.form.FieldContainer',
         'Ext.ux.form.ItemSelector',
-        'Ext.form.CheckboxGroup'
+        'Ext.form.CheckboxGroup',
+        'Ext.container.ButtonGroup',
+        'TK.User',
+        'TK.Utils',
+        'TK.VTypes'
     ],
     autoCreateViewport: true,
     name:'TK'

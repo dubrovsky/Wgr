@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:p="http://www.springframework.org/schema/p"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd" default-lazy-init="true">
+       xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+       default-lazy-init="true">
 
-    <bean id="doc2DocTemplDao" class="com.bivc.cimsmgs.dao.hibernate.Doc2DocTemplatesDAOHib" />
-    <bean id="smgsDAO" class="com.bivc.cimsmgs.dao.hibernate.SmgsDAOHib" />
-    <bean id="invoiceDAO" class="com.bivc.cimsmgs.dao.hibernate.InvoiceDAOHib" />
+    <context:component-scan base-package="com.bivc.cimsmgs.actions,com.bivc.cimsmgs"/>
 
-    <bean id="jacksonObjectMapper" class="com.fasterxml.jackson.databind.ObjectMapper" />
-    <bean id="defaultDeserializer" class="com.bivc.cimsmgs.formats.json.jackson.DeserializerImpl" >
+    <bean id="doc2DocTemplDao" class="com.bivc.cimsmgs.dao.hibernate.Doc2DocTemplatesDAOHib"/>
+    <bean id="smgsDAO" class="com.bivc.cimsmgs.dao.hibernate.SmgsDAOHib"/>
+    <bean id="invoiceDAO" class="com.bivc.cimsmgs.dao.hibernate.InvoiceDAOHib"/>
+
+    <bean id="jacksonObjectMapper" class="com.fasterxml.jackson.databind.ObjectMapper"/>
+    <bean id="defaultDeserializer" class="com.bivc.cimsmgs.formats.json.jackson.DeserializerImpl">
         <constructor-arg ref="jacksonObjectMapper"/>
     </bean>
-    <bean id="defaultSerializer" class="com.bivc.cimsmgs.formats.json.jackson.SerializerImpl" >
+    <bean id="defaultSerializer" class="com.bivc.cimsmgs.formats.json.jackson.SerializerImpl">
         <constructor-arg ref="jacksonObjectMapper"/>
     </bean>
 
@@ -24,14 +27,19 @@
     <bean id="cimSmgsKonListMapper" class="com.bivc.cimsmgs.doc2doc.orika.customize.KonListCustomMapper"/>
     <bean id="cimSmgsKonListMapperAll" class="com.bivc.cimsmgs.doc2doc.orika.customize.KonListCustomMapperAll"/>
     <bean id="invoiceAllCopyCustomMapper" class="com.bivc.cimsmgs.doc2doc.orika.customize.InvoiceAllCopyCustomMapper"/>
+    <bean id="configurableMapper" class="ma.glasnost.orika.impl.ConfigurableMapper"/>
+    <bean id="defaultMapper" class="com.bivc.cimsmgs.doc2doc.orika.MapperImpl"
+        p:mapper-ref="configurableMapper"
+    />
 
     <bean id="avisoConfigMapper" class="com.bivc.cimsmgs.doc2doc.orika.CimSmgsConfigMapper" init-method="init"
-        p:cimSmgsMapper-ref="cimSmgsMapper"
-        p:cimSmgsKonListMapper-ref="cimSmgsKonListMapper"
-        p:cimSmgsCarListMapper-ref="cimSmgsCarListMapper"
-        p:cimSmgsExcludes="cimSmgsDocses9,cimSmgsDocses136,cimSmgsDocses7,cimSmgsPlombs,cimSmgsCarLists"
-        p:cimSmgsCarListExcludes="cimSmgsKonLists, cimSmgsGruzs, cimSmgsPlombs"
-        p:cimSmgsKonListExcludes="cimSmgsGruzs,cimSmgsDocses9,cimSmgsPlombs"
+          p:cimSmgsMapper-ref="cimSmgsMapper"
+          p:cimSmgsKonListMapper-ref="cimSmgsKonListMapper"
+          p:cimSmgsCarListMapper-ref="cimSmgsCarListMapper"
+          p:cimSmgsExcludes="cimSmgsDocses9,cimSmgsDocses136,cimSmgsDocses7,cimSmgsPlombs,cimSmgsCarLists"
+          p:cimSmgsCarListExcludes="cimSmgsKonLists, cimSmgsGruzs, cimSmgsPlombs, cimSmgsDocses9"
+          p:cimSmgsGruzExcludes="cimSmgsDanGruzs"
+          p:cimSmgsKonListExcludes="cimSmgsGruzs,cimSmgsDocses9,cimSmgsPlombs"
     />
     <bean id="avisoMapper" class="com.bivc.cimsmgs.doc2doc.orika.MapperImpl" p:mapper-ref="avisoConfigMapper"/>
 
@@ -40,7 +48,8 @@
           p:cimSmgsKonListMapper-ref="cimSmgsKonListMapper"
           p:cimSmgsCarListMapper-ref="cimSmgsCarListMapper"
           p:cimSmgsExcludes="cimSmgsDocses9,cimSmgsDocses136,cimSmgsDocses7,cimSmgsPlombs,cimSmgsCarLists,cimSmgsDocses13,cimSmgsPlatels,cimSmgsPerevoz"
-          p:cimSmgsCarListExcludes="cimSmgsKonLists, cimSmgsGruzs, cimSmgsPlombs"
+          p:cimSmgsCarListExcludes="cimSmgsKonLists, cimSmgsGruzs, cimSmgsPlombs, cimSmgsDocses9"
+          p:cimSmgsGruzExcludes="cimSmgsDanGruzs"
           p:cimSmgsKonListExcludes="cimSmgsGruzs,cimSmgsDocses9,cimSmgsPlombs"
     />
     <bean id="avisoMapperAppend" class="com.bivc.cimsmgs.doc2doc.orika.MapperImpl" p:mapper-ref="avisoConfigAppendMapper"/>
@@ -53,7 +62,8 @@
           p:cimSmgsCarListMapper-ref="cimSmgsCarListMapperAll"
           p:cimSmgsKonListMapper-ref="cimSmgsKonListMapperAll"
           p:cimSmgsExcludes="cimSmgsCarLists"
-          p:cimSmgsCarListExcludes="cimSmgsKonLists, cimSmgsGruzs, cimSmgsPlombs"
+          p:cimSmgsCarListExcludes="cimSmgsKonLists, cimSmgsGruzs, cimSmgsPlombs, cimSmgsDocses9"
+          p:cimSmgsGruzExcludes="cimSmgsDanGruzs"
           p:cimSmgsKonListExcludes="cimSmgsGruzs,cimSmgsDocses9,cimSmgsPlombs"
     />
 
@@ -84,9 +94,9 @@
     <bean id="file2SmgsInvoice" class="com.bivc.cimsmgs.doc2doc.File2SmgsInvoice"/>
 
     <!--<bean id="doc2ExcelContList" class="com.bivc.cimsmgs.doc2doc.Doc2ExcelContList"/>-->
-    <bean id="smgs2ExcelContList_pl" class="com.bivc.cimsmgs.doc2doc.Smgs2ExcelContList_pl" />
-    <bean id="cimSmgs2ExcelContList_de" class="com.bivc.cimsmgs.doc2doc.CimSmgs2ExcelContList_de" />
-    <bean id="cimSmgs2ExcelDopList_de" class="com.bivc.cimsmgs.doc2doc.CimSmgs2ExcelDopList_de" />
+    <bean id="smgs2ExcelContList_pl" class="com.bivc.cimsmgs.doc2doc.Smgs2ExcelContList_pl"/>
+    <bean id="cimSmgs2ExcelContList_de" class="com.bivc.cimsmgs.doc2doc.CimSmgs2ExcelContList_de"/>
+    <bean id="cimSmgs2ExcelDopList_de" class="com.bivc.cimsmgs.doc2doc.CimSmgs2ExcelDopList_de"/>
 
 
     <bean id="doc2doc_A" class="com.bivc.cimsmgs.actions.Doc2Doc_A" scope="prototype"
@@ -102,15 +112,16 @@
           p:smgs2ExcelContList_pl-ref="smgs2ExcelContList_pl"
           p:cimSmgs2ExcelContList_de-ref="cimSmgs2ExcelContList_de"
           p:cimSmgs2ExcelDopList_de-ref="cimSmgs2ExcelDopList_de"
+          p:defaultSerializer-ref="defaultSerializer"
     />
 
-    <bean id="doc2EpdCustomMapper" class="com.bivc.cimsmgs.doc2doc.orika.customize.epd.Doc2EpdCustomMapper" />
-    <bean id="carList2EpdCustomMapper" class="com.bivc.cimsmgs.doc2doc.orika.customize.epd.CarList2EpdCustomMapper" />
-    <bean id="epd2CarListCustomMapper" class="com.bivc.cimsmgs.doc2doc.orika.customize.epd.Epd2CarListCustomMapper" />
-    <bean id="epd2DocCustomMapper" class="com.bivc.cimsmgs.doc2doc.orika.customize.epd.Epd2DocCustomMapper" />
-    <bean id="epdInvoiceCustomMapper" class="com.bivc.cimsmgs.doc2doc.orika.customize.epd.EpdInvoiceCustomMapper" />
+    <bean id="doc2EpdCustomMapper" class="com.bivc.cimsmgs.doc2doc.orika.customize.epd.Doc2EpdCustomMapper"/>
+    <bean id="carList2EpdCustomMapper" class="com.bivc.cimsmgs.doc2doc.orika.customize.epd.CarList2EpdCustomMapper"/>
+    <bean id="epd2CarListCustomMapper" class="com.bivc.cimsmgs.doc2doc.orika.customize.epd.Epd2CarListCustomMapper"/>
+    <bean id="epd2DocCustomMapper" class="com.bivc.cimsmgs.doc2doc.orika.customize.epd.Epd2DocCustomMapper"/>
+    <bean id="epdInvoiceCustomMapper" class="com.bivc.cimsmgs.doc2doc.orika.customize.epd.EpdInvoiceCustomMapper"/>
 
-    <bean id="destinationNotEmptyFilter" class="com.bivc.cimsmgs.doc2doc.orika.filters.DestinationNotEmptyFilter" />
+    <bean id="destinationNotEmptyFilter" class="com.bivc.cimsmgs.doc2doc.orika.filters.DestinationNotEmptyFilter"/>
 
 
     <bean id="doc2EpdAddConfig" class="com.bivc.cimsmgs.doc2doc.orika.epd.EpdDocAddConfig" init-method="init">
@@ -142,6 +153,7 @@
           p:invice2InvoiceMapper-ref="invoiceAllCopyMapper"
           p:defaultDeserializer-ref="defaultDeserializer"
           p:defaultSerializer-ref="defaultSerializer"
+          p:cimSmgsKonListSerializer-ref="cimSmgsSerializer"
     />
 
     <bean id="epdAddConfig" class="com.bivc.cimsmgs.doc2doc.orika.epd.EpdInvoiceAddConfig" init-method="init">
@@ -160,5 +172,103 @@
           p:epdAddMapper-ref="epdAddMapper"
           p:epdUpdateMapper-ref="epdUpdateMapper"
     />
+
+    <bean id="poezd_A" class="com.bivc.cimsmgs.actions.ky.Poezd_A" scope="prototype"/>
+    <bean id="vagon_A" class="com.bivc.cimsmgs.actions.ky.Vagon_A" scope="prototype"/>
+    <bean id="kont_A" class="com.bivc.cimsmgs.actions.ky.Kont_A" scope="prototype"/>
+    <bean id="gruz_A" class="com.bivc.cimsmgs.actions.ky.Gruz_A" scope="prototype"
+          p:gruzDAO-ref="gruzDAO"
+          p:defaultDeserializer-ref="defaultDeserializer"
+          p:defaultSerializer-ref="defaultSerializer"
+          p:gruzMapper-ref="kygruzMapper"
+    />
+    <bean id="plomb_A" class="com.bivc.cimsmgs.actions.ky.Plomb_A" scope="prototype"
+          p:plombDAO-ref="plombDAO"
+          p:defaultDeserializer-ref="defaultDeserializer"
+          p:defaultSerializer-ref="defaultSerializer"
+          p:plombMapper-ref="kyplombMapper"
+    />
+    <bean id="yard_A" class="com.bivc.cimsmgs.actions.ky.Yard_A" scope="prototype"
+          p:yardDAO-ref="yardDAO"
+          p:kontDAO-ref="kontDAO"
+          p:defaultDeserializer-ref="defaultDeserializer"
+          p:defaultSerializer-ref="defaultSerializer"
+          p:yardMapper-ref="kyyardMapper"
+          p:yardPlacesForKontListSerializer-ref="yardPlacesForKontListSerializer"
+    />
+    <bean id="avto_A" class="com.bivc.cimsmgs.actions.ky.Avto_A" scope="prototype"/>
+    <bean id="yardSector_A" class="com.bivc.cimsmgs.actions.ky.YardSector_A" scope="prototype"
+          p:yardSectorDAO-ref="yardSectorDAO"
+          p:yardSectorToListSerializer-ref="yardSectorToListSerializer"
+          p:defaultDeserializer-ref="defaultDeserializer"
+          p:defaultSerializer-ref="defaultSerializer"
+          p:defaultMapper-ref="defaultMapper"
+          p:yardDAO-ref="yardDAO"
+    />
+    <bean id="nsiVagShir_A" class="com.bivc.cimsmgs.actions.ky.NsiVagShir_A" scope="prototype"/>
+    <bean id="nsiVagUzky_A" class="com.bivc.cimsmgs.actions.ky.NsiVagUzky_A" scope="prototype"/>
+    <bean id="nsiKont_A" class="com.bivc.cimsmgs.actions.ky.NsiKont_A" scope="prototype"/>
+    <bean id="nsiAvto_A" class="com.bivc.cimsmgs.actions.ky.NsiAvto_A" scope="prototype"/>
+    <bean id="nsiOwner_A" class="com.bivc.cimsmgs.actions.ky.NsiOwner_A" scope="prototype"/>
+    <bean id="kyreport_A" class="com.bivc.cimsmgs.actions.ky.Report_A" scope="prototype"
+          p:poezdDAO-ref="poezdDAO"
+          p:yardDAO-ref="yardDAO"
+    />
+    <bean id="mdcontareax_A" class="com.bivc.cimsmgs.actions.ky.Mdcontareax_A" scope="prototype"/>
+    <bean id="nsiAvtoA" class="com.bivc.cimsmgs.actions.ky.NsiAvto_A" scope="prototype"/>
+
+    <bean id="gruzDAO" class="com.bivc.cimsmgs.dao.hibernate.GruzDAOHib"/>
+    <bean id="plombDAO" class="com.bivc.cimsmgs.dao.hibernate.PlombDAOHib"/>
+    <bean id="yardDAO" class="com.bivc.cimsmgs.dao.hibernate.YardDAOHib"/>
+    <bean id="kontDAO" class="com.bivc.cimsmgs.dao.hibernate.KontDAOHib"/>
+    <bean id="yardSectorDAO" class="com.bivc.cimsmgs.dao.hibernate.YardSectorDAOHib"/>
+    <bean id="poezdDAO" class="com.bivc.cimsmgs.dao.hibernate.PoezdDAOHib"/>
+    <bean id="avtoDAO" class="com.bivc.cimsmgs.dao.hibernate.AvtoDAOHib"/>
+    <bean id="vagonDAO" class="com.bivc.cimsmgs.dao.hibernate.VagonDAOHib"/>
+    <bean id="statusHistoryDAO" class="com.bivc.cimsmgs.dao.hibernate.KontStatusHistoryDAOHib"/>
+    <bean id="nsiAvtoDAO" class="com.bivc.cimsmgs.dao.hibernate.NsiAvtoDAOHib"/>
+    <bean id="nsiKontDAO" class="com.bivc.cimsmgs.dao.hibernate.NsiKontDAOHib"/>
+    <bean id="nsiOwnerDAO" class="com.bivc.cimsmgs.dao.hibernate.NsiOwnerDAOHib"/>
+    <bean id="nsiVagShirDAO" class="com.bivc.cimsmgs.dao.hibernate.NsiVagShirDAOHib"/>
+    <bean id="nsiVagUzkyDAO" class="com.bivc.cimsmgs.dao.hibernate.NsiVagUzkyDAOHib"/>
+
+    <bean id="kygruzMapper" class="com.bivc.cimsmgs.doc2doc.orika.MapperImpl" p:mapper-ref="kyGruzConfig"/>
+    <bean id="kyplombMapper" class="com.bivc.cimsmgs.doc2doc.orika.MapperImpl" p:mapper-ref="kyPlombConfig"/>
+    <bean id="kyyardMapper" class="com.bivc.cimsmgs.doc2doc.orika.MapperImpl" p:mapper-ref="kyYardConfig"/>
+    <bean id="kyavtoMapper" class="com.bivc.cimsmgs.doc2doc.orika.MapperImpl" p:mapper-ref="kyAvtoConfig"/>
+    <bean id="kykontMapper" class="com.bivc.cimsmgs.doc2doc.orika.MapperImpl" p:mapper-ref="kyKontConfig"/>
+    <bean id="kyNsiAvtoMapper" class="com.bivc.cimsmgs.doc2doc.orika.MapperImpl" p:mapper-ref="kyNsiAvtoConfig"/>
+    <bean id="kyNsiKontMapper" class="com.bivc.cimsmgs.doc2doc.orika.MapperImpl" p:mapper-ref="kyNsiKontConfig"/>
+    <bean id="kyNsiVagonMapper" class="com.bivc.cimsmgs.doc2doc.orika.MapperImpl" p:mapper-ref="kyNsiVagonConfig"/>
+    <bean id="kypoezdMapper" class="com.bivc.cimsmgs.doc2doc.orika.MapperImpl" p:mapper-ref="kyPoezdConfig"/>
+    <bean id="kypoezdCopyMapper" class="com.bivc.cimsmgs.doc2doc.orika.MapperImpl" p:mapper-ref="kyPoezdCopyConfig"/>
+    <bean id="kyvagonMapper" class="com.bivc.cimsmgs.doc2doc.orika.MapperImpl" p:mapper-ref="kyVagonConfig"/>
+
+    <bean id="kyGruzConfig" class="com.bivc.cimsmgs.doc2doc.orika.config.ky.KyGruzConfig" init-method="init"/>
+    <bean id="kyPlombConfig" class="com.bivc.cimsmgs.doc2doc.orika.config.ky.KyPlombConfig" init-method="init"/>
+    <bean id="kyYardConfig" class="com.bivc.cimsmgs.doc2doc.orika.config.ky.KyYardConfig" init-method="init"/>
+    <bean id="kyAvtoConfig" class="com.bivc.cimsmgs.doc2doc.orika.config.ky.KyAvtoConfig" init-method="init"/>
+    <bean id="kyKontConfig" class="com.bivc.cimsmgs.doc2doc.orika.config.ky.KyKontConfig" init-method="init"/>
+    <bean id="kyNsiAvtoConfig" class="com.bivc.cimsmgs.doc2doc.orika.config.ky.KyNsiAvtoConfig" init-method="init"/>
+    <bean id="kyNsiKontConfig" class="com.bivc.cimsmgs.doc2doc.orika.config.ky.KyNsiKontConfig" init-method="init"/>
+    <bean id="kyNsiVagonConfig" class="com.bivc.cimsmgs.doc2doc.orika.config.ky.KyNsiVagonConfig" init-method="init"/>
+    <bean id="kyPoezdConfig" class="com.bivc.cimsmgs.doc2doc.orika.config.ky.KyPoezdConfig" init-method="init"/>
+    <bean id="kyPoezdCopyConfig" class="com.bivc.cimsmgs.doc2doc.orika.config.ky.KyPoezdCopyConfig" init-method="init"/>
+    <bean id="kyVagonConfig" class="com.bivc.cimsmgs.doc2doc.orika.config.ky.KyVagonConfig" init-method="init"/>
+
+    <bean id="yardPlacesForKontListSerializer" class="com.bivc.cimsmgs.formats.json.jackson.YardPlacesForKontListSerializer">
+        <constructor-arg ref="jacksonObjectMapper"/>
+    </bean>
+    <bean id="yardSectorToListSerializer" class="com.bivc.cimsmgs.formats.json.jackson.YardSectorToListSerializer">
+        <constructor-arg ref="jacksonObjectMapper"/>
+    </bean>
+    <bean id="cimSmgsSerializer" class="com.bivc.cimsmgs.formats.json.jackson.CimSmgsSerializer">
+        <constructor-arg ref="jacksonObjectMapper"/>
+    </bean>
+
+
+    <bean id="kontOperationsService" class="com.bivc.cimsmgs.services.ky.KontOperationsService"/>
+    <bean id="kontStatusHistoryService" class="com.bivc.cimsmgs.services.ky.KontStatusHistoryService"/>
+    <bean id="poezdService" class="com.bivc.cimsmgs.services.ky.PoezdService"/>
 
 </beans>

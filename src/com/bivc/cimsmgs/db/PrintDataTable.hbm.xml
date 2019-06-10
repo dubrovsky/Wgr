@@ -7,8 +7,9 @@
         <id name="hid" type="java.lang.Long">
             <column name="HID" precision="22" scale="0" />
             <generator class="sequence">
-                <param name="sequence">PRINT_DATA_TABLE_SEQ</param>
+                <param name="sequence">PRINT_DATA_PHRASE_HID</param>
             </generator>
+            <!--<generator class="native"/>-->
         </id>
         <many-to-one name="printData" class="com.bivc.cimsmgs.db.PrintData" fetch="select">
             <column name="HID_PRINT_DATA" precision="22" scale="0" not-null="true" />

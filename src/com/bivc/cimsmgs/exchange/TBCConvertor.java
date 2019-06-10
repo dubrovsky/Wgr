@@ -757,9 +757,9 @@ public class TBCConvertor extends Convertor implements Comparator<Message> {
       String[] G23_ = format(smgsNode.valueOf("G23")).split("[\r\n]+");
       for (int i = 0; i < G23_.length; i++) {
         CimSmgsDocs cs_docs9 = new CimSmgsDocs();
-        cs.getCimSmgsDocses9().put(new Byte((byte) i), cs_docs9);
+        cs.getCimSmgsDocses9().put(i, cs_docs9);
         cs_docs9.setCimSmgs(cs);
-        cs_docs9.setSort(new Byte((byte) i));
+        cs_docs9.setSort(i);
         cs_docs9.setFieldNum("9");
         cs_docs9.setText(G23_[i]);
       }
@@ -785,9 +785,9 @@ public class TBCConvertor extends Convertor implements Comparator<Message> {
       String[] G4_ = format(smgsNode.valueOf("G4")).split("[\r\n]+");
       for (int i = 0; i < G4_.length; i++) {
         CimSmgsDocs cs_docs7 = new CimSmgsDocs();
-        cs.getCimSmgsDocses7().put(new Byte((byte) i), cs_docs7);
+        cs.getCimSmgsDocses7().put(i, cs_docs7);
         cs_docs7.setCimSmgs(cs);
-        cs_docs7.setSort(new Byte((byte) i));
+        cs_docs7.setSort(i);
         cs_docs7.setFieldNum("7");
         cs_docs7.setText(G4_[i]);
       }
@@ -833,7 +833,7 @@ public class TBCConvertor extends Convertor implements Comparator<Message> {
             for (int i = 0; it.hasNext(); i++) {
               Node nodeItem = it.next();
               CimSmgsGruz cs_gruz = new CimSmgsGruz();
-              cs_kontlist.getCimSmgsGruzs().put((byte)i, cs_gruz);
+              cs_kontlist.getCimSmgsGruzs().put(i, cs_gruz);
               cs_gruz.setCimSmgsKonList(cs_kontlist);
               cs_gruz.setSort(i);
               cs_gruz.setKgvn(nodeItem.valueOf("CODE"));
@@ -895,9 +895,9 @@ public class TBCConvertor extends Convertor implements Comparator<Message> {
             for (int i = 0; it.hasNext(); i++) {
               Node nodeItem = it.next();
               CimSmgsDocs cs_docs = new CimSmgsDocs();
-              cs.getCimSmgsDocses13().put(new Byte((byte) i), cs_docs);
+              cs.getCimSmgsDocses13().put(i, cs_docs);
               cs_docs.setCimSmgs(cs);
-              cs_docs.setSort(new Byte((byte) i));
+              cs_docs.setSort(i);
               cs_docs.setFieldNum("13");
               cs_docs.setText(nodeItem.valueOf("NAME"));
               cs_docs.setNdoc(nodeItem.valueOf("NUMBER"));
@@ -916,13 +916,13 @@ public class TBCConvertor extends Convertor implements Comparator<Message> {
             for (int i = 0; it.hasNext(); i++) {
               Node nodeItem = it.next();
               CimSmgsDocs cs_docs = new CimSmgsDocs();
-              cs.getCimSmgsDocses9().put(new Byte((byte) i), cs_docs);
+              cs.getCimSmgsDocses9().put(i, cs_docs);
               cs_docs.setCimSmgs(cs);
-              cs_docs.setSort(new Byte((byte) i));
+              cs_docs.setSort(i);
               cs_docs.setFieldNum("9");
               cs_docs.setText(nodeItem.valueOf("G07"));
               cs_docs.setText2(nodeItem.valueOf("G07NAME"));
-              cs_docs.setSort(parceB(nodeItem.valueOf("NO")));
+              cs_docs.setSort(Integer.valueOf(parceB(nodeItem.valueOf("NO"))));
             }
           }
         }

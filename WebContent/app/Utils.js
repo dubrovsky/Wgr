@@ -1,16 +1,28 @@
 Ext.define('TK.Utils', {
-    singleton : true,
-    makeErrMsg: function(response, title) {
+    singleton: true,
+    arrru: new Array('Кю','кю','Я', 'я', 'Ю', 'ю', 'Ч', 'ч', 'Ш', 'ш', 'Щ', 'щ', 'Ж', 'ж', 'А', 'а', 'Б', 'б', 'В', 'в', 'Г', 'г', 'Д', 'д', 'Е', 'е', 'Ё', 'ё', 'З', 'з', 'И', 'и', 'Й', 'й', 'К', 'к', 'Л', 'л', 'М', 'м', 'Н', 'н', 'О', 'о', 'П', 'п', 'Р', 'р', 'С', 'с', 'Т', 'т', 'У', 'у', 'Ф', 'ф', 'Х', 'х', 'Ц', 'ц', 'Ы', 'ы', 'ь', 'ь', 'ъ', 'ъ', 'Э', 'э'),
+    arren: new Array('Q','q','Ya', 'ya', 'Yu', 'yu', 'Ch', 'ch', 'Sh', 'sh', 'Sh', 'sh', 'Zh', 'zh', 'A', 'a', 'B', 'b', 'V', 'v', 'G', 'g', 'D', 'd', 'E', 'e', 'E', 'e', 'Z', 'z', 'I', 'i', 'J', 'j', 'K', 'k', 'L', 'l', 'M', 'm', 'N', 'n', 'O', 'o', 'P', 'p', 'R', 'r', 'S', 's', 'T', 't', 'U', 'u', 'F', 'f', 'H', 'h', 'C', 'c', 'Y', 'y', '`', '`', '\'', '\'', 'E', 'e'),
+    arrde: new Array('Ä','ä','Ö','ö','ẞ','ß','Ü','ü','W','w'),
+    arrde_en: new Array('Ae','ae','Oe','oe','Ss','ss','Ue','ue','V','v'),
+    makeErrMsg: function (response, title) {
         var msg = response.statusText ? response.statusText : '';
         if (response.responseText) {
             var errors = Ext.decode(response.responseText);
-            if (errors && errors.exception) {
-                msg += "<br/>" + errors.exception;
-                if (errors.cause) {
-                    msg += "<br/>" + errors.cause;
+            if (errors) {
+                if (errors.exception) {
+                    msg += "<br/>" + errors.exception;
+                    if (errors.cause) {
+                        msg += "<br/>" + errors.cause;
+                    }
+                } else if (errors.msg) {
+                    msg += "<br/>";
+                    if (Ext.isArray(errors.msg)) {
+                        msg += errors.msg.join(", ");
+                    } else {
+                        msg += errors.msg;
+                    }
                 }
-            }
-            else {
+            } else {
                 msg += "<br/>" + response.responseText;
             }
         }
@@ -22,20 +34,21 @@ Ext.define('TK.Utils', {
         });
         return false;
     },
-    failureDataMsg: function(){
-    	Ext.Msg.show({
-    		title: 'Внимание! Данные не прошли проверку',
-    		msg: 'Проверьте правильно ли заполнены поля',
-    		buttons: Ext.MessageBox.OK,
-    		icon: Ext.MessageBox.ERROR}
-    	);
+    failureDataMsg: function () {
+        Ext.Msg.show({
+                title: 'Внимание! Данные не прошли проверку',
+                msg: 'Проверьте правильно ли заполнены поля',
+                buttons: Ext.MessageBox.OK,
+                icon: Ext.MessageBox.ERROR
+            }
+        );
         return false;
     },
     renderLongStr: function (value, meta) {
         meta.style = 'white-space:normal;';
         return value;
     },
-    isRowSelected: function(grid) {
+    isRowSelected: function (grid) {
         if (grid.selModel.getCount() == 0) {
             Ext.Msg.show({
                 title: grid.warnTitle,
@@ -44,12 +57,11 @@ Ext.define('TK.Utils', {
                 icon: Ext.MessageBox.WARNING
             });
             return false;
-        }
-        else {
+        } else {
             return true;
         }
     },
-    num2str: function(money/*, target*/) {
+    num2str: function (money/*, target*/) {
         var money;
         var price;
         var rub, kop;
@@ -61,7 +73,7 @@ Ext.define('TK.Utils', {
             "", "десять", "двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят", "девяносто",
             "", "сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот",
             "тысяч", "тысяча", "тысячи", "тысячи", "тысячи", "тысяч", "тысяч", "тысяч", "тысяч", "тысяч",
-            "миллионов","миллион","миллиона","миллиона", "миллиона", "миллионов", "миллионов", "миллионов", "миллионов", "миллионов",
+            "миллионов", "миллион", "миллиона", "миллиона", "миллиона", "миллионов", "миллионов", "миллионов", "миллионов", "миллионов",
             "миллиардов", "миллиард", "миллиарда", "миллиарда", "миллиарда", "миллиардов", "миллиардов", "миллиардов", "миллиардов", "миллиардов"];
 
         var M = new Array(10);
@@ -72,8 +84,8 @@ Ext.define('TK.Utils', {
             for (j = 0; j < 10; j++)
                 M[j][i] = N[k++]
 
-    //var R = new Array("рублей", "рубль", "рубля", "рубля", "рубля", "рублей", "рублей", "рублей", "рублей", "рублей");
-    //var K = new Array("копеек", "копейка", "копейки", "копейки", "копейки", "копеек", "копеек", "копеек", "копеек", "копеек");
+        //var R = new Array("рублей", "рубль", "рубля", "рубля", "рубля", "рублей", "рублей", "рублей", "рублей", "рублей");
+        //var K = new Array("копеек", "копейка", "копейки", "копейки", "копейки", "копеек", "копеек", "копеек", "копеек", "копеек");
         var R = new Array("", "", "", "", "", "", "", "", "", "");
         var K = new Array("", "", "", "", "", "", "", "", "", "");
 
@@ -89,8 +101,7 @@ Ext.define('TK.Utils', {
                 if (n(i + 2, 2) > 10 && n(i + 2, 2) < 20) {
                     edinicy = " " + M[n(i + 1, 1)][1] + " " + M[0][i / 3 + 3];
                     i == 0 ? edinicy += D[0] : 0;
-                }
-                else {
+                } else {
                     edinicy = M[n(i + 1, 1)][0];
                     (edinicy == "один" && (i == 3 || D == K)) ? edinicy = "одна" : 0;
                     (edinicy == "два" && (i == 3 || D == K)) ? edinicy = "две" : 0;
@@ -107,7 +118,7 @@ Ext.define('TK.Utils', {
             else return litera.substr(1);
         }
 
-        rub = "",kop = "";
+        rub = "", kop = "";
         money = money.replace(",", ".");
 
         if (isNaN(money)) {
@@ -116,16 +127,14 @@ Ext.define('TK.Utils', {
         if (money.substr(0, 1) == "-") {
             money = money.substr(1);
             minus = "минус "
-        }
-        else minus = "";
+        } else minus = "";
         money = Math.round(money * 100) / 100 + "";
 
         if (money.indexOf(".") != -1) {
             rub = money.substr(0, money.indexOf("."));
             kop = money.substr(money.indexOf(".") + 1);
             if (kop.length == 1) kop += "0";
-        }
-        else rub = money;
+        } else rub = money;
 
         if (rub.length > 12) {
             return "Слишком большое число";
@@ -137,5 +146,71 @@ Ext.define('TK.Utils', {
         ru == "Ноль " + R[0] && ko != "" ? res = ko : 0;
         // kop == 0? res += " ноль " + K[0]: 0;
         return (minus + res).substr(0, 1).toUpperCase() + (minus + res).substr(1);
+    },
+    findFieldBy: function(name, items){
+        var me = this;
+        for(var i = 0; i < items.length; i++){
+            if (items[i].items) {
+                return me.findFieldBy(name, items[i].items);
+            } else if(items[i].name === name){
+                return items[i];
+            }
+        }
+    },
+
+    /**
+     * translit russian text into latin
+     * @param text input text
+     * @returns {*} result
+     */
+    translit_ru: function (text) {
+        for (var i = 0; i < this.arrru.length; i++) {
+            var reg = new RegExp(this.arrru[i], "g");
+            text = text.replace(reg, this.arren[i]);
+        }
+        return text;
+    },
+    /**
+     * translit latin text into russian
+     * @param text input text
+     * @returns {*} result
+     */
+    translit_en: function (text) {
+        for (var i = 0; i < this.arren.length; i++) {
+            var reg = new RegExp(this.arren[i], "g");
+            text = text.replace(reg, this.arrru[i]);
+        }
+        return text;
+    },
+    /**
+     * replace german letters with english analogs
+     * @param text
+     * @returns {*}
+     */
+    translit_de: function (text) {
+        for (var i = 0; i < this.arrde.length; i++) {
+            var reg = new RegExp(this.arrde[i], "g");
+            text = text.replace(reg, this.arrde_en[i]);
+        }
+        return text;
+    },
+
+    /**
+     * translit text to chosen destination and paste to entered component.
+     * @param text
+     * @param component
+     * @param lang
+     */
+    set_translit:function (text,component,lang)
+    {
+        if(text&&component)
+        {   if(lang==='ru')
+                component.setValue(this.translit_ru(text));
+            if(lang==='en') {
+                text=this.translit_de(text);
+                component.setValue(this.translit_en(text));
+            }
+        }
     }
+
 });

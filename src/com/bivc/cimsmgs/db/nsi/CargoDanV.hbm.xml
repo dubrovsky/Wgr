@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 08.04.2011 10:06:33 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+
+    <class name="com.bivc.cimsmgs.db.nsi.CargoDanV" table="CARGO_DAN_V" where="SYSDATE() &gt;= `CAR_DAN#BGN` and SYSDATE() &lt; `CAR_DAN#END`">
+    <!--<class name="com.bivc.cimsmgs.db.nsi.CargoDanV" table="CARGO_DAN_V">-->
+        <id name="carDanUn" type="java.lang.Long">
+            <column name="[CAR_DAN#UN]"/>
+            <!--<generator class="assigned"/>-->
+            <generator class="native"/>
+        </id>
+        <property name="carDanId" type="java.lang.Long">
+            <column name="[CAR_DAN#ID]"/>
+        </property>
+        <property name="numOon" type="string">
+            <column name="NUM_OON"/>
+        </property>
+        <property name="cGnUn" type="java.lang.Long">
+            <column name="C_GN_UN"/>
+        </property>
+        <property name="carDName" type="string">
+            <column name="CAR_D_NAME"/>
+        </property>
+        <property name="clazz" type="string">
+            <column name="CLASS"/>
+        </property>
+
+        <property name="codClass" type="string">
+            <column name="COD_CLASS"/>
+        </property>
+        <property name="groupPack" type="string">
+            <column name="GROUP_PACK"/>
+        </property>
+        <property name="dangSign" type="string">
+            <column name="DANG_SIGN"/>
+        </property>
+        <property name="specStatus" type="string">
+            <column name="SPEC_STATUS"/>
+        </property>
+        <property name="limitQuant" type="string">
+            <column name="LIMIT_QUANT"/>
+        </property>
+        <property name="directPack" type="string">
+            <column name="DIRECT_PACK"/>
+        </property>
+        <property name="specStatusPack" type="string">
+            <column name="SPEC_STATUS_PACK"/>
+        </property>
+        <property name="jointPack" type="string">
+            <column name="JOINT_PACK"/>
+        </property>
+        <property name="directCist" type="string">
+            <column name="DIRECT_CIST"/>
+        </property>
+        <property name="specStatusCist" type="string">
+            <column name="SPEC_STATUS_CIST"/>
+        </property>
+        <property name="codCist" type="string">
+            <column name="COD_CIST"/>
+        </property>
+        <property name="statusCist" type="string">
+            <column name="STATUS_CIST"/>
+        </property>
+        <property name="transCateg" type="java.lang.Long">
+            <column name="TRANS_CATEG"/>
+        </property>
+
+        <property name="statusCargPlace" type="string">
+            <column name="STATUS_CARG_PLACE"/>
+        </property>
+        <property name="statusBulk" type="string">
+            <column name="STATUS_BULK"/>
+        </property>
+        <property name="statusLoadUnload" type="string">
+            <column name="STATUS_LOAD_UNLOAD"/>
+        </property>
+        <property name="codDanger" type="string">
+            <column name="COD_DANGER"/>
+        </property>
+        <property name="emergenCard" type="java.lang.Long">
+            <column name="EMERGEN_CARD"/>
+        </property>
+        
+        <property name="minCover" type="string">
+            <column name="MIN_COVER"/>
+        </property>
+        <property name="conditionHump" type="string">
+            <column name="CONDITION_HUMP"/>
+        </property>
+
+
+        <property name="carDanBgn" type="date">
+            <column name="[CAR_DAN#BGN]"/>
+        </property>
+        <property name="carDanEnd" type="date">
+            <column name="[CAR_DAN#END]"/>
+        </property>
+        
+    </class>
+</hibernate-mapping>

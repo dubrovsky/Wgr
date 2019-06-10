@@ -5,7 +5,12 @@ Ext.define('TK.view.smgs.List', {
         exchange: 'TK.controller.exchange.Viewers'
     },
 
-	selModel:{mode:'MULTI'},
+    requires: [
+        'Ext.button.Split',
+        'TK.Utils'
+    ],
+
+    selModel:{mode:'MULTI'},
     buildStore: function(config) {
         config.store = 'Smgses';
     },
@@ -110,7 +115,7 @@ Ext.define('TK.view.smgs.List', {
                 config.columns.items.push({text: this.headerInv, dataIndex: 'invQty',width: 55, renderer: this.renderInvQty});
             }*/
             config.columns.items.push({text: this.headerInv, dataIndex: 'invQty',width: 55, renderer: this.renderInvQty});
-            config.columns.items.push({text: this.headerNPoezd, dataIndex: 'npoezd', width: 60, renderer: TK.Utils.renderLongStr});
+            config.columns.items.push({text: this.headerNPoezd, dataIndex: 'npoezd', width: 85, renderer: TK.Utils.renderLongStr});
         }
     },
     buildTopToolbar: function(config) {
@@ -119,11 +124,13 @@ Ext.define('TK.view.smgs.List', {
             xtype: 'toolbar',
             itemId: 'top',
             items: [
-                {text: this.btnStat, iconCls:'filter', action:'filter', itemId:'local'},'-',
+                {text: this.btnStat, iconCls:'filter', action:'filter', itemId:'local', forDeleted: true, forPresent: true},
+                {xtype: 'tbseparator', itemId:'filter1', forDeleted: true, forPresent: true},
                 {xtype:'splitbutton', text: this.btnPrint, iconCls:'pdf_blank_off', action:'print',
                     menu: [
                         {text: this.btnPrint, action:'print', iconCls:'pdf_blank_off'},
-                        {text: this.btnBindPrint, action:'bindPrintTmpl', iconCls:'bind'}
+                        {text: this.btnBindPrint, action:'bindPrintTmpl', iconCls:'bind'},
+                        {text: this.btnSelectPrint, action:'selectPrintTmpl', iconCls:'select'}
                     ]
                 },'-',
                 {text: this.btnCreate,iconCls:'doc_new', action:'create'},'-',
@@ -141,6 +148,15 @@ Ext.define('TK.view.smgs.List', {
 
         if(tkUser.hasPriv('CIM_DELETE')){
             config.dockedItems[0].items.push({text: this.btnDelete,iconCls:'del',itemId:'del', action:'del'},{xtype: 'tbseparator', itemId:'del1'});
+        }
+
+        if(tkUser.hasPriv('CIM_ADMIN_DELETE')){
+            config.dockedItems[0].items.push(
+                {text: this.btnRestore,iconCls:'restore',itemId:'restore', action:'restore', forDeleted: true, hidden: true},
+                {xtype: 'tbseparator', itemId:'restore1', forDeleted: true, hidden: true},
+                {text: this.btnDestroy,iconCls:'del',itemId:'destroy', action:'destroy', forDeleted: true, hidden: true},
+                {xtype: 'tbseparator', itemId:'destroy1', forDeleted: true, hidden: true}
+            );
         }
 
 

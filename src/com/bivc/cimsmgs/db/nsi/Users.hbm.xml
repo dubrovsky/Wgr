@@ -6,7 +6,8 @@
     <class name="com.bivc.cimsmgs.db.nsi.Users" table="USERS">
         <id name="id" type="big_decimal">
             <column name="ID" precision="22" scale="0" />
-            <generator class="assigned" />
+            <!--<generator class="assigned" />-->
+            <generator class="native"/>
         </id>
         <many-to-one name="company" class="com.bivc.cimsmgs.db.nsi.Company" fetch="join">
             <column name="COMPANY_ID" precision="22" scale="0" not-null="true" />

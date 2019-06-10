@@ -4,9 +4,10 @@
 <hibernate-mapping>
   <class name="com.bivc.cimsmgs.db.BIftminLog" table="B_IFTMIN_LOG" dynamic-update="true" dynamic-insert="true">
     <id name="hid" column="HID" type="java.lang.Long">
-      <generator class="sequence">
+      <!--<generator class="sequence">
         <param name="sequence">B_IFTMIN_LOG_HID</param>
-      </generator>
+      </generator>-->
+        <generator class="native"/>
     </id>
     <!--many-to-one name="cimSmgs" class="com.bivc.cimsmgs.db.CimSmgs" fetch="select">
       <column name="HID_SRC" precision="20" scale="0" />

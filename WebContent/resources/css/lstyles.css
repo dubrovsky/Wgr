@@ -1,71 +1,187 @@
+* {
+    -webkit-box-sizing : border-box;
+    -moz-box-sizing    : border-box;
+    box-sizing         : border-box
+}
+
+*:before, *:after {
+    -webkit-box-sizing : border-box;
+    -moz-box-sizing    : border-box;
+    box-sizing         : border-box
+}
+
+html {
+    font-size                   : 10px;
+    -webkit-tap-highlight-color : rgba(0, 0, 0, 0);
+}
+
 body {
-    background-color: #E0E0E0;
+    margin      : 0;
+    font-family : "DBOffice-Regular", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size   : 13px;
+    line-height : 1.42857143;
+    color       : #333;
 }
 
-img{
-    border:0;
+input, button, select, textarea {
+    font-family : inherit;
+    font-size   : inherit;
+    line-height : inherit;
 }
 
-#main-block .user-input, #main-block .pass-input {
-    width: 229px;
-    height: 35px;
-    line-height: 35px;
-    margin: 0 7px;
-
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
-
-    background-repeat: no-repeat;
-    border: 1px solid #b1b1b1;
-
-    font-size: 13px;
-    font-weight: 500;
-    color: #333;
-
-    padding-left: 35px;
+a {
+    color           : #646973;
+    text-decoration : none;
 }
 
-.user-input {
-    background: url(../../images/user.png) #fff;
+a:hover, a:focus {
+    color           : #40444a;
+    text-decoration : underline;
 }
 
-.pass-input {
-    background: url(../../images/pass.png) #fff;
+a:focus {
+    outline        : thin dotted;
+    outline        : 5px auto -webkit-focus-ring-color;
+    outline-offset : -2px;
 }
 
-.submit {
-    width: 100px;
-    height: 37px;
-    margin-left: 7px;
-
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
-
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 16px;
-    font-weight: bold;
-
-    cursor: pointer;
-    background-color:#de7e0f;
-    color: #fff;
-    border: 1px solid #ed6d08;
+.btn {
+    display             : inline-block;
+    margin-bottom       : 0;
+    font-weight         : normal;
+    text-align          : center;
+    vertical-align      : baseline;
+    cursor              : pointer;
+    background-image    : none;
+    border              : 1px solid transparent;
+    white-space         : nowrap;
+    padding             : 6px 12px;
+    font-size           : 13px;
+    line-height         : 1.42857143;
+    border-radius       : 4px;
+    -webkit-user-select : none;
+    -moz-user-select    : none;
+    -ms-user-select     : none;
+    user-select         : none;
 }
 
-#main-block{
-    position:absolute;
-    width:700px;
-    height:200px;
-    z-index:15;
-    top:50%;
-    left:50%;
-    margin:-100px 0 0 -350px;
-    text-align: center;
+.btn-accent {
+    background-color : #f01414;
+    border-radius: 0;
+    font-weight      : bold;
+    color            : whitesmoke;
 }
 
-.error{
-    color:red;
-    font-weight:bold;
+form .btn {
 }
 
+input, .form-wrapper div.login {
+    margin-top       : 20px;
+    width            : 100%;
+    height           : 30px;
+    padding-left     : 12px;
+    padding-top      : 5px;
+    line-height      : 100%;
+    background-color : #f5f5f5;
+    border           : solid #ccc 1px;
+}
+
+.container {
+    position   : absolute;
+    width      : 100%;
+    height     : 100%;
+    min-height : 35em;
+}
+
+.header {
+    background    : white;
+    position      : absolute;
+    top           : 0;
+    left          : 0;
+    right         : 0;
+    border-bottom : 13px solid #f01414;
+}
+
+
+.logo {
+    display : inline-block;
+}
+
+.logo a {
+    display : inline-block;
+}
+
+.logo img {
+    vertical-align : middle;
+    border-width: 0px;
+}
+
+.switch-langs {
+    float : right;
+    margin-top : 2em;
+    margin-right : 1.4em;
+}
+
+.switch-langs img {
+    border-width: 0px;
+}
+
+.form {
+    display         : table;
+    width           : 100%;
+    min-height      : 45em;
+    height          : 100%;
+    background      : url("../../images/DB-Schenker-Zug-zwischen-Koper-und-Enns2.jpg") no-repeat center;
+    background-size : cover;
+}
+
+.form-heading {
+    font-weight : normal;
+    text-align  : left;
+    font-size   : 207%;
+    margin      : 0 0 10px;
+}
+
+.form-wrapper {
+    max-width      : 20em;
+    display        : table-cell;
+    text-align     : center;
+    vertical-align : middle;
+}
+
+.form-wrapper form, .form-wrapper>span {
+    max-width  : 25em;
+    margin     : auto;
+    padding    : 2em;
+    background : white;
+    box-shadow : 1px 1px 2px rgba(51, 51, 51, .2);
+    position: relative;
+    display: block;
+}
+
+.form-wrapper>span a {
+    color: #064899;
+}
+
+.form-wrapper label {
+    clear: left;
+    text-align: left;
+    float: left;
+    margin: 5px 0px -18px;
+}
+
+.form-wrapper div.login {
+    text-align: left;
+    float: left;
+    border-color: #f1f1f1;
+}
+
+.form-wrapper h2 {
+    font-size: 18px;
+}
+
+.form-wrapper div.error {
+    border: 4px solid #f01414;
+    text-align: left;
+    padding: 1px;
+}

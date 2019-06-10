@@ -4,12 +4,11 @@ package com.bivc.cimsmgs.db;
 
 import com.bivc.cimsmgs.commons.myUser;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -150,37 +149,30 @@ public class CimSmgsFileInf implements Serializable {
 		setTrans(user.getUsr().getGroup().getName());
     }
 
+	public void addFileItem(CimSmgsFile f) {
+		if (f != null) {
+			f.setCimSmgsFileInf(this);
+			cimSmgsFiles.add(f);
+		}
+	}
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-
         if (o == null || getClass() != o.getClass()) return false;
-
         CimSmgsFileInf that = (CimSmgsFileInf) o;
-
-        return new EqualsBuilder()
-                .append(hid, that.hid)
-                .append(route, route != null ? route.getHid() : "")
-                .append(packDoc, packDoc != null ? packDoc.getHid() : "")
-                .append(type, that.type)
-                .append(nkon, that.nkon)
-                .append(dattr, that.dattr)
-                .append(un, that.un)
-                .append(trans, that.trans)
-                .isEquals();
+        return Objects.equals(hid, that.hid) &&
+                Objects.equals(route != null ? route.getHid() : "", that.route != null ? that.route.getHid() : "") &&
+                Objects.equals(packDoc!= null ? packDoc.getHid() : "", that.packDoc != null ? that.packDoc.getHid() : "") &&
+                Objects.equals(type, that.type) &&
+                Objects.equals(nkon, that.nkon) &&
+                Objects.equals(un, that.un) &&
+                Objects.equals(trans, that.trans);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(hid)
-                .append(route != null ? route.getHid() : "")
-                .append(packDoc != null ? packDoc.getHid() : "")
-                .append(type)
-                .append(nkon)
-                .append(dattr)
-                .append(un)
-                .append(trans)
-                .toHashCode();
+        return Objects.hash(hid, route != null ? route.getHid() : "", packDoc!= null ? packDoc.getHid() : "", type, nkon, un, trans);
     }
 }

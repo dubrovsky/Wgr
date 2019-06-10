@@ -5,9 +5,10 @@
     <class name="com.bivc.cimsmgs.db.Tbc2Log" table="TBC2_LOG" dynamic-insert="true" dynamic-update="true">
         <id name="hid" type="long">
             <column name="HID" precision="30" scale="0"/>
-            <generator class="sequence">
+            <!--<generator class="sequence">
                 <param name="sequence">TBC2_LOG_HID</param>
-            </generator>
+            </generator>-->
+            <generator class="native"/>
         </id>
 
         <many-to-one name="tbc2Pack" class="com.bivc.cimsmgs.db.Tbc2Pack" fetch="select">

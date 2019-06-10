@@ -1,5 +1,6 @@
 package com.bivc.cimsmgs.doc2doc;
 
+import java.util.List;
 import java.util.Map;
 
 public interface Mapper {
@@ -11,6 +12,8 @@ public interface Mapper {
     public <S,D> void copy(S sourceObject, D destinationObject);
 
     public <K, V> Map<K, V> copyMap(Map<K, V> sourceMap, Class<V> destinationClass);
+
+	public <A, B> List<B> copyList(List<A> sourceList, Class<B> destinationClass);
 
 //    public <K extends Number, V extends Sortable<K>> void copyMap(Map<K, V> sourceMap, Map<K, V> destinationMap, Class<V> valueClass, Class<K> keyClass);
 }

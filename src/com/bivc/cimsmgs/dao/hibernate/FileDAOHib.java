@@ -7,12 +7,16 @@ import com.bivc.cimsmgs.db.CimSmgsFile;
 import com.bivc.cimsmgs.db.Usr;
 import com.bivc.cimsmgs.exceptions.InfrastructureException;
 import org.hibernate.Criteria;
-import org.hibernate.LockOptions;
+import org.hibernate.Hibernate;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -21,6 +25,8 @@ public class FileDAOHib extends GenericHibernateDAO<CimSmgsFile, Long> implement
         Criteria crit = getSession().createCriteria(getPersistentClass());
         crit.createAlias("cimSmgsFileInf", "fileInf").add(Restrictions.eq("fileInf.type", search.getDocType()));
         crit.createAlias("fileInf.packDoc", "pack").add(Restrictions.eq("pack.hid", search.getPackId()));
+
+        crit.add(Restrictions.eq("deleted", search.getDeleted() != 0));
         crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 20 : limit);
 //		crit.addOrder(Order.desc("dattr"));  jetb
 
@@ -31,12 +37,14 @@ public class FileDAOHib extends GenericHibernateDAO<CimSmgsFile, Long> implement
         Criteria crit = getSession().createCriteria(getPersistentClass());
         crit.createAlias("cimSmgsFileInf", "fileInf").add(Restrictions.eq("fileInf.type", search.getDocType()));
         crit.createAlias("fileInf.packDoc", "pack").add(Restrictions.eq("pack.hid", search.getPackId()));
+
+        crit.add(Restrictions.eq("deleted", search.getDeleted() != 0));
         crit.setProjection(Projections.rowCount());
 
         return (Long) crit.uniqueResult();
     }
 
-    public void save(CimSmgsFile scan, File file) throws SQLException, IOException {
+    /*public void save(CimSmgsFile scan, File file) throws SQLException, IOException {
         OutputStream pw = null;
         InputStream fileIn = null;
         try {
@@ -61,9 +69,25 @@ public class FileDAOHib extends GenericHibernateDAO<CimSmgsFile, Long> implement
                 pw.close();
             }
         }
+    }*/
+
+    public void save(CimSmgsFile scan, File file) throws SQLException, IOException {
+        FileInputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(file);
+            Blob blob = Hibernate.getLobCreator(getSession()).createBlob(inputStream, file.length());
+            scan.setFiles(blob);
+            getSession().save(scan);
+            getSession().flush();
+            blob.free();
+        } finally {
+             if(inputStream != null){
+                 inputStream.close();
+             }
+        }
     }
 
-    public void save(CimSmgsFile scan, OutputStreamWriters file) throws SQLException, IOException {
+    /*public void save(CimSmgsFile scan, OutputStreamWriters file) throws SQLException, IOException {
         ByteArrayOutputStream outByteStream = null;
         OutputStream pw = null;
         try {
@@ -85,6 +109,27 @@ public class FileDAOHib extends GenericHibernateDAO<CimSmgsFile, Long> implement
             if (pw != null) {
                 pw.flush();
                 pw.close();
+            }
+        }
+
+    }*/
+
+    public void save(CimSmgsFile scan, OutputStreamWriters file) throws SQLException, IOException {
+        ByteArrayOutputStream outByteStream = null;
+        try {
+            outByteStream = new ByteArrayOutputStream();
+            file.writeTo(outByteStream);
+            byte[] outArray = outByteStream.toByteArray();
+            scan.setLength(BigDecimal.valueOf(outArray.length));
+
+            Blob blob = Hibernate.getLobCreator(getSession()).createBlob(outArray);
+            scan.setFiles(blob);
+            getSession().save(scan);
+            getSession().flush();
+            blob.free();
+        } finally {
+            if (outByteStream != null) {
+                outByteStream.close();
             }
         }
 

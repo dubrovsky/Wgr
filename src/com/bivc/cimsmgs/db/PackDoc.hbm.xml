@@ -9,6 +9,7 @@
             <generator class="sequence">
                 <param name="sequence">PACK_DOC_HID</param>
             </generator>
+            <!--<generator class="native"/>-->
         </id>
         <many-to-one name="route" class="com.bivc.cimsmgs.db.Route" fetch="select">
             <column name="HID_ROUTE" precision="20" scale="0"/>
@@ -18,6 +19,9 @@
         </many-to-one>
         <property name="dattr" type="timestamp">
             <column name="DATTR" length="7"/>
+        </property>
+        <property name="deleted" type="boolean">
+            <column name="DELETED" precision="1" scale="0" />
         </property>
         <!--<property name="tbc_nomer" type="string">
             <column length="20" name="TBC_NOMER"/>
@@ -64,7 +68,7 @@
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.CimSmgsScan" />
         </set>-->
-        <set name="csInvoices" table="CIM_SMGS_INVOICE" inverse="true" lazy="true" fetch="select" batch-size="50" cascade="all, delete-orphan">
+        <set name="csInvoices" table="CIM_SMGS_INVOICE" inverse="true" lazy="true" fetch="select" batch-size="50" cascade="all, delete-orphan"  where="DELETED = 'FALSE'">
             <key>
                 <column name="HID_PACK" precision="20" scale="0" not-null="true"/>
             </key>
@@ -94,6 +98,19 @@
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.FieldsComments" />
             <filter name="limitFieldCommentsByDocId" condition="FIELD_HID IN (SELECT dir.hid FROM FIELDS_DIR dir INNER JOIN FIELDS_DOCS_REFS refs ON dir.hid = refs.field_hid AND refs.doc_hid = :docId)"/>
+        </set>
+        <set name="poezds" table="KY_POEZD" inverse="true" lazy="true" fetch="select" batch-size="50" cascade="all, delete-orphan">
+            <key>
+                <column name="HID_PACK" precision="20" scale="0" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.Poezd" />
+        </set>
+
+        <set name="avtos" table="KY_AVTO" inverse="true" lazy="true" fetch="select" batch-size="50" cascade="all, delete-orphan">
+            <key>
+                <column name="HID_PACK" precision="20" scale="0" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.Avto" />
         </set>
     </class>
     <filter-def name="limitFieldCommentsByDocId">

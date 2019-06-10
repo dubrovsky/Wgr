@@ -34,7 +34,7 @@ public class LoggingEvent implements java.io.Serializable {
 	public LoggingEvent() {
 	}
 
-	public LoggingEvent(long eventId, BigDecimal timestmp,
+	public LoggingEvent(Long eventId, BigDecimal timestmp,
 			String formattedMessage, String loggerName, String levelString,
 			String callerFilename, String callerClass, String callerMethod,
 			String callerLine) {
@@ -49,7 +49,7 @@ public class LoggingEvent implements java.io.Serializable {
 		this.callerLine = callerLine;
 	}
 
-	public LoggingEvent(long eventId, BigDecimal timestmp,
+	public LoggingEvent(Long eventId, BigDecimal timestmp,
 			String formattedMessage, String loggerName, String levelString,
 			String threadName, Byte referenceFlag, String arg0,
 			String arg1, String arg2, String arg3, String callerFilename,
@@ -75,11 +75,11 @@ public class LoggingEvent implements java.io.Serializable {
 		this.loggingEventExceptions = loggingEventExceptions;
 	}
 
-	public long getEventId() {
-		return this.eventId;
+	public Long getEventId() {
+		return eventId;
 	}
 
-	public void setEventId(long eventId) {
+	public void setEventId(Long eventId) {
 		this.eventId = eventId;
 	}
 

@@ -22,14 +22,21 @@
             <interceptor name="auditStatus" class="com.bivc.cimsmgs.interceptors.AuditStatusInterceptor"/>
 
 
-           <!-- <interceptor-stack name="defaultStack">
-                <interceptor-ref name="exceptions"/>
-                <interceptor-ref name="servletConfig"/>
-                <interceptor-ref name="i18n">
-                    <param name="parameterName">lang</param>
+            <interceptor-stack name="baseStack">
+                <interceptor-ref name="exceptions">
+                    <param name="logCategory">com.bivc.cimsmgs</param>
+                    <param name="logEnabled">true</param>
+                    <param name="logLevel">error</param>
                 </interceptor-ref>
+                <interceptor-ref name="servletConfig"/>
+                <interceptor-ref name="i18n"/>
+                <interceptor-ref name="prepare"/>
+                <interceptor-ref name="chain"/>
+                <interceptor-ref name="actionMappingParams"/>
                 <interceptor-ref name="params"/>
-            </interceptor-stack>-->
+                <interceptor-ref name="conversionError"/>
+                <interceptor-ref name="debugging"/>
+            </interceptor-stack>
 
             <interceptor-stack name="hibernateStack">
                 <interceptor-ref name="exceptions">

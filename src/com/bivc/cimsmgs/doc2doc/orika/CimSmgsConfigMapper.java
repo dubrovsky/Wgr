@@ -19,6 +19,7 @@ public class CimSmgsConfigMapper extends ConfigurableMapper {
     private String[] cimSmgsExcludes;
     private String[] cimSmgsKonListExcludes;
     private String[] cimSmgsCarListExcludes;
+    private String[] cimSmgsGruzExcludes;
 
     public CimSmgsConfigMapper() {
         super(false);
@@ -72,14 +73,9 @@ public class CimSmgsConfigMapper extends ConfigurableMapper {
                 .exclude("cimSmgses")
                 .exclude("iftminLogs")
                 .exclude("iftminLogsBtlc")
-                /*.exclude("cimSmgsPlombs")
-                .exclude("cimSmgsDocses7")
-                .exclude("cimSmgsCarLists")*/
+
                 .exclude("statuses")
-                /*.exclude("cimSmgsDocses9")
-                .exclude("cimSmgsDocses136")
-                .exclude("cimSmgsDocses13")
-                .exclude("cimSmgsPlatels")*/
+
                 .exclude("iftminLogs")
                 .exclude("iftminLogsBtlc")
                 .exclude("tdgLog")
@@ -106,12 +102,6 @@ public class CimSmgsConfigMapper extends ConfigurableMapper {
 
         addExcludes(classMapBuilder, cimSmgsExcludes);
 
-        /*if(getCimSmgsExcludes() != null){
-            for (String exclude : getCimSmgsExcludes()) {
-                classMapBuilder.exclude(exclude);
-            }
-        }*/
-
         classMapBuilder
                 .byDefault()
                 .constructorB()
@@ -121,17 +111,16 @@ public class CimSmgsConfigMapper extends ConfigurableMapper {
 
     }
 
-//    protected String[] getCimSmgsExcludes() {
-//        return new String[]{"cimSmgsCarLists"};
-//    }
-
     protected void mapCimSmgsGruz(MapperFactory mapperFactory) {
-        mapperFactory.classMap(CimSmgsGruz.class, CimSmgsGruz.class)
+        ClassMapBuilder<CimSmgsGruz, CimSmgsGruz> classMapBuilder = mapperFactory.classMap(CimSmgsGruz.class, CimSmgsGruz.class)
                 .exclude("hid")
                 .exclude("cimSmgsKonList")
                 .exclude("cimSmgsCarList")
-                .exclude("dattr")
-                .constructorB()
+                .exclude("dattr");
+
+        addExcludes(classMapBuilder, cimSmgsGruzExcludes);
+
+        classMapBuilder.constructorB()
                 .byDefault()
                 .customize(cimSmgsGruzMapper)
                 .register();
@@ -141,16 +130,11 @@ public class CimSmgsConfigMapper extends ConfigurableMapper {
         ClassMapBuilder<CimSmgsKonList, CimSmgsKonList> classMapBuilder = mapperFactory.classMap(CimSmgsKonList.class, CimSmgsKonList.class)
                 .exclude("hid")
                 .exclude("cimSmgsCarList")
-//                .exclude("cimSmgsGruzs")
                 .exclude("trans")
                 .exclude("un")
                 .exclude("dattr");
         addExcludes(classMapBuilder, cimSmgsKonListExcludes);
-        /*if(getCimSmgsKonListExcludes() != null){
-            for (String exclude : getCimSmgsKonListExcludes()) {
-                classMapBuilder.exclude(exclude);
-            }
-        }*/
+
         classMapBuilder
                 .constructorB()
                 .byDefault()
@@ -158,35 +142,21 @@ public class CimSmgsConfigMapper extends ConfigurableMapper {
                 .register();
     }
 
-//    protected String[] getCimSmgsKonListExcludes() {
-//        return new String[]{"cimSmgsGruzs"};
-//    }
-
     protected void mapCimSmgsCarList(MapperFactory mapperFactory) {
         ClassMapBuilder<CimSmgsCarList, CimSmgsCarList> classMapBuilder = mapperFactory.classMap(CimSmgsCarList.class, CimSmgsCarList.class)
                 .exclude("hid")
                 .exclude("cimSmgs")
-//                .exclude("cimSmgsGruzs")
-               /* .exclude("cimSmgsKonLists")*/
                 .exclude("trans")
                 .exclude("un")
                 .exclude("dattr");
         addExcludes(classMapBuilder, cimSmgsCarListExcludes);
-        /*if(getCimSmgsCarListExcludes() != null){
-            for (String exclude : getCimSmgsCarListExcludes()) {
-                classMapBuilder.exclude(exclude);
-            }
-        }*/
+
         classMapBuilder
                 .constructorB()
                 .byDefault()
                 .customize(cimSmgsCarListMapper)
                 .register();
     }
-
-//    protected String[] getCimSmgsCarListExcludes() {
-//        return new String[]{"cimSmgsGruzs", "cimSmgsKonLists"};
-//    }
 
     protected void mapCimSmgsDocs(MapperFactory mapperFactory) {
         mapperFactory.classMap(CimSmgsDocs.class, CimSmgsDocs.class)
@@ -315,5 +285,13 @@ public class CimSmgsConfigMapper extends ConfigurableMapper {
 
     public void setCimSmgsPerevozMapper(Mapper<CimSmgsPerevoz, CimSmgsPerevoz> cimSmgsPerevozMapper) {
         this.cimSmgsPerevozMapper = cimSmgsPerevozMapper;
+    }
+
+    public String[] getCimSmgsGruzExcludes() {
+        return cimSmgsGruzExcludes;
+    }
+
+    public void setCimSmgsGruzExcludes(String[] cimSmgsGruzExcludes) {
+        this.cimSmgsGruzExcludes = cimSmgsGruzExcludes;
     }
 }

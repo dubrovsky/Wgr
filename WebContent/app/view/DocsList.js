@@ -1,6 +1,14 @@
 Ext.define('TK.view.DocsList', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.docslist',
+
+    requires: [
+        'Ext.menu.Menu',
+        'Ext.toolbar.Paging',
+        'Ext.toolbar.Separator',
+        'TK.view.components.PagingSizeChangerPlugin'
+    ],
+
 //    requires: ['Ext.ux.CheckColumn'],
     closable: false,
     autoScroll: true,
@@ -24,6 +32,7 @@ Ext.define('TK.view.DocsList', {
         this.buildBottomToolbar(config);
     },
     buildView: function(config) {
+
         var controller = TK.app.getController('Docs'),
             menuItem = controller.getMenutree().lastSelectedLeaf,
             docName = menuItem.id.split('_')[3],
@@ -35,6 +44,7 @@ Ext.define('TK.view.DocsList', {
         this.contextMenu = Ext.create('Ext.menu.Menu', {
             items: menuItems
         });
+        config.selModel={mode:'MULTI'},
     	config.viewConfig = {
             stripeRows: true/*,
 //            enableTextSelection: true,
@@ -58,7 +68,8 @@ Ext.define('TK.view.DocsList', {
             itemId: 'top',
             defaults:{iconAlign:'top', arrowAlign:'bottom'},
             items: [
-                {text: this.btnStat, iconCls:'filter', action:'filter', itemId:'local'},'-',
+                {text: this.btnStat, iconCls:'filter', action:'filter', itemId:'local', forDeleted: true, forPresent: true},
+                {xtype: 'tbseparator', itemId:'filter1', forDeleted: true, forPresent: true},
                 {text: this.btnPrint, iconCls:'pdf_blank_off', action:'print'},'-',
                 {text: this.btnCreate,iconCls:'doc_new', action:'create'},'-',
                 {text: this.btnCopy,iconCls:'copy', action:'copy'},'-',
@@ -70,11 +81,20 @@ Ext.define('TK.view.DocsList', {
         if(tkUser.hasPriv('CIM_DELETE')){
             config.dockedItems[0].items.push({text: this.btnDelete,iconCls:'del',itemId:'del', action:'del'},{xtype: 'tbseparator', itemId:'del1'});
         }
+        if(tkUser.hasPriv('CIM_ADMIN_DELETE')){
+            config.dockedItems[0].items.push(
+                {text: this.btnRestore,iconCls:'restore',itemId:'restore', action:'restore', forDeleted: true, hidden: true},
+                {xtype: 'tbseparator', itemId:'restore1', forDeleted: true, hidden: true},
+                {text: this.btnDestroy,iconCls:'del',itemId:'destroy', action:'destroy', forDeleted: true, hidden: true},
+                {xtype: 'tbseparator', itemId:'destroy1', forDeleted: true, hidden: true}
+            );
+        }
     },
     buildBottomToolbar: function(config) {
         config.dockedItems.push({
             dock: 'bottom',
             xtype: 'pagingtoolbar',
+            plugins : [Ext.create('TK.view.components.PagingSizeChangerPlugin', {options : [ 20, 50, 100, 200 ] })],
             store: config.store,
             displayInfo: true
         });
@@ -82,7 +102,6 @@ Ext.define('TK.view.DocsList', {
     initGrid: function(params) {
 	    Ext.apply(this.getStore().getProxy().extraParams, params);
 //	    this.store.proxy.extraParams = params;
-//	    console.log(this.store.proxy.extraParams);
     },
     rendererID: function(val, meta, rec) {
         return val;

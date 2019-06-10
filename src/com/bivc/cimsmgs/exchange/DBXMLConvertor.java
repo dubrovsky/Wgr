@@ -1,6 +1,7 @@
 package com.bivc.cimsmgs.exchange;
 
 import com.bivc.cimsmgs.commons.HibernateUtil;
+import com.bivc.cimsmgs.commons.VidOtpr;
 import com.bivc.cimsmgs.db.*;
 import com.bivc.cimsmgs.db.nsi.Sta;
 import org.dom4j.Document;
@@ -20,9 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static com.bivc.cimsmgs.exchange.Utils.makeBigDecimal;
-import static com.bivc.cimsmgs.exchange.Utils.makeByte;
-import static com.bivc.cimsmgs.exchange.Utils.makeShort;
+import static com.bivc.cimsmgs.exchange.Utils.*;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class DBXMLConvertor {
@@ -60,7 +59,7 @@ public class DBXMLConvertor {
                     cs.setDattr(d);
                     cs.setUn(un);
                     cs.setTrans(trans);
-                    cs.setG25((byte) 2);
+                    cs.setG25(VidOtpr.KONT.getG25());
                     cs.setTbcStatus((byte) 0);
                     cs.setDocType1(new BigDecimal(27));
 
@@ -125,7 +124,7 @@ public class DBXMLConvertor {
                         cs.setG6(custNode.valueOf("CustomerCode"));
                     }
 
-                    byte docSort = 0;
+                    Integer docSort = 0;
                     for (Node node : (List<Node>)ecn.selectNodes("ConsignorDeclarations/ConsignorDeclaration")) {
                         CimSmgsDocs csd = new CimSmgsDocs();
                         csd.setFieldNum("7");
@@ -162,7 +161,7 @@ public class DBXMLConvertor {
                     }
 
                     StringBuilder g60 = new StringBuilder();
-                    // работает только до 10, т.к. сортирует как строки
+                    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ 10, пїЅ.пїЅ. пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
                     for (Node node : (List<Node>)ecn.selectNodes("Routing/RouteSection", "number(@SequenceID)")) {
                         g60.append(node.valueOf("RouteCode"));
                     }
@@ -240,7 +239,7 @@ public class DBXMLConvertor {
                         cs.setGa52(node.valueOf("CurrencyCode"));
                         cs.setGa51(node.valueOf("Tariff/NHMCode"));
                         cs.setGa54(node.valueOf("Tariff/TariffNumber"));
-                        break; //отработать только одну итерацию
+                        break; //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                     }
 
                     byte carSort = 0;

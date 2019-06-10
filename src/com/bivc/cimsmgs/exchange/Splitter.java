@@ -1,7 +1,9 @@
 package com.bivc.cimsmgs.exchange;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 import static com.bivc.cimsmgs.exchange.Utils.split;
 import static com.bivc.cimsmgs.exchange.EDIMessage.ms;
@@ -78,6 +80,14 @@ public class Splitter {
 
     public BigDecimal geD(int idx) {
       return Utils.geD(el, idx);
+    }
+
+    public BigDecimal geD0(int idx) {
+      return Utils.geD0(el, idx);
+    }
+
+    public Date geT(int idx, SimpleDateFormat mask) {
+      return Utils.geT(el, idx, mask);
     }
 
     @Override

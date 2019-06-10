@@ -1,9 +1,11 @@
 Ext.define('TK.view.DocsForm', {
     extend:'Ext.form.Panel',
     alias:['widget.docsform'],
-    requires:[
-        'TK.view.nsi.List',
-        'TK.view.nsi.EditList'
+    requires: [
+        'Ext.form.field.VTypes',
+        'Ext.layout.container.Absolute',
+        'Ext.toolbar.Fill',
+        'TK.Utils'
     ],
     closable:true,
     border:false,
@@ -15,6 +17,7 @@ Ext.define('TK.view.DocsForm', {
         vagCollectionName: 'cimSmgsCarLists',
         contCollectionName: 'cimSmgsKonLists',
         gryzCollectionName: 'cimSmgsGruzs',
+        danGryzCollectionName: 'cimSmgsDanGruzs',
         docs9CollectionName: 'cimSmgsDocses9',
         plombsCollectionName: 'cimSmgsPlombs'
     },
@@ -67,6 +70,11 @@ Ext.define('TK.view.DocsForm', {
                     action:'save_print2',
                     itemId:'save_print2'
                 }, '-', {
+                    text:this.btnPrintView,
+                    iconCls:'view',
+                    action:'printView',
+                    itemId:'printView'
+                }, '-', {
                     text:'Документ => ЭПД',
                     iconCls:'rewrite',
                     action:'doc2EpdRewrite',
@@ -84,10 +92,11 @@ Ext.define('TK.view.DocsForm', {
                 text:this.btnClose,
                 iconCls:'close1',
                 action:'close'
-            }, '-', {
+            }
+           /* , '-', {
                 text:this.btnSign,
                 iconCls:'signature',
-                action:'signature'}
+                action:'signature'}*/
         );
     },
     addPrefix:function (prefix) {
@@ -154,6 +163,16 @@ Ext.define('TK.view.DocsForm', {
     },
     isGridDataValid:function(){
         return true;
+    },
+    dragTab:function( me, container, dragCmp, startIdx, idx, eOpts)
+    {
+        container.items.each(function (item, index, length) {
+                if(item.getText()!=index+1)
+                {
+                    item.setText(index+1);
+                    item.card.child('#sort').setValue(index);
+                }
+            });
     }
 
 });

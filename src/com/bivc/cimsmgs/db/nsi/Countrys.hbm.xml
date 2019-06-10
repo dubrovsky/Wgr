@@ -3,11 +3,11 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 08.04.2011 10:06:33 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
-    <class name="com.bivc.cimsmgs.db.nsi.Countrys" table="COUNTRYS"
-           where="SYSDATE &gt;= COU_BGN and SYSDATE &lt; COU_END">
+    <class name="com.bivc.cimsmgs.db.nsi.Countrys" table="COUNTRYS" where="SYSDATE() &gt;= `COU_BGN` and SYSDATE() &lt; `COU_END`">
         <id name="couUn" type="java.lang.Long">
             <column name="COU_UN" precision="10" scale="0"/>
-            <generator class="assigned"/>
+            <!--<generator class="assigned"/>-->
+            <generator class="native"/>
         </id>
         <property name="couId" type="java.lang.Long">
             <column name="COU_ID" precision="10" scale="0"/>

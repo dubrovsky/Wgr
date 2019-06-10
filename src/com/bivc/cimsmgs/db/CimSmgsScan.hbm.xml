@@ -5,9 +5,10 @@
     <class name="com.bivc.cimsmgs.db.CimSmgsScan" table="CIM_SMGS_SCAN">
         <id name="hid" type="long">
             <column name="HID" precision="22" scale="0" />
-            <generator class="sequence">
+            <!--<generator class="sequence">
               <param name="sequence">CIM_SMGS_SCAN_HID</param>
-            </generator>
+            </generator>-->
+            <generator class="native"/>
         </id>
         <many-to-one name="route" class="com.bivc.cimsmgs.db.Route" fetch="select">
             <column name="HID_ROUTE" precision="20" scale="0" />

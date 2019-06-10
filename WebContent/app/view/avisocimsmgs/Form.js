@@ -1,10 +1,25 @@
 Ext.define('TK.view.avisocimsmgs.Form', {
     extend:'TK.view.DocsForm',
-    alias:'widget.avisocimsmgs',
-    requires:[
+    alias:'widget.avisocimsmgs1',
+    requires: [
+        'Ext.button.Button',
+        'Ext.data.ArrayStore',
+        'Ext.form.Label',
+        'Ext.form.field.Checkbox',
+        'Ext.form.field.ComboBox',
+        'Ext.form.field.Date',
+        'Ext.form.field.Hidden',
+        'Ext.form.field.Number',
+        'Ext.form.field.Radio',
+        'Ext.form.field.Text',
+        'Ext.form.field.TextArea',
+        'Ext.form.field.Trigger',
+        'Ext.grid.column.RowNumberer',
+        'Ext.toolbar.Separator',
+        'TK.model.SmgsKon',
+        'TK.view.edit.DetailGrid',
         'TK.view.edit.DetailPanel',
-        'TK.view.edit.DetailTabPanel',
-        'TK.view.edit.DetailGrid'
+        'TK.view.edit.DetailTabPanel'
     ],
     buildItems:function(config) {
         config.items = [
@@ -147,6 +162,9 @@ Ext.define('TK.view.avisocimsmgs.Form', {
             {x:16, y:515, name: 'smgs.g101r', itemId:'smgs.g101r', maxLength:80, width:350},
             {x:372, y:483, name: 'smgs.g102', itemId:'smgs.g102', maxLength:64, width:320},
             {x:372, y:515, name: 'smgs.g102r', itemId:'smgs.g102r', maxLength:64, width:320},
+
+            {x:16, y:540, name: 'smgs.g2017', itemId:'smgs.g2017', maxLength:250, width:677},
+
             {x:258, y:455, name: 'smgs.g11', itemId:'smgs.g11', maxLength:40, width:225},
             {x:494, y:455, name: 'smgs.g12', itemId:'smgs.g12', maxLength:2, width:57},
             {x:555, y:455, name: 'smgs.g121', itemId:'smgs.g121', maxLength:6, width:138},

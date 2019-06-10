@@ -3,6 +3,7 @@ package com.bivc.cimsmgs.doc2doc.orika;
 import com.bivc.cimsmgs.doc2doc.Mapper;
 import ma.glasnost.orika.impl.ConfigurableMapper;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -31,6 +32,11 @@ public class MapperImpl implements Mapper {
 
         return destinationMap;
     }
+
+	@Override
+	public <A, B> List<B> copyList(List<A> sourceList, Class<B> destinationClass) {
+		return mapper.mapAsList(sourceList, destinationClass);
+	}
 
     /*@Override
     public <K extends Number, V extends Sortable<K>> void copyMap(Map<K, V> sourceMap, Map<K, V> destinationMap, Class<V> valueClass, Class<K> keyClass) {

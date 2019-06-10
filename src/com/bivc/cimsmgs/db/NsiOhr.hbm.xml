@@ -5,7 +5,8 @@
     <class name="com.bivc.cimsmgs.db.NsiOhr" table="NSI_OHR" batch-size="50">
         <id name="hid" type="java.lang.Long">
             <column name="HID" precision="20" scale="0"/>
-            <generator class="assigned"/>
+            <!--<generator class="assigned"/>-->
+            <generator class="native"/>
         </id>
         <!--<many-to-one name="gng" class="com.bivc.cimsmgs.db.nsi.CargoGng" fetch="select">
             <column name="cargoPl" precision="20" scale="0"  />

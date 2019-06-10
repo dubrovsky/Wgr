@@ -1,16 +1,36 @@
 package com.bivc.cimsmgs.actions;
 
+import Ti.DataProcessing.Tools.DataProcessingTools;
 import com.bivc.cimsmgs.commons.Constants;
 import com.bivc.cimsmgs.commons.Print;
-import com.bivc.cimsmgs.dao.*;
+import com.bivc.cimsmgs.dao.DocDirDAO;
+import com.bivc.cimsmgs.dao.DocDirDAOAware;
+import com.bivc.cimsmgs.dao.FieldsAccessFobiddenDAO;
+import com.bivc.cimsmgs.dao.FieldsAccessFobiddenDAOAware;
+import com.bivc.cimsmgs.dao.FileInfDAO;
+import com.bivc.cimsmgs.dao.FileInfDAOAware;
+import com.bivc.cimsmgs.dao.InvoiceDAO;
+import com.bivc.cimsmgs.dao.InvoiceDAOAware;
+import com.bivc.cimsmgs.dao.NsiSmgsG1DAO;
+import com.bivc.cimsmgs.dao.NsiSmgsG1DAOAware;
+import com.bivc.cimsmgs.dao.SmgsDAO;
+import com.bivc.cimsmgs.dao.SmgsDAOAware;
+import com.bivc.cimsmgs.dao.StatusDAO;
+import com.bivc.cimsmgs.dao.StatusDAOAware;
+import com.bivc.cimsmgs.dao.StatusDirDAO;
+import com.bivc.cimsmgs.dao.StatusDirDAOAware;
+import com.bivc.cimsmgs.dao.UsrDAO;
+import com.bivc.cimsmgs.dao.UsrDAOAware;
 import com.bivc.cimsmgs.dao.hibernate.InvoiceDAOHib;
 import com.bivc.cimsmgs.dao.hibernate.PackDocDAOHib;
 import com.bivc.cimsmgs.db.CimSmgs;
 import com.bivc.cimsmgs.db.CimSmgsInvoice;
 import com.bivc.cimsmgs.db.PackDoc;
 import com.bivc.cimsmgs.doc2doc.Mapper;
+import com.bivc.cimsmgs.dto.CimSmgsTrainDateDTO;
 import com.bivc.cimsmgs.exceptions.InfrastructureException;
 import com.bivc.cimsmgs.formats.json.Deserializer;
+import com.bivc.cimsmgs.formats.json.JsonViews;
 import com.bivc.cimsmgs.formats.json.Serializer;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.config.entities.ResultConfig;
@@ -41,12 +61,16 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
                 break;
             case 2:
             case 12:
+            case 112:
                 setJSONData(convert2JSON_SmgsList(smgslist, total, getUser()));
                 break;
             case 3:
             case 6:
             case 10:
             case 11:
+                setJSONData(convert2JSON_AvisoList(smgslist, total));
+                break;
+            case 14:
                 setJSONData(convert2JSON_AvisoList(smgslist, total));
                 break;
             case 8:
@@ -69,6 +93,27 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
                 break;*/
         }
 
+        return SUCCESS;
+    }
+
+    // get list of train numbrers and  count of smgs that are binded to the train in some period
+    public String cimsmgsDate()
+    {
+        List<CimSmgsTrainDateDTO> dtos = getSmgsDAO().findTrainDate(getLimit(),getStart(),getSearch(),getUser().getUsr());
+        setJSONData(convert2JSON_trainDate(dtos));
+        return SUCCESS;
+    }
+// get list of smgs that are  binded to the chosen train in some period
+    public String cimsmgsTrain()
+    {
+        List<CimSmgs> smgsHIDs = getSmgsDAO().findSmgsTrainDate(getLimit(),getStart(),getSearch(),getUser().getUsr());
+        setJSONData(convert2JSON_trainDateList(smgsHIDs));
+        return SUCCESS;
+    }
+
+    public String vags() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        List<CimSmgs> smgslist = getSmgsDAO().findByIds(getSearch().getIds());
+        setJSONData(convert2JSON_4VedVagList(smgslist));
         return SUCCESS;
     }
 
@@ -119,7 +164,8 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
             saveEpd(smgs.getPackDoc(), EPD_ACTION.ADD);
         }
 
-        setJSONData(convert2JSON_Smgs_Save_Results(smgs, "smgs", defaultSerializer.setLocale(getLocale()).write(smgs)));
+//        setJSONData(convert2JSON_Smgs_Save_Results(smgs, "smgs", defaultSerializer.setView(getView()).setLocale(getLocale()).write(smgs)));
+        setJSONData(convert2JSON_Smgs_Save_Results(smgs, "smgs", cimSmgsKonListSerializer.setLocale(getLocale()).write(smgs)));
         return SUCCESS;
     }
 
@@ -142,27 +188,138 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
     }
 
 
+
+    public String restore() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        log.info("restore");
+
+//        if(smgs==null) {
+//            String hIDsInput[]=getQuery1().split(",");
+//            Long hIDs[]= DataProcessingTools.stringArrToLongList(hIDsInput);
+//            // checking if record to delete is alone
+//            if(hIDs!=null)
+//            {
+//                for(int i=0;i<hIDs.length;i++)
+//                {
+//                    smgs = getSmgsDAO().getById(hIDs[i], true);
+//                    if(smgs != null){
+//                        PackDoc packDoc = smgs.getPackDoc();
+//                        packDoc.setDeleted(false);
+//                        getPackDocDAO().makePersistent(packDoc);
+//                    }
+//                }
+//            }
+//        }
+//        else {
+//            smgs = getSmgsDAO().getById(smgs.getHid(), true);
+//            PackDoc packDoc = smgs.getPackDoc();
+////            PackDoc packDoc = getPackDocDAO().getById(getSmgs().getPackDoc().getHid(), false);
+//            if (packDoc != null) {
+//                packDoc.setDeleted(false);
+//                getPackDocDAO().makePersistent(packDoc);
+//            }
+//        }
+        restoreDelete(false);
+        setJSONData(convert2JSON_True());
+        return SUCCESS;
+    }
+
+    /**
+     * delete smgs record/multiple records
+     * @return response
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException
+     */
     public String delete() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         log.info("delete");
+//        if(smgs==null) {
+//            String hIDsInput[]=getQuery1().split(",");
+//            Long hIDs[]= DataProcessingTools.stringArrToLongList(hIDsInput);
+//            // checking if record to delete is alone
+//            if(hIDs!=null)
+//            {
+//                for(int i=0;i<hIDs.length;i++)
+//                {
+//                    smgs = getSmgsDAO().getById(hIDs[i], true);
+//                    if(smgs != null){
+//                        PackDoc packDoc = smgs.getPackDoc();
+//                        packDoc.setDeleted(true);
+//                        getPackDocDAO().makePersistent(packDoc);
+//                        setJSONData(Constants.convert2JSONUploadDoc9Result(smgs.getHid().toString()));
+//                    }
+//                }
+//            }
+//        }
+//        else{
+//            smgs = getSmgsDAO().getById(smgs.getHid(), true);
+//            if(smgs != null){
+//                PackDoc packDoc = smgs.getPackDoc();
+//                packDoc.setDeleted(true);
+//                getPackDocDAO().makePersistent(packDoc);
+//            }
+//        }
+        restoreDelete(true);
+        setJSONData(convert2JSON_True());
+        return SUCCESS;
+    }
+    private void restoreDelete(Boolean delete)
+    {
+        if(smgs==null) {
+            String hIDsInput[]=getQuery1().split(",");
+            Long hIDs[]= DataProcessingTools.stringArrToLongList(hIDsInput);
+            // checking if record to delete is alone
+            if(hIDs!=null)
+            {
+                for(int i=0;i<hIDs.length;i++)
+                {
+                    smgs = getSmgsDAO().getById(hIDs[i], true);
+                    if(smgs != null){
+                        PackDoc packDoc = smgs.getPackDoc();
+                        packDoc.setDeleted(delete);
+                        getPackDocDAO().makePersistent(packDoc);
+//                        setJSONData(Constants.convert2JSONUploadDoc9Result(smgs.getHid().toString()));
+                    }
+                }
+            }
+        }
+        else{
+            smgs = getSmgsDAO().getById(smgs.getHid(), true);
+            if(smgs != null){
+                PackDoc packDoc = smgs.getPackDoc();
+                packDoc.setDeleted(delete);
+                getPackDocDAO().makePersistent(packDoc);
+            }
+        }
+    }
+    
+    public String destroy() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        log.info("destroy");
 
-        if (smgs.getHid() != null) {
+        smgs = getSmgsDAO().getById(smgs.getHid(), true);
+        if(smgs != null){
+            PackDoc packDoc = smgs.getPackDoc();
+            getPackDocDAO().makeTransient(packDoc);
+        }
+
+        /*if (smgs.getHid() != null) {
             getSmgsDAO().makeTransient(getSmgsDAO().getById(smgs.getHid(), true));
 
             // check pack_doc in smgs and invoice
             Long count = getSmgsDAO().countAll(smgs.getPackDoc()) + getInvoiceDAO().countAll(smgs.getPackDoc()) + getFileInfDAO().countAll(smgs.getPackDoc());
             log.info("Pack_Doc has - " + count + " docs in CimSmgs and CimSmgsInvoice and CimSmgsFileInf table");
-            if (count == 0) {
+            if (count < 2) {
                 log.info("No more docs with PackDoc hid " + smgs.getPackDoc().getHid() + ". Delete PackDoc");
                 getPackDocDAO().makeTransient(getPackDocDAO().getById(smgs.getPackDoc().getHid(), true));
             }
         } else if (smgs.getPackDoc().getHid() != null) {
             log.info("Delete PackDoc");
             getPackDocDAO().makeTransient(getPackDocDAO().getById(smgs.getPackDoc().getHid(), true));
-        }
+        }*/
 
         setJSONData(convert2JSON_True());
         return SUCCESS;
     }
+
 
     public String view() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, IOException {
         log.info("view");
@@ -203,7 +360,10 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
 
     private StringBuilder doc2form() throws Exception {
         StringBuilder result = new StringBuilder();
+
         if (smgs != null) {
+//            Class view = getView();
+
             result.append("{");
             result.append("success:true,");
             result.append("doc:");
@@ -211,15 +371,28 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
                 log.info("copy");
 
                 CimSmgs smgsCopy = mapper.copy(smgs, CimSmgs.class);
-                result.append(defaultSerializer.setLocale(getLocale()).write(smgsCopy));
-
+//                result.append(defaultSerializer.setLocale(getLocale()).setView(view).write(smgsCopy));
+                result.append(cimSmgsKonListSerializer.setLocale(getLocale()).write(smgsCopy));
             } else {
-                result.append(defaultSerializer.setLocale(getLocale()).write(smgs));
+                log.info("view");
+//                result.append(defaultSerializer.setLocale(getLocale()).setView(view).write(smgs));
+                result.append(cimSmgsKonListSerializer.setLocale(getLocale()).write(smgs));
             }
             result.append("}");
         }
 
         return result;
+    }
+
+    private Class getView() {
+        Class view = JsonViews.DefaultPerevozView.class;
+        if(smgs.getType() == 1 || smgs.getType() == 10 || smgs.getType() == 7  || smgs.getType() == 12 || smgs.getType() == 11|| smgs.getType() == 14) {
+            view = JsonViews.ContPerevozView.class;
+            if (smgs.getG25() != null && smgs.getG25() == 1) {
+                view = JsonViews.VagPerevozView.class;
+            }
+        }
+        return view;
     }
 
     public String doc2EpdRewrite() throws Exception {
@@ -234,7 +407,6 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
         } else {
             pack = smgs.getPackDoc();
         }
-
         log.debug("Copying DOC entity with id: {} to EPD", smgs.getHid());
 
         CimSmgs epd = saveEpd(pack, EPD_ACTION.UPDATE);
@@ -247,7 +419,7 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
 
     public String epd2DocRewrite() throws Exception {
         if(!smgs.hasPackDoc()){
-            throw new RuntimeException(String.format("DOC entity has empty PackDoc. Nothing to copy. Please, save DOC at first."));
+            throw new RuntimeException("DOC entity has empty PackDoc. Nothing to copy. Please, save DOC at first.");
         }
 
         CimSmgs epd = getSmgsDAO().findDocInPackDoc(smgs.getPackDoc().getHid(), CimSmgs.EPD_DOC_TYPE_HID);
@@ -360,6 +532,7 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
     private String jsonRequest;
     private Deserializer defaultDeserializer;
     private Serializer defaultSerializer;
+    private Serializer cimSmgsKonListSerializer;
     private CimSmgsInvoice invoice;
     private Mapper invice2InvoiceMapper;
     private Mapper doc2docAllMapper;
@@ -402,7 +575,11 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
         this.doc2docAllMapper = doc2docAllMapper;
     }
 
-    enum EPD_ACTION {ADD, UPDATE}
+	public void setCimSmgsKonListSerializer(Serializer cimSmgsKonListSerializer) {
+		this.cimSmgsKonListSerializer = cimSmgsKonListSerializer;
+	}
+
+	enum EPD_ACTION {ADD, UPDATE}
 
     public void setEpd2DocUpdateMapper(Mapper epd2DocUpdateMapper) {
         this.epd2DocUpdateMapper = epd2DocUpdateMapper;
@@ -509,7 +686,6 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
     @Override
     public void setServletRequest(HttpServletRequest httpServletRequest) {
         request = httpServletRequest;
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

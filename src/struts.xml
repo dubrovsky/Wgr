@@ -8,6 +8,7 @@
     <constant name="struts.action.extension" value="do" />
     <constant name="struts.devMode" value="false" />
     <constant name="struts.enable.DynamicMethodInvocation" value="false" />
+    <constant name="struts.enable.SlashesInActionNames" value="true"/>
     <constant name="struts.locale" value="ru_RU" />
     <constant name="struts.i18n.encoding" value="UTF-8" />
     <constant name="struts.el.throwExceptionOnFailure" value="true" />

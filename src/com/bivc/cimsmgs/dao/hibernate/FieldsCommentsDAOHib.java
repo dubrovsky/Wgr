@@ -18,7 +18,8 @@ public class FieldsCommentsDAOHib extends GenericHibernateDAO<FieldsComments, Lo
         crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 20 : limit);
         crit.addOrder(Order.desc("dattr"));
 
-        crit.createAlias("packDoc", "pack").add(Restrictions.eq("pack.hid", search.getPackId()));/*.createCriteria("cimSmgses").add(Restrictions.eq("docType1", new BigDecimal(search.getDocId())))*/
+        crit.createAlias("packDoc", "pack").add(Restrictions.eq("pack.hid", search.getPackId())).
+                add(Restrictions.eq("pack.deleted", false));/*.createCriteria("cimSmgses").add(Restrictions.eq("docType1", new BigDecimal(search.getDocId())))*/
         if(search.getDocId() != 2){ // smgs table
             crit.createCriteria("pack.cimSmgses").add(Restrictions.eq("hid", search.getHid()));
         } else { // invoice
@@ -39,7 +40,8 @@ public class FieldsCommentsDAOHib extends GenericHibernateDAO<FieldsComments, Lo
     public Long countAll(Search search) {
         Criteria crit = getSession().createCriteria(getPersistentClass());
         crit.setProjection(Projections.countDistinct("hid"));
-        crit.createAlias("packDoc", "pack").add(Restrictions.eq("pack.hid", search.getPackId()));/*.createCriteria("cimSmgses").add(Restrictions.eq("docType1", new BigDecimal(search.getDocId())))*/
+        crit.createAlias("packDoc", "pack").add(Restrictions.eq("pack.hid", search.getPackId())).
+                add(Restrictions.eq("pack.deleted", false));/*.createCriteria("cimSmgses").add(Restrictions.eq("docType1", new BigDecimal(search.getDocId())))*/
         if(search.getDocId() != 2){ // smgs table
             crit.createCriteria("pack.cimSmgses").add(Restrictions.eq("hid", search.getHid()));
         } else { // invoice

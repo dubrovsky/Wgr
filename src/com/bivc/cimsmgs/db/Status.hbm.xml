@@ -10,6 +10,7 @@
             <generator class="sequence">
                 <param name="sequence">STATUS_HID</param>
             </generator>
+            <!--<generator class="native"/>-->
         </id>
         <many-to-one name="statusDir" class="com.bivc.cimsmgs.db.StatusDir" fetch="select">
             <column name="HID_STAT" precision="20" scale="0"/>

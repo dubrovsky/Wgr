@@ -35,6 +35,7 @@ public class NsiCsG1 implements Serializable {
 	private String g112;
     private String g_1_5k;
   private String g_2inn;
+  private String dop_info;
 
   public NsiCsG1() {
 	}
@@ -252,7 +253,15 @@ public class NsiCsG1 implements Serializable {
 		this.g112 = g112;
 	}
 
-  public NsiCsG1 autoFill(CimSmgs smgs, String who)
+    public String getDop_info() {
+        return dop_info;
+    }
+
+    public void setDop_info(String dop_info) {
+        this.dop_info = dop_info;
+    }
+
+    public NsiCsG1 autoFill(CimSmgs smgs, String who)
   {
     if(who.equals("g1"))
     {

@@ -1,7 +1,12 @@
 Ext.define('TK.view.stat.List', {
 	extend         :'TK.view.DocsList',
 	alias          :'widget.statlist',
-	buildStore     :function (config) {
+
+    requires: [
+        'TK.Utils'
+    ],
+
+    buildStore     :function (config) {
         config.store = 'Stats';
 	},
 	buildColumns   :function (config) {
@@ -42,7 +47,7 @@ Ext.define('TK.view.stat.List', {
 			xtype :'toolbar',
 			itemId:'top',
 			items :[
-				{text:this.btnStat, iconCls:'filter', action:'filter', itemId:'global'},
+				{text:this.btnStat, iconCls:'filter', action:'filter', itemId:'global', forDeleted: true, forPresent: true},
 				'-'
 			]
 		});

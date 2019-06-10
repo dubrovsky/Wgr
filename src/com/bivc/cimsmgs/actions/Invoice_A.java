@@ -1,5 +1,6 @@
 package com.bivc.cimsmgs.actions;
 
+import Ti.DataProcessing.Tools.DataProcessingTools;
 import com.bivc.cimsmgs.commons.Constants;
 import com.bivc.cimsmgs.commons.JsonUtils;
 import com.bivc.cimsmgs.dao.*;
@@ -102,16 +103,87 @@ public class Invoice_A extends CimSmgsSupport_A implements InvoiceDAOAware, Smgs
         log.debug("Updated the information of a INVOICE entry with hid: {}", invoice.getHid());
     }
 
-    public String delete() {
-        log.info("delete");
 
-        if (invoice.getHid() != null) {
+    private void restoreDelete(Boolean delete)
+    {
+        if(invoice==null) {
+            String hIDsInput[]=getQuery1().split(",");
+            Long hIDs[]= DataProcessingTools.stringArrToLongList(hIDsInput);
+            // checking if record to delete is alone
+            if(hIDs!=null)
+            {
+                for(int i=0;i<hIDs.length;i++)
+                {
+                    invoice = getInvoiceDAO().getById(hIDs[i], false);
+                    if(invoice != null){
+                        invoice.setDeleted(delete);
+                        getInvoiceDAO().makePersistent(invoice);
+                    }
+                }
+            }
+        }
+        else{
+            invoice = getInvoiceDAO().getById(invoice.getHid(), false);
+            if(invoice != null){
+                PackDoc packDoc = invoice.getPackDoc();
+                packDoc.setDeleted(delete);
+                getPackDocDAO().makePersistent(packDoc);
+            }
+        }
+    }
+
+//    public String deleteInvoice() {
+public String delete() {
+        log.info("deleteInvoice");
+        restoreDelete(true);
+//        invoice = getInvoiceDAO().getById(invoice.getHid(), false);
+//        if(invoice != null){
+//            invoice.setDeleted(true);
+//            getInvoiceDAO().makePersistent(invoice);
+//        }
+        setJSONData(Constants.convert2JSON_True());
+        return SUCCESS;
+    }
+
+//    public String delete() {
+//        log.info("delete");
+//
+//        if("deleteInPack".equals(getTask())) {
+//            return deleteInvoice();
+//        }
+//
+//        invoice = getInvoiceDAO().getById(invoice.getHid(), true);
+//        if(invoice != null){
+//            PackDoc packDoc = invoice.getPackDoc();
+//            packDoc.setDeleted(true);
+//            getPackDocDAO().makePersistent(packDoc);
+//        }
+//
+//        setJSONData(convert2JSON_True());
+//        return SUCCESS;
+//
+//    }
+
+    public String destroy() {
+        log.info("destroy");
+
+        if("destroyInPack".equals(getTask())) {
+            return destroyInvoice();
+        }
+
+        invoice = getInvoiceDAO().getById(invoice.getHid(), true);
+        if(invoice != null){
+            PackDoc packDoc = invoice.getPackDoc();
+            getPackDocDAO().makeTransient(packDoc);
+        }
+
+        /*if (invoice.getHid() != null) {
             getInvoiceDAO().makeTransient(getInvoiceDAO().getById(invoice.getHid(), true));
 
             // check pack_doc in smgs and invoice
             Long count = getSmgsDAO().countAll(invoice.getPackDoc()) + getInvoiceDAO().countAll(invoice.getPackDoc()) + getFileInfDAO().countAll(invoice.getPackDoc());
             log.info("Pack_Doc has - " + count + " docs in CimSmgs and CimSmgsInvoice table and CimSmgsFileInf table");
-            if(count == 0){
+            if(count < 2){
                 log.info("No more docs with PackDoc hid " + invoice.getPackDoc().getHid() + ". Delete PackDoc");
                 getPackDocDAO().makeTransient(getPackDocDAO().getById(invoice.getPackDoc().getHid(), true));
             }
@@ -119,10 +191,53 @@ public class Invoice_A extends CimSmgsSupport_A implements InvoiceDAOAware, Smgs
             log.info("Delete PackDoc");
             getPackDocDAO().makeTransient(getPackDocDAO().getById(invoice.getPackDoc().getHid(), true));
         }
+*/
+        setJSONData(convert2JSON_True());
+        return SUCCESS;
+    }
+
+    public String destroyInvoice() {
+        log.info("destroyInvoice");
+
+        invoice = getInvoiceDAO().getById(invoice.getHid(), true);
+        if(invoice != null){
+            getInvoiceDAO().makeTransient(invoice);
+            afterDocDestoroy(invoice.getPackDoc());
+        }
 
         setJSONData(convert2JSON_True());
         return SUCCESS;
     }
+
+
+
+//    public String restoreInvoice() {
+public String restore() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        log.info("restoreInvoice");
+        restoreDelete(false);
+//        invoice = getInvoiceDAO().getById(invoice.getHid(), false);
+//        if(invoice != null){
+//            invoice.setDeleted(false);
+//            getInvoiceDAO().makePersistent(invoice);
+//        }
+        setJSONData(Constants.convert2JSON_True());
+        return SUCCESS;
+    }
+
+//    public String restore() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+//        log.info("restore");
+//        if("restoreInPack".equals(getTask())) {
+//            return restoreInvoice();
+//        }
+//        PackDoc packDoc = getPackDocDAO().getById(getInvoice().getPackDoc().getHid(), false);
+//        if(packDoc != null){
+//            packDoc.setDeleted(false);
+//            getPackDocDAO().makePersistent(packDoc);
+//        }
+//
+//        setJSONData(convert2JSON_True());
+//        return SUCCESS;
+//    }
 
     public String list() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         log.info("list");

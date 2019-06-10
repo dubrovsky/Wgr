@@ -1,9 +1,31 @@
 Ext.define('TK.controller.Nsi', {
-    extend:'Ext.app.Controller',
+    extend: 'Ext.app.Controller',
 
-    views:['nsi.ListDir'],
-    stores:['NsiDirs'],
-    models:['NsiDir', 'SmgsPlat', 'SmgsOtpr', 'NsiSta', 'NsiCarrier'],
+    requires: [
+        'Ext.form.Panel',
+        'Ext.form.field.ComboBox',
+        'Ext.form.field.File',
+        'Ext.form.field.Text',
+        'Ext.form.field.TextArea',
+        'Ext.form.field.Trigger',
+        'Ext.grid.column.Action',
+        'Ext.layout.container.Fit',
+        'Ext.toolbar.Toolbar',
+        'Ext.util.DelayedTask',
+        'Ext.util.TaskManager',
+        'Ext.ux.form.SearchField',
+        'Ext.window.Window',
+        'TK.Utils',
+        'TK.model.NsiCarrier',
+        'TK.model.NsiSta',
+        'TK.model.SmgsOtpr',
+        'TK.model.SmgsPlat',
+        'TK.view.edit.OtpavitelEdit'
+    ],
+
+    views: ['nsi.ListDir'],
+    stores: ['NsiDirs'],
+    models: ['NsiDir', 'SmgsPlat', 'SmgsOtpr', 'NsiSta', 'NsiCarrier'],
     refs: [
         {
             ref: 'center',
@@ -12,97 +34,125 @@ Ext.define('TK.controller.Nsi', {
         {
             ref: 'menutree',
             selector: 'viewport > menutree'
+        },
+        {
+            ref: 'otpaviteledit',
+            selector: 'sel_otpaviteledit'
         }
     ],
-    init:function () {
+    init: function () {
         this.control({
-            'viewport > tabpanel > nsilistdir button[action="view"]':{
-                click:this.onView
+            'viewport > tabpanel > nsilistdir button[action="view"]': {
+                click: this.onView
             },
-            'viewport > tabpanel > nsilistdir button[action="uploadNsi"]':{
-                click:this.onUploadNsi
+            'viewport > tabpanel > nsilistdir button[action="uploadNsi"]': {
+                click: this.onUploadNsi
             },
-            'viewport > tabpanel > nsilistdir button[action="exportDir2Excel"]':{
-                click:this.onExportDir2Excel
+
+            'viewport > tabpanel > nsilistdir button[action="exportDir2Excel"]': {
+                click: this.onExportDir2Excel
             },
-            'viewport > tabpanel > nsilistdir':{
-                itemdblclick:this.onView,
+            'viewport > tabpanel > nsilistdir': {
+                itemdblclick: this.onView,
                 select: this.onRowclick
+            },
+            'otpaviteledit button[action="country"]': {
+                click: this.onStrana
+            },
+            'otpaviteledit button[action="close"]': {
+                click: this.onClose
+            },
+            'otpaviteledit button[action="save"]': {
+                click: this.onSave
             }
         });
     },
-    onExportDir2Excel:function (btn) {
+    // экспортирует справочник в excel файл
+    onExportDir2Excel: function (btn) {
         var list = btn.up('grid'),
             model,
             me;
-        if(!TK.Utils.isRowSelected(list)){
+        if (!TK.Utils.isRowSelected(list)) {
             return;
         }
         me = this;
         model = list.getSelectionModel().getLastSelected();
-
-        window.open('Report_exportDir2Excel.do?' +
-            'name=' + model.get('name') + '&dirDescr=' + model.get('descr')+ '&zipped=' + model.get('zipped'),
-            '_self','');
-
         this.getCenter().getEl().mask('Идет формирование файла...');
-        new Ext.util.DelayedTask(function(){
-            Ext.TaskManager.start({
-                run: function(){
-                    Ext.Ajax.request({
-                        url: 'Report_checkExportDir2Excel.do',
-                        success: function (response) {
-                            var responseObj = Ext.decode(response.responseText);
-                            if(responseObj['success']){
-                                me.getCenter().getEl().unmask();
-                                Ext.TaskManager.destroy();
-                                return false;
-                            } else {
-                                return true;
-                            }
-                        },
-                        failure: function (response) {
-                            me.getCenter().getEl().unmask();
-                            Ext.TaskManager.destroy();
-                            TK.Utils.makeErrMsg(response, this.errorMsg);
-                        }
-                    });
+        var download = window.open('Report_exportDir2Excel.do?' +
+            'name=' + model.get('name') + '&dirDescr=' + model.get('descr') + '&zipped=' + model.get('zipped'),
+            '_self', '');
 
-                },
-                interval: 1000
-            });
-        }).delay(1000);
+        download.back = me;
+        download.onfocus = function (me, e, eOpts) {
+            this.back.getCenter().getEl().unmask();
+        };
+        // постоянно вызывала ошибку
+
+        // new Ext.util.DelayedTask(function () {
+        //     Ext.TaskManager.start({
+        //         run: function () {
+        //             Ext.Ajax.request({
+        //                 url: 'Report_checkExportDir2Excel.do',
+        //                 success: function (response) {
+        //                     var responseObj = Ext.decode(response.responseText);
+        //                     if (responseObj['success']) {
+        //                         me.getCenter().getEl().unmask();
+        //                         Ext.TaskManager.destroy();
+        //                         return false;
+        //                     } else {
+        //                         return true;
+        //                     }
+        //                 },
+        //                 failure: function (response) {
+        //                     me.getCenter().getEl().unmask();
+        //                     Ext.TaskManager.destroy();
+        //                     TK.Utils.makeErrMsg(response, this.errorMsg);
+        //                 }
+        //             });
+        //
+        //         },
+        //         interval: 1000
+        //     });
+        // }).delay(1000);
+        // me.getCenter().getEl().unmask();
     },
-    onUploadNsi:function (btn) {
+    onUploadNsi: function (btn) {
         var grid = btn.up('grid');
         Ext.create('Ext.window.Window', {
-            title:this.titleUpload,
-            width:600, y:1, modal:true,
-            layout:'fit',
-            items:{
-                xtype:'form',
-                autoHeight:true,
-                bodyStyle:'padding: 10px 10px 0 10px;',
-                labelWidth:40,
-                items:[
-                    {xtype:'filefield', emptyText:this.labelSelectFile, fieldLabel:this.labelFile, name:'upload', buttonText:this.btnSearch, anchor:'100%'}
+            title: this.titleUpload,
+            width: 600, y: 1, modal: true,
+            layout: 'fit',
+            items: {
+                xtype: 'form',
+                autoHeight: true,
+                bodyStyle: 'padding: 10px 10px 0 10px;',
+                labelWidth: 40,
+                items: [
+                    {
+                        xtype: 'filefield',
+                        emptyText: this.labelSelectFile,
+                        fieldLabel: this.labelFile,
+                        name: 'upload',
+                        buttonText: this.btnSearch,
+                        anchor: '100%'
+                    }
 //            {xtype:'hidden', name:'search.routeId', value:routeId}
                 ],
-                buttons:[
+                buttons: [
                     {
-                        text:this.btnSave,
-                        handler:function (btn) {
+                        text: this.btnSave,
+                        handler: function (btn) {
                             var form = this.up('form').getForm();
                             if (form.isValid()) {
                                 form.submit({
-                                    url:'File_uploadNsi.do',
-                                    waitMsg:'Загрузка файла...',
-                                    scope:this,
-                                    success:function (form, action) {
+                                    url: 'File_uploadNsi.do',
+                                    waitMsg: 'Загрузка файла...',
+                                    scope: this,
+                                    success: function (form, action) {
                                         form.reset();
                                         grid.store.load();
                                         btn.up('window').close();
-                                    }, failure:function (form, action) {
+                                    }, failure: function (form, action) {
                                         TK.Utils.makeErrMsg(action.response, 'Внимание! Ошибка чтения файла...');
                                     }
                                 });
@@ -110,8 +160,8 @@ Ext.define('TK.controller.Nsi', {
                         }
                     },
                     {
-                        text:this.btnClose,
-                        handler:function (btn) {
+                        text: this.btnClose,
+                        handler: function (btn) {
                             btn.up('window').close();
                         }
                     }
@@ -119,17 +169,18 @@ Ext.define('TK.controller.Nsi', {
             }
         }).show();
     },
-    onView:function (btn) {
+    onView: function (btn) {
         var list = btn.up('grid');
         if (!TK.Utils.isRowSelected(list)) {
             return false;
         }
+
         var data = list.selModel.getLastSelected().data;
         if (this[data.name]) {
             this[data.name]();
         }
     },
-    selectRoad2Sta:function (view, record, item, index) {
+    selectRoad2Sta: function (view, record, item, index) {
         var data = record.data;
         var rec = this.selModel.getLastSelected();
         rec.set('roadname', data.roadName);
@@ -137,71 +188,71 @@ Ext.define('TK.controller.Nsi', {
         this.doLayout();
         view.up('window').close();
     },
-    nsiRoutes:function (query, project) {
+    nsiRoutes: function (query, project) {
         return Ext.widget('nsilist', {
-            width:600,
-            search:query,
-            buildTitle:function (config) {
+            width: 600,
+            search: query,
+            buildTitle: function (config) {
                 config.title = this.titleRoute;
             },
-            buildStoreModel:function () {
+            buildStoreModel: function () {
                 return ['name', 'hid', 'project'];
             },
-            buildUrlPrefix:function () {
+            buildUrlPrefix: function () {
                 return 'Nsi_route';
             },
-            buildColModel:function (config) {
+            buildColModel: function (config) {
                 config.items.columns = [
-                    {text:this.headerProject, dataIndex:'project', flex:1, renderer:TK.Utils.renderLongStr},
-                    {text:this.headerRoute, dataIndex:'name', flex:1, renderer:TK.Utils.renderLongStr}
+                    {text: this.headerProject, dataIndex: 'project', flex: 1, renderer: TK.Utils.renderLongStr},
+                    {text: this.headerRoute, dataIndex: 'name', flex: 1, renderer: TK.Utils.renderLongStr}
                 ];
             },
-            buildExtraParams:function () {
-                return {'search.project':project};
+            buildExtraParams: function () {
+                return {'search.project': project};
             }
         });
     },
-    nsiProjects:function (query) {
+    nsiProjects: function (query) {
         return Ext.widget('nsilist', {
-            width:600,
-            search:query,
-            buildTitle:function (config) {
+            width: 600,
+            search: query,
+            buildTitle: function (config) {
                 config.title = this.titleProject;
             },
-            buildStoreModel:function () {
+            buildStoreModel: function () {
                 return ['name', 'hid'];
             },
-            buildUrlPrefix:function () {
+            buildUrlPrefix: function () {
                 return 'Nsi_project';
             },
-            buildColModel:function (config) {
+            buildColModel: function (config) {
                 config.items.columns = [
-                    {text:this.headerName, dataIndex:'name', flex:1, renderer:TK.Utils.renderLongStr}
+                    {text: this.headerName, dataIndex: 'name', flex: 1, renderer: TK.Utils.renderLongStr}
                 ];
             }
         });
     },
-    nsiRoad:function () {
+    nsiRoad: function () {
         return Ext.widget('nsilist', {
-            width:600,
-            buildTitle:function (config) {
+            width: 600,
+            buildTitle: function (config) {
                 config.title = this.titleRoad;
             },
-            buildStoreModel:function () {
+            buildStoreModel: function () {
                 return ['roadNo', 'roadName', 'roadUn'];
             },
-            buildUrlPrefix:function () {
+            buildUrlPrefix: function () {
                 return 'Nsi_road';
             },
-            buildColModel:function (config) {
+            buildColModel: function (config) {
                 config.items.columns = [
-                    {text:this.headerCode, dataIndex:'roadNo'},
-                    {text:this.headerName, dataIndex:'roadName', flex:1, renderer:TK.Utils.renderLongStr}
+                    {text: this.headerCode, dataIndex: 'roadNo'},
+                    {text: this.headerName, dataIndex: 'roadName', flex: 1, renderer: TK.Utils.renderLongStr}
                 ];
             }
         });
     },
-    selectManager2Sta:function (view, record, item, index) {
+    selectManager2Sta: function (view, record, item, index) {
         var data = record.data;
         var rec = this.selModel.getLastSelected();
         rec.set('managno', data.managNo);
@@ -210,29 +261,29 @@ Ext.define('TK.controller.Nsi', {
         this.doLayout();
         view.up('window').close();
     },
-    nsiManagement:function () {
+    nsiManagement: function () {
         return Ext.widget('nsilist', {
 //            title:'Поиск по справочнику администраций железных дорог',
-            width:600,
-            buildTitle:function (config) {
+            width: 600,
+            buildTitle: function (config) {
                 config.title = this.titleManagement;
             },
-            buildStoreModel:function () {
+            buildStoreModel: function () {
                 return ['managNo', 'managName', 'managUn', 'countryname'];
             },
-            buildUrlPrefix:function () {
+            buildUrlPrefix: function () {
                 return 'Nsi_management';
             },
-            buildColModel:function (config) {
+            buildColModel: function (config) {
                 config.items.columns = [
-                    {text:this.headerCode, dataIndex:'managNo'},
-                    {text:this.headerName, dataIndex:'managName', flex:1, renderer:TK.Utils.renderLongStr},
-                    {text:this.headerCountry, dataIndex:'countryname', renderer:TK.Utils.renderLongStr}
+                    {text: this.headerCode, dataIndex: 'managNo'},
+                    {text: this.headerName, dataIndex: 'managName', flex: 1, renderer: TK.Utils.renderLongStr},
+                    {text: this.headerCountry, dataIndex: 'countryname', renderer: TK.Utils.renderLongStr}
                 ];
             }
         });
     },
-    nsiSta:function (query) {
+    nsiSta: function (query) {
         var me = this,
             onRoad = Ext.bind(function () {
                 var nsiGrid1 = this.getController('Nsi').nsiRoad().getComponent(0);
@@ -244,45 +295,60 @@ Ext.define('TK.controller.Nsi', {
             }, this),
             win = Ext.widget('nsieditlist', {
 //                title:'Поиск по справочнику станций ж.д.',
-                width:1000,
-                prefix:'staE',
-                editPrivileg:'CIM_DIR_STA',
-                search:query,
-                buildTitle:function (config) {
+                width: 1000,
+                prefix: 'staE',
+                editPrivileg: 'CIM_DIR_STA',
+                search: query,
+                buildTitle: function (config) {
                     config.title = this.titleSta;
                 },
-                buildStoreModel:function () {
+                buildStoreModel: function () {
                     return 'TK.model.NsiSta';
                 },
-                buildUrlPrefix:function () {
+                buildUrlPrefix: function () {
                     return 'Sta';
                 },
-                buildColModel:function (config) {
+                buildColModel: function (config) {
                     config.items.columns = [
-                        {xtype:'actioncolumn', width:55,
-                            items:[
-                                {icon:'./resources/images/save.gif', tooltip:this.ttipSave, action:'save', handler:me.onSaveRecord, getClass:this.onGetClass, scope:this},
-                                {icon:'./resources/images/delete.png', tooltip:this.ttipDel, action:'del', handler:me.onDelRecord, getClass:this.onGetClass, scope:this}
+                        {
+                            xtype: 'actioncolumn', width: 55,
+                            items: [
+                                {
+                                    icon: './resources/images/save.gif',
+                                    tooltip: this.ttipSave,
+                                    action: 'save',
+                                    handler: me.onSaveRecord,
+                                    getClass: this.onGetClass,
+                                    scope: this
+                                },
+                                {
+                                    icon: './resources/images/delete.png',
+                                    tooltip: this.ttipDel,
+                                    action: 'del',
+                                    handler: me.onDelRecord,
+                                    getClass: this.onGetClass,
+                                    scope: this
+                                }
                             ]
                         },
-                        {text:this.headerStn, dataIndex:'staName', flex:1, editor:{xtype:'textfield', maxLength:100}, /*sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false,*/ renderer:TK.Utils.renderLongStr},
-                        {text:this.headerStn1, dataIndex:'staNameCh', flex:1, editor:{xtype:'textfield', maxLength:100},  renderer:TK.Utils.renderLongStr},
-                        {text:this.headerStn2, dataIndex:'staNameEn', flex:1, editor:{xtype:'textfield', maxLength:100},  renderer:TK.Utils.renderLongStr},
-                        {text:this.headerCode, dataIndex:'staNo', editor:{xtype:'textfield', maxLength:8}},
-                        {text:this.headerZhD, dataIndex:'roadname', editor:{xtype:'trigger', maxLength:254, triggerCls:'dir', onTriggerClick:onRoad, editable:false}},
-                        {text:this.headerCodeAdm, dataIndex:'managno', editor:{xtype:'trigger', maxLength:5, triggerCls:'dir', onTriggerClick:onManager, editable:false}},
-                        {text:this.headerCountry, dataIndex:'countryname'/*editor:{xtype:'textfield', maxLength:232},*/ }
+                        {text: this.headerStn,dataIndex: 'staName',flex: 1, editor: {xtype: 'textfield',maxLength: 100}, renderer: TK.Utils.renderLongStr },
+                        {text: this.headerStn1,dataIndex: 'staNameCh', flex: 1, editor: {xtype: 'textfield', maxLength: 100},renderer: TK.Utils.renderLongStr},
+                        {text: this.headerStn2,dataIndex: 'staNameEn',flex: 1, editor: {xtype: 'textfield', maxLength: 100},renderer: TK.Utils.renderLongStr },
+                        {text: this.headerCode, dataIndex: 'staNo', editor: {xtype: 'textfield', maxLength: 8}},
+                        {text: this.headerZhD, dataIndex: 'roadname', editor: {xtype: 'trigger', maxLength: 254,triggerCls: 'dir', onTriggerClick: onRoad, editable: false }},
+                        {text: this.headerCodeAdm,dataIndex: 'managno',editor: {xtype: 'trigger', maxLength: 5,triggerCls: 'dir',onTriggerClick: onManager,editable: false}},
+                        {text: this.headerCountry,dataIndex: 'countryname'/*editor:{xtype:'textfield', maxLength:232},*/ }
                     ];
                 },
-                newRecord:function () {
+                newRecord: function () {
                     return Ext.create('TK.model.NsiSta', {});
                 },
-                onBeforeEdit:function (editor, props) {
+                onBeforeEdit: function (editor, props) {
                     if (!tkUser.hasPriv(this.editPrivileg) || props.record.get('ro') == '1') { // switch off editing
                         return false;
                     }
                 },
-                onGetClass:function (value, meta, record) {
+                onGetClass: function (value, meta, record) {
                     if (tkUser.hasPriv(this.editPrivileg) && record.get('ro') == '1') {
                         return 'hide_el';
                     }
@@ -290,7 +356,7 @@ Ext.define('TK.controller.Nsi', {
                         return 'show_el';
                     }*/
                 },
-                prepareData:function (rec) {
+                prepareData: function (rec) {
                     var data = {};
                     data[this.prefix + '.stUn'] = rec.data['stUn'];
                     data[this.prefix + '.staName'] = rec.data['staName'];
@@ -304,330 +370,540 @@ Ext.define('TK.controller.Nsi', {
             });
         return win;
     },
-    nsiCountries:function (query) {
+    // Отображает справочник стран для выбора.
+    nsiCountries: function (query) {
         return Ext.widget('nsilist', {
 //            title:'Поиск по справочнику стран',
-            width:600,
-            search:query,
-            buildTitle:function (config) {
+            width: 600,
+            search: query,
+            buildTitle: function (config) {
                 config.title = this.titleCountries;
             },
-            buildStoreModel:function () {
-                return ['kod', 'abc2', 'sokrNam', 'naim'];
+            buildStoreModel: function () {
+                return ['kod', 'abc2', 'sokrNam', 'naim', 'anaim', 'krnaim'];
             },
-            buildUrlPrefix:function () {
+            buildUrlPrefix: function () {
                 return 'Nsi_countries';
             },
-            buildColModel:function (config) {
+            buildColModel: function (config) {
                 config.items.columns = [
-                    {text:this.headerCode, dataIndex:'abc2'},
-                    {text:this.headerCountry, dataIndex:'naim', flex:1, renderer:TK.Utils.renderLongStr},
-                    {text:this.headerWay, dataIndex:'sokrNam'}
-                ];
+                    {text: this.headerCountryRu, dataIndex: 'kod', flex: 1, renderer: TK.Utils.renderLongStr},
+                    {text: this.headerCode, dataIndex: 'abc2'},
+                    {text: this.headerCountryRu, dataIndex: 'naim', flex: 1, renderer: TK.Utils.renderLongStr},
+                    {text: this.headerCountry, dataIndex: 'anaim', flex: 1, renderer: TK.Utils.renderLongStr},
+                    {text: this.headerCountryS, dataIndex: 'krnaim', flex: 1, renderer: TK.Utils.renderLongStr},
+                    {text: this.headerWay, dataIndex: 'sokrNam'}
+                ]
             }
         });
     },
-    nsiCountriesGd:function (query) {
+    nsiCountriesGd: function (query) {
         return Ext.widget('nsilist', {
 //            title:'Поиск по справочнику стран ж.д.',
-            width:600,
-            search:query,
-            buildTitle:function (config) {
+            width: 600,
+            search: query,
+            buildTitle: function (config) {
                 config.title = this.titleCountriesZhd;
             },
-            buildStoreModel:function () {
+            buildStoreModel: function () {
                 return ['roadNo', 'managNo', 'roadName', 'countryName', 'roadUn'];
             },
-            buildUrlPrefix:function () {
+            buildUrlPrefix: function () {
                 return 'Nsi_countriesGd';
             },
-            buildColModel:function (config) {
+            buildColModel: function (config) {
                 config.items.columns = [
-                    {text:this.headerWayCode, dataIndex:'roadNo'},
-                    {text:this.headerCodeAdm, dataIndex:'managNo'},
-                    {text:this.headerZhD, dataIndex:'roadName', flex:1, renderer:TK.Utils.renderLongStr},
-                    {text:this.headerCountry, dataIndex:'countryName', flex:1, renderer:TK.Utils.renderLongStr}
+                    {text: this.headerWayCode, dataIndex: 'roadNo'},
+                    {text: this.headerCodeAdm, dataIndex: 'managNo'},
+                    {text: this.headerZhD, dataIndex: 'roadName', flex: 1, renderer: TK.Utils.renderLongStr},
+                    {text: this.headerCountry, dataIndex: 'countryName', flex: 1, renderer: TK.Utils.renderLongStr}
                 ];
             }
         });
     },
-    nsiDangCode:function (query) {
+    nsiDangCode: function (query) {
         return Ext.widget('nsilist', {
 //            title:'Поиск по справочнику опасных грузов',
-            width:700,
-            search:query,
-            buildTitle:function (config) {
+            width: 700,
+            search: query,
+            buildTitle: function (config) {
                 config.title = this.titleDangerous;
             },
-            buildStoreModel:function () {
+            buildStoreModel: function () {
                 return ['hid', 'code', 'descr'];
             },
-            buildUrlPrefix:function () {
+            buildUrlPrefix: function () {
                 return 'Nsi_dangCode';
             },
-            buildColModel:function (config) {
+            buildColModel: function (config) {
                 config.items.columns = [
-                    {text:this.headerCode, dataIndex:'code'},
-                    {text:this.headerName, dataIndex:'descr', flex:1, renderer:TK.Utils.renderLongStr}
+                    {text: this.headerCode, dataIndex: 'code'},
+                    {text: this.headerName, dataIndex: 'descr', flex: 1, renderer: TK.Utils.renderLongStr}
                 ];
             }
         });
     },
-    nsiKarantin:function (query) {
+    nsiKarantin: function (query) {
         return Ext.widget('nsilist', {
 //            title:'Поиск по справочнику карантинных грузов',
-            width:700,
-            search:query,
-            buildTitle:function (config) {
+            width: 700,
+            search: query,
+            buildTitle: function (config) {
                 config.title = this.titleKarantin;
             },
-            buildStoreModel:function () {
+            buildStoreModel: function () {
                 return ['hid', 'kgvn', 'nzgr'];
             },
-            buildUrlPrefix:function () {
+            buildUrlPrefix: function () {
                 return 'Nsi_karantin';
             },
-            buildColModel:function (config) {
+            buildColModel: function (config) {
                 config.items.columns = [
-                    {text:this.headerCode, dataIndex:'kgvn'},
-                    {text:this.headerName, dataIndex:'nzgr', flex:1, renderer:TK.Utils.renderLongStr}
+                    {text: this.headerCode, dataIndex: 'kgvn'},
+                    {text: this.headerName, dataIndex: 'nzgr', flex: 1, renderer: TK.Utils.renderLongStr}
                 ];
             }
         });
     },
-    nsiVeterin:function (query) {
+    nsiVeterin: function (query) {
         return Ext.widget('nsilist', {
 //            title:'Поиск по справочнику ветеринарных грузов',
-            width:700,
-            search:query,
-            buildTitle:function (config) {
+            width: 700,
+            search: query,
+            buildTitle: function (config) {
                 config.title = this.titleVeterin;
             },
-            buildStoreModel:function () {
+            buildStoreModel: function () {
                 return ['hid', 'kgvn', 'nzgr'];
             },
-            buildUrlPrefix:function () {
+            buildUrlPrefix: function () {
                 return 'Nsi_veterin';
             },
-            buildColModel:function (config) {
+            buildColModel: function (config) {
                 config.items.columns = [
-                    {text:this.headerCode, dataIndex:'kgvn'},
-                    {text:this.headerName, dataIndex:'nzgr', flex:1, renderer:TK.Utils.renderLongStr}
+                    {text: this.headerCode, dataIndex: 'kgvn'},
+                    {text: this.headerName, dataIndex: 'nzgr', flex: 1, renderer: TK.Utils.renderLongStr}
                 ];
             }
         });
     },
-    selectGng:function (view, record, item, index) {
+    selectGng: function (view, record, item, index) {
         var data = record.data;
         this.getComponent('kgvn').setValue(data.code);
         this.getComponent('nzgr').setValue(data.name);
         view.up('window').close();
     },
-    nsiGng:function (query) {
+
+    nsiCargoDanV: function (query) {
+        return Ext.widget('nsilist', {
+            width: 800,
+            search: query,
+            buildTitle: function (config) {
+                config.title = 'Опасные грузы';
+            },
+            buildStoreModel: function () {
+                return ['hid', 'numOon', 'carDName', 'codDanger', 'clazz', 'dangSign', 'groupPack', 'emergenCard', 'stamps'];
+            },
+            buildUrlPrefix: function () {
+                return 'Nsi_cargoDanV';
+            },
+            buildColModel: function (config) {
+                config.items.columns = [
+                    {text: 'Номер ООН', dataIndex: 'numOon', width: 50},
+                    {text: 'Наименование', dataIndex: 'carDName', width: 300, renderer: TK.Utils.renderLongStr},
+                    {text: 'Код опасности', dataIndex: 'codDanger'},
+                    {text: 'Класс опасности', dataIndex: 'clazz'},
+                    {text: 'Знак опасности', dataIndex: 'dangSign'},
+                    {text: 'Группа упаковки', dataIndex: 'groupPack'},
+                    {text: 'Авар карт', dataIndex: 'emergenCard'},
+                    {text: 'Штампы', dataIndex: 'stamps', renderer: TK.Utils.renderLongStr}
+                ];
+            }
+        });
+    },
+    nsiCargoDanDe: function (query) {
+        return Ext.widget('nsilist', {
+            width: 700,
+            search: query,
+            buildTitle: function (config) {
+                config.title = 'Опасные грузы, нем.';
+            },
+            buildStoreModel: function () {
+                return ['hid', 'carDNameDe', 'numOonDe', 'bem', 'ridNhmCode'];
+            },
+            buildUrlPrefix: function () {
+                return 'Nsi_cargoDanDe';
+            },
+            buildColModel: function (config) {
+                config.items.columns = [
+                    {text: 'Наименование', dataIndex: 'carDNameDe', flex: 1, renderer: TK.Utils.renderLongStr},
+                    {text: 'Номер ООН', dataIndex: 'numOonDe'}
+                ];
+            }
+        });
+    },
+    // выбор из справочника кодов ГНГ
+    nsiGng: function (query) {
         return Ext.widget('nsilist', {
 //            title:'Поиск по справочнику кодов ГНГ',
-            width:700,
-            search:query,
-            buildTitle:function (config) {
+            width: 700,
+            search: query,
+            buildTitle: function (config) {
                 config.title = this.titleGng;
             },
-            buildStoreModel:function () {
+            buildStoreModel: function () {
                 return ['hid', 'code', 'name', {name: 'ohr', type: 'boolean'}];
             },
-            buildUrlPrefix:function () {
+            buildUrlPrefix: function () {
                 return 'Nsi_gng';
             },
-            buildColModel:function (config) {
+            buildColModel: function (config) {
                 config.items.columns = [
-                    {text:this.headerCode, dataIndex:'code'},
-                    {text:this.headerName, dataIndex:'name', flex:1, renderer:TK.Utils.renderLongStr}
+                    {text: this.headerCode, dataIndex: 'code'},
+                    {text: this.headerName, dataIndex: 'name', flex: 1, renderer: TK.Utils.renderLongStr}
                 ];
             }
         });
     },
-    nsiGngDe:function (query) {
+    // выбор из справочника кодов ГНГ для немецкого языка
+    nsiGngDe: function (query) {
         return Ext.widget('nsilist', {
 //            title:'Поиск по справочнику кодов ГНГ',
-            width:700,
-            search:query,
-            buildTitle:function (config) {
+            width: 700,
+            search: query,
+            buildTitle: function (config) {
                 config.title = this.titleGng;
             },
-            buildStoreModel:function () {
+            buildStoreModel: function () {
                 return ['kgvn', 'nzgr'];
             },
-            buildUrlPrefix:function () {
+            buildUrlPrefix: function () {
                 return 'Nsi_gngDe';
             },
-            buildColModel:function (config) {
+            buildColModel: function (config) {
                 config.items.columns = [
-                    {text:this.headerCode, dataIndex:'kgvn'},
-                    {text:this.headerName, dataIndex:'nzgr', flex:1, renderer:TK.Utils.renderLongStr}
+                    {text: this.headerCode, dataIndex: 'kgvn'},
+                    {text: this.headerName, dataIndex: 'nzgr', flex: 1, renderer: TK.Utils.renderLongStr}
                 ];
             }
         });
     },
-    cargoGng:function (query) {
+    cargoGng: function (query) {
         return Ext.widget('nsilist', {
 //            title:'Поиск по справочнику кодов ГНГ',
-            width:700,
-            search:query,
-            buildTitle:function (config) {
+            width: 700,
+            search: query,
+            buildTitle: function (config) {
                 config.title = this.titleGng;
             },
-            buildStoreModel:function () {
+            buildStoreModel: function () {
                 return ['c_gn_un', 'cargo_group', 'cargo_fullname'];
             },
-            buildUrlPrefix:function () {
+            buildUrlPrefix: function () {
                 return 'Nsi_cargoGng';
             },
-            buildColModel:function (config) {
+            buildColModel: function (config) {
                 config.items.columns = [
-                    {text:this.headerCode, dataIndex:'cargo_group'},
-                    {text:this.headerName, dataIndex:'cargo_fullname', flex:1, renderer:TK.Utils.renderLongStr}
+                    {text: this.headerCode, dataIndex: 'cargo_group'},
+                    {text: this.headerName, dataIndex: 'cargo_fullname', flex: 1, renderer: TK.Utils.renderLongStr}
                 ];
             }
         });
     },
-    selectEtsng:function (view, record, item, index) {
+    selectEtsng: function (view, record, item, index) {
         var data = record.data;
         this.getComponent('ekgvn').setValue(data.code);
         this.getComponent('enzgr').setValue(data.name);
         view.up('window').close();
     },
-    nsiEtsng:function (query) {
+    nsiEtsng: function (query) {
         return Ext.widget('nsilist', {
 //            title:'Поиск по справочнику кодов ЕТ СНГ',
-            width:700,
-            search:query,
-            buildTitle:function (config) {
+            width: 700,
+            search: query,
+            buildTitle: function (config) {
                 config.title = this.titleEtsng;
             },
-            buildStoreModel:function () {
+            buildStoreModel: function () {
                 return ['hid', 'code', 'name', {name: 'ohr', type: 'boolean'}];
             },
-            buildUrlPrefix:function () {
+            buildUrlPrefix: function () {
                 return 'Nsi_etsng';
             },
-            buildColModel:function (config) {
+            buildColModel: function (config) {
                 config.items.columns = [
-                    {text:this.headerCode, dataIndex:'code'},
-                    {text:this.headerName, dataIndex:'name', flex:1, renderer:TK.Utils.renderLongStr}
+                    {text: this.headerCode, dataIndex: 'code'},
+                    {text: this.headerName, dataIndex: 'name', flex: 1, renderer: TK.Utils.renderLongStr}
                 ];
             }
         });
     },
-    nsiDocG23:function () {
+    nsiDocG23: function () {
         return Ext.widget('nsilist', {
 //            title:'Поиск по справочнику видов документов',
-            width:700,
-            buildTitle:function (config) {
+            width: 700,
+            buildTitle: function (config) {
                 config.title = this.titleDocs;
             },
-            buildStoreModel:function () {
+            buildStoreModel: function () {
                 return ['nsiFDesc', 'nsiFDsc2', 'nsiFDsc3', 'nsiFNn', 'nsiFNcas'];
             },
-            buildUrlPrefix:function () {
+            buildUrlPrefix: function () {
                 return 'Nsi_fieldsOpt';
             },
-            buildExtraParams:function () {
-                return {type:9};
+            buildExtraParams: function () {
+                return {type: 9};
             },
-            buildColModel:function (config) {
+            buildColModel: function (config) {
                 config.items.columns = [
-                    {text:this.headerCoedEdi, dataIndex:'nsiFNn'},
-                    {text:this.headerCustCode, dataIndex:'nsiFNcas'},
-                    {text:this.headerName1, dataIndex:'nsiFDesc', flex:1, renderer:TK.Utils.renderLongStr},
-                    {text:this.headerName2, dataIndex:'nsiFDsc3', flex:1},
-                    {text:this.headerName3, dataIndex:'nsiFDsc2', flex:1}
+                    {text: this.headerCoedEdi, dataIndex: 'nsiFNn'},
+                    {text: this.headerCustCode, dataIndex: 'nsiFNcas'},
+                    {text: this.headerName1, dataIndex: 'nsiFDesc', flex: 1, renderer: TK.Utils.renderLongStr},
+                    {text: this.headerName2, dataIndex: 'nsiFDsc3', flex: 1},
+                    {text: this.headerName3, dataIndex: 'nsiFDsc2', flex: 1}
                 ];
             }
         });
     },
-    nsiPlat:function (query) {
+    nsiPlat: function (query) {
         var me = this;
         return Ext.widget('nsieditlist', {
 //            title:'Поиск по справочнику плательщиков по железным дорогам (экспедиторы)',
-            width:750,
-            search:query,
-            editPrivileg:'CIM_DIR_PLAT',
-            buildTitle:function (config) {
+            width: 750,
+            search: query,
+            editPrivileg: 'CIM_DIR_PLAT',
+            buildTitle: function (config) {
                 config.title = this.titlePlat;
             },
-            buildStoreModel:function () {
+            buildStoreModel: function () {
                 return 'TK.model.SmgsPlat';
             },
-            buildUrlPrefix:function () {
+            buildUrlPrefix: function () {
                 return 'NsiPlatel';
             },
-            buildColModel:function (config) {
+            buildColModel: function (config) {
                 config.items.columns = [
-                    {xtype:'actioncolumn', width:55,
-                        items:[
-                            {icon:'./resources/images/save.gif', tooltip:this.ttipSave, action:'save', handler:me.onSaveRecord},
-                            {icon:'./resources/images/delete.png', tooltip:this.ttipDel, action:'del', handler:me.onDelRecord}
+                    {
+                        xtype: 'actioncolumn', width: 55,
+                        items: [
+                            {
+                                icon: './resources/images/save.gif',
+                                tooltip: this.ttipSave,
+                                action: 'save',
+                                handler: me.onSaveRecord
+                            },
+                            {
+                                icon: './resources/images/delete.png',
+                                tooltip: this.ttipDel,
+                                action: 'del',
+                                handler: me.onDelRecord
+                            }
                         ]
                     },
-                    {text:this.headerCodeAdm, dataIndex:'dorR', editor:{xtype:'combo', maxLength:5, store:['РЖД', 'УЗ', 'БЧ', 'УТИ', 'КЗХ', 'КРГ', 'ЖСР'], typeAhead:true, forceSelection:true, triggerAction:'all', selectOnFocus:true}},
-                    {text:this.headerName, dataIndex:'platR', flex:2, editor:{xtype:'textfield', maxLength:45}, renderer:TK.Utils.renderLongStr},
-                    {text:this.headerPayerMeth, dataIndex:'primR', flex:1, editor:{xtype:'textfield', maxLength:70}, renderer:TK.Utils.renderLongStr},
-                    {text:this.headerPayerCode, dataIndex:'kplat', editor:{xtype:'textfield', maxLength:50}},
-                    {text:this.headerPayerCode1, dataIndex:'kplat1', editor:{xtype:'textfield', maxLength:50}},
-                    {text:this.headerPayerCode2, dataIndex:'kplat2', editor:{xtype:'textfield', maxLength:50}}
+                    {
+                        text: this.headerCodeAdm,
+                        dataIndex: 'dorR',
+                        editor: {
+                            xtype: 'combo',
+                            maxLength: 5,
+                            store: ['РЖД', 'УЗ', 'БЧ', 'УТИ', 'КЗХ', 'КРГ', 'ЖСР'],
+                            typeAhead: true,
+                            forceSelection: true,
+                            triggerAction: 'all',
+                            selectOnFocus: true
+                        }
+                    },
+                    {
+                        text: this.headerName,
+                        dataIndex: 'platR',
+                        flex: 2,
+                        editor: {xtype: 'textfield', maxLength: 45},
+                        renderer: TK.Utils.renderLongStr
+                    },
+                    {
+                        text: this.headerPayerMeth,
+                        dataIndex: 'primR',
+                        flex: 1,
+                        editor: {xtype: 'textfield', maxLength: 70},
+                        renderer: TK.Utils.renderLongStr
+                    },
+                    {text: this.headerPayerCode, dataIndex: 'kplat', editor: {xtype: 'textfield', maxLength: 50}},
+                    {text: this.headerPayerCode1, dataIndex: 'kplat1', editor: {xtype: 'textfield', maxLength: 50}},
+                    {text: this.headerPayerCode2, dataIndex: 'kplat2', editor: {xtype: 'textfield', maxLength: 50}}
                 ];
             },
-            newRecord:function () {
-                return Ext.create('TK.model.SmgsPlat', {dorR:'', platR:'', primR:'', kplat:'', kplat1:'', hid:''});
+            newRecord: function () {
+                return Ext.create('TK.model.SmgsPlat', {
+                    dorR: '',
+                    platR: '',
+                    primR: '',
+                    kplat: '',
+                    kplat1: '',
+                    hid: ''
+                });
             }
         });
     },
-    nsiOtpr:function (query) {
-        var me = this,
-            onStrana = Ext.bind(function () {
-                var nsiGrid1 = this.getController('Nsi').nsiCountries().getComponent(0);
-                nsiGrid1.on('itemdblclick', this.getController('Nsi').selectCountriesNsiOtpr, win.getComponent(0));
-            }, this),
-            win = Ext.widget('nsieditlist', {
-//                title:'Поиск по справочнику юридических лиц (отправителей/получателей)',
-                width:850,
-                maximizable: true,
-                search:query,
-                editPrivileg:'CIM_DIR',
-                buildTitle:function (config) {
-                    config.title = this.titleOtpr;
+    // запус окна выбора страны
+    onStrana: function (button) {
+        var nsiGrid1 = this.getController('Nsi').nsiCountries().getComponent(0);
+        nsiGrid1.on('itemdblclick', this.getController('Nsi').selectCountriesOtpr, button);
+
+    },
+    nsiOtpr: function (query) {
+        return this.getController('docs.Cimsmgs').nsiOtpr(query);
+        /*, gridAction = nsiGrid.down('actioncolumn')*/
+        
+        // nsiGrid.on('itemdblclick', this.selectOtprG1, form.getComponent('g1_panel'));
+//         var me = this,
+//             onStrana = Ext.bind(function () {
+//                 var nsiGrid1 = this.getController('Nsi').nsiCountries().getComponent(0);
+//                 nsiGrid1.on('itemdblclick', this.getController('Nsi').selectCountriesNsiOtpr, win.getComponent(0));
+//             }, this),
+//             win = Ext.widget('nsieditlist', {
+// //                title:'Поиск по справочнику юридических лиц (отправителей/получателей)',
+//                 width: 850,
+//                 maximizable: true,
+//                 search: query,
+//                 editPrivileg: 'CIM_DIR',
+//                 buildTitle: function (config) {
+//                     config.title = this.titleOtpr;
+//                 },
+//                 buildStoreModel: function () {
+//                     return 'TK.model.SmgsOtpr';
+//                 },
+//                 buildUrlPrefix: function () {
+//                     return 'NsiSmgsG1';
+//                 },
+//                 buildColModel: function (config) {
+//                     config.items.columns = [
+//                         {
+//                             xtype: 'actioncolumn', width: 55,
+//                             items: [
+//                                 {
+//                                     icon: './resources/images/save.gif',
+//                                     tooltip: this.ttipSave,
+//                                     action: 'save',
+//                                     handler: me.onSaveRecord
+//                                 },
+//                                 {
+//                                     icon: './resources/images/delete.png',
+//                                     tooltip: this.ttipDel,
+//                                     action: 'del',
+//                                     handler: me.onDelRecord
+//                                 }
+//                             ]
+//                         },
+//                         {
+//                             text: this.headerName,
+//                             dataIndex: 'g1r',
+//                             flex: 5,
+//                             editor: {xtype: 'textarea', maxLength: 512},
+//                             renderer: TK.Utils.renderLongStr
+//                         },
+//                         {
+//                             text: this.headerCountryCode,
+//                             dataIndex: 'g_1_5k',
+//                             flex: 1,
+//                             editor: {xtype: 'textfield', maxLength: 3}
+//                         },
+//                         {
+//                             text: this.headerCountryName,
+//                             dataIndex: 'g16r',
+//                             flex: 4,
+//                             editor: {xtype: 'trigger', maxLength: 550, triggerCls: 'dir', onTriggerClick: onStrana},
+//                             renderer: TK.Utils.renderLongStr
+//                         },
+//                         {
+//                             text: this.headerOtprZip,
+//                             dataIndex: 'g17',
+//                             flex: 2,
+//                             editor: {xtype: 'textfield', maxLength: 10}
+//                         },
+//                         {
+//                             text: this.headerCity,
+//                             dataIndex: 'g18r_1',
+//                             flex: 4,
+//                             editor: {xtype: 'textfield', maxLength: 32}
+//                         },
+//                         {
+//                             text: this.headerDopInfo,
+//                             dataIndex: 'dop_info',
+//                             flex: 5,
+//                             editor: {xtype: 'textarea', maxLength: 512},
+//                             renderer: TK.Utils.renderLongStr
+//                         },
+//                         {
+//                             text: this.headerAddress,
+//                             dataIndex: 'g19r',
+//                             flex: 5,
+//                             editor: {xtype: 'textarea', maxLength: 128},
+//                             renderer: TK.Utils.renderLongStr
+//                         },
+//                         {text: 'код ТГНЛ', dataIndex: 'g2', flex: 3, editor: {xtype: 'textfield', maxLength: 32}},
+//                         {text: 'код ОКПО', dataIndex: 'g3', flex: 3, editor: {xtype: 'textfield', maxLength: 32}},
+//                         {text: 'код ИНН', dataIndex: 'g_2inn', flex: 3, editor: {xtype: 'textfield', maxLength: 32}}
+//                     ];
+//                 },
+//                 newRecord: function () {
+//                     return Ext.create('TK.model.SmgsOtpr', {
+//                         g1r: '',
+//                         g_1_5k: '',
+//                         g16r: '',
+//                         g17: '',
+//                         g18r_1: '',
+//                         g19r: '',
+//                         g2: '',
+//                         g3: '',
+//                         g_2inn: '',
+//                         hid: '',
+//                         dop_info: ''
+//                     });
+//                 }
+//             });
+//
+//         return win;
+    },
+    // закрываем окно добавление/редактивраония перевозчика
+    onClose: function (button) {
+        button.up().up().up().destroy();
+    },
+    // сохраняем запись об отправителе
+    onSave: function (button) {
+
+        var form = button.up().up().getComponent('otprForm');
+        var rec = form.getValues();
+        var owner = Ext.ComponentQuery.query('#otprGrid')[0];
+        var grid = owner.down('gridpanel');
+        var data = {};
+        var prefix = owner.prefix;
+        if (form.isValid()) {
+            for (var prop in rec) {
+                data[prefix + '.' + prop] = rec[prop];
+            }
+
+            rowEditing = grid.plugins[0];
+
+            rowEditing.completeEdit();
+
+            Ext.Ajax.request({
+                url: owner.buildUrlPrefix() + '_save.do',
+                params: data,
+                success: function (response, options) {
+                    grid.store.load();
+                    form.up().up().destroy();
                 },
-                buildStoreModel:function () {
-                    return 'TK.model.SmgsOtpr';
-                },
-                buildUrlPrefix:function () {
-                    return 'NsiSmgsG1';
-                },
-                buildColModel:function (config) {
-                    config.items.columns = [
-                        {xtype:'actioncolumn', width:55,
-                            items:[
-                                {icon:'./resources/images/save.gif', tooltip:this.ttipSave, action:'save', handler:me.onSaveRecord},
-                                {icon:'./resources/images/delete.png', tooltip:this.ttipDel, action:'del', handler:me.onDelRecord}
-                            ]
-                        },
-                        {text:this.headerName, dataIndex:'g1r', flex:5, editor:{xtype:'textarea', maxLength:512}, renderer:TK.Utils.renderLongStr},
-                        {text:this.headerCountryCode, dataIndex:'g_1_5k', flex:1, editor:{xtype:'textfield', maxLength:3}},
-                        {text:this.headerCountryName, dataIndex:'g16r', flex:4, editor:{xtype:'trigger', maxLength:550, triggerCls:'dir', onTriggerClick:onStrana}, renderer:TK.Utils.renderLongStr},
-                        {text:this.headerCity, dataIndex:'g18r_1', flex:4, editor:{xtype:'textfield', maxLength:32}},
-                        {text:this.headerAddress, dataIndex:'g19r', flex:5, editor:{xtype:'textarea', maxLength:128}, renderer:TK.Utils.renderLongStr},
-                        {text:'код ТГНЛ', dataIndex:'g2', flex:3, editor:{xtype:'textfield', maxLength:32}},
-                        {text:'код ОКПО', dataIndex:'g3', flex:3, editor:{xtype:'textfield', maxLength:32}},
-                        {text:'код ИНН', dataIndex:'g_2inn', flex:3, editor:{xtype:'textfield', maxLength:32}}
-                    ];
-                },
-                newRecord:function () {
-                    return Ext.create('TK.model.SmgsOtpr', {g1r:'', g_1_5k:'', g16r:'', g18r_1:'', g19r:'', g2:'', g3:'', g_2inn:'', hid:''});
+                failure: function (response, options) {
+                    TK.Utils.makeErrMsg(response, 'Error!..');
                 }
             });
+        }
+        else {
+            Ext.Msg.alert(this.titleErrorWarning, this.warningFillErrors);
+        }
 
-        return win;
     },
-    onG24:function () {
+    onG24: function () {
         var owner = this.ownerCt,
             val1 = parseFloat(owner.getComponent('smgs.g24T').getValue()),
             val2 = parseFloat(owner.getComponent('smgs.g24N').getValue()),
@@ -639,201 +915,205 @@ Ext.define('TK.controller.Nsi', {
         g24B.setValue(newsum > 0 ? newsum : '');
         g24B.fireEvent('change', g24B, newsum, oldsum);
     },
-    onG24B:function () {
-        var arr, g15 = this.ownerCt.getComponent('smgs._g24B');
-        if (this.getValue()) {
-            arr = (this.getValue() + '').split('.');
-            g15.setText(TK.Utils.num2str(arr[0]) + (arr[1] ? '.' + arr[1] : '') + ' кг');
-        } else {
-            g15.setText('');
+    onG24B: function () {
+        var arr,
+            g15 = this.ownerCt.getComponent('smgs._g24B');
+
+        if (g15) {
+            if (this.getValue()) {
+                arr = (this.getValue() + '').split('.');
+                g15.setText(TK.Utils.num2str(arr[0]) + (arr[1] ? '.' + arr[1] : '') + ' кг');
+            } else {
+                g15.setText('');
+            }
         }
     },
-    nsiDocG7:function () {
+    nsiDocG7: function () {
         return Ext.widget('nsilist', {
 //            title:'Справочник документов',
-            width:500,
-            buildTitle:function (config) {
+            width: 500,
+            buildTitle: function (config) {
                 config.title = this.titleDocs1;
             },
-            buildStoreModel:function () {
+            buildStoreModel: function () {
                 return ['nsiFNn', 'nsiFDesc'];
             },
-            buildUrlPrefix:function () {
+            buildUrlPrefix: function () {
                 return 'Nsi_fieldsOpt';
             },
-            buildExtraParams:function () {
-                return {type:7};
+            buildExtraParams: function () {
+                return {type: 7};
             },
-            buildColModel:function (config) {
+            buildColModel: function (config) {
                 config.items.columns = [
-                    {text:this.headerCode, dataIndex:'nsiFNn'},
-                    {text:this.headerName1, dataIndex:'nsiFDesc', flex:1, renderer:TK.Utils.renderLongStr}
+                    {text: this.headerCode, dataIndex: 'nsiFNn'},
+                    {text: this.headerName1, dataIndex: 'nsiFDesc', flex: 1, renderer: TK.Utils.renderLongStr}
                 ];
             }
         });
     },
-    nsiDocG9:function () {
+    nsiDocG9: function () {
         return Ext.widget('nsilist', {
 //            title:'Справочник документов',
-            width:500,
-            buildTitle:function (config) {
+            width: 500,
+            buildTitle: function (config) {
                 config.title = this.titleDocs1;
             },
-            buildStoreModel:function () {
+            buildStoreModel: function () {
                 return ['nsiFNn', 'nsiFDesc'];
             },
-            buildUrlPrefix:function () {
+            buildUrlPrefix: function () {
                 return 'Nsi_fieldsOpt';
             },
-            buildExtraParams:function () {
-                return {type:9};
+            buildExtraParams: function () {
+                return {type: 9};
             },
-            buildColModel:function (config) {
+            buildColModel: function (config) {
                 config.items.columns = [
-                    {text:this.headerCode, dataIndex:'nsiFNn'},
-                    {text:this.headerName1, dataIndex:'nsiFDesc', flex:1, renderer:TK.Utils.renderLongStr}
+                    {text: this.headerCode, dataIndex: 'nsiFNn'},
+                    {text: this.headerName1, dataIndex: 'nsiFDesc', flex: 1, renderer: TK.Utils.renderLongStr}
                 ];
             }
         });
     },
-    nsiDocG13:function () {
+    nsiDocG13: function () {
         return Ext.widget('nsilist', {
 //            title:'Справочник документов',
-            width:500,
-            buildTitle:function (config) {
+            width: 500,
+            buildTitle: function (config) {
                 config.title = this.titleDocs1;
             },
-            buildStoreModel:function () {
+            buildStoreModel: function () {
                 return ['nsiFNn', 'nsiFDesc'];
             },
-            buildUrlPrefix:function () {
+            buildUrlPrefix: function () {
                 return 'Nsi_fieldsOpt';
             },
-            buildExtraParams:function () {
-                return {type:13};
+            buildExtraParams: function () {
+                return {type: 13};
             },
-            buildColModel:function (config) {
+            buildColModel: function (config) {
                 config.items.columns = [
-                    {text:this.headerCode, dataIndex:'nsiFNn'},
-                    {text:this.headerName1, dataIndex:'nsiFDesc', flex:1, renderer:TK.Utils.renderLongStr}
+                    {text: this.headerCode, dataIndex: 'nsiFNn'},
+                    {text: this.headerName1, dataIndex: 'nsiFDesc', flex: 1, renderer: TK.Utils.renderLongStr}
                 ];
             }
         });
     },
-    nsiCurrency:function (query) {
+    nsiCurrency: function (query) {
         return Ext.widget('nsilist', {
 //            title:'Поиск по справочнику валют',
-            width:600,
-            search:query,
-            buildTitle:function (config) {
+            width: 600,
+            search: query,
+            buildTitle: function (config) {
                 config.title = this.titleCurrency;
             },
-            buildStoreModel:function () {
+            buildStoreModel: function () {
                 return ['hid', 'abv3', 'name'];
             },
-            buildUrlPrefix:function () {
+            buildUrlPrefix: function () {
                 return 'Nsi_currency';
             },
-            buildColModel:function (config) {
+            buildColModel: function (config) {
                 config.items.columns = [
-                    {text:this.headerCode, dataIndex:'abv3'},
-                    {text:this.headerDescr, dataIndex:'name', flex:1, renderer:TK.Utils.renderLongStr}
+                    {text: this.headerCode, dataIndex: 'abv3'},
+                    {text: this.headerDescr, dataIndex: 'name', flex: 1, renderer: TK.Utils.renderLongStr}
                 ];
             }
         });
     },
-    nsiTnved:function () {
+    nsiTnved: function () {
         return Ext.widget('nsilist', {
 //            title:'Поиск по справочнику кодов ТНВЭД',
-            width:600,
-            buildTitle:function (config) {
+            width: 600,
+            buildTitle: function (config) {
                 config.title = this.titleTnved;
             },
-            buildStoreModel:function () {
+            buildStoreModel: function () {
                 return ['hid', 'kod', 'naim'];
             },
-            buildUrlPrefix:function () {
+            buildUrlPrefix: function () {
                 return 'Nsi_tnved';
             },
-            buildColModel:function (config) {
+            buildColModel: function (config) {
                 config.items.columns = [
-                    {text:this.headerCode, dataIndex:'kod'},
-                    {text:this.headerDescr, dataIndex:'naim', flex:1, renderer:TK.Utils.renderLongStr}
+                    {text: this.headerCode, dataIndex: 'kod'},
+                    {text: this.headerDescr, dataIndex: 'naim', flex: 1, renderer: TK.Utils.renderLongStr}
                 ];
             }
         });
     },
-    nsiDeliv:function (query) {
+    nsiDeliv: function (query) {
         return Ext.widget('nsilist', {
 //            title:'Поиск по справочнику условий поставки',
-            width:600,
-            search:query,
-            buildTitle:function (config) {
+            width: 600,
+            search: query,
+            buildTitle: function (config) {
                 config.title = this.titleDeliv;
             },
-            buildStoreModel:function () {
+            buildStoreModel: function () {
                 return ['hid', 'kod', 'name'];
             },
-            buildUrlPrefix:function () {
+            buildUrlPrefix: function () {
                 return 'Nsi_deliv';
             },
-            buildColModel:function (config) {
+            buildColModel: function (config) {
                 config.items.columns = [
-                    {text:this.headerCode, dataIndex:'kod'},
-                    {text:this.headerDescr, dataIndex:'name', flex:1, renderer:TK.Utils.renderLongStr}
+                    {text: this.headerCode, dataIndex: 'kod'},
+                    {text: this.headerDescr, dataIndex: 'name', flex: 1, renderer: TK.Utils.renderLongStr}
                 ];
             }
         });
     },
-    nsiUpak:function () {
+    nsiUpak: function () {
         return Ext.widget('nsilist', {
 //            title:'Поиск по справочнику видов упаковки',
-            width:600,
-            buildTitle:function (config) {
+            width: 600,
+            buildTitle: function (config) {
                 config.title = this.titleUpak;
             },
-            buildStoreModel:function () {
+            buildStoreModel: function () {
                 return ['hid', 'kod', 'kypk', 'name', 'nameDe'];
             },
-            buildUrlPrefix:function () {
+            buildUrlPrefix: function () {
                 return 'Nsi_upak';
             },
-            buildColModel:function (config) {
+            buildColModel: function (config) {
                 config.items.columns = [
-                    {text:this.headerCode, dataIndex:'kod'},
-                    {text:this.headerDescr + ' RU', dataIndex:'name', flex:1, renderer:TK.Utils.renderLongStr},
-                    {text:this.headerDescr+' DE', dataIndex:'nameDe', flex:1, renderer:TK.Utils.renderLongStr}
+                    {text: this.headerCode, dataIndex: 'kod'},
+                    {text: this.headerDescr + ' RU', dataIndex: 'name', flex: 1, renderer: TK.Utils.renderLongStr},
+                    {text: this.headerDescr + ' DE', dataIndex: 'nameDe', flex: 1, renderer: TK.Utils.renderLongStr}
                 ];
             }
         });
     },
-    nsiGroups:function () {
+    nsiGroups: function () {
         return Ext.widget('nsilist', {
 //            title:this.title1,
-            width:500, height:500,
-            buildTitle:function (config) {
+            width: 500, height: 500,
+            buildTitle: function (config) {
                 config.title = this.title1;
             },
-            buildStoreModel:function () {
+            buildStoreModel: function () {
                 return ['name', 'descr'];
             },
-            buildUrlPrefix:function () {
+            buildUrlPrefix: function () {
                 return 'Nsi_groups';
             },
-            buildColModel:function (config) {
+            buildColModel: function (config) {
                 config.items.columns = [
-                    {text:this.headerName, dataIndex:'name', flex:1},
-                    {text:this.headerDescr, dataIndex:'descr', flex:2, renderer:TK.Utils.renderLongStr}
+                    {text: this.headerName, dataIndex: 'name', flex: 1},
+                    {text: this.headerDescr, dataIndex: 'descr', flex: 2, renderer: TK.Utils.renderLongStr}
                 ];
             },
-            buildGridDockedItems:function (config) {
+            buildGridDockedItems: function (config) {
                 config.items.dockedItems = [
                     {
-                        dock:'top',
-                        xtype:'toolbar',
-                        items:{
-                            xtype:'searchfield',
-                            store:config.items.store
+                        dock: 'top',
+                        xtype: 'toolbar',
+                        items: {
+                            xtype: 'searchfield',
+                            store: config.items.store
                         }
                     }
                 ]
@@ -841,26 +1121,45 @@ Ext.define('TK.controller.Nsi', {
         });
     },
 
-    selectCountriesNsiOtpr:function (view, record, item, index) {
+    selectCountriesNsiOtpr: function (view, record, item, index) {
         var data = record.data;
         var rec = this.selModel.getLastSelected();
         rec.set('g_1_5k', data.abc2);
         rec.set('g16r', data.naim);
+
         view.up('window').close();
     },
-    selectCountriesG1:function (view, record, item, index) {
+    // выбираем страну из табличного списка странн для вставки в запись отправителя
+    selectCountriesOtpr: function (view, record, item, index) {
+
+         var data = record.data;
+
+        this.up().getComponent('g16_1').setValue(data.anaim);
+        this.up().getComponent('g16r').setValue(data.krnaim);
+        this.up().up().getComponent('code_1').getComponent('g_1_5k').setValue(data.abc2);
+         this.up().up().getComponent('g15_1').setValue(data.kod);
+
+        // this.up().getComponent('g16_1').setValue(data.anaim);
+        // this.up().up().getComponent('country-2').getComponent('g16r').setValue(data.krnaim);
+        // this.up().up().getComponent('country-2').getComponent('g_1_5k').setValue(data.abc2);
+        // this.up().up().getComponent('country-2').getComponent('g15_1').setValue(data.kod);
+
+
+        view.up('window').close();
+    },
+    selectCountriesG1: function (view, record, item, index) {
         var data = record.data;
         this.getComponent('g1_panel').getComponent('strn').getComponent('smgs.g_1_5k').setValue(data.abc2);
         this.getComponent('g1_panel').getComponent('strn').getComponent('smgs.g16r').setValue(data.naim);
         view.up('window').close();
     },
-    selectCountriesG5:function (view, record, item, index) {
+    selectCountriesG5: function (view, record, item, index) {
         var data = record.data;
         this.getComponent('g5_panel').getComponent('strn').getComponent('smgs.g_1_5k_1').setValue(data.abc2);
         this.getComponent('g5_panel').getComponent('strn').getComponent('smgs.g16r_1').setValue(data.naim);
         view.up('window').close();
     },
-    selectPlatG4:function (view, record, item, index) {
+    selectPlatG4: function (view, record, item, index) {
         var data = record.data;
         this.getComponent('dorR').setValue(data['dorR']);
         this.getComponent('platR').setValue(data['platR']);
@@ -872,51 +1171,66 @@ Ext.define('TK.controller.Nsi', {
         }
         view.up('window').close();
     },
-    selectGroup:function (view, record, item, index) {
+    selectGroup: function (view, record, item, index) {
         var data = record.data,
             rec = this.selModel.getLastSelected();
         rec.set('name', data.name);
         view.up('window').close();
     },
-    nsiCarrier:function (query) {
+    nsiCarrier: function (query) {
         var me = this,
             win = Ext.widget('nsieditlist', {
-                width:1000,
-                prefix:'carrier',
-                editPrivileg:'CIM_DIR',
-                search:query,
-                buildTitle:function (config) {
-                    config.title = 'Справочник перевозчиков';
+                width: 1000,
+                prefix: 'carrier',
+                editPrivileg: 'CIM_DIR',
+                search: query,
+                buildTitle: function (config) {
+                    config.title = this.carrierTitle;
                 },
-                buildStoreModel:function () {
+                buildStoreModel: function () {
                     return 'TK.model.NsiCarrier';
                 },
-                buildUrlPrefix:function () {
+                buildUrlPrefix: function () {
                     return 'Carrier';
                 },
-                buildColModel:function (config) {
+                buildColModel: function (config) {
                     config.items.columns = [
-                        {xtype:'actioncolumn', width:55,
-                            items:[
-                                {icon:'./resources/images/save.gif', tooltip:this.ttipSave, action:'save', handler:me.onSaveRecord, getClass:this.onGetClass, scope:this},
-                                {icon:'./resources/images/delete.png', tooltip:this.ttipDel, action:'del', handler:me.onDelRecord, getClass:this.onGetClass, scope:this}
+                        {
+                            xtype: 'actioncolumn', width: 55,
+                            items: [
+                                {
+                                    icon: './resources/images/save.gif',
+                                    tooltip: this.ttipSave,
+                                    action: 'save',
+                                    handler: me.onSaveRecord,
+                                    getClass: this.onGetClass,
+                                    scope: this
+                                },
+                                {
+                                    icon: './resources/images/delete.png',
+                                    tooltip: this.ttipDel,
+                                    action: 'del',
+                                    handler: me.onDelRecord,
+                                    getClass: this.onGetClass,
+                                    scope: this
+                                }
                             ]
                         },
-                        {text:'станция', dataIndex:'countryNo', flex:1, editor:{xtype:'textfield', maxLength:3}},
-                        {text:'перевозчик, номер', dataIndex:'carrNo', flex:1, editor:{xtype:'textfield', maxLength:4}},
-                        {text:'перевозчик, короткое наимен', dataIndex:'carrNameShort', flex:1, editor:{xtype:'textfield', maxLength:48},  renderer:TK.Utils.renderLongStr},
-                        {text:'перевозчик, наимен.', dataIndex:'carrName', flex:3, editor:{xtype:'textfield', maxLength:128},  renderer:TK.Utils.renderLongStr}
+                        {text: this.headerSt, dataIndex: 'countryNo', flex: 1, editor: {xtype: 'textfield', maxLength: 3}},
+                        {text: this.headerCar,dataIndex: 'carrNo',flex: 1, editor: {xtype: 'textfield', maxLength: 4}},
+                        {text: this.headerCarShort,dataIndex: 'carrNameShort', flex: 1, editor: {xtype: 'textfield', maxLength: 48},renderer: TK.Utils.renderLongStr},
+                        {text: this.headerCarName,dataIndex: 'carrName',flex: 3,editor: {xtype: 'textfield', maxLength: 128},renderer: TK.Utils.renderLongStr}
                     ];
                 },
-                newRecord:function () {
+                newRecord: function () {
                     return Ext.create('TK.model.NsiCarrier', {});
                 },
-                onBeforeEdit:function (editor, props) {
+                onBeforeEdit: function (editor, props) {
                     if (!tkUser.hasPriv(this.editPrivileg)) { // switch off editing
                         return false;
                     }
                 },
-                onGetClass:function (value, meta, record) {
+                onGetClass: function (value, meta, record) {
                     if (!tkUser.hasPriv(this.editPrivileg)) {
                         return 'hide_el';
                     }
@@ -924,7 +1238,7 @@ Ext.define('TK.controller.Nsi', {
                      return 'show_el';
                      }*/
                 },
-                prepareData:function (rec) {
+                prepareData: function (rec) {
                     var data = {};
                     data[this.prefix + '.carrUn'] = rec.data['carrUn'];
                     data[this.prefix + '.carrId'] = rec.data['carrId'];
@@ -937,36 +1251,60 @@ Ext.define('TK.controller.Nsi', {
             });
         return win;
     },
-    selectDocG23: function(view, record, item, index) {
+    selectDocG23: function (view, record, item, index) {
         var data = record.data;
         this.getComponent('code').setValue(data['nsiFNn']);
         this.getComponent('ncas').setValue(data['nsiFNcas']);
         this.getComponent('text').setValue(data['nsiFDesc']);
-        this.getComponent('text2').setValue(data['nsiFDsc3']);
+        this.getComponent('text2').setValue(data['nsiFDsc2']);
         view.up('window').close();
     },
-    onAddRecord:function (btn) {
-        var owner = btn.up('nsieditlist'), grid = owner.getComponent(0), /*ind = grid.store.getCount(),*/
-            r = owner.newRecord(), rowEditing = grid.plugins[0];
-        rowEditing.cancelEdit();
-        grid.store.insert(0, r);
-        rowEditing.startEditByPosition({row:0, column:0});
+    // отображение окна добавления записи об перевозчике
+    onAddRecord: function (btn, param1, param2, param3) {
+
+        if (btn.up('nsieditlist').itemId === 'otprGrid') {
+            win = Ext.create('Ext.window.Window', {
+                title: this.titleAddWindow,
+                height: 725,
+                width: 750,
+                modal: true,
+                layout: 'fit',
+                autoShow: true,
+                maximizable: true,
+                items:{xtype: 'otpaviteledit'}
+            }).show();
+            var stran = new TK.model.SmgsOtpr;
+            var form = win.getComponent('ed_panel').getComponent('otprForm').getForm();
+            form.loadRecord(stran);
+
+            return win;
+        }
+        {
+            var owner = btn.up('nsieditlist'), grid = owner.getComponent(0), /*ind = grid.store.getCount(),*/
+                r = owner.newRecord(), rowEditing = grid.plugins[0];
+            rowEditing.cancelEdit();
+            grid.store.insert(0, r);
+
+            rowEditing.startEditByPosition({row: 0, column: 0});
+        }
     },
-    onDivFocus:function () {
+    onDivFocus: function () {
         this.removeCls('bg-c-white');
         this.addCls('div-active');
     },
-    onSaveRecord:function (grid, rowIndex, colIndex) {
-        var rec = grid.store.getAt(rowIndex), errors = rec.validate(), owner = grid.up('nsieditlist'), rowEditing = grid.ownerCt.plugins[0];
+    onSaveRecord: function (grid, rowIndex, colIndex) {
+        var rec = grid.store.getAt(rowIndex), errors = rec.validate(), owner = grid.up('nsieditlist'),
+            rowEditing = grid.ownerCt.plugins[0];
+
         rowEditing.completeEdit();
         if (errors.isValid()) {
             Ext.Ajax.request({
-                url:owner.buildUrlPrefix() + '_save.do',
-                params:owner.prepareData(rec),
-                success:function (response, options) {
+                url: owner.buildUrlPrefix() + '_save.do',
+                params: owner.prepareData(rec),
+                success: function (response, options) {
                     grid.store.load();
                 },
-                failure:function (response, options) {
+                failure: function (response, options) {
                     TK.Utils.makeErrMsg(response, 'Error!..');
                 }
             });
@@ -974,31 +1312,75 @@ Ext.define('TK.controller.Nsi', {
             TK.Utils.failureDataMsg();
         }
     },
-    onDelRecord:function (grid, rowIndex, colIndex) {
-        var rec = grid.store.getAt(rowIndex), data = rec.data, owner = grid.up('nsieditlist');
-        if (!rec.phantom) {
-            Ext.Ajax.request({
-                url:owner.buildUrlPrefix() + '_delete.do',
-                params:owner.prepareData(rec),
+
+    // удаление записи об отправителе
+    onDelRecord: function (grid, rowIndex, colIndex) {
+        var me = this;
+
+        var res = Ext.Msg.show({
+            title: this.titleDelMsgBox,
+            msg: this.textDelMsgBox,
+            buttons: Ext.Msg.YESNO,
+            icon: Ext.Msg.QUESTION,
+            fn: function (btn) {
+                if (btn === 'yes') {
+                    var rec = grid.store.getAt(rowIndex), data = rec.data, owner = grid.up('nsieditlist');
+                    if (!rec.phantom) {
+                        Ext.Ajax.request({
+                            url: owner.buildUrlPrefix() + '_delete.do',
+                            params: owner.prepareData(rec),
 //                params: {task: 'delete', 'nsi.hid':data.hid},
-                success:function (response, options) {
-                    grid.store.load();
-                },
-                failure:function (response, options) {
-                    TK.Utils.makeErrMsg(response, 'Error!..');
+                            success: function (response, options) {
+                                grid.store.load();
+                            },
+                            failure: function (response, options) {
+                                TK.Utils.makeErrMsg(response, 'Error!..');
+                            }
+                        });
+                    } else {
+                        grid.store.remove(rec);
+                    }
+
+                } else if (btn === 'no') {
+
                 }
-            });
-        } else {
-            grid.store.remove(rec);
-        }
+            }
+        });
     },
-    onRowclick: function(field, newValue, oldValue){
-        var grid = view.up('grid'),
-            btn = grid.getDockedComponent('top').getComponent('export2Excel'),
+
+    // редактирование записи об перевозчике
+    onEditRecord: function (grid, rowIndex, colIndex) {
+        var stran = grid.store.getAt(rowIndex);
+
+        win = Ext.create('Ext.window.Window', {
+            title: 'Hello',
+             height: 725,
+            width: 750,
+            modal: true,
+            layout: 'fit',
+            autoShow: true,
+            maximizable: true,
+            title: this.titleEditWindow,
+            items: [{
+                xtype: 'otpaviteledit'
+            }
+            ]
+        });
+        var form = win.getComponent('ed_panel').getComponent('otprForm').getForm();
+        form.loadRecord(stran);
+
+        win.show();
+
+        return win;
+    },
+    onRowclick: function (field, newValue, oldValue) {
+
+        var grid = field.view.up('grid');
+        btn = grid.getDockedComponent('top').getComponent('export2Excel'),
             hid = grid.selModel.getLastSelected().get('hid');
 
-        if(btn){
-            if(hid != 100){
+        if (btn) {
+            if (hid != 100) {
                 btn.enable();
             } else {
                 btn.disable();

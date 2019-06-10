@@ -1,23 +1,41 @@
 package com.bivc.cimsmgs.interceptors;
 
+import com.bivc.cimsmgs.actions.Login4_A;
 import com.bivc.cimsmgs.commons.myUser;
 import com.bivc.cimsmgs.dao.UserAware;
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.Interceptor;
 import org.apache.struts2.StrutsStatics;
+import org.apache.struts2.util.ServletContextAware;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 
-public class AuthenticationInterceptor implements Interceptor {
+public class AuthenticationInterceptor implements Interceptor, ServletContextAware {
+    final static private Logger log = LoggerFactory.getLogger(AuthenticationInterceptor.class);
     private final String USER_KEY = "userName";
+    private static ServletContext servletContext;
+    public static int periodOfCahgePasswordInDays = 0;
+
     public void destroy() {
     }
 
     public void init() {
+        try {
+            String s = servletContext.getInitParameter("periodOfCahgePasswordInDays");
+            if(s != null && s.length() > 0) {
+                periodOfCahgePasswordInDays = Integer.parseInt(s);
+            }
+        }
+        catch (Exception ex) {
+            log.error("error", ex);
+        }
     }
 
     /*public String intercept(ActionInvocation actionInvocation) throws Exception {
@@ -65,5 +83,10 @@ public class AuthenticationInterceptor implements Interceptor {
         }
 
         return result;
+    }
+
+    @Override
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
     }
 }

@@ -1,6 +1,11 @@
 Ext.define('TK.view.printtmpl.List', {
     extend: 'TK.view.DocsList',
     alias: 'widget.printTemplateList',
+
+    requires: [
+        'TK.Utils'
+    ],
+
     buildStore: function(config) {
         config.store = 'PrintTemplates';
     },

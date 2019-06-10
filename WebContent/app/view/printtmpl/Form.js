@@ -4,7 +4,29 @@ Ext.define('TK.view.printtmpl.Form', {
     border:false,
     bodyPadding: 5,
     title: this.title,
-    requires:['TK.view.edit.DetailGrid'],
+    requires: [
+        'Ext.button.Button',
+        'Ext.container.Container',
+        'Ext.data.Errors',
+        'Ext.form.FieldContainer',
+        'Ext.form.FieldSet',
+        'Ext.form.field.Checkbox',
+        'Ext.form.field.ComboBox',
+        'Ext.form.field.Hidden',
+        'Ext.form.field.Number',
+        'Ext.form.field.Text',
+        'Ext.grid.column.Action',
+        'Ext.grid.column.Check',
+        'Ext.grid.column.RowNumberer',
+        'Ext.layout.container.HBox',
+        'Ext.layout.container.Table',
+        'Ext.toolbar.Fill',
+        'Ext.toolbar.Separator',
+        'TK.Utils',
+        'TK.model.PrintData',
+        'TK.model.PrintTemplate',
+        'TK.view.edit.DetailGrid'
+    ],
 //    required: '<span style="color:red;font-weight:bold" data-qtip="Required">*</span>',
     initComponent:function () {
         var config = {};
@@ -92,15 +114,15 @@ Ext.define('TK.view.printtmpl.Form', {
                         {
                             text:this.titleCoordLeft,
                             columns:[
-                                {text:'X1', dataIndex:'llx', width:70, editor:{xtype:'numberfield', maxLength:5, minValue:0, allowBlank:false, decimalPrecision:0, allowDecimals:false, listeners: {change: function(f, nVal, oVal){this.up('printTemplate').fireEvent('x_y_change', f, nVal, oVal);}} }},
-                                {text:'Y1', dataIndex:'lly', width:70, editor:{xtype:'numberfield', maxLength:5, minValue:0, allowBlank:false, decimalPrecision:0, allowDecimals:false, listeners: {change: function(f, nVal, oVal){this.up('printTemplate').fireEvent('x_y_change', f, nVal, oVal);}} }}
+                                {text:'X1', dataIndex:'llx', width:70, height: 40, editor:{xtype:'numberfield', maxLength:5, minValue:0, allowBlank:false, decimalPrecision:0, allowDecimals:false, listeners: {change: function(f, nVal, oVal){this.up('printTemplate').fireEvent('x_y_change', f, nVal, oVal);}} }},
+                                {text:'Y1', dataIndex:'lly', width:70, height: 40, editor:{xtype:'numberfield', maxLength:5, minValue:0, allowBlank:false, decimalPrecision:0, allowDecimals:false, listeners: {change: function(f, nVal, oVal){this.up('printTemplate').fireEvent('x_y_change', f, nVal, oVal);}} }}
                             ]
                         },
                         {
                             text:this.titleCoordRight,
                             columns:[
-                                {text:'X2', dataIndex:'urx', width:70, editor:{xtype:'numberfield', maxLength:5, minValue:0, allowBlank:false, decimalPrecision:0, allowDecimals:false, listeners: {change: function(f, nVal, oVal){this.up('printTemplate').fireEvent('x_y_change', f, nVal, oVal);}} }},
-                                {text:'Y2', dataIndex:'ury', width:70, editor:{xtype:'numberfield', maxLength:5, minValue:0, allowBlank:false, decimalPrecision:0, allowDecimals:false, listeners: {change: function(f, nVal, oVal){this.up('printTemplate').fireEvent('x_y_change', f, nVal, oVal);}} }}
+                                {text:'X2', dataIndex:'urx', width:70, height: 40, editor:{xtype:'numberfield', maxLength:5, minValue:0, allowBlank:false, decimalPrecision:0, allowDecimals:false, listeners: {change: function(f, nVal, oVal){this.up('printTemplate').fireEvent('x_y_change', f, nVal, oVal);}} }},
+                                {text:'Y2', dataIndex:'ury', width:70, height: 40, editor:{xtype:'numberfield', maxLength:5, minValue:0, allowBlank:false, decimalPrecision:0, allowDecimals:false, listeners: {change: function(f, nVal, oVal){this.up('printTemplate').fireEvent('x_y_change', f, nVal, oVal);}} }}
                             ]
                         },
                         {

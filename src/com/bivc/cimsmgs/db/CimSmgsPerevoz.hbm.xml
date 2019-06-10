@@ -9,6 +9,7 @@
             <generator class="sequence">
                 <param name="sequence">CIM_SMGS_PEREVOZ_HID</param>
             </generator>
+            <!--<generator class="native"/>-->
         </id>
         <many-to-one name="cimSmgs" class="com.bivc.cimsmgs.db.CimSmgs" fetch="select">
             <column name="HID_CS" precision="20" scale="0" />
@@ -19,7 +20,7 @@
         </property>
 
         <property name="namPer" type="string">
-            <column name="NAME_PER" length="24" />
+            <column name="NAME_PER" length="80" />
         </property>
         <property name="stBeg" type="string">
             <column name="ST_BEG" length="48" />

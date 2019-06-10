@@ -6,7 +6,8 @@
     <class name="com.bivc.cimsmgs.db.nsi.Country" table="COUNTRY">
         <id name="code" type="string">
             <column name="CODE" length="2" />
-            <generator class="assigned" />
+            <!--<generator class="assigned" />-->
+            <generator class="native"/>
         </id>
         <many-to-one name="currency" class="com.bivc.cimsmgs.db.nsi.Currency" fetch="select">
             <column name="CUR_CODE" length="3" not-null="true" />

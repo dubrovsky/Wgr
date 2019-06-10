@@ -19,13 +19,13 @@ public class KonListCustomMapperAll extends CustomMapper<CimSmgsKonList, CimSmgs
     @Override
     public void mapAtoB(CimSmgsKonList source, CimSmgsKonList destination, MappingContext context) {
         if (MapUtils.isNotEmpty(source.getCimSmgsGruzs())){
-            Map<Byte, CimSmgsGruz> gruzListMapSrc = source.getCimSmgsGruzs();
-            Map<Byte, CimSmgsGruz> gruzListMapDest = mapperFacade.mapAsMap(gruzListMapSrc, new TypeBuilder<Map<Byte, CimSmgsGruz>>(){}.build(), new TypeBuilder<Map<Byte, CimSmgsGruz>>(){}.build());
+            Map<Integer, CimSmgsGruz> gruzListMapSrc = source.getCimSmgsGruzs();
+            Map<Integer, CimSmgsGruz> gruzListMapDest = mapperFacade.mapAsMap(gruzListMapSrc, new TypeBuilder<Map<Integer, CimSmgsGruz>>(){}.build(), new TypeBuilder<Map<Integer, CimSmgsGruz>>(){}.build());
             destination.setCimSmgsGruzs(new TreeMap<>(gruzListMapDest));
         }
         if (MapUtils.isNotEmpty(source.getCimSmgsDocses9())){
-            Map<Byte, CimSmgsDocs> docs9MapSrc = source.getCimSmgsDocses9();
-            Map<Byte, CimSmgsDocs> docs9MapDest = mapperFacade.mapAsMap(docs9MapSrc, new TypeBuilder<Map<Byte, CimSmgsDocs>>(){}.build(), new TypeBuilder<Map<Byte, CimSmgsDocs>>(){}.build());
+            Map<Integer, CimSmgsDocs> docs9MapSrc = source.getCimSmgsDocses9();
+            Map<Integer, CimSmgsDocs> docs9MapDest = mapperFacade.mapAsMap(docs9MapSrc, new TypeBuilder<Map<Integer, CimSmgsDocs>>(){}.build(), new TypeBuilder<Map<Integer, CimSmgsDocs>>(){}.build());
             destination.setCimSmgsDocses9(new TreeMap<>(docs9MapDest));
         }
         if (MapUtils.isNotEmpty(source.getCimSmgsPlombs())){

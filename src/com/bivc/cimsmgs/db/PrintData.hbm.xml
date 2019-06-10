@@ -9,6 +9,7 @@
             <generator class="sequence">
                 <param name="sequence">PRINT_DATA_HID</param>
             </generator>
+            <!--<generator class="native"/>-->
         </id>
         <many-to-one name="printTemplates" class="com.bivc.cimsmgs.db.PrintTemplates" fetch="select">
             <column name="HID_TEMPL" precision="22" scale="0" not-null="true" />
@@ -56,7 +57,7 @@
             <column name="FONT_FAMILY" length="30" />
         </property>
         <property name="leading" type="java.lang.Byte">
-            <column name="LEADING" length="2" scale="0"/>
+            <column name="[LEADING]" length="2" scale="0"/>
         </property>
         <property name="sort" type="java.lang.Integer">
             <column name="SORT" length="4" scale="0" not-null="true"/>

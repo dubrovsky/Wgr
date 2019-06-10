@@ -6,7 +6,8 @@
     <class name="com.bivc.cimsmgs.db.nsi.Currency" table="CURRENCY">
         <id name="code" type="string">
             <column name="CODE" length="3" />
-            <generator class="assigned" />
+            <!--<generator class="assigned" />-->
+            <generator class="native"/>
         </id>
         <property name="id" type="big_decimal">
             <column name="ID" precision="22" scale="0" not-null="true" unique="true" />

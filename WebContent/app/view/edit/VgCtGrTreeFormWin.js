@@ -1,6 +1,12 @@
 Ext.define('TK.view.edit.VgCtGrTreeFormWin', {
     extend: 'TK.view.edit.TreeFormWin',
     alias: 'widget.vgCtGrTreeFormWin',
+
+    requires: [
+        'Ext.form.Panel',
+        'Ext.tab.Panel'
+    ],
+
     // title: this.titleVagContGruz,
 
     buildMainPanel: function(){
@@ -47,6 +53,10 @@ Ext.define('TK.view.edit.VgCtGrTreeFormWin', {
             text: this.btnCargoText,
             action: 'addGryz',
             iconCls: 'gryz'
+        },{
+            text: this.btnDanCargoText,
+            action: 'addDanGryz',
+            iconCls: 'danGryz'
         }];
     }
 });

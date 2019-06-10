@@ -6,10 +6,27 @@ Ext.define('TK.view.smgs.Form', {
     ],*/
 
     alias:'widget.smgs',
-    requires:[
+    requires: [
+        'Ext.button.Button',
+        'Ext.data.ArrayStore',
+        'Ext.form.FieldContainer',
+        'Ext.form.Label',
+        'Ext.form.field.Checkbox',
+        'Ext.form.field.ComboBox',
+        'Ext.form.field.Date',
+        'Ext.form.field.Hidden',
+        'Ext.form.field.Number',
+        'Ext.form.field.Radio',
+        'Ext.form.field.Text',
+        'Ext.form.field.TextArea',
+        'Ext.form.field.Trigger',
+        'Ext.layout.container.HBox',
+        'Ext.layout.container.VBox',
+        'Ext.toolbar.TextItem',
+        'TK.model.SmgsPlomb',
+        'TK.view.edit.DetailGrid',
         'TK.view.edit.DetailPanel',
-        'TK.view.edit.DetailTabPanel',
-        'TK.view.edit.DetailGrid'
+        'TK.view.edit.DetailTabPanel'
     ],
     buildItems:function (config) {
         config.items = [

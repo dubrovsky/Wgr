@@ -2,6 +2,10 @@ Ext.define('TK.view.aviso.List', {
     extend: 'TK.view.DocsList',
     alias: 'widget.avisolist',
 
+    requires: [
+        'TK.Utils'
+    ],
+
     buildStore: function(config) {
         config.store = 'Avisos';
     },
@@ -44,7 +48,8 @@ Ext.define('TK.view.aviso.List', {
             itemId: 'top',
             defaults:{iconAlign:'top', arrowAlign:'bottom'},
             items: [
-                {text: this.btnStat, iconCls:'filter', action:'filter'},'-',
+                {text: this.btnStat, iconCls:'filter', action:'filter', forDeleted: true, forPresent: true},
+                {xtype: 'tbseparator', itemId:'filter1', forDeleted: true, forPresent: true},
                 {text: this.btnCreate,iconCls:'doc_new', action:'create'},'-',
                 {text: this.btnCopy,iconCls:'copy', action:'copy'},'-',
                 {text: this.btnEdit,iconCls:'edit', action:'edit'},'-',
@@ -55,6 +60,14 @@ Ext.define('TK.view.aviso.List', {
         });
         if(tkUser.hasPriv('CIM_DELETE')){
             config.dockedItems[0].items.push({text: this.btnDelete,iconCls:'del',itemId:'del', action:'del', disabled:true},'-');
+        }
+        if(tkUser.hasPriv('CIM_ADMIN_DELETE')){
+            config.dockedItems[0].items.push(
+                {text: this.btnRestore,iconCls:'restore',itemId:'restore', action:'restore', forDeleted: true, hidden: true},
+                {xtype: 'tbseparator', itemId:'restore1', forDeleted: true, hidden: true},
+                {text: this.btnDestroy,iconCls:'del',itemId:'destroy', action:'destroy', forDeleted: true, hidden: true},
+                {xtype: 'tbseparator', itemId:'destroy1', forDeleted: true, hidden: true}
+            );
         }
         if(tkUser.hasPriv('CIM_EXPORT_AVISO')){
             config.dockedItems[0].items.push({text: 'Export',iconCls:'export2Xls',itemId:'export2Excel', action:'export2Excel', disabled:true},'-');

@@ -41,6 +41,14 @@ public class PrintTemplates_A extends CimSmgsSupport_A implements PrintTemplates
         return SUCCESS;
     }
 
+    public String templs_view_print() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+        log.info("templs_view_print");
+        List<PrintTemplates> prnTempls = getPrintTemplatesDao().findAll(getLimit(), getStart(), getSearch(), getUser().getUsr());
+        Long total = getPrintTemplatesDao().countAll(getSearch(), getUser().getUsr());
+        setJSONData(Constants.convert2JSON_PrintTemplatesList4Print(prnTempls, total));
+        return SUCCESS;
+    }
+
     public String save() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         log.info("save");
         if ("copy".equals(getTask())){
@@ -144,11 +152,12 @@ public class PrintTemplates_A extends CimSmgsSupport_A implements PrintTemplates
         return SUCCESS;
     }
 
+    private static List<String> allowedTypes = Arrays.asList("image/png","image/gif","image/jpeg","image/tiff","application/pdf");
+
     public String saveBlank() throws IOException, SQLException  {
         log.info("saveBlank");
-        List<String> allowedTypes = Arrays.asList("image/png","image/gif","image/jpeg","image/tiff");
         if(!allowedTypes.contains(contentType)){
-            throw new BusinessException("Можно загружать следующие типы файлов: png, gif, jpeg, tiff");
+            throw new BusinessException("Можно загружать следующие типы файлов: png, gif, jpeg, tiff, pdf");
         }
 
         blank.prepare4save(getUser(), this);
@@ -209,17 +218,24 @@ public class PrintTemplates_A extends CimSmgsSupport_A implements PrintTemplates
     public String printWinParams(){
         log.info("printWinParams");
         Long nBlankRefs;
-        List<Integer> pages = dao.findPages4BindedUnPrnTemplate(doc, route, getUser().getUsername());
-        if(pages.size() == 0){
-            pages = dao.findPages4BindedPrnTemplate(doc, route);
-            if(pages.size() == 0){
-                pages = dao.findPages4DefaultPrnTemplate(doc);
-                nBlankRefs = dao.countPrnBlankRefs4Default(doc);
+        List<Integer> pages = new ArrayList<>();
+
+        if(templHid == null) {
+            pages = dao.findPages4BindedUnPrnTemplate(doc, route, getUser().getUsername());
+            if (pages.size() == 0) {
+                pages = dao.findPages4BindedPrnTemplate(doc, route);
+                if (pages.size() == 0) {
+                    pages = dao.findPages4DefaultPrnTemplate(doc);
+                    nBlankRefs = dao.countPrnBlankRefs4Default(doc);
+                } else {
+                    nBlankRefs = dao.countPrnBlankRefs(doc, route);
+                }
             } else {
-                nBlankRefs = dao.countPrnBlankRefs(doc, route);
+                nBlankRefs = dao.countUnPrnBlankRefs(doc, route, getUser().getUsername());
             }
-        } else{
-            nBlankRefs = dao.countUnPrnBlankRefs(doc, route, getUser().getUsername());
+        } else {
+            pages = dao.findPages4PrnTemplate(doc, templHid);
+            nBlankRefs = dao.countPrnBlankRefs(doc, templHid);
         }
 
         setJSONData(Constants.convert2JSON_PrintWinParams(pages, nBlankRefs));
@@ -258,6 +274,7 @@ public class PrintTemplates_A extends CimSmgsSupport_A implements PrintTemplates
     private HttpServletRequest request;
     private Route route;
     private DocDir doc;
+    private Long templHid;
 
 
     public void setUpload(File file) {
@@ -364,5 +381,13 @@ public class PrintTemplates_A extends CimSmgsSupport_A implements PrintTemplates
     @Override
     public void setRouteUnPrintTemplatesDAO(RouteUnPrintTemplatesDAO dao) {
         routeUnPrintTemplatesDAO = dao;
+    }
+
+    public Long getTemplHid() {
+        return templHid;
+    }
+
+    public void setTemplHid(Long templHid) {
+        this.templHid = templHid;
     }
 }

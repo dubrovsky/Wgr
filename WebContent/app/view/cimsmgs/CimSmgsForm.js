@@ -1,12 +1,24 @@
+/**
+ * Форма cimsmgs.
+ */
 Ext.define('TK.view.cimsmgs.CimSmgsForm', {
     extend: 'TK.view.DocsForm',
-    /*mixins: [
-        'TK.controller.exchange.FormStatus',
-        'TK.controller.exchange.LockChecker'
-    ],*/
-
     alias: 'widget.cimsmgs',
     requires: [
+        'Ext.button.Button',
+        'Ext.form.Label',
+        'Ext.form.field.Checkbox',
+        'Ext.form.field.ComboBox',
+        'Ext.form.field.Date',
+        'Ext.form.field.Hidden',
+        'Ext.form.field.Number',
+        'Ext.form.field.Radio',
+        'Ext.form.field.Text',
+        'Ext.form.field.TextArea',
+        'Ext.form.field.Trigger',
+        'Ext.toolbar.TextItem',
+        'TK.view.edit.Cimsmgs_g1_detailpanel',
+        'TK.view.edit.Cimsmgs_g4_detailpanel',
         'TK.view.edit.DetailPanel',
         'TK.view.edit.DetailTabPanel'
     ],
@@ -26,8 +38,9 @@ Ext.define('TK.view.cimsmgs.CimSmgsForm', {
             {xtype:'hidden', name:'smgs.btlc_status', itemId:'smgs.btlc_status'},
             {xtype:'hidden', name:'smgs.tdg_status1', itemId:'smgs.tdg_status1'},
             {xtype:'hidden', name:'search.docType', itemId:'search.docType', value:'cimsmgs'},
-//        {x:630, y:100, xtype:'label', text:'ЗАГОТОВКА', style: 'font-weight:bold;'},
-//        {x:700, y:92, xtype:'checkbox', name:"smgs.statusBr", itemId:'smgs.statusBr', inputValue:'1'},
+
+
+            {x:400, y:136, xtype:'checkbox', name:'smgs.g1c', inputValue:'1', itemId:'smgs.g1c', boxLabel:this.labelDopList},
             {xtype:'textarea',x:134, y:159, width:355, height:105, readOnly:true, name:'disp.g1', itemId:'disp.g1', submitValue:false},
             {
                 xtype:'button',
@@ -38,6 +51,8 @@ Ext.define('TK.view.cimsmgs.CimSmgsForm', {
 //        	scope:this,
                 itemId:'g1_'
             },
+
+            {x:400, y:289, xtype:'checkbox', name:'smgs.g4c', inputValue:'1', itemId:'smgs.g4c', boxLabel:this.labelDopList},
             {xtype:'textarea',x:134, y:312, width:355, height:105, readOnly:true, name:'disp.g4', itemId:'disp.g4', submitValue:false},
             {
                 xtype:'button',
@@ -131,17 +146,32 @@ Ext.define('TK.view.cimsmgs.CimSmgsForm', {
             {x:550, y:415, name: 'smgs.g43_1', itemId:'smgs.g43_1', maxLength:60, width:140},
             {x:445, y:582, name: 'smgs.g141', itemId:'smgs.g141', maxLength:40, width:61},
             {x:507, y:582, name: 'smgs.g142', itemId:'smgs.g142', maxLength:32, width:186},
-            {x:16, y:483, name: 'smgs.g101', itemId:'smgs.g101', maxLength:80, width:350},
-            {x:16, y:515, name: 'smgs.g101r', itemId:'smgs.g101r', maxLength:80, width:350},
+
+
+            // {x:16, y:483, name: 'smgs.g101', itemId:'smgs.g101', maxLength:80, width:350},
+            {x:16, y:483, xtype:'trigger', name:"smgs.g101", itemId:"smgs.g101", maxLength:80, triggerCls:'dir', width:350, onTriggerClick: function() {this.fireEvent("onTriggerClick", this);}},
+            // {x:16, y:515, name: 'smgs.g101r', itemId:'smgs.g101r', maxLength:80, width:350},
+            {x:16, y:515, xtype:'trigger', name:"smgs.g101r", itemId:"smgs.g101r", maxLength:80, triggerCls:'dir', width:350, onTriggerClick: function() {this.fireEvent("onTriggerClick", this);}},
+
+
             {x:372, y:483, name: 'smgs.g102', itemId:'smgs.g102', maxLength:64, width:320},
             {x:372, y:515, name: 'smgs.g102r', itemId:'smgs.g102r', maxLength:64, width:320},
+
+            {x:16, y:540, name: 'smgs.g2017', itemId:'smgs.g2017', maxLength:250, width:677},
+
             {x:258, y:455, name: 'smgs.g11', itemId:'smgs.g11', maxLength:40, width:225},
             {x:494, y:455, name: 'smgs.g12', itemId:'smgs.g12', maxLength:2, width:57},
             {x:555, y:455, name: 'smgs.g121', itemId:'smgs.g121', maxLength:6, width:138},
             {x:16, y:690, xtype:'textarea', name: 'smgs.g15', itemId:'smgs.g15', maxLength:512, width:337, height:55},
             {x:355, y:690, xtype:'textarea', name: 'smgs.g15r', itemId:'smgs.g15r', maxLength:512, width:337, height:55},
-            {x:696, y:441, name: 'smgs.g162', itemId:'smgs.g162', maxLength:80, width:276},
-            {x:696, y:465, name: 'smgs.g162r', itemId:'smgs.g162r', maxLength:80, width:276},
+
+
+            // {x:696, y:441, name: 'smgs.g162', itemId:'smgs.g162', maxLength:80, width:276},
+            {x:696, y:441, xtype:'trigger', name:"smgs.g162", itemId:"smgs.g162", maxLength:80, triggerCls:'dir', width:276, onTriggerClick: function() {this.fireEvent("onTriggerClick", this);}},
+            // {x:696, y:465, name: 'smgs.g162r', itemId:'smgs.g162r', maxLength:80, width:276},
+            {x:696, y:465, xtype:'trigger', name:"smgs.g162r", itemId:"smgs.g162r", maxLength:80, triggerCls:'dir', width:276, onTriggerClick: function() {this.fireEvent("onTriggerClick", this);}},
+
+
             {x:978, y:441, name: 'smgs.g163', itemId:'smgs.g163', maxLength:64, width:300},
             {x:978, y:465, name: 'smgs.g163r', itemId:'smgs.g163r', maxLength:64, width:300},
             {x:906, y:406, name: 'smgs.g161', itemId:'smgs.g161', maxLength:8, width:135},
@@ -166,8 +196,8 @@ Ext.define('TK.view.cimsmgs.CimSmgsForm', {
             {x:1188, y:690, xtype:'numberfield', name: 'smgs.g48', itemId:'smgs.g48', maxLength:16, width:92, minValue:0},
             {x:648, y:750, xtype:'checkbox', name:'smgs.g21', inputValue:'1', itemId:'smgs.g21'},
             {x:830, y:748, xtype:'checkbox', name:'smgs.g22', inputValue:'1', itemId:'smgs.g22'},
-            {x:805, y:1158, xtype:'radio', name:'smgs.g25', inputValue:'1', itemId:'smgs.g25_v'},
-            {x:945, y:1158, xtype:'radio', name:'smgs.g25', inputValue:'2', itemId:'smgs.g25_k', checked:true},
+            {x:805, y:1158, xtype:'radio', name:'smgs.g25', inputValue:'1', itemId:'smgs.g25_v', readOnly: true},
+            {x:945, y:1158, xtype:'radio', name:'smgs.g25', inputValue:'2', itemId:'smgs.g25_k', readOnly: true},
             {x:865, y:770, xtype:'label', text:this.labelCodeGng, style: 'font-weight:bold;'},
             {x:865, y:785, xtype:'textarea', name: 'smgs.g23', itemId:'smgs.g23', maxLength:80, width:120},
             {x:865, y:855, xtype:'label', text:this.labelCodeEtsng, style: 'font-weight:bold;'},
@@ -235,7 +265,7 @@ Ext.define('TK.view.cimsmgs.CimSmgsForm', {
             {x:369, y:1169, name: 'smgs.ga51', itemId:'smgs.ga51', maxLength:6, width:143},
 
             {x:290, y:1206, name: 'smgs.ga52', itemId:'smgs.ga52', maxLength:6, width:74},
-            {x:369, y:1206, name: 'smgs.ga53', itemId:'smgs.ga53', maxLength:3, width:143},
+            {x:369, y:1206, name: 'smgs.ga53', itemId:'smgs.ga53', maxLength:6, width:143},
 
             {x:39, y:1245, name: 'smgs.ga54', itemId:'smgs.ga54', maxLength:7, width:166},
             {x:212, y:1245, name: 'smgs.ga55', itemId:'smgs.ga55', maxLength:4, width:96},
@@ -248,124 +278,353 @@ Ext.define('TK.view.cimsmgs.CimSmgsForm', {
             {x:148, y:1321, name: 'smgs.gb494', itemId:'smgs.gb494', maxLength:6, width:137},
 
 
+            // форма для ввода/редактиварония графы 1
+            // {
+            //     xtype:'detailpanel',
+            //     x:500, y:50, width:750,
+            //     itemId:'g1_panel',
+            //     title:this.labelSender,
+            //     // имя
+            //     items:[
+            //         {
+            //             xtype: 'fieldcontainer',
+            //             layout: 'hbox',
+            //             itemId: 'name',
+            //             items: [
+            //                 {xtype:'textarea', fieldLabel:this.labelName, name:'smgs.g1', itemId:'smgs.g1', maxLength:512,flex: 10,height:100},
+            //                 {xtype:'textarea', fieldLabel:this.labelNameRu, name:"smgs.g1r", itemId:"smgs.g1r", maxLength:512,flex: 10,height:100},
+            //                 {xtype: 'button', text: '...', action: 'otpr', maxLength:32, margins: '0 0 0 5',flex: 1}
+            //             ]
+            //         },
+            //
+            //         {xtype: 'hidden', name: 'smgs.g15_1', itemId:'smgs.g15_1', maxLength:3},
+            //
+            //         // код отправителя
+            //         {
+            //             xtype: 'fieldcontainer',
+            //             layout: 'hbox',
+            //             itemId: 'code',
+            //             items: [
+            //                 {fieldLabel: this.labelSenderCod,xtype: 'textfield',  name: 'smgs.g2_E',itemId: 'smgs.g2_E', maxLength: 10,flex: 20},
+            //                 {xtype: 'label', text: '    ',  margins: '0 0 0 5',flex: 1}
+            //             ]
+            //         },
+            //
+            //         // код страны+ индекс
+            //         {
+            //             xtype: 'fieldcontainer',
+            //             layout: 'hbox',
+            //             itemId: 'code_1',
+            //             items: [
+            //                 {fieldLabel:this.labelCountryCode,xtype: 'textfield', name: 'smgs.g_1_5k', itemId:'smgs.g_1_5k', maxLength:3,flex: 10},
+            //                 {fieldLabel:this.labelZip,xtype: 'textfield', name: 'smgs.g17_1', itemId:'smgs.g17_1', maxLength:10,flex: 10},
+            //                 {xtype: 'label', text: '    ',  margins: '0 0 0 5',flex: 1}
+            //             ]
+            //         },
+            //         // название страны
+            //         {
+            //             xtype: 'fieldcontainer',
+            //             layout: 'hbox',
+            //             itemId: 'strn',
+            //             items: [
+            //                 {fieldLabel: this.labelCountry,xtype: 'textfield', name: 'smgs.g16_1', itemId:'smgs.g16_1', maxLength:32, flex: 10},
+            //                 { fieldLabel: this.labelCountryRu,xtype: 'textfield',name: 'smgs.g16r', itemId:'smgs.g16r', maxLength:32, flex: 10},
+            //                 {xtype: 'button', text: '...', action: 'country', maxLength:32, margins: '0 0 0 5',flex: 1}
+            //             ]
+            //         },
+            //         // название города
+            //         {
+            //             xtype: 'fieldcontainer',
+            //             layout: 'hbox',
+            //             itemId: 'city',
+            //             items: [
+            //                 {fieldLabel:this.labelCity,xtype: 'textfield', name: 'smgs.g18_1', itemId:'smgs.g18_1', maxLength:32, flex: 10} ,
+            //                 {fieldLabel:this.labelCityRu,xtype: 'textfield', name: 'smgs.g18r_1', itemId:'smgs.g18r_1', maxLength:32, flex: 10},
+            //                 {xtype: 'label', text: '    ',  margins: '0 0 0 5',flex: 1}
+            //             ]
+            //         },
+            //         // адрес
+            //         {
+            //             xtype: 'fieldcontainer',
+            //             layout: 'hbox',
+            //             itemId: 'address',
+            //             items: [
+            //                 {xtype:'textarea', fieldLabel:this.labelAdress, name: 'smgs.g19_1', itemId:'smgs.g19_1', maxLength:128, flex: 10,height:100},
+            //                 {xtype:'textarea', fieldLabel:this.labelAdressRu, name: 'smgs.g19r', itemId:'smgs.g19r', maxLength:250, flex: 10,height:100},
+            //                 {xtype: 'label', text: '    ',  margins: '0 0 0 5',flex: 1}
+            //             ]
+            //         },
+            //         // VAT
+            //         {
+            //             xtype: 'fieldcontainer',
+            //             layout: 'hbox',
+            //             itemId: 'vat',
+            //             items: [
+            //                 {fieldLabel:'VAT', name: 'smgs.g110',xtype: 'textfield', itemId:'smgs.g110', maxLength:16, flex: 20},
+            //                 {xtype: 'label', text: '    ',  margins: '0 0 0 5',flex: 1}
+            //             ]
+            //         },
+            //         // дополнительная информация
+            //         {
+            //             xtype: 'fieldcontainer',
+            //             layout: 'hbox',
+            //             itemId: 'dop',
+            //             items: [
+            //                 { fieldLabel: this.labelOptInfo, xtype: 'textarea', name: 'smgs.g1_dop_info', itemId: 'smgs.g1_dop_info', maxLength: 512, flex: 20 },
+            //                 {xtype: 'label', text: '    ',  margins: '0 0 0 5',flex: 1}
+            //             ]
+            //         }
+            //
+            //     ],
+            //     //отображет склейку полей для графы 1
+            //     setDisplayedField: function () {
+            //         var field;
+            //         var ctn = this.getComponent('code').getComponent('smgs.g2_E');
+            //
+            //         var field_g17_1=this.getComponent('code_1').getComponent('smgs.g17_1');
+            //         var field_g16_1=this.getComponent('strn').getComponent('smgs.g16_1');
+            //         var field_g18r_1=this.getComponent('city').getComponent('smgs.g18r_1');
+            //         var field_g18_1=this.getComponent('city').getComponent('smgs.g18_1');
+            //
+            //         if (ctn) {
+            //             field = ctn.getValue();
+            //             if (field) {
+            //                 this.up('cimsmgs').getComponent('smgs.g2').setValue(field);
+            //             }
+            //         }
+            //
+            //         var g = this.ownerCt.getComponent('disp.g1');
+            //         var _g1a = (this.getComponent('name').getComponent('smgs.g1').getValue() ? this.getComponent('name').getComponent('smgs.g1').getValue() : '');
+            //
+            //         var _g1b = (this.getComponent('address').getComponent('smgs.g19_1').getValue() ? this.getComponent('address').getComponent('smgs.g19_1').getValue() : '') +
+            //             (field_g17_1.getValue() ? ' ' + field_g17_1.getValue() : '') +
+            //             (field_g18_1.getValue() ? ' ' + field_g18_1.getValue() : '');
+            //
+            //         var _g1c = (field_g16_1.getValue() ? field_g16_1.getValue() : '') +
+            //             (this.getComponent('vat').getComponent('smgs.g110').getValue() ? ' ' + this.getComponent('vat').getComponent('smgs.g110').getValue() : '');
+            //         var _g1 = _g1a + (_g1a ? '\n' : '') + _g1b + (_g1b ? '\n' : '') + _g1c + (_g1c ? '\n' : '');
+            //
+            //         var _g1ra = (this.getComponent('name').getComponent('smgs.g1r').getValue() ? this.getComponent('name').getComponent('smgs.g1r').getValue() : '');
+            //         var _g1rb = (this.getComponent('address').getComponent('smgs.g19r').getValue() ? this.getComponent('address').getComponent('smgs.g19r').getValue() : '') +
+            //             (field_g17_1.getValue() ? ' ' + field_g17_1.getValue() : '') +
+            //             (field_g18r_1.getValue() ? ' ' + field_g18r_1.getValue() : '');
+            //         container = this.getComponent('strn');
+            //         var _g1rc = (container.getComponent('smgs.g16r').getValue() ? container.getComponent('smgs.g16r').getValue() : '') +
+            //             (this.getComponent('vat').getComponent('smgs.g110').getValue() ? ' ' + this.getComponent('vat').getComponent('smgs.g110').getValue() : '');
+            //         var _g1r = _g1ra + (_g1ra ? '\n' : '') + _g1rb + (_g1rb ? '\n' : '') + _g1rc;
+            //
+            //         g.setValue((_g1 ? _g1 : '') + _g1r+' '+this.getComponent('dop').getComponent('smgs.g1_dop_info').getValue());
+            //     },
+            //     copyValues2MainFlds: function () {
+            //         for (var prop in this.bufData) {
+            //             if (this.getComponent('smgs.' + prop)) {
+            //                 this.getComponent('smgs.' + prop).setValue(this.bufData[prop]);
+            //             }
+            //         }
+            //         this.getComponent('strn').getComponent('smgs.g16_1').setValue(this.bufData.g16_1);
+            //         this.getComponent('strn').getComponent('smgs.g16r').setValue(this.bufData.g16r);
+            //     },
+            //     copyValues2Buf: function () {
+            //         this.bufData = {};
+            //         this.items.each(function (item, index, length) {
+            //             if (item.items) {
+            //                 item.items.each(function (itm, index, length) {
+            //                     if (itm.itemId) {
+            //                         this.bufData[itm.itemId.split('.')[1]] = itm.getValue();
+            //                     }
+            //                 }, this);
+            //             } else {
+            //                 this.bufData[item.itemId.split('.')[1]] = item.getValue();
+            //             }
+            //         }, this);
+            //     },
+            //     initBuf: function () {
+            //         this.bufData = {};
+            //         var data = this.ownerCt.dataObj, arr;
+            //         this.items.each(function (item, index, length) {
+            //             if (item.items) {
+            //                 item.items.each(function (itm, index, length) {
+            //                     if (itm.itemId) {
+            //                         arr = itm.itemId.split('.');
+            //                         this.bufData[arr[1]] = data[arr[1]];
+            //                     }
+            //                 }, this);
+            //             } else {
+            //                 arr = item.itemId.split('.');
+            //                 this.bufData[arr[1]] = data[arr[1]];
+            //             }
+            //         }, this);
+            //     }
+            // },
             {
-                xtype:'detailpanel',
-                x:500, y:100, width:400,
-                itemId:'g1_panel',
-                title:this.labelSender,
-                items:[
-                    {xtype:'textarea', fieldLabel:this.labelName, name:'smgs.g1', itemId:'smgs.g1', maxLength:512}
-                    ,{xtype:'trigger', fieldLabel:this.labelNameRu, name:"smgs.g1r", itemId:"smgs.g1r", maxLength:512, triggerCls:'dir'/*, onTriggerClick: otprSprav.createDelegate(this, ['cimsmgs','g1_panel'])*/}
-                    ,{fieldLabel:this.labelCountryCode, name: 'smgs.g15_1', itemId:'smgs.g15_1', maxLength:3}
-                    ,{fieldLabel:this.labelCountry, name: 'smgs.g16_1', itemId:'smgs.g16_1', maxLength:32}
-                    ,{fieldLabel:this.labelCountryRu, name: 'smgs.g16r', itemId:'smgs.g16r', maxLength:32}
-                    ,{fieldLabel:this.labelZip, name: 'smgs.g17_1', itemId:'smgs.g17_1', maxLength:10}
-                    ,{fieldLabel:this.labelCity, name: 'smgs.g18_1', itemId:'smgs.g18_1', maxLength:32}
-                    ,{fieldLabel:this.labelCityRu, name: 'smgs.g18r_1', itemId:'smgs.g18r_1', maxLength:32}
-                    ,{xtype:'textarea', fieldLabel:this.labelAdress, name: 'smgs.g19_1', itemId:'smgs.g19_1', maxLength:128}
-                    ,{xtype:'textarea', fieldLabel:this.labelAdressRu, name: 'smgs.g19r', itemId:'smgs.g19r', maxLength:250}
-                    ,{fieldLabel:'VAT', name: 'smgs.g110', itemId:'smgs.g110', maxLength:16}
-                ],
-                setDisplayedField: function () {
-                    var g = this.ownerCt.getComponent('disp.g1');
-
-                    var _g1a = (this.getComponent('smgs.g1').getValue() ? this.getComponent('smgs.g1').getValue() : '');
-                    var _g1b = (this.getComponent('smgs.g19_1').getValue() ? this.getComponent('smgs.g19_1').getValue() : '') +
-                        (this.getComponent('smgs.g17_1').getValue() ? ' ' + this.getComponent('smgs.g17_1').getValue() : '') +
-                        (this.getComponent('smgs.g18_1').getValue() ? ' ' + this.getComponent('smgs.g18_1').getValue() : '');
-                    var _g1c = (this.getComponent('smgs.g16_1').getValue() ? this.getComponent('smgs.g16_1').getValue() : '') +
-                        (this.getComponent('smgs.g110').getValue() ? ' ' + this.getComponent('smgs.g110').getValue() : '');
-                    var _g1 = _g1a + (_g1a ? '\n' : '') + _g1b + (_g1b ? '\n' : '') + _g1c + (_g1c ? '\n' : '');
-
-                    var _g1ra = (this.getComponent('smgs.g1r').getValue() ? this.getComponent('smgs.g1r').getValue() : '');
-                    var _g1rb = (this.getComponent('smgs.g19r').getValue() ? this.getComponent('smgs.g19r').getValue() : '') +
-                        (this.getComponent('smgs.g17_1').getValue() ? ' ' + this.getComponent('smgs.g17_1').getValue() : '') +
-                        (this.getComponent('smgs.g18r_1').getValue() ? ' ' + this.getComponent('smgs.g18r_1').getValue() : '');
-                    var _g1rc = (this.getComponent('smgs.g16r').getValue() ? this.getComponent('smgs.g16r').getValue() : '') +
-                        (this.getComponent('smgs.g110').getValue() ? ' ' + this.getComponent('smgs.g110').getValue() : '');
-                    var _g1r = _g1ra + (_g1ra ? '\n' : '') + _g1rb + (_g1rb ? '\n' : '') + _g1rc;
-
-                    g.setValue((_g1 ? _g1 : '') + _g1r);
-                },
-                copyValues2MainFlds: function () {
-                    for (var prop in this.bufData) {
-                        this.getComponent('smgs.' + prop).setValue(this.bufData[prop]);
-                    }
-                },
-                copyValues2Buf: function () {
-                    this.bufData = {};
-                    this.items.each(function (item, index, length) {
-                        this.bufData[item.itemId.split('.')[1]] = item.getValue();
-                    }, this);
-                },
-                initBuf: function () {
-                    this.bufData = {};
-                    var data = this.ownerCt.dataObj;
-                    this.items.each(function (item, index, length) {
-                        var arr = item.itemId.split('.');
-                        this.bufData[arr[1]] = data[arr[1]];
-                    }, this);
-                }
+                // форма ввода информации об отправиетеле
+                xtype:'cimsmgs_g1_detailpanel'
             },
+            // {
+            //     xtype:'detailpanel',
+            //     x:500, y:250, width:750,
+            //     itemId:'g4_panel',
+            //     title:this.labelReceiver,
+            //
+            //     items:[
+            //         {
+            //             // название
+            //             xtype: 'fieldcontainer',
+            //             layout: 'hbox',
+            //             itemId: 'name_4',
+            //             items: [
+            //                 {xtype:'textarea', fieldLabel:this.labelName, name:'smgs.g4', itemId:'smgs.g1_1', maxLength:512,flex: 10,height:100},
+            //                 {xtype:'textarea', fieldLabel:this.labelNameRu, name:"smgs.g4r", itemId:"smgs.g1r_1", maxLength:512,flex: 10,height:100},
+            //                 {xtype: 'button', text: '...', action: 'poluch', maxLength:32, margins: '0 0 0 5',flex: 1}
+            //             ]
+            //         },
+            //         // код получателя
+            //         {
+            //             xtype: 'fieldcontainer',
+            //             layout: 'hbox',
+            //             itemId: 'code_4',
+            //             items: [
+            //                 {fieldLabel: this.labelSenderCod,  name: 'smgs.g5_E',xtype: 'textfield',itemId: 'smgs.g5_E', maxLength: 10,flex: 20},
+            //                 {xtype: 'label', text: '    ',  margins: '0 0 0 5',flex: 1}
+            //             ]
+            //         },
+            //         // код страны+индекс
+            //         {
+            //             xtype: 'fieldcontainer',
+            //             layout: 'hbox',
+            //             itemId: 'code_1_4',
+            //             items: [
+            //                 {fieldLabel:this.labelCountryCode, name: 'smgs.g45_1',xtype: 'textfield', itemId:'smgs.g15_1_1', maxLength:3,flex: 10},
+            //                 {fieldLabel:this.labelZip, name: 'smgs.g47_1', itemId:'smgs.g17_1_1',xtype: 'textfield', maxLength:10,flex: 10},
+            //                 {xtype: 'label', text: '    ',  margins: '0 0 0 5',flex: 1}
+            //             ]
+            //         },
+            //         // название страны
+            //         {
+            //             xtype: 'fieldcontainer',
+            //             layout: 'hbox',
+            //             itemId: 'strn_4',
+            //             items: [
+            //                 {fieldLabel:this.labelCountry, name: 'smgs.g46_1', itemId:'smgs.g16_1_1',xtype: 'textfield', maxLength:32,flex: 10},
+            //                 {fieldLabel:this.labelCountryRu, name: 'smgs.g46r', itemId:'smgs.g16r_1',xtype: 'textfield', maxLength:32,flex: 10},
+            //                 {xtype: 'button', text: '...', action: 'country_4', maxLength:32, margins: '0 0 0 5',flex: 1}
+            //             ]
+            //         },
+            //         // название города
+            //         {
+            //             xtype: 'fieldcontainer',
+            //             layout: 'hbox',
+            //             itemId: 'city_4',
+            //             items: [
+            //                 {fieldLabel:this.labelCity, name: 'smgs.g48_1', itemId:'smgs.g18_1_1',xtype: 'textfield', maxLength:32,flex: 10},
+            //                 {fieldLabel:this.labelCityRu, name: 'smgs.g48r', itemId:'smgs.g18r_1',xtype: 'textfield', maxLength:32,flex: 10},
+            //                 {xtype: 'label', text: '    ',  margins: '0 0 0 5',flex: 1}
+            //             ]
+            //         },
+            //         // адрес
+            //         {
+            //             xtype: 'fieldcontainer',
+            //             layout: 'hbox',
+            //             itemId: 'address_4',
+            //             items: [
+            //                 {xtype:'textarea', fieldLabel:this.labelAdress, name: 'smgs.g49', itemId:'smgs.g19_1', maxLength:128,flex: 10,height:100},
+            //                 {xtype:'textarea', fieldLabel:this.labelAdressRu, name: 'smgs.g49r', itemId:'smgs.g19r_1', maxLength:250,flex: 10,height:100},
+            //                 {xtype: 'label', text: '    ',  margins: '0 0 0 5',flex: 1}
+            //             ]
+            //         },
+            //         // VAT
+            //         {
+            //             xtype: 'fieldcontainer',
+            //             layout: 'hbox',
+            //             itemId: 'vat_4',
+            //             items: [
+            //                 {fieldLabel:'VAT', name: 'smgs.g410', itemId:'smgs.g110_1',xtype: 'textfield', maxLength:16,flex: 20},
+            //                 {xtype: 'label', text: '    ',  margins: '0 0 0 5',flex: 1}
+            //             ]
+            //
+            //         },
+            //         // дополнительная информация
+            //         {
+            //             xtype: 'fieldcontainer',
+            //             layout: 'hbox',
+            //             itemId: 'dop_4',
+            //             items: [
+            //                 { fieldLabel: this.labelOptInfo, xtype: 'textarea', name: 'smgs.g4_dop_info', itemId: 'smgs.g4_dop_info', maxLength: 512,flex: 20},
+            //                 {xtype: 'label', text: '    ',  margins: '0 0 0 5',flex: 1}
+            //             ]
+            //         }
+            //
+            //     ],
+            //     setDisplayedField:function () {
+            //         var container = this.getComponent('code_4').getComponent('smgs.g5_E');
+            //         if (container) {
+            //             field = container.getValue();
+            //             if (field) {
+            //                 this.up('cimsmgs').getComponent('smgs.g5').setValue(field);
+            //             }
+            //         }
+            //         var g = this.ownerCt.getComponent('disp.g4');
+            //
+            //         var _g1a = (this.getComponent('name_4').getComponent('smgs.g1_1').getValue() ? this.getComponent('name_4').getComponent('smgs.g1_1').getValue() : '');
+            //         var _g1b = (this.getComponent('address_4').getComponent('smgs.g19_1').getValue() ? this.getComponent('address_4').getComponent('smgs.g19_1').getValue() : '') +
+            //             (this.getComponent('code_1_4').getComponent('smgs.g17_1_1').getValue() ? ' ' + this.getComponent('code_1_4').getComponent('smgs.g17_1_1').getValue() : '') +
+            //             (this.getComponent('city_4').getComponent('smgs.g18_1_1').getValue() ? ' ' + this.getComponent('city_4').getComponent('smgs.g18_1_1').getValue() : '');
+            //         var _g1c = (this.getComponent('strn_4').getComponent('smgs.g16_1_1').getValue() ? this.getComponent('strn_4').getComponent('smgs.g16_1_1').getValue() : '') +
+            //             (this.getComponent('vat_4').getComponent('smgs.g110_1').getValue() ? ' ' + this.getComponent('vat_4').getComponent('smgs.g110_1').getValue() : '');
+            //         var _g1 = _g1a + (_g1a ? '\n' : '') + _g1b + (_g1b ? '\n' : '') + _g1c + (_g1c ? '\n' : '');
+            //
+            //         var _g1ra = (this.getComponent('name_4').getComponent('smgs.g1r_1').getValue() ? this.getComponent('name_4').getComponent('smgs.g1r_1').getValue() : '');
+            //         var _g1rb = (this.getComponent('address_4').getComponent('smgs.g19r_1').getValue() ? this.getComponent('address_4').getComponent('smgs.g19r_1').getValue() : '') +
+            //             (this.getComponent('code_1_4').getComponent('smgs.g17_1_1').getValue() ? ' ' + this.getComponent('code_1_4').getComponent('smgs.g17_1_1').getValue() : '') +
+            //             (this.getComponent('city_4').getComponent('smgs.g18r_1').getValue() ? ' ' + this.getComponent('city_4').getComponent('smgs.g18r_1').getValue() : '');
+            //         var _g1rc = (this.getComponent('strn_4').getComponent('smgs.g16r_1').getValue() ? this.getComponent('strn_4').getComponent('smgs.g16r_1').getValue() : '') +
+            //             (this.getComponent('vat_4').getComponent('smgs.g110_1').getValue() ? ' ' + this.getComponent('vat_4').getComponent('smgs.g110_1').getValue() : '');
+            //         var _g1r = _g1ra + (_g1ra ? '\n' : '') + _g1rb + (_g1rb ? '\n' : '') + _g1rc;
+            //
+            //         g.setValue((_g1 ? _g1 : '') + _g1r+' '+this.getComponent('dop_4').getComponent('smgs.g4_dop_info').getValue());
+            //     },
+            //     copyValues2MainFlds:function () {
+            //         for (var prop in this.bufData) {
+            //             if (this.getComponent('smgs.' + prop)) {
+            //                 this.getComponent('smgs.' + prop).setValue(this.bufData[prop]);
+            //             }
+            //         }
+            //     },
+            //     copyValues2Buf:function () {
+            //         this.bufData = {};
+            //         this.items.each(function (item, index, length) {
+            //             if (item.items) {
+            //                 item.items.each(function (itm, index, length) {
+            //                     if (itm.itemId) {
+            //                         this.bufData[itm.itemId.split('.')[1]] = itm.getValue();
+            //                     }
+            //                 }, this);
+            //             } else {
+            //                 this.bufData[item.itemId.split('.')[1]] = item.getValue();
+            //             }
+            //         }, this);
+            //     },
+            //     initBuf:function () {
+            //         this.bufData = {};
+            //         var data = this.ownerCt.dataObj, arr;
+            //         this.items.each(function (item, index, length) {
+            //             if (item.items) {
+            //                 item.items.each(function (itm, index, length) {
+            //                     if (itm.itemId) {
+            //                         arr = itm.itemId.split('.');
+            //                         this.bufData[arr[1]] = data[arr[1]];
+            //                     }
+            //                 }, this);
+            //             } else {
+            //                 arr = item.itemId.split('.');
+            //                 this.bufData[arr[1]] = data[arr[1]];
+            //             }
+            //         }, this);
+            //     }
+            // },
             {
-                xtype:'detailpanel',
-                x:500, y:250, width:400,
-                itemId:'g4_panel',
-                title:this.labelReceiver,
-                items:[
-                    {xtype:'textarea', fieldLabel:this.labelName, name:'smgs.g4', itemId:'smgs.g1_1', maxLength:512}
-                    ,{xtype:'trigger', fieldLabel:this.labelNameRu, name:"smgs.g4r", itemId:"smgs.g1r_1", maxLength:512, triggerCls:'dir'/*, onTriggerClick: otprSprav.createDelegate(this, ['cimsmgs','g4_panel'])*/}
-                    ,{fieldLabel:this.labelCountryCode, name: 'smgs.g45_1', itemId:'smgs.g15_1_1', maxLength:3}
-                    ,{fieldLabel:this.labelCountry, name: 'smgs.g46_1', itemId:'smgs.g16_1_1', maxLength:32}
-                    ,{fieldLabel:this.labelCountryRu, name: 'smgs.g46r', itemId:'smgs.g16r_1', maxLength:32}
-                    ,{fieldLabel:this.labelZip, name: 'smgs.g47_1', itemId:'smgs.g17_1_1', maxLength:10}
-                    ,{fieldLabel:this.labelCity, name: 'smgs.g48_1', itemId:'smgs.g18_1_1', maxLength:32}
-                    ,{fieldLabel:this.labelCityRu, name: 'smgs.g48r', itemId:'smgs.g18r_1', maxLength:32}
-                    ,{xtype:'textarea', fieldLabel:this.labelAdress, name: 'smgs.g49', itemId:'smgs.g19_1', maxLength:128}
-                    ,{xtype:'textarea', fieldLabel:this.labelAdressRu, name: 'smgs.g49r', itemId:'smgs.g19r_1', maxLength:250}
-                    ,{fieldLabel:'VAT', name: 'smgs.g410', itemId:'smgs.g110_1', maxLength:16}
-                ],
-                setDisplayedField:function () {
-                    var g = this.ownerCt.getComponent('disp.g4');
-
-                    var _g1a = (this.getComponent('smgs.g1_1').getValue() ? this.getComponent('smgs.g1_1').getValue() : '');
-                    var _g1b = (this.getComponent('smgs.g19_1').getValue() ? this.getComponent('smgs.g19_1').getValue() : '') +
-                        (this.getComponent('smgs.g17_1_1').getValue() ? ' ' + this.getComponent('smgs.g17_1_1').getValue() : '') +
-                        (this.getComponent('smgs.g18_1_1').getValue() ? ' ' + this.getComponent('smgs.g18_1_1').getValue() : '');
-                    var _g1c = (this.getComponent('smgs.g16_1_1').getValue() ? this.getComponent('smgs.g16_1_1').getValue() : '') +
-                        (this.getComponent('smgs.g110_1').getValue() ? ' ' + this.getComponent('smgs.g110_1').getValue() : '');
-                    var _g1 = _g1a + (_g1a ? '\n' : '') + _g1b + (_g1b ? '\n' : '') + _g1c + (_g1c ? '\n' : '');
-
-                    var _g1ra = (this.getComponent('smgs.g1r_1').getValue() ? this.getComponent('smgs.g1r_1').getValue() : '');
-                    var _g1rb = (this.getComponent('smgs.g19r_1').getValue() ? this.getComponent('smgs.g19r_1').getValue() : '') +
-                        (this.getComponent('smgs.g17_1_1').getValue() ? ' ' + this.getComponent('smgs.g17_1_1').getValue() : '') +
-                        (this.getComponent('smgs.g18r_1').getValue() ? ' ' + this.getComponent('smgs.g18r_1').getValue() : '');
-                    var _g1rc = (this.getComponent('smgs.g16r_1').getValue() ? this.getComponent('smgs.g16r_1').getValue() : '') +
-                        (this.getComponent('smgs.g110_1').getValue() ? ' ' + this.getComponent('smgs.g110_1').getValue() : '');
-                    var _g1r = _g1ra + (_g1ra ? '\n' : '') + _g1rb + (_g1rb ? '\n' : '') + _g1rc;
-
-                    g.setValue((_g1 ? _g1 : '') + _g1r);
-                },
-                copyValues2MainFlds:function () {
-                    var form = this.ownerCt.getForm();
-                    for (var prop in this.bufData) {
-                        form.findField('smgs.' + prop).setValue(this.bufData[prop]);
-                    }
-                },
-                copyValues2Buf:function () {
-                    this.bufData = {};
-                    this.items.each(function (item, index, length) {
-                        this.bufData[item.name.split('.')[1]] = item.getValue();
-                    }, this);
-                },
-                initBuf:function () {
-                    this.bufData = {};
-                    var data = this.ownerCt.dataObj;
-                    this.items.each(function (item, index, length) {
-                        var arr = item.name.split('.');
-                        this.bufData[arr[1]] = data[arr[1]];
-                    }, this);
-                }
+                // форма ввода информации о получателе
+                xtype:'cimsmgs_g4_detailpanel'
             },
             {
                 xtype:'detailpanel',
@@ -626,7 +885,7 @@ Ext.define('TK.view.cimsmgs.CimSmgsForm', {
                         tabCollectionName:'cimSmgsDocses136',
                         itemId:'g13_panel_tab_136',
                         tabItems:[
-                            {xtype:'trigger', fieldLabel:'Код станции', itemId:"ndoc", maxLength:6/*, onTriggerClick: fieldsOptSearch*/, triggerCls:'dir', width:50 },
+                            {xtype:'trigger', fieldLabel:this.labelCodeStn, itemId:"ndoc", maxLength:6/*, onTriggerClick: fieldsOptSearch*/, triggerCls:'dir', width:50 },
                             {xtype:'textarea', fieldLabel:this.labelTextRu, itemId:"text", maxLength:500, width:200, height: 44},
                             {xtype:'textarea', fieldLabel:this.labelText, itemId:"text2", maxLength:240, width:200, height: 44},
                             {xtype:'textarea', fieldLabel:this.labelText, itemId:"text3", maxLength:240, width:200, height: 44},
@@ -1091,6 +1350,10 @@ Ext.define('TK.view.cimsmgs.CimSmgsForm', {
     buildDockedItems:function (config) {
         this.callParent(arguments);
         config.dockedItems[0].items.push('-', {text:this.btnCopyEpd, iconCls:'copy', itemId:'copyEpd', action:'copyEpd'});
+        config.dockedItems[0].items.push('-', {text:this.btnDopList, iconCls:'dop-list', itemId:'dopList', action:'dopList'});
+        if(tkUser.hasPriv('CIM_CONTS_LIST')){
+            config.dockedItems[0].items.push('-', {text:this.btnContsList, iconCls:'conts', itemId:'contsListCimSmgs', action:'contsListCimSmgs'});
+        }
         var toolbar1 = {xtype:'toolbar', dock:'bottom', items:[]};
         config.dockedItems.push(toolbar1);
 
@@ -1205,7 +1468,7 @@ Ext.define('TK.view.cimsmgs.CimSmgsForm', {
     },
     initServiceFields: function(data, initGrid, dataObj){
         this.getForm().setValues(data);
-        if (this.form.findField('task').getValue() == 'copy' || this.form.findField('task').getValue() == 'create') {
+        if (this.form.findField('task').getValue() === 'copy' || this.form.findField('task').getValue() === 'create') {
             this.form.findField('smgs.g21').setValue("1");
         }
         if(dataObj){

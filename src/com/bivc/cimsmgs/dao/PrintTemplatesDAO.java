@@ -28,6 +28,8 @@ public interface PrintTemplatesDAO  extends GenericDAO<PrintTemplates, Long>{
 
     List<Integer> findPages4DefaultPrnTemplate(DocDir doc);
 
+    List<Integer> findPages4PrnTemplate(DocDir doc, Long tempHid);
+
     Long countPrnBlankRefs(DocDir doc, Route route);
 
     Long countPrnBlankRefs4Default(DocDir doc);
@@ -41,4 +43,6 @@ public interface PrintTemplatesDAO  extends GenericDAO<PrintTemplates, Long>{
     List<Integer> findPages4BindedUnPrnTemplate(DocDir doc, Route route, String username);
 
     Long countUnPrnBlankRefs(DocDir doc, Route route, String username);
+
+    Long countPrnBlankRefs(DocDir doc, Long tempHid);
 }

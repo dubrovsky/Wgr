@@ -1,6 +1,15 @@
 Ext.define('TK.view.user.List', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.userlist',
+
+    requires: [
+        'Ext.grid.column.RowNumberer',
+        'Ext.toolbar.Paging',
+        'Ext.toolbar.Separator',
+        'Ext.ux.form.SearchField',
+        'TK.Utils'
+    ],
+
     enableColumnHide:false,
     enableColumnMove:false,
 //    enableColumnResize:false,
@@ -31,7 +40,8 @@ Ext.define('TK.view.user.List', {
             items: [
                 {xtype: 'searchfield', store: Ext.getStore('Users')},'-',
                 {text: this.btnCreate, iconCls:'user_add', action:'add'},'-',
-                {text: this.btnEdit, iconCls:'user_edit', action:'edit'},'-'
+                {text: this.btnEdit, iconCls:'user_edit', action:'edit'},'-',
+                {text: this.btnCopy, iconCls:'user_edit2', action:'copy'},'-'
             ]
         },{
             dock: 'bottom',

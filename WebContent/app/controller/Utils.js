@@ -1,6 +1,12 @@
 Ext.define('TK.controller.Utils', {
     extend:'Ext.app.Controller',
 
+    requires: [
+        'Ext.util.DelayedTask',
+        'Ext.util.TaskManager',
+        'TK.Utils'
+    ],
+
     refs:[{
         ref:'center',
         selector:'viewport > tabpanel'

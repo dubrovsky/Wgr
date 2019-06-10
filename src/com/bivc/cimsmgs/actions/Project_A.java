@@ -20,7 +20,14 @@ public class Project_A extends CimSmgsSupport_A implements ProjectDAOAware, Prin
     public String list() {
         log.info("list");
         List<Project> projects = projectDAO.findAll(getUser().getUsr());
-        setJSONData(treeJSON(projects));
+        setJSONData(treeJSON(projects, true));
+        return SUCCESS;
+    }
+
+    public String listPart() {
+        log.info("listPart");
+        List<Project> projects = projectDAO.findAll(getUser().getUsr());
+        setJSONData(treeJSON(projects, false));
         return SUCCESS;
     }
 
@@ -56,6 +63,8 @@ public class Project_A extends CimSmgsSupport_A implements ProjectDAOAware, Prin
     public String save() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         log.info("save");
 
+//        validateParams();
+
         project.prepare4save(getUser());
         projectDAO.merge(project);
         project.prepareGroups4Save();
@@ -64,28 +73,35 @@ public class Project_A extends CimSmgsSupport_A implements ProjectDAOAware, Prin
         project.prepareRouteGroups4Save();
         project.prepareRouteDocs4Save();
 
-        /*for(Route route: project.getRoutes()){    // print templates
-            for(DocDir doc: route.docsWithoutPrintTemplate()){ // copy defaults
-                PrintTemplates defltPrintTemplate = printTemplatesDAO.findDefaultTemplate(doc);
-                HibernateBeanReplicator r = new Hibernate3BeanReplicator(null, null,
-                    new PropertyFilter() {
-                        public boolean propagate(String propertyName, Method readerMethod) {
-                            return
-                                    !"hid".equals(propertyName) &&
-                                    !"route".equals(propertyName) &&
-                                    !"usrGroupsDir".equals(propertyName);
-                        }
-                    }
-                );
-                PrintTemplates copyPrintTemplate = r.copy(defltPrintTemplate);
-                route.preparePrintTemplate4Save(copyPrintTemplate);
-            }
-        }*/
         projectDAO.merge(project);
 
         setJSONData(Constants.convert2JSON_Project_Save_Results(project));
         return SUCCESS;
     }
+
+    /*private void validateParams() {
+         if(CollectionUtils.isNotEmpty(project.getRts())){
+             List<Route> routesForDeleted = new ArrayList<>();
+             for(Route route: project.getRts()){
+                if(route.getForDeleted()){
+                    routesForDeleted.add(route);
+                }
+             }
+             if(!routesForDeleted.isEmpty()) {
+                 if(routesForDeleted.size() > 1){
+                     throw new BusinessException("Route for deleted docs can be only 1.");
+                 } else {
+                     Route route = getRouteDAO().findForDeleted();
+                     if(route != null){
+                         Long hid = routesForDeleted.iterator().next().getHid();
+                         if(hid == null || !Objects.equals(hid, route.getHid())) {
+                             throw new BusinessException("Route for deleted docs already exists.");
+                         }
+                     }
+                 }
+             }
+         }
+    }*/
 
     /*public String save() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         log.info("");
@@ -264,7 +280,7 @@ public class Project_A extends CimSmgsSupport_A implements ProjectDAOAware, Prin
         return buffer.toString();
     }
 
-    private String treeJSON(List<Project> projects) {
+    private String treeJSON(List<Project> projects, boolean full) {
         StringBuffer buffer = new StringBuffer();
         buffer.append("[");
         String prefix = "";
@@ -303,20 +319,22 @@ public class Project_A extends CimSmgsSupport_A implements ProjectDAOAware, Prin
                 buffer.append(",");
                 buffer.append("children:");
                 buffer.append("[");
-                String prefix2 = "";
-                for (RouteDoc routeDoc1 : route1.getRouteDocs()) {
-                    if(routeDoc1 != null){     // if filter applied, check LIST collection for elements that was fileterd out(can be NULL elements in LIST), for SETS this checking is not required
-                        buffer.append(prefix2);
-                        prefix2 = ",";
-                        buffer.append("{");
-                        buffer.append("text:");
-                        buffer.append("'" + Constants.javascriptString(routeDoc1.getDocDir().getDescr()) + "'");
-                        buffer.append(",");
-                        buffer.append("id:");
-                        buffer.append("'id_" + project1.getHid() + "_" + route1.getHid() + "_" + routeDoc1.getDocDir().getName() + "'");
-                        buffer.append(",");
-                        buffer.append("leaf:true");
-                        buffer.append("}");
+                if (full) {
+                    String prefix2 = "";
+                    for (RouteDoc routeDoc1 : route1.getRouteDocs()) {
+                        if (routeDoc1 != null) {     // if filter applied, check LIST collection for elements that was fileterd out(can be NULL elements in LIST), for SETS this checking is not required
+                            buffer.append(prefix2);
+                            prefix2 = ",";
+                            buffer.append("{");
+                            buffer.append("text:");
+                            buffer.append("'" + Constants.javascriptString(routeDoc1.getDocDir().getName()) + "'");
+                            buffer.append(",");
+                            buffer.append("id:");
+                            buffer.append("'id_" + project1.getHid() + "_" + route1.getHid() + "_" + routeDoc1.getDocDir().getName() + "'");
+                            buffer.append(",");
+                            buffer.append("leaf:true");
+                            buffer.append("}");
+                        }
                     }
                 }
                 buffer.append("]");

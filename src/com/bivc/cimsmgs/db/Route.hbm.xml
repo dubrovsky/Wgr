@@ -9,6 +9,7 @@
             <generator class="sequence">
               <param name="sequence">ROUTE_HID</param>
             </generator>
+            <!--<generator class="native"/>-->
         </id>
         <many-to-one class="com.bivc.cimsmgs.db.Project" fetch="select" name="project">
             <column name="HID_PROJ" not-null="true" precision="20" scale="0"/>
@@ -31,6 +32,9 @@
         <property name="emailMask" type="string">
             <column length="20" name="EMAIL_MASK"/>
         </property>
+        <!--<property name="forDeleted" type="java.lang.Boolean">
+            <column name="FOR_DELETED" precision="1" scale="0" />
+        </property>-->
         <!--<property name="locked" type="date">
             <column length="7" name="LOCKED"/>
         </property>
@@ -91,7 +95,7 @@
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.CimSmgsInvoiceBrief" />
         </set>-->
-        <set name="packDocs" table="PACK_DOC" inverse="true" lazy="true" fetch="select">
+        <set name="packDocs" table="PACK_DOC" inverse="true" lazy="true" fetch="select" where="DELETED = 'FALSE'">
             <key>
                 <column name="HID_ROUTE" precision="20" scale="0" />
             </key>
@@ -114,6 +118,19 @@
                 <column name="HID_ROUTE" precision="20" scale="0" not-null="true" />
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.Doc2docTemplsRouteRefs" />
+        </set>
+        <set name="poezds" table="KY_POEZD" inverse="true" lazy="true" fetch="select" cascade="all">
+            <key>
+                <column name="HID_ROUTE" precision="20" scale="0" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.Poezd" />
+        </set>
+
+        <set name="avtos" table="KY_AVTO" inverse="true" lazy="true" fetch="select" cascade="all">
+            <key>
+                <column name="HID_ROUTE" precision="20" scale="0" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.Avto" />
         </set>
     </class>
     <filter-def name="limitDocsByFobiddenUserGroup">

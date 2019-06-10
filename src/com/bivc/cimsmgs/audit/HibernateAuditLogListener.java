@@ -2,10 +2,7 @@ package com.bivc.cimsmgs.audit;
 
 import com.bivc.cimsmgs.commons.myUser;
 import org.apache.commons.lang3.ArrayUtils;
-import org.hibernate.event.PreInsertEvent;
-import org.hibernate.event.PreInsertEventListener;
-import org.hibernate.event.PreUpdateEvent;
-import org.hibernate.event.PreUpdateEventListener;
+import org.hibernate.event.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,8 +13,11 @@ import java.util.Date;
  * Date: 27.04.12
  * Time: 15:15
  */
-public class HibernateAuditLogListener implements PreInsertEventListener, PreUpdateEventListener/*, FlushEntityEventListener, MergeEventListener*/ {
+public class HibernateAuditLogListener implements PreInsertEventListener, PreUpdateEventListener, PreDeleteEventListener/*, FlushEntityEventListener, MergeEventListener*/ {
+
     final static private Logger log = LoggerFactory.getLogger(HibernateAuditLogListener.class);
+
+    @Override
     public boolean onPreInsert(PreInsertEvent event) {
         log.info("onPreInsert - " + event.getEntity().toString());
         /* StatelessSession session = event.getPersister().getFactory().openStatelessSession();
@@ -41,6 +41,7 @@ public class HibernateAuditLogListener implements PreInsertEventListener, PreUpd
         return false;
     }
 
+    @Override
     public boolean onPreUpdate(PreUpdateEvent event) {
         log.info("onPreUpdate - " + event.getEntity().toString());
         Object entity = event.getEntity();
@@ -57,6 +58,12 @@ public class HibernateAuditLogListener implements PreInsertEventListener, PreUpd
         } else {
 //                   Log.error("Field '" + propertyToSet + "' not found on entity '" + entity.getClass().getName() + "'.");
         }
+    }
+
+    @Override
+    public boolean onPreDelete(PreDeleteEvent event) {
+//        log.info("onPreDelete - " + event.getEntity().toString());
+        return false;
     }
 
    /* @Override

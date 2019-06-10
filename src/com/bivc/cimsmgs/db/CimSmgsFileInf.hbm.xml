@@ -9,6 +9,7 @@
             <generator class="sequence">
               <param name="sequence">CIM_SMGS_FILE_INF_HID</param>
             </generator>
+            <!--<generator class="native"/>-->
         </id>
         <many-to-one name="route" class="com.bivc.cimsmgs.db.Route" fetch="select">
             <column name="HID_ROUTE" precision="20" scale="0" />
@@ -31,7 +32,7 @@
         <property name="trans" type="string">
             <column name="TRANS" length="20" />
         </property>
-        <set name="cimSmgsFiles" table="CIM_SMGS_FILE" cascade="all" inverse="true" lazy="true" batch-size="50">
+        <set name="cimSmgsFiles" table="CIM_SMGS_FILE" cascade="all" inverse="true" lazy="true" batch-size="50" where="DELETED = 'FALSE'">
             <key>
                 <column name="HID_INF" precision="22" scale="0" not-null="true" />
             </key>

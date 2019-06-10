@@ -1,6 +1,21 @@
 Ext.define('TK.view.printtmpl.PhraseForm', {
     extend: 'Ext.window.Window',
     alias: 'widget.printDataPhrase',
+
+    requires: [
+        'Ext.data.ArrayStore',
+        'Ext.form.field.ComboBox',
+        'Ext.form.field.Number',
+        'Ext.form.field.Text',
+        'Ext.grid.column.Check',
+        'Ext.grid.column.RowNumberer',
+        'Ext.layout.container.Anchor',
+        'Ext.toolbar.Separator',
+        'TK.Utils',
+        'TK.model.PrintDataPhrase',
+        'TK.view.edit.DetailGrid'
+    ],
+
     bodyPadding: 5,
     title: 'Настройки отдельных фраз',
     autoShow: true,

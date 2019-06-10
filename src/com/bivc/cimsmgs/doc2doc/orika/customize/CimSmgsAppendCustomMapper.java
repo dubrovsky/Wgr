@@ -33,11 +33,11 @@ public class CimSmgsAppendCustomMapper extends CustomMapper<CimSmgs, CimSmgs> {
             for(CimSmgsDocs docsSource : cimSmgsSource.getCimSmgsDocses13().values()){
                 CimSmgsDocs docsDestination = mapperFacade.map(docsSource, CimSmgsDocs.class);
                 sort = cimSmgsDestination.getCimSmgsDocses13().size();
-                docsDestination.setSort((byte)sort);
-                cimSmgsDestination.getCimSmgsDocses13().put((byte) sort, docsDestination);
+                docsDestination.setSort(sort);
+                cimSmgsDestination.getCimSmgsDocses13().put(sort, docsDestination);
             }
         } else if (MapUtils.isEmpty(cimSmgsDestination.getCimSmgsDocses13())){
-            cimSmgsDestination.setCimSmgsDocses13(new TreeMap<Byte, CimSmgsDocs>());
+            cimSmgsDestination.setCimSmgsDocses13(new TreeMap<Integer, CimSmgsDocs>());
         }
 
         if (MapUtils.isNotEmpty(cimSmgsSource.getCimSmgsPerevoz())) {

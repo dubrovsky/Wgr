@@ -1,10 +1,28 @@
 Ext.define('TK.view.aviso2.Form', {
     extend:'TK.view.DocsForm',
-    alias:'widget.aviso2',
-    requires:[
+    alias:'widget.aviso2_1',
+    requires: [
+        'Ext.button.Button',
+        'Ext.data.ArrayStore',
+        'Ext.form.FieldContainer',
+        'Ext.form.Label',
+        'Ext.form.field.ComboBox',
+        'Ext.form.field.Date',
+        'Ext.form.field.Display',
+        'Ext.form.field.Hidden',
+        'Ext.form.field.Number',
+        'Ext.form.field.Radio',
+        'Ext.form.field.Text',
+        'Ext.form.field.TextArea',
+        'Ext.form.field.Trigger',
+        'Ext.grid.column.RowNumberer',
+        'Ext.layout.container.HBox',
+        'Ext.layout.container.VBox',
+        'Ext.toolbar.Separator',
+        'TK.model.SmgsKon2',
+        'TK.view.edit.DetailGrid',
         'TK.view.edit.DetailPanel',
-        'TK.view.edit.DetailTabPanel',
-        'TK.view.edit.DetailGrid'
+        'TK.view.edit.DetailTabPanel'
     ],
     buildItems:function (config) {
         config.items = [

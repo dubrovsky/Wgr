@@ -1,6 +1,11 @@
 Ext.define('TK.view.user.ListPrivs', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.userlistprivs',
+
+    requires: [
+        'TK.Utils'
+    ],
+
     enableColumnHide:false,
     enableColumnMove:false,
 //    enableColumnResize:false,
@@ -22,7 +27,7 @@ Ext.define('TK.view.user.ListPrivs', {
     },
     buildSelModel:function(config) {
         this.selType = 'checkboxmodel';
-        this.selModel = {mode: 'MULTI'};
+        this.selModel = {mode: 'SIMPLE'};
     },
     buildDockedItems: function(config) {
     	config.dockedItems = [{

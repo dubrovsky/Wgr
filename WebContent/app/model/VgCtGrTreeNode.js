@@ -6,17 +6,19 @@ Ext.define('TK.model.VgCtGrTreeNode', {
         {name: 'sort', type: 'int'},
 
         // vag
-        'nvag',
-        {name: 'grPod', type: 'float'},
-        {name: 'taraVag', type: 'float'},
-        {name: 'kolOs', type: 'float'},
+        'nvag', 'vagOtm','klientName','rod',
+        {name: 'grPod', type: 'float', useNull: true},
+        {name: 'taraVag', type: 'float', useNull: true},
+        {name: 'kolOs', type: 'float', useNull: true},
 
         // kont
         'notes',
         'utiN',
-        {name: 'sizeFoot', type: 'int'},
-        {name: 'taraKont', type: 'int'},
-        {name: 'sizeMm', type: 'int'},
+        {name: 'sizeFoot', type: 'int', useNull: true},
+        {name: 'taraKont', type: 'int', useNull: true},
+        {name: 'sizeMm', type: 'int', useNull: true},
+        {name: 'grpod', type: 'float', useNull: true},
+        'utiType',
 
         // gruz
         'kgvn',
@@ -26,9 +28,22 @@ Ext.define('TK.model.VgCtGrTreeNode', {
         'enzgr',
         'upakForeign',
         'upak',
-        {name: 'massa', type: 'float'},
-        {name: 'places', type: 'int'},
+        {name: 'massa', type: 'float', useNull: true},
+        {name: 'places', type: 'int', useNull: true},
         {name: 'ohr', type: 'boolean'},
+
+        // danGruz
+        'carDName',
+        'carDNameDe',
+        'codDanger',
+        'numOon',
+        'numOonDe',
+        'clazz',
+        'dangSign',
+        'groupPack',
+        'emergenC',
+        'stampDName',
+        'dopInfo',
 
         // tree node fields
         'who',

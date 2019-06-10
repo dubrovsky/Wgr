@@ -1,6 +1,12 @@
 Ext.define('TK.view.user.FormGroups', {
     extend: 'Ext.form.Panel',
     alias: 'widget.usergroups',
+
+    requires: [
+        'Ext.form.field.VTypes',
+        'Ext.toolbar.Separator'
+    ],
+
     defaultType: 'textfield',
     bodyStyle: 'padding:5px 8px;',
     defaults: {allowBlank: false,anchor: '100%', msgTarget: 'under'},

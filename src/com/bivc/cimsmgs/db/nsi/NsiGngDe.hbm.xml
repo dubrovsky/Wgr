@@ -6,7 +6,8 @@
     <class name="com.bivc.cimsmgs.db.nsi.NsiGngDe" table="NSI_GNG_DE">
         <id name="kgvn" type="string">
             <column name="KGVN"/>
-            <generator class="assigned"/>
+            <!--<generator class="assigned"/>-->
+            <generator class="native"/>
         </id>
 
         <property name="nzgr" type="string">

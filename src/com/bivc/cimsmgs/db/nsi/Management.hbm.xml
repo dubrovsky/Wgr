@@ -3,10 +3,11 @@
                                    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 08.04.2011 10:06:33 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
-	<class name="com.bivc.cimsmgs.db.nsi.Management" table="MANAGEMENT" where="SYSDATE &gt;= MANAG_BGN and SYSDATE &lt; MANAG_END">
+	<class name="com.bivc.cimsmgs.db.nsi.Management" table="MANAGEMENT" where="SYSDATE() &gt;= `MANAG_BGN` and SYSDATE() &lt; `MANAG_END`">
 		<id name="managUn" type="java.lang.Long">
 			<column name="MANAG_UN" precision="10" scale="0" />
-			<generator class="assigned" />
+			<!--<generator class="assigned" />-->
+            <generator class="native"/>
 		</id>
 		<many-to-one name="countrys" class="com.bivc.cimsmgs.db.nsi.Countrys" fetch="join" property-ref="countryNo" >
             <column length="3" name="COUNTRY_NO" />

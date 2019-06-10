@@ -9,12 +9,19 @@
             <generator class="sequence">
              <param name="sequence">STATUS_HID</param>
            </generator>
+            <!--<generator class="native"/>-->
         </id>
         <property name="name" type="string">
             <column name="NAME" length="300"/>
         </property>
         <property name="prim" type="string">
             <column name="PRIM" length="300"/>
+        </property>
+        <property name="nameDe" type="string">
+            <column name="NAME_DE" length="300"/>
+        </property>
+        <property name="primDe" type="string">
+            <column name="PRIM_DE" length="300"/>
         </property>
         <set name="statuses" table="STATUS" inverse="true" lazy="true" fetch="select">
             <key>

@@ -9,6 +9,7 @@
             <generator class="sequence">
               <param name="sequence">CIM_SMGS_KON_LIST_HID</param>
             </generator>
+            <!--<generator class="native"/>-->
         </id>
         <many-to-one name="cimSmgsCarList" class="com.bivc.cimsmgs.db.CimSmgsCarList" fetch="select">
             <column name="HID_CAR" precision="20" scale="0" not-null="true"/>
@@ -183,11 +184,14 @@
         <property name="prim" type="string" >
             <column name="prim" length="512"/>
         </property>
+        <property name="grpod" type="big_decimal">
+            <column name="GRPOD" precision="8" scale="3" />
+        </property>
         <map name="cimSmgsGruzs" cascade="refresh" inverse="true" sort="natural" lazy="true" batch-size="50"  >
             <key>
                 <column name="HID_KON" precision="20" scale="0"  not-null="true"/>
             </key>
-            <map-key column="SORT" type="byte"/>
+            <map-key column="SORT" type="java.lang.Integer"/>
             <one-to-many class="com.bivc.cimsmgs.db.CimSmgsGruz" />
         </map>
 
@@ -195,7 +199,7 @@
             <key>
                 <column name="HID_KON" precision="20" scale="0" not-null="true"/>
             </key>
-            <map-key column="SORT" type="byte"/>
+            <map-key column="SORT" type="java.lang.Integer"/>
             <one-to-many class="com.bivc.cimsmgs.db.CimSmgsDocs"/>
         </map>
 

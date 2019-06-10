@@ -5,7 +5,7 @@
     <class name="com.bivc.cimsmgs.db._NsiStCis" table="NSI_ST_CIS" >
         <id name="hid" type="long">
             <column name="HID" precision="14" scale="0" />
-            <generator class="assigned" />
+            <generator class="native" />
         </id>
         <many-to-one name="nsiDor" class="com.bivc.cimsmgs.db.NsiDor" fetch="join" formula="SUBSTR2(COD_DIR, 2, 2)" >
             <column name="COD_DIR" length="3" />

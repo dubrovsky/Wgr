@@ -2,6 +2,11 @@ Ext.define('TK.view.cimsmgs.CimSmgsPlombsTreeFormWin', {
     extend: 'TK.view.edit.PlombsTreeFormWin',
     alias: 'widget.cimsmgsPlombsTreeformWin',
 
+    requires: [
+        'Ext.form.field.Hidden',
+        'Ext.form.field.Number'
+    ],
+
     // title: 'Пломбы',
 
     buildFormItems: function(){

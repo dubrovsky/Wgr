@@ -6,7 +6,8 @@ Ext.define('TK.model.PrintBlank', {
         'name','fileName','contentType',
         {name:'page', type:'int'},
         {name:'ncopy', type:'int'},
-        {name:'length', type:'int'}
+        {name:'length', type:'int'},
+        {name:'preview', type:'boolean'}
     ],
     validations:[
         {type:'presence', field:'name'},

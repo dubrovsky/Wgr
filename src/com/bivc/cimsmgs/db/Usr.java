@@ -30,8 +30,17 @@ public class Usr implements Serializable {
 //    private Set<Doc2docTemplsUnRefs> doc2docTemplsUnRefses = new HashSet<Doc2docTemplsUnRefs>();
     private Set<FieldsComments> fieldsCommentses = new HashSet<FieldsComments>();
     private Set<Doc2docTemplsRouteUnRefs> doc2docTemplsRouteUnRefses = new HashSet<Doc2docTemplsRouteUnRefs>();
+	private Date datpw;
 
-    public Set<Doc2docTemplsRouteUnRefs> getDoc2docTemplsRouteUnRefses() {
+	public Date getDatpw() {
+		return datpw;
+	}
+
+	public void setDatpw(Date datpw) {
+		this.datpw = datpw;
+	}
+
+	public Set<Doc2docTemplsRouteUnRefs> getDoc2docTemplsRouteUnRefses() {
         return doc2docTemplsRouteUnRefses;
     }
 
@@ -196,6 +205,7 @@ public class Usr implements Serializable {
 	public void saving(Usr user) {
 	    setDattr(new Date());
 	    setUn1(user.getUn());
+		  setDatpw(null);
 	    buildGroups();
 	    buildPrivilegs();
 	}

@@ -3,7 +3,7 @@
 <!DOCTYPE HTML PUBLIC  "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-    <title>Wgr-b.34</title>
+    <title>DBWGR</title>
     <link rel="stylesheet" type="text/css"  href="ext/src/ux/css/ItemSelector.css" />
     <link rel="stylesheet" href="build/production/TK/resources/TK-all.css"/>
     <link rel="stylesheet" type="text/css" href="build/production/TK/resources/css/styles.css">

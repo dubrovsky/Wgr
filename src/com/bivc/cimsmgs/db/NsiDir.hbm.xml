@@ -6,7 +6,8 @@
     <class name="com.bivc.cimsmgs.db.NsiDir" table="NSI_DIR">
         <id name="hid" type="big_decimal">
             <column name="HID" precision="20" scale="0" />
-            <generator class="assigned" />
+            <!--<generator class="assigned" />-->
+            <generator class="native"/>
         </id>
         <property name="name" type="string">
             <column name="NAME" length="300" />

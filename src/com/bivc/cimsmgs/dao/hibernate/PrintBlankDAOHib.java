@@ -4,12 +4,15 @@ import com.bivc.cimsmgs.dao.PrintBlankDAO;
 import com.bivc.cimsmgs.db.PrintBlank;
 import com.bivc.cimsmgs.db.Usr;
 import org.hibernate.Criteria;
-import org.hibernate.LockOptions;
+import org.hibernate.Hibernate;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -30,36 +33,46 @@ public class PrintBlankDAOHib extends GenericHibernateDAO<PrintBlank, Long> impl
     }*/
 
     public int updateBlank(PrintBlank blank) {
-        String hqlUpdate = "update PrintBlank pb set pb.name = :newName, pb.page = :newPage, pb.ncopy = :newNcopy where pb.hid = :hid";
+        String hqlUpdate = "update PrintBlank pb set pb.name = :newName, pb.page = :newPage, pb.ncopy = :newNcopy, pb.preview = :preview where pb.hid = :hid";
         int updatedEntities = getSession().createQuery( hqlUpdate )
                 .setString("newName", blank.getName())
                 .setByte("newPage", blank.getPage())
                 .setByte("newNcopy", blank.getNcopy())
+                .setBoolean("preview", blank.isPreview())
                 .setLong("hid", blank.getHid())
                 .executeUpdate();
 
         return updatedEntities;
     }
 
-    @Override
+    /*@Override
     public void saveBlank(PrintBlank blank, File upload) throws SQLException, IOException {
         blank.setData(getSession().getLobHelper().createBlob(new byte[]{0}));
         getSession().save(blank);
         getSession().flush();
         getSession().refresh(blank, LockOptions.UPGRADE); //grabs an Oracle CLOB
-//        SerializableBlobProxy sBlob = (SerializableBlobProxy) scan.getFiles();
-//        oracle.sql.BLOB blob = (oracle.sql.BLOB) sBlob.getWrappedBlob();
         OutputStream pw = blank.getData().setBinaryStream(1);
         InputStream fileIn = new FileInputStream(upload);
         byte[] b  = new byte[new Long(upload.length()).intValue()];
         fileIn.read(b);
         pw.write(b);
-        /*int value;
-        do {
-            value = fileIn.read();
-            if (value != -1)
-                pw.write(value);
-        } while (value != -1);*/
         pw.close();
+    }*/
+
+    @Override
+    public void saveBlank(PrintBlank blank, File file) throws SQLException, IOException {
+        FileInputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(file);
+            Blob blob = Hibernate.getLobCreator(getSession()).createBlob(inputStream, file.length());
+            blank.setData(blob);
+            getSession().save(blank);
+            getSession().flush();
+            blob.free();
+        } finally {
+            if(inputStream != null){
+                inputStream.close();
+            }
+        }
     }
 }

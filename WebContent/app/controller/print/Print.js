@@ -1,6 +1,17 @@
 Ext.define('TK.controller.print.Print', {
     extend: 'Ext.app.Controller',
 
+    requires: [
+        'Ext.form.CheckboxGroup',
+        'Ext.form.Panel',
+        'Ext.form.field.Checkbox',
+        'Ext.toolbar.Fill',
+        'Ext.toolbar.Separator',
+        'Ext.toolbar.Toolbar',
+        'Ext.window.Window',
+        'TK.Utils'
+    ],
+
     refs: [
         {
             ref: 'center',
@@ -19,17 +30,85 @@ Ext.define('TK.controller.print.Print', {
             'docslist button[action="print"] menuitem[action="print"]': {
                 click: this.onPrint1
             },
+            'docslist button[action="print"] menuitem[action="printView"]': {
+                click: this.onPrintOnListView
+            },
+            'docslist button[action="print"] menuitem[action="selectPrintTmpl"]': {
+                printWithTempl: this.onPrintWithTempl
+            },
             'docslist button[action="printInvoice"]': {
                 click: this.onPrint
+            },
+            'docsform button[action="printView"]': {
+                click: this.onPrintOnFormView
+            },
+            'vedlist button[action="print"] menuitem[action="print_A4_vag"]': {
+                click: this.onVedPrint
+            },
+            'vedlist button[action="print"] menuitem[action="print_A3_vag"]': {
+                click: this.onVedPrint
+            },
+            'vedlist button[action="print"] menuitem[action="print_A4_per"]': {
+                click: this.onVedPrint
+            },
+            'vedlist button[action="print"] menuitem[action="print_A3_per"]': {
+                click: this.onVedPrint
             }
         });
     },
+// предпросмотр печати
+    onPrintOnFormView: function(btn){
+        var form = btn.up('form').getForm(),
+            hid = form.findField('smgs.hid').getValue();
+
+        if(!hid){
+            Ext.Msg.show({title: 'Предупреждение', msg: 'Сохраните документ', buttons: Ext.Msg.OK, icon: Ext.Msg.WARNING});
+            return;
+        }
+
+        var doc = tkUser.docs.getByKey(form.findField('search.docType').getValue()),
+            params = {
+                docId: form.findField('smgs.docType1').getValue(),
+                isView: true,
+                routeId: form.findField('smgs.route.hid').getValue(),
+                'search.type': form.findField('smgs.type').getValue(),
+                task: form.findField('search.docType').getValue()
+            };
+        params[doc.prefix + '.hid'] = hid;
+        this.doPrint1(doc, params);
+    },
+
+    onPrintWithTempl: function(grid, templHid){
+       this.preparePrint(grid, {isView: false, templHid: templHid})
+    },
+
+    onPrintOnListView: function(btn){
+        this.preparePrint(btn.up('grid'), {isView: true})
+    },
+
+    onVedPrint: function(btn){
+        var list = btn.up('grid');
+        var actionParams = btn.action.split('_');
+        if(TK.Utils.isRowSelected(list)) {
+            var datas = list.getSelectionModel().getLastSelected().data,
+                doc = tkUser.docs.getByKey(this.getMenutree().lastSelectedLeaf.id.split('_')[3]),
+                params = {};
+            params['pageSize'] = actionParams[1];
+            params['doc.name'] = actionParams[2];
+            params[doc.prefix+'.hid'] = datas['hid'] || datas[doc.prefix+'.hid'];
+            window.open('Pdf.do?' + Ext.Object.toQueryString(params),'_blank','');
+        }
+    },
 
     onPrint1: function(btn){
-        var list = btn.up('grid');
+        this.preparePrint(btn.up('grid'), {isView: false});
+    },
+
+    preparePrint: function(list, args){
+        // var list = btn.up('grid');
         if(TK.Utils.isRowSelected(list))
         {
-            var datas = list.selModel.getLastSelected().data,
+            var datas = list.getSelectionModel().getLastSelected().data,
                 doc = tkUser.docs.getByKey(this.getMenutree().lastSelectedLeaf.id.split('_')[3]),
                 params = {};
 
@@ -38,16 +117,19 @@ Ext.define('TK.controller.print.Print', {
             params['search.type'] = datas['type'] || datas[doc.prefix+'.type'];
             params[doc.prefix+'.hid'] = datas['hid'] || datas[doc.prefix+'.hid'];
             params['task'] = doc['name'];
+            Ext.apply(params, args);
 
             this.doPrint1(doc, params);
         }
     },
+// печать
     doPrint1: function(doc, datas){
         Ext.Ajax.request({
             url: 'PrintTemplates_printWinParams.do',
             params: {
                 'doc.hid': datas['docId'],
-                'route.hid': datas['routeId']
+                'route.hid': datas['routeId'],
+                templHid: datas['templHid']
             },
             scope: this,
             success: function(response, options) {
@@ -55,11 +137,11 @@ Ext.define('TK.controller.print.Print', {
                     winParams = Ext.decode(response.responseText),
                     pagesArr = winParams['pages'],
                     nBlanks = winParams['nBlanks'],
-//                    data = {},
                     pdfParams = {};
-//                data.hid = datas.hid || datas[doc.prefix+'.hid'];
-//                data.type = datas.type || datas[doc.prefix+'.type'];
-                pdfParams['status'] = 17;
+
+                if(!datas['isView']) {
+                    pdfParams['status'] = 17;
+                }
                 pdfParams[doc.prefix+'.hid'] = datas[doc.prefix+'.hid'];
                 pdfParams['task'] = datas['task'];
                 if(datas['search.type']){
@@ -67,8 +149,10 @@ Ext.define('TK.controller.print.Print', {
                 }
                 pdfParams['doc.hid'] = datas['docId'];
                 pdfParams['route.hid'] = datas['routeId'];
+                pdfParams['isView'] = datas['isView'];
+                pdfParams['templHid'] = datas['templHid'];
 
-                if(pagesArr.length == 1 && nBlanks == 0){
+                if(datas['isView'] || (pagesArr.length === 1 && nBlanks === 0)){
                     window.open('Pdf.do?' + Ext.Object.toQueryString(pdfParams),'_blank','');
                 } else {
                     var formItems = [],
@@ -89,7 +173,7 @@ Ext.define('TK.controller.print.Print', {
                         });
                     }
                     if(nBlanks > 0){
-                        formItems.push({xtype:'checkbox', boxLabel: me.labelBlank, name:'print.useBlanks', inputValue:true, uncheckedValue:false});
+                        formItems.push({xtype:'checkbox', boxLabel: me.labelBlank, name:'print.useBlanks', inputValue:true, uncheckedValue:false, checked:true});
                     }
                     Ext.create('Ext.window.Window',{
                         title: me.titlePrint,

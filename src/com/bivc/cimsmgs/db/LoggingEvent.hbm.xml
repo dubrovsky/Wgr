@@ -4,9 +4,10 @@
 <!-- Generated 05.05.2012 14:42:50 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.bivc.cimsmgs.db.LoggingEvent" table="LOGGING_EVENT">
-        <id name="eventId" type="long">
+        <id name="eventId" type="java.lang.Long">
             <column name="EVENT_ID" precision="10" scale="0" />
-            <generator class="assigned" />
+            <!--<generator class="assigned" />-->
+            <generator class="native"/>
         </id>
         <property name="timestmp" type="big_decimal">
             <column name="TIMESTMP" precision="20" scale="0" not-null="true" />

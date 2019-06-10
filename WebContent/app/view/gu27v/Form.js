@@ -1,10 +1,22 @@
 Ext.define('TK.view.gu27v.Form', {
     extend:'TK.view.DocsForm',
     alias:'widget.gu27v',
-    requires:[
+    requires: [
+        'Ext.button.Button',
+        'Ext.data.ArrayStore',
+        'Ext.form.Label',
+        'Ext.form.field.ComboBox',
+        'Ext.form.field.Date',
+        'Ext.form.field.Hidden',
+        'Ext.form.field.Number',
+        'Ext.form.field.Radio',
+        'Ext.form.field.Text',
+        'Ext.form.field.TextArea',
+        'Ext.form.field.Trigger',
+        'TK.model.SmgsPlomb',
+        'TK.view.edit.DetailGrid',
         'TK.view.edit.DetailPanel',
-        'TK.view.edit.DetailTabPanel',
-        'TK.view.edit.DetailGrid'
+        'TK.view.edit.DetailTabPanel'
     ],
     buildItems:function (config) {
         config.items = [

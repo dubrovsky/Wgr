@@ -25,14 +25,28 @@ public class InvoiceDAOHib extends GenericHibernateDAO<CimSmgsInvoice, Long> imp
 
     public List<CimSmgsInvoice> findAll(Integer limit, Integer start, Search search, Usr usr) throws InfrastructureException {
         Criteria crit = getSession().createCriteria(getPersistentClass(), "invoice");
-        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans()));
-        crit.createAlias("route", "route").add(Restrictions.eq("route.hid", search.getRouteId()));
+        crit.createAlias("packDoc", "pack").
+                createAlias("pack.usrGroupsDir", "gr").
+                add(Restrictions.in("gr.name", usr.getTrans()));
+        
+        crit.createAlias("route", "route").
+                add(Restrictions.eq("route.hid", search.getRouteId()));
+
         if (start >= 0) { // for excell report, start == -1
             crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 20 : limit);
         }
         crit.addOrder(Order.desc("dattr"));
+
         if (search.getPackId() != null) {
+            // invoice list in pack
             crit.add(Restrictions.eq("pack.hid", search.getPackId()));
+            crit.add(Restrictions.eq("pack.deleted", false));
+            crit.add(Restrictions.eq("invoice.deleted", search.getDeleted() != 0));
+        } else {
+            // general invoice list
+            crit.add(Restrictions.eq("pack.deleted", false));
+//            crit.add(Restrictions.eq("deleted", false));
+            crit.add(Restrictions.eq("invoice.deleted", search.getDeleted() != 0));
         }
 
         if (StringUtils.isNotEmpty(search.getStatus())) {
@@ -92,11 +106,13 @@ public class InvoiceDAOHib extends GenericHibernateDAO<CimSmgsInvoice, Long> imp
 
     public Long countAll(Search search, Usr usr) {
         Criteria crit = getSession().createCriteria(getPersistentClass(), "invoice");
-        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans()));
+        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans())).
+                add(Restrictions.eq("pack.deleted", false));
         crit.createAlias("route", "route").add(Restrictions.eq("route.hid", search.getRouteId()));
         if (search.getPackId() != null) {
             crit.add(Restrictions.eq("pack.hid", search.getPackId()));
         }
+        crit.add(Restrictions.eq("invoice.deleted", search.getDeleted() != 0));
 //        crit.setProjection(Projections.rowCount());
         crit.setProjection(Projections.countDistinct("hid"));
 
@@ -158,6 +174,7 @@ public class InvoiceDAOHib extends GenericHibernateDAO<CimSmgsInvoice, Long> imp
     public CimSmgsInvoice findById2(CimSmgsInvoice invoice) {
         Criteria crit = getSession().createCriteria(getPersistentClass()).
                 createAlias("packDoc", "pack").
+            //    add(Restrictions.eq("pack.deleted", false)).
                 createAlias("route", "route");
         if (invoice.getHid() != null) {
             crit.add(Restrictions.eq("hid", invoice.getHid()));
@@ -332,7 +349,8 @@ public class InvoiceDAOHib extends GenericHibernateDAO<CimSmgsInvoice, Long> imp
     @Override
     public Long countAll(PackDoc packDoc) {
         Criteria crit = getSession().createCriteria(getPersistentClass());
-        crit.add(Restrictions.eq("packDoc", packDoc));
+        crit.add(Restrictions.eq("packDoc", packDoc)).
+                add(Restrictions.eq("pack.deleted", false));
 
         crit.setProjection(Projections.countDistinct("hid"));
         return (Long) crit.uniqueResult();

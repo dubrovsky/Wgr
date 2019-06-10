@@ -6,7 +6,8 @@
     <class name="com.bivc.cimsmgs.db.UsrPrivilegsDir" table="USR_PRIVILEGS_DIR">
         <id name="name" type="string">
             <column name="NAME" length="64" />
-            <generator class="assigned" />
+            <!--<generator class="assigned" />-->
+            <generator class="native"/>
         </id>
         <property name="descr" type="string">
             <column name="DESCR" length="600" />

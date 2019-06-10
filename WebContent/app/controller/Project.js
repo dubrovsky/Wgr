@@ -1,6 +1,16 @@
 Ext.define('TK.controller.Project', {
     extend: 'Ext.app.Controller',
 
+    requires: [
+        'Ext.grid.Panel',
+        'Ext.layout.container.Fit',
+        'Ext.toolbar.Fill',
+        'Ext.toolbar.Separator',
+        'Ext.toolbar.Toolbar',
+        'Ext.ux.form.ItemSelector',
+        'TK.Utils'
+    ],
+
     views:  ['project.List','project.Form'],
     stores: ['Projects','Project','RouteDocs',"Groups"],
     models: ['Project','Group','Route','RouteDoc'],

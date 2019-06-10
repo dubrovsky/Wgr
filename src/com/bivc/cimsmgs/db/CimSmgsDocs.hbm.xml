@@ -9,12 +9,16 @@
             <generator class="sequence">
               <param name="sequence">CIM_SMGS_DOCS_HID</param>
             </generator>
+            <!--<generator class="native"/>-->
         </id>
         <many-to-one name="cimSmgs" class="com.bivc.cimsmgs.db.CimSmgs" fetch="select" >
             <column name="HID_CS" precision="20" scale="0" not-null="true"/>
         </many-to-one>
         <many-to-one name="cimSmgsKonList" class="com.bivc.cimsmgs.db.CimSmgsKonList" fetch="select">
             <column name="HID_KON" precision="20" scale="0"  />
+        </many-to-one>
+        <many-to-one name="cimSmgsCarList" class="com.bivc.cimsmgs.db.CimSmgsCarList" fetch="select">
+            <column name="HID_CAR" precision="20" scale="0" />
         </many-to-one>
         <property name="code" type="string">
             <column name="CODE" length="3" />
@@ -37,8 +41,8 @@
         <property name="fieldNum" type="string">
             <column name="FIELD_NUM" length="6" not-null="true" />
         </property>
-        <property name="sort" type="byte">
-            <column name="SORT" length="2" not-null="true"/>
+        <property name="sort" type="java.lang.Integer">
+            <column name="SORT" length="3" not-null="true"/>
         </property>
         <property name="ncas" type="string">
             <column name="NCAS" length="6" />

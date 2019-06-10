@@ -6,7 +6,8 @@
     <class name="com.bivc.cimsmgs.db.nsi.Company" table="COMPANY">
         <id name="id" type="big_decimal">
             <column name="ID" precision="22" scale="0" />
-            <generator class="assigned" />
+            <!--<generator class="assigned" />-->
+            <generator class="native"/>
         </id>
         <many-to-one name="country" class="com.bivc.cimsmgs.db.nsi.Country" fetch="select">
             <column name="REG_COUNTRY" length="2" not-null="true" />

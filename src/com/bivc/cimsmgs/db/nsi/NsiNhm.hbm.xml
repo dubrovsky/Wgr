@@ -7,7 +7,8 @@
 	<class name="com.bivc.cimsmgs.db.nsi.NsiNhm" table="NSI_NHM" >
 		<id name="hid" type="java.lang.Long">
 			<column name="HID"/>
-			<generator class="assigned" />
+			<!--<generator class="assigned" />-->
+            <generator class="native"/>
 		</id>
     <property name="kgvn" type="string">
       <column name="KGVN" />

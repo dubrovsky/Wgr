@@ -41,12 +41,26 @@ public class ExchangeServer {
         return res;
     }
 
-    public String getIftminText(Long hid_cs, String user)  throws Exception {
+    public String getIftminText(Long hid_cs, String user, EDIConvertor.EdiDir dir)  throws Exception {
         if (log.isDebugEnabled()) log.debug("ID = " + hid_cs);
 
-        EDIConvertor97B conv = new EDIConvertor97B(EDIConvertor.EdiDir.DB);
+        EDIConvertor conv;
+        if (dir == EDIConvertor.EdiDir.DB)
+            conv = new EDIConvertor97B(dir);
+        else if (dir == EDIConvertor.EdiDir.DB97A)
+            conv = new EDIConvertor97A2015(dir);
+        else
+            throw new Exception("Wrong EdiDir=" +dir.name());
+
         conv.sendIftmin(hid_cs);
         return conv.getIftminText();
+    }
+
+    public String getDBXMLText(Long hid_cs, String user)  throws Exception {
+        if (log.isDebugEnabled()) log.debug("ID = " + hid_cs);
+
+        DBXMLConvertor2 conv = new DBXMLConvertor2();
+        return conv.getText(hid_cs);
     }
 
     public void getFTSXMLText(Long hid_cs, String user, ServletContext sc)  throws Exception {

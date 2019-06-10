@@ -1,5 +1,6 @@
 package com.bivc.cimsmgs.exchange;
 
+import com.bivc.cimsmgs.commons.DocType;
 import com.bivc.cimsmgs.commons.HibernateUtil;
 import com.bivc.cimsmgs.db.*;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -16,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -37,9 +39,9 @@ public class DocLoader {
       tx = session.beginTransaction();
 
       @SuppressWarnings("unchecked")
-      List<Object[]> srcList = session.createSQLQuery("SELECT src, route FROM src_dir").list();
+      List<Object[]> srcList = session.createSQLQuery("SELECT src, route FROM SRC_DIR").list();
       for (Object[] row : srcList) {
-        srcMap.put((Character)row[0], ((BigDecimal)row[1]).longValue());
+        srcMap.put((Character)row[0], ((BigInteger)row[1]).longValue());
       }
       tx.commit();
     }
@@ -62,20 +64,27 @@ public class DocLoader {
     CimSmgs cs = new CimSmgs();
     cs = processNode(scFields, cs);
     cs.setHid(null);
-    if (cs.getHidSmgs() == null || cs.getHidSmgs() == 0) {
-      cs.setType((byte)1);
-      cs.setDocType1(new BigDecimal(4));
+    DocType type = null;
+    if (cs.getType() != null && cs.getType() == 2) {
+      type = DocType.SMGS;
+    }
+    else if (cs.getType() == null || cs.getType() == 1 || cs.getType() == 0) {
+      type = DocType.CIMSMGS;
+    }
+    if (type != null) {
+      cs.setType(type.getType());
+      cs.setDocType1(type.getDocType1());
     }
     else {
-      cs.setType((byte)2);
-      cs.setDocType1(BigDecimal.ONE);
+      log.warn("Unknown type=" + cs.getType());
     }
+
     cs.setDattr(d);
     cs.setUn(un);
     cs.setTrans(trans);
     cs.setReady(null);
     cs.setStatusBr(null);
-    cs.setKind(0);
+//    cs.setKind(0);
 
     Long route = null;
     if (cs.getSrc() != null) {
@@ -308,6 +317,8 @@ public class DocLoader {
           }
         }
       }
+
+      cs.addCimSmgsPlombItem(cspl);
     }
 
     log.debug("Processing CS_INVOICE");
@@ -464,8 +475,11 @@ public class DocLoader {
       Property pr = (Property)it.next();
       Iterator it1 = pr.getColumnIterator();
       if (it1.hasNext()) {
-        Column co = (Column)it1.next();
-        res.put(co.getCanonicalName(), pr.getName());
+        Object ob = it1.next();
+        if (ob instanceof Column) {
+          Column co = (Column) ob;
+          res.put(co.getCanonicalName(), pr.getName());
+        }
       }
     }
     res.put("hid", "hid");

@@ -1,5 +1,20 @@
 Ext.define('TK.controller.exchange.Senders', {
     extend: 'Ext.app.Controller',
+
+    requires: [
+        'Ext.form.Panel',
+        'Ext.form.field.Date',
+        'Ext.form.field.File',
+        'Ext.form.field.Hidden',
+        'Ext.form.field.Text',
+        'Ext.layout.container.Fit',
+        'Ext.toolbar.Fill',
+        'Ext.toolbar.Separator',
+        'Ext.toolbar.Toolbar',
+        'Ext.window.Window',
+        'TK.Utils'
+    ],
+
     refs: [
         {
             ref: 'center',
@@ -25,9 +40,23 @@ Ext.define('TK.controller.exchange.Senders', {
             'docslist button[action="exchange"] menuitem[action="iftmin"]': {
                 click: this.sendIftmin
             },
+
             'docslist button[action="exchange"] menuitem[action="iftmin_db_out"]': {
                 click: this.sendIftminDBOut
             },
+            'cimsmgslist button[action="exchange"] menuitem[action="xml_db_out"]': {
+                click: this.sendXmlDBOut
+            },
+            'cimsmgslist button[action="exchange"] menuitem[action="iftmin_97a_rzd_out"]': {
+                click: this.sendIftmin97aRzdOut
+            },
+            'smgs2list button[action="exchange"] menuitem[action="xml_db_out"]': {
+                click: this.sendXmlDBOut
+            },
+            'smgs2list button[action="exchange"] menuitem[action="iftmin_97a_rzd_out"]': {
+                click: this.sendIftmin97aRzdOut
+            },
+
             'docslist button[action="exchange"] menuitem[action="iftmin_db_in"]': {
                 click: this.sendIftminDBIn
             },
@@ -149,7 +178,19 @@ Ext.define('TK.controller.exchange.Senders', {
         );
     },
 
+    sendXmlDBOut: function(btn){
+       this.sendIftminOut(btn, 2);
+    },
+
+    sendIftmin97aRzdOut: function(btn){
+        this.sendIftminOut(btn, 3);
+    },
+
     sendIftminDBOut: function(btn){
+        this.sendIftminOut(btn, 1);
+    },
+
+    sendIftminOut: function(btn, type){
         var list = btn.up('grid');
         if(!TK.Utils.isRowSelected(list)){
             return;
@@ -157,7 +198,7 @@ Ext.define('TK.controller.exchange.Senders', {
         var model = list.selModel.getLastSelected();
         window.open(
             'SmgsIftmin_sendIftminDBOut.do?' +
-            'hid_cs=' + model.get('hid'),
+            'hid_cs=' + model.get('hid') + '&type=' + type,
             '_self',''
         );
     },

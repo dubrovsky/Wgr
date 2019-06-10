@@ -2,6 +2,14 @@ Ext.define('TK.view.cimsmgs.CimSmgsDocs9TreeFormWin', {
     extend: 'TK.view.edit.Docs9TreeFormWin',
     alias: 'widget.cimsmgsDocs9TreeformWin',
 
+    requires: [
+        'Ext.form.field.Date',
+        'Ext.form.field.Hidden',
+        'Ext.form.field.Number',
+        'Ext.form.field.TextArea',
+        'Ext.form.field.Trigger'
+    ],
+
     // title: this.titleDocs,
 
     buildFormItems: function(){

@@ -1,5 +1,11 @@
 Ext.define('TK.store.PrintBlanks', {
     extend: 'Ext.data.Store',
+
+    requires: [
+        'TK.Utils',
+        'TK.model.PrintBlank'
+    ],
+
     model: 'TK.model.PrintBlank',
 //    autoLoad: true,
     proxy: {

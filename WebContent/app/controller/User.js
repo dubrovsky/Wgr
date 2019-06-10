@@ -1,6 +1,17 @@
 Ext.define('TK.controller.User', {
     extend: 'Ext.app.Controller',
 
+    requires: [
+        'Ext.button.Button',
+        'Ext.layout.container.Fit',
+        'Ext.window.Window',
+        'TK.Utils',
+        'TK.view.user.Form',
+        'TK.view.user.FormGroups',
+        'TK.view.user.ListGroups',
+        'TK.view.user.ListPrivs'
+    ],
+
     views:  ['user.List','user.Form','user.ListGroups','user.FormGroups','user.ListPrivs'],
     stores: ['Users','UsersGroups','UsersPrivs'],
     models: ['User','UserGroup','UserPriv'],
@@ -15,7 +26,7 @@ Ext.define('TK.controller.User', {
         },
         {
             ref: 'userListGroups',
-            selector: 'window > userlistgroups'
+            selector: 'userlistgroups'
         },
         {
             ref: 'userFormGroups',
@@ -36,6 +47,9 @@ Ext.define('TK.controller.User', {
             },
             'viewport > tabpanel > userlist button[action=edit]': {
                 click: this.onEdit
+            },
+            'viewport > tabpanel > userlist button[action=copy]': {
+                click: this.onCopy
             },
             'viewport > tabpanel > userlist': {
                 itemdblclick: function(){
@@ -72,21 +86,26 @@ Ext.define('TK.controller.User', {
             'window > userlistgroups button[action=close]': {
                 click: this.onClose
             },
-            'window > userlistgroups button[action=refresh]': {
+            'userlistgroups button[action=refresh]': {
                 click: this.onRefresh
             },
             'window > userlistgroups button[action=check]': {
                 click: this.onCheckGroups
             },
-            'window > userlistgroups button[action=add]': {
+            'userlistgroups button[action=add]': {
                 click: this.onEditGroups
             },
-            'window > userlistgroups button[action=edit]': {
+            'userlistgroups button[action=edit]': {
                 click: this.onEditGroups
             },
             'window > userlistgroups': {
                 itemdblclick: function(){
                     this.onEditGroups(Ext.create('Ext.Button', {action:'edit'}));
+                }
+            },
+            'userlistgroups': {
+                render: function(list){
+                    list.store.load();
                 }
             },
             'window > usergroups button[action=close]': {
@@ -191,10 +210,24 @@ Ext.define('TK.controller.User', {
                 field.setValue(field.getValue().replace(/,/g, '\n'));
             }
         }
+        if (panel.mode == 'copy') {
+
+            form.loadRecord(this.getUserList().selModel.getLastSelected());
+            field = form.findField('usr.un').reset();
+            field = form.findField('usr.groupsIds');
+            if (field.getValue() && field.getValue().indexOf(',') != -1) {
+                field.setValue(field.getValue().replace(/,/g, '\n'));
+            }
+            field = form.findField('usr.privilegsIds');
+            if (field.getValue() && field.getValue().indexOf(',') != -1) {
+                field.setValue(field.getValue().replace(/,/g, '\n'));
+            }
+        }
     },
     onEdit: function (btn) {
         if (btn.action == 'edit') {
             if (!TK.Utils.isRowSelected(this.getUserList())) {
+                Ext.Msg.alert(this.titleNoUser, this.msgNoUser);
                 return;
             }
         }
@@ -209,6 +242,24 @@ Ext.define('TK.controller.User', {
             listeners: {show: this.onUserFormShow, scope: this}
         });
     },
+    onCopy: function (btn) {
+        if (btn.action == 'copy') {
+            if (!TK.Utils.isRowSelected(this.getUserList())) {
+                Ext.Msg.alert(this.titleNoUser, this.msgNoUser);
+                return;
+            }
+            Ext.create('Ext.window.Window', {
+//            title: 'Редактор',
+                width: 430, y: 1,
+                modal: true,
+                layout: 'fit',
+                autoShow: true,
+                items: {xtype:'user', mode: btn.action},
+                listeners: {show: this.onUserFormShow, scope: this}
+            });
+        }
+    },
+
     onSave: function (btn) {
         var form = this.getUserForm().getForm();
         form.findField('usr.un').setDisabled(false);
@@ -240,8 +291,8 @@ Ext.define('TK.controller.User', {
             modal: true,
             layout: 'fit',
             autoShow: true,
-            items: {xtype:'userlistgroups', ownerBtn: btn},
-            listeners: {show: function(win){win.getComponent(0).store.load();}}
+            items: {xtype:'userlistgroups', ownerBtn: btn}
+           // , listeners: {show: function(win){win.getComponent(0).store.load();}}
         });
     },
     onPrivs: function (btn) {
@@ -260,27 +311,32 @@ Ext.define('TK.controller.User', {
         });
     },
     onUserGroupsStoreLoad: function (store, records) {
-        var form = this.getUserForm().getForm(),value, grid = this.getUserListGroups();
-        if (grid.ownerBtn.action == 'groups') {
-            var val = form.findField('usr.group.name').getValue();
-            if (val) {
-                store.filterBy(function (record, id) {
-                    return record.get('usrGr.name') != val ? true : false;
-                });
+        if(this.getUserForm()) {
+            var form = this.getUserForm().getForm(),
+                value,
+                grid = this.getUserListGroups();
+
+            if (grid.ownerBtn.action == 'groups') {
+                var val = form.findField('usr.group.name').getValue();
+                if (val) {
+                    store.filterBy(function (record, id) {
+                        return record.get('usrGr.name') != val ? true : false;
+                    });
+                }
+                value = form.findField('usr.groupsIds').getValue();
             }
-            value = form.findField('usr.groupsIds').getValue();
-        }
-        else {
-        	value = form.findField('usr.group.name').getValue();
-        }
+            else {
+                value = form.findField('usr.group.name').getValue();
+            }
 
-        if (value) {
-            var arr = Ext.isIE ? value.split('\r\n') : value.split('\n');
+            if (value) {
+                var arr = Ext.isIE ? value.split('\r\n') : value.split('\n');
 
-            for (var i = 0; i < arr.length; i++) {
-                var index = store.findExact('usrGr.name', arr[i]);  // replace for fucken IE
-                if (index != -1) {
-                    grid.selModel.select(index, true);
+                for (var i = 0; i < arr.length; i++) {
+                    var index = store.findExact('usrGr.name', arr[i]);  // replace for fucken IE
+                    if (index != -1) {
+                        grid.selModel.select(index, true);
+                    }
                 }
             }
         }
@@ -332,7 +388,8 @@ Ext.define('TK.controller.User', {
         btn.up('window').close();
     },
     onUserGrFormShow: function(win){
-        var panel = this.getUserFormGroups(), form = panel.getForm();
+        var panel = this.getUserFormGroups(),
+            form = panel.getForm();
         if (panel.mode == 'edit') {
             var field = form.findField('usrGr.name');
             field.setDisabled(true);
@@ -341,7 +398,7 @@ Ext.define('TK.controller.User', {
         }
     },
     onEditGroups: function (btn) {
-        if (btn.action == 'edit') {
+        if (btn.action == 'edit' && this.getUserList()) {
             if (!TK.Utils.isRowSelected(this.getUserList())) {
                 return;
             }

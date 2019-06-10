@@ -2,7 +2,7 @@ Ext.define('TK.model.CimSmgs', {
     extend: 'Ext.data.Model',
 
     fields: [
-        'dattr','altered','un',
+        'dattr','altered','un', 'vagVedNum',
         'numClaim', 'vags', 'konts','npoezd',
 		{name:'g281'},
         'g1', 'g4','src',
@@ -12,5 +12,5 @@ Ext.define('TK.model.CimSmgs', {
         {name: 'check', type: 'boolean', defaultValue:false},
         'type','print','locked',
         {name:'packId', type:'int'},
-        {name:'routeId', type:'int'}]
+        {name:'routeId', type:'int'},'g1_dop_info','g4_dop_info']
 });

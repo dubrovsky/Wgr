@@ -1,27 +1,65 @@
 Ext.define('TK.controller.docs.Cim', {
     extend: 'Ext.app.Controller',
 
-    views: ['cim.List', 'cim.Form'],
+    requires: [],
+
+    views: [
+        'cim.CimList',
+        'cim.CimForm',
+        'cim.CimFormPanel',
+        'cim.CimVgCtGrTreeFormWin',
+        'cim.CimDocs9TreeFormWin',
+        'cim.CimPlombsTreeFormWin'
+    ],
     stores: ['Cims'],
     models: ['Cim'],
-    refs: [
-        {
-            ref: 'menutree',
-            selector: 'viewport > menutree'
-        },
-        {
-            ref: 'center',
-            selector: 'viewport > tabpanel'
-        },
-        {
-            ref: 'list',
-            selector: 'viewport > tabpanel > cimlist'
-        }
-    ],
+    refs: [{
+        ref: 'menutree',
+        selector: 'viewport > menutree'
+    }, {
+        ref: 'center',
+        selector: 'viewport > tabpanel'
+    }, {
+        ref: 'list',
+        selector: 'viewport > tabpanel > cimlist'
+    }, {
+        ref:'cim',
+        selector:'viewport > tabpanel > cim'
+    }, {
+        ref:'docForm',
+        selector:'viewport > tabpanel > cim > cimpanel'
+    }, {
+        ref:'vagDispField',
+        selector:'viewport > tabpanel > cim > cimpanel >field[name="disp.g18v"]'
+    }, {
+        ref:'kontDispField',
+        selector:'viewport > tabpanel > cim > cimpanel >field[name="disp.g18k"]'
+    }, {
+        ref:'gruzDispField',
+        selector:'viewport > tabpanel > cim > cimpanel >field[name="disp.g18g"]'
+    }, {
+        ref:'doc9DispField',
+        selector:'viewport > tabpanel > cim > cimpanel >field[name="disp.g9"]'
+    }],
     init: function() {
         this.control({
-            'viewport > tabpanel > docsform button[action="smgs2Cim"]': {
+            /*'viewport > tabpanel > docsform button[action="smgs2Cim"]': {
                 click: this.onSmgs2Cim
+            }*/
+            'cim button[action=changeVgCtGr]': {
+                click: this.onCimVgCtGrWinShow
+            },
+            'cim button[action=changeDocs9]': {
+                click: this.onCimDocs9WinShow
+            },
+            'cim button[action=changePlombs]': {
+                click: this.onCimPlombsWinShow
+            },
+            'cim  > cimpanel': {
+                onChangeVgCtGrDisplField: this.setDisplayedVgCtGrFields,
+                onChangeDocs9DisplField: this.setDisplayedDocs9Fields,
+                onChangePlombsDisplField: this.setDisplayedPlombsFields,
+                onSavePlombsToDataObj: this.setG2012DataObj
             }
         });
     },
@@ -29,30 +67,52 @@ Ext.define('TK.controller.docs.Cim', {
         Ext.each(form.query('button[action=change]'), function(item, index) {
             item.on('click', Ext.bind(this.onChangeData, form));
         }, this);
+        // нажатие кнопки выбора страны отправителя
+        form.down('button[action=country]').on('click',
+            function(btn){
+                var nsiGrid =  this.getController('Nsi').nsiCountries(form.down('textfield[name=smgs.g16_1]').getValue()).getComponent(0);
+                nsiGrid.on('itemdblclick', this.selectCountriesG1, form);
+            },
+            this
+        );
+        // нажатие кнопки выбора страны получателя
+        form.down('button[action=country_4]').on('click',
+            function(btn){
+                var nsiGrid =  this.getController('Nsi').nsiCountries(form.down('textfield[name=smgs.g46_1]').getValue()).getComponent(0);
+                nsiGrid.on('itemdblclick', this.selectCountriesG4, form);
+            },
+            this
+        );
+        form.getComponent('cimformpanel').getComponent('smgs.g24B').on('change', this.getController('Nsi').onG24B);
+        form.getComponent('cimformpanel').getComponent('smgs.g24N').on('change', this.getController('Nsi').onG24);
+        form.getComponent('cimformpanel').getComponent('smgs.g24T').on('change', this.getController('Nsi').onG24);
+
         form.down('button[action=otpr]').on(
             'click',
             function(btn){
-                var nsiGrid = this.getController('Nsi').nsiOtpr(form.down('textfield[name=smgs.g1]').getValue()).getComponent(0);
-                nsiGrid.on('itemdblclick', this.selectOtprG1, form.getComponent('g1_panel'));
+                //был nsi
+                var nsiGrid = this.getController('docs.Cimsmgs').nsiOtpr(form.down('textfield[name=smgs.g1]').getValue()).getComponent(0);
+                nsiGrid.on('itemdblclick', this.selectOtprG1, form.getComponent('cimformpanel').getComponent('g1_panel'));
             },
             this
         );
-        form.down('triggerfield[name=smgs.g16_1]').onTriggerClick = Ext.bind(function(){
-            var nsiGrid =  this.getController('Nsi').nsiCountries(form.down('textfield[name=smgs.g16_1]').getValue()).getComponent(0);
-            nsiGrid.on('itemdblclick', this.selectCountriesG1, form);
-        }, this);
+        // form.down('triggerfield[name=smgs.g16_1]').onTriggerClick = Ext.bind(function(){
+        //     var nsiGrid =  this.getController('Nsi').nsiCountries(form.down('textfield[name=smgs.g16_1]').getValue()).getComponent(0);
+        //     nsiGrid.on('itemdblclick', this.selectCountriesG1, form);
+        // }, this);
         form.down('button[action=poluch]').on(
             'click',
             function(btn){
-                var nsiGrid = this.getController('Nsi').nsiOtpr(form.down('textfield[name=smgs.g4]').getValue()).getComponent(0);
-                nsiGrid.on('itemdblclick', this.selectOtprG4, form.getComponent('g4_panel'));
+                //был nsi
+                var nsiGrid = this.getController('docs.Cimsmgs').nsiOtpr(form.down('textfield[name=smgs.g4]').getValue()).getComponent(0);
+                nsiGrid.on('itemdblclick', this.selectOtprG4, form.getComponent('cimformpanel').getComponent('g4_panel'));
             },
             this
         );
-        form.down('triggerfield[name=smgs.g46_1]').onTriggerClick = Ext.bind(function(){
-            var nsiGrid =  this.getController('Nsi').nsiCountries(form.down('triggerfield[name=smgs.g46_1]').getValue()).getComponent(0);
-            nsiGrid.on('itemdblclick', this.selectCountriesG4, form);
-        }, this);
+        // form.down('triggerfield[name=smgs.g46_1]').onTriggerClick = Ext.bind(function(){
+        //     var nsiGrid =  this.getController('Nsi').nsiCountries(form.down('triggerfield[name=smgs.g46_1]').getValue()).getComponent(0);
+        //     nsiGrid.on('itemdblclick', this.selectCountriesG4, form);
+        // }, this);
         form.down('detailtabpanel[itemId=g7_panel_tab_7]').on(
             'add',
             function(tabpanel, tab, inx){
@@ -77,7 +137,7 @@ Ext.define('TK.controller.docs.Cim', {
             },
             this
         );
-        form.down('detailtabpanel[itemId=g9_panel_tab_9]').on(
+        /*form.down('detailtabpanel[itemId=g9_panel_tab_9]').on(
             'add',
             function(tabpanel, tab, inx){
                 if(tabpanel.isXType('detailtabpanel',true)) {
@@ -88,9 +148,9 @@ Ext.define('TK.controller.docs.Cim', {
                 }
             },
             this
-        );
-        form.getComponent('smgs.g101').onTriggerClick = Ext.bind(function(){
-            var nsiGrid = this.getController('Nsi').nsiSta(form.getComponent('smgs.g101').getValue()).getComponent(0);
+        );*/
+        form.getComponent('cimformpanel').getComponent('smgs.g101').onTriggerClick = Ext.bind(function(){
+            var nsiGrid = this.getController('Nsi').nsiSta(form.getComponent('cimformpanel').getComponent('smgs.g101').getValue()).getComponent(0);
             nsiGrid.on('itemdblclick', this.selectStaG102r, form);
         }, this);
         form.down('detailtabpanel[itemId=g13_panel_tab_13]').on(
@@ -105,11 +165,11 @@ Ext.define('TK.controller.docs.Cim', {
             },
             this
         );
-        form.getComponent('smgs.g162').onTriggerClick = Ext.bind(function(){
-            var nsiGrid = this.getController('Nsi').nsiSta(form.getComponent('smgs.g162').getValue()).getComponent(0);
+        form.getComponent('cimformpanel').getComponent('smgs.g162').onTriggerClick = Ext.bind(function(){
+            var nsiGrid = this.getController('Nsi').nsiSta(form.getComponent('cimformpanel').getComponent('smgs.g162').getValue()).getComponent(0);
             nsiGrid.on('itemdblclick', this.selectStaG162, form);
         }, this);
-        form.down('detailtabpanel[itemId=g18v_panel_tab]').on(
+        /*form.down('detailtabpanel[itemId=g18v_panel_tab]').on(
             'add',
             function(vags, vag, inx){
                 if(vags.isXType('detailtabpanel',true) && vag.getComponent('g18k_panel_tab')) {
@@ -118,38 +178,16 @@ Ext.define('TK.controller.docs.Cim', {
                             kon.getComponent('fcNetto').getComponent('netto').on('change', this.onNetto);
                             kon.getComponent('fcTara').getComponent('tara').on('change', this.onTara);
                             kon.getComponent('fcBrutto').getComponent('brutto').on('change', this.onBrutto);
-//                            kon.getComponent('g27g_panel_tab').on('add',function(gruzs, gruz, inx){
-//                                if(gruzs.isXType('detailtabpanel',true)) {
-//                                    gruz.getComponent('kgvn').onTriggerClick = Ext.bind(function(){
-//                                        var nsiGrid = this.getController('Nsi').nsiGng(gruz.getComponent('kgvn').getValue()).getComponent(0);
-//                                        nsiGrid.on('itemdblclick', this.getController('Nsi').selectGng, gruz);
-//                                    }, this);
-//                                    gruz.getComponent('ekgvn').onTriggerClick = Ext.bind(function(){
-//                                        var nsiGrid = this.getController('Nsi').nsiEtsng(gruz.getComponent('ekgvn').getValue()).getComponent(0);
-//                                        nsiGrid.on('itemdblclick', this.getController('Nsi').selectEtsng, gruz);
-//                                    }, this);
-//                                }
-//                            }, this);
                         }
                     }, this);
                 }
             },
             this
-        );
-//        form.getComponent('g18v_panel').child('radiogroup').on('change',this.changeVidOtpravki,this);
-//        form.getComponent('g18v_panel').on(
-//            'show',
-//            function(){
-//                var vidKontOtpr = form.getComponent('g18v_panel').child('radiogroup');
-//                vidKontOtpr.fireEvent('change',vidKontOtpr,{'smgs.vidKontOtpr':vidKontOtpr.getValue()['smgs.vidKontOtpr']});
-//            },
-//            this
-//        );
-//        form.getComponent('smgs.g24B').on('change', this.onG24B);
-        form.getComponent('smgs.g24N').on('change', this.onG24);
-        form.getComponent('smgs.g24T').on('change', this.onG24);
+        );*/
+        /*form.getComponent('smgs.g24N').on('change', this.onG24);
+        form.getComponent('smgs.g24T').on('change', this.onG24);*/
     },
-    onNetto:function(newVal, oldVal){
+    /*onNetto:function(newVal, oldVal){
         var prefix = this.ownerCt.getComponent('nettoPref').getValue(),
             konts = this.up('detailtabpanel'),
             itogo = 0,
@@ -163,8 +201,8 @@ Ext.define('TK.controller.docs.Cim', {
 //        this.up('form').getComponent('nettoDisp').setValue(itogo ? prefix+itogo : '');
         if(!Ext.isNumber(netto) || !Ext.isNumber(tara)) return;
         this.ownerCt.ownerCt.getComponent('fcBrutto').getComponent('brutto').setValue(netto + tara);
-    },
-    onTara:function(newVal, oldVal){
+    },*/
+    /*onTara:function(newVal, oldVal){
         var prefix = this.ownerCt.getComponent('taraPref').getValue(),
             konts = this.up('detailtabpanel'),
             itogo = 0,
@@ -178,8 +216,8 @@ Ext.define('TK.controller.docs.Cim', {
 //        this.up('form').getComponent('taraDisp').setValue(itogo ? prefix+itogo : '');
         if(!Ext.isNumber(netto) || !Ext.isNumber(tara)) return;
         this.ownerCt.ownerCt.getComponent('fcBrutto').getComponent('brutto').setValue(tara + netto);
-    },
-    onBrutto:function(newVal, oldVal){
+    },*/
+    /*onBrutto:function(newVal, oldVal){
         var prefix = this.ownerCt.getComponent('bruttoPref').getValue(),
             konts = this.up('detailtabpanel'),
             itogo = 0;
@@ -189,8 +227,8 @@ Ext.define('TK.controller.docs.Cim', {
         });
         this.up('form').getComponent('smgs.g24B').setValue(itogo ? itogo : '');
 //        this.up('form').getComponent('bruttoDisp').setValue(itogo ? prefix+itogo : '');
-    },
-    onG24:function(){
+    },*/
+    /*onG24:function(){
         var owner = this.ownerCt,
             tara = parseFloat(owner.getComponent('smgs.g24T').getValue()),
             netto = parseFloat(owner.getComponent('smgs.g24N').getValue()),
@@ -213,11 +251,26 @@ Ext.define('TK.controller.docs.Cim', {
         if(radio == 1 || radio == 2) {
             this.ownerCt.getComponent('g18v_panel').setDisplayedField();
         }
-    },
-    onChangeData:function(btn, ev){
-        var panel, tabpanels;
+    },*/
+
+    onChangeData:function(btn, ev,out){
+        var panel, tabpanels,me;
+        // выбор вызвовшего окна шаблон или форма
+        me=out?out:this;
+
+        // установка кода отправителя
+        if(btn.itemId.indexOf('g1') != -1){
+            var value=me.getComponent('cimformpanel').getComponent('smgs.g2').getValue();
+            me.getComponent('cimformpanel').getComponent('g1_panel').getComponent('smgs.g2_E').setValue(value);
+        }
+        // установка кода получателя
+        if(btn.itemId.indexOf('g4') != -1){
+            var value=me.getComponent('cimformpanel').getComponent('smgs.g5').getValue();
+            me.getComponent('cimformpanel').getComponent('g4_panel').getComponent('smgs.g5_E').setValue(value);
+        }
+
         if(btn.itemId.indexOf('g18') == -1){
-            panel = this.getComponent(btn.itemId + 'panel');
+            panel = me.getComponent('cimformpanel').getComponent(btn.itemId + 'panel');
             tabpanels = panel.query('detailtabpanel');
             for(var i = 0; i < tabpanels.length; i++){
                 if(tabpanels[i].items.getCount() == 0){  // add tab by default if noone exists
@@ -225,175 +278,141 @@ Ext.define('TK.controller.docs.Cim', {
                 }
             }
         }
-        else {
+        /*else {
             panel = this.getComponent('g18v_panel');    // dont add tabs by default
             panel.mode = btn.itemId;
             panel.changeCmpVisibility(btn.itemId);
 
-        }
+        }*/
         panel.show();
-        this.maskPanel(true);
+        me.maskPanel(true);
     },
-    selectOtprG1: function(view, record, item, index) {
+    // занечение полей выбранного отправитлеля в форму
+    selectOtprG1: function(view, record, item, index,out) {
+        // выбор вызвовшего окна шаблон или форма
+        var me=(out.xtype==='cim_g1_detailpanel')?out:this;
         var data = record.data;
-        this.getComponent('naim').getComponent('smgs.g1').setValue(data['g1r']);
-        this.getComponent('strn').getComponent('smgs.g_1_5k').setValue(data['g_1_5k']);
-        this.getComponent('strn').getComponent('smgs.g16_1').setValue(data['g16r']);
-        this.getComponent('smgs.g18_1').setValue(data['g18r_1']);
-        this.getComponent('smgs.g19_1').setValue(data['g19r']);
+        me.getComponent('naim').getComponent('smgs.g1').setValue(data['g1']);
+        me.getComponent('smgs.g2_E').setValue(data['g2']);
+        me.getComponent('strn').getComponent('smgs.g_1_5k').setValue(data['g_1_5k']);
+        me.getComponent('strn').getComponent('smgs.g16_1').setValue(data['g16_1']);
+        me.getComponent('smgs.g17_1').setValue(data['g17_1']);
+        me.getComponent('smgs.g18_1').setValue(data['g18_1']);
+        me.getComponent('smgs.g19_1').setValue(data['g19_1']);
+        me.getComponent('smgs.g110').setValue(data['g110']);
+        me.getComponent('smgs.g1_dop_info').setValue(data['dop_info']);
         view.up('window').close();
     },
-    selectCountriesG1: function(view, record, item, index) {
+    //
+    selectCountriesG1: function(view, record, item, index,out) {
+        // выбор вызвовшего окна шаблон или форма
+        var me=(out.xtype==='avisocim')?out:this;
         var data = record.data;
-        this.getComponent('g1_panel').getComponent('strn').getComponent('smgs.g_1_5k').setValue(data['abc2']);
-        this.getComponent('g1_panel').getComponent('strn').getComponent('smgs.g16_1').setValue(data['naim']);
+        me.getComponent('cimformpanel').getComponent('g1_panel').getComponent('strn').getComponent('smgs.g_1_5k').setValue(data['abc2']);
+        me.getComponent('cimformpanel').getComponent('g1_panel').getComponent('strn').getComponent('smgs.g16_1').setValue(data['anaim']);
         view.up('window').close();
     },
-    selectOtprG4: function(view, record, item, index) {
+    selectOtprG4: function(view, record, item, index,out) {
+        // выбор вызвовшего окна шаблон или форма
+        var me=(out.xtype==='cim_g4_detailpanel')?out:this;
         var data = record.data;
-        this.getComponent('naim').getComponent('smgs.g4').setValue(data['g1r']);
-        this.getComponent('strn').getComponent('smgs.g_4_5k').setValue(data['g_1_5k']);
-        this.getComponent('strn').getComponent('smgs.g46_1').setValue(data['g16r']);
-        this.getComponent('smgs.g48_1').setValue(data['g18r_1']);
-        this.getComponent('smgs.g49').setValue(data['g19r']);
+        me.getComponent('naim').getComponent('smgs.g4').setValue(data['g1']);
+        me.getComponent('smgs.g5_E').setValue(data['g2']);
+        me.getComponent('strn').getComponent('smgs.g_4_5k').setValue(data['g_1_5k']);
+        me.getComponent('strn').getComponent('smgs.g46_1').setValue(data['g16r']);
+        me.getComponent('smgs.g17_1_1').setValue(data['g17_1']);
+        me.getComponent('smgs.g48_1').setValue(data['g18r_1']);
+        me.getComponent('smgs.g49').setValue(data['g19r']);
+        me.getComponent('smgs.g110_1').setValue(data['g110']);
+        me.getComponent('smgs.g4_dop_info').setValue(data['dop_info']);
         view.up('window').close();
     },
-    selectCountriesG4: function(view, record, item, index) {
+    selectCountriesG4: function(view, record, item, index,out) {
+        // выбор вызвовшего окна шаблон или форма
+        var me=(out.xtype==='avisocim')?out:this;
         var data = record.data;
-        this.getComponent('g4_panel').getComponent('strn').getComponent('smgs.g_4_5k').setValue(data['abc2']);
-        this.getComponent('g4_panel').getComponent('strn').getComponent('smgs.g46_1').setValue(data['naim']);
+        me.getComponent('cimformpanel').getComponent('g4_panel').getComponent('strn').getComponent('smgs.g_4_5k').setValue(data['abc2']);
+        me.getComponent('cimformpanel').getComponent('g4_panel').getComponent('strn').getComponent('smgs.g46_1').setValue(data['anaim']);
         view.up('window').close();
     },
-    selectDocG9: function(view, record, item, index) {
+    selectDocG9: function(view, record, item, index,out) {
+        // выбор вызвовшего окна шаблон или форма
+        var me=(out.xtype==='avisocim')?out:this;
         var data = record.data;
-        this.getComponent('code').setValue(data.nsiFNn);
-        this.getComponent('ncas').setValue(data.nsiFNcas);
-        this.getComponent('text').setValue(data.nsiFDesc);
-        this.getComponent('text2').setValue(data.nsiFDsc3);
+        me.getComponent('code').setValue(data.nsiFNn);
+        me.getComponent('ncas').setValue(data.nsiFNcas);
+        me.getComponent('text').setValue(data.nsiFDesc);
+        me.getComponent('text2').setValue(data.nsiFDsc3);
         view.up('window').close();
     },
     selectStaG102r: function(view, record, item, index) {
         var data = record.data;
-        this.getComponent("smgs.g101").setValue(data.staName);
+        this.getComponent('cimformpanel').getComponent("smgs.g101").setValue(data.staName);
 //        this.getComponent("smgs.g_10_3r").setValue(data.mnamerus);
-        this.getComponent("smgs.g104").setValue(data.countryname);
-        this.getComponent("smgs.g12").setValue(data.managno);
-        this.getComponent("smgs.g121").setValue(data.staNo);
+        this.getComponent('cimformpanel').getComponent("smgs.g104").setValue(data.countryname);
+        this.getComponent('cimformpanel').getComponent("smgs.g12").setValue(data.managno);
+        this.getComponent('cimformpanel').getComponent("smgs.g121").setValue(data.staNo);
         view.up('window').close();
     },
-    selectDoc: function(view, record, item, index) {
+    // выбор документа в окне G7
+    selectDoc: function(view, record, item, index,out) {
+        var me=(out.type==='dblclick')?this:out;
         var data = record.data;
-        this.getComponent('code').setValue(data['nsiFNn']);
-        this.getComponent('text').setValue(data['nsiFDesc']);
+        me.getComponent('code').setValue(data['nsiFNn']);
+        me.getComponent('text').setValue(data['nsiFDesc']);
         view.up('window').close();
     },
     selectStaG162: function(view, record, item, index) {
         var data = record.data;
-        this.getComponent('smgs.g162').setValue(data.staName);
-        this.getComponent("smgs.g164").setValue(data.countryname);
-        this.getComponent('smgs.g17').setValue(data.staNo);
-        this.getComponent('smgs.g171').setValue(data.managno);
+        this.getComponent('cimformpanel').getComponent('smgs.g162').setValue(data.staName);
+        this.getComponent('cimformpanel').getComponent('smgs.g164').setValue(data.countryname);
+        this.getComponent('cimformpanel').getComponent('smgs.g17').setValue(data.staNo);
+        this.getComponent('cimformpanel').getComponent('smgs.g171').setValue(data.managno);
 
         view.up('window').close();
     },
-//    changeVidOtpravki:function(field, newValue){
-//        if(!Ext.isArray(newValue['smgs.vidKontOtpr'])){
-//            var ownerCt = field.ownerCt, vag, kont, gruzy;
-//            vag = ownerCt.getComponent('g18v_panel_tab').getComponent(0);
-//            if(vag){
-//                switch (newValue['smgs.vidKontOtpr']) {
-//                    case 1:
-//                        ownerCt.getComponent('platform').show();
-//                        ownerCt.getComponent('docNum').show();
-//                        vag.getComponent('nvag').show();
-//                        vag.getComponent('prim').hide();
-//                        vag.getComponent('count').hide();
-//                        if((kont = vag.getComponent('g18k_panel_tab').getComponent(0))){
-//                            kont.getComponent('utiN').show();
-//                            kont.getComponent('kat').show();
-//                            kont.getComponent('privat').show();
-//                            kont.getComponent('count').hide();
-////                            if(ownerCt.mode == 'g18g_'){
-////                                gruzy = kont.getComponent('g18g_panel_tab');
-////                                gruzy.show();
-////                                kont.getComponent('g18g_label').show();
-////                            }
-//                        }
-//                        ownerCt.ownerCt.getComponent('g18g_').show();
-//                        break;
-//                    case 2:
-//                        ownerCt.getComponent('platform').show();
-//                        ownerCt.getComponent('docNum').show();
-//                        vag.getComponent('nvag').show();
-//                        vag.getComponent('prim').hide();
-//                        vag.getComponent('count').hide();
-//                        if((kont = vag.getComponent('g18k_panel_tab').getComponent(0))){
-//                            kont.getComponent('utiN').show();
-//                            kont.getComponent('kat').show();
-//                            kont.getComponent('privat').show();
-//                            kont.getComponent('count').hide();
-////                            if(ownerCt.mode == 'g18g_'){
-////                                gruzy = kont.getComponent('g18g_panel_tab');
-////                                gruzy.hide();
-////                                kont.getComponent('g18g_label').hide();
-////                            }
-//                        }
-//                        ownerCt.ownerCt.getComponent('g18g_').hide();
-//                        break;
-//                    case 3:
-//                        ownerCt.getComponent('platform').hide();
-//                        ownerCt.getComponent('docNum').hide();
-//                        vag.getComponent('nvag').hide();
-//                        vag.getComponent('prim').show();
-//                        vag.getComponent('count').show();
-//                        if((kont = vag.getComponent('g18k_panel_tab').getComponent(0))){
-//                            kont.getComponent('utiN').hide();
-//                            kont.getComponent('kat').hide();
-//                            kont.getComponent('privat').hide();
-//                            kont.getComponent('count').show();
-////                            if(ownerCt.mode == 'g18g_'){
-////                                gruzy = kont.getComponent('g18g_panel_tab');
-////                                gruzy.show();
-////                                kont.getComponent('g18g_label').show();
-////                            }
-//                        }
-//                        ownerCt.ownerCt.getComponent('g18g_').show();
-//                        break;
-//                    case 4:
-//                        ownerCt.getComponent('platform').hide();
-//                        ownerCt.getComponent('docNum').hide();
-//                        vag.getComponent('nvag').hide();
-//                        vag.getComponent('prim').show();
-//                        vag.getComponent('count').show();
-//                        if((kont = vag.getComponent('g18k_panel_tab').getComponent(0))){
-//                            kont.getComponent('utiN').hide();
-//                            kont.getComponent('kat').hide();
-//                            kont.getComponent('privat').hide();
-//                            kont.getComponent('count').show();
-////                            if(ownerCt.mode == 'g18g_'){
-////                                gruzy = kont.getComponent('g18g_panel_tab');
-////                                gruzy.hide();
-////                                kont.getComponent('g18g_label').hide();
-////                            }
-//                        }
-//                        ownerCt.ownerCt.getComponent('g18g_').hide();
-//                        break;
-//                }
-//            }
-//        }
-//    },
-    selectPlatG4: function(view, record, item, index) {
+    // выбор плательщика в окне G7
+    selectPlatG4: function(view, record, item, index,out) {
+        // выбор вызвовшего окна шаблон или форма
+        var me=(out.type==='dblclick')?this:out;
         var data = record.data;
-        this.getComponent('dor').setValue(data['dorR']);
-        this.getComponent('plat').setValue(data['platR']);
-        this.getComponent('prim').setValue(data['primR']);
-        this.getComponent('kplat').setValue(data['kplat']);
-        this.getComponent('kplat1').setValue(data['kplat1']);
-        if(this.getComponent('kplat2')) {
-            this.getComponent('kplat2').setValue(data['kplat2']);
+        me.getComponent('dor').setValue(data['dorR']);
+        me.getComponent('plat').setValue(data['platR']);
+        me.getComponent('prim').setValue(data['primR']);
+        me.getComponent('kplat').setValue(data['kplat']);
+        me.getComponent('kplat1').setValue(data['kplat1']);
+        if(me.getComponent('kplat2')) {
+            me.getComponent('kplat2').setValue(data['kplat2']);
         }
         view.up('window').close();
     },
+    isContOtpr: function () {
+        return this.getController("docs.VgCtGrTreeDetailController").isContOtpr();
+    },
+    onCimVgCtGrWinShow: function(btn){
+        this.fireEvent('showVgCtGrWin', 'cimVgCtGrTreeformWin', btn.up('docsform'));
+    },
+    onCimDocs9WinShow: function(btn){
+        this.fireEvent('showDocs9Win', 'cimDocs9TreeformWin', btn.up('docsform'));
+    },
+    onCimPlombsWinShow: function(btn){
+        this.fireEvent('showPlombsWin', 'cimPlombsTreeformWin', btn.up('docsform'));
+    },
+    setDisplayedVgCtGrFields: function(docForm){
+        this.fireEvent('displayedVgCtGrFields', this, docForm);
+    },
+    setDisplayedDocs9Fields: function(docForm){
+        this.fireEvent('displayedDocs9Fields', this, docForm);
+    },
+    setDisplayedPlombsFields: function(docForm){
+        this.fireEvent('displayedPlombsFields', this, docForm);
+        // docForm.getComponent('smgs.g2012').setValue(docForm.dataObj['g2012']);
+    },
+    setG2012DataObj: function(docForm){
+        this.fireEvent('savePlombsToDataObj', this, docForm);
+    }
+
+    /*,
     onSmgs2Cim: function(btn){
         var smgs = this.getCenter().child('smgs'),
             cim = this.getCenter().child('cim'),
@@ -486,7 +505,7 @@ Ext.define('TK.controller.docs.Cim', {
         } else{
             smgs2cim();
         }
-        /*
+        /!*
         if(smgs.hasListener('activate') && packId){
              this.getCenter().getEl().mask(this.maskMsg,'x-mask-loading');
              Ext.Ajax.request({
@@ -512,6 +531,6 @@ Ext.define('TK.controller.docs.Cim', {
              });
         } else if(packId) {
             smgs2cim();
-        }*/
-    }
+        }*!/
+    }*/
 });

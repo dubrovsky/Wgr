@@ -7,8 +7,9 @@
         <id name="hid" type="java.lang.Long">
             <column name="HID" precision="20" scale="0" />
             <generator class="sequence">
-                <param name="sequence">FIELDS_COMMENTS_SEQ</param>
+                <param name="sequence">FIELDS_COMMENTS_HID</param>
             </generator>
+            <!--<generator class="native"/>-->
         </id>
         <many-to-one name="fieldsDir" class="com.bivc.cimsmgs.db.FieldsDir" fetch="select">
             <column name="FIELD_HID" precision="20" scale="0" not-null="true" />

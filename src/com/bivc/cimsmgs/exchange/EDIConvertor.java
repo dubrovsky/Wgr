@@ -1,6 +1,7 @@
 package com.bivc.cimsmgs.exchange;
 
 import com.bivc.cimsmgs.db.BIftminLog;
+import com.bivc.cimsmgs.db.CimSmgsGruz;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -9,9 +10,16 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.rightPad;
+import static org.apache.commons.lang3.StringUtils.strip;
 
 public abstract class EDIConvertor extends Convertor {
 
@@ -22,9 +30,8 @@ public abstract class EDIConvertor extends Convertor {
   protected static final String nl = "'\r\n";
   protected static final String ms = "?";
   protected static final SimpleDateFormat dunb  = new SimpleDateFormat("yyMMddHHmm");
-  protected static final SimpleDateFormat df203 = new SimpleDateFormat("yyyyMMddHHmm");
-  protected static final SimpleDateFormat df204 = new SimpleDateFormat("yyyyMMddHHmmss");
   protected static final SimpleDateFormat dg16   = new SimpleDateFormat("MM-dd-HH");
+  protected static final SimpleDateFormat ddoc = new SimpleDateFormat("dd.MM.yyyy");
   protected static final Pattern prin_p = Pattern.compile("^[a-zA-Z]{4}");
   protected static final Pattern nkon_p = Pattern.compile("[0-9]{7,9}$");
   protected static final Pattern prinnkon_p = Pattern.compile("^[a-zA-Z]{4}[0-9]{7,9}$");
@@ -36,12 +43,24 @@ public abstract class EDIConvertor extends Convertor {
   protected EdiDir ediDir;
   protected String recipient = "IRC.RW.BY";
 
+  protected String iftminText;
+
   public EDIConvertor() {
   }
 
   public EDIConvertor(String script, EdiDir ediDir) throws Exception {
     this.ediDir = ediDir;
     readCfg(script);
+  }
+
+  protected BigDecimal calcMassSend(Collection<CimSmgsGruz> values) {
+    BigDecimal res = BigDecimal.ZERO;
+    for (CimSmgsGruz csg : values) {
+      if (csg.getMassa() != null) {
+        res = res.add(csg.getMassa());
+      }
+    }
+    return res;
   }
 
   private void readCfg(String script) throws Exception {
@@ -84,6 +103,10 @@ public abstract class EDIConvertor extends Convertor {
     session.save(bean);
   }
 
+  public String getIftminText() {
+    return iftminText;
+  }
+
   public enum EdiDir {
 
     BCH("bch", "status", (byte)24, (byte)38, "") {
@@ -93,6 +116,9 @@ public abstract class EDIConvertor extends Convertor {
     },
 
     DB("db", "db_status", (byte)41, (byte)43, "2") {
+    },
+
+    DB97A("db", "db_status", (byte)41, (byte)43, "2") {
     };
 
     private String dirName;
@@ -127,6 +153,36 @@ public abstract class EDIConvertor extends Convertor {
 
     String getSuffix() {
       return suffix;
+    }
+  }
+
+  enum EDIDateFormat {
+    DF102("yyyyMMdd"),
+    DF203("yyyyMMddHHmm"),
+    DF204("yyyyMMddHHmmss");
+
+    private SimpleDateFormat format;
+    private int formatLen;
+
+    EDIDateFormat(String format) {
+      this.format = new SimpleDateFormat(format);
+      this.formatLen = format.length();
+    }
+
+    public String format(Date date) {
+      return date != null ? format.format(date) : rightPad("", formatLen, '0');
+    }
+
+    public Date parse(String str) throws ParseException {
+      return isBlank(strip(str, "0")) ? null : format.parse(str);
+    }
+
+    public SimpleDateFormat getSdf() {
+      return format;
+    }
+
+    public static EDIDateFormat getEnum(String name) {
+      return valueOf("DF" + name);
     }
   }
 }

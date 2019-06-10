@@ -72,7 +72,7 @@ public class Smgs2Smgs4ContList implements Doc2Doc{
         dest.setTdg_status2(null);
 //        dest.setVagPrim(PRILOZHENIE_13);
 
-        Map <Byte, CimSmgsGruz> gruzy = new TreeMap<>();
+        Map <Integer, CimSmgsGruz> gruzy = new TreeMap<>();
         for (CimSmgsCarList car : source.getCimSmgsCarLists().values()) {
             for (CimSmgsKonList kon : car.getCimSmgsKonLists().values()) {
 //                gruzy = mapper.copyGruzMap(kon.getCimSmgsGruzs());
@@ -102,7 +102,7 @@ public class Smgs2Smgs4ContList implements Doc2Doc{
             gruz = new CimSmgsGruz();
             gruz.setCimSmgsKonList(kon);
             gruz.setSort(0);
-            gruzy.put((byte)0, gruz);
+            gruzy.put(0, gruz);
         } else {
             gruz = gruzy.values().iterator().next();
         }
@@ -122,11 +122,11 @@ public class Smgs2Smgs4ContList implements Doc2Doc{
         }
 
         CimSmgsDocs doc = new CimSmgsDocs();
-        doc.setSort((byte)0);
+        doc.setSort(0);
         doc.setFieldNum("9");
         doc.setText(G23_TEXT);
-        dest.setCimSmgsDocses9(new TreeMap<Byte, CimSmgsDocs>());
-        dest.getCimSmgsDocses9().put((byte)0, doc);
+        dest.setCimSmgsDocses9(new TreeMap<Integer, CimSmgsDocs>());
+        dest.getCimSmgsDocses9().put(0, doc);
 
         CimSmgsPlomb plomb = new CimSmgsPlomb();
         plomb.setSort((byte)0);

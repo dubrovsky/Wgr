@@ -1,5 +1,6 @@
 package com.bivc.cimsmgs.actions;
 
+import Ti.DataProcessing.Tools.DataProcessingTools;
 import com.bivc.cimsmgs.commons.Constants;
 import com.bivc.cimsmgs.commons.JsonUtils;
 import com.bivc.cimsmgs.commons.OutputStreamWriters;
@@ -21,6 +22,8 @@ import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+
+import static com.bivc.cimsmgs.commons.Constants.convert2JSON_True;
 
 public class File_A extends CimSmgsSupport_A implements FileDAOAware, FileInfDAOAware, ServletRequestAware, InvoiceDAOAware, SmgsDAOAware {
     final static private Logger log = LoggerFactory.getLogger(File_A.class);
@@ -137,16 +140,101 @@ public class File_A extends CimSmgsSupport_A implements FileDAOAware, FileInfDAO
     public String deleteFile() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         log.info("deleteFile");
 
-        CimSmgsFile smgsOrigin = getFileDAO().findById(file.getHid(), true);
-        getFileDAO().makeTransient(smgsOrigin);
+        CimSmgsFile cimSmgsFile = getFileDAO().findById(file.getHid(), false);
+        if(cimSmgsFile != null){
+            cimSmgsFile.setDeleted(true);
+            getFileDAO().makePersistent(cimSmgsFile);
+        }
         setJSONData(Constants.convert2JSON_True());
         return SUCCESS;
     }
 
+    public String destroyFile() {
+        log.info("destroyFile");
+
+        CimSmgsFile cimSmgsFile = getFileDAO().findById(file.getHid(), false);
+        if(cimSmgsFile != null){
+            getFileDAO().makeTransient(cimSmgsFile);
+        }
+
+        setJSONData(convert2JSON_True());
+        return SUCCESS;
+    }
+
+    public String restoreFile() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        log.info("restoreFile");
+
+        CimSmgsFile cimSmgsFile = getFileDAO().findById(files.getHid(), false);
+        if(cimSmgsFile != null){
+            cimSmgsFile.setDeleted(false);
+            getFileDAO().makePersistent(cimSmgsFile);
+        }
+        setJSONData(Constants.convert2JSON_True());
+        return SUCCESS;
+    }
+
+    /*public String deleteFile1() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        log.info("deleteFile");
+
+        CimSmgsFile cimSmgsFile = getFileDAO().findById(file.getHid(), false);
+        getFileDAO().makeTransient(cimSmgsFile);
+        setJSONData(Constants.convert2JSON_True());
+        return SUCCESS;
+    }*/
+    public String restore() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        log.info("restore");
+//        PackDoc packDoc = getPackDocDAO().getById(getFile().getPackDoc().getHid(), false);
+//        if(packDoc != null){
+//            packDoc.setDeleted(false);
+//            getPackDocDAO().makePersistent(packDoc);
+//        }
+        restoreDelete(false);
+        setJSONData(convert2JSON_True());
+        return SUCCESS;
+    }
     public String delete() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         log.info("delete");
 
-        if (file.getHid() != null) {
+        restoreDelete(true);
+        setJSONData(convert2JSON_True());
+        return SUCCESS;
+    }
+    private void restoreDelete(boolean delete)
+    {
+        if (file == null) {
+            String hIDsInput[] = getQuery1().split(",");
+            Long hIDs[] = DataProcessingTools.stringArrToLongList(hIDsInput);
+            if (hIDs != null) {
+                for (int i = 0; i < hIDs.length; i++) {
+                    file = getFileInfDAO().getById(hIDs[i], false);
+                    if (file != null) {
+                        PackDoc packDoc = file.getPackDoc();
+                        packDoc.setDeleted(delete);
+                        getPackDocDAO().makePersistent(packDoc);
+                    }
+                }
+            }
+        }
+        else {
+            file = getFileInfDAO().getById(file.getHid(), true);
+            if(file != null){
+                PackDoc packDoc = file.getPackDoc();
+                packDoc.setDeleted(delete);
+                getPackDocDAO().makePersistent(packDoc);
+            }
+        }
+    }
+
+    public String destroy() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        log.info("destroy");
+
+        file = getFileInfDAO().getById(file.getHid(), true);
+        if(file != null){
+            PackDoc packDoc = file.getPackDoc();
+            getPackDocDAO().makeTransient(packDoc);
+        }
+
+        /*if (file.getHid() != null) {
             getFileInfDAO().makeTransient(getFileInfDAO().findById(file.getHid(), true));
             Long count = getSmgsDAO().countAll(file.getPackDoc()) + getInvoiceDAO().countAll(file.getPackDoc()) + getFileInfDAO().countAll(file.getPackDoc());
             log.info("Pack_Doc has - " + count + " docs in CimSmgs and CimSmgsInvoice table and CimSmgsFileInf table");
@@ -156,10 +244,14 @@ public class File_A extends CimSmgsSupport_A implements FileDAOAware, FileInfDAO
             }
         } else if (file.getPackDoc().getHid() != null) {
             getPackDocDAO().makeTransient(getPackDocDAO().findById(file.getPackDoc().getHid(), true));
-        }
+        }*/
         setJSONData(Constants.convert2JSON_True());
         return SUCCESS;
     }
+
+
+
+
 
     /*public String uploadAviso() throws Exception {
         log.info("");

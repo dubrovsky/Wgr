@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.VedVag" table="VED_VAG">
+        <id name="hid" type="long">
+            <column name="HID" precision="20" scale="0" />
+            <generator class="native"/>
+        </id>
+        <property name="hidVed" type="java.lang.Long">
+            <column name="HID_VED" precision="20" scale="0" />
+        </property>
+        <property name="hidCs" type="java.lang.Long">
+            <column name="HID_CS" precision="20" scale="0" />
+        </property>
+        <property name="un" type="string">
+            <column name="UN"/>
+        </property>
+        <property name="dattr" type="timestamp">
+            <column name="DATTR" length="26" />
+        </property>
+        <property name="altered" type="timestamp">
+            <column name="ALTERED" length="26" />
+        </property>
+        <property name="indexNum" type="string">
+            <column name="INDEX_NUM"/>
+        </property>
+        <property name="nvag" type="string">
+            <column name="NVAG"/>
+        </property>
+        <property name="owner" type="string">
+            <column name="OWNER"/>
+        </property>
+        <property name="kind" type="string">
+            <column name="KIND"/>
+        </property>
+        <property name="gp" type="java.math.BigDecimal">
+            <column name="GP"/>
+        </property>
+        <property name="axes" type="java.lang.Byte">
+            <column name="AXES"/>
+        </property>
+        <property name="tara" type="java.math.BigDecimal">
+            <column name="TARA"/>
+        </property>
+        <property name="kpl" type="java.lang.Byte">
+            <column name="KPL"/>
+        </property>
+        <property name="znak" type="string">
+            <column name="ZNAK"/>
+        </property>
+        <property name="numClaim" type="string">
+            <column name="NUM_CLAIM"/>
+        </property>
+        <property name="g281" type="timestamp">
+            <column name="G_28_1" length="26" />
+        </property>
+        <property name="ksto" type="string">
+            <column name="KSTO"/>
+        </property>
+        <property name="nsto" type="string">
+            <column name="NSTO"/>
+        </property>
+        <property name="kstn" type="string">
+            <column name="KSTN"/>
+        </property>
+        <property name="nstn" type="string">
+            <column name="NSTN"/>
+        </property>
+        <property name="kont" type="string">
+            <column name="UTI_N"/>
+        </property>
+        <property name="kontKind" type="string">
+            <column name="UTI_TYPE"/>
+        </property>
+        <property name="kontGp" type="java.math.BigDecimal">
+            <column name="UTI_GP"/>
+        </property>
+        <property name="kontTara" type="java.math.BigDecimal">
+            <column name="UTI_TARA"/>
+        </property>
+        <property name="places" type="java.math.BigDecimal">
+            <column name="PLACES"/>
+        </property>
+        <property name="upak" type="string">
+            <column name="UPAK"/>
+        </property>
+        <property name="gng" type="string">
+            <column name="KGVN"/>
+        </property>
+        <property name="gngn" type="string">
+            <column name="NZGR"/>
+        </property>
+        <property name="mbrt" type="java.math.BigDecimal">
+            <column name="massa"/>
+        </property>
+        <property name="prim" type="string">
+            <column name="PRIM"/>
+        </property>
+        <property name="perVed" type="string">
+            <column name="PER_VED"/>
+        </property>
+
+    </class>
+</hibernate-mapping>

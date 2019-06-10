@@ -42,4 +42,12 @@ public class RouteDAOHib extends GenericHibernateDAO<Route, Long> implements Rou
         }
         return (Long) crit.uniqueResult();
     }
+
+  /*  @Override
+    public Route findForDeleted() {
+        Criteria crit = getSession().createCriteria(getPersistentClass());
+        crit.add(Restrictions.eq("forDeleted", true));
+
+        return (Route) crit.uniqueResult();
+    }*/
 }

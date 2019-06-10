@@ -4,13 +4,14 @@
 <!-- Generated 08.04.2011 10:06:33 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
 
-    <class name="com.bivc.cimsmgs.db.nsi.Cargo" table="CARGO_V" where="SYSDATE &gt;= CAR#BGN and SYSDATE &lt; CAR#END">
+    <class name="com.bivc.cimsmgs.db.nsi.Cargo" table="CARGO_V" where="SYSDATE() &gt;= `CAR#BGN` and SYSDATE() &lt; `CAR#END`">
         <id name="car_un" type="java.lang.Long">
-            <column name="CAR#UN"/>
-            <generator class="assigned"/>
+            <column name="[CAR#UN]"/>
+            <!--<generator class="assigned"/>-->
+            <generator class="native"/>
         </id>
         <property name="car_id" type="java.lang.Long">
-            <column name="CAR#ID"/>
+            <column name="[CAR#ID]"/>
         </property>
         <property name="cargo" type="string">
             <column name="CARGO"/>
@@ -25,10 +26,10 @@
             <column name="CARGO_SECURITY"/>
         </property>
         <property name="car_bgn" type="date">
-            <column name="CAR#BGN"/>
+            <column name="[CAR#BGN]"/>
         </property>
         <property name="car_end" type="date">
-            <column name="CAR#END"/>
+            <column name="[CAR#END]"/>
         </property>
         <!--<set name="ohranas" inverse="true" lazy="true" fetch="select">
             <key property-ref="cargo">

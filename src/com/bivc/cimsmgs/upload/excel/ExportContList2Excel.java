@@ -209,7 +209,7 @@ public class ExportContList2Excel extends Export2Excel {
                     /// end 2 cell
 
                     /// 3 cell
-                    CellUtil.createCell(row, columnIndex++, StringUtils.defaultString(cont.getVid()));
+                    CellUtil.createCell(row, columnIndex++,StringUtils.defaultString(cont.getVid()));
                     /// end 3 cell
 
                     /// 4 cell
@@ -376,7 +376,7 @@ public class ExportContList2Excel extends Export2Excel {
         CellUtil.createCell(CellUtil.getRow(rowIndex, sheet), 0, "Подпись отправителя _____________________________");
     }
 
-    public void makeCimSmgsContList_de() {
+    public void export() {
         Row row;
 
         Font font = getWb().createFont();
@@ -469,6 +469,15 @@ public class ExportContList2Excel extends Export2Excel {
         cs3.setVerticalAlignment(CellStyle.VERTICAL_TOP);
         cs3.setBorderLeft(CellStyle.BORDER_THIN);
         cs3.setBorderRight(CellStyle.BORDER_THIN);
+
+        CellStyle cs3_1 = getWb().createCellStyle();
+        cs3_1.setWrapText(true);
+        cs3_1.setFont(font_8);
+        cs3_1.setAlignment(CellStyle.ALIGN_CENTER);
+        cs3_1.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+        cs3_1.setBorderLeft(CellStyle.BORDER_THIN);
+        cs3_1.setBorderRight(CellStyle.BORDER_THIN);
+        cs3_1.setRotation((short)90);
 
         CellStyle cs3_8 = getWb().createCellStyle();
         cs3_8.setWrapText(true);
@@ -706,13 +715,7 @@ public class ExportContList2Excel extends Export2Excel {
                 rowInd = 2;
                 sb = new StringBuilder();
                 prefix = "";
-                /*if (StringUtils.isNotEmpty(smgs.getG691())) {
-                    for (char ch : smgs.getG691().toCharArray()) {
-                        sb.append(prefix);
-                        prefix = "   ";
-                        sb.append(ch);
-                    }
-                }*/
+
                 if (StringUtils.isNotEmpty(smgs.getG171())) {
                     for (char ch : smgs.getG171().toCharArray()) {
                         sb.append(prefix);
@@ -726,13 +729,7 @@ public class ExportContList2Excel extends Export2Excel {
                 rowInd = 2;
                 sb = new StringBuilder();
                 prefix = "";
-                /*if (StringUtils.isNotEmpty(smgs.getG692())) {
-                    for (char ch : smgs.getG692().toCharArray()) {
-                        sb.append(prefix);
-                        prefix = "   ";
-                        sb.append(ch);
-                    }
-                }*/
+
                 if (StringUtils.isNotEmpty(smgs.getG17())) {
                     for (char ch : smgs.getG17().toCharArray()) {
                         sb.append(prefix);
@@ -753,13 +750,7 @@ public class ExportContList2Excel extends Export2Excel {
                         sb.append(ch);
                     }
                 }
-                /*if (StringUtils.isNotEmpty(smgs.getGb662())) {
-                    for (char ch : smgs.getGb662().toCharArray()) {
-                        sb.append(prefix);
-                        prefix = "   ";
-                        sb.append(ch);
-                    }
-                }*/
+
                 CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd++, sb.toString());
 
                 colInd = 16;
@@ -801,7 +792,8 @@ public class ExportContList2Excel extends Export2Excel {
                     else if (kon.getCimSmgsDocses9().size() > 0) {
                         tableRowIndex = 2;
                     }
-                    int itogStringCount = car.getCimSmgsKonLists().size() == 1 || car.getCimSmgsKonLists().size() == konInCarIndex ? 2 : 1;
+//                    int itogStringCount = car.getCimSmgsKonLists().size() == 1 || car.getCimSmgsKonLists().size() == konInCarIndex ? 2 : 1;
+                    int itogStringCount = 2;
                     tableRowIndex += itogStringCount; // itog
                     ///////////////////////
 
@@ -809,6 +801,8 @@ public class ExportContList2Excel extends Export2Excel {
                     BigDecimal netto = new BigDecimal(0);
                     BigDecimal tara = kon.getTaraKont() != null ? new BigDecimal(kon.getTaraKont()) : BigDecimal.ZERO;
                     taraInVag = taraInVag.add(tara);
+
+                    String unOon = "";
 
                     for (int i = 0; i < tableRowIndex; i++) {
                         columnIndex = 0;
@@ -840,9 +834,9 @@ public class ExportContList2Excel extends Export2Excel {
                         columnIndex++;
 
                         if (i == 0) {
-                            CellUtil.createCell(row, columnIndex, StringUtils.isNotEmpty(kon.getUtiN()) ? kon.getUtiN() + " " + CONT_SUFFIX : "", cs2_boder_none_8);
+                            CellUtil.createCell(row, columnIndex, StringUtils.isNotEmpty(kon.getUtiN()) ? kon.getUtiN() + " ": "", cs2_boder_none_8);
                         } else if (tableRowIndex - i == itogStringCount){ // last or predlast itog string
-                            CellUtil.createCell(row, columnIndex, StringUtils.isNotEmpty(kon.getUtiN()) ? kon.getUtiN() + " " + CONT_SUFFIX : "", cs2_8);
+                            CellUtil.createCell(row, columnIndex, StringUtils.isNotEmpty(kon.getUtiN()) ? kon.getUtiN() + " ": "", cs2_8);
                         } else if (tableRowIndex - i == itogStringCount - 1) {  // last itog string
                             CellUtil.createCell(row, columnIndex, String.valueOf(carIndex) + ". Wag/Bar.", cs2_8);
                         }
@@ -852,7 +846,22 @@ public class ExportContList2Excel extends Export2Excel {
                         //BEGIN g13
                         columnIndex++;
                         if (i == 0) {
-                            CellUtil.createCell(row, columnIndex, kon.getSizeFoot() != null ? kon.getSizeFoot().toString() : "", cs3);
+                            StringBuilder cel13= new StringBuilder();
+                            if((kon.getSizeFoot()!=null) &&(kon.getSizeFoot().compareTo( new BigDecimal(0))!=0))
+                            cel13.append(kon.getSizeFoot());
+
+                            if(cel13.length()>0)
+                                cel13.append("\n");
+
+                            cel13.append(StringUtils.defaultString(kon.getUtiType()));
+
+                            if(!StringUtils.defaultString(kon.getUtiType()).isEmpty())
+                                cel13.append("\n");
+
+                            if((kon.getGrpod()!=null) &&(kon.getGrpod().compareTo( new BigDecimal(0))!=0))
+                                cel13.append(StringUtils.defaultString(kon.getGrpod().toString()));
+
+                            CellUtil.createCell(row, columnIndex,cel13.toString(), cs3);
                         }
                         ////END g13
 
@@ -862,7 +871,7 @@ public class ExportContList2Excel extends Export2Excel {
                             CellUtil.createCell(row, columnIndex, gruzCount + " Ladung\n" + gruzCount + " Груз", cs2);
                         } else if (tableRowIndex - i == itogStringCount - 1) {    // last itog strings
                             int konCount = car.getCimSmgsKonLists().size();
-                            CellUtil.createCell(row, columnIndex, konCount + " Container\n"+ konCount + " Контейнер", cs2);
+                            CellUtil.createCell(row, columnIndex, /*konCount*/ " Container\n"+ /*konCount*/ " Контейнер", cs2);
                         } else {
                             if (gruzCount > 0) {
 //                                CimSmgsGruz gruz = kon.getCimSmgsGruzs().get((byte)(i / 2));
@@ -879,6 +888,15 @@ public class ExportContList2Excel extends Export2Excel {
                                         sb.append("; ET SNG ");
                                         sb.append(StringUtils.defaultString(gruz.getEkgvn()));
                                     }
+
+                                    if(gruz.getCimSmgsDanGruzs() != null){
+                                        for(CimSmgsDanGruz danGruz : gruz.getCimSmgsDanGruzs().values()){
+                                            sb.append("\n");
+                                            sb.append(danGruz.danGruzDe4CimSmgsEu());
+                                            unOon += StringUtils.isNoneBlank(danGruz.getNumOon()) ? StringUtils.isBlank(unOon) ? "UN " + danGruz.getNumOon() : ", UN " + danGruz.getNumOon() : "";
+                                        }
+                                    }
+
                                     CellUtil.createCell(row, columnIndex, sb.length() > 0 ? sb.append("\n").toString() : "", cs3);
                                 } else { // odd string
                                     sb.append(StringUtils.defaultString(gruz.getNzgr()));
@@ -888,6 +906,13 @@ public class ExportContList2Excel extends Export2Excel {
                                     if (StringUtils.defaultString(gruz.getEkgvn()).length() > 0) {
                                         sb.append("; ЕТ СНГ ");
                                         sb.append(StringUtils.defaultString(gruz.getEkgvn()));
+                                    }
+
+                                    if(gruz.getCimSmgsDanGruzs() != null){
+                                        for(CimSmgsDanGruz danGruz : gruz.getCimSmgsDanGruzs().values()){
+                                            sb.append("\n");
+                                            sb.append(danGruz.danGruzRu4CimSmgsEu());
+                                        }
                                     }
                                     CellUtil.createCell(row, columnIndex, sb.length() > 0 ? sb.append("\n").toString() : "", cs3);
 
@@ -911,6 +936,9 @@ public class ExportContList2Excel extends Export2Excel {
 
                         //BEGIN g16
                         columnIndex++;
+                        if (i == 0) {
+                            CellUtil.createCell(row, columnIndex, (unOon.length() > 0 ? unOon : ""), cs3_1);
+                        }
                         ////END g16
 
                         //BEGIN g17
@@ -923,8 +951,8 @@ public class ExportContList2Excel extends Export2Excel {
                             CellUtil.createCell(row, columnIndex, sb.toString(), cs2);
                             nettoInVag = nettoInVag.add(netto);
                         } else if (tableRowIndex - i == itogStringCount - 1) {    // last itog strings
-                            CellUtil.createCell(row, columnIndex, BRUTTO + " " + BigDecimal.ZERO.add(taraInVag).add(nettoInVag), cs2);
-//                            massa = massa.add(smgs.getG24B() != null ? smgs.getG24B() : BigDecimal.ZERO);
+//                            CellUtil.createCell(row, columnIndex, BRUTTO + " " + BigDecimal.ZERO.add(taraInVag).add(nettoInVag), cs2);
+                            CellUtil.createCell(row, columnIndex, BRUTTO + " " + BigDecimal.ZERO.add(netto).add(tara), cs2);
                         } else {
                             if (kon.getCimSmgsGruzs().size() > 0) {
                                 CimSmgsGruz gruz = findGruzInKont(kon, (byte)(i / 2));
@@ -945,7 +973,8 @@ public class ExportContList2Excel extends Export2Excel {
                                 plombsString.append(suffix);
                                 suffix = "\n";
                                 plombsString.append(plomb.getKpl() != null ? plomb.getKpl() : 0);
-                                plombsString.append(" X SEALED ");
+//                                plombsString.append(" X SEALED ");
+                                plombsString.append(" X ");
                                 plombsString.append(StringUtils.defaultString(plomb.getZnak()));
                             }
                             CellUtil.createCell(row, columnIndex, plombsString.toString(), cs3_8);
@@ -962,15 +991,16 @@ public class ExportContList2Excel extends Export2Excel {
                                     sb.append(prefix);
                                     sb.append(StringUtils.defaultString(dc.getText2()));
                                 }
-                                if(dc.getDat() != null){
-                                    sb.append(",");
-                                    sb.append(new SimpleDateFormat("dd.MM.yyyy").format(dc.getDat()));
-                                }
                                 if(StringUtils.isNotBlank(dc.getNdoc())){
-                                    sb.append(",");
+                                    sb.append(" ");
                                     sb.append(dc.getNdoc());
                                 }
-                                prefix = ",";
+                                if(dc.getDat() != null){
+                                    sb.append(", ");
+                                    sb.append(new SimpleDateFormat("dd.MM.yyyy").format(dc.getDat()));
+                                }
+
+                                prefix = "; ";
                             }
                             if(sb.length() > 0){
                                 CellUtil.createCell(row, columnIndex, sb.toString(), cs3);
@@ -981,15 +1011,16 @@ public class ExportContList2Excel extends Export2Excel {
                                     sb.append(prefix);
                                     sb.append(StringUtils.defaultString(dc.getText()));
                                 }
-                                if(dc.getDat() != null){
-                                    sb.append(",");
-                                    sb.append(new SimpleDateFormat("dd.MM.yyyy").format(dc.getDat()));
-                                }
                                 if(StringUtils.isNotBlank(dc.getNdoc())){
-                                    sb.append(",");
+                                    sb.append(" ");
                                     sb.append(dc.getNdoc());
                                 }
-                                prefix = ",";
+                                if(dc.getDat() != null){
+                                    sb.append(", ");
+                                    sb.append(new SimpleDateFormat("dd.MM.yyyy").format(dc.getDat()));
+                                }
+
+                                prefix = "; ";
                             }
                             if(sb.length() > 0){
                                 CellUtil.createCell(row, columnIndex, sb.toString(), cs3);
@@ -1000,10 +1031,24 @@ public class ExportContList2Excel extends Export2Excel {
                         //BEGIN g20
                         columnIndex++;
                         if (car != null) {
+                            String input=StringUtils.defaultString(car.getNvag()) +" ";
+                            if((car.getRod()!=null)&&(!car.getRod().isEmpty()))
+                                input+=car.getRod()+" / ";
+                            if((car.getKlientName()!=null)&&(!car.getKlientName().isEmpty()))
+                                input+=car.getKlientName()+" / ";
+                            if((car.getVagOtm()!=null)&&(!car.getVagOtm().isEmpty()))
+                                input+=car.getVagOtm()+" / ";
+                            if((car.getGrPod()!=null)&&(car.getGrPod().compareTo( new BigDecimal(0))!=0))
+                                input+=car.getGrPod()+" / ";
+                            if((car.getKolOs()!=null)&&(car.getKolOs()!=0))
+                                input+=car.getKolOs()+" / ";
+                            if((car.getTaraVag()!=null)&&(car.getTaraVag().compareTo( new BigDecimal(0))!=0))
+                                input+=car.getTaraVag();
+
                             if (i == 0) {
-                                CellUtil.createCell(row, columnIndex, StringUtils.defaultString(car.getNvag()) + nl + " O", cs2_boder_none_8);
+                                CellUtil.createCell(row, columnIndex, input, cs2_boder_none_8);
                             } else if (tableRowIndex - i == 1) {    // last itog strings
-                                CellUtil.createCell(row, columnIndex, StringUtils.defaultString(car.getNvag()), cs2_8);
+                                CellUtil.createCell(row, columnIndex, input, cs2_8);
                             }
                         }
                         ////END g20
@@ -1042,669 +1087,6 @@ public class ExportContList2Excel extends Export2Excel {
         return null;
     }
 
-    /*public void makeCimSmgsContList_de() {
-        final int tableDataRowIndex = 21;
-        Row row;
-//        Cell cell;
-
-//        DataFormat format1 = getWb().createDataFormat();
-
-        Font font = getWb().createFont();
-        font.setFontHeightInPoints((short) 7);
-
-        Font font_8 = getWb().createFont();
-        font_8.setFontHeightInPoints((short) 8);
-
-        Font font2 = getWb().createFont();
-        font2.setFontHeightInPoints((short) 7);
-        font2.setBoldweight(Font.BOLDWEIGHT_BOLD);
-
-        Font font3 = getWb().createFont();
-        font3.setFontHeightInPoints((short) 7);
-        font3.setBoldweight(Font.BOLDWEIGHT_BOLD);
-
-        Font font3_8 = getWb().createFont();
-        font3_8.setFontHeightInPoints((short) 8);
-        font3_8.setBoldweight(Font.BOLDWEIGHT_BOLD);
-
-        CellStyle cs1 = getWb().createCellStyle();
-        cs1.setWrapText(true);
-        cs1.setFont(font);
-        cs1.setAlignment(CellStyle.ALIGN_LEFT);
-        cs1.setVerticalAlignment(CellStyle.VERTICAL_TOP);
-
-        CellStyle cs11 = getWb().createCellStyle();
-        cs11.setWrapText(true);
-        cs11.setFont(font);
-        cs11.setAlignment(CellStyle.ALIGN_LEFT);
-        cs11.setVerticalAlignment(CellStyle.VERTICAL_TOP);
-        cs11.setBorderLeft(CellStyle.BORDER_MEDIUM);
-
-        CellStyle cs12 = getWb().createCellStyle();
-        cs12.setWrapText(true);
-        cs12.setFont(font);
-        cs12.setAlignment(CellStyle.ALIGN_LEFT);
-        cs12.setVerticalAlignment(CellStyle.VERTICAL_TOP);
-        cs12.setBorderRight(CellStyle.BORDER_MEDIUM);
-        cs12.setBorderLeft(CellStyle.BORDER_THIN);
-        cs12.setBorderBottom(CellStyle.BORDER_THIN);
-        cs12.setBorderTop(CellStyle.BORDER_THIN);
-
-        CellStyle cs2 = getWb().createCellStyle();
-        cs2.setWrapText(true);
-        cs2.setFont(font3);
-        cs2.setAlignment(CellStyle.ALIGN_LEFT);
-        cs2.setVerticalAlignment(CellStyle.VERTICAL_TOP);
-        cs2.setBorderLeft(CellStyle.BORDER_MEDIUM);
-        cs2.setBorderBottom(CellStyle.BORDER_MEDIUM);
-        cs2.setBorderRight(CellStyle.BORDER_MEDIUM);
-        cs2.setBorderTop(CellStyle.BORDER_MEDIUM);
-
-        CellStyle cs2_8 = getWb().createCellStyle();
-        cs2_8.setWrapText(true);
-        cs2_8.setFont(font3_8);
-        cs2_8.setAlignment(CellStyle.ALIGN_LEFT);
-        cs2_8.setVerticalAlignment(CellStyle.VERTICAL_TOP);
-        cs2_8.setBorderLeft(CellStyle.BORDER_MEDIUM);
-        cs2_8.setBorderBottom(CellStyle.BORDER_MEDIUM);
-        cs2_8.setBorderRight(CellStyle.BORDER_MEDIUM);
-        cs2_8.setBorderTop(CellStyle.BORDER_MEDIUM);
-
-        CellStyle cs2_boder_none = getWb().createCellStyle();
-        cs2_boder_none.setWrapText(true);
-        cs2_boder_none.setFont(font3);
-        cs2_boder_none.setAlignment(CellStyle.ALIGN_LEFT);
-        cs2_boder_none.setVerticalAlignment(CellStyle.VERTICAL_TOP);
-
-        CellStyle cs2_boder_none_8 = getWb().createCellStyle();
-        cs2_boder_none_8.setWrapText(true);
-        cs2_boder_none_8.setFont(font3_8);
-        cs2_boder_none_8.setAlignment(CellStyle.ALIGN_LEFT);
-        cs2_boder_none_8.setVerticalAlignment(CellStyle.VERTICAL_TOP);
-
-        CellStyle cs2_boder_thin = getWb().createCellStyle();
-        cs2_boder_thin.setWrapText(true);
-        cs2_boder_thin.setFont(font);
-        cs2_boder_thin.setAlignment(CellStyle.ALIGN_LEFT);
-        cs2_boder_thin.setVerticalAlignment(CellStyle.VERTICAL_TOP);
-        cs2_boder_thin.setBorderLeft(CellStyle.BORDER_THIN);
-        cs2_boder_thin.setBorderBottom(CellStyle.BORDER_THIN);
-        cs2_boder_thin.setBorderRight(CellStyle.BORDER_THIN);
-        cs2_boder_thin.setBorderTop(CellStyle.BORDER_THIN);
-
-        CellStyle cs3 = getWb().createCellStyle();
-        cs3.setWrapText(true);
-        cs3.setFont(font);
-        cs3.setAlignment(CellStyle.ALIGN_LEFT);
-        cs3.setVerticalAlignment(CellStyle.VERTICAL_TOP);
-        cs3.setBorderLeft(CellStyle.BORDER_THIN);
-        cs3.setBorderRight(CellStyle.BORDER_THIN);
-
-        CellStyle cs3_8 = getWb().createCellStyle();
-        cs3_8.setWrapText(true);
-        cs3_8.setFont(font_8);
-        cs3_8.setAlignment(CellStyle.ALIGN_LEFT);
-        cs3_8.setVerticalAlignment(CellStyle.VERTICAL_TOP);
-        cs3_8.setBorderLeft(CellStyle.BORDER_THIN);
-        cs3_8.setBorderRight(CellStyle.BORDER_THIN);
-
-        CellStyle cs31 = getWb().createCellStyle();
-        cs31.setWrapText(true);
-        cs31.setFont(font);
-        cs31.setAlignment(CellStyle.ALIGN_LEFT);
-        cs31.setVerticalAlignment(CellStyle.VERTICAL_TOP);
-        cs31.setBorderLeft(CellStyle.BORDER_MEDIUM);
-        cs31.setBorderRight(CellStyle.BORDER_THIN);
-
-        CellStyle cs32 = getWb().createCellStyle();
-        cs32.setWrapText(true);
-        cs32.setFont(font);
-        cs32.setAlignment(CellStyle.ALIGN_LEFT);
-        cs32.setVerticalAlignment(CellStyle.VERTICAL_TOP);
-        cs32.setBorderLeft(CellStyle.BORDER_THIN);
-        cs32.setBorderRight(CellStyle.BORDER_MEDIUM);
-
-        int index = 1;
-        int tableRowIndex = 0;
-        String prefix;
-        String nl = "\n";
-        String space = " ";
-        StringBuilder sb;
-        int rowIndex = 0;
-        int columnIndex;
-        BigDecimal massa = new BigDecimal(0);
-
-        for (CimSmgs doc : docs) {
-            if (index == 1) { // shapka
-                // g1
-                int colInd = 0;
-                int rowInd = 4;
-                sb = new StringBuilder();
-                if (StringUtils.isNotEmpty(doc.getG1())) {
-                    sb.append(doc.getG1()).append(nl);
-                }
-                if (StringUtils.isNotEmpty(doc.getG19_1())) {
-                    sb.append(doc.getG19_1()).append(space);
-                }
-                if (StringUtils.isNotEmpty(doc.getG17_1())) {
-                    sb.append(doc.getG17_1()).append(space);
-                }
-                sb.append(StringUtils.defaultString(doc.getG18_1()));
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, sb.toString(), cs11);
-
-                rowInd = 6;
-                sb = new StringBuilder();
-                if (StringUtils.isNotEmpty(doc.getG1r())) {
-                    sb.append(doc.getG1r()).append(nl);
-                }
-                if (StringUtils.isNotEmpty(doc.getG19r())) {
-                    sb.append(doc.getG19r()).append(space);
-                }
-                if (StringUtils.isNotEmpty(doc.getG17_1())) {
-                    sb.append(doc.getG17_1()).append(space);
-                }
-                sb.append(StringUtils.defaultString(doc.getG18r_1()));
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, sb.toString(), cs11);
-
-                colInd = 4;
-                rowInd = 1;
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(doc.getG2()), cs2_boder_thin);
-
-                colInd = 4;
-                rowInd = 8;
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(doc.getG12_1()), cs1);
-
-                colInd = 4;
-                rowInd = 9;
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(doc.getG13_1()), cs1);
-
-                // g2
-                colInd = 0;
-                rowInd = 13;
-                sb = new StringBuilder();
-                if (StringUtils.isNotEmpty(doc.getG4())) {
-                    sb.append(doc.getG4()).append(nl);
-                }
-                if (StringUtils.isNotEmpty(doc.getG49())) {
-                    sb.append(doc.getG49()).append(space);
-                }
-                if (StringUtils.isNotEmpty(doc.getG47_1())) {
-                    sb.append(doc.getG47_1()).append(space);
-                }
-                sb.append(StringUtils.defaultString(doc.getG48_1()));
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, sb.toString(), cs11);
-
-                rowInd = 15;
-                sb = new StringBuilder();
-                if (StringUtils.isNotEmpty(doc.getG4r())) {
-                    sb.append(doc.getG4r()).append(nl);
-                }
-                if (StringUtils.isNotEmpty(doc.getG49r())) {
-                    sb.append(doc.getG49r()).append(space);
-                }
-                if (StringUtils.isNotEmpty(doc.getG47_1())) {
-                    sb.append(doc.getG47_1()).append(space);
-                }
-                sb.append(StringUtils.defaultString(doc.getG48r()));
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, sb.toString(), cs11);
-
-                colInd = 4;
-                rowInd = 10;
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(doc.getG5()), cs2_boder_thin);
-
-                colInd = 4;
-                rowInd = 17;
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(doc.getG42_1()), cs1);
-
-                colInd = 4;
-                rowInd = 18;
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(doc.getG43_1()), cs1);
-
-                //  g3
-                colInd = 7;
-                rowInd = 4;
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(doc.getG162()), cs1);
-
-                colInd = 7;
-                rowInd = 5;
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(doc.getG162r()), cs1);
-
-                colInd = 10;
-                rowInd = 4;
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(doc.getG163()), cs1);
-
-                colInd = 10;
-                rowInd = 5;
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(doc.getG163r()), cs1);
-
-                colInd = 10;
-                rowInd = 1;
-                sb = new StringBuilder();
-                prefix = "";
-                if (StringUtils.isNotEmpty(doc.getG161())) {
-                    for (char ch : doc.getG161().toCharArray()) {
-                        sb.append(prefix);
-                        prefix = "   ";
-                        sb.append(ch);
-                    }
-                }
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, sb.toString(), cs2_boder_thin);
-
-                //  g4
-                colInd = 10;
-                rowInd = 8;
-                sb = new StringBuilder();
-                prefix = "";
-                if (StringUtils.isNotEmpty(doc.getG611())) {
-                    for (char ch : doc.getG611().toCharArray()) {
-                        sb.append(prefix);
-                        prefix = "   ";
-                        sb.append(ch);
-                    }
-                }
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd++, sb.toString());
-
-                colInd = 11;
-                rowInd = 8;
-                sb = new StringBuilder();
-                prefix = "";
-                if (StringUtils.isNotEmpty(doc.getG612())) {
-                    for (char ch : doc.getG612().toCharArray()) {
-                        sb.append(prefix);
-                        prefix = " ";
-                        sb.append(ch);
-                    }
-                }
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd++, sb.toString());
-
-                //  g6
-                colInd = 9;
-                rowInd = 11;
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(doc.getG11()));
-
-
-                //g7
-                colInd = 10;
-                rowInd = 11;
-                sb = new StringBuilder();
-                prefix = "";
-                if (StringUtils.isNotEmpty(doc.getG12())) {
-                    for (char ch : doc.getG12().toCharArray()) {
-                        sb.append(prefix);
-                        prefix = " ";
-                        sb.append(ch);
-                    }
-                }
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd++, sb.toString());
-
-                colInd = 11;
-                rowInd = 11;
-                sb = new StringBuilder();
-                prefix = "";
-                if (StringUtils.isNotEmpty(doc.getG121())) {
-                    for (char ch : doc.getG121().toCharArray()) {
-                        sb.append(prefix);
-                        prefix = " ";
-                        sb.append(ch);
-                    }
-                }
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd++, sb.toString());
-
-                //  g5
-                colInd = 7;
-                rowInd = 15;
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(doc.getG101()), cs1);
-
-                colInd = 7;
-                rowInd = 16;
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(doc.getG101r()), cs1);
-
-                colInd = 10;
-                rowInd = 15;
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(doc.getG102()), cs1);
-
-                colInd = 10;
-                rowInd = 16;
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(doc.getG102r()), cs1);
-
-                // g8
-
-                colInd = 14;
-                rowInd = 2;
-                sb = new StringBuilder();
-                prefix = "";
-                *//*if (StringUtils.isNotEmpty(doc.getG691())) {
-                    for (char ch : doc.getG691().toCharArray()) {
-                        sb.append(prefix);
-                        prefix = "   ";
-                        sb.append(ch);
-                    }
-                }*//*
-                if (StringUtils.isNotEmpty(doc.getG171())) {
-                    for (char ch : doc.getG171().toCharArray()) {
-                        sb.append(prefix);
-                        prefix = "   ";
-                        sb.append(ch);
-                    }
-                }
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd++, sb.toString());
-
-                colInd = 16;
-                rowInd = 2;
-                sb = new StringBuilder();
-                prefix = "";
-                *//*if (StringUtils.isNotEmpty(doc.getG692())) {
-                    for (char ch : doc.getG692().toCharArray()) {
-                        sb.append(prefix);
-                        prefix = "   ";
-                        sb.append(ch);
-                    }
-                }*//*
-                if (StringUtils.isNotEmpty(doc.getG17())) {
-                    for (char ch : doc.getG17().toCharArray()) {
-                        sb.append(prefix);
-                        prefix = "   ";
-                        sb.append(ch);
-                    }
-                }
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd++, sb.toString(), cs12);
-
-                colInd = 14;
-                rowInd = 6;
-                sb = new StringBuilder();
-                prefix = "";
-                if (StringUtils.isNotEmpty(doc.getG693())) {
-                    for (char ch : doc.getG693().toCharArray()) {
-                        sb.append(prefix);
-                        prefix = "   ";
-                        sb.append(ch);
-                    }
-                }
-                *//*if (StringUtils.isNotEmpty(doc.getGb662())) {
-                    for (char ch : doc.getGb662().toCharArray()) {
-                        sb.append(prefix);
-                        prefix = "   ";
-                        sb.append(ch);
-                    }
-                }*//*
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd++, sb.toString());
-
-                colInd = 16;
-                rowInd = 6;
-                sb = new StringBuilder();
-                prefix = "";
-                if (StringUtils.isNotEmpty(doc.getG694())) {
-                    for (char ch : doc.getG694().toCharArray()) {
-                        sb.append(prefix);
-                        prefix = "   ";
-                        sb.append(ch);
-                    }
-                }
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd++, sb.toString(), cs12);
-
-                // g9
-                colInd = 12;
-                rowInd = 10;
-                CellUtil.createCell(CellUtil.getRow(rowInd, sheet), colInd, StringUtils.defaultString(doc.getG60()), cs1);
-
-            }
-            ///// END SHAPKA
-
-            rowIndex = sheet.getLastRowNum() + 1 *//*+ tableDataRowIndex + tableRowIndex*//*;
-
-            ///////////////////// How many rows in one row of data
-            tableRowIndex = 1;
-            for (CimSmgsCarList car : doc.getCimSmgsCarLists().values()) {
-                for (CimSmgsKonList kon : car.getCimSmgsKonLists().values()) {
-                    if (kon.getCimSmgsGruzs().size() > 0) {
-                        tableRowIndex = kon.getCimSmgsGruzs().size() * 2;
-                    }
-                    break;
-                }
-                break;
-            }
-            if (tableRowIndex == 1 && doc.getCimSmgsDocses9().size() > 0) {
-                tableRowIndex = 2;
-            }
-            tableRowIndex += 2; // itog
-            ///////////////////////
-
-            int tableDataColumnIndex = 18;
-            CimSmgsCarList car = doc.getCimSmgsCarLists().size() > 0 ? doc.getCimSmgsCarLists().values().iterator().next() : null;
-            CimSmgsKonList kon = (car != null && car.getCimSmgsKonLists().size() > 0) ? car.getCimSmgsKonLists().values().iterator().next() : null;
-            for (int i = 0; i < tableRowIndex; i++) {
-                columnIndex = 0;
-                row = sheet.createRow(rowIndex + i);
-                // BEGIN draw all cells in rows
-                for (int y = 0; y < tableDataColumnIndex; y++) {
-                    if (tableRowIndex - i <= 2) {    // 2 last itog strings
-                        CellUtil.createCell(row, y, "", cs2);
-                    } else {
-                        if(tableDataColumnIndex - y != 1){
-                            CellUtil.createCell(row, y, "", cs3);
-                        } else {
-                            CellUtil.createCell(row, y, "", cs32); // last column
-                        }
-                    }
-                }
-                /// END draw all cells in rows
-
-                // BEGIN g11
-                if (i == 0) {
-                    CellUtil.createCell(row, columnIndex, String.valueOf(index), cs31);
-                } else if(tableRowIndex - i > 2){    // NOT 2 last itog strings
-                    CellUtil.createCell(row, columnIndex, "", cs31);
-                }
-                //// END g11
-
-                //BEGIN g12
-                columnIndex++;
-
-                if (i == 0) {
-                    if (kon != null) {
-                        CellUtil.createCell(row, columnIndex, StringUtils.isNotEmpty(kon.getUtiN()) ? kon.getUtiN() + " " + CONT_SUFFIX : "", cs2_boder_none_8);
-                    }
-                } else if (tableRowIndex - i == 2) {    // predlast itog strings
-                    if (kon != null) {
-                        CellUtil.createCell(row, columnIndex, StringUtils.isNotEmpty(kon.getUtiN()) ? kon.getUtiN() + " " + CONT_SUFFIX : "", cs2_8);
-                    }
-                } else if (tableRowIndex - i == 1) {    // last itog strings
-                    CellUtil.createCell(row, columnIndex, String.valueOf(index) + ". Wag/Bar.", cs2_8);
-                }
-                *//*else{
-                    CellUtil.createCell(row, columnIndex, "", cs3);
-                }*//*
-                ////END g12
-
-                //BEGIN g13
-                columnIndex++;
-                if (i == 0) {
-                    if (kon != null) {
-                        CellUtil.createCell(row, columnIndex, kon.getSizeFoot() != null ? kon.getSizeFoot().toString() : "", cs3);
-                    }
-                } *//*else if(tableRowIndex - i <= 2){    // 2 last itog strings
-                    CellUtil.createCell(row, columnIndex, "", cs2);
-                }
-                else{
-                    CellUtil.createCell(row, columnIndex, "", cs3);
-                }*//*
-                ////END g13
-
-                //BEGIN g14
-                columnIndex++;
-                if (tableRowIndex - i == 2) {    // predlast itog strings
-                    CellUtil.createCell(row, columnIndex, "1 Ladung\n1 Груз", cs2);
-                } else if (tableRowIndex - i == 1) {    // last itog strings
-                    CellUtil.createCell(row, columnIndex, "1 Container\n1 Контейнер", cs2);
-                } else {
-                    if (kon != null && kon.getCimSmgsGruzs().size() > 0*//*(i == 0 || i % 2 == 0)*//*) {
-                        CimSmgsGruz gruz = kon.getCimSmgsGruzs().get((byte) (i / 2)) ;
-                        sb = new StringBuilder();
-                        if (i % 2 == 0) {  //even string
-                            sb.append(StringUtils.defaultString(gruz.getNzgrEu()));
-                            if(gruz.getPlaces() != null){
-//                                sb.append("; " + gruz.getPlaces() + " PALETTEN");
-                                sb.append("; " + gruz.getPlaces() + " " + StringUtils.defaultString(gruz.getUpakForeign()));
-                            }
-
-                            if (StringUtils.defaultString(gruz.getEkgvn()).length() > 0) {
-                                sb.append("; ET SNG ");
-                                sb.append(StringUtils.defaultString(gruz.getEkgvn()));
-                            }
-                            CellUtil.createCell(row, columnIndex, sb.length() > 0 ? sb.append("\n").toString() : "", cs3);
-                        } else { // odd string
-                            sb.append(StringUtils.defaultString(gruz.getNzgr()));
-                            if(gruz.getPlaces() != null){
-//                                sb.append("; " + gruz.getPlaces() + " ПОДДОНЫ");
-                                sb.append("; " + gruz.getPlaces() + " " + StringUtils.defaultString(gruz.getUpak()));
-                            }
-                            if (StringUtils.defaultString(gruz.getEkgvn()).length() > 0) {
-                                sb.append("; ЕТ СНГ ");
-                                sb.append(StringUtils.defaultString(gruz.getEkgvn()));
-                            }
-                            CellUtil.createCell(row, columnIndex, sb.length() > 0 ? sb.append("\n").toString() : "", cs3);
-
-                        }
-                    }
-                }
-                ////END g14
-
-                //BEGIN g15
-                columnIndex++;
-                *//*if(tableRowIndex - i <= 2){    // 2 last itog strings
-                    CellUtil.createCell(row, columnIndex, "", cs2);
-                } else {*//*
-                if (tableRowIndex - i > 2) {
-                    if (kon != null && kon.getCimSmgsGruzs().size() > 0) {
-                        CimSmgsGruz gruz = kon.getCimSmgsGruzs().get((byte)(i / 2));
-                        if (i % 2 == 0) {  //even string
-                            CellUtil.createCell(row, columnIndex, StringUtils.defaultString(gruz.getKgvn()), cs3);
-                        } *//*else {
-                            CellUtil.createCell(row, columnIndex, "", cs3);
-                        }*//*
-                    }
-                }
-//                }
-                ////END g15
-
-                //BEGIN g16
-                columnIndex++;
-                *//*if(tableRowIndex - i <= 2){    // 2 last itog strings
-                    CellUtil.createCell(row, columnIndex, "", cs2);
-                } else {
-                    CellUtil.createCell(row, columnIndex, "", cs3);
-                }*//*
-                ////END g16
-
-                //BEGIN g17
-                columnIndex++;
-                if (tableRowIndex - i == 2) {    // predlast itog strings
-                    sb = new StringBuilder();
-                    sb.append(doc.getG24N() != null ? NETTO + " " + doc.getG24N() : "");
-                    if (doc.getG24T() != null) {
-                        sb.append("\n").append(TARA + " " + doc.getG24T());
-                    }
-                    CellUtil.createCell(row, columnIndex, sb.toString(), cs2);
-                } else if (tableRowIndex - i == 1) {    // last itog strings
-                    CellUtil.createCell(row, columnIndex, doc.getG24B() != null ? BRUTTO + " " +  doc.getG24B() : "", cs2);
-                    massa = massa.add(doc.getG24B() != null ? doc.getG24B() : BigDecimal.ZERO);
-                } else {
-                    if (kon != null && kon.getCimSmgsGruzs().size() > 0) {
-                        CimSmgsGruz gruz = kon.getCimSmgsGruzs().get((byte)(i / 2));
-                        if (i % 2 == 0) {  //even string
-                            CellUtil.createCell(row, columnIndex, gruz.getMassa() != null ? gruz.getMassa().toString() : "", cs3);
-                        } *//*else {
-                            CellUtil.createCell(row, columnIndex, "", cs3);
-                        }*//*
-                    }
-                }
-                ////END g17
-
-                //BEGIN g18
-                columnIndex++;
-                if (i == 0) {
-                    CellUtil.createCell(row, columnIndex, StringUtils.defaultString(doc.getG2012()), cs3_8);
-                } *//*else if(tableRowIndex - i <= 2){    // 2 last itog strings
-                    CellUtil.createCell(row, columnIndex, "", cs2);
-                }
-                else{
-                    CellUtil.createCell(row, columnIndex, "", cs3);
-                }*//*
-                ////END g18
-
-                //BEGIN g19
-                columnIndex++;
-                sb = new StringBuilder();
-                prefix = "";
-                if (i == 0) {
-                    for (CimSmgsDocs dc : doc.getCimSmgsDocses9().values()) {
-                        if (StringUtils.defaultString(dc.getText2()).length() > 0) {
-                            sb.append(prefix);
-                            sb.append(StringUtils.defaultString(dc.getText2()));
-                        }
-                        if(dc.getDat() != null){
-                            sb.append(",");
-                            sb.append(new SimpleDateFormat("dd.MM.yyyy").format(dc.getDat()));
-                        }
-                        if(StringUtils.isNotBlank(dc.getNdoc())){
-                            sb.append(",");
-                            sb.append(dc.getNdoc());
-                        }
-                        prefix = ",";
-                    }
-                    if(sb.length() > 0){
-                        CellUtil.createCell(row, columnIndex, sb.toString(), cs3);
-                    }
-                } else if (i == 1) {
-                    for (CimSmgsDocs dc : doc.getCimSmgsDocses9().values()) {
-                        if (StringUtils.defaultString(dc.getText()).length() > 0) {
-                            sb.append(prefix);
-                            sb.append(StringUtils.defaultString(dc.getText()));
-                        }
-                        if(dc.getDat() != null){
-                            sb.append(",");
-                            sb.append(new SimpleDateFormat("dd.MM.yyyy").format(dc.getDat()));
-                        }
-                        if(StringUtils.isNotBlank(dc.getNdoc())){
-                            sb.append(",");
-                            sb.append(dc.getNdoc());
-                        }
-                        prefix = ",";
-                    }
-                    if(sb.length() > 0){
-                        CellUtil.createCell(row, columnIndex, sb.toString(), cs3);
-                    }
-                }
-                ////END g19
-
-                //BEGIN g20
-                columnIndex++;
-                if (car != null) {
-                    if (i == 0) {
-                        CellUtil.createCell(row, columnIndex, StringUtils.defaultString(car.getNvag() + nl + " O"), cs2_boder_none_8);
-                    } else if (tableRowIndex - i == 1) {    // last itog strings
-                        CellUtil.createCell(row, columnIndex, StringUtils.defaultString(car.getNvag()), cs2_8);
-                    }
-                }
-                ////END g20
-
-            }
-            index++;
-
-        }
-
-        rowIndex = sheet.getLastRowNum();
-        row = sheet.createRow(++rowIndex);
-        row.setHeightInPoints((2*sheet.getDefaultRowHeightInPoints()));
-        CellUtil.createCell(row, 0, "31", cs2_boder_thin);
-        CellUtil.createCell(row, 1, "Общая масса отправки\nGesamtmasse der Sendung", cs2_boder_thin);
-        int regIndex = sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 1, 5));
-        RegionUtil.setBorderBottom(CellStyle.BORDER_THIN, sheet.getMergedRegion(regIndex), sheet, getWb());
-        RegionUtil.setBorderLeft(CellStyle.BORDER_THIN, sheet.getMergedRegion(regIndex), sheet, getWb());
-        RegionUtil.setBorderRight(CellStyle.BORDER_THIN, sheet.getMergedRegion(regIndex), sheet, getWb());
-        CellUtil.createCell(row, 6, massa.toString(), cs2_boder_thin);
-    }*/
-
     private void addBorderedMergedRegion(int rowIndex, int columnIndex, int columnInterval) {
         int regIndex = sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, columnIndex, columnIndex + columnInterval - 1));
         RegionUtil.setBorderTop(CellStyle.BORDER_THIN, sheet.getMergedRegion(regIndex), sheet, getWb());
@@ -1712,32 +1094,6 @@ public class ExportContList2Excel extends Export2Excel {
         RegionUtil.setBorderLeft(CellStyle.BORDER_THIN, sheet.getMergedRegion(regIndex), sheet, getWb());
         RegionUtil.setBorderRight(CellStyle.BORDER_THIN, sheet.getMergedRegion(regIndex), sheet, getWb());
     }
-
-    /*public int countLines(String input, int maxCharInLine) {
-        StringTokenizer tok = new StringTokenizer(input, " ");
-        int lineLen = 0;
-        int count = 1;
-        while (tok.hasMoreTokens()) {
-            String word = tok.nextToken();
-            StringTokenizer tokNL = new StringTokenizer(word, "\n");
-            if(tokNL.countTokens() > 1){
-                count += tokNL.countTokens() - 1;
-            }
-            word = tokNL.nextToken();
-            while(word.length() > maxCharInLine){
-//                output.append(word.substring(0, maxCharInLine-lineLen) + "\n");
-                word = word.substring(maxCharInLine-lineLen);
-                count++;
-                lineLen = 0;
-            }
-            if (lineLen + word.length() > maxCharInLine) {
-                count++;
-                lineLen = 0;
-            }
-            lineLen += word.length();
-        }
-        return count;
-    }*/
 
 }
 

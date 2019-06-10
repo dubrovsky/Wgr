@@ -2,11 +2,12 @@ package com.bivc.cimsmgs.db;
 
 // Generated 12.11.2010 16:44:31 by Hibernate Tools 3.4.0.Beta1
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -189,4 +190,20 @@ public class UsrGroupsDir implements Serializable {
 	    setDattr(new Date());
 	    setUn(user.getUn());
 	}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UsrGroupsDir that = (UsrGroupsDir) o;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(deptrans, that.deptrans) &&
+                Objects.equals(un, that.un) &&
+                Objects.equals(descr, that.descr);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, deptrans, un, descr);
+    }
 }

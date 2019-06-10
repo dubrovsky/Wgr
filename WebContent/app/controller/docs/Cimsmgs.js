@@ -1,7 +1,18 @@
+/**
+ * контроллер формы cimsmgs
+ */
 Ext.define('TK.controller.docs.Cimsmgs', {
     extend:'Ext.app.Controller',
     mixins: [
         'TK.controller.Utils'
+    ],
+
+    requires: [
+        'Ext.form.field.Text',
+        'Ext.form.field.TextArea',
+        'Ext.grid.column.Action',
+        'TK.Utils',
+        'TK.model.CimSmgsOtpr'
     ],
 
     views:[
@@ -18,27 +29,39 @@ Ext.define('TK.controller.docs.Cimsmgs', {
         'CimSmgs',
         'CimSmgsOtpr'
     ],
-    refs:[
-        {
-            ref:'list',
-            selector:'viewport > tabpanel > cimsmgslist'
-        },
-        {
-            ref:'menutree',
-            selector:'viewport > menutree'
-        },
-        {
-            ref:'center',
-            selector:'viewport > tabpanel'
-        }, {
-            ref:'cimsmgs',
-            selector:'viewport > tabpanel > cimsmgs'
-        }
-    ],
+    refs:[{
+        ref:'list',
+        selector:'viewport > tabpanel > cimsmgslist'
+    }, {
+        ref:'menutree',
+        selector:'viewport > menutree'
+    }, {
+        ref:'center',
+        selector:'viewport > tabpanel'
+    }, {
+        ref:'cimsmgs',
+        selector:'viewport > tabpanel > cimsmgs'
+    }, {
+        ref:'docForm',
+        selector:'viewport > tabpanel > cimsmgs'
+    }, {
+        ref:'vagDispField',
+        selector:'viewport > tabpanel > cimsmgs > field[name="disp.g19v"]'
+    }, {
+        ref:'kontDispField',
+        selector:'viewport > tabpanel > cimsmgs > field[name="disp.g19k"]'
+    }, {
+        ref:'gruzDispField',
+        selector:'viewport > tabpanel > cimsmgs > field[name="disp.g19g"]'
+    }, {
+        ref:'doc9DispField',
+        selector:'viewport > tabpanel > cimsmgs > field[name="disp.g9"]'
+    }],
     init:function () {
         this.control({
             'cimsmgslist':{
-                select: this.onRowclick
+                select: this.onRowclick,
+                celldblclick: this.onCellDblClick
             },
             'cimsmgs button[action=changeVgCtGr]': {
                 click: this.onCimSmgsVgCtGrWinShow
@@ -54,6 +77,18 @@ Ext.define('TK.controller.docs.Cimsmgs', {
                 onChangeDocs9DisplField: this.setDisplayedDocs9Fields,
                 onChangePlombsDisplField: this.setDisplayedPlombsFields,
                 onSavePlombsToDataObj: this.setG2012DataObj
+            },
+            'cimsmgs trigger[itemId="smgs.g101"]': {
+                onTriggerClick: this.showNsiStaG10
+            },
+            'cimsmgs trigger[itemId="smgs.g101r"]': {
+                onTriggerClick: this.showNsiStaG10
+            },
+            'cimsmgs trigger[itemId="smgs.g162"]': {
+                onTriggerClick: this.showNsiStaG16
+            },
+            'cimsmgs trigger[itemId="smgs.g162r"]': {
+                onTriggerClick: this.showNsiStaG16
             }
         });
     },
@@ -64,14 +99,35 @@ Ext.define('TK.controller.docs.Cimsmgs', {
         form.getComponent('smgs.g24B').on('change', this.getController('Nsi').onG24B);
         form.getComponent('smgs.g24N').on('change', this.getController('Nsi').onG24);
         form.getComponent('smgs.g24T').on('change', this.getController('Nsi').onG24);
-        form.down('triggerfield[name=smgs.g1r]').onTriggerClick = Ext.bind(function () {
-            var nsiGrid = this.nsiOtpr(form.down('triggerfield[name=smgs.g1r]').getValue()).getComponent(0)/*, gridAction = nsiGrid.down('actioncolumn')*/;
-            nsiGrid.on('itemdblclick', this.selectOtprG1, form.getComponent('g1_panel'));
-        }, this);
-        form.down('triggerfield[name=smgs.g4r]').onTriggerClick = Ext.bind(function () {
-            var nsiGrid = this.nsiOtpr(form.down('triggerfield[name=smgs.g4r]').getValue()).getComponent(0)/*, gridAction = nsiGrid.down('actioncolumn')*/;
-            nsiGrid.on('itemdblclick', this.selectOtprG4, form.getComponent('g4_panel'));
-        }, this);
+
+
+        //!!!!!!!!!!!!!!!!!!!!!
+        // form.down('triggerfield[name=smgs.g1r]').onTriggerClick = Ext.bind(function () {
+        //     var nsiGrid = this.nsiOtpr(form.down('triggerfield[name=smgs.g1r]').getValue()).getComponent(0)/*, gridAction = nsiGrid.down('actioncolumn')*/;
+        //     nsiGrid.on('itemdblclick', this.selectOtprG1, form.getComponent('g1_panel'));
+        // }, this);
+        //
+        // нажатие кнопки выбора отправителя
+        form.down('button[action=otpr]').on('click',
+            function(btn){
+                var nsiGrid = this.nsiOtpr(form.down('textarea[name=smgs.g1r]').getValue()).getComponent(0)/*, gridAction = nsiGrid.down('actioncolumn')*/;
+                nsiGrid.on('itemdblclick', this.selectOtprG1, form.getComponent('g1_panel'));
+            },
+            this
+        );
+        // нажатие кнопки выбора страны получателя
+        form.down('button[action=poluch]').on('click',
+            function(btn){
+                var nsiGrid = this.nsiOtpr(form.down('textarea[name=smgs.g4r]').getValue()).getComponent(0)/*, gridAction = nsiGrid.down('actioncolumn')*/;
+                nsiGrid.on('itemdblclick', this.selectOtprG4, form.getComponent('g4_panel'));
+            },
+            this
+        );
+
+        // form.down('triggerfield[name=smgs.g4r]').onTriggerClick = Ext.bind(function () {
+        //     var nsiGrid = this.nsiOtpr(form.down('triggerfield[name=smgs.g4r]').getValue()).getComponent(0)/*, gridAction = nsiGrid.down('actioncolumn')*/;
+        //     nsiGrid.on('itemdblclick', this.selectOtprG4, form.getComponent('g4_panel'));
+        // }, this);
         form.down('detailtabpanel[itemId=g7_panel_tab_7]').on(
             'add',
             function (tabpanel, tab, inx) {
@@ -84,6 +140,23 @@ Ext.define('TK.controller.docs.Cimsmgs', {
             },
             this
         );
+        // нажатие кнопки выбора страны отправителя
+        form.down('button[action=country]').on('click',
+            function(btn){
+                var nsiGrid =  this.getController('Nsi').nsiCountries(form.down('textfield[name=smgs.g16r]').getValue()).getComponent(0);
+                nsiGrid.on('itemdblclick', this.selectCountriesG1, form);
+            },
+            this
+        );
+        // нажатие кнопки выбора страны получателя
+        form.down('button[action=country_4]').on('click',
+            function(btn){
+                var nsiGrid =  this.getController('Nsi').nsiCountries(form.down('textfield[name=smgs.g46r]').getValue()).getComponent(0);
+                nsiGrid.on('itemdblclick', this.selectCountriesG4, form);
+            },
+            this
+        );
+
         /*form.down('detailtabpanel[itemId=g9_panel_tab_9]').on(
             'add',
             function (tabpanel, tab, inx) {
@@ -161,6 +234,20 @@ Ext.define('TK.controller.docs.Cimsmgs', {
             this
         );*/
     },
+    // запись данных данных о выбранной стране для графы 1 отправителя
+    selectCountriesG1: function(view, record, item, index) {
+        var data = record.data;
+        this.getComponent('g1_panel').getComponent('strn').getComponent('smgs.g16_1').setValue(data['anaim']);
+        this.getComponent('g1_panel').getComponent('strn').getComponent('smgs.g16r').setValue(data['krnaim']);
+        view.up('window').close();
+    },
+    // запись данных данных о выбранной стране для графы 4 получателя
+    selectCountriesG4: function(view, record, item, index) {
+        var data = record.data;
+        this.getComponent('g4_panel').getComponent('strn_4').getComponent('smgs.g16_1_1').setValue(data['anaim']);
+        this.getComponent('g4_panel').getComponent('strn_4').getComponent('smgs.g16r_1').setValue(data['krnaim']);
+        view.up('window').close();
+    },
     selectGng:function (view, record, item, index) {
         var data = record.data;
         this.getComponent('kgvn').setValue(data['code']);
@@ -180,6 +267,16 @@ Ext.define('TK.controller.docs.Cimsmgs', {
         if (btn.itemId.indexOf('g19') == -1) {
             panel = this.getComponent(btn.itemId + 'panel');
         }
+        // установка кода отправителя
+        if(btn.itemId.indexOf('g1') != -1){
+            var value=this.getComponent('smgs.g2').getValue();
+            this.getComponent('g1_panel').getComponent('code').getComponent('smgs.g2_E').setValue(value);
+        }
+        // установка кода получателя
+        if(btn.itemId.indexOf('g4') != -1){
+            var value=this.getComponent('smgs.g5').getValue();
+            this.getComponent('g4_panel').getComponent('code_4').getComponent('smgs.g5_E').setValue(value);
+        }
         /*else {
             panel = this.getComponent('g19v_panel');
 //    		panel.onChangeData(btn);
@@ -188,7 +285,7 @@ Ext.define('TK.controller.docs.Cimsmgs', {
         }*/
         tabpanels = panel.query('detailtabpanel');
         for (var i = 0; i < tabpanels.length; i++) {
-            if (tabpanels[i].items.getCount() == 0) {  // add tab by default if noone exists
+            if (tabpanels[i].items.getCount() === 0) {  // add tab by default if noone exists
                 tabpanels[i].onAddTab();
             }
         }
@@ -196,51 +293,68 @@ Ext.define('TK.controller.docs.Cimsmgs', {
         panel.show();
         this.maskPanel(true);
     },
+    // заполнение полей выбранной записью отправителя
     selectOtprG1:function (view, record, item, index) {
         var data = record.data;
-        this.getComponent('smgs.g1').setValue(data['g1']);
-        this.getComponent('smgs.g1r').setValue(data['g1r']);
+        this.getComponent('name').getComponent('smgs.g1').setValue(data['g1']);
+        this.getComponent('name').getComponent('smgs.g1r').setValue(data['g1r']);
         this.ownerCt.getComponent('smgs.g11_1').setValue(data['g11']);
         this.ownerCt.getComponent('smgs.g12_1').setValue(data['g12']);
-//        this.getComponent('smgs.g13').setValue(data['g13']);
+        this.ownerCt.getComponent('smgs.g13_1').setValue(data['g13']);
+        this.getComponent('code_1').getComponent('smgs.g_1_5k').setValue(data['g_1_5k']);
+        this.getComponent('code_1').getComponent('smgs.g17_1').setValue(data['g17_1']);
         this.getComponent('smgs.g15_1').setValue(data['g15_1']);
-        this.getComponent('smgs.g16_1').setValue(data['g16_1']);
-        this.getComponent('smgs.g16r').setValue(data['g16r']);
-        this.getComponent('smgs.g17_1').setValue(data['g17_1']);
-        this.getComponent('smgs.g18_1').setValue(data['g18_1']);
-        this.getComponent('smgs.g18r_1').setValue(data['g18r_1']);
-        this.getComponent('smgs.g19_1').setValue(data['g19_1']);
-        this.getComponent('smgs.g19r').setValue(data['g19r']);
-        this.getComponent('smgs.g110').setValue(data['g110']);
-        this.ownerCt.getComponent('smgs.g2').setValue(data['g2']);
-        this.ownerCt.getComponent('smgs.g3').setValue(data['g3']);
+        this.getComponent('strn').getComponent('smgs.g16_1').setValue(data['g16_1']);
+        this.getComponent('strn').getComponent('smgs.g16r').setValue(data['g16r']);
+        this.getComponent('city').getComponent('smgs.g18_1').setValue(data['g18_1']);
+        this.getComponent('city').getComponent('smgs.g18r_1').setValue(data['g18r_1']);
+        this.getComponent('address').getComponent('smgs.g19_1').setValue(data['g19_1']);
+        this.getComponent('address').getComponent('smgs.g19r').setValue(data['g19r']);
+        this.getComponent('vat').getComponent('smgs.g110').setValue(data['g110']);
+        this.getComponent('code').getComponent('smgs.g2_E').setValue(data['g2']);
+        // this.ownerCt.getComponent('smgs.g2').setValue(data['g2']);
+        // this.ownerCt.getComponent('smgs.g3').setValue(data['g3']);
+        this.getComponent('dop').getComponent('smgs.g1_dop_info').setValue(data['dop_info']);
         view.up('window').close();
     },
+    // заполнение полей выбранной записью получателя
     selectOtprG4:function (view, record, item, index) {
         var data = record.data;
-        this.getComponent('smgs.g1_1').setValue(data['g1']);
-        this.getComponent('smgs.g1r_1').setValue(data['g1r']);
+        this.getComponent('name_4').getComponent('smgs.g1_1').setValue(data['g1']);
+        this.getComponent('name_4').getComponent('smgs.g1r_1').setValue(data['g1r']);
         this.ownerCt.getComponent('smgs.g41_1').setValue(data['g11']);
         this.ownerCt.getComponent('smgs.g42_1').setValue(data['g12']);
 //        this.getComponent('smgs.g13').setValue(data['g13']);
-        this.getComponent('smgs.g15_1_1').setValue(data['g15_1']);
-        this.getComponent('smgs.g16_1_1').setValue(data['g16_1']);
-        this.getComponent('smgs.g16r_1').setValue(data['g16r']);
-        this.getComponent('smgs.g17_1_1').setValue(data['g17_1']);
-        this.getComponent('smgs.g18_1_1').setValue(data['g18_1']);
-        this.getComponent('smgs.g18r_1').setValue(data['g18r_1']);
-        this.getComponent('smgs.g19_1').setValue(data['g19_1']);
-        this.getComponent('smgs.g19r_1').setValue(data['g19r']);
-        this.getComponent('smgs.g110_1').setValue(data['g110']);
-        this.ownerCt.getComponent('smgs.g5').setValue(data['g2']);
+        this.getComponent('code_1_4').getComponent('smgs.g15_1_1').setValue(data['g15_1']);
+        this.getComponent('code_1_4').getComponent('smgs.g17_1_1').setValue(data['g17_1']);
+
+        this.getComponent('strn_4').getComponent('smgs.g16_1_1').setValue(data['g16_1']);
+        this.getComponent('strn_4').getComponent('smgs.g16r_1').setValue(data['g16r']);
+
+        this.getComponent('city_4').getComponent('smgs.g18_1_1').setValue(data['g18_1']);
+        this.getComponent('city_4').getComponent('smgs.g18r_1').setValue(data['g18r_1']);
+
+        this.getComponent('address_4').getComponent('smgs.g19_1').setValue(data['g19_1']);
+        this.getComponent('address_4').getComponent('smgs.g19r_1').setValue(data['g19r']);
+
+        this.getComponent('vat_4').getComponent('smgs.g110_1').setValue(data['g110']);
+        this.getComponent('dop_4').getComponent('smgs.g4_dop_info').setValue(data['dop_info']);
+        this.getComponent('code_4').getComponent('smgs.g5_E').setValue(data['g2']);
+
+        this.ownerCt.getComponent('smgs.g43_1').setValue(data['g13']);
+        // this.ownerCt.getComponent('smgs.g5').setValue(data['g2']);
         this.ownerCt.getComponent('smgs.g6').setValue(data['g3']);
+
         view.up('window').close();
     },
+    // отображение таблицы выбора отправителеля/получателя
     nsiOtpr:function (query) {
         var me = this;
         return Ext.widget('nsieditlist', {
             title:this.titleOtpr,
+            itemId: 'otprGrid',
             width:1000, height:700,
+            editPrivileg:'CIM_DIR',
             search:query,
             buildStoreModel:function () {
                 return 'TK.model.CimSmgsOtpr';
@@ -253,34 +367,42 @@ Ext.define('TK.controller.docs.Cimsmgs', {
                     items:[
                         {xtype:'actioncolumn', width:55,
                             items:[
-                                {icon:'./resources/images/save.gif', tooltip:'Сохранить', action:'save', handler:me.getController('Nsi').onSaveRecord},
-                                {icon:'./resources/images/delete.png', tooltip:'Удалить', action:'del', handler:me.getController('Nsi').onDelRecord}
+                                 // {icon:'./resources/images/edit.png', tooltip:'Сохранить', action:'save', handler:me.getController('Nsi').onSaveRecord},
+                                {icon:'./resources/images/edit.png', tooltip:me.tooltipEdit, action:'edit', handler:me.getController('Nsi').onEditRecord},
+                                {icon:'./resources/images/delete.png', tooltip:me.tooltipDel, action:'del', handler:me.getController('Nsi').onDelRecord}
                             ]
                         },
-                        {text:me.headerOtprName, dataIndex:'g1', editor:{xtype:'textarea', maxLength:512}, renderer:TK.Utils.renderLongStr},
-                        {text:me.headerOtprName1, dataIndex:'g1r', editor:{xtype:'textarea', maxLength:512}, renderer:TK.Utils.renderLongStr},
-                        {text:me.headerOtprEmail, dataIndex:'g11', editor:{xtype:'textfield', maxLength:80}, renderer:TK.Utils.renderLongStr},
-                        {text:me.headerOtprPhone, dataIndex:'g12', editor:{xtype:'textfield', maxLength:60}, renderer:TK.Utils.renderLongStr},
-                        {text:me.headerOtprStrCode, dataIndex:'g15_1', editor:{xtype:'textfield'}},
-                        {text:me.headerOtprStr, dataIndex:'g16_1', editor:{xtype:'textfield', maxLength:32}, renderer:TK.Utils.renderLongStr},
-                        {text:me.headerOtprStr1, dataIndex:'g16r', editor:{xtype:'textfield', maxLength:32}, renderer:TK.Utils.renderLongStr},
-                        {text:me.headerOtprZip, dataIndex:'g17_1', editor:{xtype:'textfield', maxLength:10}},
-                        {text:me.headerOtprCity, dataIndex:'g18_1', editor:{xtype:'textfield', maxLength:32}, renderer:TK.Utils.renderLongStr},
-                        {text:me.headerOtprCity1, dataIndex:'g18r_1', editor:{xtype:'textfield', maxLength:32}, renderer:TK.Utils.renderLongStr},
-                        {text:me.headerOtprAdress, dataIndex:'g19_1', editor:{xtype:'textarea', maxLength:128}, renderer:TK.Utils.renderLongStr},
-                        {text:me.headerOtprAdress1, dataIndex:'g19r', editor:{xtype:'textarea', maxLength:128}, renderer:TK.Utils.renderLongStr},
-                        {text:me.headerOtprVat, dataIndex:'g110', editor:{xtype:'textfield', maxLength:16}},
-                        {text:me.headerOtprSendCode, dataIndex:'g2', editor:{xtype:'textfield', maxLength:32}, renderer:TK.Utils.renderLongStr},
-                        {text:me.headerOtprClCode, dataIndex:'g3', editor:{xtype:'textfield', maxLength:32}, renderer:TK.Utils.renderLongStr}
+                        { dataIndex:'hid', editable: false,hidden: true},
+                        {text:me.headerOtprName, dataIndex:'g1', editable: false, renderer:TK.Utils.renderLongStr},
+                        {text:me.headerOtprName1, dataIndex:'g1r', editable: false, renderer:TK.Utils.renderLongStr},
+                        {text:me.headerCountryCode, dataIndex:'g_1_5k', editable: false},
+                        {text:me.headerOtprStrCode, dataIndex:'g15_1', editable: false},
+                        {text:me.headerOtprEmail, dataIndex:'g11', editable: false, renderer:TK.Utils.renderLongStr},
+                        {text:me.headerOtprPhone, dataIndex:'g12', editable: false, renderer:TK.Utils.renderLongStr},
+                        {text:me.headerOtprFax, dataIndex:'g13', editable: false, renderer:TK.Utils.renderLongStr},
+                        // {text:me.headerOtprStrCode, dataIndex:'g15_1', editor:{xtype:'textfield'}},
+                        {text:me.headerOtprStr, dataIndex:'g16_1', editable: false, renderer:TK.Utils.renderLongStr},
+                        {text:me.headerOtprStr1, dataIndex:'g16r', editable: false, renderer:TK.Utils.renderLongStr},
+                        {text:me.headerOtprZip, dataIndex:'g17_1', editable: false},
+                        {text:me.headerOtprCity, dataIndex:'g18_1', editable: false, renderer:TK.Utils.renderLongStr},
+                        {text:me.headerOtprCity1, dataIndex:'g18r_1', editable: false, renderer:TK.Utils.renderLongStr},
+                        {text:me.headerOtprAdress, dataIndex:'g19_1',editable: false, renderer:TK.Utils.renderLongStr},
+                        {text:me.headerOtprAdress1, dataIndex:'g19r', editable: false, renderer:TK.Utils.renderLongStr},
+                        {text:me.headerOtprVat, dataIndex:'g110', editable: false},
+                        {text:me.headerOtprSendCode, dataIndex:'g2', editable: false, renderer:TK.Utils.renderLongStr},
+                        {text:me.headerOtprClCode, dataIndex:'g3', editable: false, renderer:TK.Utils.renderLongStr},
+                        {text:me.headerDopInfo, dataIndex:'dop_info',editable: false, renderer:TK.Utils.renderLongStr},
+                        {text:me.headerINN, dataIndex:'g_2inn',  editable: false}
                     ],
                     defaults:{sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false}
                 };
             },
             newRecord:function () {
-                return Ext.create('TK.model.CimSmgsOtpr', {hid:'', g1:'', g1r:'', g11:'', g12:'', g13:'', g15_1:'', g16_1:'', g16r:'', g17_1:'', g18_1:'', g18r_1:'', g19_1:'', g19r:'', g110:'', g2:'', g3:''});
+                return Ext.create('TK.model.CimSmgsOtpr', {hid:'', g1:'', g1r:'',g_1_5k:'',g15_1:'', g11:'', g12:'', g13:'', g16_1:'', g16r:'', g17_1:'', g18_1:'', g18r_1:'', g19_1:'', g19r:'', g110:'', g2:'', g3:'',g_2inn:'',dop_info:''});
             }
         });
     },
+
     selectDoc:function (view, record, item, index) {
         var data = record.data;
         this.getComponent('code').setValue(data['nsiFNn']);
@@ -332,311 +454,83 @@ Ext.define('TK.controller.docs.Cimsmgs', {
         this.fireEvent('showPlombsWin', 'cimsmgsPlombsTreeformWin', btn.up('docsform'));
     },
 
-    setDisplayedVgCtGrFields: function(){
-        var vags = this.getCimsmgs().dataObj[this.getCimsmgs().getVagCollectionName()],
-            vagDisplField = this.getCimsmgs().getComponent('disp.g19v');
-
-        if(vags){
-            this.setDisplayedVagFields(vags, vagDisplField);
-        } else {
-            vagDisplField.setValue('');
-            this.getCimsmgs().getComponent('disp.g19k').setValue('');
-            this.getCimsmgs().getComponent('disp.g19g').setValue('');
-        }
-
+    setDisplayedVgCtGrFields: function(docForm){
+        this.fireEvent('displayedVgCtGrFields', this, docForm);
     },
 
-    setDisplayedVagFields: function(vags, vagDisplField){
-        var vagResult = '',
-            contResult = '',
-            gryzResult = '',
-            gryzyGngMap = new Ext.util.MixedCollection(),
-            contsGryzyResult = {},
-            vag,
-            conts,
-        // gryzyCount = 0,
-        // gryzyMassa = 0,
-            contsMassa = 0,
-            contDisplField = this.getCimsmgs().getComponent('disp.g19k'),
-            gryzDisplField = this.getCimsmgs().getComponent('disp.g19g')/*,
-         g11PrimResult = ''*/;
-
-        for(var vagIndx in vags){
-            vag = vags[vagIndx];
-
-            if(vagIndx == '0' && !vags['1']) {  // only 1 vag
-                vagResult = (vag['nvag'] ? '№ вагона/Wagen Nr ' + vag['nvag'] + '\n' : '');
-                vagResult += (vag['grPod'] ? 'Тоннаж/Tragwagenfaeigkeith ' + vag['grPod'] + '\n' : '');
-                vagResult += (vag['taraVag'] ? 'Тара/Tara ' + vag['taraVag'] + '\n' : '');
-                vagResult += (vag['kolOs'] ? 'Оси/Achse ' + vag['kolOs'] + '\n' : '');
-            } else {
-                // vagResult += vag['nvag'] + '\n';
-                vagResult = 'Siehe Nachweisung\nсм. Ведомость';
-            }
-
-            conts = vag[this.getCimsmgs().getContCollectionName()];
-            if(conts){
-                contsGryzyResult = this.setDisplayedContFields(conts, /*g11PrimResult,*/ gryzyGngMap);
-                contResult += contsGryzyResult['contResult'];
-                // gryzResult += contsGryzyResult['gryzResult'];
-                // gryzyCount += contsGryzyResult['gryzyCount'];
-                // gryzyMassa += contsGryzyResult['gryzyMassa'];
-                contsMassa += contsGryzyResult['contsMassa'];
-                // g11PrimResult = contsGryzyResult['g11PrimResult'];
-            }
-        }
-
-        vagDisplField.setValue(vagResult);
-        contDisplField.setValue(contResult);
-        this.getCimsmgs().getComponent('smgs.g24N').setValue(gryzyGngMap.sum('massa'));
-        this.getCimsmgs().getComponent('smgs.g24T').setValue(contsMassa);
-
-        if(gryzyGngMap.getCount() > 0){
-            if(gryzyGngMap.getCount() > 1){
-                gryzResult = 'Сборный груз: Sammelgut:\n\n'/* + gryzResult*/;
-            }
-            gryzResult += this.setDisplayedGryzFields(gryzyGngMap);
-            gryzDisplField.setValue(gryzResult);
-        } else {
-            gryzDisplField.setValue('');
-        }
+    setDisplayedDocs9Fields: function(docForm){
+        this.fireEvent('displayedDocs9Fields', this, docForm);
     },
 
-    setDisplayedContFields: function(conts, /*g11PrimResult,*/ gryzyGngMap){
-        var contResult = '',
-        // gryzResult = '',
-        // gryzyResult = {},
-        // gryzyMassa = 0,
-        // gryzyCount = 0,
-            contsMassa = 0;
-
-        for(var contIndx in conts){
-            var cont = conts[contIndx];
-
-            contResult += (cont['sizeFoot'] ? '1x' + cont['sizeFoot'] : '');
-            contResult += (cont['notes'] ? ' ' + cont['notes'] : '');
-            contResult += (cont['utiN'] ? ' Container № ' + cont['utiN'] : '');
-            /*if(cont['utiN']){
-                var konConst = (cont['notes'] ? '' : 'HC Container №');
-                contResult += ' ' + konConst + '\n' + cont['utiN'];
-            }*/
-            contResult += (cont['sizeMm'] ? '\n(' + cont['sizeMm'] + 'mm)' : '');
-            contResult += '\n';
-
-            var contMassa = parseInt(cont['taraKont']);
-            contsMassa += isNaN(contMassa) ? 0 : contMassa;
-
-            var gryzy = cont[this.getCimsmgs().getGryzCollectionName()];
-            if(gryzy){
-                // gryzyResult = this.setDisplayedGryzFields(gryzy, gryzyCount, g11PrimResult);
-                this.groupGruzByKgvn(gryzy, gryzyGngMap);
-                // gryzResult += gryzyResult['gryzResult'];
-                // gryzyCount += gryzyResult['gryzyCount'];
-                // gryzyMassa += gryzyResult['gryzyMassa'];
-                // g11PrimResult = gryzyResult['g11PrimResult'];
-            }
-        }
-
-        return {
-            contResult: contResult,
-            // gryzResult: gryzResult,
-            // gryzyCount: gryzyCount,
-            // gryzyMassa: gryzyMassa,
-            contsMassa: contsMassa/*,
-             g11PrimResult: g11PrimResult*/
-        };
+    setDisplayedPlombsFields: function(docForm){
+        this.fireEvent('displayedPlombsFields', this, docForm);
+        // docForm.getComponent('smgs.g2012').setValue(docForm.dataObj['g2012']);
     },
 
-    groupGruzByKgvn: function(gryzy, gryzMap){
-        for(var gryzIndx in gryzy) {
-            var gryz = gryzy[gryzIndx],
-                gruzTemp = gryzMap.get(gryz['kgvn'].trim());
-
-            if(!gruzTemp){
-                gruzTemp = Ext.clone(gryz);
-                gruzTemp['places'] = 0;
-                gruzTemp['massa'] = 0;
-                gryzMap.add(gryz['kgvn'] ? gryz['kgvn'].trim() : Ext.Number.randomInt(1, 100000), gruzTemp);
-            }
-
-            var massa = 0;
-            if(gryz['massa']){
-                massa = parseFloat(gryz['massa']);
-                gruzTemp['massa'] += isNaN(massa) ? 0 : massa;
-            }
-
-            var places = 0;
-            if(gryz['places']){
-                places = parseInt(gryz['places']);
-                gruzTemp['places'] += isNaN(places) ? 0 : places;
-            }
-        }
+    isContOtpr: function () {
+        return this.getController("docs.VgCtGrTreeDetailController").isContOtpr();
     },
 
-    setDisplayedGryzFields: function(/*gryzy, g11PrimResult*/gryzyGngMap){
-        var gryzResult = '',
-            g11PrimResult = ''/*,
-         gryzyMassa = 0,
-         gryzyCount = 0*/;
-
-        gryzyGngMap.each(function(gryz, gryzIndx) {
-                gryzResult += (gryz['nzgr'] ? gryz['nzgr'] : '');
-                gryzResult += (gryz['nzgrEu'] ? '\n' + gryz['nzgrEu'] : '');
-                gryzResult += (gryz['kgvn'] ? '\nГНГ- ' + gryz['kgvn'] : '');
-                gryzResult += (gryz['ekgvn'] ? '\nЕТ СНГ- ' + gryz['ekgvn'] : '');
-                gryzResult += (gryz['upak'] ? '\nУпаковка- ' + gryz['upak'] : '');
-                gryzResult += (gryz['places'] ? '\nМеста- ' + gryz['places'] : '');
-                gryzResult += (gryz['massa'] ? '\nМасса- ' + gryz['massa'].toFixed(3) + 'кг\n\n' : '');
-
-                // gryzyCount++;
-                /*var gryzMassa = parseFloat(gryz['massa']);
-                 gryzyMassa += isNaN(gryzMassa) ? 0 : gryzMassa;*/
-                if(!g11PrimResult && gryz['ohr']){
-                    g11PrimResult = 'Груз подлежит охране';
-
-                    var g11PrimDisplField = this.getCimsmgs().getComponent('smgs.g11_prim');
-                    if(!g11PrimDisplField.getValue()){     // empty
-                        g11PrimDisplField.setValue(g11PrimResult);
-                    } else {
-                        var re = new RegExp(g11PrimResult,'gi');
-                        if(g11PrimDisplField.getValue().search(re) == -1){
-                            g11PrimDisplField.setValue(g11PrimDisplField.getValue() + ' ' + g11PrimResult);
-                        }
-                    }
-                }
-            },
-            this
-        );
-
-        /*for(var gryzIndx in gryzy) {
-         var gryz = gryzy[gryzIndx];
-
-         gryzResult += (gryz['nzgr'] ? gryz['nzgr'] : '');
-         gryzResult += (gryz['nzgrEu'] ? '\n' + gryz['nzgrEu'] : '');
-         gryzResult += (gryz['kgvn'] ? '\nГНГ- ' + gryz['kgvn'] : '');
-         gryzResult += (gryz['ekgvn'] ? '\nЕТ СНГ- ' + gryz['ekgvn'] : '');
-         gryzResult += (gryz['upak'] ? '\nУпаковка- ' + gryz['upak'] : '');
-         gryzResult += (gryz['places'] ? '\nМеста- ' + gryz['places'] : '');
-         gryzResult += (gryz['massa'] ? '\nМасса- ' + gryz['massa'] + 'кг\n\n' : '');
-
-         // gryzyCount++;
-         /!*var gryzMassa = parseFloat(gryz['massa']);
-         gryzyMassa += isNaN(gryzMassa) ? 0 : gryzMassa;*!/
-         if(!g11PrimResult && gryz['ohr']){
-         g11PrimResult = 'Груз подлежит охране';
-
-         var g11PrimDisplField = this.getCimsmgs().getComponent('smgs.g11_prim');
-         if(!g11PrimDisplField.getValue()){     // empty
-         g11PrimDisplField.setValue(g11PrimResult);
-         } else {
-         var re = new RegExp(g11PrimResult,'gi');
-         if(g11PrimDisplField.getValue().search(re) == -1){
-         g11PrimDisplField.setValue(g11PrimDisplField.getValue() + ' ' + g11PrimResult);
-         }
-         }
-         }
-         }*/
-
-        return gryzResult;
-        /*return {
-         gryzResult: gryzResult,
-         // gryzyCount: gryzyCount,
-         // gryzyMassa: gryzyMassa,
-         g11PrimResult: g11PrimResult
-         };*/
+    setG2012DataObj: function(docForm){
+        this.fireEvent('savePlombsToDataObj', this, docForm);
     },
 
-    setDisplayedDocs9Fields: function(){
-        var vags = this.getCimsmgs().dataObj[this.getCimsmgs().getVagCollectionName()],
-            docs9DisplField = this.getCimsmgs().getComponent('disp.g9'),
-            docs9Result = '';
+    showNsiStaG10: function(field){
+        var nsiGrid = this.getController('Nsi').nsiSta(field.getValue()).getComponent(0);
+        nsiGrid.on('itemdblclick', this.selectStaG10, field.up('cimsmgs'));
+    },
 
-        if(vags && !Ext.Object.isEmpty(vags)){
-            for(var vagIndx in vags){
+    selectStaG10: function(view, record, item, index) {
+        var data = record.data,
+            form = this.getForm();
 
-                var vag = vags[vagIndx],
-                    conts = vag[this.getCimsmgs().getContCollectionName()];
+        form.findField('smgs.g101r').setValue(data.staName);
+        form.findField('smgs.g101').setValue(data.staNameEn);
 
-                if(conts && !Ext.Object.isEmpty(conts)){
+        // form.findField('smgs.g102').setValue(data.);
+        form.findField('smgs.g102r').setValue(data.mnamerus);
+        form.findField('smgs.g12').setValue(data.managno);
+        form.findField('smgs.g121').setValue(data.staNo);
 
-                    for(var contIndx in conts){
-                        var cont = conts[contIndx],
-                            docs9 = cont[this.getCimsmgs().getDocs9CollectionName()];
+        view.up('window').close();
+    },
 
-                        if(docs9 && !Ext.Object.isEmpty(docs9)){
+    showNsiStaG16: function(field){
+        var nsiGrid = this.getController('Nsi').nsiSta(field.getValue()).getComponent(0);
+        nsiGrid.on('itemdblclick', this.selectStaG16, field.up('cimsmgs'));
+    },
 
-                            for(var docs9Indx in docs9){
-                                var doc9 = docs9[docs9Indx];
+    selectStaG16: function(view, record, item, index) {
+        var data = record.data,
+            form = this.getForm();
 
-                                docs9Result += (doc9['text'] ? doc9['text'] + '  ' : '');
-                                docs9Result += (doc9['text2'] ? doc9['text2'] + '  ' : '');
-                                docs9Result += (doc9['ndoc'] ? doc9['ndoc'] + '  ' : '');
-                                docs9Result += (doc9['dat'] ? 'от ' + doc9['dat'] + '  ' : '');
-                                docs9Result += (doc9['ncopy'] ? doc9['ncopy'] + ' экз '  : '');
-                                docs9Result += '\n';
-                            }
-                        }
+        form.findField('smgs.g162r').setValue(data.staName);
+        form.findField('smgs.g162').setValue(data.staNameEn);
 
-                    }
-                }
+        // form.findField('smgs.g163').setValue(data.);
+        form.findField('smgs.g163r').setValue(data.mnamerus);
+        form.findField('smgs.g171').setValue(data.managno);
+        form.findField('smgs.g17').setValue(data.staNo);
 
+        view.up('window').close();
+    },
+
+    onCellDblClick: function(view, td, cIndex, record){
+        var center = this.getCenter(),
+            grid, gridParams = {},
+            dataIndex = view.getGridColumns()[cIndex].dataIndex;
+        if (dataIndex === 'vagVedNum') {
+            var value = record.get(dataIndex);
+            if (value !== '') {
+                grid = {xtype:'vedlist'};
+                gridParams = {'search.type':11, 'search.hid':value, 'task':'list'};
+                center.remove(center.getComponent(0));
+                center.add(grid);
+                grid = center.setActiveTab(0) || center.getComponent(0);
+                Ext.apply(grid.getStore().getProxy().extraParams, gridParams);
+                grid.getStore().reload();
             }
         }
-
-        docs9DisplField.setValue(docs9Result);
-    },
-
-    setG2012DataObj: function(){
-        var vags = this.getCimsmgs().dataObj[this.getCimsmgs().getVagCollectionName()],
-            plombsResult = '',
-            delim = '',
-            plombsCount = 0,
-            vagsCount = 0,
-            contsCount = 0;
-
-        if(vags && !Ext.Object.isEmpty(vags)){
-            for(var vagIndx in vags){
-
-                var vag = vags[vagIndx],
-                    conts = vag[this.getCimsmgs().getContCollectionName()];
-
-                if(conts && !Ext.Object.isEmpty(conts)){
-
-                    for(var contIndx in conts){
-                        var cont = conts[contIndx],
-                            plombs = cont[this.getCimsmgs().getPlombsCollectionName()];
-
-                        if(plombs && !Ext.Object.isEmpty(plombs)){
-
-                            for(var plombsIndx in plombs){
-                                var plomb = plombs[plombsIndx];
-
-                                if(vagIndx == 0 && !vags[1] && contIndx == 0 && !conts[1] ){ // only 1 vag and 1 cont
-                                    plombsResult += delim;
-                                    plombsResult += (plomb['kpl'] ? plomb['kpl'] + 'x  ' : '');
-                                    plombsResult += (plomb['znak'] ? plomb['znak'] : '');
-                                    delim = ', ';
-                                }
-
-                                var kpl = parseInt(plomb['kpl']);
-                                plombsCount += isNaN(kpl) ? 0 : kpl;
-                            }
-                        }
-                        contsCount++;
-                    }
-
-                }
-                vagsCount++;
-            }
-        }
-
-        if(vagsCount > 1 || contsCount > 1){
-            plombsResult = 'SEALED / пломбы ' + plombsCount + ' (см.ведомость)';
-        }
-        this.getCimsmgs().dataObj['g2012'] = plombsResult;
-    },
-
-    setDisplayedPlombsFields: function(){
-        this.getCimsmgs().getComponent('smgs.g2012').setValue(this.getCimsmgs().dataObj['g2012']);
     }
+
 });

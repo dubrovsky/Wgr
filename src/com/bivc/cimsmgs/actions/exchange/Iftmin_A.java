@@ -148,10 +148,30 @@ public class Iftmin_A extends CimSmgsSupport_A implements SmgsDAOAware, ServletC
     public String sendIftminDBOut() throws Exception {
         log.info("sendIftminDB");
         ExchangeServer server = new ExchangeServer();
-        String text = server.getIftminText(getHid_cs(), getUser().getUsr().getUn());
-        inputStream = new ByteArrayInputStream(text.getBytes("CP1250"));
-        fileName = String.format("IFTMIN-%s.txt", getHid_cs());
-        fileLength = text.length();
+        String text;
+        byte[] buf = new byte[0];
+        switch (getType()){
+            case 1:
+                text = server.getIftminText(getHid_cs(), getUser().getUsr().getUn(), EDIConvertor.EdiDir.DB);
+                buf = text.getBytes("CP1250");
+                fileName = String.format("IFTMIN-%s.txt", getHid_cs());
+                contentType = "text/plain";
+                break;
+            case 2:
+                text = server.getDBXMLText(getHid_cs(), getUser().getUsr().getUn());
+                buf = text.getBytes("utf-8");
+                fileName = String.format("WGR-%s.xml", getHid_cs());
+                contentType = "text/xml";
+                break;
+            case 3:
+                text = server.getIftminText(getHid_cs(), getUser().getUsr().getUn(), EDIConvertor.EdiDir.DB97A);
+                buf = text.getBytes("CP1251");
+                fileName = String.format("IFTMIN-%s.txt", getHid_cs());
+                contentType = "text/plain";
+                break;
+        }
+        inputStream = new ByteArrayInputStream(buf);
+        fileLength = buf.length;
         return "view-text";
     }
 
@@ -252,7 +272,7 @@ public class Iftmin_A extends CimSmgsSupport_A implements SmgsDAOAware, ServletC
             if (iftmins.get(i).getIn_out() != null) {
                 if (iftmins.get(i).getIn_out().intValue() == 2 &&
                         iftmins.get(i).getXml() != null && iftmins.get(i).getXml().length() > 0) {
-                    text.append(StringEscapeUtils.escapeXml(iftmins.get(i).getXml()).replace("\n", "<br/>"));
+                    text.append(StringEscapeUtils.escapeXml10(iftmins.get(i).getXml()).replace("\n", "<br/>"));
                     text.append("<hr/>");
                 } else if (iftmins.get(i).getIn_out().intValue() == 1 &&
                         iftmins.get(i).getText() != null && iftmins.get(i).getText().length() > 0) {

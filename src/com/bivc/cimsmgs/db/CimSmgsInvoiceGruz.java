@@ -2,11 +2,10 @@ package com.bivc.cimsmgs.db;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @JsonIgnoreProperties({"invoice"})
 public class CimSmgsInvoiceGruz implements Serializable {
@@ -242,66 +241,31 @@ public class CimSmgsInvoiceGruz implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-
         if (o == null || getClass() != o.getClass()) return false;
-
         CimSmgsInvoiceGruz that = (CimSmgsInvoiceGruz) o;
-
-        return new EqualsBuilder()
-                .append(hid, that.hid)
-                .append(hid_csinv, that.hid_csinv)
-                .append(znak, that.znak)
-                .append(kolm, that.kolm)
-                .append(mbrt, that.mbrt)
-                .append(mnet, that.mnet)
-                .append(klms, that.klms)
-                .append(cus_kolm, that.cus_kolm)
-                .append(tnved, that.tnved)
-                .append(cus_edizm, that.cus_edizm)
-                .append(nzgr, that.nzgr)
-                .append(cost, that.cost)
-                .append(itogo, that.itogo)
-                .append(invoice, that.invoice)
-                .append(nzyp, that.nzyp)
-                .append(type, that.type)
-                .append(kole, that.kole)
-                .append(eizm, that.eizm)
-                .append(kypk, that.kypk)
-                .isEquals();
+        return Objects.equals(hid, that.hid) &&
+                Objects.equals(hid_csinv, that.hid_csinv) &&
+                Objects.equals(znak, that.znak) &&
+                Objects.equals(kolm, that.kolm) &&
+                Objects.equals(mbrt, that.mbrt) &&
+                Objects.equals(mnet, that.mnet) &&
+                Objects.equals(klms, that.klms) &&
+                Objects.equals(cus_kolm, that.cus_kolm) &&
+                Objects.equals(tnved, that.tnved) &&
+                Objects.equals(cus_edizm, that.cus_edizm) &&
+                Objects.equals(nzgr, that.nzgr) &&
+                Objects.equals(cost, that.cost) &&
+                Objects.equals(itogo, that.itogo) &&
+                Objects.equals(invoice != null ? invoice.getHid() : "", that.invoice != null ? that.invoice.getHid() : "") &&
+                Objects.equals(nzyp, that.nzyp) &&
+                Objects.equals(type, that.type) &&
+                Objects.equals(kole, that.kole) &&
+                Objects.equals(eizm, that.eizm) &&
+                Objects.equals(kypk, that.kypk);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(hid)
-                .append(hid_csinv)
-                .append(znak)
-                .append(kolm)
-                .append(mbrt)
-                .append(mnet)
-                .append(klms)
-                .append(cus_kolm)
-                .append(tnved)
-                .append(cus_edizm)
-                .append(nzgr)
-                .append(cost)
-                .append(itogo)
-                .append(invoice)
-                .append(nzyp)
-                .append(type)
-                .append(kole)
-                .append(eizm)
-                .append(kypk)
-                .toHashCode();
+        return Objects.hash(hid, hid_csinv, znak, kolm, mbrt, mnet, klms, cus_kolm, tnved, cus_edizm, nzgr, cost, itogo, invoice != null ? invoice.getHid() : "", nzyp, type, kole, eizm, kypk);
     }
-
-    /*public String toString() {
-        return new ToStringBuilder(this)
-                .append("hid", getHid())
-                .append("nzgr", getNzgr())
-                .append("itogo", getItogo())
-                .append("invoice", getInvoice())
-                .toString();
-    }*/
-
 }

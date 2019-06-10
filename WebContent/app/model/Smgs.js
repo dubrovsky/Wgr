@@ -3,7 +3,7 @@ Ext.define('TK.model.Smgs', {
 
     fields: [
         'dattr','altered','un',
-        'numClaim', 'vags', 'konts', 'aviso', 'avisoId', 'tbc2log',
+        'numClaim', 'vags', 'konts', 'aviso', 'avisoId', 'tbc2log', 'vagVedNum',
 		'g281',
         'g1', 'g4','src','print','locked','npoezd',
         {name:'hid', type:'int'},
@@ -12,6 +12,7 @@ Ext.define('TK.model.Smgs', {
         {name: 'check', type: 'boolean', defaultValue:false},
         'type','invQty',
         {name:'packId', type:'int'},
-        {name:'routeId', type:'int'}
+        {name:'routeId', type:'int'},
+        'gng', 'nstn', 'route','dop_info'
     ]
 });

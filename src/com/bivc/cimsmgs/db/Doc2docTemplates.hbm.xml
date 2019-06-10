@@ -7,8 +7,9 @@
         <id name="hid" type="long">
             <column name="HID" precision="20" scale="0" />
             <generator class="sequence">
-                <param name="sequence">DOC2DOC_TEMPLATES_SEQ</param>
+                <param name="sequence">DOC2DOC_TEMPLATES_HID</param>
             </generator>
+            <!--<generator class="native"/>-->
         </id>
         <!--<many-to-one name="docDirByHidDocTo" class="com.bivc.cimsmgs.db.DocDir" fetch="select">
             <column name="HID_DOC_TO" precision="20" scale="0" not-null="true" />

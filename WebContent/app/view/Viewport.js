@@ -1,6 +1,15 @@
 Ext.define('TK.view.Viewport', {
     extend: 'Ext.container.Viewport',
-    requires:['TK.view.MenuTree'],
+    requires: [
+        'Ext.container.Container',
+        'Ext.data.ArrayStore',
+        'Ext.form.field.ComboBox',
+        'Ext.layout.container.Border',
+        'Ext.layout.container.HBox',
+        'Ext.tab.Panel',
+        'Ext.util.Format',
+        'TK.view.MenuTree'
+    ],
     layout: 'border',
     id: 'TK.Viewport',
     alias: 'widget.tkviewport',

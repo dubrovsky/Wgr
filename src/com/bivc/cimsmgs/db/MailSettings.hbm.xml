@@ -6,7 +6,8 @@
     <class name="com.bivc.cimsmgs.db.MailSettings" table="MAIL_SETTINGS">
         <id name="hid" type="long">
             <column name="HID" precision="10" scale="0" />
-            <generator class="assigned" />
+            <!--<generator class="assigned" />-->
+            <generator class="native"/>
         </id>
         <property name="sender" type="string">
             <column name="SENDER" length="50" not-null="true" />

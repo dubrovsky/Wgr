@@ -19,6 +19,7 @@ Ext.define('TK.model.PlombsTreeNode', {
     ],
 
     config: {
-        contObj: undefined
+        contObj: undefined,
+        vagObj: undefined
     }
 });

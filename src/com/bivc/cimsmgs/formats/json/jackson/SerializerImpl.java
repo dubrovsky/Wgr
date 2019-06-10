@@ -32,6 +32,13 @@ public class SerializerImpl implements Serializer {
         return this;
     }
 
+    @Override
+    public Serializer setView(Class<?> view) {
+        writer = writer.withView(view);
+        return this;
+    }
+
+	@Override
     public Serializer setFilters(Map<String, SimpleBeanPropertyFilter> filters) {
         SimpleFilterProvider filterProvider = new SimpleFilterProvider().setFailOnUnknownId(false);
         for (Map.Entry<String, SimpleBeanPropertyFilter> entry : filters.entrySet()) {

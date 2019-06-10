@@ -6,7 +6,8 @@
     <class name="com.bivc.cimsmgs.db.NsiCountries" table="NSI_COUNTRIES" >
         <id name="kod" type="string">
             <column name="KOD" length="3" />
-            <generator class="assigned" />
+            <!--<generator class="assigned" />-->
+            <generator class="native"/>
         </id>
         <property name="abc2" type="string">
             <column name="ABC2" length="2" />

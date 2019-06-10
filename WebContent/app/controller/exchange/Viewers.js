@@ -4,6 +4,17 @@ Ext.define('TK.controller.exchange.Viewers', {
 
     mixins: ['TK.controller.exchange.LockChecker'],
 
+    requires: [
+        'Ext.data.Store',
+        'Ext.data.proxy.Ajax',
+        'Ext.data.reader.Json',
+        'Ext.grid.Panel',
+        'Ext.layout.container.Anchor',
+        'Ext.layout.container.Fit',
+        'Ext.window.Window',
+        'TK.Utils'
+    ],
+
     iftminParam: 'IFTMIN',
     iftminBchParam: 'bch',
     iftminBtlcParam: 'btlc',

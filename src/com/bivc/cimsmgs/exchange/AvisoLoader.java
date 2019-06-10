@@ -1,6 +1,7 @@
 package com.bivc.cimsmgs.exchange;
 
 import com.bivc.cimsmgs.commons.HibernateUtil;
+import com.bivc.cimsmgs.commons.VidOtpr;
 import com.bivc.cimsmgs.db.*;
 import com.bivc.cimsmgs.db.nsi.Sta;
 import org.apache.commons.lang3.ArrayUtils;
@@ -57,7 +58,7 @@ public class AvisoLoader {
             cs.setDattr(d);
             cs.setUn(un);
             cs.setTrans(trans);
-            cs.setG25((byte) 2);
+            cs.setG25(VidOtpr.KONT.getG25());
             cs.setTbcStatus((byte) 0);
             cs.setDocType1(docType);
             if(gu != null && gu.length() > 0){
@@ -247,7 +248,7 @@ public class AvisoLoader {
             cs.setUn(un);
             cs.setTrans(trans);
             cs.setAmount(kol);
-            cs.setG25((byte) 2);
+            cs.setG25(VidOtpr.KONT.getG25());
             cs.setTbcStatus((byte) 0);
             cs.setKind(0);
 
@@ -311,7 +312,7 @@ public class AvisoLoader {
                 CimSmgsDocs csd = new CimSmgsDocs();
                 csd.setCode("1");
                 csd.setFieldNum("13");
-                csd.setSort((byte) 0);
+                csd.setSort(0);
                 csd.setText(nzps);
                 cs.addCimSmgsDocsItem(csd);
             }

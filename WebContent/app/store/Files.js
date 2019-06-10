@@ -1,5 +1,11 @@
 Ext.define('TK.store.Files', {
 	extend: 'Ext.data.Store',
+
+    requires: [
+        'TK.Utils',
+        'TK.model.File'
+    ],
+
     model: 'TK.model.File',
     pageSize: 20,
 	proxy: {

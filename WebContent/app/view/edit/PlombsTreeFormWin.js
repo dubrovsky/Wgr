@@ -2,6 +2,10 @@ Ext.define('TK.view.edit.PlombsTreeFormWin', {
     extend: 'TK.view.edit.TreeFormWin',
     alias: 'widget.plombsTreeFormWin',
 
+    requires: [
+        'Ext.form.Panel'
+    ],
+
     buildMainPanel: function(){
         return [{
             xtype: 'form',

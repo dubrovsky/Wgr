@@ -408,7 +408,10 @@ Ext.define("TK.locale.zh_CN.view.DocsList", {
     override:"TK.view.DocsList",
 
     btnStat    :"统计",
+    btnRestore    :"Restore",
+    btnDestroy    :"Destroy",
     btnPrint   :" 打印PDF",
+    btnPrintView   :"View PDF",
     btnCreate  :'创造',
     btnCopy    :'副本',
     btnEdit    :'编辑',
@@ -419,6 +422,7 @@ Ext.define("TK.locale.zh_CN.view.DocsList", {
     btnDownload:'下载文件',
     btnHistory :'历史',
     btnBindPrint :'Bind print',
+    btnSelectPrint :'Select template',
     btnExch    :'与... 交流',
     btnExchTBC :'与TBC交流',
     btnExchBCh1:'打开/关闭在“编辑',
@@ -430,7 +434,7 @@ Ext.define("TK.locale.zh_CN.view.DocsList", {
     btnView    :'查看',
 
     btnContsList :'Cont. list',
-    btnDopList:'Erganzungsblatt',
+    btnDopList:'Extra list',
     btnContsList1 :'List',
     btnSmgs :'Smgs',
 
@@ -507,8 +511,8 @@ Ext.define("TK.locale.zh_CN.view.avisogu29k.List", {
     title          :'GU细则的清单'
 });
 
-Ext.define("TK.locale.zh_CN.view.cim.List", {
-    override :"TK.view.cim.List",
+Ext.define("TK.locale.zh_CN.view.cim.CimList", {
+    override :"TK.view.cim.CimList",
     headerCim:'CIM',
     title    :'CIM的清单'
 
@@ -554,6 +558,15 @@ Ext.define("TK.locale.zh_CN.view.invoice.List", {
 
 Ext.define("TK.locale.zh_CN.view.smgs.List", {
     override      :"TK.view.smgs.List",
+    title         :'SMGS的清单',
+    headerSmgs    :'SMGS',
+    headerExchTBC :'与TBC交流',
+    headerAvisoNum:'结算通知单号码',
+    headerExchBch :'Iftmin'
+});
+
+Ext.define("TK.locale.zh_CN.view.smgs2.Smgs2List", {
+    override      :"TK.view.smgs2.Smgs2List",
     title         :'SMGS的清单',
     headerSmgs    :'SMGS',
     headerExchTBC :'与TBC交流',
@@ -793,6 +806,8 @@ Ext.define("TK.locale.zh_CN.view.DocsForm", {
     btnChangeCont :'改变集装箱',
     btnChangeGr   :'改变商品',
     btnCopyEpd    :'从电子运输文件复制',
+    btnDopList:'Extra list',
+    btnContsList :'Cont. list',
     btnCopy20     :'复制到第二十栏',
     btnTbcReady   :'准备TBC',
     btnTbcNotReady:'取消TBC',
@@ -836,6 +851,7 @@ Ext.define("TK.locale.zh_CN.view.DocsForm", {
     labelSize             :'集装箱大少',
     labelSizeMm           :'集装箱大少(mm)',
     labelNotes  :'Text before Container No.',
+    labelNotesVag  :'Text before Car  No.',
     labelCategory         :'集装箱类型',
     labelContNum          :'集装箱号码',
     labelVid              :'集装箱种类',
@@ -940,8 +956,8 @@ Ext.define("TK.locale.zh_CN.view.avisogu29k.Form1", {
     labelGU27       :'GU27'
 });
 
-Ext.define("TK.locale.zh_CN.view.cim.Form", {
-    override        :"TK.view.cim.Form",
+Ext.define("TK.locale.zh_CN.view.cim.CimForm", {
+    override        :"TK.view.cim.CimForm",
     labelWagonOtpr  :'批号',
     labelContPrivate:'自己(P)'
 });
@@ -951,8 +967,8 @@ Ext.define("TK.locale.zh_CN.view.slovnakl.Form", {
     labelWagonOtpr  :'批号'
 });
 
-Ext.define("TK.locale.zh_CN.view.cimsmgs.Form", {
-    override:"TK.view.cimsmgs.Form",
+Ext.define("TK.locale.zh_CN.view.cimsmgs.CimSmgsForm", {
+    override:"TK.view.cimsmgs.CimSmgsForm",
     labelDopList: 'Erganzungsblatt'
 });
 
@@ -1046,6 +1062,7 @@ Ext.define("TK.locale.zh_CN.view.stat.Form", {
     lableUser          :'使用人',
     lableCountrySender :'发国',
     lableCountryRceiver:'到国',
+    lableDeleted:'Deleted?',
     lableStnPogr       :'通过的国境站',
     lableStnSender     :'发站',
     lableStnReciver    :'到站',

@@ -31,6 +31,15 @@ public class PrintBlank implements Serializable {
     private String contentType;
     private BigDecimal length;
     private Byte ncopy;
+    private Boolean preview = false;
+
+    public Boolean isPreview() {
+        return preview;
+    }
+
+    public void setPreview(Boolean preview) {
+        this.preview = preview;
+    }
 
     public Byte getNcopy() {
         return ncopy;

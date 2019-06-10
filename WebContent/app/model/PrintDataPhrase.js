@@ -1,5 +1,10 @@
 Ext.define('TK.model.PrintDataPhrase', {
     extend:'Ext.data.Model',
+
+    requires: [
+        'TK.model.PrintData'
+    ],
+
     idProperty:'hid',
     fields:[
         'name',

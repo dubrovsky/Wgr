@@ -8,6 +8,26 @@
     min-height: 20px;
 }*/
 
+.cont1 {
+    background: url(./../images/cont1.png)  no-repeat !important;
+}
+
+.train {
+    background: url(./../images/train.gif)  no-repeat !important;
+}
+
+.filter_check {
+    background-image: url(./../images/filter_check.png) !important;
+}
+
+.cont {
+    background: url(./../images/kont.png)  no-repeat !important;
+}
+
+.red{
+    color: red;
+}
+
 .header-main{
     font-size: 16px;
     padding-top: 2px;
@@ -339,8 +359,24 @@ textarea.x-form-focus {
     color: red;
 }
 
+.select {
+    background: url(./../images/select.png)  no-repeat !important;
+}
+
+.plus {
+    background: url(./../images/plus.png)  no-repeat !important;
+}
+
+.minus {
+    background: url(./../images/minus.png)  no-repeat !important;
+}
+
 .rewrite {
     background: url(./../images/rewrite.png)  no-repeat !important;
+}
+
+.restore {
+    background: url(./../images/restore.png)  no-repeat !important;
 }
 
 .update {
@@ -360,7 +396,7 @@ textarea.x-form-focus {
 }
 
 .cont3 {
-    background: url(./../images/cont3.png)  no-repeat !important;
+    background: url(./../images/cont4.png)  no-repeat !important;
 }
 
 .vag {
@@ -369,6 +405,10 @@ textarea.x-form-focus {
 
 .gryz {
     background: url(./../images/cargo.png)  no-repeat !important;
+}
+
+.danGryz {
+    background: url(./../images/dan_gruz.png)  no-repeat !important;
 }
 
 .comments {
@@ -478,6 +518,9 @@ textarea.x-form-focus {
 .user_edit {
     background-image: url(./../images/user_edit.gif) !important;
 }
+.user_edit2 {
+    background-image: url(./../images/user_edit2.gif) !important;
+}
 
 .refresh {
     background-image: url(./../images/refresh.gif) !important;
@@ -545,6 +588,10 @@ textarea.x-form-focus {
 
 .del1 {
     background-image: url(./../images/del1.gif) !important;
+}
+
+.copyData {
+    background-image: url(./../images/copy-16.gif) !important;
 }
 
 .add {
@@ -711,6 +758,10 @@ textarea.x-form-focus {
     background-image: url(./../images/copy6.gif) !important;
 }
 
+.clear {
+    background-image: url(./../images/clear-16.gif) !important;
+}
+
 .smgsInputArea {
     position: absolute;
     z-index: 10;
@@ -806,3 +857,12 @@ background-image:url() !important;
     /*cursor: pointer;*/
     padding-left: 16px;
 }
+
+.x-column-header.green {
+	background-color: #b3e3b3;
+    background-image: none;
+}
+/*.x-column-header.green .x-column-header-over{*/
+	/*background-color: #b3e3b3;*/
+    /*background-image: none;*/
+/*}*/

@@ -7,6 +7,7 @@
         <id name="name" type="string">
             <column name="NAME" length="64" />
             <generator class="assigned" />
+            <!--<generator class="native"/>-->
         </id>
         <property name="deptrans" type="string">
             <column name="DEPTRANS" length="512" />
@@ -47,7 +48,7 @@
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.ProjectGroups" />
         </set>
-        <set name="packDocs" table="PACK_DOC" inverse="true" lazy="true" fetch="select">
+        <set name="packDocs" table="PACK_DOC" inverse="true" lazy="true" fetch="select" where="DELETED = 'FALSE'">
             <key>
                 <column name="TRANS" length="64" />
             </key>

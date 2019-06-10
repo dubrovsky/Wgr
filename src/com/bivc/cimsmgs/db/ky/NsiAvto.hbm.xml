@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.bivc.cimsmgs.db.ky.NsiAvto" table="NSI_AVTO">
+        <id name="hid" type="java.lang.Long">
+            <column name="HID" precision="20" scale="0"/>
+            <generator class="sequence">
+                <param name="sequence">NSI_AVTO_HID</param>
+            </generator>
+        </id>
+        <!--<many-to-one class="com.bivc.cimsmgs.db.ky.NsiKyOwners" fetch="select" name="owner">
+            <column name="HID_OWNER" precision="20" scale="0"/>
+        </many-to-one>-->
+        <property name="typeAvto">
+            <column name="TYPE_AVTO" sql-type="varchar2" length="250"/>
+        </property>
+        <property name="noAvto">
+            <column name="NO_AVTO" sql-type="varchar2" length="20"/>
+        </property>
+        <property name="noTrail">
+            <column name="NO_TRAIL" sql-type="varchar2" length="20"/>
+        </property>
+        <property name="ownCargo">
+            <column name="OWN_CARGO" sql-type="varchar2" length="250"/>
+        </property>
+        <property name="un" type="string" update="false">
+            <column length="20" name="UN"/>
+        </property>
+        <property name="dattr" type="timestamp">
+            <column length="7" name="DATTR"/>
+        </property>
+        <property name="trans" type="string" update="false">
+            <column length="20" name="TRANS"/>
+        </property>
+        <property name="altered" type="timestamp" update="false">
+            <column length="7" name="ALTERED"/>
+        </property>
+    </class>
+</hibernate-mapping>

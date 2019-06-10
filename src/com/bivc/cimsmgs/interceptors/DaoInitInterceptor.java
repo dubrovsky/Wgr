@@ -167,6 +167,10 @@ public class DaoInitInterceptor implements Interceptor {
             ((InvoiceDAOAware) action).setInvoiceDAO(new InvoiceDAOHib());
         }
 
+        if (action instanceof VedDAOAware) {
+            ((VedDAOAware) action).setVedDAO(new VedDAOHib());
+        }
+
         if (action instanceof InvoiceBriefDAOAware) {
             ((InvoiceBriefDAOAware) action).setInvoiceBriefDAO(new InvoiceBriefDAOHib());
         }
@@ -244,6 +248,19 @@ public class DaoInitInterceptor implements Interceptor {
         if (action instanceof NsiCarrierDAOAware) {
             ((NsiCarrierDAOAware) action).setNsiCarrierDAO(new NsiCarrierDAOHib());
         }
+
+        if (action instanceof NsiCargoDanVDAOAware) {
+            ((NsiCargoDanVDAOAware) action).setNsiCargoDanVDAO(new NsiCargoDanVDAOHib());
+        }
+
+        if (action instanceof NsiCargoDanGVDAOAware) {
+            ((NsiCargoDanGVDAOAware) action).setNsiCargoDanGVDAO(new NsiCargoDanGVDAOHib());
+        }
+
+        if (action instanceof NsiCargoDanDeDAOAware) {
+            ((NsiCargoDanDeDAOAware) action).setNsiCargoDanDeDAO(new NsiCargoDanDeDAOHib());
+        }
+
         return actionInvocation.invoke();
     }
 }

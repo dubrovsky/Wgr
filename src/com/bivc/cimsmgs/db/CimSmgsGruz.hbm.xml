@@ -9,6 +9,7 @@
             <generator class="sequence">
               <param name="sequence">CIM_SMGS_GRUZ_HID</param>
             </generator>
+            <!--<generator class="native"/>-->
         </id>
         <many-to-one name="cimSmgsCarList" class="com.bivc.cimsmgs.db.CimSmgsCarList" fetch="select">
             <column name="HID_CAR" precision="20" scale="0" />
@@ -76,5 +77,13 @@
         <property name="ohr" type="boolean">
             <column name="ohr" precision="1" scale="0" />
         </property>
+
+        <map name="cimSmgsDanGruzs" cascade="all, delete-orphan" inverse="true" sort="natural" lazy="true" batch-size="50"  >
+            <key>
+                <column name="HID_GRUZ" precision="20" scale="0"  not-null="true"/>
+            </key>
+            <map-key column="SORT" type="byte"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsDanGruz" />
+        </map>
     </class>
 </hibernate-mapping>

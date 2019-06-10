@@ -17,8 +17,12 @@ public class NsiStaDAOHib extends GenericHibernateDAO<Sta, Long> implements NsiS
 		crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 10 : limit);
 //        crit.add(Restrictions.in("trans", usr.getTrans()));
 		if (query != null && query.trim().length() > 0) {
-			crit.add(Restrictions.or(Restrictions.ilike("staName", query.trim(), MatchMode.ANYWHERE),
-					Restrictions.ilike("staNo", query.trim(), MatchMode.ANYWHERE)));
+			crit.add(Restrictions.
+                            disjunction().
+                            add(Restrictions.ilike("staName", query.trim(), MatchMode.ANYWHERE)).
+                            add(Restrictions.ilike("staNameEn", query.trim(), MatchMode.ANYWHERE)).
+                            add(Restrictions.ilike("staNo", query.trim(), MatchMode.ANYWHERE))
+					);
 		}
         return listAndCast(crit);
 	}
@@ -28,8 +32,12 @@ public class NsiStaDAOHib extends GenericHibernateDAO<Sta, Long> implements NsiS
 		crit.setProjection(Projections.rowCount());
 //        crit.add(Restrictions.in("trans", usr.getTrans()));
 		if (query != null && query.trim().length() > 0) {
-			crit.add(Restrictions.or(Restrictions.ilike("staName", query.trim(), MatchMode.ANYWHERE),
-					Restrictions.ilike("staNo", query.trim(), MatchMode.ANYWHERE)));
+            crit.add(Restrictions.
+                    disjunction().
+                    add(Restrictions.ilike("staName", query.trim(), MatchMode.ANYWHERE)).
+                    add(Restrictions.ilike("staNameEn", query.trim(), MatchMode.ANYWHERE)).
+                    add(Restrictions.ilike("staNo", query.trim(), MatchMode.ANYWHERE))
+            );
 		}
 		return (Long) crit.uniqueResult();
 	}

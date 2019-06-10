@@ -2,6 +2,11 @@ Ext.define('TK.view.invoice.List', {
     extend:'TK.view.DocsList',
     alias:'widget.invoicelist',
 
+    requires: [
+        'Ext.button.Split',
+        'TK.Utils'
+    ],
+
     buildStore:function (config) {
         if(this.inPack){
             config.store = 'InvoicesInPack';
@@ -30,7 +35,10 @@ Ext.define('TK.view.invoice.List', {
                         width: 85
                     }]
                 },
-                {text:'№', dataIndex:'invoice', flex:1, renderer:TK.Utils.renderLongStr},
+                {text:this.headerNum, dataIndex:'invoice', flex:1, renderer:TK.Utils.renderLongStr},
+                {text:this.headerNumOtpr, dataIndex:'notpr', flex:1, renderer:TK.Utils.renderLongStr},
+                {text:this.headerNumCont, dataIndex:'utiN', flex:1, renderer:TK.Utils.renderLongStr},
+                {text:this.headerDateOtpr, dataIndex:'dat_inv', flex:1, renderer:TK.Utils.renderLongStr},
                 {text:this.headerSenderName, dataIndex:'notd', flex:3, renderer:TK.Utils.renderLongStr},
                 {text:this.headerReceiverName, dataIndex:'npol', flex:3, renderer:TK.Utils.renderLongStr}
             ],
@@ -44,7 +52,8 @@ Ext.define('TK.view.invoice.List', {
             xtype: 'toolbar',
             itemId: 'top',
             items: [
-                {text: this.btnStat, iconCls:'filter', action:'filter', itemId:'local'},'-',
+                {text: this.btnStat, iconCls:'filter', action:'filter', itemId:'local', forDeleted: true, forPresent: true},
+                {xtype: 'tbseparator', itemId:'filter1', forDeleted: true, forPresent: true},
                 {text: this.btnPrint, iconCls:'pdf_blank_off', action:'printInvoice'},'-',
                 {text: this.btnCreate,iconCls:'doc_new', action:'create'},'-',
                 //{text: this.btnCopy,iconCls:'copy', action:'copy'},'-',
@@ -61,6 +70,15 @@ Ext.define('TK.view.invoice.List', {
 
         if(tkUser.hasPriv('CIM_DELETE')){
             config.dockedItems[0].items.push({text: this.btnDelete,iconCls:'del',itemId:'del', action:'del'},{xtype: 'tbseparator', itemId:'del1'});
+        }
+
+        if(tkUser.hasPriv('CIM_ADMIN_DELETE')){
+            config.dockedItems[0].items.push(
+                {text: this.btnRestore,iconCls:'restore',itemId:'restore', action:'restore', forDeleted: true, hidden: true},
+                {xtype: 'tbseparator', itemId:'restore1', forDeleted: true, hidden: true},
+                {text: this.btnDestroy,iconCls:'del',itemId:'destroy', action:'destroy', forDeleted: true, hidden: true},
+                {xtype: 'tbseparator', itemId:'destroy1', forDeleted: true, hidden: true}
+            );
         }
 
         /*var items = config.dockedItems[0].items;

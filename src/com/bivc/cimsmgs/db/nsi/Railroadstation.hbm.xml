@@ -6,7 +6,8 @@
     <class name="com.bivc.cimsmgs.db.nsi.Railroadstation" table="RAILROADSTATION">
         <id name="id" type="big_decimal">
             <column name="ID" precision="22" scale="0" />
-            <generator class="assigned" />
+            <!--<generator class="assigned" />-->
+            <generator class="native"/>
         </id>
         <!--many-to-one name="railroadstation" class="com.bivc.cimsmgs.db.nsi.Railroadstation" fetch="select">
             <column name="LINK_STATION_ID" precision="22" scale="0" />

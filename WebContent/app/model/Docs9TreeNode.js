@@ -33,7 +33,9 @@ Ext.define('TK.model.Docs9TreeNode', {
     ],
 
     config: {
-        contObj: undefined/*,
+        contObj: undefined,
+        vagObj: undefined
+        /*,
         vagIndx: undefined,
         contIndx: undefined*/
     }

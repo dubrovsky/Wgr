@@ -162,28 +162,49 @@ public ArrayList<PrintTemplates> findPrnTemplates4Print(PrintTemplates prnTempl,
     }
 
     @Override
+    public List<Integer> findPages4PrnTemplate(DocDir doc, Long tempHid) {
+        Criteria crit = getSession().
+                createCriteria(PrintData.class).setProjection(Projections.distinct(Property.forName("page"))).addOrder(Order.asc("page")).
+                createCriteria("printTemplates").add(Restrictions.eq("docDir", doc)).add(Restrictions.eq("hid", tempHid));
+
+        return crit.list();
+    }
+
+    @Override
     public Long countPrnBlankRefs(DocDir doc, Route route) {
         Criteria crit = getSession().
-                createCriteria(PrintBlankTemplRef.class).setProjection(Projections.count("id.hidBlank")).
-                createCriteria("printTemplates").add(Restrictions.eq("docDir", doc)).
-                createCriteria("routePrintTemplateses").add(Restrictions.eq("route", route));
+                createCriteria(PrintBlankTemplRef.class, "printBlankTemplRef").setProjection(Projections.count("id.hidBlank")).
+                createCriteria("printBlankTemplRef.printTemplates", "printTemplates").add(Restrictions.eq("docDir", doc)).
+                createCriteria("printTemplates.routePrintTemplateses").add(Restrictions.eq("route", route)).
+                createCriteria("printBlankTemplRef.printBlank").add(Restrictions.eq("preview", false));
         return (Long)crit.uniqueResult();
     }
 
     @Override
     public Long countUnPrnBlankRefs(DocDir doc, Route route, String username) {
         Criteria crit = getSession().
-                createCriteria(PrintBlankTemplRef.class).setProjection(Projections.count("id.hidBlank")).
-                createCriteria("printTemplates").add(Restrictions.eq("docDir", doc)).
-                createCriteria("routeUnPrintTemplateses").add(Restrictions.eq("route", route)).add(Restrictions.eq("id.hidUn", username));
+                createCriteria(PrintBlankTemplRef.class, "printBlankTemplRef").setProjection(Projections.count("id.hidBlank")).
+                createCriteria("printBlankTemplRef.printTemplates", "printTemplates").add(Restrictions.eq("docDir", doc)).
+                createCriteria("printTemplates.routeUnPrintTemplateses").add(Restrictions.eq("route", route)).add(Restrictions.eq("id.hidUn", username)).
+                createCriteria("printBlankTemplRef.printBlank").add(Restrictions.eq("preview", false));
         return (Long)crit.uniqueResult();
     }
 
     @Override
     public Long countPrnBlankRefs4Default(DocDir doc) {
         Criteria crit = getSession().
-                createCriteria(PrintBlankTemplRef.class).setProjection(Projections.count("id.hidBlank")).
-                createCriteria("printTemplates").add(Restrictions.eq("docDir", doc)).add(Restrictions.eq("defaults", true));
+                createCriteria(PrintBlankTemplRef.class, "printBlankTemplRef").setProjection(Projections.count("id.hidBlank")).
+                createCriteria("printBlankTemplRef.printTemplates").add(Restrictions.eq("docDir", doc)).add(Restrictions.eq("defaults", true)).
+                createCriteria("printBlankTemplRef.printBlank").add(Restrictions.eq("preview", false));
+        return (Long)crit.uniqueResult();
+    }
+
+    @Override
+    public Long countPrnBlankRefs(DocDir doc, Long tempHid) {
+        Criteria crit = getSession().
+                createCriteria(PrintBlankTemplRef.class, "printBlankTemplRef").setProjection(Projections.count("id.hidBlank")).
+                createCriteria("printBlankTemplRef.printTemplates").add(Restrictions.eq("docDir", doc)).add(Restrictions.eq("hid", tempHid)).
+                createCriteria("printBlankTemplRef.printBlank").add(Restrictions.eq("preview", false));
         return (Long)crit.uniqueResult();
     }
 }

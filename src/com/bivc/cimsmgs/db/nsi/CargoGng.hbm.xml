@@ -3,13 +3,14 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-    <class name="com.bivc.cimsmgs.db.nsi.CargoGng" table="CARGO_GNG_V" where="SYSDATE &gt;= C_GN#BGN and SYSDATE &lt; C_GN#END">
+    <class name="com.bivc.cimsmgs.db.nsi.CargoGng" table="CARGO_GNG_V" where="SYSDATE() &gt;= `C_GN#BGN` and SYSDATE() &lt; `C_GN#END`">
         <id name="c_gn_un" type="java.lang.Long">
-            <column name="C_GN#UN"/>
-            <generator class="assigned"/>
+            <column name="[C_GN#UN]"/>
+            <!--<generator class="assigned"/>-->
+            <generator class="native"/>
         </id>
         <property name="c_gn_id" type="java.lang.Long">
-            <column name="C_GN#ID"/>
+            <column name="[C_GN#ID]"/>
         </property>
         <property name="cargo_place" type="string">
             <column name="CARGO_PLACE"/>
@@ -30,10 +31,10 @@
             <column name="CARGO_ETT"/>
         </property>
         <property name="c_gn_bgn" type="date">
-            <column name="C_GN#BGN"/>
+            <column name="[C_GN#BGN]"/>
         </property>
         <property name="c_gn_end" type="date">
-            <column name="C_GN#END"/>
+            <column name="[C_GN#END]"/>
         </property>
 
     </class>

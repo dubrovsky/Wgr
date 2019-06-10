@@ -6,9 +6,10 @@
     <class name="com.bivc.cimsmgs.db.PackListGruz" table="CS_PACKLIST_GRUZ" >
         <id name="hid" type="long">
             <column name="HID" precision="20" scale="0" />
-            <generator class="sequence">
+           <!-- <generator class="sequence">
               <param name="sequence">CS_PACKLISTGRUZ_HID</param>
-            </generator>
+            </generator>-->
+            <generator class="native"/>
         </id>
 
         <many-to-one name="PackList" class="com.bivc.cimsmgs.db.PackList" fetch="select">

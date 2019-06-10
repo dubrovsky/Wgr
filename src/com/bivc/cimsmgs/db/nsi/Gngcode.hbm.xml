@@ -6,7 +6,8 @@
     <class name="com.bivc.cimsmgs.db.nsi.Gngcode" table="GNGCODE" where="WORK_TILL IS NULL">
         <id name="id" type="big_decimal">
             <column name="ID" precision="22" scale="0" />
-            <generator class="assigned" />
+            <!--<generator class="assigned" />-->
+            <generator class="native"/>
         </id>
         <property name="mlName" type="string">
             <column name="ML_NAME" length="4000" not-null="true" />

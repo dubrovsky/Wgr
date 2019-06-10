@@ -3,12 +3,9 @@ package com.bivc.cimsmgs.db;
 import com.bivc.cimsmgs.commons.money2str;
 import com.bivc.cimsmgs.commons.myUser;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +16,8 @@ import java.util.*;
 @JsonIgnoreProperties({"iftminLogs", "iftminLogsBtlc", "packDoc", "route", "statuses"})
 public class CimSmgsInvoice implements Serializable {
 
-    @JsonSerialize(include = JsonSerialize.Inclusion.ALWAYS)
+//    @JsonSerialize(include = JsonSerialize.Inclusion.ALWAYS)
+    @JsonInclude
     private Long hid;
     //    private CimSmgs cimSmgs;
     private String notd;
@@ -78,6 +76,15 @@ public class CimSmgsInvoice implements Serializable {
     private Set<Status> statuses = new HashSet<Status>();
     private Set<BIftminLog> iftminLogs = new HashSet<BIftminLog>();
     private Set<BIftminLog> iftminLogsBtlc = new HashSet<BIftminLog>();
+    private boolean deleted = false;
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 
     public Set<BIftminLog> getIftminLogsBtlc() {
         return iftminLogsBtlc;
@@ -542,12 +549,12 @@ public class CimSmgsInvoice implements Serializable {
         }
     }
 
-    public String toString() {
+    /*public String toString() {
         return new ToStringBuilder(this)
                 .append("hid", getHid())
                 .append("invoicegruz", getInvoiceGruzs())
                 .toString();
-    }
+    }*/
 
     public void correct4js() {
         for (CimSmgsInvoiceGruz elem : invoiceGruzs.values()) {
@@ -773,112 +780,64 @@ public class CimSmgsInvoice implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-
         if (o == null || getClass() != o.getClass()) return false;
-
         CimSmgsInvoice that = (CimSmgsInvoice) o;
-
-        return new EqualsBuilder()
-                .append(hid, that.hid)
-                .append(notd, that.notd)
-                .append(adres_o, that.adres_o)
-                .append(n_dog, that.n_dog)
-                .append(npol, that.npol)
-                .append(adres_p, that.adres_p)
-                .append(kod_pol, that.kod_pol)
-                .append(itogo, that.itogo)
-                .append(invoice, that.invoice)
-                .append(nsel, that.nsel)
-                .append(adres_s, that.adres_s)
-                .append(nbuy, that.nbuy)
-                .append(adres_b, that.adres_b)
-                .append(kod_b, that.kod_b)
-                .append(kod_del, that.kod_del)
-                .append(ndel, that.ndel)
-                .append(prim, that.prim)
-                .append(fio_otv, that.fio_otv)
-                .append(un, that.un)
-                .append(dat_dog, that.dat_dog)
-                .append(dat_inv, that.dat_inv)
-                .append(trans, that.trans)
-                .append(dattr, that.dattr)
-                .append(cux, that.cux)
-                .append(invoicId, that.invoicId)
-                .append(invoicOut, that.invoicOut)
-                .append(invoicIn, that.invoicIn)
-                .append(invoicId2, that.invoicId2)
-                .append(invoicOut2, that.invoicOut2)
-                .append(invoicIn2, that.invoicIn2)
-                .append(route, that.route)
-                .append(packDoc, that.packDoc)
-                .append(postavka, that.postavka)
-                .append(postavkaPunkt, that.postavkaPunkt)
-                .append(notpr, that.notpr)
-                .append(nvag, that.nvag)
-                .append(utiN, that.utiN)
-                .append(country_o, that.country_o)
-                .append(zip_o, that.zip_o)
-                .append(city_o, that.city_o)
-                .append(country_p, that.country_p)
-                .append(zip_p, that.zip_p)
-                .append(city_p, that.city_p)
-                .append(altered, that.altered)
-                .append(status, that.status)
-                .append(docType1, that.docType1)
-                .append(docType, that.docType)
-                .isEquals();
+        return deleted == that.deleted &&
+                Objects.equals(hid, that.hid) &&
+                Objects.equals(notd, that.notd) &&
+                Objects.equals(adres_o, that.adres_o) &&
+                Objects.equals(n_dog, that.n_dog) &&
+                Objects.equals(npol, that.npol) &&
+                Objects.equals(adres_p, that.adres_p) &&
+                Objects.equals(kod_pol, that.kod_pol) &&
+                Objects.equals(itogo, that.itogo) &&
+                Objects.equals(invoice, that.invoice) &&
+                Objects.equals(nsel, that.nsel) &&
+                Objects.equals(adres_s, that.adres_s) &&
+                Objects.equals(nbuy, that.nbuy) &&
+                Objects.equals(adres_b, that.adres_b) &&
+                Objects.equals(kod_b, that.kod_b) &&
+                Objects.equals(kod_del, that.kod_del) &&
+                Objects.equals(ndel, that.ndel) &&
+                Objects.equals(prim, that.prim) &&
+                Objects.equals(fio_otv, that.fio_otv) &&
+                Objects.equals(un, that.un) &&
+                Objects.equals(dat_dog, that.dat_dog) &&
+                Objects.equals(dat_inv, that.dat_inv) &&
+                Objects.equals(trans, that.trans) &&
+                Objects.equals(dattr, that.dattr) &&
+                Objects.equals(locked, that.locked) &&
+                Objects.equals(cux, that.cux) &&
+                Objects.equals(invoicId, that.invoicId) &&
+                Objects.equals(invoicOut, that.invoicOut) &&
+                Objects.equals(invoicIn, that.invoicIn) &&
+                Objects.equals(invoicId2, that.invoicId2) &&
+                Objects.equals(invoicOut2, that.invoicOut2) &&
+                Objects.equals(invoicIn2, that.invoicIn2) &&
+                Objects.equals(route != null ? route.getHid() : "", that.route != null ? that.route.getHid() : "") &&
+                Objects.equals(packDoc != null ? packDoc.getHid() : "", that.packDoc != null ? that.packDoc.getHid() : "") &&
+                Objects.equals(postavka, that.postavka) &&
+                Objects.equals(postavkaPunkt, that.postavkaPunkt) &&
+                Objects.equals(notpr, that.notpr) &&
+                Objects.equals(nvag, that.nvag) &&
+                Objects.equals(utiN, that.utiN) &&
+                Objects.equals(country_o, that.country_o) &&
+                Objects.equals(zip_o, that.zip_o) &&
+                Objects.equals(city_o, that.city_o) &&
+                Objects.equals(country_p, that.country_p) &&
+                Objects.equals(zip_p, that.zip_p) &&
+                Objects.equals(city_p, that.city_p) &&
+                Objects.equals(status, that.status) &&
+                Objects.equals(docType1, that.docType1) &&
+                Objects.equals(docType, that.docType);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(hid)
-                .append(notd)
-                .append(adres_o)
-                .append(n_dog)
-                .append(npol)
-                .append(adres_p)
-                .append(kod_pol)
-                .append(itogo)
-                .append(invoice)
-                .append(nsel)
-                .append(adres_s)
-                .append(nbuy)
-                .append(adres_b)
-                .append(kod_b)
-                .append(kod_del)
-                .append(ndel)
-                .append(prim)
-                .append(fio_otv)
-                .append(un)
-                .append(dat_dog)
-                .append(dat_inv)
-                .append(trans)
-                .append(dattr)
-                .append(cux)
-                .append(invoicId)
-                .append(invoicOut)
-                .append(invoicIn)
-                .append(invoicId2)
-                .append(invoicOut2)
-                .append(invoicIn2)
-                .append(route)
-                .append(packDoc)
-                .append(postavka)
-                .append(postavkaPunkt)
-                .append(notpr)
-                .append(nvag)
-                .append(utiN)
-                .append(country_o)
-                .append(zip_o)
-                .append(city_o)
-                .append(country_p)
-                .append(zip_p)
-                .append(city_p)
-                .append(altered)
-                .append(status)
-                .append(docType1)
-                .append(docType)
-                .toHashCode();
+        return Objects.hash(hid, notd, adres_o, n_dog, npol, adres_p, kod_pol, itogo, invoice, nsel, adres_s, nbuy, adres_b, kod_b, kod_del, ndel, prim, fio_otv, un, dat_dog, dat_inv,
+                trans, dattr, locked, cux, invoicId, invoicOut, invoicIn, invoicId2, invoicOut2, invoicIn2,
+                route != null ? route.getHid() : "", packDoc != null ? packDoc.getHid() : "",
+                postavka, postavkaPunkt, notpr, nvag, utiN, country_o, zip_o, city_o, country_p, zip_p,
+                city_p, status, docType1, docType, deleted);
     }
 }

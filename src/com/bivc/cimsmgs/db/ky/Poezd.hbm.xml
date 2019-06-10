@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 19.02.2014 14:19:48 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.ky.Poezd" table="KY_POEZD" batch-size="50">
+        <id name="hid" type="java.lang.Long">
+            <column name="HID" precision="20" scale="0"/>
+            <generator class="sequence">
+                <param name="sequence">KY_POEZD_HID</param>
+            </generator>
+        </id>
+        <many-to-one class="com.bivc.cimsmgs.db.Route" fetch="select" name="route">
+            <column name="HID_ROUTE" precision="20" scale="0"/>
+        </many-to-one>
+        <many-to-one class="com.bivc.cimsmgs.db.PackDoc" fetch="select" name="packDoc">
+            <column name="HID_PACK" precision="20" scale="0"/>
+        </many-to-one>
+        <property name="trans" type="string" update="false">
+            <column length="20" name="TRANS" />
+        </property>
+        <property name="dattr" type="timestamp">
+            <column length="7" name="DATTR" />
+        </property>
+        <property name="un" type="string" update="false">
+            <column length="60" name="UN" />
+        </property>
+        <property name="altered" type="timestamp" update="false">
+            <column length="7" name="ALTERED" />
+        </property>
+        <property name="nppr" type="string">
+            <column length="5" name="NPPR"/>
+        </property>
+        <property name="npprm" type="string">
+            <column length="10" name="NPPRM"/>
+        </property>
+        <property name="dprb" type="timestamp">
+            <column length="7" name="DPRB"/>
+        </property>
+        <property name="koleya" type="java.lang.Byte">
+            <column name="KOLEYA" precision="1" scale="0" not-null="true"/>
+        </property>
+        <property name="direction" type="java.lang.Byte">
+            <column name="DIRECTION" precision="1" scale="0" not-null="true"/>
+        </property>
+        <property name="dotp" type="timestamp">
+            <column length="7" name="DOTP"/>
+        </property>
+
+        <property name="punkt_otpr" type="string">
+            <column length="96" name="PUNKT_OTPR"/>
+        </property>
+        <property name="punkt_nazn" type="string">
+            <column length="96" name="PUNKT_NAZN"/>
+        </property>
+        <property name="gruzotpr" type="string">
+            <column length="128" name="GRUZOTPR"/>
+        </property>
+
+        <set fetch="select" inverse="true" lazy="true" name="kontsOut" sort="natural" table="KY_KONT" batch-size="50" cascade="delete">
+            <key>
+                <column name="HID_POEZD_OUT" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.Kont"/>
+        </set>
+        <set fetch="select" inverse="true" lazy="true" name="kontsInto" sort="natural" table="KY_KONT" batch-size="50" cascade="delete">
+            <key>
+                <column name="HID_POEZD_INTO" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.Kont"/>
+        </set>
+        <set fetch="select" inverse="true" lazy="true" name="vagons" sort="natural" table="KY_VAGON" batch-size="50" cascade="delete">
+            <key>
+                <column name="HID_POEZD" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.Vagon"/>
+        </set>
+    </class>
+</hibernate-mapping>

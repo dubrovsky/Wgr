@@ -6,7 +6,8 @@
     <class name="com.bivc.cimsmgs.db.NsiUpak" table="NSI_UPAK">
         <id name="hid" type="big_decimal">
             <column name="HID" precision="20" scale="0" />
-            <generator class="assigned" />
+            <!--<generator class="assigned" />-->
+            <generator class="native"/>
         </id>
         <property name="kypk" type="string">
             <column name="KYPK" length="6" />

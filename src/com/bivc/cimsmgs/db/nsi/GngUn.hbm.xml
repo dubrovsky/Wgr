@@ -6,7 +6,8 @@
     <class name="com.bivc.cimsmgs.db.nsi.GngUn" table="GNG_UN">
         <id name="id" type="big_decimal">
             <column name="ID" precision="22" scale="0" />
-            <generator class="assigned" />
+            <!--<generator class="assigned" />-->
+            <generator class="native"/>
         </id>
         <property name="unNum" type="string">
             <column name="UN_NUM" length="16" />

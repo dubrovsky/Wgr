@@ -1,6 +1,18 @@
 Ext.define('TK.view.user.Form', {
     extend: 'Ext.form.Panel',
     alias: 'widget.user',
+
+    requires: [
+        'Ext.button.Button',
+        'Ext.form.FieldContainer',
+        'Ext.form.field.Checkbox',
+        'Ext.form.field.Text',
+        'Ext.form.field.TextArea',
+        'Ext.form.field.VTypes',
+        'Ext.layout.container.HBox',
+        'Ext.toolbar.Separator'
+    ],
+
     defaultType: 'textfield',
     bodyStyle: 'padding:5px 8px;',
     defaults: {allowBlank: false,anchor: '100%', msgTarget: 'under'},

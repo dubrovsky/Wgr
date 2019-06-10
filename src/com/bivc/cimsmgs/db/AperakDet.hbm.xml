@@ -4,9 +4,10 @@
 <hibernate-mapping>
   <class name="com.bivc.cimsmgs.db.AperakDet" table="B_APERAK_DET" dynamic-update="true" dynamic-insert="true">
     <id name="hid" column ="HID" type="long">
-       <generator class="sequence">
+      <!-- <generator class="sequence">
          <param name="sequence">B_APERAK_DET_HID</param>
-       </generator>
+       </generator>-->
+        <generator class="native" />
     </id>
     <many-to-one name="main" class="com.bivc.cimsmgs.db.Aperak" column="HID_MAIN" not-null="true" fetch="select"/>
     <!--many-to-one name="BIftminLog" class="com.bivc.cimsmgs.db.BIftminLog" fetch="select">

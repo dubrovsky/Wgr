@@ -111,7 +111,7 @@ public class Convertor {
 
   protected long prepareMessageId(Session session) throws HibernateException, SQLException {
     long id = -1;
-    PreparedStatement pst = ((SessionImplementor)session).getBatcher().prepareSelectStatement("SELECT iftmin_id.NEXTVAL FROM dual");
+    PreparedStatement pst = ((SessionImplementor)session).getBatcher().prepareSelectStatement("select NextVal('IFTMIN_ID')");
     ResultSet rs = pst.executeQuery();
     if (rs.next()) {
       id = rs.getLong(1);
@@ -264,11 +264,7 @@ public class Convertor {
   }
 
   protected String normNvagNkonStr(String str) {
-    String res = "";
-    if (str != null) {
-      res = str.replaceAll(" ", "").replaceAll("-", "");
-    }
-    return res;
+    return Utils.normNvagNkonStr(str);
   }
 
 }

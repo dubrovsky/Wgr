@@ -13,4 +13,6 @@ public interface RouteDAO extends GenericDAO<Route, Long>{
     List<Route> findAll(Integer limit, Integer start, String query, Search search);
 
     Long countAll(String query, Search search);
+
+//    Route findForDeleted();
 }

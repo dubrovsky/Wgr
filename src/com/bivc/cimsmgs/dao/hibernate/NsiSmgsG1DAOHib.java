@@ -6,10 +6,7 @@ import com.bivc.cimsmgs.db.NsiCsG1;
 import com.bivc.cimsmgs.db.Usr;
 import com.bivc.cimsmgs.exceptions.InfrastructureException;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.hibernate.type.StandardBasicTypes;
 
 import java.util.List;
@@ -17,13 +14,16 @@ import java.util.List;
 public class NsiSmgsG1DAOHib extends GenericHibernateDAO<NsiCsG1, Long> implements NsiSmgsG1DAO {
     @SuppressWarnings("unchecked")
     public List<NsiCsG1> findAll(Integer limit, Integer start, String query, Usr usr) throws InfrastructureException {
+
         Criteria crit = getSession().createCriteria(getPersistentClass());
         crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 10 : limit);
         crit.addOrder(Order.desc("altered"));
         crit.add(Restrictions.in("trans", usr.getTrans()));
         if (query != null && query.trim().length() > 0) {
-            crit.add(Restrictions.or(Restrictions.ilike("g1r", query.trim(), MatchMode.ANYWHERE),
-                    Restrictions.ilike("g2", query.trim(), MatchMode.ANYWHERE)));
+            Criterion criteria1=Restrictions.or(Restrictions.ilike("g1r", query.trim(), MatchMode.ANYWHERE),
+                    Restrictions.ilike("g2", query.trim(), MatchMode.ANYWHERE));
+            Criterion criteria2=Restrictions.ilike("g1", query.trim(), MatchMode.ANYWHERE);
+            crit.add(Restrictions.or(criteria1, criteria2));
         }
 
 //        List<NsiCsG1> list = crit.list();
@@ -36,8 +36,12 @@ public class NsiSmgsG1DAOHib extends GenericHibernateDAO<NsiCsG1, Long> implemen
         crit.setProjection(Projections.rowCount());
         crit.add(Restrictions.in("trans", usr.getTrans()));
         if (query != null && query.trim().length() > 0) {
-            crit.add(Restrictions.or(Restrictions.ilike("g1r", query.trim(), MatchMode.ANYWHERE),
-                    Restrictions.ilike("g2", query.trim(), MatchMode.ANYWHERE)));
+//            crit.add(Restrictions.or(Restrictions.ilike("g1r", query.trim(), MatchMode.ANYWHERE),
+//                    Restrictions.ilike("g2", query.trim(), MatchMode.ANYWHERE)));
+            Criterion criteria1=Restrictions.or(Restrictions.ilike("g1r", query.trim(), MatchMode.ANYWHERE),
+                    Restrictions.ilike("g2", query.trim(), MatchMode.ANYWHERE));
+            Criterion criteria2=Restrictions.ilike("g1", query.trim(), MatchMode.ANYWHERE);
+            crit.add(Restrictions.or(criteria1, criteria2));
         }
 
         return (Long) crit.uniqueResult();

@@ -1,5 +1,11 @@
 Ext.define('TK.store.PrintTemplate', {
     extend: 'Ext.data.Store',
+
+    requires: [
+        'TK.Utils',
+        'TK.model.PrintTemplate'
+    ],
+
     model: 'TK.model.PrintTemplate',
     proxy: {
         type: 'ajax',

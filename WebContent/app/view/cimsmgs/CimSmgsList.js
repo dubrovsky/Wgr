@@ -5,6 +5,11 @@ Ext.define('TK.view.cimsmgs.CimSmgsList', {
         exchange: 'TK.controller.exchange.Viewers'
     },
 
+    requires: [
+        'Ext.button.Split',
+        'TK.Utils'
+    ],
+
     buildStore:function (config) {
         config.store = 'CimSmgses';
     },
@@ -26,7 +31,8 @@ Ext.define('TK.view.cimsmgs.CimSmgsList', {
                         width: 80
                     }]
                 },
-                {text:this.headerCimsmgs, dataIndex:'numClaim', width:80, renderer: this.rendererPrint}
+                {text:this.headerCimsmgs, dataIndex:'numClaim', width:80, renderer: this.rendererPrint},
+                {text: this.headerVagVed, dataIndex: 'vagVedNum', width: 70, renderer: this.rendererVagVed}
             ],
             defaults:{}
         };
@@ -91,14 +97,14 @@ Ext.define('TK.view.cimsmgs.CimSmgsList', {
 
         config.columns.items.push(
             {text:this.headerVagNum, dataIndex:'vags', width:85, renderer:TK.Utils.renderLongStr},
-            {text:this.headerContNum, dataIndex:'konts', width:85, renderer:TK.Utils.renderLongStr},
+            {text:this.headerContNum, dataIndex:'konts', width:95, renderer:TK.Utils.renderLongStr},
             {text:this.headerDateTransp, dataIndex:'g281', width:85, renderer:TK.Utils.renderLongStr},
-            {text:this.headerSenderName, dataIndex:'g1', flex:1, width:200, renderer:TK.Utils.renderLongStr},
-            {text:this.headerReceiverName, dataIndex:'g4', flex:1, width:200, renderer:TK.Utils.renderLongStr}
+            {text:this.headerSenderName, dataIndex:'g1', flex:1, width:180, renderer:TK.Utils.renderLongStr},
+            {text:this.headerReceiverName, dataIndex:'g4', flex:1, width:180, renderer:TK.Utils.renderLongStr}
         );
 
         if(tkUser.hasPriv('CIM_DOC2DOC')){
-            config.columns.items.push({text: this.headerNPoezd, dataIndex: 'npoezd', width: 60, renderer: TK.Utils.renderLongStr});
+            config.columns.items.push({text: this.headerNPoezd, dataIndex: 'npoezd', width: 90, renderer: TK.Utils.renderLongStr});
         }
     },
     buildTopToolbar:function (config) {
@@ -108,19 +114,29 @@ Ext.define('TK.view.cimsmgs.CimSmgsList', {
             xtype: 'toolbar',
             itemId: 'top',
             items: [
-                {text: this.btnStat, iconCls:'filter', action:'filter', itemId:'local'},'-',
+                {text: this.btnStat, iconCls:'filter', action:'filter', itemId:'local', forDeleted: true, forPresent: true},
+                {xtype: 'tbseparator', itemId:'filter1', forDeleted: true, forPresent: true},
+
                 {xtype:'splitbutton', text: this.btnPrint, iconCls:'pdf_blank_off', action:'print',
                     menu: [
+                        {text: this.btnPrintView, action:'printView', iconCls:'view'},
                         {text: this.btnPrint, action:'print', iconCls:'pdf_blank_off'},
-                        {text: this.btnBindPrint, action:'bindPrintTmpl', iconCls:'bind'}
+                        {text: this.btnBindPrint, action:'bindPrintTmpl', iconCls:'bind'},
+                        {text: this.btnSelectPrint, action:'selectPrintTmpl', iconCls:'select'}
                     ]
                 },'-',
-                {text: this.btnCreate,iconCls:'doc_new', action:'create'},'-',
+                {xtype:'splitbutton', text: this.btnCreate, iconCls:'doc_new', action:'create',
+                    menu: [
+                        {text: this.btnCont, action:'createCont', iconCls:'doc_new'},
+                        {text: this.btnVag, action:'createVag', iconCls:'doc_new'}
+                    ]
+                },'-',
+                // {text: this.btnCreate,iconCls:'doc_new', action:'create'},'-',
                 //{text: this.btnCopy,iconCls:'copy', action:'copy'},'-',
                 {xtype:'splitbutton', text: this.btnCopy, iconCls:'copy', action:'copy',
                     menu: [
                         {text: this.btnCopy, action:'copy', iconCls:'copy'},
-                        {text: 'Копия, выбрать...', action:'showCopySelectedWin', iconCls:'copySelected'}
+                        {text: this.btnCopySelect, action:'showCopySelectedWin', iconCls:'copySelected'}
                     ]
                 },
                 {text: this.btnEdit,iconCls:'edit', action:'edit'},'-'
@@ -130,6 +146,24 @@ Ext.define('TK.view.cimsmgs.CimSmgsList', {
 
         if(tkUser.hasPriv('CIM_DELETE')){
             config.dockedItems[0].items.push({text: this.btnDelete,iconCls:'del',itemId:'del', action:'del'},{xtype: 'tbseparator', itemId:'del1'});
+        }
+
+        if(tkUser.hasPriv('CIM_ADMIN_DELETE')){
+            config.dockedItems[0].items.push(
+                {text: this.btnRestore,iconCls:'restore',itemId:'restore', action:'restore', forDeleted: true, hidden: true},
+                {xtype: 'tbseparator', itemId:'restore1', forDeleted: true, hidden: true},
+                {text: this.btnDestroy,iconCls:'del',itemId:'destroy', action:'destroy', forDeleted: true, hidden: true},
+                {xtype: 'tbseparator', itemId:'destroy1', forDeleted: true, hidden: true}
+            );
+        }
+
+        if(tkUser.hasPriv('CIM_ADMIN_DELETE')){
+            config.dockedItems[0].items.push(
+                {text: this.btnRestore,iconCls:'restore',itemId:'restore', action:'restore', forDeleted: true, hidden: true},
+                {xtype: 'tbseparator', itemId:'restore1', forDeleted: true, hidden: true},
+                {text: this.btnDestroy,iconCls:'del',itemId:'destroy', action:'destroy', forDeleted: true, hidden: true},
+                {xtype: 'tbseparator', itemId:'destroy1', forDeleted: true, hidden: true}
+            );
         }
 
         if(tkUser.hasPriv('CIM_IFTMIN') || tkUser.hasPriv('CIM_BTLC') || tkUser.hasPriv('CIM_TDG') || tkUser.hasPriv('CIM_GREENRAIL')){
@@ -146,6 +180,8 @@ Ext.define('TK.view.cimsmgs.CimSmgsList', {
                 exchangeMenu.push(
                     {text: this.btnExchBCh, action:'iftmin'},
                     {text: 'IFTMIN DB OUT', action:'iftmin_db_out'},
+                    {text: 'XML DB OUT', action:'xml_db_out'},
+                    {text: 'IFTMIN 97A RZD OUT', action:'iftmin_97a_rzd_out'},
                     {text: 'IFTMIN DB IN', action:'iftmin_db_in'}
                 );
             }
@@ -170,6 +206,9 @@ Ext.define('TK.view.cimsmgs.CimSmgsList', {
             text: this.btnPlusDocs, iconCls:'copy', action:'doc2doc',
             arrowAlign:'bottom',
             menu:[
+                {text:this.btnUploadPogruzList, iconCls:'smgs', action:'uploadPogruzList'},
+                {text:this.btnUploadPogruzListPoezd, iconCls:'smgs', action:'uploadPogruzListTrain'},
+                {text:this.btnUploadCSDocs9, iconCls:'packet', action:'uploadCimSmgsDocs9'},
                 {text:this.btnDopList, iconCls:'dop-list', action:'dopList'}
             ]
         },'-');
@@ -181,5 +220,12 @@ Ext.define('TK.view.cimsmgs.CimSmgsList', {
         }
         config.dockedItems[0].items.push({text:this.btnHistory, iconCls:'history', action:'history'}, '-');
 
+
+    },
+    rendererVagVed: function(val) {
+        if (val !== '')
+            return this.titleVagVed;
+        else
+            return '';
     }
 });

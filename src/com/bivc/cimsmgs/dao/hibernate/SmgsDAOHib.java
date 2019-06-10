@@ -3,6 +3,7 @@ package com.bivc.cimsmgs.dao.hibernate;
 import com.bivc.cimsmgs.commons.Search;
 import com.bivc.cimsmgs.dao.SmgsDAO;
 import com.bivc.cimsmgs.db.*;
+import com.bivc.cimsmgs.dto.CimSmgsTrainDateDTO;
 import com.bivc.cimsmgs.exceptions.InfrastructureException;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
@@ -15,10 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements SmgsDAO {
     final static private Logger log = LoggerFactory.getLogger(SmgsDAOHib.class);
@@ -29,9 +27,28 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
 //        log.info("findAll");
         Criteria crit = getSession().createCriteria(getPersistentClass(), "smgs");
 
-        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans()));
-        crit.createAlias("route", "route").add(Restrictions.eq("route.hid", search.getRouteId()));
-        crit.add(Restrictions.eq("type", search.getType()));
+        crit.createAlias("packDoc", "pack").
+                createAlias("pack.usrGroupsDir", "gr").
+                add(Restrictions.in("gr.name", usr.getTrans())).
+                add(Restrictions.eq("pack.deleted", search.getDeleted() != 0));
+        if (search.getRouteId() != null)
+            crit.createAlias("route", "route").
+                add(Restrictions.eq("route.hid", search.getRouteId()));
+
+        // добавлено для выбора документов по нескольком маршрутам для передаточной ведомости
+        if (!search.getRouteIds().isEmpty()) {
+            DetachedCriteria vedVagCriteria = DetachedCriteria.forClass(VedVag.class,"vedvag");
+            vedVagCriteria.add(Property.forName("vedvag.hidCs").eqProperty("smgs.hid"));
+            crit.createAlias("route", "route").
+                    add(Restrictions.in("route.hid", search.getRouteIds())).
+                    add(Subqueries.notExists(vedVagCriteria.setProjection(Projections.property("hid"))));
+        }
+
+        if(search.getType() == 112)
+            crit.add(Restrictions.in("type", new Byte[]{1, 12}));
+        else
+            crit.add(Restrictions.eq("type", search.getType()));
+
         if (start >= 0) { // for local stat excell report, start == -1
             crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 20 : limit);
         }
@@ -168,8 +185,12 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
     public Long countAll(Search search, Usr usr) {
 //        log.info("countAll");
         Criteria crit = getSession().createCriteria(getPersistentClass(), "smgs");
-        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans()));
-        crit.createAlias("route", "route").add(Restrictions.eq("route.hid", search.getRouteId()));
+        crit.createAlias("packDoc", "pack").
+                createAlias("pack.usrGroupsDir", "gr").
+                add(Restrictions.in("gr.name", usr.getTrans())).
+                add(Restrictions.eq("pack.deleted", search.getDeleted() != 0));
+        crit.createAlias("route", "route").
+                add(Restrictions.eq("route.hid", search.getRouteId()));
         crit.add(Restrictions.eq("type", search.getType()));
 
         crit.setProjection(Projections.countDistinct("hid"));
@@ -276,7 +297,8 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
     @Override
     public Long countAll(PackDoc packDoc) {
         Criteria crit = getSession().createCriteria(getPersistentClass());
-        crit.add(Restrictions.eq("packDoc", packDoc));
+        crit.add(Restrictions.eq("packDoc", packDoc)).
+                add(Restrictions.eq("pack.deleted", false));
 
         crit.setProjection(Projections.countDistinct("hid"));
         return (Long) crit.uniqueResult();
@@ -294,7 +316,8 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
 //        log.info("findAllRep");
         Criteria crit = getSession().createCriteria(getPersistentClass());
 
-        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans()));
+        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans())).
+                add(Restrictions.eq("pack.deleted", search.getDeleted() != 0));
         crit.createAlias("route", "route").add(Restrictions.eq("route.hid", search.getRouteId()));
         crit.add(Restrictions.eq("type", search.getType()));
         crit.addOrder(Order.desc("dattr"));
@@ -370,6 +393,9 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
             crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 20 : limit);
         }
         crit.addOrder(Order.desc("dattr"));
+
+        crit.createAlias("packDoc", "pack").
+                add(Restrictions.eq("pack.deleted", !(search == null || search.getDeleted() == 0)));
 
         if (search != null) {
             if (StringUtils.isNotEmpty(search.getProject()) || StringUtils.isNotEmpty(search.getRoute())) {
@@ -518,6 +544,9 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
         Criteria crit = getSession().createCriteria(getPersistentClass(), "smgs");
 //        crit.setProjection(Projections.rowCount());
         crit.setProjection(Projections.countDistinct("hid"));
+        crit.createAlias("packDoc", "pack").
+                add(Restrictions.eq("pack.deleted", !(search == null || search.getDeleted() == 0)));
+
 
         if (search != null) {
             if (StringUtils.isNotEmpty(search.getProject()) || StringUtils.isNotEmpty(search.getRoute())) {
@@ -627,9 +656,113 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
                 crit.add(Restrictions.le("altered", date2));
             }
         }
-
-
         return (Long) crit.uniqueResult();
+    }
+
+    /**
+     * findTrainDate finds trains and smgs quantity by date period
+     * @param limit
+     * @param start
+     * @param search search parameters
+     * @param usr user
+     * @return list of CimSmgsTrainDateDTO objects
+     */
+    public List<CimSmgsTrainDateDTO> findTrainDate(Integer limit, Integer start, Search search, Usr usr) {
+        log.info("findTrainDate");
+        Criteria crit = getSession().createCriteria(getPersistentClass(), "smgs");
+
+        crit.createAlias("packDoc", "pack").
+                createAlias("pack.usrGroupsDir", "gr").
+                add(Restrictions.in("gr.name", usr.getTrans())).
+                add(Restrictions.isNotNull("npoezd"));
+
+
+        if (start >= 0) { // for local stat excell report, start == '-1'
+            crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 1000 : limit);
+        }
+        crit.addOrder(Order.asc("npoezd"));
+
+        if (search != null) {
+
+            if (search.getDeleted() != null)
+                crit.add(Restrictions.eq("pack.deleted", search.getDeleted() != 0));
+            if (search.getRouteId() != null)
+                crit.createAlias("route", "route").
+                        add(Restrictions.eq("route.hid", search.getRouteId()));
+            if (search.getType() != null) {
+                crit.add(Restrictions.eq("type", search.getType()));
+            }
+            Date date1 = search.getDate1();
+            Date date2 = search.getDate2();
+            if (search.getDate1() != null) {
+                crit.add(Restrictions.gt("altered", date1));
+            }
+            if (search.getDate2() != null) {
+                crit.add(Restrictions.le("altered", date2));
+            }
+        }
+        ProjectionList projectionList = Projections.projectionList();
+        projectionList
+                .add(Projections.groupProperty("npoezd"))
+                .add(Projections.countDistinct("hid"));
+        crit.setProjection(projectionList);
+
+        List<Object[]> res = crit.list();
+        Iterator<Object[]> resIt = res.iterator();
+        List<CimSmgsTrainDateDTO> resDTO = new ArrayList<>();
+        while (resIt.hasNext()) {
+            Object[] rO = resIt.next();
+            resDTO.add(new CimSmgsTrainDateDTO((String) rO[0], (Long) rO[1]));
+        }
+        return resDTO;
+    }
+
+    /**
+     * findSmgsTrainDate finds list of SMGSs by date period and train number
+     * @param limit
+     * @param start
+     * @param search search parameters
+     * @param usr user
+     * @return CimSmgs LList
+     */
+    public List<CimSmgs> findSmgsTrainDate(Integer limit, Integer start, Search search, Usr usr) {
+        List<CimSmgs> res = new ArrayList<>();
+
+        Criteria crit = getSession().createCriteria(getPersistentClass(), "smgs");
+
+        crit.createAlias("packDoc", "pack").
+                createAlias("pack.usrGroupsDir", "gr").
+                add(Restrictions.in("gr.name", usr.getTrans())).
+                add(Restrictions.isNotNull("npoezd"));
+
+        if (start >= 0) { // for local stat excell report, start == '-1'
+            crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 1000 : limit);
+        }
+
+        if (search != null) {
+
+            if (search.getDeleted() != null)
+                crit.add(Restrictions.eq("pack.deleted", search.getDeleted() != 0));
+            if (search.getRouteId() != null)
+                crit.createAlias("route", "route").
+                        add(Restrictions.eq("route.hid", search.getRouteId()));
+            if (search.getType() != null) {
+                crit.add(Restrictions.eq("type", search.getType()));
+            }
+            Date date1 = search.getDate1();
+            Date date2 = search.getDate2();
+            if (search.getDate1() != null) {
+                crit.add(Restrictions.gt("altered", date1));
+            }
+            if (search.getDate2() != null) {
+                crit.add(Restrictions.le("altered", date2));
+            }
+            if (search.getNpoezd() != null)
+                crit.add(Restrictions.eq("npoezd", search.getNpoezd()));
+        }
+
+        List<CimSmgs> cimSmgs = crit.list();
+        return cimSmgs;
     }
 
     @Override
@@ -658,7 +791,7 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
         Disjunction disjunction = Restrictions.disjunction();
         for(String poezd: npoezds){
 //            disjunction.add(Restrictions.sqlRestriction("',' || lower(replace({alias}.n_poezd, ' ', '')) || ',' LIKE '%,' || lower(?) || ',%'", poezd, StandardBasicTypes.STRING));
-            disjunction.add(Restrictions.sqlRestriction("',' || lower({alias}.n_poezd) || ',' LIKE '%,' || lower(?) || ',%'", poezd, StandardBasicTypes.STRING));
+            disjunction.add(Restrictions.sqlRestriction("CONCAT(',' , lower({alias}.n_poezd) , ',') LIKE CONCAT('%,' , lower(?) , ',%')", poezd, StandardBasicTypes.STRING));
         }
         crit.add(disjunction);
 
@@ -684,7 +817,7 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
         Disjunction disjunction = Restrictions.disjunction();
         for(String poezd: npoezds){
 //            disjunction.add(Restrictions.sqlRestriction("',' || lower(replace({alias}.n_poezd, ' ', '')) || ',' LIKE '%,' || lower(?) || ',%'", poezd, StandardBasicTypes.STRING));
-            disjunction.add(Restrictions.sqlRestriction("',' || lower({alias}.n_poezd) || ',' LIKE '%,' || lower(?) || ',%'", poezd, StandardBasicTypes.STRING));
+            disjunction.add(Restrictions.sqlRestriction("CONCAT(',' , lower({alias}.n_poezd) , ',') LIKE CONCAT('%,' , lower(?) , ',%')", poezd, StandardBasicTypes.STRING));
         }
         crit.add(disjunction);
         crit.add(Restrictions.eq("type", type));
@@ -706,7 +839,7 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
         Disjunction disjunction = Restrictions.disjunction();
         for(String poezd: npoezds){
 //            disjunction.add(Restrictions.sqlRestriction("',' || lower(replace({alias}.n_poezd, ' ', '')) || ',' LIKE '%,' || lower(?) || ',%'", poezd, StandardBasicTypes.STRING));
-            disjunction.add(Restrictions.sqlRestriction("',' || lower({alias}.n_poezd) || ',' LIKE '%,' || lower(?) || ',%'", poezd, StandardBasicTypes.STRING));
+            disjunction.add(Restrictions.sqlRestriction("CONCAT(',' , lower({alias}.n_poezd) , ',') LIKE CONCAT('%,' , lower(?) , ',%')", poezd, StandardBasicTypes.STRING));
         }
         crit.add(disjunction);
         crit.add(Restrictions.eq("type", type));
@@ -729,7 +862,7 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
             npoezdBuilder.append(prefix);
             prefix = " OR ";
 //            npoezdBuilder.append("',' || lower(replace(cs.npoezd, ' ', '')) || ',' LIKE '%,' || lower(" + ":npoezd" + i + ") || ',%'");
-            npoezdBuilder.append("',' || lower({prefix}.npoezd) || ',' LIKE '%,' || lower(" + ":npoezd" + i + ") || ',%'");
+            npoezdBuilder.append("CONCAT(',' , lower({prefix}.npoezd) , ',') LIKE CONCAT('%,' , lower(" + ":npoezd" + i + ") , ',%')");
         }
         npoezdBuilder.append(")");
 
@@ -752,8 +885,9 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
                         "   FROM CimSmgs cs" +
                         "   INNER JOIN cs.route route" +
                         "   WHERE  route.hid = :routeId AND cs.type = :type AND (cs.kind != 1 or cs.kind is NULL) AND " +
-                        npoezdBuilder.toString().replace("{prefix}", "cs") +
-                        "   GROUP BY 4";
+                        npoezdBuilder.toString().replace("{prefix}", "cs");
+//                        +
+//                        "   GROUP BY 4";
         Query q = getSession().createQuery(query);
         q.setByte("type", type);
         q.setLong("routeId", routeId);
@@ -775,7 +909,7 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
         Disjunction disjunction = Restrictions.disjunction();
         for(String poezd: npoezds){
 //            disjunction.add(Restrictions.sqlRestriction("',' || lower(replace({alias}.n_poezd, ' ', '')) || ',' LIKE '%,' || lower(?) || ',%'", poezd, StandardBasicTypes.STRING));
-            disjunction.add(Restrictions.sqlRestriction("',' || lower({alias}.n_poezd) || ',' LIKE '%,' || lower(?) || ',%'", poezd, StandardBasicTypes.STRING));
+            disjunction.add(Restrictions.sqlRestriction("CONCAT(',', lower({alias}.n_poezd), ',') LIKE CONCAT('%,' , lower(?) , ',%')", poezd, StandardBasicTypes.STRING));
         }
         crit.add(disjunction);
         crit.add(Restrictions.eq("type", (byte) type));
@@ -830,10 +964,18 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
 
     public List<CimSmgs> findAll4FTS(Byte type, Long routeId, Usr usr) {
         Criteria crit = getSession().createCriteria(getPersistentClass());
-        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans()));
+        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans())).
+                add(Restrictions.eq("pack.deleted", false));
         crit.createAlias("route", "route").add(Restrictions.eq("route.hid", routeId));
         crit.add(Restrictions.eq("type", /*(byte)2*/type));
         crit.add(Restrictions.eq("ftsStatus", (byte) 25)); //
+//        crit.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        return listAndCast(crit);
+    }
+
+    public List<CimSmgs> findByIds(List<Long> ids) {
+        Criteria crit = getSession().createCriteria(getPersistentClass());
+        crit.add(Restrictions.in("hid", ids));
 //        crit.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         return listAndCast(crit);
     }
@@ -843,7 +985,8 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
     public List<Long> findAll4Iftmins1(Byte type, Long routeId, Usr usr, byte docReadyStatus) {
         Criteria crit = getSession().createCriteria(getPersistentClass());
         crit.setProjection(Property.forName("hid"));
-        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans()));
+        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans())).
+                add(Restrictions.eq("pack.deleted", false));
         crit.createAlias("route", "route").add(Restrictions.eq("route.hid", routeId));
         crit.add(Restrictions.eq("type", type));
         crit.add(Restrictions.eq("status", docReadyStatus)); //
@@ -853,7 +996,8 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
 
     public Long countAll4Iftmins1(Byte type, Long routeId, Usr usr, byte docReadyStatus) {
         Criteria crit = getSession().createCriteria(getPersistentClass());
-        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans()));
+        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans())).
+                add(Restrictions.eq("pack.deleted", false));
         crit.createAlias("route", "route").add(Restrictions.eq("route.hid", routeId));
         crit.setProjection(Projections.countDistinct("hid"));
         crit.add(Restrictions.eq("type", type));
@@ -865,7 +1009,8 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
     @Override
     public Long countAll4Btlc(Byte type, Long routeId, Usr usr, byte docReadyStatus) {
         Criteria crit = getSession().createCriteria(getPersistentClass());
-        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans()));
+        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans())).
+                add(Restrictions.eq("pack.deleted", false));
         crit.createAlias("route", "route").add(Restrictions.eq("route.hid", routeId));
         crit.setProjection(Projections.countDistinct("hid"));
         crit.add(Restrictions.eq("type", type));
@@ -878,7 +1023,8 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
     public List<Long> findAll4Btlc(Byte type, Long routeId, Usr usr, byte docReadyStatus) {
         Criteria crit = getSession().createCriteria(getPersistentClass());
         crit.setProjection(Property.forName("hid"));
-        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans()));
+        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans())).
+                add(Restrictions.eq("pack.deleted", false));
         crit.createAlias("route", "route").add(Restrictions.eq("route.hid", routeId));
         crit.add(Restrictions.eq("type", type));
         crit.add(Restrictions.eq("btlc_status", docReadyStatus)); //
@@ -889,7 +1035,8 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
     @Override
     public Long countAll4Tdg(Byte type, Long routeId, Usr usr, byte docReadyStatus) {
         Criteria crit = getSession().createCriteria(getPersistentClass());
-        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans()));
+        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans())).
+                add(Restrictions.eq("pack.deleted", false));
         crit.createAlias("route", "route").add(Restrictions.eq("route.hid", routeId));
         crit.setProjection(Projections.countDistinct("hid"));
         crit.add(Restrictions.eq("type", type));
@@ -902,7 +1049,8 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
     public List<Long> findAll4Tdg(Byte type, Long routeId, Usr usr, byte docReadyStatus) {
         Criteria crit = getSession().createCriteria(getPersistentClass());
         crit.setProjection(Property.forName("hid"));
-        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans()));
+        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans())).
+                add(Restrictions.eq("pack.deleted", false));
         crit.createAlias("route", "route").add(Restrictions.eq("route.hid", routeId));
         crit.add(Restrictions.eq("type", type));
         crit.add(Restrictions.eq("tdg_status1", docReadyStatus)); //
@@ -923,7 +1071,8 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
     public CimSmgs findDocInPackDoc(Long packDocHid, BigDecimal docTypeHid) {
         Criteria crit = getSession().createCriteria(getPersistentClass(), "smgs");
         crit.add(Restrictions.eq("docType1", docTypeHid));
-        crit.createCriteria("packDoc", "pack").add(Restrictions.idEq(packDocHid));
+        crit.createCriteria("packDoc", "pack").add(Restrictions.idEq(packDocHid)).
+                add(Restrictions.eq("pack.deleted", false));
 
         return (CimSmgs)crit.uniqueResult();
     }

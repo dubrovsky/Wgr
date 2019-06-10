@@ -7,8 +7,9 @@
         <id name="hid" type="long">
             <column name="HID" precision="20" scale="0" />
             <generator class="sequence">
-              <param name="sequence">CS_INVOICE_GRUZ_HID</param>
+              <param name="sequence">CIM_SMGS_INVOICE_GRUZ_HID</param>
             </generator>
+            <!--<generator class="native"/>-->
         </id>
 
 <!--

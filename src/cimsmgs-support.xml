@@ -13,16 +13,28 @@
         <action name="Locale" class="com.bivc.cimsmgs.actions.Locale_A">
             <result name="SUCCESS">/Login.jsp</result>
         </action>
+        <action name="TestDB" class="com.bivc.cimsmgs.actions.TestDB_A">
+            <result name="success" type="json"/>
+            <interceptor-ref name="baseStack"/>
+        </action>
     </package>
 
     <package name="cimsmgs-support4" namespace="/" extends="cimsmgs-default">
         <action name="Login4" class="com.bivc.cimsmgs.actions.Login4_A">
             <result name="success">/dev.jsp</result>
+            <result name="changepw">/change_pw.jsp</result>
         </action>
     </package>
     <package name="cimsmgs-support4-prod" namespace="/" extends="cimsmgs-default">
         <action name="Login4-prod" class="com.bivc.cimsmgs.actions.Login4_A">
             <result name="success">/jsp/Menu4-prod.jsp</result>
+            <result name="changepw">/change_pw.jsp</result>
+        </action>
+    </package>
+    <package name="change-pw" namespace="/" extends="cimsmgs-default">
+        <action name="ChangePw" class="com.bivc.cimsmgs.actions.CangePw_A">
+            <result name="skip">/index.jsp</result>
+            <result name="success">/change_pw.jsp</result>
         </action>
     </package>
 
@@ -55,7 +67,7 @@
             </result>
 
             <result name="view-text" type="stream">
-                <param name="contentType">text/plain</param>
+                <param name="contentType">${contentType}</param>
                 <param name="contentDisposition">attachment;filename="${fileName}"</param>
                 <param name="contentLength">${fileLength}</param>
             </result>
@@ -80,18 +92,10 @@
 
     </package>
 
-    <package name="invoice-support" namespace="/" extends="cimsmgs-default">
-        <action name="Invoice_*" method="{1}" class="invoice_a">
+    <package name="ved-support" namespace="/" extends="cimsmgs-default">
+        <action name="Ved_*" method="{1}" class="com.bivc.cimsmgs.actions.Ved_A">
             <result name="success" type="json"/>
         </action>
-
-        <action name="Invoice_view" method="view" class="invoice_a">
-            <result name="invoice">/jsp/Invoice.jsp</result>
-            <interceptor-ref name="hibernate4JspStack"/>
-            <exception-mapping result="errorJsp" exception="java.lang.Exception"/>
-        </action>
-
-        <!--<action name="ErrorJspHandler" class="com.bivc.cimsmgs.actions.ErrorJspHandler_A"/>-->
 
     </package>
 
@@ -174,6 +178,21 @@
             <result name="success" type="json"/>
             <interceptor-ref name="fileUploadStack"/>
         </action>
+        <action name="Doc2Doc_uploadDoc9" method="uploadDoc9" class="doc2doc_A">
+            <result name="success" type="json"/>
+            <interceptor-ref name="fileUploadStack"/>
+        </action>
+        <action name="Doc2Doc_uploadPogruzList" method="uploadPogruzList" class="doc2doc_A">
+            <result name="success" type="json"/>
+            <interceptor-ref name="fileUploadStack"/>
+        </action>
+        <action name="Doc2Doc_uploadPeregruz2BaseList" method="uploadPeregruz2BaseList" class="doc2doc_A">
+            <result name="success" type="json"/>
+        </action>
+        <action name="Doc2Doc_uploadPogruzListTrain" method="uploadPogruzListTrain" class="doc2doc_A">
+            <result name="success" type="json"/>
+            <interceptor-ref name="fileUploadStack"/>
+        </action>
     </package>
 
     <package name="project-support" namespace="/" extends="cimsmgs-default">
@@ -243,6 +262,86 @@
             <result name="success" type="json"/>
             <!--<result name="btns">/jsp/NsiBtns.jsp</result>-->
         </action>
+    </package>
+
+    <package name="invoice-support" namespace="/" extends="cimsmgs-default">
+        <action name="Invoice_*" method="{1}" class="invoice_a">
+            <result name="success" type="json"/>
+        </action>
+
+        <action name="Invoice_view" method="view" class="invoice_a">
+            <result name="invoice">/jsp/Invoice.jsp</result>
+            <interceptor-ref name="hibernate4JspStack"/>
+            <exception-mapping result="errorJsp" exception="java.lang.Exception"/>
+        </action>
+    </package>
+
+    <package name="kontyard-support" namespace="/ky" extends="cimsmgs-default">
+
+        <action name="secure/Poezd" class="poezd_A">
+            <result name="success" type="json"/>
+        </action>
+        <action name="secure/Vagon" class="vagon_A">
+            <result name="success" type="json"/>
+        </action>
+        <action name="secure/Kont" class="kont_A">
+            <result name="success" type="json"/>
+        </action>
+        <action name="secure/Gruz" class="gruz_A">
+            <result name="success" type="json"/>
+        </action>
+        <action name="secure/Plomb" class="plomb_A">
+            <result name="success" type="json"/>
+        </action>
+        <action name="secure/Yard" class="yard_A">
+            <result name="success" type="json"/>
+        </action>
+        <action name="secure/Avto" class="avto_A">
+            <result name="success" type="json"/>
+        </action>
+        <action name="secure/mdcontareax" class="mdcontareax_A">
+            <result name="success" type="json"/>
+        </action>
+
+        <action name="secure/Report_*" method="{1}" class="kyreport_A">
+            <result name="view" type="stream">
+                <param name="contentType">application/vnd.ms-excel</param>
+                <param name="contentDisposition">attachment;filename="Report.xls"</param>
+            </result>
+        </action>
+
+        <action name="secure/YardSector_*" method="{1}" class="yardSector_A">
+            <result name="success" type="json"/>
+        </action>
+
+        <action name="secure/YardSector_list" method="list" class="yardSector_A">
+            <result name="success" type="json"/>
+        </action>
+
+        <action name="secure/NsiVagShir" class="nsiVagShir_A">
+            <result name="success" type="json"/>
+        </action>
+
+        <action name="secure/NsiVagUzky" class="nsiVagUzky_A">
+            <result name="success" type="json"/>
+        </action>
+
+        <action name="secure/NsiKont" class="nsiKont_A">
+            <result name="success" type="json"/>
+        </action>
+
+        <action name="secure/NsiAvto" class="nsiAvto_A">
+            <result name="success" type="json"/>
+        </action>
+
+        <action name="secure/NsiOwner" class="nsiOwner_A">
+            <result name="success" type="json"/>
+        </action>
+
+        <!--<action name="NsiVagShir_list" method="list" class="nsiVagShir_A">
+            <result name="success" type="json"/>
+        </action>-->
+
     </package>
 
     <package name="nsidir-support" namespace="/" extends="cimsmgs-default">

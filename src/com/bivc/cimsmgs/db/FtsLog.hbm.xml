@@ -5,9 +5,10 @@
     <class name="com.bivc.cimsmgs.db.FtsLog" table="FTS_LOG" dynamic-insert="true" dynamic-update="true">
         <id name="hid" type="long">
             <column name="HID" precision="30" scale="0"/>
-            <generator class="sequence">
+            <!--<generator class="sequence">
                 <param name="sequence">FTS_LOG_HID</param>
-            </generator>
+            </generator>-->
+            <generator class="native"/>
         </id>
         <property name="hid_src" type="long" column="HID_SRC" precision="20" scale="0"/>
         <property name="in_out" type="byte" column="IN_OUT" precision="1" scale="0"/>

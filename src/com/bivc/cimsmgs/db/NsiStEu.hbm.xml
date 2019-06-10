@@ -5,7 +5,8 @@
     <class name="com.bivc.cimsmgs.db.NsiStEu" table="NSI_ST_EU" >
         <id name="hid" type="long">
             <column name="HID" precision="20" scale="0" />
-            <generator class="assigned" />
+            <!--<generator class="assigned" />-->
+            <generator class="native"/>
         </id>
         <many-to-one name="nsiDor" class="com.bivc.cimsmgs.db.NsiDor" fetch="join" >
             <column name="COD_DIR" length="3" />

@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 19.02.2014 14:19:48 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.ky.Vagon" table="KY_VAGON" batch-size="50">
+        <id name="hid" type="java.lang.Long">
+            <column name="HID" precision="20" scale="0"/>
+            <generator class="sequence">
+                <param name="sequence">KY_VAGON_HID</param>
+            </generator>
+        </id>
+        <many-to-one class="com.bivc.cimsmgs.db.ky.Poezd" fetch="select" name="poezd">
+            <column name="HID_POEZD" precision="20" scale="0" />
+        </many-to-one>
+        <many-to-one class="com.bivc.cimsmgs.db.ky.NsiKyOwners" fetch="select" name="owner">
+            <column name="HID_OWNER" precision="20" scale="0"/>
+        </many-to-one>
+        <property name="trans" type="string" update="false">
+            <column length="60" name="TRANS" />
+        </property>
+        <property name="dattr" type="timestamp">
+            <column length="7" name="DATTR" />
+        </property>
+        <property name="un" type="string" update="false">
+            <column length="60" name="UN" />
+        </property>
+        <property name="altered" type="timestamp" update="false">
+            <column length="7" name="ALTERED" />
+        </property>
+        <property name="nvag" type="string">
+            <column length="13" name="NVAG"/>
+        </property>
+
+        <property name="line" type="string">
+            <column length="10" name="LINE"/>
+        </property>
+
+        <property name="kpv" type="string">
+            <column length="28" name="KPV"/>
+        </property>
+        <property name="kolOs" type="java.lang.Integer">
+            <column name="KOL_OS" precision="2" scale="0"/>
+        </property>
+        <property name="masTar" type="java.lang.Long">
+            <column name="MAS_TAR" precision="20" scale="0"/>
+        </property>
+        <property name="sobstv" type="string">
+            <column length="128" name="SOBSTV"/>
+        </property>
+        <property name="bortDate" type="date">
+            <column length="7" name="BORT_DATE"/>
+        </property>
+        <property name="probeg" type="java.lang.Long">
+            <column name="PROBEG" precision="20" scale="0"/>
+        </property>
+        <property name="prim" type="string">
+            <column length="512" name="PRIM"/>
+        </property>
+        <property name="podSila" type="java.lang.Float">
+            <column name="POD_SILA" precision="20" scale="2"/>
+        </property>
+
+        <property name="koleya" type="java.lang.Byte">
+            <column name="KOLEYA" precision="1" scale="0"/>
+        </property>
+        <property name="dprb" type="timestamp">
+            <column length="7" name="DPRB"/>
+        </property>
+        <property name="dotp" type="timestamp">
+            <column length="7" name="DOTP"/>
+        </property>
+        <property name="direction" type="java.lang.Byte">
+            <column name="DIRECTION" precision="1" scale="0"/>
+        </property>
+        <property name="sort" type="java.lang.Short">
+            <column name="SORT" precision="3" scale="0"/>
+        </property>
+
+        <property name="plan_rem" type="date">
+            <column length="7" name="PLAN_REM"/>
+        </property>
+        <property name="reviz" type="date">
+            <column length="7" name="REVIZ"/>
+        </property>
+        <property name="type_no" type="java.lang.Long">
+            <column name="TYPE_NO" precision="4" scale="0"/>
+        </property>
+        <property name="dlina" type="java.lang.Float">
+            <column name="DLINA" precision="12" scale="2"/>
+        </property>
+        <property name="model" type="string">
+            <column length="20" name="MODEL"/>
+        </property>
+        <property name="foot" type="string">
+            <column length="4" name="FOOT"/>
+        </property>
+
+        <property name="poruz" type="java.lang.Boolean">
+            <column name="PORUZ" precision="1" scale="0"/>
+        </property>
+        <property name="defective" type="java.lang.Boolean">
+            <column name="DEFECTIVE" precision="1" scale="0"/>
+        </property>
+
+        <set fetch="select" inverse="true" lazy="true" sort="natural" name="kontsOut" table="KY_KONT" batch-size="50" cascade="delete">
+            <key>
+                <column name="HID_VAGON_OUT" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.Kont"/>
+        </set>
+        <set fetch="select" inverse="true" lazy="true" sort="natural" name="kontsInto" table="KY_KONT" batch-size="50" cascade="delete">
+            <key>
+                <column name="HID_VAGON_INTO" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.Kont"/>
+        </set>
+    </class>
+</hibernate-mapping>

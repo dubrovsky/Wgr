@@ -5,7 +5,8 @@
     <class name="com.bivc.cimsmgs.db.FieldsDir" table="FIELDS_DIR">
         <id name="hid" type="long">
             <column name="HID" precision="20" scale="0" />
-            <generator class="assigned" />
+            <!--<generator class="assigned" />-->
+            <generator class="native"/>
         </id>
         <property name="name" type="string">
             <column name="NAME" length="20" not-null="true" />

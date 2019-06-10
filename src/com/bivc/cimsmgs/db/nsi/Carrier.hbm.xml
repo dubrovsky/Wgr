@@ -2,16 +2,17 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="com.bivc.cimsmgs.db.nsi.Carrier" table="CARRIER" where="SYSDATE &gt;= CARR_BGN and SYSDATE &lt; CARR_END">
+    <class name="com.bivc.cimsmgs.db.nsi.Carrier" table="CARRIER_V" where="SYSDATE() &gt;= `CARR#BGN` and SYSDATE() &lt; `CARR#END`">
         <id name="carrUn" type="java.lang.Long">
-            <column name="CARR_UN" precision="10" scale="0" />
-            <generator class="sequence">
+            <column name="`CARR#UN`" precision="10" scale="0" />
+            <!--<generator class="sequence">
                 <param name="sequence">CARRIER_HID</param>
-            </generator>
+            </generator>-->
+            <generator class="native"/>
         </id>
 
         <property name="carrId" type="java.lang.Long">
-            <column name="CARR_ID" precision="10" scale="0" />
+            <column name="`CARR#ID`" precision="10" scale="0" />
         </property>
         <property name="countryNo" type="string">
             <column length="3" name="COUNTRY_NO" />
@@ -20,17 +21,17 @@
             <column length="4" name="CARR_NO" />
         </property>
         <property name="carrNameShort" type="string">
-            <column length="48" name="CARR_NAME_ID" />
+            <column length="48" name="CARR_ID" />
         </property>
         <property name="carrName" type="string">
             <column length="128" name="CARR_NAME" />
         </property>
 
         <property name="carrBgn" type="date">
-            <column length="7" name="CARR_BGN" />
+            <column length="7" name="`CARR#BGN`" />
         </property>
         <property name="carrEnd" type="date">
-            <column length="7" name="CARR_END" />
+            <column length="7" name="`CARR#END`" />
         </property>
 
     </class>

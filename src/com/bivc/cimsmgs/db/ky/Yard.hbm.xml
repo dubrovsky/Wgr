@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 19.02.2014 14:19:48 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.ky.Yard" table="KY_YARD">
+        <id name="hid" type="java.lang.Long">
+            <column name="HID" precision="20" scale="0"/>
+            <generator class="sequence">
+                <param name="sequence">KY_KONT_YARD_HID</param>
+            </generator>
+        </id>
+        <many-to-one class="com.bivc.cimsmgs.db.ky.YardSector" fetch="select" name="sector">
+            <column name="HID_SECTOR" not-null="true" precision="20" scale="0"/>
+        </many-to-one>
+        <property name="x" type="java.lang.Long">
+            <column name="X" not-null="true" precision="10" scale="0"/>
+        </property>
+        <property name="y" type="java.lang.Long">
+            <column name="Y" not-null="true" precision="10" scale="0"/>
+        </property>
+        <property name="z" type="java.lang.Long">
+            <column name="Z" not-null="true" precision="10" scale="0"/>
+        </property>
+        <property name="notes" type="string">
+            <column length="100" name="NOTES"/>
+        </property>
+        <property name="empty" type="boolean">
+            <column name="EMPTY" precision="1" scale="0"/>
+        </property>
+        <!--<property name="dateRev" type="date">
+            <column length="7" name="DATE_REV"/>
+        </property>-->
+        <property name="altered" type="timestamp" update="false">
+            <column length="7" name="ALTERED"/>
+        </property>
+        <property name="dattr" type="timestamp">
+            <column length="7" name="DATTR"/>
+        </property>
+        <property name="trans" type="string" update="false">
+            <column length="20" name="TRANS"/>
+        </property>
+        <property name="un" type="string" update="false">
+            <column length="20" name="UN"/>
+        </property>
+
+        <one-to-one name="kont" class="com.bivc.cimsmgs.db.ky.Kont" property-ref="yard"/>
+        <!--<set fetch="select" inverse="true" lazy="true" name="konts" sort="unsorted" table="KY_KONT">
+            <key>
+                <column name="HID_KY" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.Kont"/>
+        </set>-->
+    </class>
+</hibernate-mapping>

@@ -2,6 +2,10 @@ Ext.define('TK.view.edit.Docs9TreeFormWin', {
     extend: 'TK.view.edit.TreeFormWin',
     alias: 'widget.docs9TreeFormWin',
 
+    requires: [
+        'Ext.form.Panel'
+    ],
+
     buildMainPanel: function(){
         return [{
             xtype: 'form',

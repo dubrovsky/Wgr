@@ -23,13 +23,11 @@ public class Export2Excel {
     public Export2Excel(String excelFormat, String path4ExcelTmpl) throws IOException, InvalidFormatException {
         this.excelFormat = excelFormat;
         wb = WorkbookFactory.create(new File(path4ExcelTmpl));
-//        wb = excelFormat.equals(XLSX) ? new XSSFWorkbook() : new HSSFWorkbook();
     }
 
-    /*public Export2Excel() {
-        this.excelFormat = XLS;
-        wb = new HSSFWorkbook();
-    }*/
+    public void export(){
+
+    }
 
     public Workbook getWb() {
         return wb;
@@ -105,29 +103,25 @@ public class Export2Excel {
         }
     }
 
+   CellStyle createCellStyle(CellStyleSettings styleSettings){
+       CellStyle cellStyle = getWb().createCellStyle();
+       cellStyle.setAlignment(styleSettings.getHorizontalAlignment());
+       cellStyle.setWrapText(styleSettings.isWrapText());
+       cellStyle.setFont(styleSettings.getFont());
+       cellStyle.setVerticalAlignment(styleSettings.getVerticalAlignment());
+       cellStyle.setBorderBottom(styleSettings.getBorderBottom());
+       cellStyle.setBorderLeft(styleSettings.getBorderLeft());
+       cellStyle.setBorderRight(styleSettings.getBorderRight());
+       cellStyle.setBorderTop(styleSettings.getBorderTop());
+       cellStyle.setRotation(styleSettings.getRotation());
+       return cellStyle;
+   }
 
+    Font createFont(FontSettings fontSettings){
+        Font font = getWb().createFont();
+        font.setFontHeightInPoints((short) fontSettings.getFontHeightInPoints());
+        font.setBold(fontSettings.isBold());
+        return font;
+    }
 
-
-   /* public String getFilename() {
-        if(zipped){
-            return fileName + ".zip";
-        } else {
-            return fileName + "." + excelFormat;
-        }
-    }*/
-
-    /*public void write(OutputStream os) throws IOException {
-        if(zipped){
-            ZipOutputStream zip = new ZipOutputStream(os);
-            zip.putNextEntry(new ZipEntry("Spravochnik." + excelFormat));
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            wb.write(baos);
-            zip.write(baos.toByteArray());
-//            wb.write(zip);
-            baos.close();
-            zip.close();
-        } else {
-            wb.write(os);
-        }
-    }*/
 }

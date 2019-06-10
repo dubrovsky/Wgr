@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+  "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 12.11.2010 16:44:31 by Hibernate Tools 3.4.0.Beta1 -->
+<hibernate-mapping>
+  <class name="com.bivc.cimsmgs.db.UsrPwLog" table="USR_PW_LOG">
+
+    <id name="hid" type="long">
+      <column name="HID" precision="20" scale="0"/>
+      <generator class="sequence">
+        <param name="sequence">USR_PW_LOG_HID</param>
+      </generator>
+      <!--<generator class="native"/>-->
+    </id>
+
+    <property name="un" type="string">
+      <column name="UN" length="20" not-null="true"/>
+    </property>
+
+    <property name="ps" type="string">
+      <column name="PS" length="64" not-null="true"/>
+    </property>
+    <property name="datpw" type="timestamp">
+      <column name="DATPW" length="7" not-null="true"/>
+    </property>
+
+    <many-to-one name="usr" class="com.bivc.cimsmgs.db.UsrCahgePw" update="false" insert="false" fetch="select">
+      <column name="UN" length="20" not-null="true" />
+    </many-to-one>
+
+  </class>
+</hibernate-mapping>

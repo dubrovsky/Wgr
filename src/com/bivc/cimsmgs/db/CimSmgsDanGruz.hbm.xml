@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 02.03.2009 10:02:25 by Hibernate Tools 3.2.4.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.CimSmgsDanGruz" table="CIM_SMGS_DAN_GRUZ" batch-size="50">
+        <id name="hid" type="long">
+            <column name="HID" precision="20" scale="0" />
+            <generator class="sequence">
+                <param name="sequence">CIM_SMGS_DAN_GRUZ_HID</param>
+            </generator>
+            <!--<generator class="native"/>-->
+        </id>
+        <many-to-one name="cimSmgsGruz" class="com.bivc.cimsmgs.db.CimSmgsGruz" fetch="select">
+            <column name="HID_GRUZ" precision="20" scale="0" />
+        </many-to-one>
+
+
+        <property name="carDName" type="string">
+            <column name="CAR_D_NAME" length="256" />
+        </property>
+        <property name="carDNameDe" type="string">
+            <column name="CAR_D_NAME_DE" length="256" />
+        </property>
+        <property name="codDanger" type="string">
+            <column name="COD_DANGER" length="32" />
+        </property>
+        <property name="numOon" type="string">
+            <column name="NUM_OON" length="32" />
+        </property>
+        <!--<property name="numOonDe" type="string">
+            <column name="NUM_OON_DE" length="32" />
+        </property>-->
+        <property name="clazz" type="string">
+            <column name="CLASS" length="32" />
+        </property>
+        <property name="dangSign" type="string">
+            <column name="DANG_SIGN" length="32" />
+        </property>
+        <property name="groupPack" type="string">
+            <column name="GROUP_PACK" length="32" />
+        </property>
+        <property name="emergenC" type="string">
+            <column name="EMERGEN_C" length="32" />
+        </property>
+        <property name="stampDName" type="string">
+            <column name="STAMP_D_NAME" length="128" />
+        </property>
+        <property name="dopInfo" type="string">
+            <column name="DOP_INFO" length="64" />
+        </property>
+        
+
+
+        <!--<property name="dattr" type="date">
+             <column name="DATTR" length="7" />
+         </property>-->
+
+        <property name="sort" type="byte">
+            <column name="SORT" length="2" not-null="true"/>
+        </property>
+
+    </class>
+</hibernate-mapping>

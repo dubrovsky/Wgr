@@ -3,7 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-    <title>TK2-b.679</title>
+    <title>DBWGR</title>
     <link rel="stylesheet" type="text/css"  href="./ext/src/ux/css/ItemSelector.css" />
 
     <!-- <x-compile> -->

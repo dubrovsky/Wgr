@@ -218,7 +218,7 @@ public class InvLoader {
       CimSmgsDocs d25 = new CimSmgsDocs();
       d25.setFieldNum("7");
       d25.setCode("25");
-      d25.setSort((byte) 0);
+      d25.setSort(0);
       d25.setNdoc("10404090");
       d25.setText("Т/П ЕЛАБУЖСКИЙ 10404090");
       cs.addCimSmgsDocsItem(d25);
@@ -244,7 +244,7 @@ public class InvLoader {
       BigDecimal mnet = BigDecimal.ZERO;
       int kolm = 0;
       boolean hasBody = false;
-      byte doc9Sort = 0;
+      int doc9Sort = 0;
       for (CimSmgsInvoice inv : invMap.get(nkon)) {
         inv.setRoute(r);
 

@@ -1,4 +1,4 @@
-/*
+﻿/*
 This file is part of Ext JS 4.2
 
 Copyright (c) 2011-2013 Sencha Inc
@@ -287,7 +287,11 @@ Ext.define("Ext.locale.zh_CN.window.MessageBox", {
 
 // This is needed until we can refactor all of the locales into individual files
 Ext.define("Ext.locale.zh_CN.Component", {	
-    override: "Ext.Component"
+    override: "Ext.Component",
+    titleDelMsgBox  :'Delete record?',
+    textDelMsgBox   :'Record will be deleted',
+    titleEditWindow  :'Edit record',
+    titleAddWindow  :'Add record'
 });
 
 //////////////////////////////////
@@ -305,22 +309,66 @@ Ext.define("TK.locale.zh_CN.view.MenuTree", {
     override    :"TK.view.MenuTree",
     title       :'菜单',
     treeUsers   :'使用人',
+    treeGroups  :'Groups',
     treeProjects:'草案',
     treeLogs    :'日志文件',
     btnStat     :"统计",
     btnPrnTmpl  :"Print templates",
     treeDirs    :'手册',
     treeInstr   :'细则',
-    treeExit    :'出口'
+    treeChangePw:'Password change',
+    treeExit    :'出口',
+    epd         :'EPD',
+    smgs	    :'SMGS',
+    invoicelist :'Invoice',
+    aviso	    :'Templates SMGS for CKP',
+    cimsmgs	    :'CIM/SMGS',
+    aviso1	    :'Templates SMGS for agents',
+    slovnakl    :'Slovak waybill',
+    smgs2	    :'SMGS2',
+    aviso2	    :'Templates SMGS2',
+    gu29k	    :'GU-29k',
+    doplist	    :'Extra sheet',
+    filesmgs    :'Graphics SMGS',
+    filegu29k   :'Graphics GU',
+    fileaviso   :'Graphics Templates SMGS',
+    fileinvoice :'Graphics Invoice',
+    filecimsmgs :'Graphics ЦИМ/СМГС',
+    avisogu29k  :'Templates GU for CKP',
+    cim         :'CIM',
+    avisocim    :'Templates CIM',
+    files       :'Other documents',
+    cmr         :'CMR',
+    fileavisogu29k:'Graphics Templates GU',
+    gu27v       :'GU-27v',
+    avisogu29k1 :'Templates GU for agents',
+    avisocimsmgs:'Templates CIM/SMGS',
+    ved         :'Wagon and transfer list',
+    btnKontYards  :"Сontainers' yard",
+    btnKontYard    :'Containers\' storage and location',
+    btnKontPoezdIn    :'Train\'s arrival',
+    btnKontPoezdOut    :'Train\'s departure',
+    btnKontReports    :'Reports',
+
+    kyreport1: 'Report 1',
+    kyreport2: 'Report 2',
+    kyreport3: 'Report 3',
+    kyreport4: 'Report 4',
+    kyreport5: 'Report 5',
+    kyreport6: 'Report 6'
 });
 
 Ext.define("TK.locale.zh_CN.view.DocsList", {
     override:"TK.view.DocsList",
 
     btnStat    :"统计",
+    btnRestore    :"Restore",
+    btnDestroy    :"Destroy",
     btnPrint   :" 打印PDF",
+    btnPrintView   :"View PDF",
     btnCreate  :'创造',
     btnCopy    :'副本',
+    btnCopySelect    :'Copy, select...',
     btnEdit    :'编辑',
     btnDelete  :'删除',
     btnMakeSmgs:'形成SMGS',
@@ -331,6 +379,7 @@ Ext.define("TK.locale.zh_CN.view.DocsList", {
     btnDownload:'下载文件',
     btnHistory :'历史',
     btnBindPrint :'Bind print',
+    btnSelectPrint :'Select template',
     btnExch    :'与... 交流',
     btnExchTBC :'与TBC交流',
     btnExchBCh1:'打开/关闭在“编辑',
@@ -340,9 +389,15 @@ Ext.define("TK.locale.zh_CN.view.DocsList", {
     btnExchBTLC:'BTLC',
     btnReports :'决算',
     btnView    :'查看',
+    btnCont    :'Containers',
+    btnVag     :'Wagons',
+    lableDeleted: 'Deleted?',
 
-    btnContsList :'Cont. list',
-    btnDopList:'Erganzungsblatt',
+    btnContsList :'Cont/Wag list',
+    btnDopList:'Extra list',
+    btnUploadCSDocs9 :'Sender docs',
+    btnUploadPogruzList:'Cargo List',
+    btnUploadPogruzListPoezd:'Cargo List. for trains',
     btnContsList1 :'List',
     btnSmgs :'Smgs',
 
@@ -372,8 +427,16 @@ Ext.define("TK.locale.zh_CN.view.DocsList", {
 
     txtForApproval:'For approval',
     txtApproved:'Approved',
+    txtWork:'Working',
     txtNotApproved:'Not approved',
-    txtBlocked:'Blocked'
+    txtBlocked:'Blocked',
+    headerStatus   :'地位',
+    headerInstrNum :'细则号码',
+    headerGNG      :'GNG',
+    statusBlocked  :'封锁',
+    status4Approval:'为了协调',
+    statusAgreed   :'协调一致',
+    statusNotAgreed:'不协调一致'
 });
 
 Ext.define("TK.locale.zh_CN.view.printtmpl.List", {
@@ -403,51 +466,32 @@ Ext.define("TK.locale.zh_CN.stat.List", {
 Ext.define("TK.locale.zh_CN.view.aviso.List", {
     override:"TK.view.aviso.List",
 
-    headerStatus   :'地位',
-    headerInstrNum :'细则号码',
-    headerGNG      :'GNG',
-    statusBlocked  :'封锁',
-    status4Approval:'为了协调',
-    statusAgreed   :'协调一致',
-    statusNotAgreed:'不协调一致',
     title          :'SMGS细则的清单'
 });
 
 Ext.define("TK.locale.zh_CN.view.aviso.List", {
     override:"TK.view.aviso.List",
 
-    headerStatus   :'地位',
-    headerInstrNum :'细则号码',
-    headerGNG      :'GNG',
-    statusBlocked  :'封锁',
-    status4Approval:'为了协调',
-    statusAgreed   :'协调一致',
-    statusNotAgreed:'不协调一致',
     title          :'CIM/SMGS细则的清单'
 });
 
 Ext.define("TK.locale.zh_CN.view.avisogu29k.List", {
     override       :"TK.view.avisogu29k.List",
-    headerStatus   :'地位',
-    headerInstrNum :'细则号码',
-    headerGNG      :'GNG',
-    statusBlocked  :'封锁',
-    status4Approval:'为了协调',
-    statusAgreed   :'协调一致',
-    statusNotAgreed:'不协调一致',
+
     title          :'GU细则的清单'
 });
 
-Ext.define("TK.locale.zh_CN.view.cim.List", {
-    override :"TK.view.cim.List",
+Ext.define("TK.locale.zh_CN.view.cim.CimList", {
+    override :"TK.view.cim.CimList",
     headerCim:'CIM',
     title    :'CIM的清单'
 
 });
 
-Ext.define("TK.locale.zh_CN.view.cimsmgs.List", {
-    override     :"TK.view.cimsmgs.List",
-    headerCimsmgs:'CIM/SMGS',
+Ext.define("TK.locale.zh_CN.view.cimsmgs.CimSmgsList", {
+    override     :"TK.view.cimsmgs.CimSmgsList",
+    headerCimsmgs:'Num CIM/SMGS',
+    headerDateTransp:'Date CIM/SMGS',
     title        :'CIM/SMGS的清单',
     headerExchBch:'Iftmin'
 
@@ -480,7 +524,11 @@ Ext.define("TK.locale.zh_CN.view.gu29k.List", {
 
 Ext.define("TK.locale.zh_CN.view.invoice.List", {
     override:"TK.view.invoice.List",
-    title   :'发票的清单'
+    title   :'发票的清单',
+    headerNum: '№ inv',
+    headerNumOtpr: '№',
+    headerNumCont: '№ cont',
+    headerDateOtpr: 'Date inv'
 });
 
 Ext.define("TK.locale.zh_CN.view.smgs.List", {
@@ -492,9 +540,29 @@ Ext.define("TK.locale.zh_CN.view.smgs.List", {
     headerExchBch :'Iftmin'
 });
 
+Ext.define("TK.locale.zh_CN.view.smgs2.Smgs2List", {
+    override      :"TK.view.smgs2.Smgs2List",
+    title         :'SMGS的清单',
+    headerSmgs    :'SMGS',
+    headerExchTBC :'与TBC交流',
+    headerAvisoNum:'结算通知单号码',
+    headerExchBch :'Iftmin'
+});
+Ext.define("TK.locale.zh_CN.view.avisocim.AvisoCimList", {
+    override      :"TK.view.avisocim.AvisoCimList",
+    title         :'CIM template register'
+});
+Ext.define("TK.locale.zh_CN.view.aviso2.AvisoSmgs2List", {
+    override      :"TK.view.aviso2.AvisoSmgs2List",
+    title         :'SMGS template register'
+});
+
 Ext.define("TK.locale.zh_CN.view.file.List", {
     override:"TK.view.file.List",
-    title   :'图形数据的清单'
+    title   :'图形数据的清单',
+    headerNumOtpr: '№ Shipment',
+    headerNumCont: '№ cont',
+    headerDateOtpr: 'Data Shipment'
 });
 
 Ext.define("TK.locale.zh_CN.view.logs.List", {
@@ -536,6 +604,7 @@ Ext.define("TK.locale.zh_CN.view.user.List", {
     headerSu      :'管理员?',
     headerEmail   :'E-mail',
     btnCreate     :'创造',
+    btnCopy       :"复制",
     btnEdit       :'编辑',
     btnRefresh    :'升级',
 
@@ -627,6 +696,7 @@ Ext.define("TK.locale.zh_CN.view.edit.DetailGrid", {
     headerRoutesCodeTbc:' TBC代码',
     headerRoutesCodeCustoms:'Customs code',
     headerRoutesEmailMask: 'Email, mask',
+    headerRoutesForDeleted: 'For deleted?',
     headerContNum      :'集装箱号码',
     headerContSize     :'集装箱大少',
     headerContVid      :'集装箱种类',
@@ -671,7 +741,29 @@ Ext.define("TK.locale.zh_CN.view.edit.DetailGrid", {
 Ext.define("TK.locale.zh_CN.view.edit.DetailPanel", {
     override:"TK.view.edit.DetailPanel",
     btnSave :'保存',
-    btnClose:'关闭'
+    btnClose:'关闭',
+    labelDescr   :'Desciption',
+    labelNotes            :'附注',
+    labelSender           :'发货人',
+    labelName             :'名称',
+    labelName1            :'名称',
+    labelNameEu           :'名称 (EU)',
+    labelNameRu           :'名称 (RU)',
+    labelNameCh           :'名称 (CN)',
+    labelDate             :'日期',
+    labelTotal            :'数量',
+    labelCountry          :'国家',
+    labelCountryRu        :'国家 (RU)',
+    labelCountryCode      :'国家代码',
+    labelZip              :'邮政编码',
+    labelCity             :'城市',
+    labelCityRu           :'城市 (RU)',
+    labelAdress           :'地址',
+    labelAdressRu         :'地址 (RU)',
+    labelOptInfo          :'Opt. info',
+    labelSenderCod        :'Senders code',
+    labelReceiverCod      :'Recievers code',
+    labelReceiver         :'收货人'
 });
 
 Ext.define("TK.locale.zh_CN.view.edit.DetailTabPanel", {
@@ -711,7 +803,24 @@ Ext.define("TK.locale.zh_CN.view.edit.VgCtGrTreeFormWin", {
     labelMassa    :'重量 (公斤)',
     labelMesta    :'件数',
     labelPack     :'包装种类(ru)',
-    labelPackForeign:'包装种类'
+    labelPackForeign:'包装种类',
+
+    labelWagonsGiven:'Wagon is given',
+    labelWagonsOwner:"Wagon's owner",
+    labelWagonsKind:"Wagon's kind",
+
+    labelContSize:'Size Type',
+    labelMaxLoad:'Max load',
+
+    labelNameRu: 'Name(ru)',
+    labelName: 'Name',
+    labelOON: 'OON',
+    labelClass: 'Class',
+    labelZnak: 'Marks',
+    labelGrUpak: 'Packing group',
+    labelAvKart: '№ emerg. card',
+    labelStamp: 'Stamp',
+    labelDopInf: 'Add. info '
 });
 
 
@@ -732,7 +841,32 @@ Ext.define("TK.locale.zh_CN.view.edit.PlombsTreeFormWin", {
     labelZnak: 'Plomb',
     labelTotal: 'Total'
 });
+Ext.define("TK.locale.zh_CN.view.edit.OtpavitelEdit", {
+    override: "TK.view.edit.OtpavitelEdit",
+    labelOtprName:'名称',
+    labelOtprNameRu:'名称 (RU)',
+    labelCountry:'国家',
+    labelCountryRu:'国家 (RU)',
+    labelCountryCode:'国家代码',
+    labelEmail:'E-mail',
+    labelPhone:'电话',
+    labelFax:'Fax',
+    labelCity:'城市',
+    labelCityRu:'城市 (RU)',
+    labelAdress:'地址',
+    labelAdressRu:'地址 (RU)',
+    labelZip:'邮政编码',
+    labelVat:'VAT',
+    labelSenRecCode:'发货人代码/收货人代码',
+    labelOKPO: 'Code OKPO:',
+    labelCliCode:'顾客代码',
+    labelNNcode:'Code INN',
+    labelDopInfo:'Additional info',
 
+
+    closeBtn:'关闭',
+    saveBtn:'保存'
+});
 Ext.define("TK.locale.zh_CN.view.DocsForm", {
     override      :"TK.view.DocsForm",
     btnSave       :'保存',
@@ -741,10 +875,13 @@ Ext.define("TK.locale.zh_CN.view.DocsForm", {
     btnClose      :'关闭',
     btnSign       :'签定电子签名',
     btnChange     :'改变',
+    btnChangePlomb   :'Change plombs',
     btnChangeWagen:'改变车辆',
     btnChangeCont :'改变集装箱',
     btnChangeGr   :'改变商品',
     btnCopyEpd    :'从电子运输文件复制',
+    btnDopList:'Extra list',
+    btnContsList :'Cont/Wag list',
     btnCopy20     :'复制到第二十栏',
     btnTbcReady   :'准备TBC',
     btnTbcNotReady:'取消TBC',
@@ -753,25 +890,7 @@ Ext.define("TK.locale.zh_CN.view.DocsForm", {
     btnFtsReady   :'FTS ready',
     btnFtsNotReady:'FTS cancel',
 
-    labelDescr   :'Desciption',
-    labelNotes            :'附注',
-    labelSender           :'发货人',
-    labelName             :'名称',
-    labelName1            :'名称',
-    labelNameEu           :'名称 (EU)',
-    labelNameRu           :'名称 (RU)',
-    labelNameCh           :'名称 (CN)',
-    labelDate             :'日期',
-    labelTotal            :'数量',
-    labelCountry          :'国家',
-    labelCountryRu        :'国家 (RU)',
-    labelCountryCode      :'国家代码',
-    labelZip              :'邮政编码',
-    labelCity             :'城市',
-    labelCityRu           :'城市 (RU)',
-    labelAdress           :'地址',
-    labelAdressRu         :'地址 (RU)',
-    labelReceiver         :'收货人',
+
     labelPayers           :'付款人',
     labelBukvKod          :'当局字母代码',
     labelBukvKodRu        :'当局字母代码(RU)',
@@ -788,6 +907,7 @@ Ext.define("TK.locale.zh_CN.view.DocsForm", {
     labelSize             :'集装箱大少',
     labelSizeMm           :'集装箱大少(mm)',
     labelNotes  :'Text before Container No.',
+    labelNotesVag  :'Text before Car  No.',
     labelCategory         :'集装箱类型',
     labelContNum          :'集装箱号码',
     labelVid              :'集装箱种类',
@@ -834,7 +954,8 @@ Ext.define("TK.locale.zh_CN.view.DocsForm", {
     labelOKPO: 'Code OKPO:',
     labelINN: 'Code INN:',
 
-    labelVagKontGruz: 'Car/Container/Cargo'
+    labelVagKontGruz: 'Car/Container/Cargo',
+    btnPrintView   :"View PDF"
 });
 
 Ext.define("TK.locale.zh_CN.view.aviso.Form", {
@@ -849,8 +970,8 @@ Ext.define("TK.locale.zh_CN.view.aviso.Form", {
     labelZakazNum :'定货号码:'
 });
 
-Ext.define("TK.locale.zh_CN.view.aviso2.Form", {
-    override:"TK.view.aviso2.Form",
+Ext.define("TK.locale.zh_CN.view.aviso2.AvisoSmgs2Form", {
+    override:"TK.view.aviso2.AvisoSmgs2Form",
 
     btnForAgree :'为了协调过程',
     btnAgreed   :'协调一致',
@@ -873,8 +994,8 @@ Ext.define("TK.locale.zh_CN.view.aviso.Form1", {
     labelZakazNum :'定货号码:'
 });
 
-Ext.define("TK.locale.zh_CN.view.avisocimsmgs.Form", {
-    override:"TK.view.avisocimsmgs.Form",
+Ext.define("TK.locale.zh_CN.view.avisocimsmgs.CimSmgsForm", {
+    override:"TK.view.avisocimsmgs.CimSmgsForm",
 
     btnForAgree :'为了协调过程',
     btnAgreed   :'协调一致',
@@ -923,8 +1044,8 @@ Ext.define("TK.locale.zh_CN.view.avisogu29k.Form1", {
     labelGU27       :'GU27'
 });
 
-Ext.define("TK.locale.zh_CN.view.cim.Form", {
-    override        :"TK.view.cim.Form",
+Ext.define("TK.locale.zh_CN.view.cim.CimForm", {
+    override        :"TK.view.cim.CimForm",
     labelWagonOtpr  :'批号',
     labelContPrivate:'自己(P)'
 });
@@ -934,8 +1055,8 @@ Ext.define("TK.locale.zh_CN.view.slovnakl.Form", {
     labelWagonOtpr  :'批号'
 });
 
-Ext.define("TK.locale.zh_CN.view.cimsmgs.Form", {
-    override:"TK.view.cimsmgs.Form",
+Ext.define("TK.locale.zh_CN.view.cimsmgs.CimSmgsForm", {
+    override:"TK.view.cimsmgs.CimSmgsForm",
     labelDopList: 'Erganzungsblatt'
 });
 
@@ -1012,7 +1133,25 @@ Ext.define("TK.locale.zh_CN.view.nsi.ListDir", {
     btnExportDir:'Export to Excel',
     headerName  :'名称',
     warnTitle:'警告',
-    warnMsg  :'你必须选择一个数据行'
+    warnMsg  :'你必须选择一个数据行',
+
+    nsiSta      :'铁路车站的手册',
+    nsiCountries:'国家的手册',
+    nsiGng      :'Handbook of NHM codes',
+    nsiEtsng    :'ETSNG代码的手册',
+    nsiCurrency :'货币的手册',
+    nsiTnved    :'对外经济活动商品分类目录的手册',
+    nsiDeliv    :'供应条件的手册',
+    nsiUpak     :'包装种类的手册',
+    nsiOtpr     :'法人的手册',
+    nsiPlat     :'在铁路中付款人的手册(货运代理)',
+    nsiManagement:'铁路机关的手册',
+    nsiCountriesGd:'国家铁路的手册',
+    nsiDocG23   :'文件种类的手册',
+    nsiVeterin	:'兽医品的手册',
+    nsiKarantin	:'检疫品的手册',
+    nsiDangCode	:'危险品的手册',
+    gruzyLink	:'Cargo list, with financial insurance'
 });
 
 Ext.define("TK.locale.zh_CN.view.smgs.Form", {
@@ -1037,6 +1176,7 @@ Ext.define("TK.locale.zh_CN.view.stat.Form", {
     lableUser          :'使用人',
     lableCountrySender :'发国',
     lableCountryRceiver:'到国',
+    lableDeleted:'Deleted?',
     lableStnPogr       :'通过的国境站',
     lableStnSender     :'发站',
     lableStnReciver    :'到站',
@@ -1141,14 +1281,23 @@ Ext.define("TK.locale.zh_CN.controller.Docs", {
     waitMsg        :'下载的文件...',
     waitMsg1       :'保存数据时…',
     headerData     :'造成的日期',
-    headerMsg      :'报告'
+    headerMsg      :'报告',
+
+    titlePrint: "Printing",
+    labelBlank: "With blank?",
+    textPrint: "Print",
+
+    titleDocsCopy: 'Docs list for copy',
+    headerName: 'Name',
+    btnCopy: 'Copy'
 });
 
-Ext.define("TK.locale.ru.controller.Doc2Doc", {
+Ext.define("TK.locale.zh_CN.controller.Doc2Doc", {
     override:"TK.controller.Doc2Doc",
 
     titleDownldInv:'Download Invoices',
     msgEpd  :'你须要选择电子运输文件的选项卡为了文件下载好',
+    successMsgTitle:'The operation has been finished successfully',
 
     errorMsg:'注意! 是错误...',
     btnFind        :'查找',
@@ -1193,6 +1342,7 @@ Ext.define("TK.locale.zh_CN.controller.docs.Cimsmgs", {
     headerOtprName1   :'名称 (RU)',
     headerOtprEmail   :'E-mail',
     headerOtprPhone   :'电话',
+    headerOtprFax     :'Fax',
     headerOtprStrCode :'国家代码',
     headerOtprStr     :'国家',
     headerOtprStr1    :'国家 (RU)',
@@ -1203,7 +1353,12 @@ Ext.define("TK.locale.zh_CN.controller.docs.Cimsmgs", {
     headerOtprAdress1 :'地址 (RU)',
     headerOtprVat     :'VAT',
     headerOtprSendCode:'发货人代码/收货人代码',
-    headerOtprClCode  :'顾客代码'
+    headerOtprClCode  :'顾客代码',
+    headerINN         :'Code INN:',
+    headerCountryCode :'国家代码',
+    headerDopInfo     :'Additional Info',
+    tooltipEdit       :'编辑',
+    tooltipDel        :'删除'
 });
 
 Ext.define("TK.locale.zh_CN.controller.docs.Cmr", {
@@ -1292,7 +1447,9 @@ Ext.define("TK.locale.zh_CN.controller.User", {
     override:"TK.controller.User",
     maskMsg :'数据请求...',
     errorMsg:'注意! 是错误...',
-    waitMsg1:'保存数据时...'
+    waitMsg1:'保存数据时...',
+        titleNoUser :'Warning',
+        msgNoUser   :'Choose a user to perform an operation'
 });
 
 Ext.define("TK.locale.zh_CN.controller.Nsi", {
@@ -1302,7 +1459,9 @@ Ext.define("TK.locale.zh_CN.controller.Nsi", {
     labelFile      :'文件',
     btnSave        :'保存',
     btnClose       :'关闭',
-    btnSearch      :'查看记录... '
+    btnSearch      :'查看记录... ',
+    titleErrorWarning   :'Warning',
+    warningFillErrors   :'Underlined fields are too long'
 });
 
 Ext.define("TK.locale.zh_CN.view.nsi.List", {
@@ -1333,7 +1492,9 @@ Ext.define("TK.locale.zh_CN.view.nsi.List", {
     headerRoute       :'Route',
     headerDescr      :'成名',
     headerCode       :'代码',
+    headerCountryRu  :'国家(RU)',
     headerCountry    :'国家',
+    headerCountryS   :'国家',
     headerStn        :'站(RU)',
     headerStn1       :'站(CN)',
     headerStn2       :'站(EN)',
@@ -1354,6 +1515,15 @@ Ext.define("TK.locale.zh_CN.view.nsi.List", {
     headerCountryName:'国家名称',
     headerCity       :'城市',
     headerAddress    :'地址',
+    headerOtprZip    :'邮政编码',
+    headerDopInfo    :'Additional Info',
+
+    carrierTitle    :'Carrier handbook',
+    headerSt        :'Station',
+    headerCar       :'Carrier, number',
+    headerCarName   :'Carrier, name',
+    headerCarShort  :'Carrier, name short',
+
     ttipSave         :'保存',
     ttipDel          :'删除',
     btnClose         :'关闭'
@@ -1373,8 +1543,13 @@ Ext.define("TK.locale.zh_CN.controller.print.PrintTemplates", {
     override: "TK.controller.print.PrintTemplates",
 
     titleText: 'Bind print template',
+    titleSelectText: 'Select print template',
     columnText: 'Name',
-    btnBindText: 'Bind'
+    btnBindText: 'Bind',
+    btnBindPrintText: 'Print',
+    btnClose: 'Close',
+    msgTitle: 'Warning',
+    msgMsg: 'Please, select a record'
 });
 
 Ext.define("TK.locale.zh_CN.view.printtmpl.Form", {
@@ -1406,6 +1581,7 @@ Ext.define("TK.locale.zh_CN.view.edit.TreeFormWin", {
     titleVag: 'Car',
     titleCont: 'Container',
     titleCargo: 'Cargo',
+    titleDanCargo: 'Dan Cargo',
 
     btnDel: 'Delete',
     btnClose: 'Close',
@@ -1413,7 +1589,11 @@ Ext.define("TK.locale.zh_CN.view.edit.TreeFormWin", {
     btnVagText: '+ Car',
     btnContText: '+ Container',
     btnCargoText: '+ Cargo',
-    btnPlombText: '+ Plomb'
+    btnDanCargoText: '+ Dan.Cargo',
+    btnPlombText: '+ Plomb',
+    btnSearch: 'Search',
+    btnExpandAll: 'Expand All',
+    btnCollapseAll: 'Collapse All'
 });
 
 Ext.define("TK.locale.zh_CN.view.cimsmgs.CimSmgsDocs9TreeFormWin", {
@@ -1432,4 +1612,207 @@ Ext.define("TK.locale.zh_CN.view.cimsmgs.CimSmgsPlombsTreeFormWin", {
     override: "TK.view.cimsmgs.CimSmgsPlombsTreeFormWin",
 
     title: 'Plombs'
+});
+/*
+Ext.define("Ext.locale.zh_CN.form.field.Base", {
+    override: "Ext.form.field.Base",
+
+    kontNumText: 'This field must have the container number in the format ABCD1234567',
+    vagNumText: 'This field must have the number of the narrow(8 symbols) or the wide(12 symbols) wagon',
+    vagNumUzkText: 'This field must have the number of the narrow wagon in the format 123456789012',
+    vagNumShirText: 'This field must have the number of the wide wagon in the format 12345678',
+    vagNumLastDigitText: 'Invalid key digit',
+    kontNumLastDigitText: 'Invalid key digit'
+});*/
+
+Ext.define("TK.locale.zh_CN.Validators", {
+    override: "TK.Validators",
+
+
+    kontNumText: 'This field must have the container number in the format ABCD1234567',
+    vagNumText: 'This field must have the number of the narrow(8 symbols) or the wide(12 symbols) wagon',
+    vagNumUzkText: 'This field must have the number of the narrow wagon in the format 123456789012',
+    vagNumShirText: 'This field must have the number of the wide wagon in the format 12345678',
+    vagNumLastDigitText: 'Invalid key digit',
+    kontNumLastDigitText: 'Invalid key digit'
+});
+
+Ext.define("TK.locale.zh_CN.view.edit.UploadDoc9FormWin", {
+    override: "TK.view.edit.UploadDoc9FormWin",
+
+    labelCustomsCode: 'Customs code',
+    labelTextRu: 'Text(ru)',
+    labelText: 'Text'
+});
+
+Ext.define("TK.locale.zh_CN.view.edit.UploadFormWin", {
+    override: "TK.view.edit.UploadFormWin",
+
+    title: 'Documents attached by sender',
+    titleUpload: 'Uploading',
+    btnClose: 'Close',
+    btnSave: 'Save',
+    labelUpload: 'Upload',
+    labelFile: 'File'
+});
+
+Ext.define("TK.locale.zh_CN.view.ved.List", {
+    override        :"TK.view.ved.List",
+    btnCreate       :'Create',
+    btnEdit         :'Edit',
+    btnDelete       :'Delete',
+    headerID        :'ID',
+    headerCreation  :'Creation',
+    headerDateTime  :'Date&Time',
+    headerUser      :'User',
+    headerVagVedNum :'Wagon list №',
+    headerPerVedNum :'Transfer list №',
+    headerTraneNum  :'Train №',
+    headerTraneName :'Train name',
+    headerVagCount  :'Wagon count',
+    title           :'Wagon and transfer lists',
+    btnPrint        :"Print PDF",
+    btnA4VagPrint   :"А4-Wagon list",
+    btnA3VagPrint   :"А3-Wagon list",
+    btnA4PerPrint   :"А4-Transfer list",
+    btnA3PerPrint   :"А3-Transfer list"
+
+});
+
+Ext.define("TK.locale.zh_CN.controller.docs.Ved", {
+    override        :"TK.controller.docs.Ved",
+    titleEdit       :'Edit',
+    waitMsg         :'Saving',
+    btnSelect       :'Select',
+    btnClose        :'Close',
+    labelDocs :'Waybill list',
+    headerNumClaim :'Waybill',
+    headerVags :'Wagon №',
+    headerCreate :'Creation date',
+    headerKont :'Container №',
+    headerTrain :'Train №',
+    headerNstn :'Destination<br/>station',
+    headerRoute :'Route',
+    headerGng :'NHM',
+    filterText: "Filter",
+    claerAll: "Clear all",
+    duplicateAll: "Duplicate all",
+    duplicateEmpty: "Duplicate empty",
+
+    labelFilter :   'Filter',
+    filterHeader:   'Data',
+    userfiltr: "Filter"
+
+});
+
+Ext.define("TK.locale.zh_CN.view.ved.Form", {
+    override            :"TK.view.ved.Form",
+    title               :'List',
+    fldLblNum           :'List №',
+    fldLblDate          :'Date',
+    fldLblTrain         :'Train',
+    fldLblTrainName     :'Train name',
+    fldLblCarrOutName   :'Carrier from',
+    fldLblCarrInName    :'Carrier to',
+    fldLblStnOut        :'station',
+    fldLblStnIn         :'station',
+    fldLblRoadOut       :'From road',
+    fldLblRoadIn        :'To road'
+
+});
+
+Ext.define("TK.locale.zh_CN.view.ved.VagsList", {
+    override: "TK.view.ved.VagsList",
+    title:          'Documents list',
+    colTextIndex:   '№',
+    colTextNvag:    'Wagon<br>№',
+    colTextOwner:   'Wagons<br>owner',
+    colTextKind:    'Wagons<br>kind',
+    colTextGp:      'Wagons<br>max load,m.t.',
+    colTextAxes:    'Axes<br>count',
+    colTextTara:    'Wagones<br>tara,m.t.',
+    colTextPlomb:   'Plombs',
+    colTextKpl:     'Quantity',
+    colTextZnak:    'Signs',
+    colTextNstoF:   'Sealing<br>station',
+    colTextNum:     'Waybill №',
+    colTextDatpp:   'Shipping<br>date',
+    colTextKsto:    'Departure st.<br>code',
+    colTextNsto:    'Departure<br>station',
+    colTextKstn:    'Arrival st.<br>code',
+    colTextNstn:    'Arrival<br>station',
+    colTextKontNum: 'Container<br>№',
+    colTextKontType:'Container<br>type',
+    colTextKontGp:  'Container<br>max load',
+    colTextKontTara:'Container<br>tara',
+    colTextPlaces:  'Places',
+    colTextPack:    'Package',
+    colTextGruz:    'Cargo code',
+    colTextGruzName:'Cargo<br>name',
+    colTextMbrt:    'Cargo<br>weight',
+    colTextPrim:    'Notes',
+    colTextPerVed:  'Transfer<br>list № ',
+    btnAdd:         'Add',
+    btnDelete:      'Delete',
+    btnLoad:        'Close'
+});
+
+Ext.define("TK.locale.zh_CN.view.ved.MenuPart", {
+    override: "TK.view.ved.MenuPart",
+    title: 'Routes list',
+    btnView: "Show documents"
+});
+
+Ext.define("TK.locale.zh_CN.view.pogruz.PoezdSelectForm", {
+    override: "TK.view.pogruz.PoezdSelectForm",
+    title       :'Trains',
+    btnFind     :'查找',
+    btnFilter   :'过滤器',
+    btnClose    :'关闭',
+    btnReset    :'Reset',
+    lableDate   :'Date from',
+    lableDate1  :'Date to',
+    train       :'Train number',
+    count       :'Quantity',
+    btnOk       :'Choose',
+    btnCancel   :'取消'
+});
+
+Ext.define("TK.locale.zh_CN.view.pogruz.SmgsSelectForm", {
+    override: "TK.view.pogruz.SmgsSelectForm",
+    title           :'CIM/SMGS by train number',
+    btnClose        :'关闭',
+    headerG694      :'Num<br/>waybill',
+    headerAltered   :'Altered',
+    btnOk           :'Choose',
+    btnCancel       :'取消',
+    headerContNum   :'集装箱号码',
+    headerVagNum    :'车辆号码',
+    headertNstn     :'到站'
+});
+
+Ext.define("TK.locale.zh_CN.view.pogruz.Map2BaseSelectForm", {
+    override: "TK.view.pogruz.Map2BaseSelectForm",
+    title           :'Loading list',
+    headerWagN      :'№ wagon<br/><b>list</b>',
+    headerKonN      :'№ container<br/><b>list</b>',
+    headerKonNdb    :'№ container<br/><b>db</b>',
+    headerG694      :'№waybill<br/><b>list</b>',
+    headerKlient    :'Owner<br/><b>list</b>',
+    headerFoot      :'Size foot<br/><b>list</b>',
+    headerContSize  :'Type<br/><b>list</b>',
+    headerPlomb     :'Plombs<br/><b>list</b>',
+    headerTara      :'Tara<br/>container<br/><b>list</b>',
+    headerMaxLoad   :'Max load<br/>container<br/><b>list</b>',
+    headerTaraVag   :'Tara<br/>wagon<br/><b>list</b>',
+    headerMaxLoadVag:'Max load<br/>wagon<br/><b>list</b>',
+    headerKolOs     :'Axis<br/><b>list</b>',
+    headerId        :'Id<br/><b>db</b>',
+
+    btnOk           :'Choose',
+    btnCancel       :'取消',
+});
+Ext.define("TK.locale.zh_CN.view.components.PagingSizeChangerPlugin", {
+    override: "TK.view.components.PagingSizeChangerPlugin",
+    displayText           :'records per page'
 });

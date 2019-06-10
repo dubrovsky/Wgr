@@ -9,6 +9,7 @@
             <generator class="sequence">
                 <param name="sequence">PRINT_TEMPLATES_HID</param>
             </generator>
+            <!--<generator class="native"/>-->
         </id>
         <many-to-one name="docDir" class="com.bivc.cimsmgs.db.DocDir" fetch="select">
             <column name="HID_DOC" precision="22" scale="0" not-null="true" />
@@ -47,7 +48,7 @@
             <column name="FONT_FAMILY" length="30" not-null="true" />
         </property>
         <property name="leading" type="java.lang.Byte">
-            <column name="LEADING" length="2" scale="0" not-null="true" />
+            <column name="[LEADING]" length="2" scale="0" not-null="true" />
         </property>
        <!-- <property name="bold" type="boolean">
             <column name="BOLD" precision="1" scale="0" not-null="true" />

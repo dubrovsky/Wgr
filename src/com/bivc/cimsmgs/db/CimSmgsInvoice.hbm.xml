@@ -8,8 +8,9 @@
             <column name="HID" precision="20" scale="0"/>
             <generator class="sequence">
                 <!--<param name="sequence">CS_INVOICE_HID</param>-->
-                <param name="sequence">CIM_SMGS_HID</param>
+                <param name="sequence">CIM_SMGS_INVOICE_HID</param>
             </generator>
+            <!--<generator class="native"/>-->
         </id>
         <many-to-one name="route" class="com.bivc.cimsmgs.db.Route" fetch="select">
             <column name="HID_ROUTE" precision="20" scale="0"/>
@@ -161,6 +162,10 @@
         </property>
         <property name="docType1" type="big_decimal">
             <column name="doc_type1" precision="20"/>
+        </property>
+
+        <property name="deleted" type="boolean">
+            <column name="DELETED" precision="1" scale="0" />
         </property>
 
         <!--

@@ -1,6 +1,12 @@
 Ext.define('TK.view.gu27v.List', {
     extend:'TK.view.DocsList',
     alias:'widget.gu27vlist',
+
+    requires: [
+        'Ext.button.Split',
+        'TK.Utils'
+    ],
+
 //    headerDateTransp:'',
 //    headerGu27v:'',
 //    headerAvisoNum:'',
@@ -43,11 +49,13 @@ Ext.define('TK.view.gu27v.List', {
             xtype: 'toolbar',
             itemId: 'top',
             items: [
-                {text: this.btnStat, iconCls:'filter', action:'filter', itemId:'local'},'-',
+                {text: this.btnStat, iconCls:'filter', action:'filter', itemId:'local', forDeleted: true, forPresent: true},
+                {xtype: 'tbseparator', itemId:'filter1', forDeleted: true, forPresent: true},
                 {xtype:'splitbutton', text: this.btnPrint, iconCls:'pdf_blank_off', action:'print',
                     menu: [
                         {text: this.btnPrint, action:'print', iconCls:'pdf_blank_off'},
-                        {text: this.btnBindPrint, action:'bindPrintTmpl', iconCls:'bind'}
+                        {text: this.btnBindPrint, action:'bindPrintTmpl', iconCls:'bind'},
+                        {text: this.btnSelectPrint, action:'selectPrintTmpl', iconCls:'select'}
                     ]
                 },'-',
                 {text: this.btnCreate,iconCls:'doc_new', action:'create'},'-',
@@ -65,6 +73,14 @@ Ext.define('TK.view.gu27v.List', {
 
         if(tkUser.hasPriv('CIM_DELETE')){
             config.dockedItems[0].items.push({text: this.btnDelete,iconCls:'del',itemId:'del', action:'del'},{xtype: 'tbseparator', itemId:'del1'});
+        }
+        if(tkUser.hasPriv('CIM_ADMIN_DELETE')){
+            config.dockedItems[0].items.push(
+                {text: this.btnRestore,iconCls:'restore',itemId:'restore', action:'restore', forDeleted: true, hidden: true},
+                {xtype: 'tbseparator', itemId:'restore1', forDeleted: true, hidden: true},
+                {text: this.btnDestroy,iconCls:'del',itemId:'destroy', action:'destroy', forDeleted: true, hidden: true},
+                {xtype: 'tbseparator', itemId:'destroy1', forDeleted: true, hidden: true}
+            );
         }
 //        config.dockedItems[0].items.push({text: this.btnBindPrint,iconCls:'bind', action:'bindPrintTmpl'},'-');
         config.dockedItems[0].items.push({text: this.btnHistory,iconCls:'history',action:'history'},'-');

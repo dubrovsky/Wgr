@@ -4,7 +4,7 @@ Ext.define('TK.model.FileInf', {
     fields: [
         'dattr',
         {name:'hid', type:'int'},
-        'type','nkon',
+        'type','nkon', 'numOtpr', 'numCont', 'dateOtpr',
         {name:'packId', type:'int'},
         {name:'routeId', type:'int'}
     ]

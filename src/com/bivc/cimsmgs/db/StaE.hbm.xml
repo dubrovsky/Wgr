@@ -9,6 +9,7 @@
             <generator class="sequence">
                 <param name="sequence">STA_E_HID</param>
             </generator>
+            <!--<generator class="native"/>-->
         </id>
         <many-to-one name="road" class="com.bivc.cimsmgs.db.nsi.Road" fetch="join" property-ref="roadNo" >
             <column name="ROAD_NO" precision="5" scale="0"/>

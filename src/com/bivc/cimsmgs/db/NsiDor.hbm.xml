@@ -6,7 +6,8 @@
     <class name="com.bivc.cimsmgs.db.NsiDor" table="NSI_DOR" >
         <id name="kod" type="string">
             <column name="KOD" length="3" />
-            <generator class="assigned" />
+            <!--<generator class="assigned" />-->
+            <generator class="native"/>
         </id>
         <many-to-one name="nsiCountries" class="com.bivc.cimsmgs.db.NsiCountries" fetch="join">
             <column name="KOD_STR" length="3" />

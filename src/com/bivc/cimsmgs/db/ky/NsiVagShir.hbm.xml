@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.bivc.cimsmgs.db.ky.NsiVagShir" table="NSI_VAG_SHIR">
+        <id name="hid" type="java.lang.Long">
+            <column name="HID" precision="20" scale="0"/>
+            <generator class="sequence">
+                <param name="sequence">NSI_VAG_SHIR_HID</param>
+            </generator>
+        </id>
+        <many-to-one class="com.bivc.cimsmgs.db.ky.NsiKyOwners" fetch="select" name="owner">
+            <column name="HID_OWNER" precision="20" scale="0"/>
+        </many-to-one>
+        <property name="nvag">
+            <column name="NVAG" sql-type="varchar2" length="56"/>
+        </property>
+        <property name="typeNo">
+            <column name="TYPE_NO" sql-type="varchar2" length="16"/>
+        </property>
+        <property name="yearB">
+            <column name="YEAR_B" sql-type="char" length="4"/>
+        </property>
+        <property name="factoryB">
+            <column name="FACTORY_B" sql-type="varchar2" length="80"/>
+        </property>
+        <property name="modelvag">
+            <column name="MODELVAG" sql-type="varchar2" length="48"/>
+        </property>
+        <property name="dlvag">
+            <column name="DLVAG" sql-type="number" precision="8"/>
+        </property>
+        <property name="tara">
+            <column name="TARA" sql-type="number" precision="12" scale="3"/>
+        </property>
+        <property name="gp">
+            <column name="GP" sql-type="number" precision="12" scale="3"/>
+        </property>
+        <property name="okpoOwn">
+            <column name="OKPO_OWN" sql-type="varchar2" length="40"/>
+        </property>
+        <property name="nown">
+            <column name="NOWN" sql-type="varchar2" length="1000"/>
+        </property>
+        <property name="okpoArend">
+            <column name="OKPO_AREND" sql-type="varchar2" length="40"/>
+        </property>
+        <property name="narend">
+            <column name="NAREND" sql-type="varchar2" length="1000"/>
+        </property>
+        <property name="datePlanrem">
+            <column name="DATE_PLANREM" sql-type="date"/>
+        </property>
+        <property name="prim">
+            <column name="PRIM" sql-type="varchar2" length="1000"/>
+        </property>
+        <property name="groupvag">
+            <column name="GROUPVAG" sql-type="varchar2" length="80"/>
+        </property>
+        <property name="owntypen">
+            <column name="OWNTYPEN" sql-type="varchar2" length="80"/>
+        </property>
+        <property name="dparkIn">
+            <column name="DPARK_IN" sql-type="date"/>
+        </property>
+        <property name="dparkOut">
+            <column name="DPARK_OUT" sql-type="date"/>
+        </property>
+        <property name="un" type="string" update="false">
+            <column length="20" name="UN"/>
+        </property>
+        <property name="dattr">
+            <column length="7" name="DATTR" sql-type="date"/>
+        </property>
+        <property name="trans" type="string" update="false">
+            <column length="20" name="TRANS"/>
+        </property>
+        <property name="altered" update="false">
+            <column length="7" name="ALTERED" sql-type="date"/>
+        </property>
+        <property name="dateBVag">
+            <column name="DATE_B_VAG" sql-type="date"/>
+        </property>
+        <property name="dProbegV">
+            <column name="D_PROBEG_V" sql-type="date"/>
+        </property>
+        <property name="ostProbeg">
+            <column name="OST_PROBEG" sql-type="number" precision="12"/>
+        </property>
+    </class>
+</hibernate-mapping>

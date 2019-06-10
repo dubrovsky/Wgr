@@ -133,7 +133,7 @@ class TIReceiverTask extends AbstractTask {
         }
 
         DocLoader docloader = new DocLoader();
-        ExchangeServer server = new ExchangeServer();
+//        ExchangeServer server = new ExchangeServer();
         for (byte[] doc : list) {
           try {
             SAXReader reader = new SAXReader(false);
@@ -141,8 +141,8 @@ class TIReceiverTask extends AbstractTask {
             CimSmgs cs = docloader.load(document, un, trans, routes);
 
             if (cs != null /*&& !"v".equals(cs.getSrc())*/) {
-              server.SendIftmin(cs.getHid(), un, EDIConvertor.EdiDir.BCH);
-              server.SendIftmin(cs.getHid(), un, EDIConvertor.EdiDir.BTLC);
+//              server.SendIftmin(cs.getHid(), un, EDIConvertor.EdiDir.BCH);
+//              server.SendIftmin(cs.getHid(), un, EDIConvertor.EdiDir.BTLC);
             }
           }
           catch (Exception pex) {

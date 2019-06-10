@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.bivc.cimsmgs.db.ky.NsiKont" table="NSI_KONT">
+        <id name="hid" type="java.lang.Long">
+            <column name="HID" precision="20" scale="0"/>
+            <generator class="sequence">
+                <param name="sequence">NSI_KONT_HID</param>
+            </generator>
+        </id>
+        <many-to-one class="com.bivc.cimsmgs.db.ky.NsiKyOwners" fetch="select" name="owner">
+            <column name="HID_OWNER" precision="20" scale="0"/>
+        </many-to-one>
+        <property name="nkont">
+            <column name="NKONT" sql-type="varchar2" length="11"/>
+        </property>
+        <property name="yearbuild">
+            <column name="YEARBUILD" sql-type="varchar2" length="9"/>
+        </property>
+        <property name="type">
+            <column name="TYPE" sql-type="varchar2" length="10"/>
+        </property>
+        <property name="sizeFoot">
+            <column name="SIZE_FOOT" sql-type="varchar2" length="4"/>
+        </property>
+        <property name="massaTar">
+            <column name="MASSA_TAR" sql-type="number" precision="20"/>
+        </property>
+        <property name="podSila">
+            <column name="POD_SILA" sql-type="number" precision="20"/>
+        </property>
+        <property name="vol">
+            <column name="VOL" sql-type="number" precision="4" scale="2"/>
+        </property>
+        <property name="un" type="string" update="false">
+            <column length="20" name="UN"/>
+        </property>
+        <property name="dattr" type="timestamp">
+            <column length="7" name="DATTR"/>
+        </property>
+        <property name="trans" type="string" update="false">
+            <column length="20" name="TRANS"/>
+        </property>
+        <property name="altered" type="timestamp" update="false">
+            <column length="7" name="ALTERED"/>
+        </property>
+        <property name="naim_sob" type="string">
+            <column length="128" name="NAIM_SOB"/>
+        </property>
+    </class>
+</hibernate-mapping>

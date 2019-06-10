@@ -7,8 +7,9 @@
         <id name="hid" type="long">
             <column name="HID" precision="20" scale="0" />
             <generator class="sequence">
-              <param name="sequence">CIM_SMGS_CAR_LIST_HID</param>
+                <param name="sequence">CIM_SMGS_CAR_LIST_HID</param>
             </generator>
+            <!--<generator class="native"/>-->
         </id>
         <many-to-one name="packDoc" class="com.bivc.cimsmgs.db.PackDoc" fetch="select">
             <column name="HID_PACK" precision="20" scale="0" />
@@ -206,16 +207,8 @@
             <key>
                 <column name="HID_CAR" precision="20" scale="0"  not-null="true"/>
             </key>
-            <map-key column="SORT" type="byte"/>
+            <map-key column="SORT" type="java.lang.Integer"/>
             <one-to-many class="com.bivc.cimsmgs.db.CimSmgsGruz" />
-        </map>
-
-        <map name="cimSmgsPlombs" cascade="refresh" inverse="true" sort="natural" lazy="true" batch-size="50">
-            <key>
-                <column name="HID_CAR" precision="20" scale="0" not-null="true"/>
-            </key>
-            <map-key column="SORT" type="byte"/>
-            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsPlomb"/>
         </map>
 
         <map name="cimSmgsKonLists" cascade="all, delete-orphan" inverse="true" sort="natural" lazy="true" batch-size="50"  >
@@ -224,6 +217,22 @@
             </key>
             <map-key column="SORT" type="byte"/>
             <one-to-many class="com.bivc.cimsmgs.db.CimSmgsKonList" />
+        </map>
+
+        <map name="cimSmgsDocses9" cascade="refresh" inverse="true" sort="natural" where="FIELD_NUM = '9'" lazy="true" batch-size="50">
+            <key>
+                <column name="HID_CAR" precision="20" scale="0" not-null="true"/>
+            </key>
+            <map-key column="SORT" type="java.lang.Integer"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsDocs"/>
+        </map>
+
+        <map name="cimSmgsPlombs" cascade="refresh" inverse="true" sort="natural" lazy="true" batch-size="50">
+            <key>
+                <column name="HID_CAR" precision="20" scale="0" not-null="true"/>
+            </key>
+            <map-key column="SORT" type="byte"/>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsPlomb"/>
         </map>
 
     </class>

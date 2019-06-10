@@ -1,8 +1,10 @@
 package com.bivc.cimsmgs.commons;
 
+import Ti.model.MapPogruz;
 import com.bivc.cimsmgs.actions.exchange.Tdg_A;
 import com.bivc.cimsmgs.db.*;
 import com.bivc.cimsmgs.db.nsi.*;
+import com.bivc.cimsmgs.dto.CimSmgsTrainDateDTO;
 import eu.bitwalker.useragentutils.UserAgent;
 import org.apache.commons.beanutils.BeanPredicate;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -15,8 +17,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Constants {
     public static final String ERROR_MESSAGES_NOT_LOADED = "";
@@ -109,6 +114,7 @@ public class Constants {
                 buffer.append(elem.getAltered() == null ? "" : new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(elem.getAltered()));
                 buffer.append("',un:'");
                 buffer.append(elem.getUn());
+
                 buffer.append("',numClaim:'");
                 buffer.append(javascriptString(elem.getG694()));
                 buffer.append("',vags:'");
@@ -116,6 +122,9 @@ public class Constants {
                     buffer.append(javascriptString(vag.getNvag()));
                     buffer.append("<br/>");
                 }
+
+                buffer.append("',vagVedNum:'");
+                buffer.append(javascriptString(elem.getVagVedNum()));
                 buffer.append("',g281:'");
                 buffer.append(elem.getG281() == null ? "" : new SimpleDateFormat("dd.MM.yyyy").format(elem.getG281()));
                 buffer.append("',status:");
@@ -186,6 +195,7 @@ public class Constants {
 //                buffer.append(buildDoctype(elem.getType()));
                 buffer.append(elem.getDocType1());
                 buffer.append("',locked:'");
+
                 /*if (elem.getStatus() != null) {
                     switch (elem.getStatus()) {
                         case 22:
@@ -297,6 +307,10 @@ public class Constants {
                 buffer.append(elem.getUn());
                 buffer.append("',numClaim:'");
                 buffer.append(javascriptString(elem.getG694()));
+                buffer.append("',g1_dop_info:'");
+                buffer.append(javascriptString(elem.getG1_dop_info()));
+                buffer.append("',g4_dop_info:'");
+                buffer.append(javascriptString(elem.getG4_dop_info()));
                 buffer.append("',vags:'");
                 for (CimSmgsCarList vag : elem.getCimSmgsCarLists().values()) {
                     buffer.append(javascriptString(vag.getNvag()));
@@ -391,6 +405,10 @@ public class Constants {
                 buffer.append("',g4:'");
                 buffer.append(javascriptString(elem.getG4r()));
 
+                buffer.append("',vagVedNum:'");
+                buffer.append(javascriptString(elem.getVagVedNum()));
+
+
                 if (elem.getCimSmgs() != null && elem.getCimSmgs().getAviso_num() != null) {
                     buffer.append("',aviso:'");
                     buffer.append(elem.getCimSmgs().getAviso_num());
@@ -408,15 +426,24 @@ public class Constants {
                 buffer.append(elem.getReady() != null ? elem.getReady() : "");
                 buffer.append("',konts:'");
 
+                StringBuffer gng = new StringBuffer();
                 for (CimSmgsCarList vag : elem.getCimSmgsCarLists().values()) {
                     for (CimSmgsKonList kon : vag.getCimSmgsKonLists().values()) {
                         buffer.append(javascriptString(kon.getUtiN()));
                         buffer.append("<br/>");
+                        for (CimSmgsGruz gruz : kon.getCimSmgsGruzs().values()) {
+                            gng.append(javascriptString(gruz.getKgvn()));
+                            gng.append("<br/>");
+                        }
                     }
                 }
 
                 buffer.append("',type:'");
                 buffer.append(elem.getType());
+                buffer.append("',gng:'");
+                buffer.append(gng);
+                buffer.append("',nstn:'");
+                buffer.append(StringUtils.defaultString(elem.getG101r()));
                 buffer.append("',src:'");
 //                buffer.append(buildDoctype(elem.getType()));
                 buffer.append(elem.getDocType1());
@@ -464,14 +491,116 @@ public class Constants {
                 }*/
                 buffer.append("',packId:'");
                 buffer.append(elem.getPackDoc().getHid());
+                buffer.append("',route:'");
+                buffer.append(elem.getRoute().getName());
                 buffer.append("',routeId:'");
                 buffer.append(elem.getRoute().getHid());
+
                 buffer.append("'},");
             }
 
             buffer.replace(buffer.lastIndexOf(","), buffer.length(), "]}");
         } else {
             buffer.append("{'total':0, 'rows':[]}");
+        }
+
+        return buffer.toString();
+    }
+
+    public static String convert2JSON_4VedVagList(List<CimSmgs> data) throws IllegalAccessException,
+            InvocationTargetException, NoSuchMethodException {
+        StringBuilder buffer = new StringBuilder();
+        if (data != null && data.size() > 0) {
+            buffer.append("{'rows': [");
+
+            for (CimSmgs elem : data) {
+                for (CimSmgsCarList vag : elem.getCimSmgsCarLists().values()) {
+                    for (CimSmgsKonList kon : vag.getCimSmgsKonLists().values()) {
+                        buffer.append("{");
+                        buffer.append("hidCs:'");
+                        buffer.append(elem.getHid());
+                        buffer.append("',numClaim:'");
+                        buffer.append(javascriptString(elem.getG694()));
+                        buffer.append("',nvag:'");
+                        buffer.append(javascriptString(vag.getNvag()));
+                        buffer.append("',g281:'");
+                        buffer.append(elem.getG281() == null ? "" : new SimpleDateFormat("dd.MM.yyyy").format(elem.getG281()));
+                        buffer.append("'");
+
+                        buffer.append(",owner:'");
+                        buffer.append(javascriptString(vag.getNameSob()));
+                        buffer.append("',kind:'");
+                        buffer.append(javascriptString(vag.getRod()));
+                        buffer.append("',gp:");
+                        buffer.append(vag.getGrPod());
+//                        buffer.append(",hid:'");
+//                        buffer.append(elem.getHid());
+                        buffer.append(",axes:");
+                        buffer.append(vag.getKolOs());
+                        buffer.append(",tara:");
+                        buffer.append(vag.getTaraVag());
+
+                        int kpl = 0;
+                        String znak = "";
+                        for (CimSmgsPlomb plomb : kon.getCimSmgsPlombs().values()) {
+                            kpl += (plomb.getKpl() != null ? plomb.getKpl() : 0);
+                            znak += (StringUtils.isNotBlank(plomb.getZnak()) ? ("," +plomb.getZnak()) : "");
+                        }
+                        buffer.append(",kpl:");
+                        buffer.append(kpl);
+                        buffer.append(",znak:'");
+                        buffer.append(javascriptString(znak.replaceFirst(",", "")));
+                        buffer.append("',ksto:'");
+                        buffer.append(javascriptString(elem.getG121()));
+                        buffer.append("',nsto:'");
+                        buffer.append(javascriptString(elem.getG101r()));
+                        buffer.append("',kstn:'");
+                        buffer.append(javascriptString(elem.getG17()));
+                        buffer.append("',nstn:'");
+                        buffer.append(javascriptString(elem.getG162r()));
+                        buffer.append("',kont:'");
+                        buffer.append(javascriptString(kon.getUtiN()));
+                        buffer.append("',kontGp:");
+                        buffer.append(kon.getGrpod());
+                        buffer.append(",kontTara:");
+                        buffer.append(kon.getTaraKont());
+
+//                        StringBuilder places = new StringBuilder();
+//                        StringBuilder upak = new StringBuilder();
+//                        StringBuilder gng = new StringBuilder();
+//                        StringBuilder gngn = new StringBuilder();
+//                        StringBuilder mbrt = new StringBuilder();
+
+                        int placasAll = 0;
+                        BigDecimal mbrtAll = new BigDecimal(0);
+                        for (CimSmgsGruz gruz : kon.getCimSmgsGruzs().values()) {
+                            placasAll += (gruz.getPlaces() != null ? gruz.getPlaces() : 0);
+                            mbrtAll = mbrtAll.add(gruz.getMassa() != null ? gruz.getMassa() : new BigDecimal(0));
+                        }
+                        buffer.append(",places:");
+                        buffer.append(placasAll);
+                        buffer.append(",mbrt:");
+                        buffer.append(mbrtAll.add(new BigDecimal(kon.getTaraKont() != null ? kon.getTaraKont().intValue() : 0)));
+                        buffer.append(",kontType:'");
+                        buffer.append(javascriptString(kon.getUtiType()));
+
+                        if (!kon.getCimSmgsGruzs().isEmpty()) {
+                            CimSmgsGruz gruz = kon.getCimSmgsGruzs().values().iterator().next();
+                            buffer.append("',upak:'");
+                            buffer.append("Контейнер");
+                            buffer.append("',gng:'");
+                            buffer.append(javascriptString(gruz.getKgvn()));
+                            buffer.append("',gngn:'");
+                            buffer.append(javascriptString(gruz.getNzgr()));
+//                        }
+                        }
+                        buffer.append("'},");
+                    }
+                }
+            }
+            buffer.replace(buffer.lastIndexOf(","), buffer.length(), "]}");
+        } else {
+            buffer.append("{'rows':[]}");
         }
 
         return buffer.toString();
@@ -789,6 +918,7 @@ public class Constants {
                 buffer.append(elem.getPackDoc().getHid());
                 buffer.append("',routeId:'");
                 buffer.append(elem.getRoute().getHid());
+
                 buffer.append("'},");
             }
 
@@ -921,6 +1051,7 @@ public class Constants {
         buffer.append("','g694':'");
         buffer.append(javascriptString(elem.getG694()));
 
+
         for (CimSmgsCarList vag : elem.getCimSmgsCarLists().values()) {
             for (CimSmgsKonList kon : vag.getCimSmgsKonLists().values()) {
                 buffer.append("','utiN':'");
@@ -967,6 +1098,99 @@ public class Constants {
             buffer.append("{'total':0, 'rows':[]}");
         }
 
+        return buffer.toString();
+    }
+
+    public static String convert2JSON_VedList(List<Ved> data, Long total, myUser usr) throws IllegalAccessException, InvocationTargetException,
+            NoSuchMethodException {
+        StringBuffer buffer = new StringBuffer();
+
+        if (data != null && data.size() > 0) {
+            buffer.append("{'total':" + total + ", 'rows': [");
+
+            for (Ved elem : data) {
+                buffer.append("{");
+                buffer.append("'dattr':'");
+                buffer.append(elem.getDattr() == null ? "" : new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(elem.getDattr()));
+
+//                buffer.append("','altered':'");
+//                buffer.append(elem.getAltered() == null ? "" : new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(elem.getAltered()));
+                buffer.append("','un':'");
+                buffer.append(elem.getUn());
+                buffer.append("','num':'");
+                buffer.append(StringUtils.defaultString(elem.getNum()));
+                buffer.append("','pervednum':'");
+                HashSet<String> pernumSet = new HashSet<>();
+                for(VedVag vag : elem.getVags())
+                    if(StringUtils.isNotBlank(vag.getPerVed()))
+                        pernumSet.add(vag.getPerVed().trim());
+                buffer.append(StringUtils.join(pernumSet, ","));
+                buffer.append("','train':'");
+                buffer.append(StringUtils.defaultString(elem.getTrain()));
+                buffer.append("','trainname':'");
+                buffer.append(StringUtils.defaultString(elem.getTrainname()));
+                buffer.append("','vagcount':'");
+                buffer.append(elem.getVags().size());
+//                buffer.append(javascriptString(elem.getNotd()));
+//
+//                buffer.append("','npol':'");
+//                buffer.append(javascriptString(elem.getNpol()));
+//
+//                buffer.append("','invoice':'");
+//                buffer.append(javascriptString(elem.getInvoice()));
+//
+//                buffer.append("','dat_inv':'");
+//                buffer.append(elem.getDat_inv() == null ? "" : new SimpleDateFormat("dd.MM.yyyy").format(elem.getDat_inv()));
+
+                buffer.append("','hid':'");
+                buffer.append(elem.getHid());
+//                buffer.append("'");
+
+                /*if(usr.hasPrivileg("CIM_IFTMIN")){
+                    buffer.append(",'iftmin':'");
+                    if (elem.getInvoicOut() != null) {
+                        if (elem.getIftminLogs() != null && elem.getIftminLogs().size() > 0) {
+                            buffer.append("Iftmin");
+                            BIftminLog iftmin = elem.getIftminLogs().iterator().next();
+                            if (iftmin.getBContrls() != null && iftmin.getBContrls().size() > 0) {
+                                buffer.append(", Contrl");
+                                Contrl contrl = iftmin.getBContrls().iterator().next();
+                                buffer.append(contrl.getError().equals("1") ? "+" : "-");
+                            }
+                            if (iftmin.getBAperakDets() != null && iftmin.getBAperakDets().size() > 0) {
+                                buffer.append(", Aperak");
+                            }
+                        }
+                    }
+                    buffer.append("'");
+                }
+
+                if(usr.hasPrivileg("CIM_BTLC")){
+                    buffer.append(",'btlc':'");
+                    if (elem.getInvoicOut2() != null) {
+                        if (elem.getIftminLogsBtlc() != null && elem.getIftminLogsBtlc().size() > 0) {
+                            buffer.append("Iftmin");
+                            BIftminLog iftmin = elem.getIftminLogsBtlc().iterator().next();
+                            if (iftmin.getBContrls() != null && iftmin.getBContrls().size() > 0) {
+                                buffer.append(", Contrl");
+                                Contrl contrl = iftmin.getBContrls().iterator().next();
+                                buffer.append(contrl.getError().equals("1") ? "+" : "-");
+                            }
+                            if (iftmin.getBAperakDets() != null && iftmin.getBAperakDets().size() > 0) {
+                                buffer.append(", Aperak");
+                            }
+                        }
+                    }
+                    buffer.append("'");
+                }*/
+
+                buffer.append("'},");
+            }
+
+            buffer.replace(buffer.lastIndexOf(","), buffer.length(), "]}");
+        } else {
+            buffer.append("{'total':0, 'rows':[]}");
+        }
         return buffer.toString();
     }
 
@@ -1046,6 +1270,14 @@ public class Constants {
                 buffer.append(elem.getPackDoc().getHid());
                 buffer.append("','routeId':'");
                 buffer.append(elem.getRoute().getHid());
+
+                buffer.append("','notpr':'");
+                buffer.append(StringUtils.defaultString(elem.getNotpr()));
+                buffer.append("','utiN':'");
+                buffer.append(StringUtils.defaultString(elem.getUtiN()));
+                buffer.append("','dat_inv':'");
+                buffer.append(elem.getDat_inv() != null ? new SimpleDateFormat("dd.MM.yyyy").format(elem.getDat_inv()) : "");
+
                 buffer.append("'},");
             }
 
@@ -1195,21 +1427,21 @@ public class Constants {
                 buffer.append(javascriptString(elem.getG13()));
                 buffer.append("','g14':'");
                 buffer.append(javascriptString(elem.getG14()));
-                buffer.append("','g15':'");
+                buffer.append("','g15_1':'");
                 buffer.append(javascriptString(elem.getG15_1()));
-                buffer.append("','g16':'");
+                buffer.append("','g16_1':'");
                 buffer.append(javascriptString(elem.getG16_1()));
                 buffer.append("','g_1_5k':'");
                 buffer.append(javascriptString(elem.getG_1_5k()));
                 buffer.append("','g16r':'");
                 buffer.append(javascriptString(elem.getG16r()));
-                buffer.append("','g17':'");
+                buffer.append("','g17_1':'");
                 buffer.append(javascriptString(elem.getG17_1()));
-                buffer.append("','g18':'");
+                buffer.append("','g18_1':'");
                 buffer.append(javascriptString(elem.getG18_1()));
                 buffer.append("','g18r':'");
                 buffer.append(javascriptString(elem.getG18r_1()));
-                buffer.append("','g19':'");
+                buffer.append("','g19_1':'");
                 buffer.append(javascriptString(elem.getG19_1()));
                 buffer.append("','g19r':'");
                 buffer.append(javascriptString(elem.getG19r()));
@@ -1227,6 +1459,8 @@ public class Constants {
                 buffer.append(javascriptString(elem.getG18r_1()));
                 buffer.append("','g_2inn':'");
                 buffer.append(javascriptString(elem.getG_2inn()));
+                buffer.append("','dop_info':'");
+                buffer.append(javascriptString(elem.getDop_info()));
                 buffer.append("','hid':'");
                 buffer.append(elem.getHid() == null ? "" : elem.getHid());
                 buffer.append("'},");
@@ -1330,7 +1564,8 @@ public class Constants {
                 buffer.append(javascriptString(elem.getG411()));
                 buffer.append("','g412':'");
                 buffer.append(javascriptString(elem.getG412()));
-
+                buffer.append("','dop_info':'");
+                buffer.append(javascriptString(elem.getDop_info()));
                 buffer.append("','hid':'");
                 buffer.append(elem.getHid() == null ? "" : elem.getHid());
                 buffer.append("'},");
@@ -1422,6 +1657,12 @@ public class Constants {
             buffer.append(javascriptString(elem.getCargo_group()));
             buffer.append("',nzgr:'");
             buffer.append(javascriptString(elem.getCargo_fullname()));
+            buffer.append("'");
+        } else {
+            buffer.append("kgvn:'");
+            buffer.append("");
+            buffer.append("',nzgr:'");
+            buffer.append("");
             buffer.append("'");
         }
 
@@ -1872,6 +2113,10 @@ public class Constants {
                 buffer.append(javascriptString(elem.getAbc2()));
                 buffer.append("','naim':'");
                 buffer.append(javascriptString(elem.getNaim()));
+                buffer.append("','anaim':'");
+                buffer.append(javascriptString(elem.getAnaim()));
+                buffer.append("','krnaim':'");
+                buffer.append(javascriptString(elem.getKrnaim()));
                 for (NsiDor dor : elem.getNsiDors()) {
                     buffer.append("','sokrNam':'");
                     buffer.append(javascriptString(dor.getSokrNam()));
@@ -2140,6 +2385,10 @@ public class Constants {
         return "{success: true, hid:" + findHids(smgs, name) + doc + "}";
     }
 
+    public static String convert2JSON_Ved_Save_Results(Ved ved) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        return "{success: true, hid:{'ved.hid':" + ved.getHid() + "}}";
+    }
+
     public static String convert2JSON_Hid(CimSmgs smgs) {
         return "{success: true, 'hid':" + smgs.getHid() + "}";
     }
@@ -2201,12 +2450,20 @@ public class Constants {
         return "{success: true}";
     }
 
+    public static String convert2JSON_TrueWithMsg(String msg) {
+        return String.format("{success: true, msg:'%s'}", StringUtils.defaultString(msg));
+    }
+
     public static String convert2JSON_True(String msg) {
         return msg != null && msg.length() > 0 ? String.format("{success: true, result:'%s'}", msg) : convert2JSON_True();
     }
 
     public static String convert2JSON_False() {
         return "{success: false}";
+    }
+
+    public static String convert2JSON_False(String msg) {
+        return String.format("{success: false, msg:'%s'}", StringUtils.defaultString(msg));
     }
 
     public static String convert2JSON_IFTMIN_Results1() {
@@ -2520,6 +2777,97 @@ public class Constants {
                 buffer.append(elem.getPackDoc().getHid());
                 buffer.append(",routeId:");
                 buffer.append(elem.getRoute().getHid());
+
+                switch (elem.getType()) {
+                    case "filecimsmgs":  // Графика ЦИМ/СМГС
+                        if (elem.getPackDoc().getCimSmgses() != null && elem.getPackDoc().getCimSmgses().size() > 0) {
+                            for (CimSmgs cimSmgs : elem.getPackDoc().getCimSmgses()) {
+                                if (cimSmgs.getType() == 1) {
+                                    buffer.append(",numCont:'");
+
+                                    for (CimSmgsCarList vag : cimSmgs.getCimSmgsCarLists().values()) {
+                                        for (CimSmgsKonList kon : vag.getCimSmgsKonLists().values()) {
+                                            buffer.append(javascriptString(kon.getUtiN()));
+                                            buffer.append("<br/>");
+                                        }
+                                    }
+
+                                    buffer.append("',dateOtpr:'");
+                                    buffer.append(cimSmgs.getG281() == null ? "" : new SimpleDateFormat("dd.MM.yyyy").format(cimSmgs.getG281()));
+
+                                    buffer.append("',numOtpr:'");
+                                    buffer.append(javascriptString(cimSmgs.getG694()));
+
+                                    break;
+                                }
+                            }
+                            buffer.append("'");
+                        }
+                        break;
+                    case "files":    // Прочие документы
+                        if (elem.getPackDoc().getCimSmgses() != null && elem.getPackDoc().getCimSmgses().size() > 0) {
+                            List<CimSmgs> smgsList = new ArrayList<>();
+                            CimSmgs cimsmgs = null;
+                            CimSmgs smgs = null;
+                            for (CimSmgs cimSmgs : elem.getPackDoc().getCimSmgses()) {
+                               if(cimSmgs.getType() == 1){
+                                   cimsmgs = cimSmgs;
+                               } else if(cimSmgs.getType() == 12){
+                                   smgs = cimSmgs;
+                               }
+                            }
+
+                            StringBuilder numCont = new StringBuilder();
+                            String dateOtpr = "";
+                            String numOtpr = "";
+
+                            if(cimsmgs != null){
+                                for (CimSmgsCarList vag : cimsmgs.getCimSmgsCarLists().values()) {
+                                    for (CimSmgsKonList kon : vag.getCimSmgsKonLists().values()) {
+                                        numCont.append(javascriptString(kon.getUtiN()));
+                                        numCont.append("<br/>");
+                                    }
+                                }
+
+                                dateOtpr = cimsmgs.getG281() == null ? "" : new SimpleDateFormat("dd.MM.yyyy").format(cimsmgs.getG281());
+
+                                numOtpr = javascriptString(cimsmgs.getG694());
+                            }
+
+                            if(numCont.length() == 0 && smgs != null){
+                                for (CimSmgsCarList vag : smgs.getCimSmgsCarLists().values()) {
+                                    for (CimSmgsKonList kon : vag.getCimSmgsKonLists().values()) {
+                                        numCont.append(javascriptString(kon.getUtiN()));
+                                        numCont.append("<br/>");
+                                    }
+                                }
+                            }
+
+                            if(dateOtpr.length() == 0 && smgs != null){
+                                dateOtpr = smgs.getG281() == null ? "" : new SimpleDateFormat("dd.MM.yyyy").format(smgs.getG281());
+                            }
+
+                            if(numOtpr.length() == 0 && smgs != null){
+                                numOtpr = javascriptString(smgs.getG694());
+                            }
+
+                            buffer.append(",numCont:'");
+                            buffer.append(numCont);
+                            buffer.append("',dateOtpr:'");
+                            buffer.append(dateOtpr);
+                            buffer.append("',numOtpr:'");
+                            buffer.append(numOtpr);
+                            buffer.append("'");
+                        }
+                        break;
+                    default:
+                        buffer.append(",numOtpr:''");
+                        buffer.append(",numCont:''");
+                        buffer.append(",dateOtpr:'");
+                        buffer.append("'");
+                        break;
+                }
+
                 buffer.append("}");
             }
             buffer.append("]}");
@@ -2673,6 +3021,8 @@ public class Constants {
                 buffer.append(doc.getPage());
                 buffer.append(",ncopy:");
                 buffer.append(doc.getNcopy());
+                buffer.append(",preview:");
+                buffer.append(doc.isPreview());
                 buffer.append(",hid:");
                 buffer.append(doc.getHid());
                 buffer.append("}");
@@ -2974,6 +3324,8 @@ public class Constants {
                 buffer.append("{");
                 buffer.append("status:'");
                 buffer.append(elem.getStatusDir().getName());
+                buffer.append("',statusDe:'");
+                buffer.append(elem.getStatusDir().getNameDe());
                 buffer.append("',datBegin:'");
                 buffer.append(elem.getDatBegin() == null ? "" : new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(elem.getDatBegin()));
                 buffer.append("',user:'");
@@ -3192,6 +3544,30 @@ public class Constants {
         return buffer.toString();
     }
 
+    public static String convert2JSON_PrintTemplatesList4Print(List<PrintTemplates> prnTempls, Long total) {
+        StringBuilder buffer = new StringBuilder();
+        if (prnTempls != null && prnTempls.size() > 0) {
+            buffer.append("{'total':").append(total).append(", 'rows': [");
+            String prefix = "";
+            for (PrintTemplates tmpl : prnTempls) {
+                buffer.append(prefix);
+                prefix = ",";
+                buffer.append("{");
+                buffer.append("hid:");
+                buffer.append(tmpl.getHid());
+                buffer.append(",docId:");
+                buffer.append(tmpl.getDocDir().getHid());
+                buffer.append(",name:'");
+                buffer.append(javascriptString(tmpl.getName()));
+                buffer.append("'}");
+            }
+            buffer.append("]}");
+        } else {
+            buffer.append("{'total':0, 'rows':[]}");
+        }
+        return buffer.toString();
+    }
+
     public static String convert2JSON_PrintWinParams(List<Integer> pages, Long nBlankRefs) {
         StringBuilder buffer = new StringBuilder();
         buffer.append("{pages:");
@@ -3339,6 +3715,301 @@ public class Constants {
         } else {
             buffer.append("{rows:[]}");
         }
+        return buffer.toString();
+    }
+
+    public static String convert2JSON_NsiCargoDanV(List<CargoDanV> cargoDanVList, Long total, List<CargoDanGV> cargoDanGVList) {
+        StringBuilder buffer = new StringBuilder();
+        if (cargoDanVList != null && cargoDanVList.size() > 0) {
+            buffer.append("{'total':" + total + ", 'rows': [");
+            Pattern regex = Pattern.compile("(\\d+\\.\\d+|\\d+)");
+            String prefix = "";
+            for(CargoDanV cargoDanV: cargoDanVList){
+                buffer.append(prefix);
+                prefix = ",";
+                buffer.append("{");
+                buffer.append("hid:");
+                buffer.append(cargoDanV.getCarDanUn());
+                buffer.append(",numOon:'");
+                buffer.append(cargoDanV.getNumOon());
+                buffer.append("',carDName:'");
+                buffer.append(javascriptString(cargoDanV.getCarDName()));
+                buffer.append("',codDanger:'");
+                buffer.append(javascriptString(cargoDanV.getCodDanger()));
+
+                String clazz = javascriptString(cargoDanV.getClazz());
+                buffer.append("',clazz:'");
+                buffer.append(clazz);
+
+                List<String> dangSigns = getDangSign(regex, javascriptString(cargoDanV.getDangSign()), clazz);
+                buffer.append("',dangSign:'");
+                buffer.append(CollectionUtils.isNotEmpty(dangSigns) ?  StringUtils.join(dangSigns, ",") : "");
+                
+                buffer.append("',groupPack:'");
+                buffer.append(javascriptString(cargoDanV.getGroupPack()));
+                buffer.append("',emergenCard:'");
+                buffer.append(cargoDanV.getEmergenCard() != null ? cargoDanV.getEmergenCard() : "");
+                buffer.append("',stamps:'");
+
+                List<String> stamps = getStamps(cargoDanGVList, clazz, dangSigns);
+                buffer.append(CollectionUtils.isNotEmpty(stamps) ?  StringUtils.join(new HashSet<>(stamps), ",") : "");
+                buffer.append("'}");
+            }
+            buffer.append("]}");
+        } else {
+            buffer.append("{rows:[]}");
+        }
+        return buffer.toString();
+    }
+
+    private static List<String> getStamps(List<CargoDanGV> cargoDanGVList, String clazz, List<String> dangSigns) {
+        List<String> stamps = new ArrayList<>();
+        clazz = StringUtils.defaultString(clazz);
+        if(dangSigns == null){
+            dangSigns = new ArrayList<>();
+        }
+        if(CollectionUtils.isNotEmpty(cargoDanGVList)){
+            for(CargoDanGV cargoDanGV: cargoDanGVList){
+                if(StringUtils.isNotBlank(clazz) && cargoDanGV.getCarDCode().equals(clazz)){
+                    stamps.add(cargoDanGV.getCarDName());
+                } else {
+                    for(String dangSign: dangSigns){
+                        if(cargoDanGV.getCarDCode().equals(dangSign)){
+                            stamps.add(cargoDanGV.getCarDName());
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return stamps;
+    }
+
+    private static List<String> getDangSign(Pattern regex, String dangSign, String clazz) {
+        Matcher matcher = regex.matcher(dangSign);
+        List<String> list = new ArrayList<>();
+        while(matcher.find()){
+            list.add(matcher.group(1));
+        }
+//        dangSign = "";
+        if(!list.isEmpty()){
+            if(StringUtils.isNotBlank(clazz)) {
+                list.remove(clazz);
+            }
+           // dangSign = StringUtils.join(list, ",");
+        }
+        return list;
+    }
+
+    public static String convert2JSON_NsiCargoDanDe(List<CargoDanDe> cargoDanVList, Long total) {
+        StringBuilder buffer = new StringBuilder();
+        if (cargoDanVList != null && cargoDanVList.size() > 0) {
+            buffer.append("{'total':" + total + ", 'rows': [");
+            String prefix = "";
+            for(CargoDanDe cargoDanV: cargoDanVList){
+                buffer.append(prefix);
+                prefix = ",";
+                buffer.append("{");
+                buffer.append("hid:");
+                buffer.append(cargoDanV.getHid());
+                buffer.append(",carDNameDe:'");
+                buffer.append(javascriptString(cargoDanV.getCarDNameDe()));
+                buffer.append("',numOonDe:'");
+                buffer.append(javascriptString(cargoDanV.getNumOonDe()));
+                buffer.append("',ridNhmCode:'");
+                buffer.append(javascriptString(cargoDanV.getRidNhmCode()));
+                buffer.append("',bem:'");
+                buffer.append(javascriptString(cargoDanV.getBem()));
+
+                buffer.append("'}");
+            }
+            buffer.append("]}");
+        } else {
+            buffer.append("{rows:[]}");
+        }
+        return buffer.toString();
+    }
+
+
+
+    public static String convert2JSONUploadDoc9Result(String result) {
+        StringBuilder buffer = new StringBuilder();
+        buffer.append("{");
+        buffer.append("success: false");
+        buffer.append(",");
+        buffer.append("msg: ");
+        buffer.append(result);
+        buffer.append("}");
+
+        return buffer.toString();
+    }
+
+    /**
+     * convert2JSON_trainDate converts list of CimSmgsTrainDateDTO records to json
+     *
+     * @param data list of CimSmgsTrainDateDTO records
+     * @return result json
+     */
+    public static String convert2JSON_trainDate(List<CimSmgsTrainDateDTO> data) {
+        StringBuffer buffer = new StringBuffer();
+        if (data != null && data.size() > 0) {
+            buffer.append("{'rows': [");
+
+            for (CimSmgsTrainDateDTO elem : data) {
+                buffer.append("{");
+                buffer.append("npoezd:'");
+                buffer.append(elem.getNpoezd());
+                buffer.append("',count:'");
+                buffer.append(elem.getCount());
+                buffer.append("'},");
+            }
+
+            buffer.replace(buffer.lastIndexOf(","), buffer.length(), "]}");
+        }
+        else {
+            buffer.append("{'rows':[]}");
+        }
+
+        return buffer.toString();
+    }
+
+    /**
+     * convert2JSON_trainDateList list of smgs records to json
+     *
+     * @param data list of smgs records
+     * @return json
+     */
+    public static String convert2JSON_trainDateList(List<CimSmgs> data) {
+        StringBuffer buffer = new StringBuffer();
+        if (data != null && data.size() > 0) {
+            buffer.append("{'rows': [");
+
+            for (CimSmgs elem : data) {
+                buffer.append("{");
+                buffer.append("hid:'");
+                buffer.append(elem.getHid());
+                buffer.append("',g694:'");
+                if (elem.getG694() != null)
+                    buffer.append(elem.getG694());
+
+                buffer.append("',vags:'");
+                for (CimSmgsCarList vag : elem.getCimSmgsCarLists().values()) {
+                    buffer.append(javascriptString(vag.getNvag()));
+                    buffer.append("<br/>");
+                }
+                buffer.append("',konts:'");
+
+                for (CimSmgsCarList vag : elem.getCimSmgsCarLists().values()) {
+                    for (CimSmgsKonList kon : vag.getCimSmgsKonLists().values()) {
+                        buffer.append(javascriptString(kon.getUtiN()));
+                        buffer.append("<br/>");
+                    }
+                }
+
+                buffer.append("',g101:'");
+                if (elem.getG101() != null) {
+                    buffer.append(elem.getG101());
+                }
+                if (elem.getG101r() != null) {
+                    if (elem.getG101() != null)
+                        buffer.append("<br/>");
+                    buffer.append(elem.getG101r());
+                }
+
+                buffer.append("',altered:'");
+                buffer.append(elem.getAltered());
+                buffer.append("'},");
+            }
+
+            buffer.replace(buffer.lastIndexOf(","), buffer.length(), "]}");
+        }
+        else {
+            buffer.append("{'rows':[]}");
+        }
+
+        return buffer.toString();
+    }
+
+    /**
+     * convert2JSON_mapPogruz list of MapPogruz records to json
+     * @param data of MapPogruz records
+     * @return
+     */
+    public static String convert2JSON_mapPogruz(List<MapPogruz> data) {
+        StringBuffer buffer = new StringBuffer();
+
+        if (data != null && data.size() > 0) {
+            buffer.append("{");
+            buffer.append("success: true,");
+            buffer.append("'rows': [");
+
+            for (MapPogruz elem : data) {
+                buffer.append("{");
+                buffer.append("cs_hid:'");
+                if (elem.getCs_hid() != null)
+                    buffer.append(elem.getCs_hid());
+
+                buffer.append("',nvag:'");
+                if (elem.getNvag() != null)
+                    buffer.append(elem.getNvag());
+
+                buffer.append("',utin:'");
+                buffer.append(elem.getUtiN().toUpperCase());
+
+                buffer.append("',utin_db:'");
+                buffer.append(elem.getUtiN_db().toUpperCase());
+
+                buffer.append("',g694:'");
+                buffer.append(elem.getG694());
+
+                buffer.append("',klientname:'");
+                if (elem.getNvag() != null)
+                    buffer.append(elem.getKlientName());
+
+                buffer.append("',sizefoot:'");
+                if (elem.getSizeFoot() != null)
+                    buffer.append(elem.getSizeFoot());
+
+                buffer.append("',uti_type:'");
+                if (elem.getUti_type() != null)
+                    buffer.append(elem.getUti_type());
+
+                buffer.append("',znak:'");
+                if (elem.getZnak().size() != 0)
+                    buffer.append(elem.getZnak().toString());
+
+                buffer.append("',tarakont:'");
+                if (elem.getTaraKont() != 0)
+                    buffer.append(elem.getTaraKont());
+
+                buffer.append("',grpodkont:'");
+                if (elem.getGrPodKont() != null)
+                    buffer.append(elem.getGrPodKont());
+
+                buffer.append("',taravag:'");
+                if (elem.getTaraVag() != null)
+                    buffer.append(elem.getTaraVag());
+
+                buffer.append("',grpod:'");
+                if (elem.getGrPod() != null)
+                    buffer.append(elem.getGrPod());
+
+                buffer.append("',kolos:'");
+                if (elem.getKolOs() != null)
+                    buffer.append(elem.getKolOs());
+
+                buffer.append("',isSelected:");
+                buffer.append(elem.isSelected());
+
+                buffer.append("},");
+            }
+
+            buffer.replace(buffer.lastIndexOf(","), buffer.length(), "]}");
+        }
+        else {
+            buffer.append("{'rows':[]}");
+        }
+
         return buffer.toString();
     }
 }
