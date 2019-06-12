@@ -7,6 +7,10 @@ Ext.define('TK.view.ky2.VgCtGrTreeForm', {
         'Ext.tab.Panel'
     ],
 
+    config: {
+        vagId: undefined
+    },
+
     buildMainPanel: function(){
         return [{
             xtype: 'tabpanel',
@@ -34,20 +38,133 @@ Ext.define('TK.view.ky2.VgCtGrTreeForm', {
             title: 'Вагон',
             itemId: 'vag',
             items: [
-                {xtype:'textfield', fieldLabel:'№ вагона', name:"nvag", maxLength:160, width:150, validator: TK.Validators.vagNum},
+                {xtype:'textfield', fieldLabel:'№ вагона', name:"nvag", maxLength:13, allowBlank: false},
+                {
+                    xtype: 'fieldcontainer',
+                    layout: {
+                        type: 'hbox',
+                        defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
+                    },
+                    fieldLabel: 'Прибытие',
+                    items: [{
+                        name : 'dprbDate',
+                        xtype: 'datefield',
+                        altFormats:'d.m.y',
+                        width: 80
+                    },{
+                        xtype: 'displayfield',
+                        value: 'Дата'
+                    },{
+                        name : 'dprbTime',
+                        xtype: 'timefield',
+                        altFormats:'H:i',
+                        width: 80
+                    },{
+                        xtype: 'displayfield',
+                        value: 'Время'
+                    }]
+                },
                 {
                     xtype: 'combo',
                     queryMode: 'local',
                     forceSelection: true,
-                    fieldLabel: 'Вагон предоставлен',
-                    name:'vagOtm',
-                    store: [['П', 'Перевозчиком'], ['О', 'Отправителем']]
+                    fieldLabel: 'Номер пути',
+                    name:'line',
+                    allowBlank: false,
+                    store: [[1, '1'], [2, '2']]
+                },{
+                    xtype:'textfield',
+                    fieldLabel: 'Код принадлежности',
+                    name: 'kpv',
+                    maxLength: 28
+                },{
+                    xtype:'numberfield',
+                    fieldLabel: 'Подъемная сила',
+                    decimalPrecision: 2,
+                    minValue:0,
+                    name: 'podSila',
+                    maxLength: 20
+                },{
+                    xtype:'numberfield',
+                    fieldLabel: 'Количество осей',
+                    decimalPrecision: 0,
+                    name: 'kolOs',
+                    maxLength: 2
+                },{
+                    xtype:'numberfield',
+                    fieldLabel: 'Масса тары',
+                    decimalPrecision: 0,
+                    name: 'masTar',
+                    maxLength: 20
+                },{
+                    xtype: 'combo',
+                    queryMode: 'local',
+                    fieldLabel: 'Футовость',
+                    name: 'foot',
+                    store: ['20','40','60','80','2x20']
+                },{
+                    xtype:'textarea',
+                    fieldLabel: 'Собственник',
+                    name: 'sobstv',
+                    maxLength: 128
+                },{
+                    xtype:'checkbox',
+                    name: 'poruz',
+                    fieldLabel: 'Порожний?',
+                    inputValue: true,
+                    uncheckedValue: false
+                },{
+                    xtype:'checkbox',
+                    name: 'defective',
+                    fieldLabel: 'Не исправен?',
+                    inputValue: true,
+                    uncheckedValue: false
+                },{
+                    name : 'bortDate',
+                    xtype: 'datefield',
+                    fieldLabel: 'Дата с борта',
+                    altFormats:'d.m.y'
+                },{
+                    xtype:'numberfield',
+                    fieldLabel: 'Оставшийся пробег',
+                    decimalPrecision: 0,
+                    name: 'probeg',
+                    maxLength: 20
+                },{
+                    name : 'plan_rem',
+                    xtype: 'datefield',
+                    fieldLabel: 'След. план. ремонт',
+                    altFormats:'d.m.y'
+                },{
+                    name : 'reviz',
+                    xtype: 'datefield',
+                    fieldLabel: 'Ревизия',
+                    altFormats:'d.m.y'
+                },{
+                    xtype:'numberfield',
+                    fieldLabel: 'Числовой тип',
+                    decimalPrecision: 0,
+                    minValue: 0,
+                    name: 'type_no',
+                    maxLength: 4
+                },{
+                    xtype:'numberfield',
+                    fieldLabel: 'Длина',
+                    decimalPrecision: 2,
+                    minValue: 0,
+                    name: 'dlina',
+                    maxLength: 12
+                },{
+                    xtype:'textfield',
+                    fieldLabel: 'Модель',
+                    name: 'model',
+                    maxLength: 32
+                },{
+                    xtype:'textarea',
+                    fieldLabel: 'Примечание',
+                    name: 'prim',
+                    maxLength: 512
                 },
-                {xtype:'numberfield', fieldLabel:'Тоннаж', name:"grPod", maxLength:5, width:100, minValue:0, decimalPrecision:2},
-                {xtype:'numberfield', fieldLabel:'Тара', name:"taraVag", maxLength:5, width:100, minValue:0, decimalPrecision:2},
-                {xtype:'numberfield', fieldLabel:'Оси', name:"kolOs", maxLength:2, width:100, allowDecimals:false, minValue:0},
-                {xtype:'textfield', fieldLabel:'Владелец вагона', name:"klientName", maxLength:124, width:100},
-                {xtype:'textfield', fieldLabel:'Род вагона', name:"rod", maxLength:20, width:100},
                 {xtype:'hidden', name:"sort"},
                 {xtype:'hidden', name:"hid"}
             ]
@@ -55,13 +172,133 @@ Ext.define('TK.view.ky2.VgCtGrTreeForm', {
             title: 'Контейнер',
             itemId: 'cont',
             items: [
-                {xtype:'textfield', fieldLabel:'Текст перед № контейнера', name:"notes", maxLength:80, width:100},
-                {xtype:'textfield', fieldLabel:'№ Контейнера', name:"utiN", maxLength:16, width:100, validator: TK.Validators.kontNum},
-                {xtype:'numberfield', fieldLabel:'Размер', name:"sizeFoot", maxLength:5, width:100, allowDecimals:false, minValue:0},
-                {xtype:'numberfield', fieldLabel:'Размер(мм)', name:"sizeMm", maxLength:12, width:100, allowDecimals:false, minValue:0},
-                {xtype:'numberfield', fieldLabel:'Тара, вес', name:"taraKont", maxLength:5, width:100, allowDecimals:false, minValue:0},
-                {xtype:'textfield', fieldLabel:'Типоразмер', name:"utiType", maxLength:16, width:100},
-                {xtype:'numberfield', fieldLabel:'Макс. грузопод.', name:"grpod", maxLength:9, width:100, minValue:0, decimalPrecision:3},
+                {
+                    fieldLabel: 'Номер контейнера',
+                    xtype:'textfield',
+                    name: 'nkon',
+                    itemId: 'nkon',
+                    maxLength: 11,
+                    enableKeyEvents: true,
+                    allowBlank: false
+                },{
+                    xtype:'fieldset',
+                    title: 'Прибытие',
+                    layout: 'anchor',
+                    defaults: {
+                        anchor: '100%'
+                    },
+                    width:250,
+                    items: [{
+                        fieldLabel:'Дата',
+                        name : 'dprbDate',
+                        xtype: 'datefield',
+                        altFormats:'d.m.y'
+                    },{
+                        fieldLabel:'Время',
+                        name : 'dprbTime',
+                        xtype: 'timefield',
+                        //snapToIncrement: true,
+                        altFormats:'H:i'
+                    }]
+                },{
+                    xtype:'checkbox',
+                    name: 'poruz',
+                    fieldLabel: 'Порожний?',
+                    inputValue: true,
+                    uncheckedValue: false
+                },{
+                    xtype:'numberfield',
+                    fieldLabel: 'Масса тары',
+                    decimalPrecision: 0,
+                    name: 'massa_tar',
+                    maxLength: 20
+                },{
+                    xtype:'numberfield',
+                    fieldLabel: 'Подъемная сила',
+                    decimalPrecision: 2,
+                    minValue: 0,
+                    name: 'pod_sila',
+                    maxLength: 20
+                },{
+                    xtype: 'combo',
+                    queryMode: 'local',
+                    fieldLabel: 'Футовость',
+                    name: 'type',
+                    store: ['20','30','40','40HC','45']
+                },{
+                    xtype:'textfield',
+                    fieldLabel: 'Вид',
+                    name: 'vid',
+                    maxLength: 28
+                },{
+                    xtype:'textfield',
+                    fieldLabel: 'Признак собственности',
+                    name: 'prizn_sob',
+                    maxLength: 128
+                },{
+                    xtype: 'fieldcontainer',
+                    layout: {
+                        type: 'hbox',
+                        defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
+                    },
+                    fieldLabel: 'Собственник',
+                    items: [{
+                        xtype:'textarea',
+                        name: 'naim_sob',
+                        maxLength: 128,
+                        //allowBlank: false,
+                        readOnly: true
+                    },{
+                        xtype: 'button',
+                        text: '...',
+                        action: 'nsiOwner'
+                    },{
+                        xtype: 'hidden',
+                        name: 'owner.hid'
+                    }]
+                },{
+                    xtype: 'fieldcontainer',
+                    layout: {
+                        type: 'hbox',
+                        defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
+                    },
+                    fieldLabel: 'Клиент',
+                    items: [{
+                        xtype:'textarea',
+                        name: 'gruzotpr',
+                        maxLength: 128,
+                        flex:1
+                    },{
+                        xtype: 'button',
+                        text: '...',
+                        itemId: 'gruzotprDir',
+                        action: 'nsiOtpr'
+                    }]
+                },{
+                    xtype:'textfield',
+                    fieldLabel: 'Пункт отправления',
+                    name: 'punkt_otpr',
+                    maxLength: 96,
+                    anchor: '99%'
+                },{
+                    xtype:'textfield',
+                    fieldLabel: 'Пункт назначения',
+                    name: 'punkt_nazn',
+                    maxLength: 96,
+                    anchor: '99%'
+                },{
+                    name : 'teh_obsl',
+                    xtype: 'datefield',
+                    fieldLabel: 'След. тех. обсл.',
+                    altFormats:'d.m.y'
+                },{
+                    name : 'prim',
+                    xtype: 'textarea',
+                    fieldLabel: 'Примечание',
+                    maxLength: 128,
+                    anchor: '90%'
+                },
+
                 {xtype:'hidden', name:"sort"},
                 {xtype:'hidden', name:"hid"}
             ]
@@ -69,32 +306,48 @@ Ext.define('TK.view.ky2.VgCtGrTreeForm', {
             title: "Груз",
             itemId: 'gryz',
             items: [
-                {xtype:'trigger', fieldLabel:'Код ГНГ', name:"kgvn", maxLength:10, triggerCls:'dir', width:100,
-                    onTriggerClick: function(e){
-                        this.fireEvent("ontriggerclick", this, e);
-                    }
+                {
+                    xtype: 'fieldcontainer',
+                    layout: {
+                        type: 'hbox',
+                        defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
+                    },
+                    fieldLabel: 'Код груза ГНГ',
+                    items: [{
+                        xtype:'textfield',
+                        name: 'kgvn',
+                        maxLength: 10
+                    },{
+                        xtype: 'button',
+                        text: '...',
+                        itemId: 'nsiGng',
+                        action: 'nsiGng'
+                    }]
+                },{
+                    xtype:'textarea',
+                    fieldLabel: 'Наименование груза ГНГ',
+                    name: 'nzgr',
+                    maxLength: 4000
+                },{
+                    xtype:'textfield',
+                    fieldLabel: 'Упаковка',
+                    name: 'upak',
+                    maxLength: 50
+                },{
+                    xtype:'numberfield',
+                    fieldLabel: 'Места',
+                    name: 'places',
+                    minValue: 0,
+                    decimalPrecision: 0,
+                    maxLength: 8
+                },{
+                    xtype:'numberfield',
+                    fieldLabel: 'Масса',
+                    name: 'massa',
+                    minValue: 0,
+                    decimalPrecision: 3,
+                    maxLength: 14
                 },
-                {xtype:'textarea', fieldLabel:'Название(рус)', name:"nzgr", maxLength:4000, width:250},
-                {xtype:'textarea', fieldLabel:'Наименование EU', name:"nzgrEu", maxLength:4000, width:250},
-                {xtype:'trigger', fieldLabel:'Код ЕТ СНГ', name:"ekgvn", maxLength:10, triggerCls:'dir', width:100,
-                    onTriggerClick: function(e){
-                        this.fireEvent("ontriggerclick", this, e);
-                    }
-                },
-                {xtype:'textarea', fieldLabel:'Название', name:"enzgr", maxLength:4000, width:250},
-                {xtype:'numberfield', fieldLabel:'Масса, кг', name:'massa', maxLength:14, width:80, minValue:0, decimalPrecision:3},
-                {xtype:'trigger', fieldLabel:'Упаковка', name:"upakForeign", maxLength:50, triggerCls:'dir', width:100,
-                    onTriggerClick: function(e){
-                        this.fireEvent("ontriggerclick", this, e);
-                    }
-                },
-                {xtype:'trigger', fieldLabel:'Упаковка(рус)', name:"upak", maxLength:50, triggerCls:'dir', width:100,
-                    onTriggerClick: function(e){
-                        this.fireEvent("ontriggerclick", this, e);
-                    }
-                },
-                {xtype:'numberfield', fieldLabel:'Места', name:'places', maxLength:8, width:80, allowDecimals:false, minValue:0},
-                {xtype:'hidden', name:"ohr"},
                 {xtype:'hidden', name:"sort"},
                 {xtype:'hidden', name:"hid"}
             ]

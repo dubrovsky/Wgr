@@ -89,14 +89,14 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
             return false;
         }
 
-        var vagon = Ext.create(modelClsName, {
+        var /*vagon = Ext.create(modelClsName, {
                 'poezd.hid': poezdlist.getSelectionModel().getLastSelected().get('hid')
-            }),
+            }),*/
             vagoncontainer = Ext.widget(xtype, {title: 'Вагон/Контейнер/Груз'});
 
         // poezdcontainer.down('form').loadRecord(poezd);
         // poezdcontainer.down('form').initFieldsWithDefaultsValues();
-
+        vagoncontainer.setVagId(poezdlist.getSelectionModel().getLastSelected().get('hid'));
         this.getCenter().remove(this.getCenter().getComponent(0), true);
         this.getCenter().add(vagoncontainer);
     },
