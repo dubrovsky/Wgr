@@ -1,8 +1,9 @@
-Ext.define('TK.view.ky2.poezd.into.Form', {
+Ext.define('TK.view.ky2.poezd.into.PoezdForm', {
     extend:'Ext.container.Container',
     alias:'widget.ky2poezdintoform',
 
-
+    closable: false,
+    layout: 'fit',
     items: [{
         xtype: 'ky2basepoezdform',
         itemId: 'ky2poezdform',

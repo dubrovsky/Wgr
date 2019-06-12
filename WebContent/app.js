@@ -74,8 +74,8 @@ Ext.application({
         'ky.NsiAvto',
         'ky.NsiOwner',
 
-        'ky2.Poezd',
-        'ky2.Vagon'
+        'ky2.PoezdController',
+        'ky2.VgCtGrController'
     ],
 
     requires:[

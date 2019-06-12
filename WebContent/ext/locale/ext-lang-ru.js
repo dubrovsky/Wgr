@@ -2155,8 +2155,8 @@ Ext.define("TK.locale.ru.view.ky.poezd.into.List", {
     title:'Список поездов по прибытию'
 });
 
-Ext.define("TK.locale.ru.view.ky2.poezd.into.List", {
-    override:"TK.view.ky2.poezd.into.List",
+Ext.define("TK.locale.ru.view.ky2.poezd.into.PoezdList", {
+    override:"TK.view.ky2.poezd.into.PoezdList",
 
     headerCreation    :'Создание',
     headerDateTime    :'Дата и время',
@@ -2392,8 +2392,8 @@ Ext.define("TK.locale.ru.controller.ky.Poezd", {
     errorMsg:'Внимание! Ошибка...'
 });
 
-Ext.define("TK.locale.ru.controller.ky2.Poezd", {
-    override:"TK.controller.ky2.Poezd",
+Ext.define("TK.locale.ru.controller.ky2.PoezdController", {
+    override:"TK.controller.ky2.PoezdController",
 
     titleCreate: 'Создание поезда',
     titleEdit: 'Редактирование поезда',

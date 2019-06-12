@@ -1,9 +1,9 @@
-Ext.define('TK.controller.ky2.Poezd', {
+Ext.define('TK.controller.ky2.PoezdController', {
     extend: 'Ext.app.Controller',
     mixins: ['TK.controller.FilterUtils'],
     views: [
-        'ky2.poezd.into.List',
-        'ky2.poezd.into.Form',
+        'ky2.poezd.into.PoezdList',
+        'ky2.poezd.into.PoezdForm',
         'ky2.poezd.BasePoezdList',
         'ky2.poezd.BasePoezdForm',
         'ky2.AbstractList',

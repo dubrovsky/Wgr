@@ -1,4 +1,4 @@
-Ext.define('TK.view.ky2.TreeForm', {
+Ext.define('TK.view.ky2.AbstractTreeForm', {
     extend: 'Ext.form.Panel',
     alias: 'widget.ky2treeform',
 
@@ -9,11 +9,15 @@ Ext.define('TK.view.ky2.TreeForm', {
         'Ext.tree.Panel'
     ],
 
-    layout: 'fit',
+    layout: {
+        type: 'hbox',
+        align: 'stretch'
+    },
     closable: false,
     defaults: {
         autoScroll: true
     },
+
     initComponent:function () {
         this.items = [{
             xtype: 'treepanel',
@@ -43,26 +47,26 @@ Ext.define('TK.view.ky2.TreeForm', {
         return this.
             buildTreeToolbarItems().
             concat({
-                text: this.btnDel,
+                text: 'Удалить',
                 action: 'del',
                 iconCls: 'del'
             },{
                 xtype: 'tbfill',  // ->
                 hidden: false
             },{
-                text: this.btnSave,
+                text: 'Сохранить',
                 iconCls: 'save',
                 action: 'save'
-            }, {
+            }/*, {
                 text: this.btnClose,
                 iconCls: 'exit',
                 hidden: false,
                 handler: this.close.bind(this)
-            });
+            }*/);
     },
 
     buildTopToolbarItems: function() {
-        return [{
+        return [/*{
             xtype: 'textfield',
             itemId: 'searchField',
             enableKeyEvents: true
@@ -78,7 +82,7 @@ Ext.define('TK.view.ky2.TreeForm', {
             text: this.btnCollapseAll,
             action: 'collapseAll',
             iconCls: 'plus'
-        }, '-'];
+        }, '-'*/];
     },
 
     buildMainPanel: function(){

@@ -5,8 +5,7 @@ Ext.define('TK.view.ky2.poezd.BasePoezdForm', {
     // region: 'west',
     // width: 400,
     // split: true,
-    closable: false,
-    layout: 'fit',
+
     buildItems: function(config) {
         config.items = [{
             xtype:'textfield',

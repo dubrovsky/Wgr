@@ -1,4 +1,4 @@
-Ext.define('TK.view.ky2.poezd.into.List', {
+Ext.define('TK.view.ky2.poezd.into.PoezdList', {
     extend:'TK.view.ky2.poezd.BasePoezdList',
     alias:'widget.ky2poezdintolist',
     itemId:'ky2poezdlist',
