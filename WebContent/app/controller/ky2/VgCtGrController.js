@@ -18,40 +18,40 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
     }, {
         ref: 'poezdlist',
         selector: 'viewport > tabpanel grid'
-    },{
+    }, {
         ref: 'treepanel',
         selector: 'ky2vgctgrtreeform > treepanel'
-    },{
+    }, {
         ref: 'tabpanel',
         selector: 'ky2vgctgrtreeform > tabpanel'
-    },{
+    }, {
         ref: 'addVagBtn',
         selector: 'ky2vgctgrtreeform button[action=addVag]'
-    },{
+    }, {
         ref: 'addContBtn',
         selector: 'ky2vgctgrtreeform button[action=addCont]'
-    },{
+    }, {
         ref: 'addGryzBtn',
         selector: 'ky2vgctgrtreeform button[action=addGryz]'
-    },{
+    }, {
         ref: 'delBtn',
         selector: 'ky2vgctgrtreeform button[action=del]'
-    },{
+    }, {
         ref: 'saveBtn',
         selector: 'ky2vgctgrtreeform button[action=save]'
-    },{
+    }, {
         ref: 'vagpanel',
         selector: 'ky2vgctgrtreeform > tabpanel > #vag'
-    },{
+    }, {
         ref: 'contpanel',
         selector: 'ky2vgctgrtreeform > tabpanel > #cont'
-    },{
+    }, {
         ref: 'gryzpanel',
         selector: 'ky2vgctgrtreeform > tabpanel > #gryz'
     }],
     init: function () {
         this.control({
-            'ky2vgctgrtreeform' : {
+            'ky2vgctgrtreeform': {
                 beforedestroy: this.clearVgCtGrForm
             },
             'ky2poezdintolist button[action="createVags"]': {
@@ -74,6 +74,12 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
             },
             'ky2vgctgrtreeform button[action=del]': {
                 click: this.onDelClick
+            },
+            'ky2vgctgrtreeform button[action=save]': {
+                click: this.onSaveClick
+            },
+            'ky2vgctgrtreeform > tabpanel > form field': {
+                blur: this.onVgCtGrFormUpdateData
             }
         });
     },
@@ -105,9 +111,9 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
 
     },
 
-    onTreeNodeClick: function(treepanel, record, item, index){
+    onTreeNodeClick: function (treepanel, record, item, index) {
         var tabBar = this.getTabpanel().getTabBar();
-        if(tabBar.isHidden()){
+        if (tabBar.isHidden()) {
             tabBar.show();
         }
 
@@ -115,9 +121,9 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
             newTab = oldTab,
             newTabItemId = record.get('who');
 
-        if(oldTab.getItemId() !== newTabItemId){ // new tab
-            this.getTabpanel().items.each(function(tab){
-                if(tab.getItemId() === newTabItemId){
+        if (oldTab.getItemId() !== newTabItemId) { // new tab
+            this.getTabpanel().items.each(function (tab) {
+                if (tab.getItemId() === newTabItemId) {
                     newTab = tab;
                     return false;
                 }
@@ -130,27 +136,27 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
         newTab.loadRecord(record);
 
         // change buttons visibillity
-        if(this.getSaveBtn().isHidden()){
+        if (this.getSaveBtn().isHidden()) {
             this.getSaveBtn().show();
         }
-        if(this.getDelBtn().isHidden()){
+        if (this.getDelBtn().isHidden()) {
             this.getDelBtn().show();
         }
 
-        switch(newTabItemId){
+        switch (newTabItemId) {
             case 'gryz':
-                if(this.getAddGryzBtn().isHidden()){
+                if (this.getAddGryzBtn().isHidden()) {
                     this.getAddGryzBtn().show();
                 }
-                if(/*this.isContOtpr() &&*/ this.getAddContBtn().isHidden()){
+                if (/*this.isContOtpr() &&*/ this.getAddContBtn().isHidden()) {
                     this.getAddContBtn().show();
                 }
                 break;
             case 'cont':
-                if(this.getAddGryzBtn().isHidden()){
+                if (this.getAddGryzBtn().isHidden()) {
                     this.getAddGryzBtn().show();
                 }
-                if(this.getAddContBtn().isHidden()){
+                if (this.getAddContBtn().isHidden()) {
                     this.getAddContBtn().show();
                 }
                 break;
@@ -177,11 +183,11 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
         }
     },
 
-    onAddVagClick: function(btn){
+    onAddVagClick: function (btn) {
         this.addVgCtGr(this.getTreepanel().getRootNode(), 'vag');
     },
 
-    addVgCtGr: function(parentModelNode, who, iconCls){
+    addVgCtGr: function (parentModelNode, who, iconCls) {
         var childModelNode = parentModelNode.appendChild(
             Ext.create('TK.model.ky2.VgCtGrTreeNode', {
                 leaf: true,
@@ -196,10 +202,10 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
         this.getTreepanel().fireEvent('itemclick', this.getTreepanel(), childModelNode);
     },
 
-    onAddContClick: function(btn){
+    onAddContClick: function (btn) {
         var selectedModelNode = this.getTreepanel().getSelectionModel().getLastSelected(),
             parentModelNode;
-        switch (selectedModelNode.get('who')){
+        switch (selectedModelNode.get('who')) {
             case 'vag':
                 parentModelNode = selectedModelNode;
                 break;
@@ -208,7 +214,7 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
                 break;
             case 'gryz':
                 parentModelNode = selectedModelNode.parentNode.parentNode; // gruz pod cont
-                if(parentModelNode.getId() === 'root'){
+                if (parentModelNode.getId() === 'root') {
                     parentModelNode = selectedModelNode.parentNode; // gruz pod vagonom
                 }
                 break;
@@ -217,10 +223,10 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
         this.addVgCtGr(parentModelNode, 'cont', 'cont3');
     },
 
-    onAddGryzClick: function(btn){
+    onAddGryzClick: function (btn) {
         var selectedModelNode = this.getTreepanel().getSelectionModel().getLastSelected(),
             parentModelNode;
-        switch (selectedModelNode.get('who')){
+        switch (selectedModelNode.get('who')) {
             case 'vag':
                 parentModelNode = selectedModelNode;
                 break;
@@ -234,7 +240,7 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
         this.addVgCtGr(parentModelNode, 'gryz');
     },
 
-    onDelClick: function(btn){
+    onDelClick: function (btn) {
         this.getTreepanel().getSelectionModel().getLastSelected().remove(true, true);
         this.getDelBtn().hide();
         this.getAddContBtn().hide();
@@ -243,6 +249,41 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
 
     clearVgCtGrForm: function () {
         this.getTreepanel().getRootNode().removeAll();
+    },
+
+    onVgCtGrFormUpdateData: function (field) {
+        var rec = field.up('form').getRecord(),
+            oldVal = rec.get(field.getName()),
+            newVal = field.getSubmitValue();
+
+        if (oldVal !== newVal) {
+            rec.set(field.getName(), newVal);
+            if (field.getName() === 'kgvn' ||
+                field.getName() === 'nkon' ||
+                field.getName() === 'nvag') {
+                rec.set('text', newVal);
+            }
+        }
+    },
+
+    onSaveClick: function (btn) {
+        var dataObj = {};
+
+        if (this.getTreepanel().getRootNode().hasChildNodes()) {
+            dataObj = this.saveVags();
+        }
+    },
+
+    saveVags: function () {
+        var vagIndex = 0,
+            dataObj = {};
+
+        this.getTreepanel().getRootNode().eachChild(function (vagNodeModel) { // write vags
+
+        }, this);
+
+        return dataObj;
     }
+
 
 });
