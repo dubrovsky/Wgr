@@ -52,7 +52,7 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
     init: function () {
         this.control({
             'ky2vgctgrtreeform' : {
-                destroy: this.destroyVgCtGrForm
+                beforedestroy: this.clearVgCtGrForm
             },
             'ky2poezdintolist button[action="createVags"]': {
                 click: this.createVgCtGrInto
@@ -207,7 +207,10 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
                 parentModelNode = selectedModelNode.parentNode;
                 break;
             case 'gryz':
-                parentModelNode = selectedModelNode.parentNode.parentNode;
+                parentModelNode = selectedModelNode.parentNode.parentNode; // gruz pod cont
+                if(parentModelNode.getId() === 'root'){
+                    parentModelNode = selectedModelNode.parentNode; // gruz pod vagonom
+                }
                 break;
         }
 
@@ -238,9 +241,8 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
         this.getAddGryzBtn().hide();
     },
 
-    destroyVgCtGrForm: function () {
-      //  Ext.data.StoreManager
-        Ext.data.StoreManager.lookup('ky2VgCtGrTreeNodes').removeAll();
+    clearVgCtGrForm: function () {
+        this.getTreepanel().getRootNode().removeAll();
     }
 
 });
