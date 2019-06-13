@@ -280,6 +280,7 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
 
         this.getTreepanel().getRootNode().eachChild(function (vagNodeModel) { // write vags
 
+            vagIndex++;
         }, this);
 
         return dataObj;

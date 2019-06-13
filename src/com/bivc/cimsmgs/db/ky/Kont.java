@@ -66,13 +66,6 @@ public class Kont implements Serializable, Comparable<Kont> {
     private Byte sort;
     private Set<Gruz> gruzs = new TreeSet<>();
     private Set<Plomb> plombs = new TreeSet<>();
-    /*private Date dateYard;
-    private Date dateCancel;
-    private Date dateNoTransp;
-    private Date datePoezdInto;
-    private Date datePoezdOut;
-    private Date dateAvtoInto;
-    private Date dateAvtoOut;*/
     private String prim;
     private Date dyard;
     private NsiKyOwners owner;
