@@ -3,60 +3,89 @@ Ext.define('TK.model.ky2.VgCtGrTreeNode', {
 
     fields: [
         {name: 'hid', type: 'int', useNull: true},
+
         {name: 'sort', type: 'int'},
 
+        // poezd
+        {name:'direction', type:'int'},
+
         // vag
-        'nvag', 'vagOtm','klientName','rod',
-        {name: 'grPod', type: 'float', useNull: true},
-        {name: 'taraVag', type: 'float', useNull: true},
-        {name: 'kolOs', type: 'float', useNull: true},
+        {name: 'nvag', type: 'string'},
+        {name: 'dprbDate', type: 'string', useNull: true},
+        {name: 'dprbTime', type: 'string', useNull: true, defaultValue: null},
+        {name: 'line', type: 'string'},
+        {name: 'kpv', type: 'string'},
+        {name: 'podSila', type: 'float', useNull: true},
+        {name: 'kolOs', type: 'int', useNull: true},
+        {name: 'masTar', type: 'int', useNull: true},
+        {name: 'foot', type: 'string'},
+        {name: 'sobstv', type: 'string'},
+        {name: 'poruz', type: 'boolean'},
+        {name: 'defective', type: 'boolean'},
+        {name: 'bortDate', type: 'string'},
+        {name: 'probeg', type: 'int', useNull: true},
+        {name: 'plan_rem', type: 'string'},
+        {name: 'reviz', type: 'string'},
+        {name: 'type_no', type: 'int', useNull: true},
+        {name: 'dlina', type: 'float', useNull: true},
+        {name: 'model', type: 'string'},
+        {name: 'prim', type: 'string'},
 
         // kont
-        'notes',
-        'utiN',
-        {name: 'sizeFoot', type: 'int', useNull: true},
-        {name: 'taraKont', type: 'int', useNull: true},
-        {name: 'sizeMm', type: 'int', useNull: true},
-        {name: 'grpod', type: 'float', useNull: true},
-        'utiType',
+        {name: 'nkon', type: 'string'},
+        {name: 'dprbDate', type: 'string', useNull: true},
+        {name: 'dprbTime', type: 'string', useNull: true, defaultValue: null},
+        {name: 'poruz', type: 'boolean'},
+        {name: 'massa_tar', type: 'int', useNull: true},
+        {name: 'pod_sila', type: 'float', useNull: true},
+        {name: 'type', type: 'int', useNull: true},
+        {name: 'vid', type: 'string'},
+        {name: 'prizn_sob', type: 'string'},
+        {name: 'naim_sob', type: 'string'},
+        {name: 'gruzotpr', type: 'string'},
+        {name: 'punkt_otpr', type: 'string'},
+        {name: 'punkt_nazn', type: 'string'},
+        {name: 'teh_obsl', type: 'string'},
+        {name: 'prim', type: 'string'},
 
         // gruz
         'kgvn',
         'nzgr',
-        'nzgrEu',
-        'ekgvn',
-        'enzgr',
-        'upakForeign',
         'upak',
-        {name: 'massa', type: 'float', useNull: true},
         {name: 'places', type: 'int', useNull: true},
-        {name: 'ohr', type: 'boolean'},
-
-        // danGruz
-        'carDName',
-        'carDNameDe',
-        'codDanger',
-        'numOon',
-        'numOonDe',
-        'clazz',
-        'dangSign',
-        'groupPack',
-        'emergenC',
-        'stampDName',
-        'dopInfo',
+        {name: 'massa', type: 'int', useNull: true},
 
         // tree node fields
         'who',
         'iconCls',
-        {name: 'text', type: 'string', convert: function(v, rec){
-             return v ? v : '...';
-        }},
+        {
+            name: 'text', type: 'string', convert: function (v, rec) {
+                return v ? v : '...';
+            }
+        },
         {name: 'leaf', type: 'boolean'},
         {name: 'expanded', type: 'boolean'}
     ],
 
-    config: {
-        docs9Obj: undefined,
-        plombsObj: undefined
+    idProperty: 'hid',
+    proxy: {
+        type: 'ajax',
+        url: 'ky2/secure/VgCtGr.do',
+        idParam: 'hid',
+        reader: {
+            type: 'json',
+            root: 'rows',
+            idProperty: 'hid'
+        },
+        writer: {
+            encode: true,
+            root: 'jsonRequest',
+            expandData: true
+        },
+        listeners: {
+            exception: function (proxy, response, operation) {
+                TK.Utils.makeErrMsg(response, 'Внимание! Ошибка загрузки списка...');
+            }
+        }
     }
 });

@@ -19,6 +19,9 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
         ref: 'poezdlist',
         selector: 'viewport > tabpanel grid'
     }, {
+        ref: 'ky2treeform',
+        selector: 'viewport > tabpanel ky2treeform'
+    }, {
         ref: 'treepanel',
         selector: 'ky2vgctgrtreeform > treepanel'
     }, {
@@ -85,10 +88,10 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
     },
 
     createVgCtGrInto: function (btn) {
-        this.createVgCtGr('ky2vgctgrintoform', 'TK.model.ky2.VgCtGrTreeNode');
+        this.createVgCtGr('ky2vgctgrintoform', 'TK.model.ky2.VgCtGrTreeNode', 'Into');
     },
 
-    createVgCtGr: function (xtype, modelClsName) {
+    createVgCtGr: function (xtype, modelClsName, direction) {
 
         var poezdlist = this.getPoezdlist();
         if (!TK.Utils.isRowSelected(poezdlist)) {
@@ -103,6 +106,7 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
         // poezdcontainer.down('form').loadRecord(poezd);
         // poezdcontainer.down('form').initFieldsWithDefaultsValues();
         vagoncontainer.setVagId(poezdlist.getSelectionModel().getLastSelected().get('hid'));
+        vagoncontainer.setDirection(direction);
         this.getCenter().remove(this.getCenter().getComponent(0), true);
         this.getCenter().add(vagoncontainer);
     },
@@ -267,23 +271,101 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
     },
 
     onSaveClick: function (btn) {
-        var dataObj = {};
+        var dataObj = {id: this.getKy2treeform().getVagId()};
 
         if (this.getTreepanel().getRootNode().hasChildNodes()) {
-            dataObj = this.saveVags();
+            dataObj = this.saveVags(dataObj, this.getKy2treeform().getDirection());
         }
+
+        console.log(dataObj);
+
+        var url = Ext.ModelManager.getModel('TK.model.ky2.VgCtGrTreeNode').url;
+
+        Ext.Ajax.request({
+            url: url,
+            params: {query: dataObj, action: 'save'},
+            scope:this,
+            success: function(response) {
+                var respObj = Ext.decode(response.responseText);
+                console.log(respObj);
+            },
+            failure: function(response) {
+                TK.Utils.makeErrMsg(response, 'Error...');
+            }
+        });
     },
 
-    saveVags: function () {
-        var vagIndex = 0,
-            dataObj = {};
+    saveVags: function (dataObj, direction) {
+        var vagIndex = 0;
+
+        dataObj['vagons'] = [];
 
         this.getTreepanel().getRootNode().eachChild(function (vagNodeModel) { // write vags
+
+            var vagDataObj = {};
+            this.getVagpanel().items.each(function (vagItem, index, length) {
+                if (vagItem.isXType('field')) {
+                    vagDataObj[vagItem.getName()] = vagNodeModel.get(vagItem.getName());
+                }
+            }, this);
+            vagDataObj['sort'] = vagIndex;
+            dataObj['vagons'].push(vagDataObj);
+
+            if (vagNodeModel.hasChildNodes()) {
+                var childNodeModel = vagNodeModel.getChildAt(0);
+                if (childNodeModel.get('who') === 'cont') {
+                    this.saveConts(vagNodeModel, vagDataObj, direction);
+                } else if (childNodeModel.get('who') === 'gryz') {
+                    this.saveGryzy(vagNodeModel, vagDataObj);
+                }
+            }
 
             vagIndex++;
         }, this);
 
         return dataObj;
+    },
+
+    saveConts: function(vagNodeModel, vagDataObj, direction){
+        var contIndex = 0;
+        vagDataObj['konts' + direction] = [];
+
+        vagNodeModel.eachChild(function(contNodeModel) {  // write conts
+            var contDataObj = {};
+
+            this.getContpanel().items.each(function(contItem,index,length){
+                if (contItem.isXType('field')) {
+                    contDataObj[contItem.getName()] = contNodeModel.get(contItem.getName());
+                }
+            }, this);
+            contDataObj['sort'] = contIndex;
+            vagDataObj['konts' + direction].push(contDataObj);
+
+            if(contNodeModel.hasChildNodes()){
+                this.saveGryzy(contNodeModel, contDataObj);
+            }
+
+            contIndex++;
+        }, this);
+    },
+
+    saveGryzy: function (nodeModel, dataObj) {
+        var gryzIndex = 0;
+
+        dataObj['gruzs'] = [];
+        nodeModel.eachChild(function (gryzNodeModel) {
+            var gruzDataObj = {};
+
+            this.getGryzpanel().items.each(function (gryzItem, index, length) {
+                if (gryzItem.isXType('field')) {
+                    gruzDataObj[gryzItem.getName()] = gryzNodeModel.get(gryzItem.getName());
+                }
+            }, this);
+            gruzDataObj['sort'] = gryzIndex;
+            dataObj['gruzs'].push(gruzDataObj);
+
+            gryzIndex++;
+        }, this);
     }
 
 

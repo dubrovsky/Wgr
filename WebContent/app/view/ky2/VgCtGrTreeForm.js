@@ -8,7 +8,8 @@ Ext.define('TK.view.ky2.VgCtGrTreeForm', {
     ],
 
     config: {
-        vagId: undefined
+        vagId: undefined,
+        direction: undefined
     },
 
     buildMainPanel: function(){
