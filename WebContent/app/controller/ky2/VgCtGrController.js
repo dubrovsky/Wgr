@@ -271,7 +271,7 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
     },
 
     onSaveClick: function (btn) {
-        var dataObj = {id: this.getKy2treeform().getVagId()};
+        var dataObj = {hid: this.getKy2treeform().getVagId()};
 
         if (this.getTreepanel().getRootNode().hasChildNodes()) {
             dataObj = this.saveVags(dataObj, this.getKy2treeform().getDirection());
@@ -279,11 +279,11 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
 
         console.log(dataObj);
 
-        var url = Ext.ModelManager.getModel('TK.model.ky2.VgCtGrTreeNode').url;
+        var url = Ext.ModelManager.getModel('TK.model.ky2.VgCtGrTreeNode').getProxy().url;
 
         Ext.Ajax.request({
             url: url,
-            params: {query: dataObj, action: 'save'},
+            params: {dataObj: Ext.encode(dataObj), action: 'save'},
             scope:this,
             success: function(response) {
                 var respObj = Ext.decode(response.responseText);
@@ -314,8 +314,10 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
             if (vagNodeModel.hasChildNodes()) {
                 var childNodeModel = vagNodeModel.getChildAt(0);
                 if (childNodeModel.get('who') === 'cont') {
+                    vagDataObj['otpravka'] = 'CONT';
                     this.saveConts(vagNodeModel, vagDataObj, direction);
                 } else if (childNodeModel.get('who') === 'gryz') {
+                    vagDataObj['otpravka'] = 'GRUZ';
                     this.saveGryzy(vagNodeModel, vagDataObj);
                 }
             }

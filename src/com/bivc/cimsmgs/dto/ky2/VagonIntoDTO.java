@@ -1,6 +1,5 @@
 package com.bivc.cimsmgs.dto.ky2;
 
-import java.util.Set;
 import java.util.TreeSet;
 
 /**
@@ -8,13 +7,13 @@ import java.util.TreeSet;
  */
 public class VagonIntoDTO extends VagonDTO {
 
-    private Set<KontDTO> kontsInto = new TreeSet<>();
+    private TreeSet<KontDTO> kontsInto = new TreeSet<>();
 
-    public Set<KontDTO> getKontsInto() {
+    public TreeSet<KontDTO> getKontsInto() {
         return kontsInto;
     }
 
-    public void setKontsInto(Set<KontDTO> kontsInto) {
+    public void setKontsInto(TreeSet<KontDTO> kontsInto) {
         this.kontsInto = kontsInto;
     }
 }

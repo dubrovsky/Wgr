@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.util.Date;
-import java.util.Set;
 import java.util.TreeSet;
 
 /**
@@ -28,6 +27,7 @@ public class VagonDTO implements Comparable<VagonDTO> {
     private Date dprbTime;
 
     private String line;
+    private String nvag;
     private String kpv;
     private Float podSila;
     private Integer kolOs;
@@ -55,8 +55,9 @@ public class VagonDTO implements Comparable<VagonDTO> {
     private String model;
     private String prim;
     private Short sort;
+    private Otpravka otpravka;
 
-    private Set<GruzDTO> gruzs = new TreeSet<>();
+    private TreeSet<GruzDTO> gruzs = new TreeSet<>();
 
     public Date getDprbDate() {
         return dprbDate;
@@ -247,11 +248,29 @@ public class VagonDTO implements Comparable<VagonDTO> {
         this.hid = hid;
     }
 
-    public Set<GruzDTO> getGruzs() {
+    public TreeSet<GruzDTO> getGruzs() {
         return gruzs;
     }
 
-    public void setGruzs(Set<GruzDTO> gruzs) {
+    public void setGruzs(TreeSet<GruzDTO> gruzs) {
         this.gruzs = gruzs;
     }
+
+    public String getNvag() {
+        return nvag;
+    }
+
+    public void setNvag(String nvag) {
+        this.nvag = nvag;
+    }
+
+    public Otpravka getOtpravka() {
+        return otpravka;
+    }
+
+    public void setOtpravka(Otpravka otpravka) {
+        this.otpravka = otpravka;
+    }
+
+    enum Otpravka {CONT, GRUZ}
 }

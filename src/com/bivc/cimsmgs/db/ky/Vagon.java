@@ -8,6 +8,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -38,6 +39,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
     private Short sort;
     private Set<Kont> kontsOut = new TreeSet<>();
     private Set<Kont> kontsInto = new TreeSet<>();
+    private Set<Gruz> gruzs = new TreeSet<>();
     private String kpv;
     private Integer kolOs;
     private Long masTar;
@@ -140,13 +142,20 @@ public class Vagon implements Serializable, Comparable<Vagon> {
         this.plan_rem = plan_rem;
     }
 
-    public enum FilterFields{
+    public Set<Gruz> getGruzs() {
+        return gruzs;
+    }
+
+    public void setGruzs(Set<Gruz> gruzs) {
+        this.gruzs = gruzs;
+    }
+
+    public enum FilterFields {
         NPPR("nppr"),
-        NVAG("nvag")
-        ;
+        NVAG("nvag");
         private final String name;
 
-        FilterFields(String name){
+        FilterFields(String name) {
             this.name = name;
         }
 
@@ -388,12 +397,51 @@ public class Vagon implements Serializable, Comparable<Vagon> {
         Comparable thisHid = this.getHid();
         Comparable thatHid = that.getHid();
 
-        if(thisHid == null) {
+        if (thisHid == null) {
             return AFTER;
-        } else if(thatHid == null) {
+        } else if (thatHid == null) {
             return BEFORE;
         } else {
             return thisHid.compareTo(thatHid);
+        }
+    }
+
+    public void addKontInto(Kont kont) {
+        kontsInto.add(kont);
+        kont.setVagonInto(this);
+    }
+
+    public void removeKontsInto() {
+        for (Iterator<Kont> iterator = kontsInto.iterator(); iterator.hasNext(); ) {   // avoid ConcurrentModificationException
+            Kont kont = iterator.next();
+            iterator.remove();
+            kont.setVagonInto(null);
+        }
+    }
+
+    public void addKontOut(Kont kont) {
+        kontsOut.add(kont);
+        kont.setVagonOut(this);
+    }
+
+    public void removeKontsOut() {
+        for (Iterator<Kont> iterator = kontsOut.iterator(); iterator.hasNext(); ) {   // avoid ConcurrentModificationException
+            Kont kont = iterator.next();
+            iterator.remove();
+            kont.setVagonOut(null);
+        }
+    }
+
+    public void addGruz(Gruz gruz) {
+        gruzs.add(gruz);
+        gruz.setVagon(this);
+    }
+
+    public void removeGruzy() {
+        for (Iterator<Gruz> iterator = gruzs.iterator(); iterator.hasNext(); ) {   // avoid ConcurrentModificationException
+            Gruz gruz = iterator.next();
+            iterator.remove();
+            gruz.setVagon(null);
         }
     }
 }

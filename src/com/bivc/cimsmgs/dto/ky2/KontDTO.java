@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.util.Date;
-import java.util.Set;
 import java.util.TreeSet;
 
 /**
@@ -42,7 +41,7 @@ public class KontDTO implements Comparable<KontDTO>{
     private String prim;
     private Byte sort;
 
-    private Set<GruzDTO> gruzs = new TreeSet<>();
+    private TreeSet<GruzDTO> gruzs = new TreeSet<>();
 
     public String getNkon() {
         return nkon;
@@ -201,11 +200,11 @@ public class KontDTO implements Comparable<KontDTO>{
         this.hid = hid;
     }
 
-    public Set<GruzDTO> getGruzs() {
+    public TreeSet<GruzDTO> getGruzs() {
         return gruzs;
     }
 
-    public void setGruzs(Set<GruzDTO> gruzs) {
+    public void setGruzs(TreeSet<GruzDTO> gruzs) {
         this.gruzs = gruzs;
     }
 }

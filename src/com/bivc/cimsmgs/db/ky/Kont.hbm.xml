@@ -28,10 +28,10 @@
         </many-to-one>
 
         <many-to-one class="com.bivc.cimsmgs.db.ky.Avto" fetch="select" name="avtoOut">
-          <column name="HID_AVTO_OUT" precision="20" scale="0"/>
+            <column name="HID_AVTO_OUT" precision="20" scale="0"/>
         </many-to-one>
         <many-to-one class="com.bivc.cimsmgs.db.ky.Avto" fetch="select" name="avtoInto">
-          <column name="HID_AVTO_INTO" precision="20" scale="0"/>
+            <column name="HID_AVTO_INTO" precision="20" scale="0"/>
         </many-to-one>
         <many-to-one class="com.bivc.cimsmgs.db.ky.NsiKyOwners" fetch="select" name="owner">
             <column name="HID_OWNER" precision="20" scale="0"/>
@@ -155,23 +155,32 @@
             <column length="96" name="PUNKT_NAZN"/>
         </property>
 
-        <set fetch="select" inverse="true" lazy="true" name="gruzs" sort="natural" table="KY_GRUZ" batch-size="50" cascade="delete">
+        <set fetch="select" inverse="true" lazy="true" name="gruzs" sort="natural" table="KY_GRUZ" batch-size="50" cascade="all, delete-orphan">
             <key>
                 <column name="HID_KONT" precision="20" scale="0"/>
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.ky.Gruz"/>
         </set>
-        <set fetch="select" inverse="true" lazy="true" name="plombs" sort="natural" table="KY_PLOMB" batch-size="50" cascade="delete">
+
+        <!--<set fetch="select" inverse="true" lazy="true" name="gruzs" sort="natural" table="KY_GRUZ" batch-size="50"
+             cascade="delete">
+            <key>
+                <column name="HID_KONT" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.Gruz"/>
+        </set>-->
+        <!--<set fetch="select" inverse="true" lazy="true" name="plombs" sort="natural" table="KY_PLOMB" batch-size="50" cascade="delete">
             <key>
                 <column name="HID_KONT" precision="20" scale="0"/>
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.ky.Plomb"/>
         </set>
-        <set fetch="select" inverse="true" lazy="true" name="kontStatusHistory" sort="natural" table="KY_KONT_STATUS_HISTORY" batch-size="50" cascade="delete">
+        <set fetch="select" inverse="true" lazy="true" name="kontStatusHistory" sort="natural"
+             table="KY_KONT_STATUS_HISTORY" batch-size="50" cascade="delete">
             <key>
                 <column name="HID_KONT" precision="20" scale="0"/>
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.ky.KontStatusHistory"/>
-        </set>
+        </set>-->
     </class>
 </hibernate-mapping>

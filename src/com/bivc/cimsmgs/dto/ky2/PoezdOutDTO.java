@@ -1,6 +1,5 @@
 package com.bivc.cimsmgs.dto.ky2;
 
-import java.util.Set;
 import java.util.TreeSet;
 
 /**
@@ -8,14 +7,14 @@ import java.util.TreeSet;
  */
 public class PoezdOutDTO extends PoezdDTO {
 
-    private Set<VagonOutDTO> vagons = new TreeSet<>();
+    private TreeSet<VagonOutDTO> vagons = new TreeSet<>();
 
 
-    public Set<VagonOutDTO> getVagons() {
+    public TreeSet<VagonOutDTO> getVagons() {
         return vagons;
     }
 
-    public void setVagons(Set<VagonOutDTO> vagons) {
+    public void setVagons(TreeSet<VagonOutDTO> vagons) {
         this.vagons = vagons;
     }
 }

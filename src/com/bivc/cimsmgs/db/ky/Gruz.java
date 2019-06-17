@@ -12,6 +12,7 @@ public class Gruz implements Serializable, Comparable<Gruz> {
 
 	private Long hid;
 	private Kont kont;
+	private Vagon vagon;
 	private String upak;
 	private String kgvn;
 	private String nzgr;
@@ -161,5 +162,13 @@ public class Gruz implements Serializable, Comparable<Gruz> {
 		} else {
 			return thisHid.compareTo(thatHid);
 		}
+	}
+
+	public Vagon getVagon() {
+		return vagon;
+	}
+
+	public void setVagon(Vagon vagon) {
+		this.vagon = vagon;
 	}
 }

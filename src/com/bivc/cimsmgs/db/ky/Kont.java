@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -564,6 +565,19 @@ public class Kont implements Serializable, Comparable<Kont> {
             return BEFORE;
         } else {
             return thisHid.compareTo(thatHid);
+        }
+    }
+
+    public void addGruz(Gruz gruz) {
+        gruzs.add(gruz);
+        gruz.setKont(this);
+    }
+
+    public void removeGruzy() {
+        for (Iterator<Gruz> iterator = gruzs.iterator(); iterator.hasNext(); ) {   // avoid ConcurrentModificationException
+            Gruz gruz = iterator.next();
+            iterator.remove();
+            gruz.setKont(null);
         }
     }
 }

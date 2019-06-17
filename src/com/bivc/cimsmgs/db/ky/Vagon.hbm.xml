@@ -103,7 +103,25 @@
             <column name="DEFECTIVE" precision="1" scale="0"/>
         </property>
 
-        <set fetch="select" inverse="true" lazy="true" sort="natural" name="kontsOut" table="KY_KONT" batch-size="50" cascade="delete">
+        <set fetch="select" inverse="true" lazy="true" sort="natural" name="kontsOut" table="KY_KONT" batch-size="50" cascade="all, delete-orphan">
+            <key>
+                <column name="HID_VAGON_OUT" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.Kont"/>
+        </set>
+        <set fetch="select" inverse="true" lazy="true" sort="natural" name="kontsInto" table="KY_KONT" batch-size="50" cascade="all, delete-orphan">
+            <key>
+                <column name="HID_VAGON_INTO" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.Kont"/>
+        </set>
+        <set fetch="select" inverse="true" lazy="true" name="gruzs" sort="natural" table="KY_GRUZ" batch-size="50" cascade="all, delete-orphan">
+            <key>
+                <column name="HID_VAGON" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.Gruz"/>
+        </set>
+        <!--<set fetch="select" inverse="true" lazy="true" sort="natural" name="kontsOut" table="KY_KONT" batch-size="50" cascade="delete">
             <key>
                 <column name="HID_VAGON_OUT" precision="20" scale="0"/>
             </key>
@@ -114,6 +132,6 @@
                 <column name="HID_VAGON_INTO" precision="20" scale="0"/>
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.ky.Kont"/>
-        </set>
+        </set>-->
     </class>
 </hibernate-mapping>

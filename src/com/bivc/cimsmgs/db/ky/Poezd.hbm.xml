@@ -69,11 +69,17 @@
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.ky.Kont"/>
         </set>
-        <set fetch="select" inverse="true" lazy="true" name="vagons" sort="natural" table="KY_VAGON" batch-size="50" cascade="delete">
+        <set fetch="select" inverse="true" lazy="true" name="vagons" sort="natural" table="KY_VAGON" batch-size="50" cascade="all, delete-orphan">
             <key>
                 <column name="HID_POEZD" precision="20" scale="0"/>
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.ky.Vagon"/>
         </set>
+        <!--<set fetch="select" inverse="true" lazy="true" name="vagons" sort="natural" table="KY_VAGON" batch-size="50" cascade="delete">
+            <key>
+                <column name="HID_POEZD" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.Vagon"/>
+        </set>-->
     </class>
 </hibernate-mapping>
