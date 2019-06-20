@@ -88,10 +88,10 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
     },
 
     createVgCtGrInto: function (btn) {
-        this.createVgCtGr('ky2vgctgrintoform', 'TK.model.ky2.VgCtGrTreeNode', 'Into');
+        this.createVgCtGr('ky2vgctgrintoform', 'TK.model.ky2.VgCtGrTreeNode');
     },
 
-    createVgCtGr: function (xtype, modelClsName, direction) {
+    createVgCtGr: function (xtype, modelClsName) {
 
         var poezdlist = this.getPoezdlist();
         if (!TK.Utils.isRowSelected(poezdlist)) {
@@ -106,7 +106,7 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
         // poezdcontainer.down('form').loadRecord(poezd);
         // poezdcontainer.down('form').initFieldsWithDefaultsValues();
         vagoncontainer.setVagId(poezdlist.getSelectionModel().getLastSelected().get('hid'));
-        vagoncontainer.setDirection(direction);
+        // vagoncontainer.setDirection(direction);
         this.getCenter().remove(this.getCenter().getComponent(0), true);
         this.getCenter().add(vagoncontainer);
     },
@@ -149,40 +149,57 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
 
         switch (newTabItemId) {
             case 'gryz':
-                if (this.getAddGryzBtn().isHidden()) {
-                    this.getAddGryzBtn().show();
+                if(record.parentNode.get('who') === 'vag'){
+                    if (this.getAddGryzBtn().isHidden()) {
+                        this.getAddGryzBtn().show();
+                    }
+                    if (this.getAddContBtn().isVisible()) {
+                        this.getAddContBtn().hide();
+                    }
+                } else {    // cont
+                    if (this.getAddGryzBtn().isHidden()) {
+                        this.getAddGryzBtn().show();
+                    }
+                    if (this.getAddContBtn().isHidden()) {
+                        this.getAddContBtn().show();
+                    }
                 }
-                if (/*this.isContOtpr() &&*/ this.getAddContBtn().isHidden()) {
-                    this.getAddContBtn().show();
-                }
+
                 break;
             case 'cont':
-                if (this.getAddGryzBtn().isHidden()) {
-                    this.getAddGryzBtn().show();
-                }
                 if (this.getAddContBtn().isHidden()) {
                     this.getAddContBtn().show();
                 }
+                if (this.getAddGryzBtn().isHidden()) {
+                    this.getAddGryzBtn().show();
+                }
+
                 break;
             case 'vag':
-                if (this.getAddGryzBtn().isHidden()) {
-                    this.getAddGryzBtn().show();
-                }
-                if (this.getAddContBtn().isHidden()) {
-                    this.getAddContBtn().show();
-                }
-                /*if(this.isContOtpr()) {
+                if(record.get('otpravka') === 'CONT') {
                     if (this.getAddGryzBtn().isVisible()) {
                         this.getAddGryzBtn().hide();
                     }
                     if (this.getAddContBtn().isHidden()) {
                         this.getAddContBtn().show();
                     }
-                } else {
-                    if(this.getAddGryzBtn().isHidden()){
+
+                } else if(record.get('otpravka') === 'GRUZ') {
+                    if (this.getAddGryzBtn().isHidden()) {
                         this.getAddGryzBtn().show();
                     }
-                }*/
+                    if (this.getAddContBtn().isVisible()) {
+                        this.getAddContBtn().hide();
+                    }
+                } else {
+                    if (this.getAddGryzBtn().isHidden()) {
+                        this.getAddGryzBtn().show();
+                    }
+                    if (this.getAddContBtn().isHidden()) {
+                        this.getAddContBtn().show();
+                    }
+                }
+
                 break;
         }
     },
@@ -212,6 +229,7 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
         switch (selectedModelNode.get('who')) {
             case 'vag':
                 parentModelNode = selectedModelNode;
+                parentModelNode.set('otpravka', 'CONT');
                 break;
             case 'cont':
                 parentModelNode = selectedModelNode.parentNode;
@@ -233,6 +251,7 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
         switch (selectedModelNode.get('who')) {
             case 'vag':
                 parentModelNode = selectedModelNode;
+                parentModelNode.set('otpravka', 'GRUZ');
                 break;
             case 'cont':
                 parentModelNode = selectedModelNode;
@@ -245,10 +264,17 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
     },
 
     onDelClick: function (btn) {
-        this.getTreepanel().getSelectionModel().getLastSelected().remove(true, true);
+        var selectedModelNode = this.getTreepanel().getSelectionModel().getLastSelected();
+        var parentModelNode = selectedModelNode.parentNode;
+
+        selectedModelNode.remove(true, true);
         this.getDelBtn().hide();
         this.getAddContBtn().hide();
         this.getAddGryzBtn().hide();
+
+        if (parentModelNode && parentModelNode.get('who') === 'vag' && !parentModelNode.hasChildNodes()) {
+            parentModelNode.set('otpravka', undefined);
+        }
     },
 
     clearVgCtGrForm: function () {
@@ -274,7 +300,7 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
         var dataObj = {hid: this.getKy2treeform().getVagId()};
 
         if (this.getTreepanel().getRootNode().hasChildNodes()) {
-            dataObj = this.saveVags(dataObj, this.getKy2treeform().getDirection());
+            dataObj = this.saveVags(dataObj);
         }
 
         console.log(dataObj);
@@ -284,12 +310,12 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
         Ext.Ajax.request({
             url: url,
             params: {dataObj: Ext.encode(dataObj), action: 'save'},
-            scope:this,
-            success: function(response) {
+            scope: this,
+            success: function (response) {
                 var respObj = Ext.decode(response.responseText);
                 console.log(respObj);
             },
-            failure: function(response) {
+            failure: function (response) {
                 TK.Utils.makeErrMsg(response, 'Error...');
             }
         });
@@ -313,11 +339,9 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
 
             if (vagNodeModel.hasChildNodes()) {
                 var childNodeModel = vagNodeModel.getChildAt(0);
-                if (childNodeModel.get('who') === 'cont') {
-                    vagDataObj['otpravka'] = 'CONT';
-                    this.saveConts(vagNodeModel, vagDataObj, direction);
-                } else if (childNodeModel.get('who') === 'gryz') {
-                    vagDataObj['otpravka'] = 'GRUZ';
+                if (vagNodeModel.get('otpravka') === 'CONT') {
+                    this.saveConts(vagNodeModel, vagDataObj);
+                } else if (vagNodeModel.get('otpravka') === 'GRUZ') {
                     this.saveGryzy(vagNodeModel, vagDataObj);
                 }
             }
@@ -328,22 +352,22 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
         return dataObj;
     },
 
-    saveConts: function(vagNodeModel, vagDataObj, direction){
+    saveConts: function (vagNodeModel, vagDataObj) {
         var contIndex = 0;
-        vagDataObj['konts' + direction] = [];
+        vagDataObj['konts'] = [];
 
-        vagNodeModel.eachChild(function(contNodeModel) {  // write conts
+        vagNodeModel.eachChild(function (contNodeModel) {  // write conts
             var contDataObj = {};
 
-            this.getContpanel().items.each(function(contItem,index,length){
+            this.getContpanel().items.each(function (contItem, index, length) {
                 if (contItem.isXType('field')) {
                     contDataObj[contItem.getName()] = contNodeModel.get(contItem.getName());
                 }
             }, this);
             contDataObj['sort'] = contIndex;
-            vagDataObj['konts' + direction].push(contDataObj);
+            vagDataObj['konts'].push(contDataObj);
 
-            if(contNodeModel.hasChildNodes()){
+            if (contNodeModel.hasChildNodes()) {
                 this.saveGryzy(contNodeModel, contDataObj);
             }
 

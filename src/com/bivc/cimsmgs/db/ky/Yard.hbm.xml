@@ -44,7 +44,7 @@
             <column length="20" name="UN"/>
         </property>
 
-        <one-to-one name="kont" class="com.bivc.cimsmgs.db.ky.Kont" property-ref="yard"/>
+<!--        <one-to-one name="kont" class="com.bivc.cimsmgs.db.ky.Kont" property-ref="yard"/>-->
         <!--<set fetch="select" inverse="true" lazy="true" name="konts" sort="unsorted" table="KY_KONT">
             <key>
                 <column name="HID_KY" precision="20" scale="0"/>

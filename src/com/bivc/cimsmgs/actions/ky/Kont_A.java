@@ -6,7 +6,6 @@ import com.bivc.cimsmgs.commons.Response;
 import com.bivc.cimsmgs.dao.*;
 import com.bivc.cimsmgs.db.ky.*;
 import com.bivc.cimsmgs.doc2doc.Mapper;
-import com.bivc.cimsmgs.dto.ky.YardDTO;
 import com.bivc.cimsmgs.dto.ky.kont.*;
 import com.bivc.cimsmgs.formats.json.Deserializer;
 import com.bivc.cimsmgs.formats.json.Serializer;
@@ -373,11 +372,12 @@ public class Kont_A extends CimSmgsSupport_A {
     }
 
     private Kont createKontInYard(Kont added) {
-        Yard yard = yardDAO.getById(added.getYard().getHid(), false);
+       /* Yard yard = yardDAO.getById(added.getYard().getHid(), false);
         added.setYard(yard);
         added = kontOperationsService.bindKontToYard(added, added.getYard(), added.getYard().getSector());
         yardDAO.makePersistent(yard);
-        return added;
+        return added;*/
+       return null;
     }
 
     public String deleteInPoezdOut() throws Exception {
@@ -414,9 +414,9 @@ public class Kont_A extends CimSmgsSupport_A {
 
         Kont deleted = kontDAO.getById(dto.getHid(), false);
 
-        if(deleted.getYard() != null){
+        /*if(deleted.getYard() != null){             +++
             deleteKontInYard(deleted);
-        }
+        }*/
         kontDAO.makeTransient(deleted);
 
 
@@ -639,9 +639,9 @@ public class Kont_A extends CimSmgsSupport_A {
         kont = kontOperationsService.unbindKontFromPoezdOut(kont, prevStatus, prevPrevStatusInHistory != null ? prevPrevStatusInHistory.getStatus() : null);
 
         kontDAO.makePersistent(kont);
-        if(prevStatus.getStatus() == KontStatus.YARD){
+        /*if(prevStatus.getStatus() == KontStatus.YARD){
             yardDAO.makePersistent(kont.getYard());
-        }
+        }*/
 
         perfomUnbindInStatusHistory(kont, curStatus);
         return kont;
@@ -691,7 +691,7 @@ public class Kont_A extends CimSmgsSupport_A {
     }
 
     private void kontOperationsForYardResponse(Kont kont) throws Exception {
-        setJSONData(
+        /*setJSONData(
                 defaultSerializer
                         .setLocale(getLocale())
                         .write(
@@ -699,7 +699,7 @@ public class Kont_A extends CimSmgsSupport_A {
                                         kykontMapper.copy(kont.getYard(), YardDTO.class)
                                 )
                         )
-        );
+        );*/
     }
 
     public String yardPlaceForKontInPoezdIntoUnbind() throws Exception {
@@ -729,13 +729,13 @@ public class Kont_A extends CimSmgsSupport_A {
         Kont kont = kontDAO.getByIdWithAllParents(kontId); // eager init poezd and vagon to avoid error when save status history
 //        Kont kont = kontDAO.findById(kontId, false);
         KontStatus curStatus = kont.getStatus();
-        Yard yard = yardDAO.getById(kont.getYard().getHid(), false);
+//        Yard yard = yardDAO.getById(kont.getYard().getHid(), false);
 
-        log.info("Unbind Yard with information - {} from Kont with hid - {}", yard, kontId);
+//        log.info("Unbind Yard with information - {} from Kont with hid - {}", yard, kontId);
 
-        kont = kontOperationsService.unbindKontFromYard(kont, yard, prevStatus);
+//        kont = kontOperationsService.unbindKontFromYard(kont, yard, prevStatus);
         kontDAO.makePersistent(kont);
-        yardDAO.makePersistent(yard);
+//        yardDAO.makePersistent(yard);
 
         perfomUnbindInStatusHistory(kont, curStatus);
 
@@ -746,11 +746,11 @@ public class Kont_A extends CimSmgsSupport_A {
         Long kontId = kont.getHid();
 //        Kont kont = kontDAO.getById(kontId, false); // get live kont from Db
         Kont kont = kontDAO.getByIdWithAllParents(kontId);
-        Yard yard = kont.getYard();
+//        Yard yard = kont.getYard();
 
-        log.info("Unbind Yard with information - {} from Kont with hid - {}", yard, kontId);
+//        log.info("Unbind Yard with information - {} from Kont with hid - {}", yard, kontId);
 
-        kontOperationsService.makeYardPalceEmpty(kont, kont.getYard());
+//        kontOperationsService.makeYardPalceEmpty(kont, kont.getYard());
         kont = kontToYardBind(kont.getPrevStatus());
 
         return kontOperationsResponse(kont, KontOperationsIntoDTO.class);

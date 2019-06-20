@@ -11,6 +11,7 @@ Ext.define('TK.model.ky2.VgCtGrTreeNode', {
 
         // vag
         {name: 'nvag', type: 'string'},
+        {name: 'otpravka', type: 'string'},
         {name: 'dprbDate', type: 'string', useNull: true},
         {name: 'dprbTime', type: 'string', useNull: true, defaultValue: null},
         {name: 'line', type: 'string'},

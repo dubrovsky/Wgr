@@ -36,7 +36,7 @@ public class KontOperationsService implements IKontOperationsService {
         yard.setKont(kont);
         yard.setEmpty(false);
 
-        kont.setYard(yard);
+//        kont.setYard(yard);
         kont.setKy_x(yard.getX());
         kont.setKy_y(yard.getY());
         kont.setKy_z(yard.getZ());
@@ -65,7 +65,7 @@ public class KontOperationsService implements IKontOperationsService {
 
     @Override
     public Kont makeYardPalceEmpty(Kont kont, Yard yard) {
-        kont.setYard(null);
+//        kont.setYard(null);
 
         yard.setKont(null);
         yard.setEmpty(true);
@@ -76,11 +76,11 @@ public class KontOperationsService implements IKontOperationsService {
     @Override
     public Kont bindKontToPoezdOut(Kont kont, Poezd poezd, Vagon vagon, KontOperationsDTO kontDTO) {
 
-        kont.setVagonOut(vagon);
-        kont.setPoezdOut(poezd);
+//        kont.setVagonOut(vagon);
+//        kont.setPoezdOut(poezd);
         kont.setDotp(kontDTO.getDotp());
-        vagon.getKontsOut().add(kont);
-        poezd.getKontsOut().add(kont);
+//        vagon.getKontsOut().add(kont);
+//        poezd.getKontsOut().add(kont);
 
         bind(kont, KontStatus.POEZD_OUT, kont.getStatus());
 
@@ -89,8 +89,8 @@ public class KontOperationsService implements IKontOperationsService {
 
     @Override
      public Kont unbindKontFromPoezdOut(Kont kont, KontStatusHistory status, KontStatus prevStatus) {
-        kont.setVagonOut(null);
-        kont.setPoezdOut(null);
+//        kont.setVagonOut(null);
+//        kont.setPoezdOut(null);
         kont.setDotp(null);
 
         if(status != null) {
@@ -107,7 +107,7 @@ public class KontOperationsService implements IKontOperationsService {
 
     @Override
     public Kont bindKontToAvtoOut(Kont kont, Avto avto, KontOperationsDTO kontDTO) {
-        kont.setAvtoOut(avto);
+//        kont.setAvtoOut(avto);
         avto.getKontsOut().add(kont);
         kont.setDotp(kontDTO.getDotp());
 
@@ -118,7 +118,7 @@ public class KontOperationsService implements IKontOperationsService {
 
     @Override
     public Kont unbindKontFromAvtoOut(Kont kont, KontStatusHistory status, KontStatus prevStatus) {
-        kont.setAvtoOut(null);
+//        kont.setAvtoOut(null);
         kont.setDotp(null);
         if(status != null) {
             unbind(kont, status, prevStatus);

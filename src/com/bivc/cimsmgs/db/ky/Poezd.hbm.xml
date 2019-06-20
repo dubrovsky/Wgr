@@ -57,7 +57,7 @@
             <column length="128" name="GRUZOTPR"/>
         </property>
 
-        <set fetch="select" inverse="true" lazy="true" name="kontsOut" sort="natural" table="KY_KONT" batch-size="50" cascade="delete">
+        <!--<set fetch="select" inverse="true" lazy="true" name="kontsOut" sort="natural" table="KY_KONT" batch-size="50" cascade="delete">
             <key>
                 <column name="HID_POEZD_OUT" precision="20" scale="0"/>
             </key>
@@ -68,7 +68,7 @@
                 <column name="HID_POEZD_INTO" precision="20" scale="0"/>
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.ky.Kont"/>
-        </set>
+        </set>-->
         <set fetch="select" inverse="true" lazy="true" name="vagons" sort="natural" table="KY_VAGON" batch-size="50" cascade="all, delete-orphan">
             <key>
                 <column name="HID_POEZD" precision="20" scale="0"/>

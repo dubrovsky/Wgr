@@ -8,8 +8,7 @@ Ext.define('TK.view.ky2.VgCtGrTreeForm', {
     ],
 
     config: {
-        vagId: undefined,
-        direction: undefined
+        vagId: undefined
     },
 
     buildMainPanel: function(){
@@ -167,6 +166,7 @@ Ext.define('TK.view.ky2.VgCtGrTreeForm', {
                     maxLength: 512
                 },
                 {xtype:'hidden', name:"sort"},
+                {xtype:'hidden', name:"otpravka"},
                 {xtype:'hidden', name:"hid"}
             ]
         },{

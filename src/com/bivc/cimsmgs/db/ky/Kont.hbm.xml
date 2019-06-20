@@ -11,7 +11,11 @@
             </generator>
         </id>
 
-        <many-to-one class="com.bivc.cimsmgs.db.ky.Poezd" fetch="select" name="poezdOut">
+        <many-to-one class="com.bivc.cimsmgs.db.ky.Vagon" fetch="select" name="vagon">
+            <column name="HID_VAGON" precision="20" scale="0"/>
+        </many-to-one>
+
+        <!--<many-to-one class="com.bivc.cimsmgs.db.ky.Poezd" fetch="select" name="poezdOut">
             <column name="HID_POEZD_OUT" precision="20" scale="0"/>
         </many-to-one>
         <many-to-one class="com.bivc.cimsmgs.db.ky.Vagon" fetch="select" name="vagonInto">
@@ -32,12 +36,12 @@
         </many-to-one>
         <many-to-one class="com.bivc.cimsmgs.db.ky.Avto" fetch="select" name="avtoInto">
             <column name="HID_AVTO_INTO" precision="20" scale="0"/>
-        </many-to-one>
+        </many-to-one>-->
         <many-to-one class="com.bivc.cimsmgs.db.ky.NsiKyOwners" fetch="select" name="owner">
             <column name="HID_OWNER" precision="20" scale="0"/>
         </many-to-one>
 
-        <property name="status" column="STATUS" not-null="true">
+        <property name="status" column="STATUS" >
             <type name="org.hibernate.type.EnumType">
                 <param name="enumClass">com.bivc.cimsmgs.db.ky.KontStatus</param>
             </type>

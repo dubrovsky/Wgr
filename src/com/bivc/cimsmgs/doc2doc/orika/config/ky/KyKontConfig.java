@@ -144,11 +144,11 @@ public class KyKontConfig extends ConfigurableMapper {
     }
 
     private void copyOwner(KontBaseDTO dto, Kont kont, MapperFacade mapperFacade) {
-        if (dto.getOwner() == null || dto.getOwner().getHid() == null) {
+        /*if (dto.getOwner() == null || dto.getOwner().getHid() == null) {
             kont.setOwner(null);
         } else {
             kont.setOwner(new NsiKyOwners());
             mapperFacade.map(dto.getOwner(), kont.getOwner());
-        }
+        }*/
     }
 }

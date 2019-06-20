@@ -1,15 +1,17 @@
 package com.bivc.cimsmgs.actions.ky2;
 
 import com.bivc.cimsmgs.actions.CimSmgsSupport_A;
-import com.bivc.cimsmgs.dto.ky2.PoezdIntoDTO;
+import com.bivc.cimsmgs.commons.Response;
+import com.bivc.cimsmgs.dao.PoezdDAO;
+import com.bivc.cimsmgs.db.ky.Poezd;
+import com.bivc.cimsmgs.doc2doc.orika.Mapper;
+import com.bivc.cimsmgs.dto.ky2.PoezdDTO;
 import com.bivc.cimsmgs.formats.json.Deserializer;
 import com.bivc.cimsmgs.formats.json.Serializer;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.io.IOException;
 
 /**
  * @author p.dzeviarylin
@@ -36,9 +38,21 @@ public class VgCtGr_A extends CimSmgsSupport_A {
 
     }
 
-    private String save() throws IOException {
-        PoezdIntoDTO dto = defaultDeserializer.setLocale(getLocale()).read(PoezdIntoDTO.class, dataObj);
-
+    private String save() throws Exception {
+        final PoezdDTO dto = defaultDeserializer.setLocale(getLocale()).read(PoezdDTO.class, dataObj);
+        Poezd poezd = poezdDAO.findById(dto.getHid(), false);
+        poezd.updateVags(dto.getVagons(), mapper);
+        poezd = poezdDAO.makePersistent(poezd);
+        poezdDAO.flush(); // to get ids
+        setJSONData(
+                defaultSerializer
+                        .setLocale(getLocale())
+                        .write(
+                                new Response<>(
+                                        mapper.map(poezd, PoezdDTO.class)
+                                )
+                        )
+        );
         return SUCCESS;
     }
 
@@ -46,6 +60,11 @@ public class VgCtGr_A extends CimSmgsSupport_A {
     private Serializer defaultSerializer;
     @Autowired
     private Deserializer defaultDeserializer;
+    @Autowired
+    private Mapper mapper;
+    @Autowired
+    private PoezdDAO poezdDAO;
+
     private String action;
     private String dataObj;
 
@@ -55,14 +74,6 @@ public class VgCtGr_A extends CimSmgsSupport_A {
 
     public void setDataObj(String dataObj) {
         this.dataObj = dataObj;
-    }
-
-    public void setDefaultSerializer(Serializer defaultSerializer) {
-        this.defaultSerializer = defaultSerializer;
-    }
-
-    public void setDefaultDeserializer(Deserializer defaultDeserializer) {
-        this.defaultDeserializer = defaultDeserializer;
     }
 
     enum Action {SAVE}

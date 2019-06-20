@@ -137,7 +137,7 @@ public class Report_A extends CimSmgsSupport_A {
             vagonDTO.setNumpp(++numpp);
             vagonDTO.setNvag(vagon.getNvag());
 
-            Set<Kont> konts = isInto ? vagon.getKontsInto() : vagon.getKontsOut();// + Set for KontsOut
+            Set<Kont> konts = isInto ? vagon.getKonts() : vagon.getKonts();// + Set for KontsOut
             if(konts != null && konts.size() > 0){
                 int index = 0;
                 for(Kont kont: konts){
@@ -153,11 +153,11 @@ public class Report_A extends CimSmgsSupport_A {
                     if(isInto){
                         switch (kont.getStatus()){
                             case AVTO_OUT:
-                                vagonDTO.setAvtoOut(kont.getAvtoOut().getNo_avto());
+//                                vagonDTO.setAvtoOut(kont.getAvtoOut().getNo_avto());
                                 break;
                             case POEZD_OUT:
-                                vagonDTO.setNpprOut(kont.getPoezdOut().getNppr());
-                                vagonDTO.setNvagOut(kont.getVagonOut().getNvag());
+//                                vagonDTO.setNpprOut(kont.getPoezdOut().getNppr());
+//                                vagonDTO.setNvagOut(kont.getVagonOut().getNvag());
                                 break;
                             case YARD:
                                 vagonDTO.setKySector(kont.getKy_sector());
@@ -169,11 +169,11 @@ public class Report_A extends CimSmgsSupport_A {
                     } else if(kont.getPrevStatus() != null){
                         switch (kont.getPrevStatus()){
                             case POEZD_INTO:
-                                vagonDTO.setNpprInto(kont.getPoezdInto().getNppr());
-                                vagonDTO.setNvagInto(kont.getVagonInto().getNvag());
+//                                vagonDTO.setNpprInto(kont.getPoezdInto().getNppr());
+//                                vagonDTO.setNvagInto(kont.getVagonInto().getNvag());
                                 break;
                             case AVTO_INTO:
-                                vagonDTO.setAvtoInto(kont.getAvtoInto().getNo_avto());
+//                                vagonDTO.setAvtoInto(kont.getAvtoInto().getNo_avto());
                                 break;
                             case YARD:
                                 vagonDTO.setKySector(kont.getKy_sector());

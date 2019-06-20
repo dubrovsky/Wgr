@@ -2,13 +2,12 @@ package com.bivc.cimsmgs.db.ky;
 
 // Generated 19.02.2014 14:19:48 by Hibernate Tools 3.4.0.CR1
 
+import com.bivc.cimsmgs.doc2doc.orika.Mapper;
+import com.bivc.cimsmgs.dto.ky2.GruzDTO;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /*@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @JsonFilter("kontFilter")
@@ -18,13 +17,14 @@ public class Kont implements Serializable, Comparable<Kont> {
     private Long hid;
     private KontStatus status;
     private KontStatus prevStatus;
-    private Poezd poezdOut;
+    private Vagon vagon;
+   /* private Poezd poezdOut;
     private Vagon vagonInto;
     private Yard yard;
     private Vagon vagonOut;
-    private Poezd poezdInto;
+    private Poezd poezdInto;*/
     private String trans;
-    private Set<KontStatusHistory> kontStatusHistory;
+//    private Set<KontStatusHistory> kontStatusHistory;
     private Long massa_tar;
     private Float pod_sila;
     private String type;
@@ -39,8 +39,8 @@ public class Kont implements Serializable, Comparable<Kont> {
     private Long ky_y;
     private Long ky_z;
     private String ky_sector;
-    private Avto avtoOut;
-    private Avto avtoInto;
+    /*private Avto avtoOut;
+    private Avto avtoInto;*/
 
     private Date dattr;
 
@@ -66,7 +66,7 @@ public class Kont implements Serializable, Comparable<Kont> {
     private Boolean poruz;
     private Byte sort;
     private Set<Gruz> gruzs = new TreeSet<>();
-    private Set<Plomb> plombs = new TreeSet<>();
+//    private Set<Plomb> plombs = new TreeSet<>();
     private String prim;
     private Date dyard;
     private NsiKyOwners owner;
@@ -89,13 +89,13 @@ public class Kont implements Serializable, Comparable<Kont> {
         this.punkt_otpr = punkt_otpr;
     }
 
-    public NsiKyOwners getOwner() {
+    /*public NsiKyOwners getOwner() {
         return owner;
     }
 
     public void setOwner(NsiKyOwners owner) {
         this.owner = owner;
-    }
+    }*/
 
     public Date getDyard() {
         return dyard;
@@ -177,7 +177,7 @@ public class Kont implements Serializable, Comparable<Kont> {
         this.dateYard = dateYard;
     }*/
 
-    public Avto getAvtoInto() {
+    /*public Avto getAvtoInto() {
         return avtoInto;
     }
 
@@ -191,7 +191,7 @@ public class Kont implements Serializable, Comparable<Kont> {
 
     public void setAvtoOut(Avto avtoOut) {
         this.avtoOut = avtoOut;
-    }
+    }*/
 
     /*public static enum KontLocation {
         POEZD_INTO,
@@ -241,6 +241,65 @@ public class Kont implements Serializable, Comparable<Kont> {
 
     public void setPrevStatus(KontStatus prevStatus) {
         this.prevStatus = prevStatus;
+    }
+
+    public void updateGruzs(TreeSet<GruzDTO> dtos, Mapper mapper) {
+        // delete
+        Set<Gruz> gruzyToRemove = new HashSet<>();
+        for (Gruz gruz : getGruzs()) {
+            boolean found = false;
+            for (GruzDTO gruzDto : dtos) {
+                if (Objects.equals(gruz.getHid(), gruzDto.getHid())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                gruzyToRemove.add(gruz);
+            }
+        }
+        for (Gruz gruz : gruzyToRemove) {
+            removeGruz(gruz);
+        }
+
+        // update
+        Set<GruzDTO> dtoToRemove = new HashSet<>();
+        for (Gruz gruz : getGruzs()) {
+            for (GruzDTO gruzDto : dtos) {
+                if (Objects.equals(gruz.getHid(), gruzDto.getHid())) {
+                    mapper.map(gruzDto, gruz);
+                    dtoToRemove.add(gruzDto);
+                }
+            }
+        }
+        dtos.removeAll(dtoToRemove);
+
+        // insert
+        for (GruzDTO gruzDto : dtos) {
+            Gruz gruz = mapper.map(gruzDto, Gruz.class);
+            addGruz(gruz);
+        }
+    }
+
+    private void removeGruz(Gruz gruz) {
+        gruzs.remove(gruz);
+        gruz.setVagon(null);
+    }
+
+    public Vagon getVagon() {
+        return vagon;
+    }
+
+    public void setVagon(Vagon vagon) {
+        this.vagon = vagon;
+    }
+
+    public NsiKyOwners getOwner() {
+        return owner;
+    }
+
+    public void setOwner(NsiKyOwners owner) {
+        this.owner = owner;
     }
 
     public enum FilterFields {
@@ -325,17 +384,17 @@ public class Kont implements Serializable, Comparable<Kont> {
         this.massa_tar = massa_tar;
     }
 
-    public Set<KontStatusHistory> getKontStatusHistory() {
+    /*public Set<KontStatusHistory> getKontStatusHistory() {
         return kontStatusHistory;
     }
 
     public void setKontStatusHistory(Set<KontStatusHistory> kontStatusHistory) {
         this.kontStatusHistory = kontStatusHistory;
-    }
+    }*/
 
     @Override
     public String toString() {
-        return ReflectionToStringBuilder.toStringExclude(this, "gruzs", "plombs", "poezd", "kontStatusHistory", "status", "poezdOut", "vagonInto", "yard", "vagonOut", "poezdInto");
+        return ReflectionToStringBuilder.toStringExclude(this, "gruzs", "plombs", "poezd", "status");
     }
 
 
@@ -386,7 +445,7 @@ public class Kont implements Serializable, Comparable<Kont> {
         this.status = status;
     }
 
-    public Poezd getPoezdOut() {
+    /*public Poezd getPoezdOut() {
         return this.poezdOut;
     }
 
@@ -424,7 +483,7 @@ public class Kont implements Serializable, Comparable<Kont> {
 
     public void setPoezdInto(Poezd poezdInto) {
         this.poezdInto = poezdInto;
-    }
+    }*/
 
     public String getTrans() {
         return this.trans;
@@ -507,13 +566,13 @@ public class Kont implements Serializable, Comparable<Kont> {
         this.gruzs = gruzs;
     }
 
-    public Set<Plomb> getPlombs() {
+    /*public Set<Plomb> getPlombs() {
         return this.plombs;
     }
 
     public void setPlombs(Set<Plomb> plombs) {
         this.plombs = plombs;
-    }
+    }*/
 
     public Date getDprbDate() {
         return this.dprbDate != null ? this.dprbDate : this.dprb;
@@ -568,9 +627,10 @@ public class Kont implements Serializable, Comparable<Kont> {
         }
     }
 
-    public void addGruz(Gruz gruz) {
+    public Gruz addGruz(Gruz gruz) {
         gruzs.add(gruz);
         gruz.setKont(this);
+        return gruz;
     }
 
     public void removeGruzy() {

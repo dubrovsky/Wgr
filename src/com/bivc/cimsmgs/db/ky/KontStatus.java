@@ -8,35 +8,40 @@ public enum KontStatus {
     AVTO_INTO() {
         @Override
         public KontStatusHistory supplyHistory(Kont kont) {
-            return new KontStatusHistory(this, kont, kont.getAvtoInto());
+//            return new KontStatusHistory(this, kont, kont.getAvtoInto());
+            return null;
         }
 
     },
     POEZD_INTO() {
         @Override
         public KontStatusHistory supplyHistory(Kont kont) {
-            return new KontStatusHistory(this, kont, kont.getPoezdInto(), kont.getVagonInto());
+//            return new KontStatusHistory(this, kont, kont.getPoezdInto(), kont.getVagonInto());
+            return null;
         }
 
     },
     YARD() {
         @Override
         public KontStatusHistory supplyHistory(Kont kont) {
-            return new KontStatusHistory(this, kont, kont.getYard());
+//            return new KontStatusHistory(this, kont, kont.getYard());
+            return null;
         }
 
     },
     POEZD_OUT() {
         @Override
         public KontStatusHistory supplyHistory(Kont kont) {
-            return new KontStatusHistory(this, kont, kont.getPoezdOut(), kont.getVagonOut());
+//            return new KontStatusHistory(this, kont, kont.getPoezdOut(), kont.getVagonOut());
+            return null;
         }
 
     },
     AVTO_OUT() {
         @Override
         public KontStatusHistory supplyHistory(Kont kont) {
-            return new KontStatusHistory(this, kont, kont.getAvtoOut());
+//            return new KontStatusHistory(this, kont, kont.getAvtoOut());
+            return null;
         }
 
     },

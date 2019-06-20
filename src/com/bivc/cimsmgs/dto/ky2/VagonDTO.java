@@ -1,9 +1,9 @@
 package com.bivc.cimsmgs.dto.ky2;
 
 import com.bivc.cimsmgs.commons.TimeSerializer;
+import com.bivc.cimsmgs.db.ky.Otpravka;
 import com.bivc.cimsmgs.formats.json.serializers.DateSerializer;
 import com.bivc.cimsmgs.formats.json.serializers.DateTimeDeserializer;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -23,7 +23,6 @@ public class VagonDTO implements Comparable<VagonDTO> {
 
     @JsonSerialize(using = TimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeserializer.class)
-    @JsonInclude(JsonInclude.Include.ALWAYS)
     private Date dprbTime;
 
     private String line;
@@ -58,6 +57,7 @@ public class VagonDTO implements Comparable<VagonDTO> {
     private Otpravka otpravka;
 
     private TreeSet<GruzDTO> gruzs = new TreeSet<>();
+    private TreeSet<KontDTO> konts = new TreeSet<>();
 
     public Date getDprbDate() {
         return dprbDate;
@@ -272,5 +272,11 @@ public class VagonDTO implements Comparable<VagonDTO> {
         this.otpravka = otpravka;
     }
 
-    enum Otpravka {CONT, GRUZ}
+    public TreeSet<KontDTO> getKonts() {
+        return konts;
+    }
+
+    public void setKonts(TreeSet<KontDTO> konts) {
+        this.konts = konts;
+    }
 }

@@ -10,9 +10,9 @@
                 <param name="sequence">KY_KONT_STATUS_HISTORY_HID</param>
             </generator>
         </id>
-        <many-to-one class="com.bivc.cimsmgs.db.ky.Kont" fetch="select" name="kont">
+        <!--<many-to-one class="com.bivc.cimsmgs.db.ky.Kont" fetch="select" name="kont">
             <column name="HID_KONT" precision="20" scale="0" not-null="true"/>
-        </many-to-one>
+        </many-to-one>-->
 
         <many-to-one class="com.bivc.cimsmgs.db.ky.Poezd" fetch="select" name="poezd">
             <column name="HID_POEZD" precision="20" scale="0"/>

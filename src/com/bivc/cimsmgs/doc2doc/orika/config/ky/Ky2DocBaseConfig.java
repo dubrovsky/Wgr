@@ -12,10 +12,8 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.impl.ConfigurableMapper;
 import ma.glasnost.orika.metadata.ClassMapBuilder;
-import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -55,7 +53,7 @@ public class Ky2DocBaseConfig extends ConfigurableMapper {
                             @Override
                             public void mapAtoB(Kont kont, CimSmgsKonList cimSmgsKonList, MappingContext context) {
                                 CimSmgs cimSmgs = cimSmgsKonList.getCimSmgsCarList().getCimSmgs();
-                                if(CollectionUtils.isNotEmpty(kont.getPlombs())){
+                                /*if(CollectionUtils.isNotEmpty(kont.getPlombs())){
                                     cimSmgs.getCimSmgsPlombs().clear();
                                     Map<Byte, CimSmgsPlomb> cimSmgsPlombs = cimSmgs.getCimSmgsPlombs();
                                     Iterator<Plomb> plombIterator = kont.getPlombs().iterator();
@@ -66,7 +64,7 @@ public class Ky2DocBaseConfig extends ConfigurableMapper {
                                         cimSmgsPlombs.put(sort++, cimSmgsPlomb);
                                     } while (plombIterator.hasNext());
 
-                                }
+                                }*/
                             }
                             /*@Override
                             public void mapBtoA(CimSmgsKonList cimSmgsKonList, Kont kont, MappingContext context) {
