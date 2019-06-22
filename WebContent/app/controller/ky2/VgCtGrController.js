@@ -57,10 +57,7 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
             'ky2vgctgrtreeform': {
                 beforedestroy: this.clearVgCtGrForm
             },
-            'ky2poezdintolist button[action="createVags"]': {
-                click: this.createVgCtGrInto
-            },
-            'ky2poezdintolist button[action="editVags"]': {
+            'ky2poezdintolist button[action="editVgCtGrInto"]': {
                 click: this.editVgCtGrInto
             },
             'ky2vgctgrtreeform > treepanel': {
@@ -87,32 +84,125 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
         });
     },
 
-    createVgCtGrInto: function (btn) {
-        this.createVgCtGr('ky2vgctgrintoform', 'TK.model.ky2.VgCtGrTreeNode');
+    editVgCtGrInto: function (btn) {
+        this.editVgCtGr('ky2vgctgrtreeforminto', 'TK.model.ky2.VgCtGrTreeNode');
     },
 
-    createVgCtGr: function (xtype, modelClsName) {
-
+    editVgCtGr: function (xtype, modelClsName) {
         var poezdlist = this.getPoezdlist();
         if (!TK.Utils.isRowSelected(poezdlist)) {
             return false;
         }
 
-        var /*vagon = Ext.create(modelClsName, {
-                'poezd.hid': poezdlist.getSelectionModel().getLastSelected().get('hid')
-            }),*/
-            vagoncontainer = Ext.widget(xtype, {title: 'Вагон/Контейнер/Груз'});
+        var url = Ext.ModelManager.getModel('TK.model.ky2.VgCtGrTreeNode').getProxy().url;
 
-        // poezdcontainer.down('form').loadRecord(poezd);
-        // poezdcontainer.down('form').initFieldsWithDefaultsValues();
-        vagoncontainer.setVagId(poezdlist.getSelectionModel().getLastSelected().get('hid'));
-        // vagoncontainer.setDirection(direction);
-        this.getCenter().remove(this.getCenter().getComponent(0), true);
-        this.getCenter().add(vagoncontainer);
+        Ext.Ajax.request({
+            url: url,
+            params: {hid: poezdlist.getSelectionModel().getLastSelected().get('hid'), action: 'edit'},
+            scope: this,
+            success: function (response) {
+                var respObj = Ext.decode(response.responseText);
+                var poezdObj = respObj['rows'][0];
+
+                var vagoncontainer = Ext.widget(xtype, {title: 'Вагон/Контейнер/Груз'});
+
+                //// fill tree
+                var vags = poezdObj['vagons'];
+                var rootNode = this.getTreepanel().getStore().getRootNode();
+                // rootNode.removeAll();
+                vagoncontainer.setVagId(poezdObj['hid']);
+
+                if (vags && !Ext.Object.isEmpty(vags)) {
+                    this.initVagsNodes(vags, rootNode);
+                    rootNode.expand();
+                }
+                /// END fill tree
+                this.getCenter().remove(this.getCenter().getComponent(0), true);
+                this.getCenter().add(vagoncontainer);
+
+            },
+            failure: function (response) {
+                TK.Utils.makeErrMsg(response, 'Error...');
+            }
+        });
     },
 
-    editVgCtGrInto: function (btn) {
+    initVagsNodes: function (vags, rootNode) {
+        for (var vagIndx in vags) {
+            var vag = vags[vagIndx],
+                conts = vag['konts'],
+                gruzy = vag['gruzs'],
+                vagModel = Ext.create('TK.model.ky2.VgCtGrTreeNode', {
+                    text: vag['nvag'],
+                    who: 'vag',
+                    leaf: false,
+                    iconCls: 'vag',
+                    expanded: ((conts && conts['0']) || (gruzy && gruzy['0'])) && vagIndx == 0
+                });
 
+            this.getVagpanel().items.each(function (item, index, length) {
+                if (item.isXType('field')) {
+                    vagModel.set(item.getName(), vag[item.getName()]);
+                }
+            });
+
+            rootNode.appendChild(vagModel);
+
+            if (vag['otpravka'] === 'CONT') {
+                if (conts && !Ext.Object.isEmpty(conts)) {
+                    this.initContsNodes(conts, vagIndx, vagModel);
+                }
+            } else if (vag['otpravka'] === 'GRUZ') {
+                if (gruzy && !Ext.Object.isEmpty(gruzy)) {
+                    this.initGryzyNodes(gruzy, vagModel, vagIndx);
+                }
+            }
+        }
+    },
+
+    initContsNodes: function (conts, vagIndx, vagModel) {
+        for (var contIndx in conts) {
+            var cont = conts[contIndx],
+                gryzy = cont['gruzs'],
+                contModel = Ext.create('TK.model.ky2.VgCtGrTreeNode', {
+                    text: cont['nkon'],
+                    who: 'cont',
+                    iconCls: 'cont3',
+                    leaf: gryzy && gryzy['0'] ? false : true,
+                    expanded: vagIndx == 0 && gryzy && gryzy['0'] && contIndx == 0
+                });
+
+            this.getContpanel().items.each(function (item, index, length) {
+                if (item.isXType('field')) {
+                    contModel.set(item.getName(), cont[item.getName()]);
+                }
+            });
+            vagModel.appendChild(contModel);
+
+            if (gryzy && !Ext.Object.isEmpty(gryzy)) {
+                this.initGryzyNodes(gryzy, contModel, contIndx);
+            }
+        }
+    },
+
+    initGryzyNodes: function (gryzy, contModel, contIndx) {
+        for (var gryzIndx in gryzy) {
+            var gryz = gryzy[gryzIndx],
+                gryzModel = Ext.create('TK.model.ky2.VgCtGrTreeNode', {
+                    text: gryz['kgvn'],
+                    who: 'gryz',
+                    iconCls: 'gryz',
+                    leaf: true,
+                    expanded: false
+                });
+
+            this.getGryzpanel().items.each(function (item, index, length) {
+                if (item.isXType('field')) {
+                    gryzModel.set(item.getName(), gryz[item.getName()]);
+                }
+            });
+            contModel.appendChild(gryzModel);
+        }
     },
 
     onTreeNodeClick: function (treepanel, record, item, index) {
@@ -149,7 +239,7 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
 
         switch (newTabItemId) {
             case 'gryz':
-                if(record.parentNode.get('who') === 'vag'){
+                if (record.parentNode.get('who') === 'vag') {
                     if (this.getAddGryzBtn().isHidden()) {
                         this.getAddGryzBtn().show();
                     }
@@ -176,7 +266,7 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
 
                 break;
             case 'vag':
-                if(record.get('otpravka') === 'CONT') {
+                if (record.get('otpravka') === 'CONT') {
                     if (this.getAddGryzBtn().isVisible()) {
                         this.getAddGryzBtn().hide();
                     }
@@ -184,7 +274,7 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
                         this.getAddContBtn().show();
                     }
 
-                } else if(record.get('otpravka') === 'GRUZ') {
+                } else if (record.get('otpravka') === 'GRUZ') {
                     if (this.getAddGryzBtn().isHidden()) {
                         this.getAddGryzBtn().show();
                     }
@@ -278,7 +368,9 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
     },
 
     clearVgCtGrForm: function () {
-        this.getTreepanel().getRootNode().removeAll();
+        var rootNode = this.getTreepanel().getRootNode();
+        rootNode.removeAll();
+        rootNode.collapse(); // to avois second autoload
     },
 
     onVgCtGrFormUpdateData: function (field) {
@@ -313,12 +405,64 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
             scope: this,
             success: function (response) {
                 var respObj = Ext.decode(response.responseText);
-                console.log(respObj);
+                var poezdObj = respObj['rows'][0];
+                var rootNode = this.getTreepanel().getStore().getRootNode();
+                var vags = poezdObj['vagons'];
+                if (vags && !Ext.Object.isEmpty(vags)) {
+                    this.initVagsHids(vags, rootNode);
+                }
             },
             failure: function (response) {
                 TK.Utils.makeErrMsg(response, 'Error...');
             }
         });
+    },
+
+    initVagsHids: function (vags, rootNode) {
+        for (var vagIndx in vags) {
+            var vag = vags[vagIndx],
+                conts = vag['konts'],
+                gruzy = vag['gruzs'];
+
+            var vagNode = rootNode.findChild('sort', vagIndx);
+            if (vagNode) {
+                vagNode.set('hid', vag['hid']);
+                if (vag['otpravka'] === 'CONT') {
+                    if (conts && !Ext.Object.isEmpty(conts)) {
+                        this.initContsHids(conts, vagNode);
+                    }
+                } else if (vag['otpravka'] === 'GRUZ') {
+                    if (gruzy && !Ext.Object.isEmpty(gruzy)) {
+                        this.initGryzyHids(gruzy, vagNode);
+                    }
+                }
+            }
+        }
+    },
+
+    initContsHids: function (conts, vagNode) {
+        for (var contIndx in conts) {
+            var cont = conts[contIndx],
+                gruzy = cont['gruzs'];
+
+            var contNode = vagNode.findChild('sort', contIndx);
+            if (contNode) {
+                contNode.set('hid', cont['hid']);
+                if (gruzy && !Ext.Object.isEmpty(gruzy)) {
+                    this.initGryzyHids(gruzy, contNode);
+                }
+            }
+        }
+    },
+
+    initGryzyHids: function (gruzy, parentNode) {
+        for (var gruzIndx in gruzy) {
+            var gruz = gruzy[gruzIndx];
+            var gruzNode = parentNode.findChild('sort', gruzIndx);
+            if (gruzNode) {
+                gruzNode.set('hid', gruz['hid']);
+            }
+        }
     },
 
     saveVags: function (dataObj, direction) {
@@ -332,6 +476,12 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
             this.getVagpanel().items.each(function (vagItem, index, length) {
                 if (vagItem.isXType('field')) {
                     vagDataObj[vagItem.getName()] = vagNodeModel.get(vagItem.getName());
+                } else if (vagItem.isXType('fieldcontainer')) {
+                    vagItem.items.each(function (item) {
+                        if (item.isXType('field')) {
+                            vagDataObj[item.getName()] = vagNodeModel.get(item.getName());
+                        }
+                    }, this);
                 }
             }, this);
             vagDataObj['sort'] = vagIndex;
@@ -362,6 +512,12 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
             this.getContpanel().items.each(function (contItem, index, length) {
                 if (contItem.isXType('field')) {
                     contDataObj[contItem.getName()] = contNodeModel.get(contItem.getName());
+                } else if (contItem.isXType('fieldcontainer')) {
+                    contItem.items.each(function (item) {
+                        if (item.isXType('field')) {
+                            contDataObj[item.getName()] = contNodeModel.get(item.getName());
+                        }
+                    }, this);
                 }
             }, this);
             contDataObj['sort'] = contIndex;
@@ -385,6 +541,12 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
             this.getGryzpanel().items.each(function (gryzItem, index, length) {
                 if (gryzItem.isXType('field')) {
                     gruzDataObj[gryzItem.getName()] = gryzNodeModel.get(gryzItem.getName());
+                } else if (gryzItem.isXType('fieldcontainer')) {
+                    gryzItem.items.each(function (item) {
+                        if (item.isXType('field')) {
+                            gruzDataObj[item.getName()] = gryzNodeModel.get(item.getName());
+                        }
+                    }, this);
                 }
             }, this);
             gruzDataObj['sort'] = gryzIndex;

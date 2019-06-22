@@ -17,65 +17,81 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author p.dzeviarylin
  */
 public class VgCtGr_A extends CimSmgsSupport_A {
-    private static final Logger log = LoggerFactory.getLogger(VgCtGr_A.class);
+	private static final Logger log = LoggerFactory.getLogger(VgCtGr_A.class);
 
-    public String execute() throws Exception {
-        if(StringUtils.isEmpty(action)){
-            throw new RuntimeException("Empty action parameter");
-        }
+	public String execute() throws Exception {
+		if (StringUtils.isEmpty(action)) {
+			throw new RuntimeException("Empty action parameter");
+		}
 
-        try {
-            switch (Action.valueOf(action.toUpperCase())){
-                case SAVE:
-                    return save();
-                default:
-                    throw new RuntimeException("Unknown action");
-            }
+		try {
+			switch (Action.valueOf(action.toUpperCase())) {
+				case SAVE:
+					return save();
+				case EDIT:
+					return edit();
+				default:
+					throw new RuntimeException("Unknown action");
+			}
 
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException(e);
-        }
+		} catch (IllegalArgumentException e) {
+			throw new RuntimeException(e);
+		}
 
-    }
+	}
 
-    private String save() throws Exception {
-        final PoezdDTO dto = defaultDeserializer.setLocale(getLocale()).read(PoezdDTO.class, dataObj);
-        Poezd poezd = poezdDAO.findById(dto.getHid(), false);
-        poezd.updateVags(dto.getVagons(), mapper);
-        poezd = poezdDAO.makePersistent(poezd);
-        poezdDAO.flush(); // to get ids
-        setJSONData(
-                defaultSerializer
-                        .setLocale(getLocale())
-                        .write(
-                                new Response<>(
-                                        mapper.map(poezd, PoezdDTO.class)
-                                )
-                        )
-        );
-        return SUCCESS;
-    }
+	private String edit() throws Exception {
+		Poezd poezd = poezdDAO.findById(getHid(), false);
+		setJSONData(
+				defaultSerializer
+						.setLocale(getLocale())
+						.write(
+								new Response<>(
+										mapper.map(poezd, PoezdDTO.class)
+								)
+						)
+		);
+		return SUCCESS;
+	}
 
-    @Autowired
-    private Serializer defaultSerializer;
-    @Autowired
-    private Deserializer defaultDeserializer;
-    @Autowired
-    private Mapper mapper;
-    @Autowired
-    private PoezdDAO poezdDAO;
+	private String save() throws Exception {
+		final PoezdDTO dto = defaultDeserializer.setLocale(getLocale()).read(PoezdDTO.class, dataObj);
+		Poezd poezd = poezdDAO.findById(dto.getHid(), false);
+		poezd.updateVags(dto.getVagons(), mapper);
+		poezd = poezdDAO.makePersistent(poezd);
+		poezdDAO.flush(); // to get ids
+		setJSONData(
+				defaultSerializer
+						.setLocale(getLocale())
+						.write(
+								new Response<>(
+										mapper.map(poezd, PoezdDTO.class)
+								)
+						)
+		);
+		return SUCCESS;
+	}
 
-    private String action;
-    private String dataObj;
+	@Autowired
+	private Serializer defaultSerializer;
+	@Autowired
+	private Deserializer defaultDeserializer;
+	@Autowired
+	private Mapper mapper;
+	@Autowired
+	private PoezdDAO poezdDAO;
 
-    public void setAction(String action) {
-        this.action = action;
-    }
+	private String action;
+	private String dataObj;
 
-    public void setDataObj(String dataObj) {
-        this.dataObj = dataObj;
-    }
+	public void setAction(String action) {
+		this.action = action;
+	}
 
-    enum Action {SAVE}
+	public void setDataObj(String dataObj) {
+		this.dataObj = dataObj;
+	}
+
+	enum Action {SAVE, EDIT}
 
 }

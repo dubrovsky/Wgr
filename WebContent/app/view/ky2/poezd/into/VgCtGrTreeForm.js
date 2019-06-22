@@ -1,6 +1,6 @@
 Ext.define('TK.view.ky2.poezd.into.VgCtGrTreeForm', {
     extend: 'TK.view.ky2.VgCtGrTreeForm',
-    alias: 'widget.ky2vgctgrintoform',
+    alias: 'widget.ky2vgctgrtreeforminto',
 
     requires: [
         'Ext.form.field.ComboBox',

@@ -20,8 +20,9 @@ Ext.define('TK.view.ky2.poezd.into.PoezdList', {
     },
     buildTopToolbar: function (config) {
         this.callParent(arguments);
-        config.tbar.splice(6, 0, {text: this.btnCreateVags, iconCls:'doc_new', action:'createVags'},'-');
-        config.tbar.splice(8, 0, {text: this.btnEditVags, iconCls:'edit', action:'editVags'},'-');
+        config.tbar.splice(6, 0, {text: '+Вагон/Контейнер/Груз', iconCls:'edit', action:'editVgCtGrInto'},'-');
+        // config.tbar.splice(6, 0, {text: this.btnCreateVags, iconCls:'doc_new', action:'createVags'},'-');
+        // config.tbar.splice(8, 0, {text: this.btnEditVags, iconCls:'edit', action:'editVags'},'-');
         // config.tbar.splice(config.tbar.length - 3, 0, {text: 'Создать поезд по отправлению', iconCls:'train', action:'createPoezdOutFromInto'},'-');
     }
 });
