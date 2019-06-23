@@ -8,9 +8,9 @@ Ext.define('TK.store.ky2.VgCtGrTreeNodes', {
         children: []
     },
     rootVisible : false*/
-    /*root: {
-        // children: []
+    /*,root: {
+        children: [],
 
-      //  expanded: true
+       expanded: true
     }*/
 });

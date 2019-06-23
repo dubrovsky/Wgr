@@ -66,9 +66,9 @@ Ext.define('TK.model.ky2.VgCtGrTreeNode', {
         },
         {name: 'leaf', type: 'boolean'},
         {name: 'expanded', type: 'boolean'}
-    ],
+    ]/*,,
 
-    idProperty: 'hid',
+    idProperty: 'hid' // if present, server side call will be made
     proxy: {
         type: 'ajax',
         url: 'ky2/secure/VgCtGr.do',
@@ -88,5 +88,5 @@ Ext.define('TK.model.ky2.VgCtGrTreeNode', {
                 TK.Utils.makeErrMsg(response, 'Внимание! Ошибка загрузки списка...');
             }
         }
-    }
+    }*/
 });
