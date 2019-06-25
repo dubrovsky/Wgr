@@ -11,7 +11,8 @@ Ext.define('TK.model.ky2.VgCtGrTreeNode', {
 
         // vag
         {name: 'nvag', type: 'string'},
-        {name: 'otpravka', type: 'string'},
+        {name: 'otpravka', type: 'string', useNull: true},
+        {name: 'dprb', type: 'string', useNull: true},
         {name: 'dprbDate', type: 'string', useNull: true},
         {name: 'dprbTime', type: 'string', useNull: true, defaultValue: null},
         {name: 'line', type: 'string'},
@@ -36,6 +37,7 @@ Ext.define('TK.model.ky2.VgCtGrTreeNode', {
         {name: 'nkon', type: 'string'},
         {name: 'dprbDate', type: 'string', useNull: true},
         {name: 'dprbTime', type: 'string', useNull: true, defaultValue: null},
+        {name: 'dprb', type: 'string', useNull: true},
         {name: 'poruz', type: 'boolean'},
         {name: 'massa_tar', type: 'int', useNull: true},
         {name: 'pod_sila', type: 'float', useNull: true},

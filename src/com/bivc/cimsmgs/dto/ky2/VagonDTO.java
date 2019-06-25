@@ -1,6 +1,5 @@
 package com.bivc.cimsmgs.dto.ky2;
 
-import com.bivc.cimsmgs.commons.TimeSerializer;
 import com.bivc.cimsmgs.db.ky.Otpravka;
 import com.bivc.cimsmgs.formats.json.serializers.DateSerializer;
 import com.bivc.cimsmgs.formats.json.serializers.DateTimeDeserializer;
@@ -17,13 +16,17 @@ public class VagonDTO implements Comparable<VagonDTO> {
 
     private Long hid;
 
-    @JsonSerialize(using = DateSerializer.class)
+    /*@JsonSerialize(using = DateSerializer.class)
     @JsonDeserialize(using = DateTimeDeserializer.class)
     private Date dprbDate;
 
     @JsonSerialize(using = TimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeserializer.class)
-    private Date dprbTime;
+    private Date dprbTime;*/
+
+    @JsonSerialize(using = DateSerializer.class)
+    @JsonDeserialize(using = DateTimeDeserializer.class)
+    private Date dprb;
 
     private String line;
     private String nvag;
@@ -59,8 +62,8 @@ public class VagonDTO implements Comparable<VagonDTO> {
     private TreeSet<GruzDTO> gruzs = new TreeSet<>();
     private TreeSet<KontDTO> konts = new TreeSet<>();
 
-    public Date getDprbDate() {
-        return dprbDate;
+    /*public Date getDprbDate() {
+        return this.dprbDate != null ? this.dprbDate : this.dprb;
     }
 
     public void setDprbDate(Date dprbDate) {
@@ -68,12 +71,22 @@ public class VagonDTO implements Comparable<VagonDTO> {
     }
 
     public Date getDprbTime() {
-        return dprbTime;
+        return this.dprbTime != null ? this.dprbTime : this.dprb;
     }
 
     public void setDprbTime(Date dprbTime) {
         this.dprbTime = dprbTime;
     }
+
+    public Date getDprb() {
+        if(this.dprbDate != null){
+            this.dprb = this.dprbDate;
+            if(this.dprbTime != null){
+                this.dprb = DateTimeUtils.addTimeToDate(this.dprbDate, this.dprbTime);
+            }
+        }
+        return this.dprb;
+    }*/
 
     public String getLine() {
         return line;
@@ -278,5 +291,14 @@ public class VagonDTO implements Comparable<VagonDTO> {
 
     public void setKonts(TreeSet<KontDTO> konts) {
         this.konts = konts;
+    }
+
+
+    public Date getDprb() {
+        return dprb;
+    }
+
+    public void setDprb(Date dprb) {
+        this.dprb = dprb;
     }
 }

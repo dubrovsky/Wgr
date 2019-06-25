@@ -265,8 +265,11 @@ public class Poezd implements Serializable {
                     mapper.map(vagonIntoDTO, vagon);
                     if(vagonIntoDTO.getOtpravka() == Otpravka.CONT){
                         vagon.updateKonts(vagonIntoDTO.getKonts(), mapper);
-                    } else {
+                    } else if (vagonIntoDTO.getOtpravka() == Otpravka.GRUZ){
                         vagon.updateGruzs(vagonIntoDTO.getGruzs(), mapper);
+                    } else {  // can be deleted and getOtpravka is null
+                        vagon.removeKonts();
+                        vagon.removeGruzy();
                     }
 
                     vagsDtoToRemove.add(vagonIntoDTO);
@@ -281,7 +284,7 @@ public class Poezd implements Serializable {
             addVagon(vagon);
             if(vagonIntoDTO.getOtpravka() == Otpravka.CONT){
                 vagon.updateKonts(vagonIntoDTO.getKonts(), mapper);
-            } else {
+            } else if(vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
                 vagon.updateGruzs(vagonIntoDTO.getGruzs(), mapper);
             }
         }

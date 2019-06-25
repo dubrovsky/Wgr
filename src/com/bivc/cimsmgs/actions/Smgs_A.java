@@ -164,8 +164,8 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
             saveEpd(smgs.getPackDoc(), EPD_ACTION.ADD);
         }
 
-//        setJSONData(convert2JSON_Smgs_Save_Results(smgs, "smgs", defaultSerializer.setView(getView()).setLocale(getLocale()).write(smgs)));
-        setJSONData(convert2JSON_Smgs_Save_Results(smgs, "smgs", cimSmgsKonListSerializer.setLocale(getLocale()).write(smgs)));
+        setJSONData(convert2JSON_Smgs_Save_Results(smgs, "smgs", defaultSerializer.setView(getView()).setLocale(getLocale()).write(smgs)));
+//        setJSONData(convert2JSON_Smgs_Save_Results(smgs, "smgs", cimSmgsKonListSerializer.setLocale(getLocale()).write(smgs)));
         return SUCCESS;
     }
 
@@ -362,7 +362,7 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
         StringBuilder result = new StringBuilder();
 
         if (smgs != null) {
-//            Class view = getView();
+            Class view = getView();
 
             result.append("{");
             result.append("success:true,");
@@ -371,12 +371,12 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
                 log.info("copy");
 
                 CimSmgs smgsCopy = mapper.copy(smgs, CimSmgs.class);
-//                result.append(defaultSerializer.setLocale(getLocale()).setView(view).write(smgsCopy));
-                result.append(cimSmgsKonListSerializer.setLocale(getLocale()).write(smgsCopy));
+                result.append(defaultSerializer.setLocale(getLocale()).setView(view).write(smgsCopy));
+//                result.append(cimSmgsKonListSerializer.setLocale(getLocale()).write(smgsCopy));
             } else {
                 log.info("view");
-//                result.append(defaultSerializer.setLocale(getLocale()).setView(view).write(smgs));
-                result.append(cimSmgsKonListSerializer.setLocale(getLocale()).write(smgs));
+                result.append(defaultSerializer.setLocale(getLocale()).setView(view).write(smgs));
+//                result.append(cimSmgsKonListSerializer.setLocale(getLocale()).write(smgs));
             }
             result.append("}");
         }

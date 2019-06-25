@@ -1,6 +1,5 @@
 package com.bivc.cimsmgs.dto.ky2;
 
-import com.bivc.cimsmgs.commons.TimeSerializer;
 import com.bivc.cimsmgs.formats.json.serializers.DateSerializer;
 import com.bivc.cimsmgs.formats.json.serializers.DateTimeDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -17,13 +16,17 @@ public class KontDTO implements Comparable<KontDTO>{
     private Long hid;
     private String nkon;
 
-    @JsonSerialize(using = DateSerializer.class)
+    /*@JsonSerialize(using = DateSerializer.class)
     @JsonDeserialize(using = DateTimeDeserializer.class)
     private Date dprbDate;
 
     @JsonSerialize(using = TimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeserializer.class)
-    private Date dprbTime;
+    private Date dprbTime;*/
+
+    @JsonSerialize(using = DateSerializer.class)
+    @JsonDeserialize(using = DateTimeDeserializer.class)
+    private Date dprb;
     private Boolean poruz;
     private Long massa_tar;
     private Float pod_sila;
@@ -51,7 +54,7 @@ public class KontDTO implements Comparable<KontDTO>{
         this.nkon = nkon;
     }
 
-    public Date getDprbDate() {
+    /*public Date getDprbDate() {
         return dprbDate;
     }
 
@@ -65,7 +68,7 @@ public class KontDTO implements Comparable<KontDTO>{
 
     public void setDprbTime(Date dprbTime) {
         this.dprbTime = dprbTime;
-    }
+    }*/
 
     public Boolean getPoruz() {
         return poruz;
@@ -206,5 +209,13 @@ public class KontDTO implements Comparable<KontDTO>{
 
     public void setGruzs(TreeSet<GruzDTO> gruzs) {
         this.gruzs = gruzs;
+    }
+
+    public Date getDprb() {
+        return dprb;
+    }
+
+    public void setDprb(Date dprb) {
+        this.dprb = dprb;
     }
 }

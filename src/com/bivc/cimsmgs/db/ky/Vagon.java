@@ -521,6 +521,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
     public void removeKonts() {
         for (Iterator<Kont> iterator = konts.iterator(); iterator.hasNext(); ) {   // avoid ConcurrentModificationException
             Kont kont = iterator.next();
+            kont.removeGruzy();
             iterator.remove();
             kont.setVagon(null);
         }

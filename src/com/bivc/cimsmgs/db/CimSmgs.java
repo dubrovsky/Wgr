@@ -3,7 +3,6 @@ package com.bivc.cimsmgs.db;
 import com.bivc.cimsmgs.commons.money2str;
 import com.bivc.cimsmgs.commons.myUser;
 import com.bivc.cimsmgs.formats.json.JsonViews;
-import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -21,7 +20,7 @@ import java.util.*;
 // ignore ActionSupport props
 @JsonIgnoreProperties({"iftminLogs","iftminLogsBtlc","tdgLog", "tbc2Logs", "csComnt","cimSmgs","cimSmgses","packDoc","route","statuses", "docType1", "type",
         "actionErrors", "actionMessages", "errorMessages", "fieldErrors", "errors", "texts", "locale"})
-@JsonFilter("cimSmgsPropertyFilter")
+//@JsonFilter("cimSmgsPropertyFilter")
 @Entity
 public class CimSmgs extends ActionSupport implements Serializable {
     public static final BigDecimal EPD_DOC_TYPE_HID = new BigDecimal(0);

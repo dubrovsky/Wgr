@@ -4,7 +4,6 @@ package com.bivc.cimsmgs.db;
 
 import com.bivc.cimsmgs.formats.json.JsonViews;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.apache.commons.collections4.MapUtils;
@@ -19,7 +18,7 @@ import java.util.Objects;
 import java.util.TreeMap;
 
 @JsonIgnoreProperties({"packDoc","cimSmgs", "handler", "hibernateLazyInitializer"})
-@JsonFilter("vagPropertyFilter")
+//@JsonFilter("vagPropertyFilter")
 public class CimSmgsCarList implements Serializable {
 
 	private Long hid;

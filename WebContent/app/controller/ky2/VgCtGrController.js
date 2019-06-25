@@ -377,7 +377,7 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
         var selectedModelNode = this.getTreepanel().getSelectionModel().getLastSelected();
         var parentModelNode = selectedModelNode.parentNode;
 
-        selectedModelNode.remove(true);
+        selectedModelNode.remove(true, true);
         this.getDelBtn().hide();
         this.getAddContBtn().hide();
         this.getAddGryzBtn().hide();
@@ -385,6 +385,12 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
         if (parentModelNode && parentModelNode.get('who') === 'vag' && !parentModelNode.hasChildNodes()) {
             parentModelNode.set('otpravka', undefined);
         }
+
+        var index = 0;
+        parentModelNode.eachChild(function (childNodeModel) {
+            childNodeModel.set('sort', index);
+            index++;
+        });
     },
 
     clearVgCtGrForm: function () {
@@ -419,11 +425,13 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
 
         // var url = Ext.ModelManager.getModel('TK.model.ky2.VgCtGrTreeNode').getProxy().url;
         var url = 'ky2/secure/VgCtGr.do';
+        this.getCenter().setLoading(true);
         Ext.Ajax.request({
             url: url,
             params: {dataObj: Ext.encode(dataObj), action: 'save'},
             scope: this,
             success: function (response) {
+                this.getCenter().setLoading(false);
                 var respObj = Ext.decode(response.responseText);
                 var poezdObj = respObj['rows'][0];
                 var rootNode = this.getTreepanel().getStore().getRootNode();
@@ -433,6 +441,7 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
                 }
             },
             failure: function (response) {
+                this.getCenter().setLoading(false);
                 TK.Utils.makeErrMsg(response, 'Error...');
             }
         });
@@ -508,7 +517,7 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
             dataObj['vagons'].push(vagDataObj);
 
             if (vagNodeModel.hasChildNodes()) {
-                var childNodeModel = vagNodeModel.getChildAt(0);
+                // var childNodeModel = vagNodeModel.getChildAt(0);
                 if (vagNodeModel.get('otpravka') === 'CONT') {
                     this.saveConts(vagNodeModel, vagDataObj);
                 } else if (vagNodeModel.get('otpravka') === 'GRUZ') {

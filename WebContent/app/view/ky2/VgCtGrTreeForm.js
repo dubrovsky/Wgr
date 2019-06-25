@@ -40,6 +40,12 @@ Ext.define('TK.view.ky2.VgCtGrTreeForm', {
             items: [
                 {xtype:'textfield', fieldLabel:'№ вагона', name:"nvag", maxLength:13, allowBlank: false},
                 {
+                    name : 'dprb',
+                    xtype: 'datefield',
+                    fieldLabel: 'Прибытие',
+                    altFormats:'d.m.y'
+                },
+                /*{
                     xtype: 'fieldcontainer',
                     layout: {
                         type: 'hbox',
@@ -63,7 +69,7 @@ Ext.define('TK.view.ky2.VgCtGrTreeForm', {
                         xtype: 'displayfield',
                         value: 'Время'
                     }]
-                },
+                },*/
                 {
                     xtype: 'combo',
                     queryMode: 'local',
@@ -71,7 +77,7 @@ Ext.define('TK.view.ky2.VgCtGrTreeForm', {
                     fieldLabel: 'Номер пути',
                     name:'line',
                     allowBlank: false,
-                    store: [[1, '1'], [2, '2']]
+                    store: [['1', '1'], ['2', '2']]
                 },{
                     xtype:'textfield',
                     fieldLabel: 'Код принадлежности',
@@ -182,6 +188,11 @@ Ext.define('TK.view.ky2.VgCtGrTreeForm', {
                     enableKeyEvents: true,
                     allowBlank: false
                 },{
+                    name : 'dprb',
+                    xtype: 'datefield',
+                    fieldLabel: 'Прибытие',
+                    altFormats:'d.m.y'
+                },/*{
                     xtype:'fieldset',
                     title: 'Прибытие',
                     layout: 'anchor',
@@ -201,7 +212,7 @@ Ext.define('TK.view.ky2.VgCtGrTreeForm', {
                         //snapToIncrement: true,
                         altFormats:'H:i'
                     }]
-                },{
+                },*/{
                     xtype:'checkbox',
                     name: 'poruz',
                     fieldLabel: 'Порожний?',
@@ -237,6 +248,11 @@ Ext.define('TK.view.ky2.VgCtGrTreeForm', {
                     name: 'prizn_sob',
                     maxLength: 128
                 },{
+                    xtype:'textfield',
+                    fieldLabel: 'Собственник',
+                    name: 'naim_sob',
+                    maxLength: 128
+                }/*,{
                     xtype: 'fieldcontainer',
                     layout: {
                         type: 'hbox',
@@ -246,9 +262,9 @@ Ext.define('TK.view.ky2.VgCtGrTreeForm', {
                     items: [{
                         xtype:'textarea',
                         name: 'naim_sob',
-                        maxLength: 128,
+                        maxLength: 128
                         //allowBlank: false,
-                        readOnly: true
+                       // readOnly: true
                     },{
                         xtype: 'button',
                         text: '...',
@@ -257,7 +273,12 @@ Ext.define('TK.view.ky2.VgCtGrTreeForm', {
                         xtype: 'hidden',
                         name: 'owner.hid'
                     }]
-                },{
+                }*/,{
+                    xtype:'textfield',
+                    fieldLabel: 'Клиент',
+                    name: 'gruzotpr',
+                    maxLength: 128
+                }/*,{
                     xtype: 'fieldcontainer',
                     layout: {
                         type: 'hbox',
@@ -275,7 +296,7 @@ Ext.define('TK.view.ky2.VgCtGrTreeForm', {
                         itemId: 'gruzotprDir',
                         action: 'nsiOtpr'
                     }]
-                },{
+                }*/,{
                     xtype:'textfield',
                     fieldLabel: 'Пункт отправления',
                     name: 'punkt_otpr',
@@ -308,6 +329,12 @@ Ext.define('TK.view.ky2.VgCtGrTreeForm', {
             itemId: 'gryz',
             items: [
                 {
+                    xtype:'textfield',
+                    fieldLabel: 'Код груза ГНГ',
+                    name: 'kgvn',
+                    maxLength: 10
+                },
+                /*{
                     xtype: 'fieldcontainer',
                     layout: {
                         type: 'hbox',
@@ -324,7 +351,7 @@ Ext.define('TK.view.ky2.VgCtGrTreeForm', {
                         itemId: 'nsiGng',
                         action: 'nsiGng'
                     }]
-                },{
+                },*/{
                     xtype:'textarea',
                     fieldLabel: 'Наименование груза ГНГ',
                     name: 'nzgr',
