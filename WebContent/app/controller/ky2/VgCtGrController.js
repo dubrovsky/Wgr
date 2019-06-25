@@ -4,7 +4,8 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
     views: [
         'ky2.AbstractTreeForm',
         'ky2.VgCtGrTreeForm',
-        'ky2.poezd.into.VgCtGrTreeForm'
+        'ky2.poezd.into.VgCtGrTreeForm',
+        'ky2.poezd.out.VgCtGrTreeForm'
     ],
     models: [
         'ky2.VgCtGrTreeNode'
@@ -57,8 +58,11 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
             'ky2vgctgrtreeform': {
                 beforedestroy: this.clearVgCtGrForm
             },
-            'ky2poezdintolist button[action="editVgCtGrInto"]': {
+            'ky2poezdintolist button[action="editVgCtGr"]': {
                 click: this.editVgCtGrInto
+            },
+            'ky2poezdoutlist button[action="editVgCtGr"]': {
+                click: this.editVgCtGrOut
             },
             'ky2vgctgrtreeform > treepanel': {
                 itemclick: this.onTreeNodeClick
@@ -86,6 +90,10 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
 
     editVgCtGrInto: function (btn) {
         this.editVgCtGr('ky2vgctgrtreeforminto', 'TK.model.ky2.VgCtGrTreeNode');
+    },
+
+    editVgCtGrOut: function (btn) {
+        this.editVgCtGr('ky2vgctgrtreeformout', 'TK.model.ky2.VgCtGrTreeNode');
     },
 
     editVgCtGr: function (xtype, modelClsName) {

@@ -2174,6 +2174,20 @@ Ext.define("TK.locale.ru.view.ky2.poezd.into.PoezdList", {
     btnEditVags     :'Редактировать вагоны'
 });
 
+Ext.define("TK.locale.ru.view.ky2.poezd.out.PoezdList", {
+    override:"TK.view.ky2.poezd.out.PoezdList",
+
+    headerCreation    :'Создание',
+    headerDateTime    :'Дата и время',
+    headerUser        :'Пользователь',
+
+    headerPoezdNum        :'Номер поезда',
+    headerKoleya        :'Колея',
+    headerDateOut        :'Отправление',
+
+    title:'Список поездов по отправлению'
+});
+
 Ext.define("TK.locale.ru.view.ky.poezd.out.List", {
     override:"TK.view.ky.poezd.out.List",
 

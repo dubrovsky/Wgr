@@ -4,6 +4,8 @@ Ext.define('TK.controller.ky2.PoezdController', {
     views: [
         'ky2.poezd.into.PoezdList',
         'ky2.poezd.into.PoezdForm',
+        'ky2.poezd.out.PoezdList',
+        'ky2.poezd.out.PoezdForm',
         'ky2.poezd.BasePoezdList',
         'ky2.poezd.BasePoezdForm',
         'ky2.AbstractList',
@@ -11,11 +13,13 @@ Ext.define('TK.controller.ky2.PoezdController', {
     ],
     stores: [
         'ky2.PoezdsBase',
-        'ky2.PoezdsInto'
+        'ky2.PoezdsInto',
+        'ky2.PoezdsOut'
     ],
     models: [
         'ky2.PoezdBase',
         'ky2.PoezdInto',
+        'ky2.PoezdOut',
         'PackDoc'
     ],
     refs: [{
@@ -34,27 +38,45 @@ Ext.define('TK.controller.ky2.PoezdController', {
             'ky2poezdintolist button[action="create"]': {
                 click: this.createPoezdInto
             },
+            'ky2poezdoutlist button[action="create"]': {
+                click: this.createPoezdOut
+            },
             'ky2poezdintolist button[action="edit"]': {
                 click: this.editPoezdInto
+            },
+            'ky2poezdoutlist button[action="edit"]': {
+                click: this.editPoezdOut
             },
 
             'ky2poezdintolist': {
                 itemdblclick: this.editPoezdInto
             },
+            'ky2poezdoutlist': {
+                itemdblclick: this.editPoezdOut
+            },
             'ky2poezdintolist button[action="delete"]': {
+                click: this.deletePoezd
+            },
+            'ky2poezdoutlist button[action="delete"]': {
                 click: this.deletePoezd
             },
             'ky2poezdintoform button[action="save"]': {
                 click: this.savePoezd
             },
+            'ky2poezdoutform button[action="save"]': {
+                click: this.savePoezd
+            }/*,
             'ky2basepoezdform radiogroup#koleya': {
                 change: this.onKoleyaChange
-            }
+            }*/
         });
     },
 
     createPoezdInto: function(btn){
         this.createPoezd('ky2poezdintoform', 'TK.model.ky2.PoezdInto');
+    },
+    createPoezdOut: function(btn){
+        this.createPoezd('ky2poezdoutform', 'TK.model.ky2.PoezdOut');
     },
     createPoezd: function(xtype, modelClsName){
         var poezdlist = this.getCenter().remove(this.getCenter().getComponent(0), true),
@@ -73,6 +95,9 @@ Ext.define('TK.controller.ky2.PoezdController', {
     },
     editPoezdInto: function(btn){
         this.editPoezd('ky2poezdintoform', 'TK.model.ky2.PoezdInto');
+    },
+    editPoezdOut: function(btn){
+        this.editPoezd('ky2poezdoutform', 'TK.model.ky2.PoezdOut');
     },
     editPoezd: function(xtype, modelClsName){
         var poezdlist = this.getPoezdlist();
@@ -160,7 +185,7 @@ Ext.define('TK.controller.ky2.PoezdController', {
         } else {
             Ext.Msg.alert('Warning', 'Form is not valid');
         }
-    },
+    }/*,
     onKoleyaChange: function(field, newValue){
         var lineField =  field.up('form').getForm().findField('line');
         if(newValue.koleya === 1){
@@ -174,6 +199,6 @@ Ext.define('TK.controller.ky2.PoezdController', {
             );
             lineField.setValue('Все');
         }
-    }
+    }*/
 
 });

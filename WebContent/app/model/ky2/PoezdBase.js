@@ -13,7 +13,11 @@ Ext.define('TK.model.ky2.PoezdBase', {
         {name:'koleya', type:'int'},
         {name:'direction', type:'int'},
         {name:'route.hid', type:'int', useNull:true},
-        {name:'packDoc.hid', type:'int', useNull:true}
+        {name:'packDoc.hid', type:'int', useNull:true} ,
+        {name:'punkt_otpr', type: 'string'},
+        {name:'punkt_nazn', type: 'string'},
+        {name:'gruzotpr', type: 'string'}/*,
+        {name:'line', type: 'string'}*/
     ],
     belongsTo:[{
         model:'TK.model.Route',

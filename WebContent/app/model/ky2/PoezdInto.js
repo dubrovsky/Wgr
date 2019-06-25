@@ -4,10 +4,7 @@ Ext.define('TK.model.ky2.PoezdInto', {
     fields: [
         {name:'dprb', type: 'string', persist: false},
         {name:'dprbDate', type: 'string', useNull:true},
-        {name:'dprbTime', type: 'string', useNull:true, defaultValue: null},
-        {name:'punkt_otpr', type: 'string'},
-        {name:'punkt_nazn', type: 'string'},
-        {name:'gruzotpr', type: 'string'}
+        {name:'dprbTime', type: 'string', useNull:true, defaultValue: null}
     ]/*,
     hasMany:[{
         primaryKey:'hid',

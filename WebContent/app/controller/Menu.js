@@ -315,6 +315,11 @@ Ext.define('TK.controller.Menu', {
                 grid = Ext.widget('ky2poezdintolist');
                 break;
 
+            case 'poezd2out':
+                gridParams = {action:'list', direction:2, routeId:routeId};
+                grid = Ext.widget('ky2poezdoutlist');
+                break;
+
             case 'poezdout':
                 gridParams = {action:'list', direction:2, routeId:routeId};
                 grid = Ext.widget('kypoezdoutlist');
@@ -521,7 +526,7 @@ function translate (me,cur_lang) {
             filecimsmgs :'Графика ЦИМ/СМГС',  avisogu29k  :'Инструкция ГУ для ЦКП', cim :'CIM', avisocim    :'Инструкция CIM',
             files       :'Прочие документы',cmr         :'CMR', fileavisogu29k:'Графика Инструкция ГУ',  gu27v:'ГУ-27в',
             avisogu29k1 :'Инструкция ГУ для агентов', avisocimsmgs:'Инструкция ЦИМ/СМГС', ved :'Вагонная/передаточная ведомость',exit:'Выход',
-            poezdin: 'Поезда, прибытие',poezd2in: 'Поезда2, прибытие', poezdout: 'Поезда, отправление', avtoin: 'Авто, прибытие', avtoout: 'Авто, отправление'
+            poezdin: 'Поезда, прибытие',poezd2in: 'Поезда2, прибытие',poezd2out: 'Поезда2, отправление', poezdout: 'Поезда, отправление', avtoin: 'Авто, прибытие', avtoout: 'Авто, отправление'
         },
 
         de : {user   :'Die Benutzer',userGroups  :'Groups',project:'Die Projekte',log    :'Logs', stat     :"Statistik",
