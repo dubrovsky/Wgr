@@ -35,7 +35,10 @@ Ext.define('TK.view.ky2.poezd.BasePoezdList', {
     },
     buildTopToolbar: function (config) {
         this.callParent(arguments);
-        config.tbar.splice(6, 0, {text: '+Вагон/Контейнер/Груз', iconCls:'edit', action:'editVgCtGr'},'-');
+        config.tbar.splice(6, 0,
+            {text: '+Вагон/Контейнер/Груз', iconCls:'edit', action:'editVgCtGr'},'-'/*,
+            {text: '+Разместить на поезд', iconCls:'bind', action:'editVgCtGr'},'-'*/
+        );
         // config.tbar.unshift({text: 'Фильтр', iconCls:'filter', action:'filterPoezd'},'-');
         // config.tbar.push('->', '-', {text: 'Поиск контейнера', iconCls:'search', action:'searchKont'});
     }

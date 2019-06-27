@@ -87,6 +87,31 @@ public class PoezdDAOHib extends GenericHibernateDAO<Poezd, Long> implements Poe
 
     }
 
+    @Override
+    public List<Poezd> findPoezdsDir(Integer limit, Integer start, List<Filter> filters, Usr usr, Long routeId, Byte direction) {
+        Criteria crit = getSession().createCriteria(getPersistentClass());
+        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans()));
+        crit.createAlias("route", "route").add(Restrictions.eq("route.hid", routeId));
+        if (start >= 0) {
+            crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 20 : limit);
+        }
+        crit.add(Restrictions.eq("direction", direction));
+
+        return listAndCast(crit);
+    }
+
+    @Override
+    public Long countPoezdsDir(List<Filter> filters, Usr usr, Long routeId, Byte direction) {
+        Criteria crit = getSession().createCriteria(getPersistentClass());
+        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans()));
+        crit.createAlias("route", "route").add(Restrictions.eq("route.hid", routeId));
+        crit.add(Restrictions.eq("direction", direction));
+
+        crit.setProjection(Projections.countDistinct("hid"));
+
+        return (Long) crit.uniqueResult();
+    }
+
     private void applyFilter(List<Filter> filters, Criteria crit, Locale locale) {
         if(CollectionUtils.isNotEmpty(filters)){
             for(Filter filter: filters){

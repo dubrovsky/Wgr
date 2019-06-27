@@ -34,7 +34,7 @@ Ext.define('TK.view.ky2.AbstractList', {
     },
     buildTopToolbar: function (config) {
         config.tbar = [
-            {text: this.btnCreate, iconCls:'doc_new', action:'create'},'-'
+            // {text: this.btnCreate, iconCls:'doc_new', action:'create'},'-'
         ];
 
     }

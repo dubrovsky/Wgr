@@ -19,4 +19,8 @@ public interface PoezdDAO extends GenericDAO<Poezd, Long> {
     List<Poezd> findByNppr(String nppr);
 
     Integer findMaxNppr(PoezdService.PoezdPrefix sp, String dateProp, int year);
+
+    List<Poezd> findPoezdsDir(Integer limit, Integer start, List<Filter> filters, Usr usr, Long routeId, Byte direction);
+
+    Long countPoezdsDir(List<Filter> filters, Usr usr, Long routeId, Byte direction);
 }

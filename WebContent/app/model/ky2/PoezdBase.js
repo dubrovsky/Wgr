@@ -39,7 +39,7 @@ Ext.define('TK.model.ky2.PoezdBase', {
 
     proxy: {
         type: 'ajax',
-        url: 'ky/secure/Poezd.do',
+        url: 'ky2/secure/Poezd.do',
         idParam:'hid',
         reader: {
             type: 'json',

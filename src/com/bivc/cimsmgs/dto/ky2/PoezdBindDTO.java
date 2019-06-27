@@ -5,11 +5,11 @@ import java.util.TreeSet;
 /**
  * @author p.dzeviarylin
  */
-public class PoezdDTO {
+public class PoezdBindDTO {
 
     private Long hid;
     private Byte direction;
-    private TreeSet<VagonDTO> vagons = new TreeSet<>();
+    private TreeSet<VagonBindDTO> vagons = new TreeSet<>();
 
     public Long getHid() {
         return hid;
@@ -19,11 +19,11 @@ public class PoezdDTO {
         this.hid = hid;
     }
 
-    public TreeSet<VagonDTO> getVagons() {
+    public TreeSet<VagonBindDTO> getVagons() {
         return vagons;
     }
 
-    public void setVagons(TreeSet<VagonDTO> vagons) {
+    public void setVagons(TreeSet<VagonBindDTO> vagons) {
         this.vagons = vagons;
     }
 

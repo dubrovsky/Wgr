@@ -277,7 +277,13 @@
     </package>
 
     <package name="kontyard2-support" namespace="/ky2" extends="cimsmgs-default">
+        <action name="secure/Poezd" class="poezd2_A">
+            <result name="success" type="json"/>
+        </action>
         <action name="secure/VgCtGr" class="vgctgr_A">
+            <result name="success" type="json"/>
+        </action>
+        <action name="secure/VgCtGrBind" class="vgctgrBind_A">
             <result name="success" type="json"/>
         </action>
     </package>

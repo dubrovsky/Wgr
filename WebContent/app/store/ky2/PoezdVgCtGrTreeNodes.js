@@ -1,6 +1,6 @@
-Ext.define('TK.store.ky2.VgCtGrTreeNodes', {
+Ext.define('TK.store.ky2.PoezdVgCtGrTreeNodes', {
     extend: 'Ext.data.TreeStore',
-    model: 'TK.model.ky2.VgCtGrTreeNode',
+    model: 'TK.model.ky2.PoezdVgCtGrTreeNode',
     // storeId: 'ky2VgCtGrTreeNodes',
     autoLoad: false/*,
     root : {

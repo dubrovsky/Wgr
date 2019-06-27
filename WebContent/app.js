@@ -75,7 +75,8 @@ Ext.application({
         'ky.NsiOwner',
 
         'ky2.PoezdController',
-        'ky2.VgCtGrController'
+        'ky2.VgCtGrController',
+        'ky2.VgCtGrBindController'
     ],
 
     requires:[

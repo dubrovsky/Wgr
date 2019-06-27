@@ -4,10 +4,7 @@ import com.bivc.cimsmgs.db.ky.Gruz;
 import com.bivc.cimsmgs.db.ky.Kont;
 import com.bivc.cimsmgs.db.ky.Poezd;
 import com.bivc.cimsmgs.db.ky.Vagon;
-import com.bivc.cimsmgs.dto.ky2.GruzDTO;
-import com.bivc.cimsmgs.dto.ky2.KontDTO;
-import com.bivc.cimsmgs.dto.ky2.PoezdDTO;
-import com.bivc.cimsmgs.dto.ky2.VagonDTO;
+import com.bivc.cimsmgs.dto.ky2.*;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.ConfigurableMapper;
 import org.springframework.stereotype.Component;
@@ -37,6 +34,26 @@ public class Mapper extends ConfigurableMapper {
                 .register();
 
         factory.classMap(Gruz.class, GruzDTO.class)
+                .byDefault()
+                .register();
+
+        factory.classMap(Poezd.class, PoezdBindDTO.class)
+                .fieldAToB("vagons", "vagons")
+                .byDefault()
+                .register();
+
+        factory.classMap(Vagon.class, VagonBindDTO.class)
+                .fieldAToB("konts", "konts")
+                .fieldAToB("gruzs", "gruzs")
+                .byDefault()
+                .register();
+
+        factory.classMap(Kont.class, KontBindDTO.class)
+                .fieldAToB("gruzs", "gruzs")
+                .byDefault()
+                .register();
+
+        factory.classMap(Gruz.class, GruzBindDTO.class)
                 .byDefault()
                 .register();
     }

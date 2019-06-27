@@ -1,4 +1,4 @@
-Ext.define('TK.view.ky2.VgCtGrTreeForm', {
+Ext.define('TK.view.ky2.PoezdVgCtGrTreeForm', {
     extend: 'TK.view.ky2.AbstractTreeForm',
     alias: 'widget.ky2vgctgrtreeform',
 
@@ -8,7 +8,7 @@ Ext.define('TK.view.ky2.VgCtGrTreeForm', {
     ],
 
     config: {
-        vagId: undefined
+        poezdId: undefined
     },
 
     buildMainPanel: function(){
@@ -383,7 +383,7 @@ Ext.define('TK.view.ky2.VgCtGrTreeForm', {
     },
 
     buildTreePanelStore: function () {
-        return 'ky2.VgCtGrTreeNodes';
+        return 'ky2.PoezdVgCtGrTreeNodes';
     },
 
     buildTreeToolbarItems: function () {

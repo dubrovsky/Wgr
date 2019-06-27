@@ -17,5 +17,11 @@ Ext.define('TK.view.ky2.poezd.into.PoezdList', {
     buildBottomToolbar: function (config) {
         this.callParent(arguments);
         config.bbar.store = 'ky2.PoezdsInto';
+    },
+    buildTopToolbar: function (config) {
+        this.callParent(arguments);
+        config.tbar.splice(8, 0,
+            {text: '+ На поезд по отпр.', iconCls:'bind', action:'showPoezdsOutDir4PoezdIntoBind'},'-'
+        );
     }
 });

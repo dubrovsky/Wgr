@@ -3,15 +3,15 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
 
     views: [
         'ky2.AbstractTreeForm',
-        'ky2.VgCtGrTreeForm',
-        'ky2.poezd.into.VgCtGrTreeForm',
-        'ky2.poezd.out.VgCtGrTreeForm'
+        'ky2.PoezdVgCtGrTreeForm',
+        'ky2.poezd.into.PoezdVgCtGrTreeForm',
+        'ky2.poezd.out.PoezdVgCtGrTreeForm'
     ],
     models: [
-        'ky2.VgCtGrTreeNode'
+        'ky2.PoezdVgCtGrTreeNode'
     ],
     stores: [
-        'ky2.VgCtGrTreeNodes'
+        'ky2.PoezdVgCtGrTreeNodes'
     ],
     refs: [{
         ref: 'center',
@@ -89,11 +89,11 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
     },
 
     editVgCtGrInto: function (btn) {
-        this.editVgCtGr('ky2vgctgrtreeforminto', 'TK.model.ky2.VgCtGrTreeNode');
+        this.editVgCtGr('ky2vgctgrtreeformpoezdinto', 'TK.model.ky2.PoezdVgCtGrTreeNode');
     },
 
     editVgCtGrOut: function (btn) {
-        this.editVgCtGr('ky2vgctgrtreeformout', 'TK.model.ky2.VgCtGrTreeNode');
+        this.editVgCtGr('ky2vgctgrtreeformpoezdout', 'TK.model.ky2.PoezdVgCtGrTreeNode');
     },
 
     editVgCtGr: function (xtype, modelClsName) {
@@ -118,7 +118,7 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
                 var vags = poezdObj['vagons'];
                 var rootNode = this.getTreepanel().getStore().getRootNode();
                 // rootNode.removeAll();
-                vagoncontainer.setVagId(poezdObj['hid']);
+                vagoncontainer.setPoezdId(poezdObj['hid']);
 
                 if (vags && !Ext.Object.isEmpty(vags)) {
                     this.initVagsNodes(vags, rootNode);
@@ -140,7 +140,7 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
             var vag = vags[vagIndx],
                 conts = vag['konts'],
                 gruzy = vag['gruzs'],
-                vagModel = Ext.create('TK.model.ky2.VgCtGrTreeNode', {
+                vagModel = Ext.create('TK.model.ky2.PoezdVgCtGrTreeNode', {
                     text: vag['nvag'],
                     who: 'vag',
                     leaf: false,
@@ -178,7 +178,7 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
         for (var contIndx in conts) {
             var cont = conts[contIndx],
                 gryzy = cont['gruzs'],
-                contModel = Ext.create('TK.model.ky2.VgCtGrTreeNode', {
+                contModel = Ext.create('TK.model.ky2.PoezdVgCtGrTreeNode', {
                     text: cont['nkon'],
                     who: 'cont',
                     iconCls: 'cont3',
@@ -205,10 +205,10 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
         }
     },
 
-    initGryzyNodes: function (gryzy, contModel, contIndx) {
+    initGryzyNodes: function (gryzy, parentModel, parentIndx) {
         for (var gryzIndx in gryzy) {
             var gryz = gryzy[gryzIndx],
-                gryzModel = Ext.create('TK.model.ky2.VgCtGrTreeNode', {
+                gryzModel = Ext.create('TK.model.ky2.PoezdVgCtGrTreeNode', {
                     text: gryz['kgvn'],
                     who: 'gryz',
                     iconCls: 'gryz',
@@ -227,7 +227,7 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
                     });
                 }
             });
-            contModel.appendChild(gryzModel);
+            parentModel.appendChild(gryzModel);
         }
     },
 
@@ -327,7 +327,7 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
     addVgCtGr: function (parentModelNode, who, iconCls) { // add sort prop
         var sort = parentModelNode.childNodes.length;
         var childModelNode = parentModelNode.appendChild(
-            Ext.create('TK.model.ky2.VgCtGrTreeNode', {
+            Ext.create('TK.model.ky2.PoezdVgCtGrTreeNode', {
                 leaf: true,
                 who: who,
                 iconCls: iconCls ? iconCls : who,
@@ -423,7 +423,7 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
     },
 
     onSaveClick: function (btn) {
-        var dataObj = {hid: this.getKy2treeform().getVagId()};
+        var dataObj = {hid: this.getKy2treeform().getPoezdId()};
 
         if (this.getTreepanel().getRootNode().hasChildNodes()) {
             dataObj = this.saveVags(dataObj);

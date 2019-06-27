@@ -1,4 +1,4 @@
-Ext.define('TK.model.ky2.VgCtGrTreeNode', {
+Ext.define('TK.model.ky2.PoezdVgCtGrTreeNode', {
     extend: 'Ext.data.TreeModel',
 
     fields: [
@@ -11,7 +11,7 @@ Ext.define('TK.model.ky2.VgCtGrTreeNode', {
 
         // vag
         {name: 'nvag', type: 'string'},
-        {name: 'otpravka', type: 'string', useNull: true},
+        {name: 'otpravka', type: 'string', useNull: true, defaultValue: null},
         {name: 'dprb', type: 'string', useNull: true},
         {name: 'dprbDate', type: 'string', useNull: true},
         {name: 'dprbTime', type: 'string', useNull: true, defaultValue: null},

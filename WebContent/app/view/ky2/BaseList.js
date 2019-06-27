@@ -5,6 +5,7 @@ Ext.define('TK.view.ky2.BaseList', {
     buildTopToolbar: function (config) {
         this.callParent(arguments);
 
+        config.tbar.push({text: this.btnCreate, iconCls:'doc_new', action:'create'},'-');
         config.tbar.push({text: this.btnEdit, iconCls:'edit', action:'edit'},'-');
 
         if(tkUser.hasPriv('CIM_DELETE')){
