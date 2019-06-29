@@ -191,10 +191,10 @@ Ext.define('TK.controller.ky2.VgCtGrBindController', {
     clearVgCtGrForm: function () {
         var rootNode = this.getTreepanelLeft().getRootNode();
         rootNode.removeAll();
-        rootNode.collapse(); // to avoid second autoload
+        // rootNode.collapse(); // to avoid second autoload
         rootNode = this.getTreepanelRight().getRootNode();
         rootNode.removeAll();
-        rootNode.collapse();
+        // rootNode.collapse();
     },
 
     sortChildNodes: function(treeNodeModel) {

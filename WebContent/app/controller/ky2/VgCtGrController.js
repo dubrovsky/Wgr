@@ -404,7 +404,7 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
     clearVgCtGrForm: function () {
         var rootNode = this.getTreepanel().getRootNode();
         rootNode.removeAll();
-        rootNode.collapse(); // to avois second autoload
+        // rootNode.collapse(); // to avois second autoload
     },
 
     onVgCtGrFormUpdateData: function (field) {
