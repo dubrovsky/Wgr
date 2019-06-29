@@ -395,7 +395,7 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
         }
 
         var index = 0;
-        parentModelNode.eachChild(function (childNodeModel) {
+        parentModelNode.eachChild(function (childNodeModel) { // resort
             childNodeModel.set('sort', index);
             index++;
         });

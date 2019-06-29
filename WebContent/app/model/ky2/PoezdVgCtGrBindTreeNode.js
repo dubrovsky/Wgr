@@ -8,6 +8,7 @@ Ext.define('TK.model.ky2.PoezdVgCtGrBindTreeNode', {
 
         // poezd
         {name:'direction', type:'int'},
+        {name:'nppr', type:'string'},
 
         // vag
         {name: 'nvag', type: 'string'},

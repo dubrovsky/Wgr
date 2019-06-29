@@ -1,6 +1,7 @@
 Ext.define('TK.controller.ky2.VgCtGrBindController', {
     extend: 'Ext.app.Controller',
 
+    sourceVagModel: undefined,
     views: [
         'ky2.poezd.into.PoezdsOutDir',
         'ky2.BasePoezdsOutDir',
@@ -40,6 +41,11 @@ Ext.define('TK.controller.ky2.VgCtGrBindController', {
             },
             'ky2basepoezdsoutdir button[action="getPoesdIntoAndPoezdOutForBind"]': {
                 click: this.getPoesdIntoAndPoezdOutForBind
+            },
+            'ky2bindtreeform > treepanel > treeview': {
+                drop: this.onDropToVag,
+                // beforedrop: this.onBeforedropToVag1,
+                nodedragover: this.onBeforedropToVag
             }
         });
     },
@@ -83,6 +89,7 @@ Ext.define('TK.controller.ky2.VgCtGrBindController', {
 
                     //// fill trees
                     var vags = poezdIntoObj['vagons'];
+                    this.getTreepanelLeft().setTitle(poezdIntoObj['nppr']);
                     var rootNode = this.getTreepanelLeft().getStore().getRootNode();
                     if (vags && !Ext.Object.isEmpty(vags)) {
                         this.initVagsNodes(vags, rootNode);
@@ -90,6 +97,7 @@ Ext.define('TK.controller.ky2.VgCtGrBindController', {
                     }
 
                     vags = poezdOutObj['vagons'];
+                    this.getTreepanelRight().setTitle(poezdOutObj['nppr']);
                     rootNode = this.getTreepanelRight().getStore().getRootNode();
                     if (vags && !Ext.Object.isEmpty(vags)) {
                         this.initVagsNodes(vags, rootNode);
@@ -120,7 +128,7 @@ Ext.define('TK.controller.ky2.VgCtGrBindController', {
                     expanded: ((conts && conts['0']) || (gruzy && gruzy['0'])) && vagIndx == 0
                 });
 
-            Ext.Object.each(vag, function(prop, value) {
+            Ext.Object.each(vag, function (prop, value) {
                 vagModel.set(prop, value);
             }, this);
 
@@ -151,7 +159,7 @@ Ext.define('TK.controller.ky2.VgCtGrBindController', {
                     expanded: vagIndx == 0 && gryzy && gryzy['0'] && contIndx == 0
                 });
 
-            Ext.Object.each(cont, function(prop, value) {
+            Ext.Object.each(cont, function (prop, value) {
                 contModel.set(prop, value);
             }, this);
             vagModel.appendChild(contModel);
@@ -173,7 +181,7 @@ Ext.define('TK.controller.ky2.VgCtGrBindController', {
                     expanded: false
                 });
 
-            Ext.Object.each(gryz, function(prop, value) {
+            Ext.Object.each(gryz, function (prop, value) {
                 gryzModel.set(prop, value);
             }, this);
             parentModel.appendChild(gryzModel);
@@ -183,9 +191,55 @@ Ext.define('TK.controller.ky2.VgCtGrBindController', {
     clearVgCtGrForm: function () {
         var rootNode = this.getTreepanelLeft().getRootNode();
         rootNode.removeAll();
-        rootNode.collapse(); // to avois second autoload
+        rootNode.collapse(); // to avoid second autoload
         rootNode = this.getTreepanelRight().getRootNode();
         rootNode.removeAll();
         rootNode.collapse();
+    },
+
+    sortChildNodes: function(treeNodeModel) {
+        var index = 0;
+        treeNodeModel.eachChild(function (childNodeModel) { // resort
+            childNodeModel.set('sort', index);
+            index++;
+        });
+    },
+
+    onDropToVag: function (node, dragData, targetVagModel, dropPosition) {
+        var sourceModel = dragData.records[0];
+
+        targetVagModel.set('otpravka', sourceModel.get('who').toUpperCase());
+        this.sortChildNodes(targetVagModel);
+
+        if(!this.sourceVagModel.hasChildNodes()){
+            this.sourceVagModel.set('otpravka', undefined);
+        } else {
+            this.sortChildNodes(this.sourceVagModel);
+        }
+
+    },
+
+    onBeforedropToVag: function (targetModel, position, dragData) {
+        var sourceModel = dragData.records[0],
+            sourceParentModel = sourceModel.parentNode,
+            isDrop;
+
+        // check source
+        isDrop = sourceModel.get('who') !== 'vag'; // vag can't be moved
+        if(isDrop){ // can be moved cont in vag, gruz in vag
+            isDrop = sourceParentModel.get('who') === 'vag';
+        }
+
+        // check target
+        if(isDrop){ // can be dropped only in vag
+            isDrop = targetModel.get('who') === 'vag';
+        }
+        if(isDrop) { // vag otpravka should be null or the same as in source parent model
+            isDrop = !targetModel.get('otpravka') || sourceParentModel.get('otpravka') === targetModel.get('otpravka');
+        }
+
+        this.sourceVagModel = isDrop ? sourceParentModel : undefined; // save sourceParentModel to later use it in drop event
+
+        return isDrop;
     }
 });

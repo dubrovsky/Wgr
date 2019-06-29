@@ -9,6 +9,7 @@ public class PoezdBindDTO {
 
     private Long hid;
     private Byte direction;
+	private String nppr;
     private TreeSet<VagonBindDTO> vagons = new TreeSet<>();
 
     public Long getHid() {
@@ -34,4 +35,12 @@ public class PoezdBindDTO {
     public void setDirection(Byte direction) {
         this.direction = direction;
     }
+
+	public String getNppr() {
+		return nppr;
+	}
+
+	public void setNppr(String nppr) {
+		this.nppr = nppr;
+	}
 }

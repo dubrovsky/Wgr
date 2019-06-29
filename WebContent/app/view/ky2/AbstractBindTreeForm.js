@@ -25,14 +25,14 @@ Ext.define('TK.view.ky2.AbstractBindTreeForm', {
             store: this.buildTreeLeftPanelStore(),
             rootVisible: false,
             flex: 1,
-            viewConfig: this.buildTreePanelViewConfig()
+            viewConfig: this.buildTreeLeftPanelViewConfig()
         }, {
             xtype: 'treepanel',
             id: 'treepanelRight',
             store: this.buildTreeRightPanelStore(),
             rootVisible: false,
             flex: 1,
-            viewConfig: this.buildTreePanelViewConfig()
+            viewConfig: this.buildTreeRightPanelViewConfig()
         }];
 
         this.dockedItems = [{
@@ -63,7 +63,23 @@ Ext.define('TK.view.ky2.AbstractBindTreeForm', {
     buildTreeLeftPanelStore: function(){},
     buildTreeRightPanelStore: function(){},
 
-    buildTreePanelViewConfig: function(){
-        return {};
+    buildTreeLeftPanelViewConfig: function(){
+        return {
+            plugins: {
+                ptype: 'treeviewdragdrop',
+                containerScroll: true,
+                appendOnly: true
+            }
+        }
+    },
+
+    buildTreeRightPanelViewConfig: function(){
+        return {
+            plugins: {
+                ptype: 'treeviewdragdrop',
+                containerScroll: true,
+                appendOnly: true
+            }
+        }
     }
 });
