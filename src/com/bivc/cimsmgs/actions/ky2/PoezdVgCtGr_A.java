@@ -16,8 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * @author p.dzeviarylin
  */
-public class VgCtGr_A extends CimSmgsSupport_A {
-	private static final Logger log = LoggerFactory.getLogger(VgCtGr_A.class);
+public class PoezdVgCtGr_A extends CimSmgsSupport_A {
+	private static final Logger log = LoggerFactory.getLogger(PoezdVgCtGr_A.class);
 
 	public String execute() throws Exception {
 		if (StringUtils.isEmpty(action)) {

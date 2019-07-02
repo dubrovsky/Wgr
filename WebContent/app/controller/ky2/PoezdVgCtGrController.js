@@ -1,4 +1,4 @@
-Ext.define('TK.controller.ky2.VgCtGrController', {
+Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
     extend: 'Ext.app.Controller',
 
     views: [
@@ -118,7 +118,8 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
                 var vags = poezdObj['vagons'];
                 var rootNode = this.getTreepanel().getStore().getRootNode();
                 // rootNode.removeAll();
-                vagoncontainer.setPoezdId(poezdObj['hid']);
+                rootNode.set('hid', poezdObj['hid']);
+                // vagoncontainer.setPoezdId(poezdObj['hid']);
 
                 if (vags && !Ext.Object.isEmpty(vags)) {
                     this.initVagsNodes(vags, rootNode);
@@ -423,13 +424,12 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
     },
 
     onSaveClick: function (btn) {
-        var dataObj = {hid: this.getKy2treeform().getPoezdId()};
+        // var dataObj = {hid: this.getKy2treeform().getPoezdId()};
+        var dataObj = {hid: this.getTreepanel().getRootNode().get('hid')};
 
         if (this.getTreepanel().getRootNode().hasChildNodes()) {
             dataObj = this.saveVags(dataObj);
         }
-
-        console.log(dataObj);
 
         // var url = Ext.ModelManager.getModel('TK.model.ky2.VgCtGrTreeNode').getProxy().url;
         var url = 'ky2/secure/VgCtGr.do';
@@ -502,7 +502,7 @@ Ext.define('TK.controller.ky2.VgCtGrController', {
         }
     },
 
-    saveVags: function (dataObj, direction) {
+    saveVags: function (dataObj) {
         var vagIndex = 0;
 
         dataObj['vagons'] = [];

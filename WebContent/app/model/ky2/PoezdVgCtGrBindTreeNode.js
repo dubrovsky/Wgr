@@ -20,7 +20,7 @@ Ext.define('TK.model.ky2.PoezdVgCtGrBindTreeNode', {
 
         // gruz
         'kgvn',
-        'nzgr',
+        // 'nzgr',
 
         // tree node fields
         'who',

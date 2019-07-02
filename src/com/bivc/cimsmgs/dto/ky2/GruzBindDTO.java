@@ -7,7 +7,7 @@ public class GruzBindDTO implements Comparable<GruzBindDTO> {
 
     private Long hid;
     private String kgvn;
-    private String nzgr;
+//    private String nzgr;
     private Byte sort;
 
     public Long getHid() {
@@ -26,13 +26,13 @@ public class GruzBindDTO implements Comparable<GruzBindDTO> {
         this.kgvn = kgvn;
     }
 
-    public String getNzgr() {
+   /* public String getNzgr() {
         return nzgr;
     }
 
     public void setNzgr(String nzgr) {
         this.nzgr = nzgr;
-    }
+    }*/
 
     public Byte getSort() {
         return sort;

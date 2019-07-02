@@ -302,6 +302,10 @@ public class Kont implements Serializable, Comparable<Kont> {
         this.owner = owner;
     }
 
+    public void unbindGruzy() {
+
+    }
+
     public enum FilterFields {
         NKON("nkon"),
         NPPR("nppr"),

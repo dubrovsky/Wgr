@@ -3,7 +3,9 @@ package com.bivc.cimsmgs.db.ky;
 // Generated 19.02.2014 14:19:48 by Hibernate Tools 3.4.0.CR1
 
 import com.bivc.cimsmgs.doc2doc.orika.Mapper;
+import com.bivc.cimsmgs.dto.ky2.GruzBindDTO;
 import com.bivc.cimsmgs.dto.ky2.GruzDTO;
+import com.bivc.cimsmgs.dto.ky2.KontBindDTO;
 import com.bivc.cimsmgs.dto.ky2.KontDTO;
 import com.bivc.cimsmgs.formats.json.serializers.DateSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -152,6 +154,123 @@ public class Vagon implements Serializable, Comparable<Vagon> {
         this.gruzs = gruzs;
     }
 
+    public void bindKonts(Set<KontBindDTO> dtos, Mapper mapper, Set<Vagon> toVags) {
+        // delete
+        Set<Kont> kontsToUnbind = new HashSet<>();
+        for (Kont kont : getKonts()) {
+            boolean found = false;
+            for (KontBindDTO kontDTO : dtos) {
+                if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                kontsToUnbind.add(kont);
+            }
+        }
+        for (Kont kont : kontsToUnbind) {    // kont will go to another poezd
+            unbindKont(kont);
+        }
+
+        // update
+        Set<KontBindDTO> dtoToRemove = new HashSet<>();
+        for (Kont kont : getKonts()) {
+            for (KontBindDTO kontDTO : dtos) {
+                if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
+                    mapper.map(kontDTO, kont);  // update kont, sort can change
+                    dtoToRemove.add(kontDTO);
+                }
+            }
+        }
+        dtos.removeAll(dtoToRemove);
+
+        // insert
+        for (Vagon vagon : toVags) {// add kont from another poezd
+            for (Kont kont : vagon.getKonts()) {
+                for (KontBindDTO kontDTO : dtos) {
+                    if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
+                        bindKont(kont);
+                    }
+                }
+            }
+        }
+
+    }
+
+    public void bindGruzs(TreeSet<GruzBindDTO> dtos, Mapper mapper, Set<Vagon> toVags) {
+        // delete
+        Set<Gruz> gruzyToUnbind = new HashSet<>();
+        for (Gruz gruz : getGruzs()) {
+            boolean found = false;
+            for (GruzBindDTO gruzDTO : dtos) {
+                if (Objects.equals(gruz.getHid(), gruzDTO.getHid())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                gruzyToUnbind.add(gruz);
+            }
+        }
+        for (Gruz gruz : gruzyToUnbind) {    // gruz will go to another poezd
+            unbindGruz(gruz);
+        }
+
+        // update
+        Set<GruzBindDTO> dtoToRemove = new HashSet<>();
+        for (Gruz gruz : getGruzs()) {
+            for (GruzBindDTO gruzDTO : dtos) {
+                if (Objects.equals(gruz.getHid(), gruzDTO.getHid())) {
+                    mapper.map(gruzDTO, gruz);  // update gruz, sort can change
+                    dtoToRemove.add(gruzDTO);
+                }
+            }
+        }
+        dtos.removeAll(dtoToRemove);
+
+        // insert
+        for (Vagon vagon : toVags) {// add gruz from another poezd
+            for (Gruz gruz : vagon.getGruzs()) {
+                for (GruzBindDTO gruzDTO : dtos) {
+                    if (Objects.equals(gruz.getHid(), gruzDTO.getHid())) {
+                        bindGruz(gruz);
+                    }
+                }
+            }
+        }
+    }
+
+    private void unbindGruz(Gruz gruz) {
+//        konts.remove(kont);
+        if (gruz.getVagon() != null && gruz.getVagon().getHid().equals(hid)) {  // unbind only this vagon
+            gruz.setVagon(null);
+        }
+
+    }
+
+    public Gruz bindGruz(Gruz gruz) {
+        if (gruz.getVagon() == null || !gruz.getVagon().getHid().equals(getHid())) {  // bind only another vagon
+            gruz.setVagon(this);
+        }
+        return gruz;
+    }
+
+    private void unbindKont(Kont kont) {
+        if (kont.getVagon() != null && kont.getVagon().getHid().equals(hid)) {  // unbind only this vagon
+            kont.setVagon(null);
+        }
+
+    }
+
+    public Kont bindKont(Kont kont) {
+        if (kont.getVagon() == null || !kont.getVagon().getHid().equals(getHid())) {// bind only another vagon
+            kont.setVagon(this);
+        }
+        return kont;
+    }
+
+
     public void updateKonts(TreeSet<KontDTO> dtos, Mapper mapper) {
         // delete
         Set<Kont> kontsToRemove = new HashSet<>();
@@ -196,6 +315,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
         konts.remove(kont);
         kont.setVagon(null);
     }
+
 
     public void updateGruzs(TreeSet<GruzDTO> dtos, Mapper mapper) {
         // delete
@@ -527,6 +647,13 @@ public class Vagon implements Serializable, Comparable<Vagon> {
         }
     }
 
+    public void unbindKonts() {
+        for (Iterator<Kont> iterator = konts.iterator(); iterator.hasNext(); ) {   // avoid ConcurrentModificationException
+            Kont kont = iterator.next();
+            unbindKont(kont);
+        }
+    }
+
     public Gruz addGruz(Gruz gruz) {
         gruzs.add(gruz);
         gruz.setVagon(this);
@@ -538,6 +665,14 @@ public class Vagon implements Serializable, Comparable<Vagon> {
             Gruz gruz = iterator.next();
             iterator.remove();
             gruz.setVagon(null);
+        }
+    }
+
+    public void unbindGruzy() {
+        for (Iterator<Gruz> iterator = gruzs.iterator(); iterator.hasNext(); ) {   // avoid ConcurrentModificationException
+            Gruz gruz = iterator.next();
+//            iterator.remove();
+            unbindGruz(gruz);
         }
     }
 }

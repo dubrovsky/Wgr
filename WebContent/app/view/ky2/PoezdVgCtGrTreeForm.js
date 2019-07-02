@@ -7,9 +7,9 @@ Ext.define('TK.view.ky2.PoezdVgCtGrTreeForm', {
         'Ext.tab.Panel'
     ],
 
-    config: {
+    /*config: {
         poezdId: undefined
-    },
+    },*/
 
     buildMainPanel: function(){
         return [{

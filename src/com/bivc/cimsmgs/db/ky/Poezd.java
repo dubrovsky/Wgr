@@ -5,6 +5,7 @@ package com.bivc.cimsmgs.db.ky;
 import com.bivc.cimsmgs.db.PackDoc;
 import com.bivc.cimsmgs.db.Route;
 import com.bivc.cimsmgs.doc2doc.orika.Mapper;
+import com.bivc.cimsmgs.dto.ky2.VagonBindDTO;
 import com.bivc.cimsmgs.dto.ky2.VagonDTO;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
@@ -236,6 +237,24 @@ public class Poezd implements Serializable {
 
     public boolean hasPack() {
         return (this.getPackDoc() != null && this.getPackDoc().getHid() != null);
+    }
+
+    public void bindPoezdToPoezd(Set<VagonBindDTO> dtos, Set<Vagon> vagOut, Mapper mapper) {
+        for(Vagon vagon: getVagons()){
+            for(VagonBindDTO vagonIntoDTO : dtos){
+                if(Objects.equals(vagon.getHid(), vagonIntoDTO.getHid())){
+                    mapper.map(vagonIntoDTO, vagon); // update otpravka
+                    if(vagonIntoDTO.getOtpravka() == Otpravka.CONT){
+                        vagon.bindKonts(vagonIntoDTO.getKonts(), mapper, vagOut);
+                    } else if (vagonIntoDTO.getOtpravka() == Otpravka.GRUZ){
+                        vagon.bindGruzs(vagonIntoDTO.getGruzs(), mapper, vagOut);
+                    } else {  // can be deleted and getOtpravka is null
+                        vagon.unbindKonts();
+                        vagon.unbindGruzy();
+                    }
+                }
+            }
+        }
     }
 
     public void updateVags(Set<VagonDTO> dtos, Mapper mapper) {

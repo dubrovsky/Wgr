@@ -173,8 +173,8 @@
           p:epdUpdateMapper-ref="epdUpdateMapper"
     />
 
-    <bean id="vgctgr_A" class="com.bivc.cimsmgs.actions.ky2.VgCtGr_A" scope="prototype"/>
-    <bean id="vgctgrBind_A" class="com.bivc.cimsmgs.actions.ky2.VgCtGrBind" scope="prototype"/>
+    <bean id="vgctgr_A" class="com.bivc.cimsmgs.actions.ky2.PoezdVgCtGr_A" scope="prototype"/>
+    <bean id="vgctgrBind_A" class="com.bivc.cimsmgs.actions.ky2.PoezdVgCtGrBind_A" scope="prototype"/>
     <bean id="poezd2_A" class="com.bivc.cimsmgs.actions.ky2.Poezd_A" scope="prototype"/>
 
     <bean id="poezd_A" class="com.bivc.cimsmgs.actions.ky.Poezd_A" scope="prototype"/>

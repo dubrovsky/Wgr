@@ -1,4 +1,4 @@
-Ext.define('TK.controller.ky2.VgCtGrBindController', {
+Ext.define('TK.controller.ky2.PoezdVgCtGrBindController', {
     extend: 'Ext.app.Controller',
 
     sourceVagModel: undefined,
@@ -46,6 +46,9 @@ Ext.define('TK.controller.ky2.VgCtGrBindController', {
                 drop: this.onDropToVag,
                 // beforedrop: this.onBeforedropToVag1,
                 nodedragover: this.onBeforedropToVag
+            },
+            'ky2vgctgrtreebindformpoezdinto button[action=save]': {
+                click: this.bindPoezdIntoToPoezdOut
             }
         });
     },
@@ -92,6 +95,9 @@ Ext.define('TK.controller.ky2.VgCtGrBindController', {
                     this.getTreepanelLeft().setTitle(poezdIntoObj['nppr']);
                     var rootNode = this.getTreepanelLeft().getStore().getRootNode();
                     if (vags && !Ext.Object.isEmpty(vags)) {
+                        rootNode.set('hid', poezdIntoObj['hid']); // poezd hid
+                        rootNode.set('direction', poezdIntoObj['direction']);
+                        rootNode.set('nppr', poezdIntoObj['nppr']);
                         this.initVagsNodes(vags, rootNode);
                         rootNode.expand();
                     }
@@ -100,6 +106,9 @@ Ext.define('TK.controller.ky2.VgCtGrBindController', {
                     this.getTreepanelRight().setTitle(poezdOutObj['nppr']);
                     rootNode = this.getTreepanelRight().getStore().getRootNode();
                     if (vags && !Ext.Object.isEmpty(vags)) {
+                        rootNode.set('hid', poezdOutObj['hid']);   // // poezd hid
+                        rootNode.set('direction', poezdOutObj['direction']);
+                        rootNode.set('nppr', poezdOutObj['nppr']);
                         this.initVagsNodes(vags, rootNode);
                         rootNode.expand();
                     }
@@ -208,7 +217,12 @@ Ext.define('TK.controller.ky2.VgCtGrBindController', {
     onDropToVag: function (node, dragData, targetVagModel, dropPosition) {
         var sourceModel = dragData.records[0];
 
-        targetVagModel.set('otpravka', sourceModel.get('who').toUpperCase());
+        if(sourceModel.get('who') === 'cont'){
+            targetVagModel.set('otpravka', 'CONT');
+        } else if(sourceModel.get('who') === 'gryz') {
+            targetVagModel.set('otpravka', 'GRUZ');
+        }
+
         this.sortChildNodes(targetVagModel);
 
         if(!this.sourceVagModel.hasChildNodes()){
@@ -241,5 +255,107 @@ Ext.define('TK.controller.ky2.VgCtGrBindController', {
         this.sourceVagModel = isDrop ? sourceParentModel : undefined; // save sourceParentModel to later use it in drop event
 
         return isDrop;
+    },
+
+    bindPoezdIntoToPoezdOut: function(btn) {
+        var dataObjLeft = {
+            hid: this.getTreepanelLeft().getRootNode().get('hid'),
+            direction: this.getTreepanelLeft().getRootNode().get('direction'),
+            nppr: this.getTreepanelLeft().getRootNode().get('nppr')
+        };
+
+        if (this.getTreepanelLeft().getRootNode().hasChildNodes()) {
+            dataObjLeft = this.bindVags(dataObjLeft, this.getTreepanelLeft());
+        }
+
+        var dataObjRight = {
+            hid: this.getTreepanelRight().getRootNode().get('hid'),
+            direction: this.getTreepanelRight().getRootNode().get('direction'),
+            nppr: this.getTreepanelRight().getRootNode().get('nppr')
+        };
+
+        if (this.getTreepanelRight().getRootNode().hasChildNodes()) {
+            dataObjRight = this.bindVags(dataObjRight, this.getTreepanelRight());
+        }
+
+        var url = 'ky2/secure/VgCtGrBind.do';
+        this.getCenter().setLoading(true);
+        Ext.Ajax.request({
+            url: url,
+            params: {dataObj: Ext.encode([dataObjLeft, dataObjRight]), action: 'bind_poesd_into_to_poezd_out'},
+            scope: this,
+            success: function (response) {
+                this.getCenter().setLoading(false);
+                var respObj = Ext.decode(response.responseText);
+            },
+            failure: function (response) {
+                this.getCenter().setLoading(false);
+                TK.Utils.makeErrMsg(response, 'Error...');
+            }
+        });
+    },
+
+    bindVags: function (dataObj, treepanel) {
+        var vagIndex = 0;
+
+        dataObj['vagons'] = [];
+
+        treepanel.getRootNode().eachChild(function (vagNodeModel) { // write vags
+            var vagDataObj = {};
+            vagDataObj['hid'] = vagNodeModel.get('hid');
+            vagDataObj['sort'] = vagNodeModel.get('sort');
+            vagDataObj['otpravka'] = vagNodeModel.get('otpravka');
+            vagDataObj['nvag'] = vagNodeModel.get('nvag');
+
+            dataObj['vagons'].push(vagDataObj);
+
+            if (vagNodeModel.hasChildNodes()) {
+                if (vagNodeModel.get('otpravka') === 'CONT') {
+                    this.bindConts(vagNodeModel, vagDataObj);
+                } else if (vagNodeModel.get('otpravka') === 'GRUZ') {
+                    this.bindGryzy(vagNodeModel, vagDataObj);
+                }
+            }
+
+            vagIndex++;
+        }, this);
+
+        return dataObj;
+    },
+
+    bindConts: function (vagNodeModel, vagDataObj) {
+        var contIndex = 0;
+        vagDataObj['konts'] = [];
+
+        vagNodeModel.eachChild(function (contNodeModel) {  // write conts
+            var contDataObj = {};
+            contDataObj['hid'] = contNodeModel.get('hid');
+            contDataObj['sort'] = contNodeModel.get('sort');
+            contDataObj['nkon'] = contNodeModel.get('nkon');
+
+            vagDataObj['konts'].push(contDataObj);
+
+            if (contNodeModel.hasChildNodes()) {
+                this.bindGryzy(contNodeModel, contDataObj);
+            }
+
+            contIndex++;
+        }, this);
+    },
+
+    bindGryzy: function (nodeModel, dataObj) {
+        var gryzIndex = 0;
+
+        dataObj['gruzs'] = [];
+        nodeModel.eachChild(function (gryzNodeModel) {
+            var gruzDataObj = {};
+            gruzDataObj['hid'] = gryzNodeModel.get('hid');
+            gruzDataObj['sort'] = gryzNodeModel.get('sort');
+            gruzDataObj['kgvn'] = gryzNodeModel.get('kgvn');
+
+            dataObj['gruzs'].push(gruzDataObj);
+
+            gryzIndex++;
+        }, this);
     }
 });

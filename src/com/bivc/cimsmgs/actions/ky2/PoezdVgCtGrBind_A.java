@@ -13,14 +13,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author p.dzeviarylin
  */
-public class VgCtGrBind extends CimSmgsSupport_A {
+public class PoezdVgCtGrBind_A extends CimSmgsSupport_A {
 
-    private static final Logger log = LoggerFactory.getLogger(VgCtGrBind.class);
+    private static final Logger log = LoggerFactory.getLogger(PoezdVgCtGrBind_A.class);
 
     public String execute() throws Exception {
         if (StringUtils.isEmpty(action)) {
@@ -28,9 +30,11 @@ public class VgCtGrBind extends CimSmgsSupport_A {
         }
 
         try {
-            switch (VgCtGrBind.Action.valueOf(action.toUpperCase())) {
+            switch (PoezdVgCtGrBind_A.Action.valueOf(action.toUpperCase())) {
                 case GET_POESD_INTO_AND_POEZD_OUT_FOR_BIND:
                     return getPoesdIntoAndPoezdOutForBind();
+                case BIND_POESD_INTO_TO_POEZD_OUT:
+                    return bindPoesdIntoToPoezdOut();
                 default:
                     throw new RuntimeException("Unknown action");
             }
@@ -38,6 +42,21 @@ public class VgCtGrBind extends CimSmgsSupport_A {
         } catch (IllegalArgumentException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String bindPoesdIntoToPoezdOut() throws Exception {
+        List<PoezdBindDTO> poezdBindDTOS = defaultDeserializer.read(new ArrayList<PoezdBindDTO>() {}.getClass().getGenericSuperclass(), dataObj);
+        PoezdBindDTO poezdBindDTOInto = poezdBindDTOS.get(0);
+        PoezdBindDTO poezdBindDTOOut = poezdBindDTOS.get(1);
+        Poezd poezdInto = poezdDAO.findById(poezdBindDTOInto.getHid(), false);
+        Poezd poezdOut = poezdDAO.findById(poezdBindDTOOut.getHid(), false);
+        poezdInto.bindPoezdToPoezd(poezdBindDTOInto.getVagons(), poezdOut.getVagons(), mapper);
+        poezdOut.bindPoezdToPoezd(poezdBindDTOOut.getVagons(), poezdInto.getVagons(), mapper);
+        poezdDAO.makePersistent(poezdInto);
+        poezdDAO.makePersistent(poezdOut);
+
+        setJSONData(defaultSerializer.write(new Response<>()));
+        return SUCCESS;
     }
 
     private String getPoesdIntoAndPoezdOutForBind() throws Exception {
@@ -69,6 +88,7 @@ public class VgCtGrBind extends CimSmgsSupport_A {
     private PoezdDAO poezdDAO;
 
     private String action;
+    private String dataObj;
     private Long intoPoezdHid;
     private Long outPoezdHid;
 
@@ -84,5 +104,9 @@ public class VgCtGrBind extends CimSmgsSupport_A {
         this.outPoezdHid = outPoezdHid;
     }
 
-    enum Action {GET_POESD_INTO_AND_POEZD_OUT_FOR_BIND}
+    public void setDataObj(String dataObj) {
+        this.dataObj = dataObj;
+    }
+
+    enum Action {GET_POESD_INTO_AND_POEZD_OUT_FOR_BIND, BIND_POESD_INTO_TO_POEZD_OUT}
 }
