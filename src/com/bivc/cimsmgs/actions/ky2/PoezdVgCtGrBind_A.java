@@ -31,10 +31,10 @@ public class PoezdVgCtGrBind_A extends CimSmgsSupport_A {
 
         try {
             switch (PoezdVgCtGrBind_A.Action.valueOf(action.toUpperCase())) {
-                case GET_POESD_INTO_AND_POEZD_OUT_FOR_BIND:
-                    return getPoesdIntoAndPoezdOutForBind();
-                case BIND_POESD_INTO_TO_POEZD_OUT:
-                    return bindPoesdIntoToPoezdOut();
+                case GET_POEZD_AND_POEZD_FOR_BIND:
+                    return getPoezdAndPoezdForBind();
+                case BIND_POEZD_TO_POEZD:
+                    return bindPoezdToPoezd();
                 default:
                     throw new RuntimeException("Unknown action");
             }
@@ -44,32 +44,32 @@ public class PoezdVgCtGrBind_A extends CimSmgsSupport_A {
         }
     }
 
-    private String bindPoesdIntoToPoezdOut() throws Exception {
+    private String bindPoezdToPoezd() throws Exception {
         List<PoezdBindDTO> poezdBindDTOS = defaultDeserializer.read(new ArrayList<PoezdBindDTO>() {}.getClass().getGenericSuperclass(), dataObj);
-        PoezdBindDTO poezdBindDTOInto = poezdBindDTOS.get(0);
-        PoezdBindDTO poezdBindDTOOut = poezdBindDTOS.get(1);
-        Poezd poezdInto = poezdDAO.findById(poezdBindDTOInto.getHid(), false);
-        Poezd poezdOut = poezdDAO.findById(poezdBindDTOOut.getHid(), false);
-        poezdInto.bindPoezdToPoezd(poezdBindDTOInto.getVagons(), poezdOut.getVagons(), mapper);
-        poezdOut.bindPoezdToPoezd(poezdBindDTOOut.getVagons(), poezdInto.getVagons(), mapper);
-        poezdDAO.makePersistent(poezdInto);
-        poezdDAO.makePersistent(poezdOut);
+        PoezdBindDTO poezd1BindDTO = poezdBindDTOS.get(0);
+        PoezdBindDTO poezd2BindDTO = poezdBindDTOS.get(1);
+        Poezd poezd1 = poezdDAO.findById(poezd1BindDTO.getHid(), false);
+        Poezd poezd2 = poezdDAO.findById(poezd2BindDTO.getHid(), false);
+        poezd1.bindPoezdToPoezd(poezd1BindDTO.getVagons(), poezd2.getVagons(), mapper);
+        poezd2.bindPoezdToPoezd(poezd2BindDTO.getVagons(), poezd1.getVagons(), mapper);
+        poezdDAO.makePersistent(poezd1);
+        poezdDAO.makePersistent(poezd2);
 
         setJSONData(defaultSerializer.write(new Response<>()));
         return SUCCESS;
     }
 
-    private String getPoesdIntoAndPoezdOutForBind() throws Exception {
-        Poezd intoPoezd = poezdDAO.findById(intoPoezdHid, false);
-        Poezd outPoezd = poezdDAO.findById(outPoezdHid, false);
+    private String getPoezdAndPoezdForBind() throws Exception {
+        Poezd poezd1 = poezdDAO.findById(poezd1Hid, false);
+        Poezd poezd2 = poezdDAO.findById(poezd2Hid, false);
         setJSONData(
                 defaultSerializer
                         .setLocale(getLocale())
                         .write(
                                 new Response<>(
                                         Arrays.asList(
-                                                mapper.map(intoPoezd, PoezdBindDTO.class),
-                                                mapper.map(outPoezd, PoezdBindDTO.class)
+                                                mapper.map(poezd1, PoezdBindDTO.class),
+                                                mapper.map(poezd2, PoezdBindDTO.class)
                                         ),
                                         2L
                                 )
@@ -89,24 +89,25 @@ public class PoezdVgCtGrBind_A extends CimSmgsSupport_A {
 
     private String action;
     private String dataObj;
-    private Long intoPoezdHid;
-    private Long outPoezdHid;
+    private Long poezd1Hid;
+    private Long poezd2Hid;
 
     public void setAction(String action) {
         this.action = action;
     }
 
-    public void setIntoPoezdHid(Long intoPoezdHid) {
-        this.intoPoezdHid = intoPoezdHid;
-    }
-
-    public void setOutPoezdHid(Long outPoezdHid) {
-        this.outPoezdHid = outPoezdHid;
-    }
 
     public void setDataObj(String dataObj) {
         this.dataObj = dataObj;
     }
 
-    enum Action {GET_POESD_INTO_AND_POEZD_OUT_FOR_BIND, BIND_POESD_INTO_TO_POEZD_OUT}
+    public void setPoezd1Hid(Long poezd1Hid) {
+        this.poezd1Hid = poezd1Hid;
+    }
+
+    public void setPoezd2Hid(Long poezd2Hid) {
+        this.poezd2Hid = poezd2Hid;
+    }
+
+    enum Action {GET_POEZD_AND_POEZD_FOR_BIND, BIND_POEZD_TO_POEZD}
 }

@@ -9,7 +9,7 @@ Ext.define('TK.controller.ky2.PoezdController', {
         'ky2.poezd.BasePoezdList',
         'ky2.poezd.BasePoezdForm',
         'ky2.poezd.into.PoezdsOutDir',
-        'ky2.BasePoezdsOutDir',
+        'ky2.BasePoezdsDir',
         'ky2.AbstractList',
         'ky2.AbstractForm'
     ],
@@ -17,13 +17,13 @@ Ext.define('TK.controller.ky2.PoezdController', {
         'ky2.PoezdsBase',
         'ky2.PoezdsInto',
         'ky2.PoezdsOut',
-        'ky2.PoezdsOutDir'
+        'ky2.PoezdsDir'
     ],
     models: [
         'ky2.PoezdBase',
         'ky2.PoezdInto',
         'ky2.PoezdOut',
-        'ky2.PoezdOutDir',
+        'ky2.PoezdDir',
         'PackDoc'
     ],
     refs: [{
@@ -63,6 +63,9 @@ Ext.define('TK.controller.ky2.PoezdController', {
             },
             'ky2poezdintolist button[action="showPoezdsOutDir4PoezdIntoBind"]': {
                 click: this.showPoezdsOutDir4PoezdIntoBind
+            },
+            'ky2poezdoutlist button[action="showPoezdsIntoDir4PoezdOutBind"]': {
+                click: this.showPoezdsIntoDir4PoezdOutBind
             },
             'ky2poezdoutlist button[action="delete"]': {
                 click: this.deletePoezd
@@ -163,7 +166,7 @@ Ext.define('TK.controller.ky2.PoezdController', {
             }
         });
     },
-    savePoezd: function (/*serverAction*/) {
+    savePoezd: function () {
         var form = this.getPoezdform();
         if (form.isValid()) {
             var poezd = form.getRecord(),
@@ -176,14 +179,12 @@ Ext.define('TK.controller.ky2.PoezdController', {
                 poezd.setRoute(Ext.create('TK.model.Route', {hid: poezd.get('route.hid')}));
             }
             poezd.save({
-                //params:{action: serverAction},
                 params: {action: 'save'},
                 callback: function (poezd, operation, success) {
                     if (success) {
                         form.loadRecord(poezd);
                         if (newPoezd) {       // packdoc will be available after save
                             poezd.setPackDoc(Ext.create('TK.model.PackDoc', {hid: poezd.get('packDoc.hid')}));
-                            // this.showVagons(poezd.vagons());
                         }
                     }
                     this.getCenter().setLoading(false);
@@ -194,34 +195,28 @@ Ext.define('TK.controller.ky2.PoezdController', {
             Ext.Msg.alert('Warning', 'Form is not valid');
         }
     },
+
     showPoezdsOutDir4PoezdIntoBind: function (btn) {
+        this.showPoezdsDir4PoezdBind('ky2poezdsout4poezdintodir', 2);
+    },
+
+    showPoezdsIntoDir4PoezdOutBind: function (btn) {
+        this.showPoezdsDir4PoezdBind('ky2poezdsinto4poezdoutdir', 1);
+    },
+
+    showPoezdsDir4PoezdBind: function (widget, direction) {
         var poezdlist = this.getPoezdlist();
         if (!TK.Utils.isRowSelected(poezdlist)) {
             return false;
         }
 
-        var win = Ext.widget('ky2poezdsout4poezdintodir'),
+        var win = Ext.widget(widget),
             store = win.down('grid').getStore(),
             poezdModel = poezdlist.getSelectionModel().getLastSelected();
 
-        store.getProxy().extraParams = {action: 'poezds_out_dir_for_poezd_into_bind', direction: 2, routeId: poezdModel.get('route.hid')};
+        store.getProxy().extraParams = {action: 'poezds_dir_for_poezd_bind', direction: direction, routeId: poezdModel.get('route.hid')};
         store.load();
     }
 
-    /*,
-    onKoleyaChange: function(field, newValue){
-        var lineField =  field.up('form').getForm().findField('line');
-        if(newValue.koleya === 1){
-            lineField.getStore().loadData(
-                [['Все'], ['948S'], ['949S'], ['950S'], ['951S'], ['Ciern/T']]
-            );
-            lineField.setValue('Все');
-        } else if(newValue.koleya === 2){
-            lineField.getStore().loadData(
-                [['Все'], ['880'], ['881'], ['882'], ['883'], ['884'], ['948']]
-            );
-            lineField.setValue('Все');
-        }
-    }*/
 
 });

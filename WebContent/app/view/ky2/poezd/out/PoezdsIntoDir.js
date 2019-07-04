@@ -1,10 +1,10 @@
-Ext.define('TK.view.ky2.poezd.into.PoezdsOutDir', {
+Ext.define('TK.view.ky2.poezd.out.PoezdsIntoDir', {
     extend: 'TK.view.ky2.AbstractWindow',
-    alias:'widget.ky2poezdsout4poezdintodir',
-    itemId:'ky2poezdsout4poezdintodir',
+    alias:'widget.ky2poezdsinto4poezdoutdir',
+    itemId:'ky2poezdsinto4poezdoutdir',
 
     width: 550,
-    title: 'Список поездов по отправлению',
+    title: 'Список поездов по прибытию',
 
     buildItems: function (config) {
         config.items = [ {

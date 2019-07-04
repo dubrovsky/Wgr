@@ -42,9 +42,8 @@ public class Poezd_A extends CimSmgsSupport_A {
                     return delete();
                 case LIST:
                     return list();
-                case POEZDS_OUT_DIR_FOR_POEZD_INTO_BIND:
-                    return poezdsOutDir4PoezdIntoBind();
-
+                case POEZDS_DIR_FOR_POEZD_BIND:
+                    return poezdsDir4PoezdBind();
                 default:
                     throw new RuntimeException("Unknown action");
             }
@@ -172,7 +171,7 @@ public class Poezd_A extends CimSmgsSupport_A {
         return SUCCESS;
     }
 
-    public String poezdsOutDir4PoezdIntoBind() throws Exception {
+    public String poezdsDir4PoezdBind() throws Exception {
         final List<Poezd> poezds = poezdDAO.findPoezdsDir(getLimit(), getStart(), getFilters(), getUser().getUsr(), getRouteId(), getDirection());
         final Long total = poezdDAO.countPoezdsDir(getFilters(), getUser().getUsr(), getRouteId(), getDirection());
 
@@ -194,7 +193,7 @@ public class Poezd_A extends CimSmgsSupport_A {
     private Byte direction;
     private long routeId;
 
-    enum Action {LIST, EDIT, SAVE, DELETE, POEZDS_OUT_DIR_FOR_POEZD_INTO_BIND}
+    enum Action {LIST, EDIT, SAVE, DELETE, POEZDS_DIR_FOR_POEZD_BIND}
 
     private List<Filter> filters;
     private String filter;

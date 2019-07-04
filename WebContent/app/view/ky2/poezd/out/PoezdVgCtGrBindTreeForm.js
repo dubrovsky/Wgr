@@ -1,6 +1,6 @@
-Ext.define('TK.view.ky2.poezd.into.PoezdVgCtGrBindTreeForm', {
+Ext.define('TK.view.ky2.poezd.out.PoezdVgCtGrBindTreeForm', {
     extend: 'TK.view.ky2.AbstractBindTreeForm',
-    alias: 'widget.ky2vgctgrtreebindformpoezdinto',
+    alias: 'widget.ky2vgctgrtreebindformpoezdout',
 
     buildTreeLeftPanelStore: function () {
         return 'ky2.PoezdVgCtGrBindTreeLeftNodes';

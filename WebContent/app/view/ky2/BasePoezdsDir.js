@@ -1,6 +1,6 @@
-Ext.define('TK.view.ky2.BasePoezdsOutDir', {
+Ext.define('TK.view.ky2.BasePoezdsDir', {
     extend: 'TK.view.ky2.AbstractList',
-    alias:'widget.ky2basepoezdsoutdir',
+    alias:'widget.ky2basepoezdsdir',
 
     selType: 'checkboxmodel',
 
@@ -12,7 +12,7 @@ Ext.define('TK.view.ky2.BasePoezdsOutDir', {
         };
     },
     buildStore:function (config) {
-        config.store = 'ky2.PoezdsOutDir';
+        config.store = 'ky2.PoezdsDir';
     },
     buildBottomToolbar: function(config) {
         config.bbar = {
@@ -23,7 +23,7 @@ Ext.define('TK.view.ky2.BasePoezdsOutDir', {
     },
     buildTopToolbar: function(config) {
         config.tbar = [
-            {text: 'Выбрать', action:'getPoesdIntoAndPoezdOutForBind', iconCls:'check1'}, '-'
+            {text: 'Выбрать', action:'getPoesdAndPoezdForBind', iconCls:'check1'}, '-'
         ];
     }
 });
