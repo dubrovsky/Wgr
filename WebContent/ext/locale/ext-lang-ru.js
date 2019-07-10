@@ -1906,8 +1906,8 @@ Ext.define("TK.locale.ru.view.ky.yard.List", {
 
 });
 
-Ext.define("TK.locale.ru.view.ky2.yard.List", {
-    override:"TK.view.ky2.yard.List",
+Ext.define("TK.locale.ru.view.ky2.yard.YardList", {
+    override:"TK.view.ky2.yard.YardList",
 
     headerCreation    :'Создание',
     headerDateTime    :'Дата и время',
@@ -1939,8 +1939,8 @@ Ext.define("TK.locale.ru.controller.ky.Yard", {
 
 });
 
-Ext.define("TK.locale.ru.controller.ky2.Yard", {
-    override:"TK.controller.ky2.Yard",
+Ext.define("TK.locale.ru.controller.ky2.YardController", {
+    override:"TK.controller.ky2.YardController",
 
     titleEdit:'Редактирование места на конт. площадке',
     titleCreate:'Создание места на конт. площадке',
@@ -1978,8 +1978,8 @@ Ext.define("TK.locale.ru.view.ky.yard.Form", {
 
 });
 
-Ext.define("TK.locale.ru.view.ky2.yard.Form", {
-    override:"TK.view.ky2.yard.Form",
+Ext.define("TK.locale.ru.view.ky2.yard.YardForm", {
+    override:"TK.view.ky2.yard.YardForm",
 
     labelNKont:'Номер контейнера',
     labelX     :'X',

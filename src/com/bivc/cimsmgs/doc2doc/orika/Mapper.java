@@ -1,9 +1,6 @@
 package com.bivc.cimsmgs.doc2doc.orika;
 
-import com.bivc.cimsmgs.db.ky.Gruz;
-import com.bivc.cimsmgs.db.ky.Kont;
-import com.bivc.cimsmgs.db.ky.Poezd;
-import com.bivc.cimsmgs.db.ky.Vagon;
+import com.bivc.cimsmgs.db.ky.*;
 import com.bivc.cimsmgs.dto.ky2.*;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.ConfigurableMapper;
@@ -50,6 +47,11 @@ public class Mapper extends ConfigurableMapper {
 
         factory.classMap(Kont.class, KontBindDTO.class)
                 .fieldAToB("gruzs", "gruzs")
+                .byDefault()
+                .register();
+
+        factory.classMap(Yard.class, YardDTO.class)
+                .fieldAToB("sector", "sector")
                 .byDefault()
                 .register();
 

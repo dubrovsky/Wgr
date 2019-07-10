@@ -73,7 +73,7 @@ Ext.define('TK.model.ky2.PoezdVgCtGrTreeNode', {
     idProperty: 'hid' // if present, server side call will be made
     proxy: {
         type: 'ajax',
-        url: 'ky2/secure/VgCtGr.do',
+        url: 'ky2/secure/PoezdVgCtGr.do',
         idParam: 'hid',
         reader: {
             type: 'json',

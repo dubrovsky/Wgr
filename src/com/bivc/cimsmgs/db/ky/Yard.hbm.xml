@@ -7,7 +7,7 @@
         <id name="hid" type="java.lang.Long">
             <column name="HID" precision="20" scale="0"/>
             <generator class="sequence">
-                <param name="sequence">KY_KONT_YARD_HID</param>
+                <param name="sequence">KY_YARD_HID</param>
             </generator>
         </id>
         <many-to-one class="com.bivc.cimsmgs.db.ky.YardSector" fetch="select" name="sector">

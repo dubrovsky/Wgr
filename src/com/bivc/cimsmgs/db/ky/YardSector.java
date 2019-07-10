@@ -5,25 +5,29 @@ package com.bivc.cimsmgs.db.ky;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @JsonFilter("yardSectorFilter")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class YardSector implements java.io.Serializable {
+public class YardSector implements Serializable {
 
 	private Integer hid;
 	private String name;
 	private String descr;
 	private Set<Yard> yards = new HashSet<Yard>(0);
+	private Set<YardSectorGroups> yardSectorGroups = new HashSet<>(0);
 
-    @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toStringExclude(this, "yards");
-    }
+	public Set<YardSectorGroups> getYardSectorGroups() {
+		return yardSectorGroups;
+	}
+
+	public void setYardSectorGroups(Set<YardSectorGroups> yardSectorGroups) {
+		this.yardSectorGroups = yardSectorGroups;
+	}
 
 	public YardSector() {
 	}

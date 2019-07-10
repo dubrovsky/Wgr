@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 12.11.2010 16:44:31 by Hibernate Tools 3.4.0.Beta1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.ky.YardSectorGroups" table="KY_YARD_SECTOR_GROUPS">
+        <composite-id name="hid" class="com.bivc.cimsmgs.db.ky.YardSectorGroupsId">
+            <key-property name="yardSectorId" type="java.lang.Integer">
+                <column name="YARD_SECTOR_ID" length="20" />
+            </key-property>
+            <key-property name="groupId" type="string">
+                <column name="GROUP_ID" length="64" />
+            </key-property>
+        </composite-id>
+        <many-to-one name="yardSector" class="com.bivc.cimsmgs.db.ky.YardSector" update="false" insert="false" fetch="select">
+            <column name="USR_ID" length="20" not-null="true" />
+        </many-to-one>
+        <many-to-one name="group" class="com.bivc.cimsmgs.db.UsrGroupsDir" update="false" insert="false" fetch="select">
+            <column name="GROUP_ID" length="64" not-null="true" />
+        </many-to-one>
+    </class>
+</hibernate-mapping>

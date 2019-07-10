@@ -30,6 +30,12 @@
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.UsrGroups" />
         </set>
+        <set name="yardSectorGroups" table="KY_YARD_SECTOR_GROUPS" inverse="true" lazy="true"  fetch="select">
+            <key>
+                <column name="YARD_SECTOR_ID" length="20" not-null="true"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.YardSectorGroups"/>
+        </set>
         <set name="usrs" table="USR" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="GROUP_ID" length="64" not-null="true" />

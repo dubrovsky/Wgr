@@ -173,9 +173,11 @@
           p:epdUpdateMapper-ref="epdUpdateMapper"
     />
 
-    <bean id="vgctgr_A" class="com.bivc.cimsmgs.actions.ky2.PoezdVgCtGr_A" scope="prototype"/>
-    <bean id="vgctgrBind_A" class="com.bivc.cimsmgs.actions.ky2.PoezdVgCtGrBind_A" scope="prototype"/>
+    <bean id="poezdVgctgr_A" class="com.bivc.cimsmgs.actions.ky2.PoezdVgCtGr_A" scope="prototype"/>
+    <bean id="bindPoezdAndPoezd_A" class="com.bivc.cimsmgs.actions.ky2.BindPoezdAndPoezd_A" scope="prototype"/>
     <bean id="poezd2_A" class="com.bivc.cimsmgs.actions.ky2.Poezd_A" scope="prototype"/>
+    <bean id="yard2_A" class="com.bivc.cimsmgs.actions.ky2.Yard_A" scope="prototype"/>
+    <bean id="yardSector2_A" class="com.bivc.cimsmgs.actions.ky2.YardSector_A" scope="prototype"/>
 
     <bean id="poezd_A" class="com.bivc.cimsmgs.actions.ky.Poezd_A" scope="prototype"/>
     <bean id="vagon_A" class="com.bivc.cimsmgs.actions.ky.Vagon_A" scope="prototype"/>

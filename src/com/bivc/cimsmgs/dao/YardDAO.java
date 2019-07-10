@@ -13,9 +13,13 @@ import java.util.Locale;
  * Created by peter on 21.01.14.
  */
 public interface YardDAO extends GenericDAO<Yard, Long> {
-    public Long countAll(List<Filter> filters, Locale locale);
+    Long countAll(List<Filter> filters, Locale locale);
 
-    public List<Yard> findAll(Integer limit, Integer start, List<Filter> filters, Locale locale);
+    List<Yard> findAll(Integer limit, Integer start, List<Filter> filters, Locale locale);
+
+    Long countAll(List<Filter> filters, Locale locale, Usr usr);
+
+    List<Yard> findAll(Integer limit, Integer start, List<Filter> filters, Locale locale, Usr usr);
 
     List<Yard> findPlaces4Kont(Integer limit, Integer start, List<Filter> filters, Usr usr, Locale locale);
 

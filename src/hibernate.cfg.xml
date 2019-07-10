@@ -163,6 +163,7 @@
         <mapping resource="com/bivc/cimsmgs/db/ky/Poezd.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/ky/Avto.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/ky/YardSector.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/ky/YardSectorGroups.hbm.xml"/>
         <!--<mapping resource="com/bivc/cimsmgs/db/ky/KontStatus.hbm.xml"/>-->
         <mapping resource="com/bivc/cimsmgs/db/ky/KontStatusHistory.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/ky/Vagon.hbm.xml"/>

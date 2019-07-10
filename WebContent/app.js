@@ -76,7 +76,8 @@ Ext.application({
 
         'ky2.PoezdController',
         'ky2.PoezdVgCtGrController',
-        'ky2.PoezdVgCtGrBindController'
+        'ky2.BindPoezdAndPoezdController',
+        'ky2.YardController'
     ],
 
     requires:[

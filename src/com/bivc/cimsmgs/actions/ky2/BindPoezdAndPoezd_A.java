@@ -20,9 +20,9 @@ import java.util.List;
 /**
  * @author p.dzeviarylin
  */
-public class PoezdVgCtGrBind_A extends CimSmgsSupport_A {
+public class BindPoezdAndPoezd_A extends CimSmgsSupport_A {
 
-    private static final Logger log = LoggerFactory.getLogger(PoezdVgCtGrBind_A.class);
+    private static final Logger log = LoggerFactory.getLogger(BindPoezdAndPoezd_A.class);
 
     public String execute() throws Exception {
         if (StringUtils.isEmpty(action)) {
@@ -30,7 +30,7 @@ public class PoezdVgCtGrBind_A extends CimSmgsSupport_A {
         }
 
         try {
-            switch (PoezdVgCtGrBind_A.Action.valueOf(action.toUpperCase())) {
+            switch (BindPoezdAndPoezd_A.Action.valueOf(action.toUpperCase())) {
                 case GET_POEZD_AND_POEZD_FOR_BIND:
                     return getPoezdAndPoezdForBind();
                 case BIND_POEZD_TO_POEZD:

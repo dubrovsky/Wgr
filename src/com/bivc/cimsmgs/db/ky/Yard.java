@@ -46,22 +46,6 @@ public class Yard implements Serializable {
 		PLACE("place"),
 		NKON("nkon")
 				;
-//        N_KONT("nkon"),
-//        SECTOR("sector.hid"),
-//        LOADED("loaded"),
-//        NOTLOADED("loaded"),
-//        STORAGETYPE("storageType"),
-//        DATEIN("dateIn"),
-//        DATEINDATE1("dateInDate1"),
-//        DATEINTIME1("dateInTime1"),
-//        DATEINDATE2("dateInDate2"),
-//        DATEINTIME2("dateInTime2"),
-//        DATEOUT("dateOut"),
-//        DATEOUTDATE1("dateOutDate1"),
-//        DATEOUTTIME1("dateOutTime1"),
-//        DATEOUTDATE2("dateOutDate2"),
-//        DATEOUTTIME2("dateOutTime2");
-
         private final String name;
 
         FilterFields(String name){

@@ -1,13 +1,12 @@
 package com.bivc.cimsmgs.dao.hibernate;
 
 import com.bivc.cimsmgs.dao.YardSectorDAO;
+import com.bivc.cimsmgs.db.Usr;
 import com.bivc.cimsmgs.db.ky.YardSector;
+import com.bivc.cimsmgs.db.ky.YardSectorGroups;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 
 import java.util.List;
 
@@ -42,15 +41,44 @@ public class YardSectorDAOHib extends GenericHibernateDAO<YardSector, Integer> i
         return (Long) crit.uniqueResult();
     }
 
-    /*@Override
-    public void delete(Integer hid) {
-        YardSector sector = (YardSector) getSession().get(YardSector.class, hid);
-        for(Yard yard : sector.getYards()){
-            if(yard.findKont() != null) {
-                yard.findKont().unbindYard();
-            }
-            getSession().delete(yard);
+
+    @Override
+    public List<YardSector> findAll(Integer limit, Integer start, String query, Usr usr){
+        Criteria crit = getSession().createCriteria(getPersistentClass(), "ys");
+
+        DetachedCriteria yardSectorGroups =
+                DetachedCriteria.forClass(YardSectorGroups.class, "ysg").
+                        setProjection(Property.forName("hid")).
+                        createCriteria("group").
+                        add(Restrictions.in("name", usr.getTrans())).
+                        add(Property.forName("ysg.id.yardSectorId").eqProperty("ys.hid"));
+        crit.add(Subqueries.exists(yardSectorGroups));
+
+        crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 20 : limit);
+        crit.addOrder(Order.asc("name"));
+        if (StringUtils.isNotBlank(query)) {
+            crit.add(Restrictions.ilike("name", query.trim(), MatchMode.ANYWHERE));
         }
-        getSession().delete(sector);
-    }*/
+        return listAndCast(crit);
+    }
+
+    @Override
+    public Long countAll(String query, Usr usr) {
+        Criteria crit = getSession().createCriteria(getPersistentClass(), "ys");
+        crit.setProjection(Projections.countDistinct("hid"));
+        DetachedCriteria yardSectorGroups =
+                DetachedCriteria.forClass(YardSectorGroups.class, "ysg").
+                        setProjection(Property.forName("hid")).
+                        createCriteria("group").
+                        add(Restrictions.in("name", usr.getTrans())).
+                        add(Property.forName("ysg.id.yardSectorId").eqProperty("ys.hid"));
+        crit.add(Subqueries.exists(yardSectorGroups));
+
+        if (StringUtils.isNotBlank(query)) {
+            crit.add(Restrictions.ilike("name", query.trim(), MatchMode.ANYWHERE));
+        }
+        return (Long) crit.uniqueResult();
+    }
+
+
 }

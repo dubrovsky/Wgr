@@ -102,7 +102,7 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
             return false;
         }
 
-        var url = 'ky2/secure/VgCtGr.do';
+        var url = 'ky2/secure/PoezdVgCtGr.do';
 
         Ext.Ajax.request({
             url: url,
@@ -432,7 +432,7 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
         }
 
         // var url = Ext.ModelManager.getModel('TK.model.ky2.VgCtGrTreeNode').getProxy().url;
-        var url = 'ky2/secure/VgCtGr.do';
+        var url = 'ky2/secure/PoezdVgCtGr.do';
         this.getCenter().setLoading(true);
         Ext.Ajax.request({
             url: url,

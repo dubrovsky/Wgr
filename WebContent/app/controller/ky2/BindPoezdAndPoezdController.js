@@ -1,4 +1,4 @@
-Ext.define('TK.controller.ky2.PoezdVgCtGrBindController', {
+Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
     extend: 'Ext.app.Controller',
 
     sourceVagModel: undefined,
@@ -6,17 +6,17 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrBindController', {
         'ky2.poezd.into.PoezdsOutDir',
         'ky2.poezd.out.PoezdsIntoDir',
         'ky2.BasePoezdsDir',
-        'ky2.poezd.into.PoezdVgCtGrBindTreeForm',
-        'ky2.poezd.out.PoezdVgCtGrBindTreeForm'
+        'ky2.poezd.into.Poezd2PoezdBindTreeForm',
+        'ky2.poezd.out.Poezd2PoezdBindTreeForm'
     ],
     models: [
         'ky2.PoezdDir',
-        'ky2.PoezdVgCtGrBindTreeNode'
+        'ky2.PoezdBindTreeNode'
     ],
     stores: [
         'ky2.PoezdsDir',
-        'ky2.PoezdVgCtGrBindTreeLeftNodes',
-        'ky2.PoezdVgCtGrBindTreeRightNodes'
+        'ky2.PoezdBindTreeLeftNodes',
+        'ky2.PoezdBindTreeRightNodes'
     ],
 
     refs: [{
@@ -54,21 +54,21 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrBindController', {
                 drop: this.onDropToVag,
                 nodedragover: this.onBeforedropToVag
             },
-            'ky2vgctgrtreebindformpoezdinto button[action=save]': {
+            'ky2poezd2poezdbindtreeforminto button[action=save]': {
                 click: this.bindPoezdToPoezd
             },
-            'ky2vgctgrtreebindformpoezdout button[action=save]': {
+            'ky2poezd2poezdbindtreeformout button[action=save]': {
                 click: this.bindPoezdToPoezd
             }
         });
     },
 
     getPoesdIntoAndPoezdOutForBind: function (btn) {
-        this.getPoesdAndPoezdForBind(this.getPoezdoutdir(), 'ky2vgctgrtreebindformpoezdinto', '+ На поезд по отправлению');
+        this.getPoesdAndPoezdForBind(this.getPoezdoutdir(), 'ky2poezd2poezdbindtreeforminto', '+ На поезд по отправлению');
     },
 
     getPoesdOutAndPoezdIntoForBind: function (btn) {
-        this.getPoesdAndPoezdForBind(this.getPoezdintodir(), 'ky2vgctgrtreebindformpoezdout', '+ На поезд по прибытию');
+        this.getPoesdAndPoezdForBind(this.getPoezdintodir(), 'ky2poezd2poezdbindtreeformout', '+ На поезд по прибытию');
     },
 
     getPoesdAndPoezdForBind: function (poezdDir, widget, title) {
@@ -90,7 +90,7 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrBindController', {
         this.getCenter().setLoading(true);
 
         Ext.Ajax.request({
-            url: 'ky2/secure/VgCtGrBind.do',
+            url: 'ky2/secure/BindPoezdAndPoezd.do',
             params: {
                 action: 'get_poezd_and_poezd_for_bind',
                 'poezd1Hid': poezdModel.get('hid'),
@@ -147,7 +147,7 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrBindController', {
             var vag = vags[vagIndx],
                 conts = vag['konts'],
                 gruzy = vag['gruzs'],
-                vagModel = Ext.create('TK.model.ky2.PoezdVgCtGrBindTreeNode', {
+                vagModel = Ext.create('TK.model.ky2.PoezdBindTreeNode', {
                     text: vag['nvag'],
                     who: 'vag',
                     leaf: false,
@@ -178,7 +178,7 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrBindController', {
         for (var contIndx in conts) {
             var cont = conts[contIndx],
                 gryzy = cont['gruzs'],
-                contModel = Ext.create('TK.model.ky2.PoezdVgCtGrBindTreeNode', {
+                contModel = Ext.create('TK.model.ky2.PoezdBindTreeNode', {
                     text: cont['nkon'],
                     who: 'cont',
                     iconCls: 'cont3',
@@ -200,7 +200,7 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrBindController', {
     initGryzyNodes: function (gryzy, parentModel, parentIndx) {
         for (var gryzIndx in gryzy) {
             var gryz = gryzy[gryzIndx],
-                gryzModel = Ext.create('TK.model.ky2.PoezdVgCtGrBindTreeNode', {
+                gryzModel = Ext.create('TK.model.ky2.PoezdBindTreeNode', {
                     text: gryz['kgvn'],
                     who: 'gryz',
                     iconCls: 'gryz',
@@ -296,7 +296,7 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrBindController', {
             dataObjRight = this.bindVags(dataObjRight, this.getTreepanelRight());
         }
 
-        var url = 'ky2/secure/VgCtGrBind.do';
+        var url = 'ky2/secure/BindPoezdAndPoezd.do';
         this.getCenter().setLoading(true);
         Ext.Ajax.request({
             url: url,

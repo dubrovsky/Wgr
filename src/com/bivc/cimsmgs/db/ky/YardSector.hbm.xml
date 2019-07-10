@@ -5,22 +5,28 @@
 <hibernate-mapping>
     <class name="com.bivc.cimsmgs.db.ky.YardSector" table="KY_YARD_SECTOR" batch-size="50">
         <id name="hid" type="java.lang.Integer">
-            <column name="HID" precision="5" scale="0" />
+            <column name="HID" precision="5" scale="0"/>
             <generator class="sequence">
-                <param name="sequence">NSI_KONT_SECTOR_SEQ</param>
+                <param name="sequence">KY_YARD_SECTOR_HID</param>
             </generator>
         </id>
         <property name="name" type="string">
-            <column name="NAME" length="20" not-null="true" />
+            <column name="NAME" length="20" not-null="true"/>
         </property>
         <property name="descr" type="string">
-            <column name="DESCR" length="100" />
+            <column name="DESCR" length="100"/>
         </property>
         <set name="yards" table="KY_KONT_YARD" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="HID_SECTOR" precision="20" scale="0" not-null="true"/>
             </key>
-            <one-to-many class="com.bivc.cimsmgs.db.ky.Yard" />
+            <one-to-many class="com.bivc.cimsmgs.db.ky.Yard"/>
+        </set>
+        <set name="yardSectorGroups" table="KY_YARD_SECTOR_GROUPS" inverse="true" lazy="true"  batch-size="50" cascade="all, delete-orphan">
+            <key>
+                <column name="YARD_SECTOR_ID" length="20" not-null="true"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.YardSectorGroups"/>
         </set>
     </class>
 </hibernate-mapping>

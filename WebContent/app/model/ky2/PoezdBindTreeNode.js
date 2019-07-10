@@ -1,4 +1,4 @@
-Ext.define('TK.model.ky2.PoezdVgCtGrBindTreeNode', {
+Ext.define('TK.model.ky2.PoezdBindTreeNode', {
     extend: 'Ext.data.TreeModel',
 
     fields: [

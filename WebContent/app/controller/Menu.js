@@ -90,9 +90,8 @@ Ext.define('TK.controller.Menu', {
                 if (tkUser.hasPriv('CIM_KONT_YARD')) {
                     root.appendChild({text:menutree.btnKontYards, iconCls:'cont', id:'konts_yards',
                         children:[
-                            {text:menutree.btnKontYard, leaf:true, id:'kont_yard', iconCls:'cont1'},
-                            //{text:menutree.btnKont, leaf:true, id:'kont', iconCls:'cont1'},
-                            {text:menutree.btnKontReports, id:'kont_reports', iconCls:'logs',
+                            {text:menutree.btnKontYard, leaf:true, id:'kont_yard2', iconCls:'cont1'}
+                            /*{text:menutree.btnKontReports, id:'kont_reports', iconCls:'logs',
                                 children:[
                                     {text:menutree.kyreport1, leaf:true, id:'kyreport1', iconCls:'logs' },
                                     {text:menutree.kyreport2, leaf:true, id:'kyreport2', iconCls:'logs' },
@@ -101,7 +100,7 @@ Ext.define('TK.controller.Menu', {
                                     {text:menutree.kyreport5, leaf:true, id:'kyreport5', iconCls:'logs' },
                                     {text:menutree.kyreport6, leaf:true, id:'kyreport6', iconCls:'logs' }
                                 ]
-                            }
+                            }*/
                         ]
                     });
                 }
@@ -109,21 +108,7 @@ Ext.define('TK.controller.Menu', {
                 root.appendChild({text:'User guide', iconCls:'instr', id:'instr',
                     children:[
                         {text:"1.Регистрация и авторизация в Портале", leaf:true, id:'instr1', iconCls:'paragr' },
-                        {text:"2.Меню Портала", leaf:true, id:'instr2', iconCls:'paragr' }/*,
-                        {text:"3.Ввод и просмотр грузосопроводительной документации в Портале", leaf:true, id:'instr3', iconCls:'paragr' },
-                        {text:"4.Работа с Инструкциями для формирования накладных", leaf:true, id:'instr4', iconCls:'paragr' },
-                        {text:"5.Формирование накладных СМГС", leaf:true, id:'instr5', iconCls:'paragr' },
-                        {text:"6.Формирование накладных ЦИМ", leaf:true, id:'instr6', iconCls:'paragr' },
-                        {text:"7.Формирование накладных CMR", leaf:true, id:'instr7', iconCls:'paragr' },
-                        {text:"8.Формирование накладных ГУ-29к(27в)", leaf:true, id:'instr8', iconCls:'paragr' },
-                        {text:"9.Формирование коммерческих документов", leaf:true, id:'instr9', iconCls:'paragr' },
-                        {text:"10.Обмен с ТБЦ", leaf:true, id:'instr10', iconCls:'paragr' },
-                        {text:"11.Обмен с БЧ", leaf:true, id:'instr11', iconCls:'paragr' },
-                        {text:"12.Настройка печати", leaf:true, id:'instr12', iconCls:'paragr' },
-                        {text:"13.Обмен с ФТС", leaf:true, id:'instr13', iconCls:'paragr' },
-                        {text:"14.Выгрузка/загрузка в/из файл(а)", leaf:true, id:'instr14', iconCls:'paragr'},
-                        {text:"15.Обмен с Порталом БТЛЦ", leaf:true, id:'instr15', iconCls:'paragr' },
-                        {text:"16.Обмен с УПК ТДГ", leaf:true, id:'instr16', iconCls:'paragr' }*/
+                        {text:"2.Меню Портала", leaf:true, id:'instr2', iconCls:'paragr' }
                     ]});
                 if (tkUser.hasPriv('CIM_INFTKBREST')) {
                     root.appendChild({text:'Информация ТК Брест', iconCls:'info', leaf:true, id:'info'});
@@ -334,8 +319,13 @@ Ext.define('TK.controller.Menu', {
                 grid = Ext.widget('kyavtooutlist');
                 break;
 
-            case 'kont_yard':
+            /*case 'kont_yard':
                 grid = Ext.widget('kyyardlist');
+                gridParams = {action:'list'};
+                break;*/
+
+            case 'kont_yard2':
+                grid = Ext.widget('ky2yardlist');
                 gridParams = {action:'list'};
                 break;
 

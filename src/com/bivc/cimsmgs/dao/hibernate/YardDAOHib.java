@@ -5,13 +5,11 @@ import com.bivc.cimsmgs.commons.Filter;
 import com.bivc.cimsmgs.dao.YardDAO;
 import com.bivc.cimsmgs.db.Usr;
 import com.bivc.cimsmgs.db.ky.Yard;
+import com.bivc.cimsmgs.db.ky.YardSectorGroups;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 
 import java.util.Date;
 import java.util.List;
@@ -37,6 +35,48 @@ public class YardDAOHib extends GenericHibernateDAO<Yard, Long> implements YardD
         applyFilter(filters, crit, locale);
 
         return listAndCast(crit);
+    }
+
+    @Override
+    public List<Yard> findAll(Integer limit, Integer start, List<Filter> filters, Locale locale, Usr usr) {
+        Criteria crit = getSession().createCriteria(getPersistentClass(), "yard");
+        crit.createAlias("sector", "sector");
+
+        DetachedCriteria yardSectorGroups =
+                DetachedCriteria.forClass(YardSectorGroups.class, "ysg").
+                        setProjection(Property.forName("hid")).
+                        createCriteria("group").
+                        add(Restrictions.in("name", usr.getTrans())).
+                        add(Property.forName("ysg.id.yardSectorId").eqProperty("sector.hid"));
+        crit.add(Subqueries.exists(yardSectorGroups));
+
+        if (start >= 0) {
+            crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 20 : limit);
+        }
+        crit.addOrder(Order.desc("dattr"));
+
+//        applyFilter(filters, crit, locale);
+
+        return listAndCast(crit);
+    }
+
+    @Override
+    public Long countAll(List<Filter> filters, Locale locale, Usr usr) {
+        Criteria crit = getSession().createCriteria(getPersistentClass(), "yard");
+        crit.createAlias("sector", "sector");
+        crit.setProjection(Projections.countDistinct("hid"));
+
+        DetachedCriteria yardSectorGroups =
+                DetachedCriteria.forClass(YardSectorGroups.class, "ysg").
+                        setProjection(Property.forName("hid")).
+                        createCriteria("group").
+                        add(Restrictions.in("name", usr.getTrans())).
+                        add(Property.forName("ysg.id.yardSectorId").eqProperty("sector.hid"));
+        crit.add(Subqueries.exists(yardSectorGroups));
+
+        applyFilter(filters, crit, locale);
+
+        return (Long) crit.uniqueResult();
     }
 
     @Override
