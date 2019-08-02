@@ -14,7 +14,6 @@ import javax.mail.internet.MimeUtility;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -28,16 +27,32 @@ class VedReceiverTask extends AbstractTask {
   private String password;
   private int pop3Port;
   private boolean ssl;
+  private LOAD_TYPE loadType;
   private VedLoader loader;
 
   private static final String TRASH = "TRASH_VED";
   private static final String FAIL = "FAILAED_VED";
   private static final String PROCESSED = "PROCESSED_VED";
-  private static final Pattern SUBJ = Pattern.compile("VEDOMOST|\\d{5,5}((_| )\\d{5,5})?(\\.xml)?");
+//  private static final Pattern SUBJ = Pattern.compile("VEDOMOST|\\d{5}((_| )\\d{5,5})?(\\.xml)?");
   private static final Logger log = LoggerFactory.getLogger(ReceiverTask.class);
   private static final SimpleDateFormat df2  = new SimpleDateFormat("yyyyMMddHHmmss");
 
-  public VedReceiverTask(String server, int pop3Port, boolean ssl, String account, String password, String un, String trans) {
+  public enum LOAD_TYPE {
+    NAKL ("VEDOMOST|\\d{5}((_| )\\d{5,5})?(\\.xml)?"),
+    VED ("VEDOMOST|\\d{5}((_| )\\d{5})?(\\.(xml|xls))?|WWWZ(_| )\\d{5}(_| )\\d{4,5}");
+
+    LOAD_TYPE(String patterStr) {
+      this.SUBJ = Pattern.compile(patterStr);
+    }
+
+    public Pattern getSubj() {
+      return SUBJ;
+    }
+
+    private Pattern SUBJ;
+  }
+
+  public VedReceiverTask(String server, int pop3Port, boolean ssl, String account, String password, String un, String trans, LOAD_TYPE loadType) {
     this.server = server;
     this.account = account;
     this.password = password;
@@ -45,7 +60,9 @@ class VedReceiverTask extends AbstractTask {
     this.ssl = ssl;
     this.un = un;
     this.trans = trans;
+    this.loadType = loadType;
   }
+
 
   protected void runTask() throws Exception {
     Properties props = System.getProperties();
@@ -76,7 +93,7 @@ class VedReceiverTask extends AbstractTask {
           subj = "";
         String from = decodeAddr(msg.getFrom());
         info = "Process incoming message from " + from + " about '" + subj + "'";
-        Matcher m = SUBJ.matcher(subj);
+        Matcher m = loadType.getSubj().matcher(subj);
         if (!m.matches()) {
           log.info(info + " - skipped");
           save2file(msg, TRASH);
@@ -152,7 +169,18 @@ class VedReceiverTask extends AbstractTask {
     String ved_nomer = StringUtils.substringBefore(fileName, ".xml");
     SAXReader reader = new SAXReader(false);
     Document document = reader.read(is);
-    return loader.load(document, un, trans, ved_nomer);
+    boolean res;
+    switch (loadType) {
+      case NAKL :
+        res = loader.load(document, un, trans, ved_nomer);
+        break;
+      case VED :
+        res = loader.load2(document, un, trans, ved_nomer);
+        break;
+      default :
+        res = false;
+    }
+    return res;
   }
 
   private String decodeAddr(Address[] addr) {

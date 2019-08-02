@@ -2,6 +2,7 @@ package com.bivc.cimsmgs.exchange;
 
 import com.bivc.cimsmgs.commons.DocType;
 import com.bivc.cimsmgs.commons.HibernateUtil;
+import com.bivc.cimsmgs.commons.VidOtpr;
 import com.bivc.cimsmgs.db.*;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +22,8 @@ import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static org.apache.commons.lang3.StringUtils.*;
 
 public class DocLoader {
 
@@ -77,6 +80,27 @@ public class DocLoader {
     }
     else {
       log.warn("Unknown type=" + cs.getType());
+    }
+
+    if (cs.getG25() != null && cs.getG25() == 3) {  // аока Юра не может объяснить, зачем он это делает, просто перебъем значение
+      cs.setG25(VidOtpr.KONT.getG25());
+    }
+
+    if (isNotBlank(cs.getG7())) {
+      cs.setG1_dop_info(cs.getG7());
+      cs.setG7(null);
+    }
+
+    if (isNotBlank(cs.getG7r())) {
+      cs.setG4_dop_info(cs.getG7r());
+      cs.setG7r(null);
+    }
+
+    if (isNotBlank(cs.getG20())) {
+      String s = cs.getG20();
+      if (isNotBlank(cs.getG11_prim()))
+        s = cs.getG11_prim() + "\r\n" + s;
+      cs.setG11_prim(s);
     }
 
     cs.setDattr(d);

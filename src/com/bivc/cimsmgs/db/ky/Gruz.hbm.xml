@@ -16,6 +16,9 @@
         <many-to-one class="com.bivc.cimsmgs.db.ky.Vagon" fetch="select" name="vagon">
             <column name="HID_VAGON" precision="20" scale="0"/>
         </many-to-one>
+        <many-to-one class="com.bivc.cimsmgs.db.ky.Avto" fetch="select" name="avto">
+            <column name="HID_AVTO" precision="20" scale="0"/>
+        </many-to-one>
         <property name="upak" type="string">
             <column length="50" name="UPAK"/>
         </property>

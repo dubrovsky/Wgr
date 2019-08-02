@@ -9,7 +9,7 @@ Ext.define('TK.view.ky2.poezd.into.PoezdForm', {
         itemId: 'ky2poezdform',
         buildItems: function(config) {
             TK.view.ky2.poezd.BasePoezdForm.prototype.buildItems.apply(this, arguments);     // callParent doesn't work in inline override
-            /*config.items.splice(2, 0, {
+            config.items.splice(2, 0, {
                 xtype:'fieldset',
                 title: 'Прибытие',
                 layout: 'anchor',
@@ -29,14 +29,14 @@ Ext.define('TK.view.ky2.poezd.into.PoezdForm', {
                     //snapToIncrement: true,
                     altFormats:'H:i'
                 }]
-            });*/
-
-            config.items.splice(2, 0, {
-                fieldLabel:'Прибытие',
-                name : 'dprbDate',
-                xtype: 'datefield',
-                altFormats:'d.m.y'
             });
+
+            // config.items.splice(2, 0, {
+            //     fieldLabel:'Прибытие',
+            //     name : 'dprbDate',
+            //     xtype: 'datefield',
+            //     altFormats:'d.m.y'
+            // });
 
             /*config.items.push({
                 xtype: 'fieldcontainer',

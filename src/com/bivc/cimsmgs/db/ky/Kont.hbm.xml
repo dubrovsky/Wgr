@@ -15,6 +15,10 @@
             <column name="HID_VAGON" precision="20" scale="0"/>
         </many-to-one>
 
+        <many-to-one class="com.bivc.cimsmgs.db.ky.Yard" fetch="select" name="yard" unique="true">
+            <column name="HID_KY" precision="20" scale="0"/>
+        </many-to-one>
+
         <!--<many-to-one class="com.bivc.cimsmgs.db.ky.Poezd" fetch="select" name="poezdOut">
             <column name="HID_POEZD_OUT" precision="20" scale="0"/>
         </many-to-one>
@@ -31,12 +35,13 @@
             <column name="HID_POEZD_INTO" precision="20" scale="0"/>
         </many-to-one>
 
-        <many-to-one class="com.bivc.cimsmgs.db.ky.Avto" fetch="select" name="avtoOut">
-            <column name="HID_AVTO_OUT" precision="20" scale="0"/>
-        </many-to-one>
         <many-to-one class="com.bivc.cimsmgs.db.ky.Avto" fetch="select" name="avtoInto">
             <column name="HID_AVTO_INTO" precision="20" scale="0"/>
         </many-to-one>-->
+        <many-to-one class="com.bivc.cimsmgs.db.ky.Avto" fetch="select" name="avto">
+            <column name="HID_AVTO" precision="20" scale="0"/>
+        </many-to-one>
+
         <many-to-one class="com.bivc.cimsmgs.db.ky.NsiKyOwners" fetch="select" name="owner">
             <column name="HID_OWNER" precision="20" scale="0"/>
         </many-to-one>

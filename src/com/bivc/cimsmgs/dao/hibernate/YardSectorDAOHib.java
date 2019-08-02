@@ -43,6 +43,23 @@ public class YardSectorDAOHib extends GenericHibernateDAO<YardSector, Integer> i
 
 
     @Override
+    public List<YardSector> findAll(Usr usr) {
+        Criteria crit = getSession().createCriteria(getPersistentClass(), "ys");
+
+        DetachedCriteria yardSectorGroups =
+                DetachedCriteria.forClass(YardSectorGroups.class, "ysg").
+                        setProjection(Property.forName("hid")).
+                        createCriteria("group").
+                        add(Restrictions.in("name", usr.getTrans())).
+                        add(Property.forName("ysg.id.yardSectorId").eqProperty("ys.hid"));
+        crit.add(Subqueries.exists(yardSectorGroups));
+
+        crit.addOrder(Order.asc("name"));
+        return listAndCast(crit);
+    }
+
+
+    @Override
     public List<YardSector> findAll(Integer limit, Integer start, String query, Usr usr){
         Criteria crit = getSession().createCriteria(getPersistentClass(), "ys");
 
@@ -79,6 +96,5 @@ public class YardSectorDAOHib extends GenericHibernateDAO<YardSector, Integer> i
         }
         return (Long) crit.uniqueResult();
     }
-
 
 }

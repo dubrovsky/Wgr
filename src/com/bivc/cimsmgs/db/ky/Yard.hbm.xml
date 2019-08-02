@@ -44,6 +44,13 @@
             <column length="20" name="UN"/>
         </property>
 
+        <set fetch="select" inverse="true" lazy="true" sort="natural" name="konts" table="KY_KONT" batch-size="50" cascade="all, delete-orphan">
+            <key>
+                <column name="HID_KY" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.Kont"/>
+        </set>
+
 <!--        <one-to-one name="kont" class="com.bivc.cimsmgs.db.ky.Kont" property-ref="yard"/>-->
         <!--<set fetch="select" inverse="true" lazy="true" name="konts" sort="unsorted" table="KY_KONT">
             <key>

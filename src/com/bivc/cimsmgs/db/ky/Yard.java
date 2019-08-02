@@ -11,6 +11,8 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
+import java.util.TreeSet;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @JsonFilter("yardFilter")
@@ -32,13 +34,21 @@ public class Yard implements Serializable {
 	private Date dattr;
 	private String trans;
 	private String un;
-//	private Set<Kont> konts = new HashSet<Kont>(0);
+	private Set<Kont> konts = new TreeSet<>();
     private boolean empty;
 
     /*@JsonInclude(JsonInclude.Include.ALWAYS)*/
     private Kont kont;
 
-    public enum FilterFields{
+	public Set<Kont> getKonts() {
+		return konts;
+	}
+
+	public void setKonts(Set<Kont> konts) {
+		this.konts = konts;
+	}
+
+	public enum FilterFields{
 		SECTOR("hid"),
 		X("x"),
 		Y("y"),

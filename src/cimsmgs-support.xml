@@ -280,10 +280,22 @@
         <action name="secure/Poezd" class="poezd2_A">
             <result name="success" type="json"/>
         </action>
+        <action name="secure/Avto" class="avto2_A">
+            <result name="success" type="json"/>
+        </action>
         <action name="secure/PoezdVgCtGr" class="poezdVgctgr_A">
             <result name="success" type="json"/>
         </action>
+        <action name="secure/AvtoCtGr" class="avtoCtgr_A">
+            <result name="success" type="json"/>
+        </action>
         <action name="secure/BindPoezdAndPoezd" class="bindPoezdAndPoezd_A">
+            <result name="success" type="json"/>
+        </action>
+        <action name="secure/BindAvtoAndAvto" class="bindAvtoAndAvto_A">
+            <result name="success" type="json"/>
+        </action>
+        <action name="secure/BindPoezdAndYard" class="bindPoezdAndYard_A">
             <result name="success" type="json"/>
         </action>
         <action name="secure/Yard" class="yard2_A">

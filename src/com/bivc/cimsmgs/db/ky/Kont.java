@@ -18,6 +18,7 @@ public class Kont implements Serializable, Comparable<Kont> {
     private KontStatus status;
     private KontStatus prevStatus;
     private Vagon vagon;
+    private Yard yard;
    /* private Poezd poezdOut;
     private Vagon vagonInto;
     private Yard yard;
@@ -39,8 +40,8 @@ public class Kont implements Serializable, Comparable<Kont> {
     private Long ky_y;
     private Long ky_z;
     private String ky_sector;
-    /*private Avto avtoOut;
-    private Avto avtoInto;*/
+    private Avto avto;
+//    private Avto avtoInto;*/
 
     private Date dattr;
 
@@ -119,6 +120,14 @@ public class Kont implements Serializable, Comparable<Kont> {
 
     public Date getDotp() {
         return dotp;
+    }
+
+    public Avto getAvto() {
+        return avto;
+    }
+
+    public void setAvto(Avto avto) {
+        this.avto = avto;
     }
 
     /*public Date getDateAvtoOut() {
@@ -269,6 +278,7 @@ public class Kont implements Serializable, Comparable<Kont> {
                 if (Objects.equals(gruz.getHid(), gruzDto.getHid())) {
                     mapper.map(gruzDto, gruz);
                     dtoToRemove.add(gruzDto);
+                    break;
                 }
             }
         }
@@ -304,6 +314,14 @@ public class Kont implements Serializable, Comparable<Kont> {
 
     public void unbindGruzy() {
 
+    }
+
+    public Yard getYard() {
+        return yard;
+    }
+
+    public void setYard(Yard yard) {
+        this.yard = yard;
     }
 
     public enum FilterFields {

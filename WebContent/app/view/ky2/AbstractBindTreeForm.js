@@ -18,21 +18,47 @@ Ext.define('TK.view.ky2.AbstractBindTreeForm', {
         autoScroll: true
     },
 
-    initComponent:function () {
+    initComponent: function () {
         this.items = [{
             xtype: 'treepanel',
             id: 'treepanelLeft',
             store: this.buildTreeLeftPanelStore(),
             rootVisible: false,
             flex: 1,
-            viewConfig: this.buildTreeLeftPanelViewConfig()
+            viewConfig: this.buildTreeLeftPanelViewConfig(),
+            selModel: {
+                mode: 'MULTI'
+            },
+            dockedItems: [{
+                xtype: 'toolbar',
+                dock: 'top',
+                items: this.buildTreeLeftPanelTopToolbarItems()
+            }, {
+                xtype: 'toolbar',
+                dock: 'bottom',
+                ui: 'footer',
+                items: this.buildTreeLeftPanelBottomToolbarItems()
+            }]
         }, {
             xtype: 'treepanel',
             id: 'treepanelRight',
             store: this.buildTreeRightPanelStore(),
             rootVisible: false,
             flex: 1,
-            viewConfig: this.buildTreeRightPanelViewConfig()
+            viewConfig: this.buildTreeRightPanelViewConfig(),
+            selModel: {
+                mode: 'MULTI'
+            },
+            dockedItems: [{
+                xtype: 'toolbar',
+                dock: 'top',
+                items: this.buildTreeRightPanelTopToolbarItems()
+            }, {
+                xtype: 'toolbar',
+                dock: 'bottom',
+                ui: 'footer',
+                items: this.buildTreeRightPanelBottomToolbarItems()
+            }]
         }];
 
         this.dockedItems = [{
@@ -48,7 +74,7 @@ Ext.define('TK.view.ky2.AbstractBindTreeForm', {
         this.callParent(arguments);
     },
 
-    buildBottomToolbarItems: function() {
+    buildBottomToolbarItems: function () {
         return ['->', {
             text: 'Сохранить',
             iconCls: 'save',
@@ -56,14 +82,49 @@ Ext.define('TK.view.ky2.AbstractBindTreeForm', {
         }];
     },
 
-    buildTopToolbarItems: function() {
+    buildTopToolbarItems: function () {
         return [];
     },
 
-    buildTreeLeftPanelStore: function(){},
-    buildTreeRightPanelStore: function(){},
+    buildTreeLeftPanelStore: function () {
+    },
+    buildTreeRightPanelStore: function () {
+    },
 
-    buildTreeLeftPanelViewConfig: function(){
+    buildTreeLeftPanelTopToolbarItems: function () {
+        return [
+            '->',
+            {
+                text: 'Переместить >',
+                action: 'moveRight'
+            }
+            /*{
+            xtype: 'radiogroup',
+            fieldLabel: 'Вид',
+            labelWidth: 40,
+            items: [
+                {boxLabel: 'Все', name: 'leftBindView', inputValue: 'all', checked: true},
+                {boxLabel: 'Без вагонов', name: 'leftBindView', inputValue: 'noVags'}
+            ]
+        }*/];
+    },
+
+    buildTreeLeftPanelBottomToolbarItems: function () {
+        return [];
+    },
+
+    buildTreeRightPanelTopToolbarItems: function () {
+        return [{
+            text: '< Переместить',
+            action: 'moveLeft'
+        }];
+    },
+
+    buildTreeRightPanelBottomToolbarItems: function () {
+        return [];
+    },
+
+    buildTreeLeftPanelViewConfig: function () {
         return {
             plugins: {
                 ptype: 'treeviewdragdrop',
@@ -73,7 +134,7 @@ Ext.define('TK.view.ky2.AbstractBindTreeForm', {
         }
     },
 
-    buildTreeRightPanelViewConfig: function(){
+    buildTreeRightPanelViewConfig: function () {
         return {
             plugins: {
                 ptype: 'treeviewdragdrop',

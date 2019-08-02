@@ -5,7 +5,7 @@ Ext.define('TK.view.ky2.poezd.into.PoezdList', {
 
     buildColumns:function (config) {
         this.callParent(arguments);
-        config.columns.items.push(
+        config.columns.items.splice(3, 0,
             {text:this.headerDateIn, dataIndex:'dprb', width:100, renderer: TK.Utils.renderLongStr}
         );
     },
@@ -21,7 +21,8 @@ Ext.define('TK.view.ky2.poezd.into.PoezdList', {
     buildTopToolbar: function (config) {
         this.callParent(arguments);
         config.tbar.splice(8, 0,
-            {text: '+ На поезд по отпр.', iconCls:'bind', action:'showPoezdsOutDir4PoezdIntoBind'},'-'
+            {text: '+ На поезд по отпр.', iconCls:'bind', action:'showPoezdsOutDir4PoezdIntoBind'},'-',
+            {text: '+ На конт. площадку', iconCls:'bind', action:'getPoesdAndYardForBind'},'-'
         );
     }
 });

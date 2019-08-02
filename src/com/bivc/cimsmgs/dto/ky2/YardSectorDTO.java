@@ -1,7 +1,6 @@
 package com.bivc.cimsmgs.dto.ky2;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * Created by peter on 27.08.2014.
@@ -11,11 +10,6 @@ public class YardSectorDTO {
     private Integer hid;
     private String name;
     private String descr;
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
 
     public Integer getHid() {
         return hid;

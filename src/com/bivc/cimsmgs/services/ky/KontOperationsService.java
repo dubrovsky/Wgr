@@ -108,7 +108,8 @@ public class KontOperationsService implements IKontOperationsService {
     @Override
     public Kont bindKontToAvtoOut(Kont kont, Avto avto, KontOperationsDTO kontDTO) {
 //        kont.setAvtoOut(avto);
-        avto.getKontsOut().add(kont);
+//        avto.getKontsOut().add(kont);
+        avto.getKonts().add(kont);
         kont.setDotp(kontDTO.getDotp());
 
         bind(kont, KontStatus.AVTO_OUT, kont.getStatus());

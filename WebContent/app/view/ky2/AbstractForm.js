@@ -22,15 +22,27 @@ Ext.define('TK.view.ky2.AbstractForm', {
 
         if (tkUser.hasPriv('CIM_SAVE')){
             buttons.push({
-                    text: this.btnSave,
-                    formBind: true,
-                    disabled: true,
-                    action: 'save',
-                    iconCls:'save'
+                text: this.btnSave,
+                formBind: true,
+                disabled: true,
+                action: 'save',
+                iconCls:'save'
+            },{
+                text:this.btnSaveExit,
+                formBind: true,
+                disabled: true,
+                iconCls:'save_close',
+                action:'saveExit'
             });
         }
 
         buttons.push({
+            text:this.btnClose,
+            iconCls:'close1',
+            action:'close'
+        }
+        ,'-'
+        ,{
             text: this.btnCancel,
             iconCls:'delete1',
             handler: function(btn) {

@@ -248,10 +248,12 @@ public class Poezd implements Serializable {
                         vagon.bindKonts(vagonIntoDTO.getKonts(), mapper, vagOut);
                     } else if (vagonIntoDTO.getOtpravka() == Otpravka.GRUZ){
                         vagon.bindGruzs(vagonIntoDTO.getGruzs(), mapper, vagOut);
-                    } else {  // can be deleted and getOtpravka is null
+                    }
+                    break;
+                    /*else {  // can be deleted and getOtpravka is null
                         vagon.unbindKonts();
                         vagon.unbindGruzy();
-                    }
+                    }*/
                 }
             }
         }
@@ -290,8 +292,8 @@ public class Poezd implements Serializable {
                         vagon.removeKonts();
                         vagon.removeGruzy();
                     }
-
                     vagsDtoToRemove.add(vagonIntoDTO);
+                    break;
                 }
             }
         }

@@ -73,17 +73,24 @@
         <property name="altered" type="timestamp" update="false">
             <column length="7" name="ALTERED"/>
         </property>
-        <set fetch="select" inverse="true" lazy="true" name="kontsOut" sort="natural" table="KY_KONT" batch-size="50" cascade="delete">
+        <set fetch="select" inverse="true" lazy="true" name="konts" sort="natural" table="KY_KONT" batch-size="50" cascade="all, delete-orphan">
             <key>
-                <column name="HID_AVTO_OUT" precision="20" scale="0"/>
+                <column name="HID_AVTO" precision="20" scale="0"/>
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.ky.Kont"/>
         </set>
-        <set fetch="select" inverse="true" lazy="true" name="kontsInto" sort="natural" table="KY_KONT" batch-size="50" cascade="delete">
+        <set fetch="select" inverse="true" lazy="true" name="gruzs" sort="natural" table="KY_GRUZ" batch-size="50" cascade="all, delete-orphan">
             <key>
-                <column name="HID_AVTO_INTO" precision="20" scale="0"/>
+                <column name="HID_AVTO" precision="20" scale="0"/>
             </key>
-            <one-to-many class="com.bivc.cimsmgs.db.ky.Kont"/>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.Gruz"/>
         </set>
+
+        <!--        <set fetch="select" inverse="true" lazy="true" name="kontsInto" sort="natural" table="KY_KONT" batch-size="50" cascade="delete">-->
+<!--            <key>-->
+<!--                <column name="HID_AVTO" precision="20" scale="0"/>-->
+<!--            </key>-->
+<!--            <one-to-many class="com.bivc.cimsmgs.db.ky.Kont"/>-->
+<!--        </set>-->
     </class>
 </hibernate-mapping>

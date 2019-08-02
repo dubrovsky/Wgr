@@ -43,12 +43,12 @@ Ext.define('TK.view.ky2.yard.YardList', {
 
     buildTopToolbar: function (config) {
         config.tbar = [
-            {text: this.btnCreate, iconCls: 'doc_new', action: 'create'},
-            {text: this.btnEdit, iconCls: 'edit', action: 'edit'}
+            {text: this.btnCreate, iconCls: 'doc_new', action: 'create'}, '-',
+            {text: this.btnEdit, iconCls: 'edit', action: 'edit'}, '-'
         ];
 
         if(tkUser.hasPriv('CIM_DELETE')){
-            config.tbar.push({text: this.btnDelete,iconCls:'del', action:'delete'});
+            config.tbar.push({text: this.btnDelete,iconCls:'del', action:'delete'}, '-');
         }
     }
 

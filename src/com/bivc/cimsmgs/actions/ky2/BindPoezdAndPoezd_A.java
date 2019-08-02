@@ -96,7 +96,6 @@ public class BindPoezdAndPoezd_A extends CimSmgsSupport_A {
         this.action = action;
     }
 
-
     public void setDataObj(String dataObj) {
         this.dataObj = dataObj;
     }

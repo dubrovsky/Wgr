@@ -762,6 +762,25 @@ textarea.x-form-focus {
     background-image: url(./../images/clear-16.gif) !important;
 }
 
+.truck {
+    background-image: url(./../images/truck.png) !important;
+}
+
+.s_arrow_r {
+    background-image: url(./../images/s_arrow_r.png) !important;
+}
+
+.d_arrow_r {
+    background-image: url(./../images/d_arrow_r.png) !important;
+}
+
+.x-tool-img.x-tool-s-arrow-r{
+    background: url('./../images/s_arrow_r.png') no-repeat 0 0;
+}
+
+.x-tool-img.x-tool-d-arrow-r{
+    background: url('./../images/d_arrow_r.png') no-repeat 0 0;
+}
 .smgsInputArea {
     position: absolute;
     z-index: 10;
@@ -866,3 +885,7 @@ background-image:url() !important;
 	/*background-color: #b3e3b3;*/
     /*background-image: none;*/
 /*}*/
+
+.x-tool-img-myheader {
+    background-image: url(./../images/s_arrow_r.png) !important;
+}

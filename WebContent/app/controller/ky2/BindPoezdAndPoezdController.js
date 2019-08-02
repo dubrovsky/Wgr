@@ -1,7 +1,9 @@
 Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
     extend: 'Ext.app.Controller',
 
-    sourceVagModel: undefined,
+    sourceVagModels: [],
+    selectedNodesLeft: [],
+    selectedNodesRight: [],
     views: [
         'ky2.poezd.into.PoezdsOutDir',
         'ky2.poezd.out.PoezdsIntoDir',
@@ -42,7 +44,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
     init: function () {
         this.control({
             'ky2bindtreeform': {
-                beforedestroy: this.clearVgCtGrForm
+                beforedestroy: this.clearBindForm
             },
             'ky2poezdsout4poezdintodir button[action="getPoesdAndPoezdForBind"]': {
                 click: this.getPoesdIntoAndPoezdOutForBind
@@ -51,14 +53,29 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
                 click: this.getPoesdOutAndPoezdIntoForBind
             },
             'ky2bindtreeform > treepanel > treeview': {
-                drop: this.onDropToVag,
-                nodedragover: this.onBeforedropToVag
+                drop: this.dropToVag,
+                nodedragover: this.beforeDropToVag
             },
             'ky2poezd2poezdbindtreeforminto button[action=save]': {
                 click: this.bindPoezdToPoezd
             },
             'ky2poezd2poezdbindtreeformout button[action=save]': {
                 click: this.bindPoezdToPoezd
+            },
+            'ky2poezd2poezdbindtreeforminto radiogroup': {
+                change: this.changeLeftView
+            },
+            'ky2poezd2poezdbindtreeforminto treepanel#treepanelLeft': {
+                selectionchange: this.selectionchangeLeft
+            },
+            'ky2poezd2poezdbindtreeforminto treepanel#treepanelRight': {
+                selectionchange: this.selectionchangeRight
+            },
+            'ky2poezd2poezdbindtreeforminto button[action=moveRight]': {
+                click: this.moveNodesRight
+            },
+            'ky2poezd2poezdbindtreeforminto button[action=moveLeft]': {
+                click: this.moveNodesLeft
             }
         });
     },
@@ -105,8 +122,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
                     var poezd1Obj = respObj['rows'][0];
                     var poezd2Obj = respObj['rows'][1];
 
-                    var vgctgrcontainer = Ext.widget(widget, {title: title});
-                    // var vgctgrcontainer = Ext.widget('ky2vgctgrtreebindformpoezdinto', {title: '+ На поезд по отправлению'});
+                    var bindcontainer = Ext.widget(widget, {title: title});
 
                     //// fill trees
                     var vags = poezd1Obj['vagons'];
@@ -116,8 +132,8 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
                         rootNode.set('hid', poezd1Obj['hid']); // poezd hid
                         rootNode.set('direction', poezd1Obj['direction']);
                         rootNode.set('nppr', poezd1Obj['nppr']);
-                        this.initVagsNodes(vags, rootNode);
-                        rootNode.expand();
+                        this.initVagsNodes(vags, rootNode, false);
+                        // rootNode.expand();
                     }
 
                     vags = poezd2Obj['vagons'];
@@ -127,13 +143,13 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
                         rootNode.set('hid', poezd2Obj['hid']);   // // poezd hid
                         rootNode.set('direction', poezd2Obj['direction']);
                         rootNode.set('nppr', poezd2Obj['nppr']);
-                        this.initVagsNodes(vags, rootNode);
-                        rootNode.expand();
+                        this.initVagsNodes(vags, rootNode, false);
+                        // rootNode.expand();
                     }
                     /// END fill tree
 
                     this.getCenter().remove(this.getCenter().getComponent(0), true);
-                    this.getCenter().add(vgctgrcontainer);
+                    this.getCenter().add(bindcontainer);
                 } else {
                     TK.Utils.makeErrMsg(response, 'Error!..');
                 }
@@ -142,7 +158,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         });
     },
 
-    initVagsNodes: function (vags, rootNode) {
+    initVagsNodes: function (vags, rootNode, isYard) {
         for (var vagIndx in vags) {
             var vag = vags[vagIndx],
                 conts = vag['konts'],
@@ -150,40 +166,47 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
                 vagModel = Ext.create('TK.model.ky2.PoezdBindTreeNode', {
                     text: vag['nvag'],
                     who: 'vag',
+                    poezdHid: rootNode.get('hid'),
                     leaf: false,
                     iconCls: 'vag',
-                    expanded: ((conts && conts['0']) || (gruzy && gruzy['0'])) && vagIndx == 0
+                    allowDrag: false,
+                    expanded: true
+                    // expanded: (conts && conts['0']) || (gruzy && gruzy['0'])
                 });
 
             Ext.Object.each(vag, function (prop, value) {
                 vagModel.set(prop, value);
             }, this);
 
-            rootNode.appendChild(vagModel);
+            if (vag['otpravka'] === 'CONT' || !isYard) {
+                rootNode.appendChild(vagModel);
+            }
 
             if (vag['otpravka'] === 'CONT') {
                 if (conts && !Ext.Object.isEmpty(conts)) {
-                    this.initContsNodes(conts, vagIndx, vagModel);
+                    this.initContsNodes(conts, vagIndx, vagModel, isYard);
                 }
-            } else if (vag['otpravka'] === 'GRUZ') {
+            } else if (vag['otpravka'] === 'GRUZ' && !isYard) {
                 if (gruzy && !Ext.Object.isEmpty(gruzy)) {
-                    this.initGryzyNodes(gruzy, vagModel, vagIndx);
+                    this.initGryzyNodes(gruzy, vagModel, vagIndx, isYard);
                 }
             }
-
         }
     },
 
-    initContsNodes: function (conts, vagIndx, vagModel) {
+    initContsNodes: function (conts, vagIndx, vagModel, isYard) {
         for (var contIndx in conts) {
             var cont = conts[contIndx],
                 gryzy = cont['gruzs'],
                 contModel = Ext.create('TK.model.ky2.PoezdBindTreeNode', {
                     text: cont['nkon'],
                     who: 'cont',
+                    poezdHid: vagModel.get('poezdHid'),
+                    vagHid: vagModel.get('hid'),
                     iconCls: 'cont3',
+                    allowDrop: false,
                     leaf: gryzy && gryzy['0'] ? false : true,
-                    expanded: vagIndx == 0 && gryzy && gryzy['0'] && contIndx == 0
+                    expanded: false
                 });
 
             Ext.Object.each(cont, function (prop, value) {
@@ -197,14 +220,19 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         }
     },
 
-    initGryzyNodes: function (gryzy, parentModel, parentIndx) {
+    initGryzyNodes: function (gryzy, parentModel, parentIndx, isYard) {
         for (var gryzIndx in gryzy) {
             var gryz = gryzy[gryzIndx],
                 gryzModel = Ext.create('TK.model.ky2.PoezdBindTreeNode', {
                     text: gryz['kgvn'],
                     who: 'gryz',
+                    poezdHid: parentModel.get('poezdHid'),
+                    vagHid: parentModel.get('who') === 'cont' ? parentModel.parentNode.get('hid') : parentModel.get('hid'),
+                    contHid: parentModel.get('who') === 'cont' ?  parentModel.get('hid') : null,
                     iconCls: 'gryz',
                     leaf: true,
+                    allowDrop: false,
+                    allowDrag: !isYard,
                     expanded: false
                 });
 
@@ -215,7 +243,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         }
     },
 
-    clearVgCtGrForm: function () {
+    clearBindForm: function () {
         var rootNode = this.getTreepanelLeft().getRootNode();
         rootNode.removeAll();
         // rootNode.collapse(); // to avoid second autoload
@@ -230,49 +258,6 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
             childNodeModel.set('sort', index);
             index++;
         });
-    },
-
-    onDropToVag: function (node, dragData, targetVagModel, dropPosition) {
-        var sourceModel = dragData.records[0];
-
-        if (sourceModel.get('who') === 'cont') {
-            targetVagModel.set('otpravka', 'CONT');
-        } else if (sourceModel.get('who') === 'gryz') {
-            targetVagModel.set('otpravka', 'GRUZ');
-        }
-
-        this.sortChildNodes(targetVagModel);
-
-        if (!this.sourceVagModel.hasChildNodes()) {
-            this.sourceVagModel.set('otpravka', undefined);
-        } else {
-            this.sortChildNodes(this.sourceVagModel);
-        }
-
-    },
-
-    onBeforedropToVag: function (targetModel, position, dragData) {
-        var sourceModel = dragData.records[0],
-            sourceParentModel = sourceModel.parentNode,
-            isDrop;
-
-        // check source
-        isDrop = sourceModel.get('who') !== 'vag'; // vag can't be moved
-        if (isDrop) { // can be moved cont in vag, gruz in vag
-            isDrop = sourceParentModel.get('who') === 'vag';
-        }
-
-        // check target
-        if (isDrop) { // can be dropped only in vag
-            isDrop = targetModel.get('who') === 'vag';
-        }
-        if (isDrop) { // vag otpravka should be null or the same as in source parent model
-            isDrop = !targetModel.get('otpravka') || sourceParentModel.get('otpravka') === targetModel.get('otpravka');
-        }
-
-        this.sourceVagModel = isDrop ? sourceParentModel : undefined; // save sourceParentModel to later use it in drop event
-
-        return isDrop;
     },
 
     bindPoezdToPoezd: function (btn) {
@@ -375,5 +360,199 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
 
             gryzIndex++;
         }, this);
+    },
+
+    changeLeftView: function (field, newValue, oldValue) {
+        switch (newValue['leftBindView']) {
+            case 'all':
+                break;
+            case 'noVags':
+                break;
+        }
+    },
+
+    selectionchangeLeft: function (selModel, selected) {
+        this.selectionchange(selModel, selected, this.selectedNodesLeft);
+    },
+
+    selectionchangeRight: function (selModel, selected) {
+        this.selectionchange(selModel, selected, this.selectedNodesRight);
+    },
+
+    selectionchange: function (selModel, selected, selectedNodes) {
+        // var nodeModel = selModel.getLastSelected();
+        if (selModel.getLastSelected() && selected[0]) {
+            if (selected.length > 1 && !this.checkSelected(selected)) { // has wrong selection
+                for (var i = 0; i < selected.length; i++) {      // remove last selections
+                    var found = false;
+                    for (var y = 0; y < selectedNodes.length; y++) {
+                        if (selected[i].get('hid') === selectedNodes[y].get('hid') && selected[i].get('who') === selectedNodes[y].get('who')) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        selModel.deselect(selected[i], true);
+                    }
+                }
+                return;
+            }
+
+            while (selectedNodes.length) {
+                selectedNodes.pop(); // clear array
+            }
+            for (var z = 0; z < selected.length; z++) {
+                selectedNodes.push(selected[z]);
+            }
+
+            /*if (
+                nodeModel.get('who') === 'vag' ||
+                (nodeModel.get('who') === 'gryz' && nodeModel.parentNode.get('who') === 'cont') ||
+                (selected[0] && selected[0].get('who') !== nodeModel.get('who') /!*&& selected[0].parentNode.get('who') === nodeModel.parentNode.get('who')*!/)
+            ) {   // no selection for  vag
+                // gruz in conts and
+                // gruz and cont in one selection
+                selModel.deselect(nodeModel);
+                return;
+            }*/
+        }
+    },
+
+    checkSelected: function (selected) {
+        if (!selected || selected.length < 2) {
+            return true;
+        }
+
+        var vags = Ext.Array.filter(selected, function (item, index, array) {
+            return item.get('who') === 'vag';
+        });
+        if (vags.length !== 0) {   // vags can't be more than 1
+            return false;
+        }
+
+        var conts = Ext.Array.filter(selected, function (item, index, array) {
+            return item.get('who') === 'cont';
+        });
+        if (conts.length === selected.length) {// all selected must be conts
+            return true;
+        }
+
+        var gryzy = Ext.Array.filter(selected, function (item, index, array) {
+            return item.get('who') === 'gryz';
+        });
+        if (gryzy.length === selected.length) {
+            gryzy = Ext.Array.filter(selected, function (item, index, array) {
+                return item.parentNode.get('who') === 'vag';// parent can be only vag
+            });
+            if (gryzy.length === selected.length) {
+                return true;
+            }
+        }
+
+        return false;
+    },
+
+    moveNodesRight: function (btn) {
+        this.moveNodes(this.getTreepanelLeft(), this.getTreepanelRight());
+    },
+
+    moveNodesLeft: function (btn) {
+        this.moveNodes(this.getTreepanelRight(), this.getTreepanelLeft());
+    },
+
+    beforeDropToVag: function (targetModel, position, dragData) {
+        return this.checkBeforeMoveToVag(dragData.records, targetModel);
+    },
+
+    checkBeforeMoveToVag: function (records, targetModel) {
+        var isDrop = false;
+        for (var i = 0; i < records.length; i++) {
+            var sourceModel = records[i],
+                sourceParentModel = sourceModel.parentNode;
+
+            isDrop = false;
+            // check source
+            isDrop = sourceModel.get('who') !== 'vag'; // vag can't be moved
+            if (isDrop) { // can be moved cont in vag, gruz in vag
+                isDrop = sourceParentModel.get('who') === 'vag';
+            }
+
+            // check target
+            if (isDrop) { // can be dropped only in vag
+                isDrop = targetModel.get('who') === 'vag' /*&& sourceParentModel.parentNode.get('hid') !== targetModel.parentNode.get('hid')*/;
+            }
+            if (isDrop) { // vag otpravka should be null or the same as in source parent model
+                isDrop = !targetModel.get('otpravka') || sourceParentModel.get('otpravka') === targetModel.get('otpravka');
+            }
+
+            if (isDrop) {    // save distinct sourceVagModels
+                var found = false;
+                for (var y = 0; y < this.sourceVagModels.length; y++) {
+                    if (this.sourceVagModels[y].get('hid') === sourceParentModel.get('hid')) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    this.sourceVagModels.push(sourceParentModel); // save sourceParentModel to later use it in drop event
+                }
+            } else {
+                this.sourceVagModels = [];
+                break;
+            }
+        }
+        return isDrop;
+    },
+
+    moveNodes: function (sourcePanel, targetPanel) {
+        var sourceNodes = sourcePanel.getSelectionModel().getSelection();
+        if (sourceNodes.length === 0) {
+            return;
+        }
+
+        var targetNode = targetPanel.getSelectionModel().getLastSelected(); // move only in one place
+        if (!targetNode || targetPanel.getSelectionModel().getSelection().length > 1) {
+            return;
+        }
+
+        if(!this.checkBeforeMoveToVag(sourceNodes, targetNode)) {
+            return;
+        }
+
+        for (var y = 0; y < sourceNodes.length; y++) {
+            targetNode.insertChild(targetNode.childNodes.length, sourceNodes[y]); // appendChild don't work, no need to remove before insert
+        }
+
+        this.afterDropToVag(sourceNodes, targetNode);
+    },
+
+    afterDropToVag: function (records, targetVagModel) {
+        var sourceModel = records[0];   // all models go in one place
+
+        if (sourceModel.get('who') === 'cont') {
+            targetVagModel.set('otpravka', 'CONT');
+        } else if (sourceModel.get('who') === 'gryz') {
+            targetVagModel.set('otpravka', 'GRUZ');
+        }
+
+        this.sortChildNodes(targetVagModel);
+
+        for (var i = 0; i < this.sourceVagModels.length; i++) {
+            if (!this.sourceVagModels[i].hasChildNodes()) {
+                this.sourceVagModels[i].set('otpravka', undefined);
+            } else {
+                this.sortChildNodes(this.sourceVagModels[i]);
+            }
+        }
+
+        this.getTreepanelLeft().getSelectionModel().deselectAll(true);
+        this.getTreepanelRight().getSelectionModel().deselectAll(true);
+        this.selectedNodesLeft = [];
+        this.selectedNodesRight = [];
+        this.sourceVagModels = [];
+    },
+
+    dropToVag: function (node, dragData, targetVagModel, dropPosition) {
+        this.afterDropToVag(dragData.records, targetVagModel);
     }
 });

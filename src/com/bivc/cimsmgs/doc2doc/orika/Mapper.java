@@ -58,5 +58,10 @@ public class Mapper extends ConfigurableMapper {
         factory.classMap(Gruz.class, GruzBindDTO.class)
                 .byDefault()
                 .register();
+
+        factory.classMap(Yard.class, YardBindDTO.class)
+                .fieldAToB("konts", "konts")
+                .byDefault()
+                .register();
     }
 }

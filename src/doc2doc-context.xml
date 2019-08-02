@@ -174,8 +174,12 @@
     />
 
     <bean id="poezdVgctgr_A" class="com.bivc.cimsmgs.actions.ky2.PoezdVgCtGr_A" scope="prototype"/>
+    <bean id="avtoCtgr_A" class="com.bivc.cimsmgs.actions.ky2.AvtoCtGr_A" scope="prototype"/>
+    <bean id="bindAvtoAndAvto_A" class="com.bivc.cimsmgs.actions.ky2.BindAvtoAndAvto_A" scope="prototype"/>
     <bean id="bindPoezdAndPoezd_A" class="com.bivc.cimsmgs.actions.ky2.BindPoezdAndPoezd_A" scope="prototype"/>
+    <bean id="bindPoezdAndYard_A" class="com.bivc.cimsmgs.actions.ky2.BindPoezdAndYard_A" scope="prototype"/>
     <bean id="poezd2_A" class="com.bivc.cimsmgs.actions.ky2.Poezd_A" scope="prototype"/>
+    <bean id="avto2_A" class="com.bivc.cimsmgs.actions.ky2.Avto_A" scope="prototype"/>
     <bean id="yard2_A" class="com.bivc.cimsmgs.actions.ky2.Yard_A" scope="prototype"/>
     <bean id="yardSector2_A" class="com.bivc.cimsmgs.actions.ky2.YardSector_A" scope="prototype"/>
 

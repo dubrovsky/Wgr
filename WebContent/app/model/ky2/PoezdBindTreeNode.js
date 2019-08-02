@@ -3,6 +3,9 @@ Ext.define('TK.model.ky2.PoezdBindTreeNode', {
 
     fields: [
         {name: 'hid', type: 'int', useNull: true},
+        {name: 'poezdHid', type: 'int', useNull: true},
+        {name: 'vagHid', type: 'int', useNull: true},
+        {name: 'contHid', type: 'int', useNull: true},
 
         {name: 'sort', type: 'int'},
 

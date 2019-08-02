@@ -21,7 +21,10 @@ Ext.define('TK.view.ky2.poezd.BasePoezdList', {
                     }]
                 },
                 {text:this.headerPoezdNum, dataIndex:'nppr', flex:1},
-                {text:this.headerKoleya, dataIndex:'koleya', width:70}
+                {text:this.headerVagCount, dataIndex:'vagCount', flex:1},
+                {text:this.headerKontCount, dataIndex:'kontCount', flex:1},
+                {text:this.headerKoleya, dataIndex:'koleya', width:70},
+                {text:this.freeSpace, flex:3}
             ]
         };
 

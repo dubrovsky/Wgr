@@ -77,6 +77,12 @@ Ext.application({
         'ky2.PoezdController',
         'ky2.PoezdVgCtGrController',
         'ky2.BindPoezdAndPoezdController',
+        'ky2.BindPoezdAndYardController',
+
+        'ky2.AvtoController',
+        'ky2.AvtoCtGrController',
+        'ky2.BindAvtoAndAvtoController',
+
         'ky2.YardController'
     ],
 

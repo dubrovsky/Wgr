@@ -2088,6 +2088,8 @@ Ext.define("TK.locale.ru.view.ky2.AbstractForm", {
     override:"TK.view.ky2.AbstractForm",
 
     btnSave         :'Сохранить',
+    btnSaveExit     :'Сохранить и выйти',
+    btnClose        :'Закрыть',
     btnCancel     :'Очистить'
 });
 
@@ -2155,18 +2157,20 @@ Ext.define("TK.locale.ru.view.ky.poezd.into.List", {
     title:'Список поездов по прибытию'
 });
 
-Ext.define("TK.locale.ru.view.ky2.poezd.into.PoezdList", {
-    override:"TK.view.ky2.poezd.into.PoezdList",
+Ext.define("TK.locale.ru.view.ky2.poezd.BasePoezdList", {
+    override:"TK.view.ky2.poezd.BasePoezdList",
 
     headerCreation    :'Создание',
     headerDateTime    :'Дата и время',
     headerUser        :'Пользователь',
 
-    headerPoezdNum        :'Номер поезда',
-    headerKoleya        :'Колея',
-    headerDateIn        :'Прибытие',
+    headerPoezdNum    :'Номер поезда',
+    headerKoleya      :'Колея',
+    headerVagCount    :'Количество вагонов',
+    headerKontCount   :'Количество контейнеров',
+    freeSpace         :'',
 
-    title:'Список поездов по прибытию',
+    // title:'Список поездов по прибытию',
 
     btnCreate   :'Создать поезд',
     btnEdit     :'Редактировать поезд',
@@ -2174,15 +2178,34 @@ Ext.define("TK.locale.ru.view.ky2.poezd.into.PoezdList", {
     btnEditVags     :'Редактировать вагоны'
 });
 
+Ext.define("TK.locale.ru.view.ky2.poezd.into.PoezdList", {
+    override:"TK.view.ky2.poezd.into.PoezdList",
+
+    // headerCreation    :'Создание',
+    // headerDateTime    :'Дата и время',
+    // headerUser        :'Пользователь',
+    //
+    // headerPoezdNum        :'Номер поезда',
+    // headerKoleya        :'Колея',
+    headerDateIn        :'Прибытие',
+
+    title:'Список поездов по прибытию',
+
+    // btnCreate   :'Создать поезд',
+    // btnEdit     :'Редактировать поезд',
+    // btnCreateVags   :'Создать вагоны',
+    // btnEditVags     :'Редактировать вагоны'
+});
+
 Ext.define("TK.locale.ru.view.ky2.poezd.out.PoezdList", {
     override:"TK.view.ky2.poezd.out.PoezdList",
 
-    headerCreation    :'Создание',
-    headerDateTime    :'Дата и время',
-    headerUser        :'Пользователь',
-
-    headerPoezdNum        :'Номер поезда',
-    headerKoleya        :'Колея',
+    // headerCreation    :'Создание',
+    // headerDateTime    :'Дата и время',
+    // headerUser        :'Пользователь',
+    //
+    // headerPoezdNum        :'Номер поезда',
+    // headerKoleya        :'Колея',
     headerDateOut        :'Отправление',
 
     title:'Список поездов по отправлению'
@@ -2410,6 +2433,8 @@ Ext.define("TK.locale.ru.controller.ky2.PoezdController", {
     override:"TK.controller.ky2.PoezdController",
 
     titleCreate: 'Создание поезда',
+    titleCreateInto: 'Создание поезда к.???? по прибытию',
+    titleCreateOut: 'Создание поезда к.???? по отправлению',
     titleEdit: 'Редактирование поезда',
     delTitle :'Удаление...',
     delMsg   :'Вы действительно хотите удалить..?',
@@ -2506,3 +2531,105 @@ Ext.define("TK.locale.ru.controller.ky2.Plomb", {
 });
 
 
+Ext.define("TK.locale.ru.view.ky2.poezd.into.PoezdList", {
+    override:"TK.view.ky2.poezd.into.PoezdList",
+
+    headerCreation    :'Создание',
+    headerDateTime    :'Дата и время',
+    headerUser        :'Пользователь',
+
+    headerPoezdNum        :'Номер поезда',
+    headerKoleya        :'Колея',
+    headerDateIn        :'Прибытие',
+
+    title:'Список поездов по прибытию',
+
+    btnCreate   :'Создать поезд',
+    btnEdit     :'Редактировать поезд',
+    btnCreateVags   :'Создать вагоны',
+    btnEditVags     :'Редактировать вагоны'
+});
+
+Ext.define("TK.locale.ru.view.ky2.poezd.out.PoezdList", {
+    override:"TK.view.ky2.poezd.out.PoezdList",
+
+    headerCreation    :'Создание',
+    headerDateTime    :'Дата и время',
+    headerUser        :'Пользователь',
+
+    headerPoezdNum        :'Номер поезда',
+    headerKoleya        :'Колея',
+    headerDateOut        :'Отправление',
+
+    title:'Список поездов по отправлению'
+});
+
+Ext.define("TK.locale.ru.view.ky2.poezd.BasePoezdForm", {
+    override:"TK.view.ky2.poezd.BasePoezdForm",
+
+    labelNppr         :'Номер поезда',
+    labelNpprm        :'Международный номер поезда',
+    labelKoleya       :'Колея',
+    labelKoleyaWide   :'Широкая',
+    labelKoleyaNarow  :'Узкая',
+    labelClient       :'Клиент',
+    labelDep          :'Станция формирования поезда',
+    labelDest         :'Станция назначеняи поезда',
+
+    title:'Список автомобилей по прибытию'
+
+});
+
+Ext.define("TK.locale.ru.view.ky2.avto.BaseAvtoList", {
+    override:"TK.view.ky2.avto.BaseAvtoList",
+
+    headerCreation    :'Создание',
+    headerDateTime    :'Дата и время',
+    headerUser        :'Пользователь',
+
+    headerAvtoNum      :'Номер авто',
+    headerAvtoTrail    :'Номер прицепа',
+    headerDep          :'Пункт отправления',
+    headerDest         :'Пункт назначения',
+
+    title:'Список автомобилей по прибытию'
+
+});
+
+Ext.define("TK.locale.ru.view.ky2.BaseAvtosDir", {
+    override:"TK.view.ky2.BaseAvtosDir",
+
+    headerAvtoNum      :'Номер авто',
+    headerAvtoTrail    :'Номер прицепа',
+    headerDep          :'Отправление',
+    headerDest         :'Назначение',
+    btnSelect          :'Выбрать',
+
+    title:'Список автомобилей по прибытию'
+
+});
+Ext.define("TK.locale.ru.view.ky2.avto.into.AvtoList", {
+    override:"TK.view.ky2.avto.into.AvtoList",
+
+    headerDateIn       :'Прибытие',
+    title              :'Список автомобилей по прибытию'
+
+});
+
+Ext.define("TK.locale.ru.view.ky2.avto.out.AvtoList", {
+    override:"TK.view.ky2.avto.out.AvtoList",
+
+    headerDateOut      :'Отправление',
+    title              :'Список автомобилей по отправлению'
+});
+
+Ext.define("TK.locale.ru.controller.ky2.AvtoController", {
+    override:"TK.controller.ky2.AvtoController",
+
+    titleCreate: 'Создание авто',
+    titleEdit: 'Редактирование авто',
+    delTitle :'Удаление...',
+    delMsg   :'Вы действительно хотите удалить..?',
+    maskMsg :'Запрос данных...',
+    errorMsg:'Внимание! Ошибка...'
+});

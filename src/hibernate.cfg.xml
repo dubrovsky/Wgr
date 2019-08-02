@@ -5,20 +5,12 @@
     <session-factory>
         <!--<property name="hibernate.connection.driver_class">oracle.jdbc.OracleDriver</property>-->
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-
-        <property name="hibernate.connection.password">wgr2013</property>
 <!--        <property name="hibernate.connection.password">wgr#2019</property>-->
+        <property name="hibernate.connection.password">wgr2013</property>
         <property name="hibernate.connection.username">wgr</property>
 <!--        <property name="hibernate.connection.username">wgr_second</property>-->
-
-
-
-
-
         <property name="hibernate.connection.url">jdbc:mysql://10.50.25.238/wgr?zeroDateTimeBehavior=convertToNull&amp;useSSL=false</property>
-<!--        <property name="hibernate.connection.url">jdbc:mysql://10.50.25.23:53306/wgr_second?zeroDateTimeBehavior=convertToNull&amp;useSSL=false</property>-->
-
-
+<!--        <property name="hibernate.connection.url">jdbc:mysql://localhost:33306/wgr_second?zeroDateTimeBehavior=convertToNull&amp;useSSL=false</property>-->
         <!--<property name="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</property>-->
         <property name="hibernate.dialect">com.bivc.cimsmgs.commons.MySqlDialect</property>
         <!--<property name="hibernate.generate_statistics">true</property>-->
@@ -153,6 +145,8 @@
         <mapping resource="com/bivc/cimsmgs/db/LoggingEvent.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/LoggingEventException.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/LoggingEventProperty.hbm.xml"/>
+
+        <mapping resource="com/bivc/cimsmgs/db/VagPerVed.hbm.xml"/>
 
         <mapping resource="com/bivc/cimsmgs/db/Ved.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/VedVag.hbm.xml"/>

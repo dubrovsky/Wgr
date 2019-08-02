@@ -20,4 +20,9 @@ public interface AvtoDAO extends GenericDAO<Avto, Long> {
     List<Avto> findAvtosOut4Kont(Integer limit, Integer start, List<Filter> filters, Usr usr, Locale locale);
 
     Long countAvtosOut4Kont(List<Filter> filters, Usr usr, Locale locale);
+
+    List<Avto> findAvtosDir(Integer limit, Integer start, List<Filter> filters, Usr usr, Long routeId, Byte direction);
+
+    Long countAvtosDir(List<Filter> filters, Usr usr, Long routeId, Byte direction);
+
 }

@@ -28,6 +28,7 @@ public class VedLoader {
   private static final SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd");
   private static final SimpleDateFormat dateTimeFormater1 = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
   private static final SimpleDateFormat dateFormater1 = new SimpleDateFormat("dd-MMM-yy", Locale.ENGLISH);
+  private static final SimpleDateFormat df4 = new SimpleDateFormat("yyyyMMddHHmmss");
   private static final Logger log = LoggerFactory.getLogger(VedLoader.class);
   private TreeMap<String, Long> srcMap = new TreeMap<>();
   private static final int interval = 90;
@@ -240,6 +241,76 @@ public class VedLoader {
         session.close();
     }*/
     }
+    return true;
+  }
+
+  public boolean load2(Document doc, String un, String trans, String fullNum) {
+    Date d = new Date();
+    String n_poezd = StringUtils.substringAfter(fullNum, "_");
+    String ved_nomer = StringUtils.substringBefore(fullNum, "_");
+    String n_packet = df4.format(d) + (long)(Math.random() * 1000000 + 1);
+
+    Session session;
+    Transaction tx = null;
+
+    String rootName = doc.getRootElement().getName();
+
+    @SuppressWarnings("unchecked")
+    List<Node> nodes = doc.selectNodes("/" + rootName + "/row");
+    try {
+      session = HibernateUtil.getSession();
+      tx = session.beginTransaction();
+      for (Node node : nodes) {
+        VagPerVed ved = new VagPerVed();
+        ved.setPor_vag(node.valueOf("por_vag"));
+        ved.setNvag(node.valueOf("nvag"));
+        ved.setTara_vag(node.valueOf("tara_vag"));
+        ved.setKol_osi(node.valueOf("kol_osi"));
+        ved.setNsto_f(node.valueOf("nsto_f"));
+        ved.setNsto(node.valueOf("nsto"));
+        ved.setDotp(node.valueOf("dotp"));
+        ved.setKsto(node.valueOf("ksto"));
+        ved.setSmgs(node.valueOf("smgs"));
+        ved.setDate_pr(node.valueOf("date_pr"));
+        ved.setPrin(node.valueOf("prin"));
+        ved.setNkon(node.valueOf("nkon"));
+        ved.setMnet(node.valueOf("mnet"));
+        ved.setMbrt(node.valueOf("mbrt"));
+        ved.setTip_razm(node.valueOf("tip_razm"));
+        ved.setKstn(node.valueOf("kstn"));
+        ved.setKgvn(node.valueOf("kgvn"));
+        ved.setNzgr(node.valueOf("nzgr"));
+        ved.setKolm(node.valueOf("kolm"));
+        ved.setZnak(node.valueOf("znak"));
+        ved.setKpl(trim(node.valueOf("kpl")));
+        ved.setTara(node.valueOf("tara"));
+        ved.setNotd(node.valueOf("notd"));
+        ved.setNpol(node.valueOf("npol"));
+        ved.setAdres_o(node.valueOf("adres_o"));
+        ved.setAdres_p(node.valueOf("adres_p"));
+        ved.setOwnern(node.valueOf("vag_vl"));
+        ved.setGrpod(node.valueOf("grpdt"));
+        ved.setVed_nomer(ved_nomer);
+        ved.setN_poezd(n_poezd);
+        ved.setDattr(d);
+        ved.setN_packet(n_packet);
+
+        session.save(ved);
+      }
+
+      tx.commit();
+    }
+    catch (Exception ex) {
+      log.error(ex.getMessage(), ex);
+      if (tx != null)
+        tx.rollback();
+//      if (session != null)
+//        session.clear();
+    }
+    /*finally {
+      if (session != null)
+        session.close();
+    }*/
     return true;
   }
 

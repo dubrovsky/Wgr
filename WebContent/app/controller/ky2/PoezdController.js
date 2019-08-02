@@ -33,6 +33,9 @@ Ext.define('TK.controller.ky2.PoezdController', {
         ref: 'poezdlist',
         selector: 'viewport > tabpanel grid'
     }, {
+        ref: 'menutree',
+        selector: 'viewport > menutree'
+    }, {
         ref: 'poezdform',
         selector: 'viewport > tabpanel ky2abstractform#ky2poezdform'
     }],
@@ -75,11 +78,26 @@ Ext.define('TK.controller.ky2.PoezdController', {
             },
             'ky2poezdoutform button[action="save"]': {
                 click: this.savePoezd
-            }/*,
-            'ky2basepoezdform radiogroup#koleya': {
-                change: this.onKoleyaChange
-            }*/
+            },
+            // 'ky2basepoezdform radiogroup#koleya': {
+            //     change: this.onKoleyaChange
+            // }
+            'ky2poezdoutform button[action="close"]': {
+                click: this.onExit
+            },
+            'ky2poezdintoform button[action="close"]': {
+                click: this.onExit
+            }
+
         });
+    },
+
+    onExit:function(btn){
+	    var menu = this.getMenutree(),
+            node = menu.lastSelectedLeaf;
+
+        menu.selModel.select(node, false, true);
+        menu.fireEvent('itemclick', menu.view, node);
     },
 
     createPoezdInto: function (btn) {
@@ -95,7 +113,7 @@ Ext.define('TK.controller.ky2.PoezdController', {
                 'route.hid': extraParams['routeId'],
                 direction: extraParams['direction']
             }),
-            poezdcontainer = Ext.widget(xtype, {title: this.titleCreate});
+            poezdcontainer = Ext.widget(xtype, {title: this.getTitleByDirection(extraParams['direction'])});
 
         poezdcontainer.down('form').loadRecord(poezd);
         poezdcontainer.down('form').initFieldsWithDefaultsValues();
@@ -216,7 +234,18 @@ Ext.define('TK.controller.ky2.PoezdController', {
 
         store.getProxy().extraParams = {action: 'poezds_dir_for_poezd_bind', direction: direction, routeId: poezdModel.get('route.hid')};
         store.load();
+    },
+    getTitleByDirection: function (direction) {
+        switch (direction) {
+            case 1:
+                return this.titleCreateInto;
+            case 2:
+                return this.titleCreateOut;
+            default:
+                return "";
+        }
     }
+
 
 
 });

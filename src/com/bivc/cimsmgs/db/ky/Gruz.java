@@ -13,6 +13,7 @@ public class Gruz implements Serializable, Comparable<Gruz> {
 	private Long hid;
 	private Kont kont;
 	private Vagon vagon;
+	private Avto avto;
 	private String upak;
 	private String kgvn;
 	private String nzgr;
@@ -170,5 +171,13 @@ public class Gruz implements Serializable, Comparable<Gruz> {
 
 	public void setVagon(Vagon vagon) {
 		this.vagon = vagon;
+	}
+
+	public Avto getAvto() {
+		return avto;
+	}
+
+	public void setAvto(Avto avto) {
+		this.avto = avto;
 	}
 }

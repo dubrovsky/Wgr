@@ -2,6 +2,8 @@ package com.bivc.cimsmgs.dto.ky2;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.util.TreeSet;
+
 /**
  * @author p.dzeviarylin
  */
@@ -15,6 +17,7 @@ public class YardDTO {
     private Long z;
     private String notes;
     private boolean empty;
+    private TreeSet<KontDTO> konts = new TreeSet<>();
 
     public Long getHid() {
         return hid;
@@ -70,5 +73,13 @@ public class YardDTO {
 
     public void setEmpty(boolean empty) {
         this.empty = empty;
+    }
+
+    public TreeSet<KontDTO> getKonts() {
+        return konts;
+    }
+
+    public void setKonts(TreeSet<KontDTO> konts) {
+        this.konts = konts;
     }
 }

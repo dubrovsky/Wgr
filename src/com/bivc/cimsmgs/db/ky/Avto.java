@@ -2,12 +2,12 @@ package com.bivc.cimsmgs.db.ky;
 
 import com.bivc.cimsmgs.db.PackDoc;
 import com.bivc.cimsmgs.db.Route;
+import com.bivc.cimsmgs.doc2doc.orika.Mapper;
+import com.bivc.cimsmgs.dto.ky2.*;
 import com.bivc.cimsmgs.formats.json.serializers.DateTimeSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import java.util.Date;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Created by vva on 29.12.14.
@@ -44,9 +44,239 @@ public class Avto {
     private String trans;
     @JsonSerialize(using = DateTimeSerializer.class)
     private Date altered;
-    private Set<Kont> kontsOut = new TreeSet<>();
-    private Set<Kont> kontsInto = new TreeSet<>();
+    private Set<Kont> konts = new TreeSet<>();
+    private Set<Gruz> gruzs = new TreeSet<>();
 
+
+    public void bindKonts(Set<KontBindDTO> dtos, Mapper mapper, Avto toAvto) {
+        // delete
+        Set<Kont> kontsToUnbind = new HashSet<>();
+        for (Kont kont : getKonts()) {
+            boolean found = false;
+            for (KontBindDTO kontDTO : dtos) {
+                if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                kontsToUnbind.add(kont);
+            }
+        }
+        for (Kont kont : kontsToUnbind) {    // kont will go to another poezd
+            unbindKont(kont);
+            kont.setAvto(toAvto);
+        }
+
+        // update
+        Set<KontBindDTO> dtoToRemove = new HashSet<>();
+        for (Kont kont : getKonts()) {
+            for (KontBindDTO kontDTO : dtos) {
+                if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
+                    mapper.map(kontDTO, kont);  // update kont, sort can change
+                    dtoToRemove.add(kontDTO);
+                }
+            }
+        }
+        dtos.removeAll(dtoToRemove);
+
+        // insert
+//        for (Vagon vagon : toVags) {// add kont from another poezd
+            for (Kont kont : toAvto.getKonts()) {
+                for (KontBindDTO kontDTO : dtos) {
+                    if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
+                        bindKont(kont);
+                    }
+                }
+            }
+//        }
+
+    }
+    public void bindGruzs(TreeSet<GruzBindDTO> dtos, Mapper mapper, Avto toAvto) {
+        // delete
+        Set<Gruz> gruzyToUnbind = new HashSet<>();
+        for (Gruz gruz : getGruzs()) {
+            boolean found = false;
+            for (GruzBindDTO gruzDTO : dtos) {
+                if (Objects.equals(gruz.getHid(), gruzDTO.getHid())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                gruzyToUnbind.add(gruz);
+            }
+        }
+        for (Gruz gruz : gruzyToUnbind) {    // gruz will go to another poezd
+            unbindGruz(gruz);
+            gruz.setAvto(toAvto);
+        }
+
+        // update
+        Set<GruzBindDTO> dtoToRemove = new HashSet<>();
+        for (Gruz gruz : getGruzs()) {
+            for (GruzBindDTO gruzDTO : dtos) {
+                if (Objects.equals(gruz.getHid(), gruzDTO.getHid())) {
+                    mapper.map(gruzDTO, gruz);  // update gruz, sort can change
+                    dtoToRemove.add(gruzDTO);
+                }
+            }
+        }
+        dtos.removeAll(dtoToRemove);
+
+        // insert
+//        for (Vagon vagon : toVags) {// add gruz from another poezd
+//            for (Gruz gruz : toAvto.getGruzs()) {
+//                for (GruzBindDTO gruzDTO : dtos) {
+//                    if (Objects.equals(gruz.getHid(), gruzDTO.getHid())) {
+//                        bindGruz(gruz);
+//                    }
+//                }
+//            }
+//        }
+    }
+
+    private void unbindGruz(Gruz gruz) {
+//        konts.remove(kont);
+        if (gruz.getAvto() != null && gruz.getAvto().getHid().equals(hid)) {  // unbind only this vagon
+            gruz.setAvto(null);
+        }
+
+    }
+
+    public Gruz bindGruz(Gruz gruz) {
+        if (gruz.getAvto() == null || !gruz.getAvto().getHid().equals(getHid())) {  // bind only another vagon
+            gruz.setAvto(this);
+        }
+        return gruz;
+    }
+
+    private void unbindKont(Kont kont) {
+        if (kont.getAvto() != null && kont.getAvto().getHid().equals(hid)) {  // unbind only this vagon
+            kont.setAvto(null);
+        }
+
+    }
+
+    public Kont bindKont(Kont kont) {
+        if (kont.getAvto() == null || !kont.getAvto().getHid().equals(getHid())) {// bind only another vagon
+            kont.setAvto(this);
+        }
+        return kont;
+    }
+
+
+    public void updateKonts(Set<KontDTO> dtos, Mapper mapper) {
+        // delete
+        Set<Kont> kontsToRemove = new HashSet<>();
+        for(Kont kont: getKonts()){
+            boolean found = false;
+            for(KontDTO kontDTO : dtos){
+                if(Objects.equals(kont.getHid(), kontDTO.getHid())){
+                    found = true;
+                    break;
+                }
+            }
+            if(!found){
+                kontsToRemove.add(kont);
+            }
+        }
+        for(Kont kont: kontsToRemove){
+            removeKont(kont);
+        }
+
+        // update
+        Set<KontDTO> kontDtoToRemove = new HashSet<>();
+        for(Kont kont: getKonts()){
+            for(KontDTO kontIntoDTO : dtos){
+                if(Objects.equals(kont.getHid(), kontIntoDTO.getHid())){
+                    mapper.map(kontIntoDTO, kont);
+//                    if(kontIntoDTO.getOtpravka() == Otpravka.CONT){
+//                        kont.updateKonts(kontIntoDTO.getKonts(), mapper);
+//                    } else if (kontIntoDTO.getOtpravka() == Otpravka.GRUZ){
+                        kont.updateGruzs(kontIntoDTO.getGruzs(), mapper);
+//                    } else {  // can be deleted and getOtpravka is null
+//                        kont.removeKonts();
+//                        kont.removeGruzy();
+//                    }
+
+                    kontDtoToRemove.add(kontIntoDTO);
+                }
+            }
+        }
+        dtos.removeAll(kontDtoToRemove);
+
+        // insert
+        for(KontDTO kontIntoDTO : dtos){
+            Kont kont = mapper.map(kontIntoDTO, Kont.class);
+            addKont(kont);
+//            if(vagonIntoDTO.getOtpravka() == Otpravka.CONT){
+//                vagon.updateKonts(vagonIntoDTO.getKonts(), mapper);
+//            } else if(vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
+                kont.updateGruzs(kontIntoDTO.getGruzs(), mapper);
+//            }
+        }
+    }
+
+    public Kont addKont(Kont kont) {
+        konts.add(kont);
+        kont.setAvto(this);
+        return kont;
+    }
+
+    public void removeKont(Kont kont) {
+        konts.remove(kont);
+        kont.setAvto(null);
+    }
+
+    public void updateGruzs(TreeSet<GruzDTO> dtos, Mapper mapper) {
+        // delete
+        Set<Gruz> gruzyToRemove = new HashSet<>();
+        for (Gruz gruz : getGruzs()) {
+            boolean found = false;
+            for (GruzDTO gruzDto : dtos) {
+                if (Objects.equals(gruz.getHid(), gruzDto.getHid())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                gruzyToRemove.add(gruz);
+            }
+        }
+        for (Gruz gruz : gruzyToRemove) {
+            removeGruz(gruz);
+        }
+
+        // update
+        Set<GruzDTO> dtoToRemove = new HashSet<>();
+        for (Gruz gruz : getGruzs()) {
+            for (GruzDTO gruzDto : dtos) {
+                if (Objects.equals(gruz.getHid(), gruzDto.getHid())) {
+                    mapper.map(gruzDto, gruz);
+                    dtoToRemove.add(gruzDto);
+                }
+            }
+        }
+        dtos.removeAll(dtoToRemove);
+
+        // insert
+        for (GruzDTO gruzDto : dtos) {
+            Gruz gruz = mapper.map(gruzDto, Gruz.class);
+            addGruz(gruz);
+        }
+    }
+
+    private void removeGruz(Gruz gruz) {
+        gruzs.remove(gruz);
+        gruz.setAvto(null);
+    }
+
+    private Gruz addGruz(Gruz gruz) {
+        gruzs.add(gruz);
+        gruz.setAvto(this);
+        return gruz;
+    }
 
 
     public enum FilterFields {
@@ -110,20 +340,12 @@ public class Avto {
     }
 
 
-    public Set<Kont> getKontsInto() {
-        return kontsInto;
+    public Set<Kont> getKonts() {
+        return konts;
     }
 
-    public void setKontsInto(Set<Kont> kontsInto) {
-        this.kontsInto = kontsInto;
-    }
-
-    public Set<Kont> getKontsOut() {
-        return kontsOut;
-    }
-
-    public void setKontsOut(Set<Kont> kontsOut) {
-        this.kontsOut = kontsOut;
+    public void setKonts(Set<Kont> konts) {
+        this.konts = konts;
     }
 
     public Date getAltered() {
@@ -252,5 +474,13 @@ public class Avto {
 
     public void setHid(Long hid) {
         this.hid = hid;
+    }
+
+    public Set<Gruz> getGruzs() {
+        return gruzs;
+    }
+
+    public void setGruzs(Set<Gruz> gruzs) {
+        this.gruzs = gruzs;
     }
 }

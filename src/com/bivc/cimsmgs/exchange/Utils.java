@@ -9,8 +9,11 @@ import java.util.regex.Matcher;
 import java.util.ArrayList;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static com.bivc.cimsmgs.exchange.DateFormat.*;
 
 public class Utils {
 
@@ -209,6 +212,34 @@ public class Utils {
     return res;
   }
 
+  static final private FastDateFormat arr[] = {sdf14, sdf13, sdf12, sdf11, sdf10, sdf24, sdf23, sdf22, sdf21, sdf20, sdf34, sdf33, sdf32, sdf31, sdf30, sdf44, cdf, sdf51};
+
+  public static Date makeDate(String str) {
+    return makeDate(str, arr);
+  }
+
+  public static Date makeDate(String str, FastDateFormat... mask) {
+//      logger.debug("Converting to Date from String - " + str);
+    Date check = null;
+    if (org.apache.commons.lang3.StringUtils.isBlank(str))
+      return null;
+
+    str = str.trim();
+    for (FastDateFormat anArr : mask) {
+      try {
+        check = anArr.parse(str);
+        String sdat = anArr.format(check);
+        if (str.equals(sdat))
+          break;
+      } catch (Exception ignore) {
+      }
+    }
+
+    if (check == null)
+      log.warn("Not parsable date " + str);
+
+    return check;
+  }
   public static String normNvagNkonStr(String str) {
     String res = "";
     if (str != null) {

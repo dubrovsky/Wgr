@@ -123,7 +123,7 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
 
                 if (vags && !Ext.Object.isEmpty(vags)) {
                     this.initVagsNodes(vags, rootNode);
-                    rootNode.expand();
+                    // rootNode.expand();
                 }
                 /// END fill tree
                 this.getCenter().remove(this.getCenter().getComponent(0), true);

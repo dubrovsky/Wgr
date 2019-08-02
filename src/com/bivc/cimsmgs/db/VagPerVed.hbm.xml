@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.VagPerVed" table="VAG_PER_VED">
+        <id name="hid" type="long">
+            <column name="HID" precision="20" scale="0" />
+            <generator class="native"/>
+        </id>
+        <property column="DATTR" name="dattr" type="java.util.Date"/>
+        <property column="VED_NOMER" name="ved_nomer" type="java.math.BigDecimal"/>
+        <property column="N_POEZD" name="n_poezd" type="java.math.BigDecimal"/>
+        <property column="POR_VAG" name="por_vag" type="java.lang.String"/>
+        <property column="NVAG" name="nvag" type="java.lang.String"/>
+        <property column="TARA_VAG" name="tara_vag" type="java.math.BigDecimal"/>
+        <property column="KOL_OSI" name="kol_osi" type="java.math.BigDecimal"/>
+        <property column="NSTO_F" name="nsto_f" type="java.lang.String"/>
+        <property column="NSTO" name="nsto" type="java.lang.String"/>
+        <property column="DOTP" name="dotp" type="java.lang.String"/>
+        <property column="KSTO" name="ksto" type="java.lang.String"/>
+        <property column="SMGS" name="smgs" type="java.lang.String"/>
+        <property column="DATE_PR" name="date_pr" type="java.util.Date"/>
+        <property column="PRIN" name="prin" type="java.lang.String"/>
+        <property column="NKON" name="nkon" type="java.lang.String"/>
+        <property column="MNET" name="mnet" type="java.math.BigDecimal"/>
+        <property column="MBRT" name="mbrt" type="java.math.BigDecimal"/>
+        <property column="TIP_RAZM" name="tip_razm" type="java.lang.String"/>
+        <property column="KSTN" name="kstn" type="java.lang.String"/>
+        <property column="KGVN" name="kgvn" type="java.lang.String"/>
+        <property column="NZGR" name="nzgr" type="java.lang.String"/>
+        <property column="KOLM" name="kolm" type="java.lang.String"/>
+        <property column="ZNAK" name="znak" type="java.lang.String"/>
+        <property column="KPL" name="kpl" type="java.lang.String"/>
+        <property column="TARA" name="tara" type="java.lang.String"/>
+        <property column="NOTD" name="notd" type="java.lang.String"/>
+        <property column="NPOL" name="npol" type="java.lang.String"/>
+        <property column="ADRES_O" name="adres_o" type="java.lang.String"/>
+        <property column="ADRES_P" name="adres_p" type="java.lang.String"/>
+        <property column="N_PACKET" name="n_packet" type="java.lang.String"/>
+        <property column="RECVDT" name="recvdt" type="java.util.Date"/>
+        <property column="DTO" name="dto" type="java.util.Date"/>
+        <property column="DTN" name="dtn" type="java.util.Date"/>
+        <property column="OWNERN" name="ownern" type="java.lang.String"/>
+        <property column="GRPOD" name="grpod" type="java.math.BigDecimal"/>
+    </class>
+</hibernate-mapping>

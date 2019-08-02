@@ -9,26 +9,26 @@ Ext.define('TK.view.ky2.poezd.BasePoezdForm', {
     buildItems: function(config) {
         config.items = [{
             xtype:'textfield',
-            fieldLabel: 'Номер',
+            fieldLabel: this.labelNppr,
             //decimalPrecision: 0,
             name: 'nppr',
             maxLength: 5
         },{
             xtype:'textfield',
-            fieldLabel: 'Международный номер',
+            fieldLabel: this.labelNpprm,
             //decimalPrecision: 0,
             name: 'npprm',
             maxLength: 10
         },{
             xtype: 'radiogroup',
-            fieldLabel: 'Колея',
+            fieldLabel: this.labelKoleya,
             itemId:'koleya',
             columns: 1,
             vertical: true,
             allowBlank: false,
             items: [
-                {boxLabel: 'Широкая', name: 'koleya', inputValue: 1},
-                {boxLabel: 'Узкая', name: 'koleya', inputValue: 2}
+                {boxLabel: this.labelKoleyaWide, name: 'koleya', inputValue: 1},
+                {boxLabel: this.labelKoleyaNarow, name: 'koleya', inputValue: 2}
             ]
         }/*,{
             xtype: 'combo',
@@ -40,7 +40,7 @@ Ext.define('TK.view.ky2.poezd.BasePoezdForm', {
             store: []
         }*/,{
             xtype:'textfield',
-            fieldLabel: 'Клиент',
+            fieldLabel: this.labelClient,
             name: 'gruzotpr',
             maxLength: 128,
             anchor: '99%'
@@ -64,13 +64,13 @@ Ext.define('TK.view.ky2.poezd.BasePoezdForm', {
             }]
         }*/,{
             xtype:'textfield',
-            fieldLabel: 'Пункт отправления',
+            fieldLabel: this.labelDep,
             name: 'punkt_otpr',
             maxLength: 96,
             anchor: '99%'
         },{
             xtype:'textfield',
-            fieldLabel: 'Пункт назначения',
+            fieldLabel: this.labelDest,
             name: 'punkt_nazn',
             maxLength: 96,
             anchor: '99%'

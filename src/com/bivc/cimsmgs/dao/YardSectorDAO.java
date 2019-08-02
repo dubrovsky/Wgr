@@ -9,13 +9,15 @@ import java.util.List;
  * Created by peter on 10.02.14.
  */
 public interface YardSectorDAO extends GenericDAO<YardSector, Integer> {
-    public List<YardSector> findAll(Integer limit, Integer start, String query);
+    List<YardSector> findAll(Integer limit, Integer start, String query);
 
-    public Long countAll(String query);
+    Long countAll(String query);
 
-    public List<YardSector> findAll(Integer limit, Integer start, String query, Usr usr);
+    List<YardSector> findAll(Integer limit, Integer start, String query, Usr usr);
 
     Long countAll(String query, Usr usr);
+
+    List<YardSector> findAll(Usr usr);
 
 //    public void delete(Integer hid);
 }
