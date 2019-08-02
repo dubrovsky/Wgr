@@ -40,6 +40,20 @@ public class Poezd implements Serializable {
     private String punkt_otpr;
     private String punkt_nazn;
     private String gruzotpr;
+    private Integer vagCount;
+    private Integer kontCount;
+
+
+    public Integer getVagCount() {
+        return vagons.size();
+    }
+
+    public Integer getKontCount() {
+        int konts = 0;
+        for (Vagon vagon: vagons)
+            konts += vagon.getKonts().size();
+        return konts;
+    }
 
     public String getGruzotpr() {
         return gruzotpr;

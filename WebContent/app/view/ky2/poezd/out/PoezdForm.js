@@ -16,13 +16,15 @@ Ext.define('TK.view.ky2.poezd.out.PoezdForm', {
                 defaults: {
                     anchor: '100%'
                 },
-                width:250,
+                width:300,
                 items: [{
+                    labelWidth: '140px',
                     fieldLabel:'Дата',
                     name : 'dotpDate',
                     xtype: 'datefield',
                     altFormats:'d.m.y'
                 },{
+                    labelWidth: '140px',
                     fieldLabel:'Время',
                     name : 'dotpTime',
                     xtype: 'timefield',

@@ -2,17 +2,21 @@ package com.bivc.cimsmgs.dto.ky;
 
 import com.bivc.cimsmgs.commons.DateTimeUtils;
 import com.bivc.cimsmgs.commons.TimeSerializer;
+import com.bivc.cimsmgs.db.ky.Vagon;
 import com.bivc.cimsmgs.dto.PackDocDTO;
 import com.bivc.cimsmgs.dto.RouteDTO;
 import com.bivc.cimsmgs.formats.json.serializers.DateSerializer;
 import com.bivc.cimsmgs.formats.json.serializers.DateTimeDeserializer;
 import com.bivc.cimsmgs.formats.json.serializers.DateTimeSerializer;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import java.util.Date;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author p.dzeviarylin
@@ -29,6 +33,8 @@ public class PoezdBaseDTO {
     private String gruzotpr;
     private String punkt_otpr;
     private String punkt_nazn;
+    private Integer vagCount;
+    private Integer kontCount;
 
     @JsonSerialize(using = DateTimeSerializer.class)
     private Date dattr;
@@ -64,6 +70,22 @@ public class PoezdBaseDTO {
 
     public PoezdBaseDTO(Long hid) {
         this.hid = hid;
+    }
+
+    public void setVagCount(Integer vagCount) {
+        this.vagCount = vagCount;
+    }
+
+    public void setKontCount(Integer kontCount) {
+        this.kontCount = kontCount;
+    }
+
+    public Integer getVagCount() {
+        return vagCount;
+    }
+
+    public Integer getKontCount() {
+        return kontCount;
     }
 
     public Date getDotp() {

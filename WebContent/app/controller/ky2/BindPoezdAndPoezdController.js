@@ -158,7 +158,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         });
     },
 
-    initVagsNodes: function (vags, rootNode, isYard) {
+    initVagsNodes: function (vags, rootNode, isYard) {    //isYard - poezd for yard
         for (var vagIndx in vags) {
             var vag = vags[vagIndx],
                 conts = vag['konts'],
@@ -215,15 +215,15 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
             vagModel.appendChild(contModel);
 
             if (gryzy && !Ext.Object.isEmpty(gryzy)) {
-                this.initGryzyNodes(gryzy, contModel, contIndx);
+                this.initGryzyNodes(gryzy, contModel, contIndx, isYard, 'TK.model.ky2.PoezdBindTreeNode');
             }
         }
     },
 
-    initGryzyNodes: function (gryzy, parentModel, parentIndx, isYard) {
+    initGryzyNodes: function (gryzy, parentModel, parentIndx, isYard, model) {      // used here and in yard
         for (var gryzIndx in gryzy) {
             var gryz = gryzy[gryzIndx],
-                gryzModel = Ext.create('TK.model.ky2.PoezdBindTreeNode', {
+                gryzModel = Ext.create(model, {
                     text: gryz['kgvn'],
                     who: 'gryz',
                     poezdHid: parentModel.get('poezdHid'),

@@ -9,18 +9,21 @@ Ext.define('TK.view.ky2.poezd.BasePoezdForm', {
     buildItems: function(config) {
         config.items = [{
             xtype:'textfield',
+            labelWidth: '150px',
             fieldLabel: this.labelNppr,
             //decimalPrecision: 0,
             name: 'nppr',
             maxLength: 5
         },{
             xtype:'textfield',
+            labelWidth: '150px',
             fieldLabel: this.labelNpprm,
             //decimalPrecision: 0,
             name: 'npprm',
             maxLength: 10
         },{
             xtype: 'radiogroup',
+            labelWidth: '150px',
             fieldLabel: this.labelKoleya,
             itemId:'koleya',
             columns: 1,
@@ -38,13 +41,13 @@ Ext.define('TK.view.ky2.poezd.BasePoezdForm', {
             name: 'line',
             itemId:'line',
             store: []
-        }*/,{
+        },{
             xtype:'textfield',
             fieldLabel: this.labelClient,
             name: 'gruzotpr',
             maxLength: 128,
             anchor: '99%'
-        }/*,{
+        },{
             xtype: 'fieldcontainer',
             layout: {
                 type: 'hbox',
@@ -64,16 +67,18 @@ Ext.define('TK.view.ky2.poezd.BasePoezdForm', {
             }]
         }*/,{
             xtype:'textfield',
+            labelWidth: '150px',
             fieldLabel: this.labelDep,
             name: 'punkt_otpr',
-            maxLength: 96,
-            anchor: '99%'
+            maxLength: 96
+            // anchor: '99%'
         },{
             xtype:'textfield',
+            labelWidth: '150px',
             fieldLabel: this.labelDest,
             name: 'punkt_nazn',
-            maxLength: 96,
-            anchor: '99%'
+            maxLength: 96
+            // anchor: '99%'
         }]
     },
     buildTopToolbar: function(config){

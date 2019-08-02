@@ -2574,7 +2574,7 @@ Ext.define("TK.locale.ru.view.ky2.poezd.BasePoezdForm", {
     labelKoleyaNarow  :'Узкая',
     labelClient       :'Клиент',
     labelDep          :'Станция формирования поезда',
-    labelDest         :'Станция назначеняи поезда',
+    labelDest         :'Станция назначения поезда',
 
     title:'Список автомобилей по прибытию'
 

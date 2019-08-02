@@ -3,6 +3,8 @@ Ext.define('TK.model.ky2.YardBindTreeNode', {
 
     fields: [
         {name: 'hid', type: 'int', useNull: true},
+        {name: 'yardHid', type: 'int', useNull: true},
+        {name: 'yardSectorHid', type: 'int', useNull: true},
         {name: 'sort', type: 'int'},
 
         // sector

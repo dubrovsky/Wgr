@@ -10,6 +10,8 @@ Ext.define('TK.model.ky2.PoezdBase', {
         {name:'nppr', type: 'string', useNull:true},
         {name:'npprm', type: 'string', useNull:true},
 
+        {name:'vagCount', type:'int'},
+        {name:'kontCount', type:'int'},
         {name:'koleya', type:'int'},
         {name:'direction', type:'int'},
         {name:'route.hid', type:'int', useNull:true},

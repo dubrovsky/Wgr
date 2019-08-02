@@ -93,7 +93,7 @@ Ext.define('TK.view.ky2.AbstractBindTreeForm', {
 
     buildTreeLeftPanelTopToolbarItems: function () {
         return [
-            '->',
+            '->', '-',
             {
                 text: 'Переместить >',
                 action: 'moveRight'
@@ -117,7 +117,7 @@ Ext.define('TK.view.ky2.AbstractBindTreeForm', {
         return [{
             text: '< Переместить',
             action: 'moveLeft'
-        }];
+        }, '-'];
     },
 
     buildTreeRightPanelBottomToolbarItems: function () {

@@ -79,7 +79,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
 
                     this.getTreepanelRight().setTitle('Контейнерная площадка');
                     rootNode = this.getTreepanelRight().getStore().getRootNode();
-                    if(yardSectorArr && yardSectorArr.length > 0){
+                    if (yardSectorArr && yardSectorArr.length > 0) {
                         this.initYardSectorNodes(yardSectorArr, rootNode);
                     }
                     /// END fill tree
@@ -103,7 +103,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
                     text: yardSector['name'],
                     who: 'yardsector',
                     leaf: false,
-                    iconCls: 'vag',
+                    iconCls: 'cont',
                     allowDrag: false,
                     expanded: true
                     // expanded: (yards && yards['0']) && i === 0
@@ -114,8 +114,8 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
             }, this);
 
             rootNode.appendChild(yardSectorModel);
-            if(yards && yards.length > 0){
-                // this.initYardNodes(yards, i, yardSectorModel);
+            if (yards && yards.length > 0) {
+                this.initYardNodes(yards, i, yardSectorModel);
             }
         }
     },
@@ -127,17 +127,46 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
                 yardModel = Ext.create('TK.model.ky2.YardBindTreeNode', {
                     text: yard['x'] + '/' + yard['y'] + '/' + yard['z'],
                     who: 'yard',
+                    yardSectorHid: yardSectorModel.get('hid'),
                     leaf: false,
                     iconCls: 'vag',
-                    expanded: yardIndx === 0 && (conts && conts['0']) && i === 0
+                    allowDrag: false,
+                    expanded: true
+                    // expanded: yardIndx === 0 && (conts && conts['0']) && i === 0
                 });
 
             Ext.Object.each(yard, function (prop, value) {
                 yardModel.set(prop, value);
             }, this);
-            yardSectorModel.appendChild(yardModel);
-            if(conts && conts.length > 0){
-                this.getController('ky2.BindPoezdAndPoezdController').initContsNodes(conts, i, yardModel);
+            // yardSectorModel.appendChild(yardModel);     // view withot yard places
+            if (conts && conts.length > 0) {
+                this.initContsNodes(conts, yardModel, yardSectorModel);
+            }
+        }
+    },
+
+    initContsNodes: function (conts, yardModel, yardSectorModel) {
+        for (var contIndx in conts) {
+            var cont = conts[contIndx],
+                gryzy = cont['gruzs'],
+                contModel = Ext.create('TK.model.ky2.YardBindTreeNode', {
+                    text: cont['nkon'],
+                    who: 'cont',
+                    yardHid: yardModel.get('hid'),
+                    yardSectorHid: yardModel.get('yardSectorHid'),
+                    iconCls: 'cont3',
+                    allowDrop: false,
+                    leaf: gryzy && gryzy['0'] ? false : true,
+                    expanded: false
+                });
+
+            Ext.Object.each(cont, function (prop, value) {
+                contModel.set(prop, value);
+            }, this);
+            yardSectorModel.appendChild(contModel);
+
+            if (gryzy && !Ext.Object.isEmpty(gryzy)) {
+                this.getController('ky2.BindPoezdAndPoezdController').initGryzyNodes(gryzy, contModel, contIndx, false, 'TK.model.ky2.YardBindTreeNode');
             }
         }
     }
