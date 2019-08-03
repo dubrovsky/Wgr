@@ -14,6 +14,9 @@ Ext.define('TK.model.ky2.YardBindTreeNode', {
         {name:'x', type:'int'},
         {name:'y', type:'int'},
         {name:'z', type:'int'},
+        {name:'contsInYardSector', type:'int'},
+        {name:'placesInYardSector', type:'int'},
+        {name:'z', type:'int'},
 
         // kont
         {name: 'nkon', type: 'string'},

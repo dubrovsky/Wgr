@@ -13,7 +13,7 @@
             </key-property>
         </composite-id>
         <many-to-one name="yardSector" class="com.bivc.cimsmgs.db.ky.YardSector" update="false" insert="false" fetch="select">
-            <column name="USR_ID" length="20" not-null="true" />
+            <column name="YARD_SECTOR_ID" length="20" not-null="true" />
         </many-to-one>
         <many-to-one name="group" class="com.bivc.cimsmgs.db.UsrGroupsDir" update="false" insert="false" fetch="select">
             <column name="GROUP_ID" length="64" not-null="true" />

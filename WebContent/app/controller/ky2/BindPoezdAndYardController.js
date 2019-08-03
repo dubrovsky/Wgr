@@ -1,7 +1,9 @@
 Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
     extend: 'Ext.app.Controller',
 
-    sourceParentModel: undefined,
+    sourceVagModels: [],
+    selectedNodesPoezd: [],
+    selectedNodesYard: [],
 
     views: [
         'ky2.poezd.into.Poezd2PoezdBindTreeForm',
@@ -39,6 +41,12 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
             },
             'ky2poezdintolist button[action="getPoesdAndYardForBind"]': {
                 click: this.getPoesdIntoAndYardForBind
+            },
+            'ky2poezd2yardbindtreeforminto treepanel#treepanelLeft': {
+                selectionchange: this.selectionchangePoezd
+            },
+            'ky2poezd2yardbindtreeforminto treepanel#treepanelRight': {
+                selectionchange: this.selectionchangeYard
             }
         });
     },
@@ -100,7 +108,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
             var yardSector = yardSectorArr[i],
                 yards = yardSector['yards'],
                 yardSectorModel = Ext.create('TK.model.ky2.YardBindTreeNode', {
-                    text: yardSector['name'],
+                    text: '',
                     who: 'yardsector',
                     leaf: false,
                     iconCls: 'cont',
@@ -115,12 +123,22 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
 
             rootNode.appendChild(yardSectorModel);
             if (yards && yards.length > 0) {
-                this.initYardNodes(yards, i, yardSectorModel);
+                var contsSum = this.initYardNodes(yards, i, yardSectorModel);
+                
+                yardSectorModel.set('contsInYardSector', contsSum);
+                yardSectorModel.set('placesInYardSector', yards.length);
+                this.updateYardSectorModelText(yardSectorModel);
             }
         }
     },
 
+    updateYardSectorModelText: function(yardSectorModel) {
+        yardSectorModel.set('text', yardSectorModel.get('name') + ' (' + yardSectorModel.get('contsInYardSector') + '/' + yardSectorModel.get('placesInYardSector') + ')');
+        yardSectorModel.commit(true); // to remove red triangle
+    },
+
     initYardNodes: function (yards, yardIndx, yardSectorModel) {
+        var contsSum = 0;
         for (var i = 0; i < yards.length; i++) {
             var yard = yards[i],
                 conts = yard['konts'],
@@ -138,11 +156,13 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
             Ext.Object.each(yard, function (prop, value) {
                 yardModel.set(prop, value);
             }, this);
-            // yardSectorModel.appendChild(yardModel);     // view withot yard places
+            // yardSectorModel.appendChild(yardModel);     // view without yard places
             if (conts && conts.length > 0) {
                 this.initContsNodes(conts, yardModel, yardSectorModel);
+                contsSum += conts.length;
             }
         }
+        return contsSum;
     },
 
     initContsNodes: function (conts, yardModel, yardSectorModel) {
@@ -169,6 +189,36 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
                 this.getController('ky2.BindPoezdAndPoezdController').initGryzyNodes(gryzy, contModel, contIndx, false, 'TK.model.ky2.YardBindTreeNode');
             }
         }
+    },
+
+    selectionchangePoezd: function (selModel, selected) {
+        this.getController('ky2.BindPoezdAndPoezdController').selectionchange(selModel, selected, this.selectedNodesPoezd);
+    },
+
+    selectionchangeYard: function (selModel, selected) {
+        this.getController('ky2.BindPoezdAndPoezdController').selectionchange(selModel, selected, this.selectedNodesYard, this.checkSelectedInYard);
+    },
+
+    checkSelectedInYard: function (selected) {
+        if (!selected || selected.length < 2) {
+            return true;
+        }
+
+        var yardsectors = Ext.Array.filter(selected, function (item, index, array) {
+            return item.get('who') === 'yardsector';
+        });
+        if (yardsectors.length !== 0) {   // yardsectors can't be more than 1
+            return false;
+        }
+
+        var conts = Ext.Array.filter(selected, function (item, index, array) {
+            return item.get('who') === 'cont';
+        });
+        if (conts.length === selected.length) {// all selected must be conts
+            return true;
+        }
+
+        return false;
     }
 
 });

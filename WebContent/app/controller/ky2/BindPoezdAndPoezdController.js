@@ -188,7 +188,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
                 }
             } else if (vag['otpravka'] === 'GRUZ' && !isYard) {
                 if (gruzy && !Ext.Object.isEmpty(gruzy)) {
-                    this.initGryzyNodes(gruzy, vagModel, vagIndx, isYard);
+                    this.initGryzyNodes(gruzy, vagModel, vagIndx, isYard, 'TK.model.ky2.PoezdBindTreeNode');
                 }
             }
         }
@@ -379,10 +379,10 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         this.selectionchange(selModel, selected, this.selectedNodesRight);
     },
 
-    selectionchange: function (selModel, selected, selectedNodes) {
-        // var nodeModel = selModel.getLastSelected();
+    selectionchange: function (selModel, selected, selectedNodes, checkSelectedFn) {
+        var checkSelected = checkSelectedFn || this.checkSelected; // in yards another checkSelectedFn
         if (selModel.getLastSelected() && selected[0]) {
-            if (selected.length > 1 && !this.checkSelected(selected)) { // has wrong selection
+            if (selected.length > 1 && !checkSelected(selected)) { // has wrong selection
                 for (var i = 0; i < selected.length; i++) {      // remove last selections
                     var found = false;
                     for (var y = 0; y < selectedNodes.length; y++) {
@@ -404,17 +404,6 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
             for (var z = 0; z < selected.length; z++) {
                 selectedNodes.push(selected[z]);
             }
-
-            /*if (
-                nodeModel.get('who') === 'vag' ||
-                (nodeModel.get('who') === 'gryz' && nodeModel.parentNode.get('who') === 'cont') ||
-                (selected[0] && selected[0].get('who') !== nodeModel.get('who') /!*&& selected[0].parentNode.get('who') === nodeModel.parentNode.get('who')*!/)
-            ) {   // no selection for  vag
-                // gruz in conts and
-                // gruz and cont in one selection
-                selModel.deselect(nodeModel);
-                return;
-            }*/
         }
     },
 
