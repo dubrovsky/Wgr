@@ -52,7 +52,11 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
             'ky2poezdsinto4poezdoutdir button[action="getPoesdAndPoezdForBind"]': {
                 click: this.getPoesdOutAndPoezdIntoForBind
             },
-            'ky2bindtreeform > treepanel > treeview': {
+            'ky2poezd2poezdbindtreeformout treepanel#treepanelLeft > treeview': {
+                drop: this.dropToVag,
+                nodedragover: this.beforeDropToVag
+            },
+            'ky2poezd2poezdbindtreeformout treepanel#treepanelRight > treeview': {
                 drop: this.dropToVag,
                 nodedragover: this.beforeDropToVag
             },
@@ -474,23 +478,31 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
                 isDrop = !targetModel.get('otpravka') || sourceParentModel.get('otpravka') === targetModel.get('otpravka');
             }
 
-            if (isDrop) {    // save distinct sourceVagModels
-                var found = false;
-                for (var y = 0; y < this.sourceVagModels.length; y++) {
-                    if (this.sourceVagModels[y].get('hid') === sourceParentModel.get('hid')) {
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) {
-                    this.sourceVagModels.push(sourceParentModel); // save sourceParentModel to later use it in drop event
-                }
-            } else {
-                this.sourceVagModels = [];
+            this.cacheDistinctSourceModels(isDrop, sourceParentModel, this.sourceVagModels);
+            if (!isDrop) {
                 break;
             }
         }
         return isDrop;
+    },
+
+    cacheDistinctSourceModels: function(isDrop, sourceParentModel, sourceVagModels){
+        if (isDrop) {    // save distinct sourceVagModels
+            var found = false;
+            for (var y = 0; y < sourceVagModels.length; y++) {
+                if (sourceVagModels[y].get('hid') === sourceParentModel.get('hid')) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                sourceVagModels.push(sourceParentModel); // save sourceParentModel to later use it in drop event
+            }
+        } else {
+            while (sourceVagModels.length) {
+                sourceVagModels.pop(); // clear array
+            }
+        }
     },
 
     moveNodes: function (sourcePanel, targetPanel) {
