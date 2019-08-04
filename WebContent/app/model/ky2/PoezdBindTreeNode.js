@@ -6,6 +6,8 @@ Ext.define('TK.model.ky2.PoezdBindTreeNode', {
         {name: 'poezdHid', type: 'int', useNull: true},
         {name: 'vagHid', type: 'int', useNull: true},
         {name: 'contHid', type: 'int', useNull: true},
+        {name: 'yardHid', type: 'int', useNull: true},
+        {name: 'yardSectorHid', type: 'int', useNull: true},
 
         {name: 'sort', type: 'int'},
 
@@ -17,13 +19,21 @@ Ext.define('TK.model.ky2.PoezdBindTreeNode', {
         {name: 'nvag', type: 'string'},
         {name: 'otpravka', type: 'string', useNull: true, defaultValue: null},
 
-
         // kont
         {name: 'nkon', type: 'string'},
 
         // gruz
         'kgvn',
-        // 'nzgr',
+
+        // sector
+        {name:'name', type:'string'},
+
+        // yard
+        {name:'x', type:'int'},
+        {name:'y', type:'int'},
+        {name:'z', type:'int'},
+        {name:'contsInYardSector', type:'int'},
+        {name:'placesInYardSector', type:'int'},
 
         // tree node fields
         'who',

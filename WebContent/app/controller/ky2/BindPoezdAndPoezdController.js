@@ -52,6 +52,14 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
             'ky2poezdsinto4poezdoutdir button[action="getPoesdAndPoezdForBind"]': {
                 click: this.getPoesdOutAndPoezdIntoForBind
             },
+            'ky2poezd2poezdbindtreeforminto treepanel#treepanelLeft > treeview': {
+                drop: this.dropToVag,
+                nodedragover: this.beforeDropToVag
+            },
+            'ky2poezd2poezdbindtreeforminto treepanel#treepanelRight > treeview': {
+                drop: this.dropToVag,
+                nodedragover: this.beforeDropToVag
+            },
             'ky2poezd2poezdbindtreeformout treepanel#treepanelLeft > treeview': {
                 drop: this.dropToVag,
                 nodedragover: this.beforeDropToVag
@@ -477,6 +485,9 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
             if (isDrop) { // vag otpravka should be null or the same as in source parent model
                 isDrop = !targetModel.get('otpravka') || sourceParentModel.get('otpravka') === targetModel.get('otpravka');
             }
+            if (isDrop) {
+                isDrop = sourceParentModel.get('hid') !== targetModel.get('hid'); // prevent dropping in same node
+            }
 
             this.cacheDistinctSourceModels(isDrop, sourceParentModel, this.sourceVagModels);
             if (!isDrop) {
@@ -544,6 +555,11 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
             } else {
                 this.sortChildNodes(this.sourceVagModels[i]);
             }
+        }
+
+        for (var i = 0; i < records.length; i++) {
+            records[i].set('poezdHid', targetVagModel.get('poezdHid'));
+            records[i].set('vagHid', targetVagModel.get('hid'))
         }
 
         this.getTreepanelLeft().getSelectionModel().deselectAll(true);
