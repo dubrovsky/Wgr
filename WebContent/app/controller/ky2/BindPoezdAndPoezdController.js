@@ -215,7 +215,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
                 vagModel.set(prop, value);
             }, this);
 
-            if (vag['otpravka'] === 'CONT' || !isYard) {
+            if (!vag['otpravka'] || vag['otpravka'] === 'CONT' || !isYard) {
                 rootNode.appendChild(vagModel);
             }
 

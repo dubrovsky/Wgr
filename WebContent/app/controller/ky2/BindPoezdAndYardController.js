@@ -9,7 +9,8 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
     views: [
         'ky2.poezd.into.Poezd2PoezdBindTreeForm',
         'ky2.poezd.out.Poezd2PoezdBindTreeForm',
-        'ky2.poezd.into.Poezd2YardBindTreeForm'
+        'ky2.poezd.into.Poezd2YardBindTreeForm',
+        'ky2.poezd.out.Poezd2YardBindTreeForm'
     ],
     models: [
         'ky2.YardBindTreeNode',
@@ -219,6 +220,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
                     yardSectorHid: yardSectorModel.get('hid'),
                     leaf: false,
                     iconCls: 'vag',
+                    cls: 'hideTreeNode',
                     allowDrag: false,
                     expanded: true
                     // expanded: yardIndx === 0 && (conts && conts['0']) && i === 0
@@ -227,9 +229,10 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
             Ext.Object.each(yard, function (prop, value) {
                 yardModel.set(prop, value);
             }, this);
-            // yardSectorModel.appendChild(yardModel);     // view without yard places
+            yardSectorModel.appendChild(yardModel);     // view without yard places
             if (conts && conts.length > 0) {
                 this.initContsNodes(conts, yardModel, yardSectorModel);
+                // this.initContsNodes(conts, yardModel, yardSectorModel);
                 contsSum += conts.length;
             }
         }
@@ -257,7 +260,8 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
             Ext.Object.each(cont, function (prop, value) {
                 contModel.set(prop, value);
             }, this);
-            yardSectorModel.appendChild(contModel);
+            yardModel.appendChild(contModel);
+            // yardSectorModel.appendChild(contModel);
 
             if (gryzy && !Ext.Object.isEmpty(gryzy)) {
                 this.getController('ky2.BindPoezdAndPoezdController').initGryzyNodes(gryzy, contModel, contIndx, false, 'TK.model.ky2.PoezdBindTreeNode');
@@ -385,8 +389,20 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
                 for (var y = 0; y < this.sourceYardModels.length; y++) {
                     if (records[i].get('yardSectorHid') === this.sourceYardModels[y].get('hid')) {
                         this.sourceYardModels[y].set('contsInYardSector', (this.sourceYardModels[y].get('contsInYardSector') - 1));
+                        this.updateYardSectorModelText(this.sourceYardModels[y]);
+                        break;
                     }
-                    this.updateYardSectorModelText(this.sourceYardModels[y]);
+                }
+            } else { // move from same tree, vag
+                for (var y = 0; y < this.sourceVagModels.length; y++) {
+                    if (records[i].get('vagHid') === this.sourceVagModels[y].get('hid')) {
+                        if (!this.sourceVagModels[y].hasChildNodes()) {
+                            this.sourceVagModels[y].set('otpravka', undefined);
+                        } else {
+                            this.getController('ky2.BindPoezdAndPoezdController').sortChildNodes(this.sourceVagModels[y]);
+                        }
+                        break;
+                    }
                 }
             }
             records[i].set('yardSectorHid', null);
@@ -496,20 +512,24 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
         var dataObjRight = this.bindYardSectors(this.getTreepanelRight().getRootNode());
 
         var url = 'ky2/secure/BindPoezdAndYard.do';
-         this.getCenter().setLoading(true);
-         Ext.Ajax.request({
-             url: url,
-             params: {poezdObj: Ext.encode(dataObjLeft), yardSectorsObj: Ext.encode(dataObjRight), action: 'bind_poezd_and_yard'},
-             scope: this,
-             success: function (response) {
-                 this.getCenter().setLoading(false);
-                 var respObj = Ext.decode(response.responseText);
-             },
-             failure: function (response) {
-                 this.getCenter().setLoading(false);
-                 TK.Utils.makeErrMsg(response, 'Error...');
-             }
-         });
+        this.getCenter().setLoading(true);
+        Ext.Ajax.request({
+            url: url,
+            params: {
+                poezdObj: Ext.encode(dataObjLeft),
+                yardSectorsObj: Ext.encode(dataObjRight),
+                action: 'bind_poezd_and_yard'
+            },
+            scope: this,
+            success: function (response) {
+                this.getCenter().setLoading(false);
+                var respObj = Ext.decode(response.responseText);
+            },
+            failure: function (response) {
+                this.getCenter().setLoading(false);
+                TK.Utils.makeErrMsg(response, 'Error...');
+            }
+        });
     },
 
     bindYardSectors: function (rootNodeModel) {
