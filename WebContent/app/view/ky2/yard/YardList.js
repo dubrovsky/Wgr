@@ -21,9 +21,9 @@ Ext.define('TK.view.ky2.yard.YardList', {
                         dataIndex: 'z',
                         width: 60
                     }]
-                }/*,
-                {text:this.headerNKont, dataIndex:'kont.nkon', flex:1},
-                {text:'Размещение на площадке', dataIndex:'kont.dyard', width:110, renderer: TK.Utils.renderLongStr}*/
+                },
+                {text:this.headerNKont, dataIndex:'konts', width: 200, renderer: this.renderNkon}
+                // {text:'Размещение на площадке', dataIndex:'kont.dyard', width:110, renderer: TK.Utils.renderLongStr}
             ]
         };
 
@@ -50,6 +50,15 @@ Ext.define('TK.view.ky2.yard.YardList', {
         if(tkUser.hasPriv('CIM_DELETE')){
             config.tbar.push({text: this.btnDelete,iconCls:'del', action:'delete'}, '-');
         }
+    },
+
+    renderNkon: function (value, meta) {
+        var nkon = '';
+        Ext.Array.each(value, function(kont) {
+            nkon += kont.nkon + ' ';
+        });
+        return nkon;
     }
+
 
 });

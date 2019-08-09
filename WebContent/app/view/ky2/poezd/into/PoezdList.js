@@ -5,7 +5,7 @@ Ext.define('TK.view.ky2.poezd.into.PoezdList', {
 
     buildColumns:function (config) {
         this.callParent(arguments);
-        config.columns.items.splice(3, 0,
+        config.columns.items.splice(2, 0,
             {text:this.headerDateIn, dataIndex:'dprb', width:100, renderer: TK.Utils.renderLongStr}
         );
     },

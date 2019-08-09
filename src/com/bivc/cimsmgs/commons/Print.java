@@ -9,21 +9,22 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.commons.lang3.text.WordUtils;
-import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 /**
  * Date: 06.03.12
  * Time: 9:54
  */
 public class Print {
+
     private boolean useBlanks;
     private List<Integer> pages;
 
@@ -42,11 +43,13 @@ public class Print {
     public void setPages(List<Integer> pages) {
         this.pages = pages;
     }
+
     private static HashMap<String, Rectangle> pageSizeMap = new HashMap<>();
+
     static {
         pageSizeMap.put("A4", PageSize.A4);
         pageSizeMap.put("A3", PageSize.A3);
-        pageSizeMap.put("A4L", new RectangleReadOnly(842.0F,595.0F ));
+        pageSizeMap.put("A4L", new RectangleReadOnly(842.0F, 595.0F));
         pageSizeMap.put("A3L", new RectangleReadOnly(1191.0F, 842.0F));
     }
 
@@ -95,7 +98,6 @@ public class Print {
         table0.addCell(new Phrase(DateFormat.dateFormaterDay.format(new Date()), font_simple));
 
 
-
         document.add(table0);
 
         PdfPTable table1 = new PdfPTable(2);
@@ -117,7 +119,7 @@ public class Print {
         table1.addCell(cell);
 
         Phrase phrase = new Phrase();
-        phrase.add(new Chunk("Вагонов, сданных с ",  font));
+        phrase.add(new Chunk("Вагонов, сданных с ", font));
         phrase.add(new Chunk(StringUtils.defaultString(ved.getRailoutn()), font_bold));
         phrase.add(new Chunk(StringUtils.defaultString(ved.getCarroutn()), font_bold));
         cell = new PdfPCell(phrase);
@@ -125,26 +127,26 @@ public class Print {
         table1.addCell(cell);
 
         phrase = new Phrase();
-        phrase.add(new Chunk("на ",  font));
+        phrase.add(new Chunk("на ", font));
         phrase.add(new Chunk(StringUtils.defaultString(ved.getRailinn()), font_bold));
         cell = new PdfPCell(phrase);
         cell.setBorder(Rectangle.NO_BORDER);
         table1.addCell(cell);
 
         phrase = new Phrase();
-        phrase.add(new Chunk("Wagonow przekazanych z kolei",  font_simple));
+        phrase.add(new Chunk("Wagonow przekazanych z kolei", font_simple));
         cell = new PdfPCell(phrase);
         cell.setBorder(Rectangle.NO_BORDER);
         table1.addCell(cell);
 
         phrase = new Phrase();
-        phrase.add(new Chunk("na koleje",  font_simple));
+        phrase.add(new Chunk("na koleje", font_simple));
         cell = new PdfPCell(phrase);
         cell.setBorder(Rectangle.NO_BORDER);
         table1.addCell(cell);
 
         phrase = new Phrase();
-        phrase.add(new Chunk("На станции ",  font));
+        phrase.add(new Chunk("На станции ", font));
         phrase.add(new Chunk(StringUtils.defaultString(ved.getStninn()), font_bold));
         cell = new PdfPCell(phrase);
 //        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -154,7 +156,7 @@ public class Print {
         table1.addCell(cell);
 
         phrase = new Phrase();
-        phrase.add(new Chunk("поезд №",  font));
+        phrase.add(new Chunk("поезд №", font));
         phrase.add(new Chunk(StringUtils.defaultString(ved.getTrain()), font_bold));
         cell = new PdfPCell(phrase);
         cell.setPaddingTop(10);
@@ -162,14 +164,14 @@ public class Print {
         table1.addCell(cell);
 
         phrase = new Phrase();
-        phrase.add(new Chunk("Na stacji",  font_simple));
+        phrase.add(new Chunk("Na stacji", font_simple));
         cell = new PdfPCell(phrase);
         cell.setPaddingLeft(25);
         cell.setBorder(Rectangle.NO_BORDER);
         table1.addCell(cell);
 
         phrase = new Phrase();
-        phrase.add(new Chunk("pociagiem",  font_simple));
+        phrase.add(new Chunk("pociagiem", font_simple));
         cell = new PdfPCell(phrase);
         cell.setBorder(Rectangle.NO_BORDER);
         table1.addCell(cell);
@@ -183,7 +185,7 @@ public class Print {
         table1_1.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
 
         table1_1.addCell(new Phrase("Месяц\nmiesiac", font));
-        table1_1.addCell(new Phrase(ved.getCrdate() != null ? DateFormat.dateFormater.format(ved.getCrdate()).substring(3, 5) : "" , font_bold));
+        table1_1.addCell(new Phrase(ved.getCrdate() != null ? DateFormat.dateFormater.format(ved.getCrdate()).substring(3, 5) : "", font_bold));
         table1_1.addCell(new Phrase("день\ndzien", font));
         table1_1.addCell(new Phrase(ved.getCrdate() != null ? DateFormat.dateFormater.format(ved.getCrdate()).substring(0, 2) : "", font_bold));
         table1_1.addCell(new Phrase("года\nrok", font));
@@ -203,7 +205,7 @@ public class Print {
         table2.addCell(new Phrase("Код приписки вагона\nKod przypisania", font));
         table2.addCell(new Phrase("Владелец вагона\nPosiadacz wagonu", font));
         table2.addCell(new Phrase("Вагон совм. польз.\nWagon wspolnego uzytkow.", font));
-        table2.addCell(new Phrase("Оси\nil osi" , font));
+        table2.addCell(new Phrase("Оси\nil osi", font));
         table2.addCell(new Phrase("Гружен/Порожн.\nLadowny/prozny", font));
         table2.addCell(new Phrase("Станция назначения\nStacja przeznaczenia", font));
         table2.addCell(new Phrase("Примечание\nUwagi", font));
@@ -214,19 +216,18 @@ public class Print {
             table2.addCell(new Phrase(StringUtils.defaultString(vag.getIndexNum()), font));
             table2.addCell(new Phrase(StringUtils.defaultString(vag.getNvag()), font));
             String nvag = StringUtils.defaultString(vag.getNvag()).replaceAll(" ", "");
-            table2.addCell(new Phrase(nvag.length()>4 ? nvag.substring(2, 4) : "", font));
+            table2.addCell(new Phrase(nvag.length() > 4 ? nvag.substring(2, 4) : "", font));
             table2.addCell(new Phrase(StringUtils.defaultString(vag.getOwner()), font));
             table2.addCell(new Phrase(StringUtils.isBlank(vag.getOwner()) ? "X" : "", font));
             table2.addCell(new Phrase(vag.getAxes() != null ? vag.getAxes().toString() : "", font));
             String txt = "";
             if (vag.getMbrt() == null || vag.getMbrt().equals(new BigDecimal(0))) {
                 txt = "Порожний";
-            }
-            else {
+            } else {
                 txt = "Груженый";
                 grCount++;
             }
-            table2.addCell(new Phrase( txt , font));
+            table2.addCell(new Phrase(txt, font));
             table2.addCell(new Phrase(StringUtils.defaultString(vag.getNstn()), font));
             table2.addCell(new Phrase(StringUtils.defaultString(vag.getPrim()), font));
             axCount += vag.getAxes() != null ? vag.getAxes() : 0;
@@ -239,14 +240,14 @@ public class Print {
         table3.setWidthPercentage(90);
         table3.getDefaultCell().setBorder(Rectangle.NO_BORDER);
         table3.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
-        
+
 
         table3.addCell(new Phrase("Итого груженых\nRazem ladownych", font));
-        table3.addCell(new Phrase(""  + grCount, font));
+        table3.addCell(new Phrase("" + grCount, font));
         table3.addCell(new Phrase("порожних\nproznych", font));
         table3.addCell(new Phrase("" + (ved.getVags().size() - grCount), font));
         table3.addCell(new Phrase("Всего вагонов\nOgolem wagonow", font));
-        table3.addCell(new Phrase("" + ved.getVags().size() , font));
+        table3.addCell(new Phrase("" + ved.getVags().size(), font));
         table3.addCell(new Phrase("осей\nosi", font));
         table3.addCell(new Phrase("" + axCount, font));
 
@@ -255,7 +256,7 @@ public class Print {
         table3.addCell(new Phrase("", font));
         table3.addCell(new Phrase("", font));
         table3.addCell(new Phrase("Вес БРУТТО\nWaga brutto", font));
-        table3.addCell(new Phrase("" , font));
+        table3.addCell(new Phrase("", font));
         table3.addCell(new Phrase("", font));
         table3.addCell(new Phrase("", font));
 
@@ -297,7 +298,7 @@ public class Print {
         Font font_bold = FontFactory.getFont(fontFamily, BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 9, Font.BOLD);
         Font font = FontFactory.getFont(fontFamily, BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 9, Font.NORMAL);
 
-        Document document = new Document( pageSizeMap.get(pageSize+"L"), 10, 10, 10, 10);
+        Document document = new Document(pageSizeMap.get(pageSize + "L"), 10, 10, 10, 10);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         PdfWriter writer = PdfWriter.getInstance(document, baos);
@@ -370,7 +371,7 @@ public class Print {
             table1.addCell(cell);
 
             phrase = new Phrase();
-            phrase.add(new Chunk(ved.getCrdate()!= null ? DateFormat.dateFormater.format(ved.getCrdate()) : "", font_bold));
+            phrase.add(new Chunk(ved.getCrdate() != null ? DateFormat.dateFormater.format(ved.getCrdate()) : "", font_bold));
             cell = new PdfPCell(phrase);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell.setBorderWidthLeft(0);
@@ -461,7 +462,7 @@ public class Print {
             for (VedVag vag : entry.getValue()) {
                 table2.addCell(new Phrase("" + i++, font));
                 table2.addCell(new Phrase(StringUtils.defaultString(vag.getNvag()) + "\n" + StringUtils.defaultString(vag.getOwner()), font));
-                table2.addCell(new Phrase(vag.getKpl() != null ? ""+vag.getKpl() : "", font));
+                table2.addCell(new Phrase(vag.getKpl() != null ? "" + vag.getKpl() : "", font));
                 table2.addCell(new Phrase(StringUtils.defaultString(vag.getZnak()), font));
                 table2.addCell(new Phrase(StringUtils.defaultString(vag.getNumClaim()), font));
                 table2.addCell(new Phrase(vag.getG281() != null ? DateFormat.dateFormaterPrint.format(vag.getG281()) : "", font));
@@ -496,8 +497,23 @@ public class Print {
         return baos;
     }
 
-    public ByteArrayOutputStream generatePdf(List<PrintTemplates> printTemplates, Object smgs, boolean isView) throws DocumentException, InvocationTargetException, IllegalAccessException, IOException, SQLException {
-        PrintTemplates printTemplate = printTemplates.iterator().next();
+    /**
+     * generatePdf generates pdf file from group of smgses
+     * @param smgsTemplatesObject map of smgses anf their taplate lists
+     * @param isView
+     * @return
+     * @throws DocumentException
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     * @throws IOException
+     * @throws SQLException
+     */
+    //    public ByteArrayOutputStream generatePdf(List<PrintTemplates> printTemplates, List<Object> smgses, boolean isView) throws DocumentException, InvocationTargetException, IllegalAccessException, IOException, SQLException {
+    public ByteArrayOutputStream generatePdf(Map<Object, List<PrintTemplates>> smgsTemplatesObject, boolean isView) throws DocumentException, InvocationTargetException, IllegalAccessException, IOException, SQLException {
+        ;
+//        PrintTemplates printTemplate = printTemplates.iterator().next();
+        Object firstSmgs = smgsTemplatesObject.keySet().iterator().next();
+        PrintTemplates printTemplate = smgsTemplatesObject.get(firstSmgs).iterator().next();
         Document document = new Document(new Rectangle(Utilities.millimetersToPoints(printTemplate.getPaperWidth()), Utilities.millimetersToPoints(printTemplate.getPaperHeight())), 0f, 0f, 0f, 0f);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -509,132 +525,143 @@ public class Print {
         document.open();
         PdfContentByte content = writer.getDirectContent();
 
-        int templatesCount = 0;
-
-        if(!isView) {
-            for (PrintTemplates prnTempl : printTemplates) {
-                if (templatesCount > 0) {
-                    document.newPage();
-                }
-
-                List<PrintData> list = new ArrayList<>(prnTempl.getPrintDatas().values());
-                Collections.sort(list, new Comparator<PrintData>() {
-                    @Override
-                    public int compare(PrintData o1, PrintData o2) {
-                        return new CompareToBuilder()
-                                .append(o1.getPage(), o2.getPage())
-                                .toComparison();
+        for (Object smgs : smgsTemplatesObject.keySet()) {
+            int templatesCount = 0;
+            List<PrintTemplates> printTemplates = smgsTemplatesObject.get(smgs);
+            if (!isView) {
+                for (PrintTemplates prnTempl : printTemplates) {
+                    if (templatesCount > 0) {
+                        document.newPage();
                     }
-                });
 
-
-                if (!needBlank() || templatesCount > 0) { // no blank
-                    for (PrintData printData : list) {
-                        if (printThisPage(printData.getPage()) && printData.printThisColumn()) {
-                            if (needNewPage(printData.getPage())) {
-                                document.newPage();
-                            }
-                            drawText(printData, content, smgs);
-                        }
-                    }
-                } else {   // print with blank      Only 1st template can have blanks
-                    List<PrintBlank> blanks = new ArrayList<>(prnTempl.getPrintBlankTemplRefs().size());
-                    for (PrintBlankTemplRef refs : prnTempl.getPrintBlankTemplRefs()) {
-                        if(!refs.getPrintBlank().isPreview()) {
-                            blanks.add(refs.getPrintBlank());
-                        }
-                    }
-                    Collections.sort(blanks, new Comparator<PrintBlank>() {
+                    List<PrintData> list = new ArrayList<>(prnTempl.getPrintDatas().values());
+                    Collections.sort(list, new Comparator<PrintData>() {
                         @Override
-                        public int compare(PrintBlank o1, PrintBlank o2) {
-                            int result;
-                            if (o1.getPage() == o2.getPage()) {
-                                result = new CompareToBuilder()
-                                        .append(o1.getNcopy(), o2.getNcopy())
-                                        .toComparison();
-                                return result;
-                            } else if (o1.getPage() < o2.getPage() && o1.getPage() - o2.getPage() == -1) {
-                                if (o1.getNcopy() <= o2.getNcopy()) {
-                                    result = -1;
-                                } else {
-                                    result = 1;
-                                }
-                                return result;
-                            } else if (o1.getPage() > o2.getPage() && o1.getPage() - o2.getPage() == 1) {
-                                if (o1.getNcopy() < o2.getNcopy()) {
-                                    result = -1;
-                                } else {
-                                    result = 1;
-                                }
-                                return result;
-                            } else {
-                                result = new CompareToBuilder()
-                                        .append(o1.getPage(), o2.getPage())
-                                        .toComparison();
-                                return result;
-                            }
+                        public int compare(PrintData o1, PrintData o2) {
+                            return new CompareToBuilder()
+                                    .append(o1.getPage(), o2.getPage())
+                                    .toComparison();
                         }
                     });
-                    for (PrintBlank blank : blanks) {
-                        document.newPage();
+
+
+                    if (!needBlank() || templatesCount > 0) { // no blank
+                        for (PrintData printData : list) {
+                            if (printThisPage(printData.getPage()) && printData.printThisColumn()) {
+                                if (needNewPage(printData.getPage())) {
+                                    document.newPage();
+                                }
+                                drawText(printData, content, smgs);
+                            }
+                        }
+                    } else {   // print with blank      Only 1st template can have blanks
+                        List<PrintBlank> blanks = new ArrayList<>(prnTempl.getPrintBlankTemplRefs().size());
+                        for (PrintBlankTemplRef refs : prnTempl.getPrintBlankTemplRefs()) {
+                            if (!refs.getPrintBlank().isPreview()) {
+                                blanks.add(refs.getPrintBlank());
+                            }
+                        }
+                        Collections.sort(blanks, new Comparator<PrintBlank>() {
+                            @Override
+                            public int compare(PrintBlank o1, PrintBlank o2) {
+                                int result;
+                                if (o1.getPage() == o2.getPage()) {
+                                    result = new CompareToBuilder()
+                                            .append(o1.getNcopy(), o2.getNcopy())
+                                            .toComparison();
+                                    return result;
+                                } else if (o1.getPage() < o2.getPage() && o1.getPage() - o2.getPage() == -1) {
+                                    if (o1.getNcopy() <= o2.getNcopy()) {
+                                        result = -1;
+                                    } else {
+                                        result = 1;
+                                    }
+                                    return result;
+                                } else if (o1.getPage() > o2.getPage() && o1.getPage() - o2.getPage() == 1) {
+                                    if (o1.getNcopy() < o2.getNcopy()) {
+                                        result = -1;
+                                    } else {
+                                        result = 1;
+                                    }
+                                    return result;
+                                } else {
+                                    result = new CompareToBuilder()
+                                            .append(o1.getPage(), o2.getPage())
+                                            .toComparison();
+                                    return result;
+                                }
+                            }
+                        });
+                        for (PrintBlank blank : blanks) {
+                            document.newPage();
+                            if ("application/pdf".equals(blank.getContentType())) {
+                                importFromPdf(writer, content, blank);
+                            } else {
+                                document.add(createBlank1(prnTempl, blank));
+                            }
+                            for (PrintData printData : list) {
+                                if (printThisPage1(blank.getPage(), printData.getPage()) && printData.printThisColumn()) {
+                                    drawText(printData, content, smgs);
+                                }
+                            }
+                        /*if (isView) {
+                            break;
+                        }*/
+                        }
+                    }
+
+                /*if (isView) {   // print only 1st page
+                    break;
+                }*/
+                    templatesCount++;
+                }
+            } else {
+                PrintTemplates prnTempl = printTemplates.iterator().next();
+                if (prnTempl != null) {
+                    List<PrintData> list = new ArrayList<>(prnTempl.getPrintDatas().values());
+                    PrintBlank blank = null;
+                    for (PrintBlankTemplRef refs : prnTempl.getPrintBlankTemplRefs()) {
+                        if (refs.getPrintBlank().isPreview()) {
+                            blank = refs.getPrintBlank();
+                            break;
+                        }
+                    }
+
+                    if (blank != null) {
                         if ("application/pdf".equals(blank.getContentType())) {
                             importFromPdf(writer, content, blank);
-                        }
-                        else {
-                        document.add(createBlank1(prnTempl, blank));
+                        } else {
+                            document.add(createBlank1(prnTempl, blank));
                         }
                         for (PrintData printData : list) {
                             if (printThisPage1(blank.getPage(), printData.getPage()) && printData.printThisColumn()) {
                                 drawText(printData, content, smgs);
                             }
                         }
-                        /*if (isView) {
-                            break;
-                        }*/
-                    }
-                }
-
-                /*if (isView) {   // print only 1st page
-                    break;
-                }*/
-                templatesCount++;
-            }
-        } else {
-            PrintTemplates prnTempl = printTemplates.iterator().next();
-            if(prnTempl != null){
-                List<PrintData> list = new ArrayList<>(prnTempl.getPrintDatas().values());
-                PrintBlank blank = null;
-                for (PrintBlankTemplRef refs : prnTempl.getPrintBlankTemplRefs()) {
-                    if(refs.getPrintBlank().isPreview()) {
-                        blank = refs.getPrintBlank();
-                        break;
-                    }
-                }
-
-                if(blank != null){
-                    if ("application/pdf".equals(blank.getContentType())) {
-                        importFromPdf(writer, content, blank);
-                    }
-                    else {
-                    document.add(createBlank1(prnTempl, blank));
-                    }
-                    for (PrintData printData : list) {
-                        if (printThisPage1(blank.getPage(), printData.getPage()) && printData.printThisColumn()) {
-                            drawText(printData, content, smgs);
-                        }
-                    }
-                } else {
-                    for (PrintData printData : list) {
-                        if (printThisPage(printData.getPage()) && printData.printThisColumn()) {
-                            drawText(printData, content, smgs);
+                    } else {
+                        for (PrintData printData : list) {
+                            if (printThisPage(printData.getPage()) && printData.printThisColumn()) {
+                                drawText(printData, content, smgs);
+                            }
                         }
                     }
                 }
             }
         }
+        document.close();
+//        return baos;
+        // пересохранения документа с удалением лишнего
+        document = new Document();
+        ByteArrayOutputStream res = new ByteArrayOutputStream();
+        PdfCopy copy = new PdfSmartCopy(document, res);
+        document.open();
+
+        PdfReader reader = new PdfReader(new ByteArrayInputStream(baos.toByteArray()));
+        copy.addDocument(reader);
+        reader.close();
 
         document.close();
-        return baos;
+        return res;
     }
 
     private void importFromPdf(PdfWriter writer, PdfContentByte content, PrintBlank blank) throws IOException, SQLException {
@@ -654,9 +681,9 @@ public class Print {
     }
 
     private boolean hasBlank(PrintTemplates prnTempl, Byte page) {
-        for(PrintBlankTemplRef refs: prnTempl.getPrintBlankTemplRefs()){
+        for (PrintBlankTemplRef refs : prnTempl.getPrintBlankTemplRefs()) {
             PrintBlank blank = refs.getPrintBlank();
-            if(blank.getPage() == page){
+            if (blank.getPage() == page) {
                 return true;
             }
         }
@@ -665,9 +692,9 @@ public class Print {
 
     private Image createBlank(PrintTemplates prnTempl, Byte page) throws SQLException, IOException, BadElementException {
         Image img = null;
-        for(PrintBlankTemplRef refs: prnTempl.getPrintBlankTemplRefs()){
+        for (PrintBlankTemplRef refs : prnTempl.getPrintBlankTemplRefs()) {
             PrintBlank blank = refs.getPrintBlank();
-            if(blank.getPage() == page){
+            if (blank.getPage() == page) {
                 img = Image.getInstance(blank.getData().getBytes(1, (int) blank.getData().length()));
                 img.scaleToFit(Utilities.millimetersToPoints(prnTempl.getPaperWidth()), Utilities.millimetersToPoints(prnTempl.getPaperHeight()));
                 break;
@@ -699,7 +726,7 @@ public class Print {
     }
 
     private void drawText(PrintData printData, PdfContentByte content, Object doc) throws DocumentException, InvocationTargetException, IllegalAccessException {
-        if(printData.getPrintDataTables().values().size() == 0) { // no table
+        if (printData.getPrintDataTables().values().size() == 0) { // no table
             drawTextInRectangle(printData, content, doc);
         } else { // table
             drawTextInTable(printData, content, doc);
@@ -707,7 +734,7 @@ public class Print {
     }
 
     private void drawTextInRectangle(PrintData printData, PdfContentByte content, Object doc) throws IllegalAccessException, InvocationTargetException, DocumentException {
-        if(printData.getPrintDataPhrases().size() == 0){
+        if (printData.getPrintDataPhrases().size() == 0) {
             drawOnePhrase(printData, content, doc);
         } else {
             drawManyPhrases(printData, content, doc);
@@ -720,15 +747,15 @@ public class Print {
         column.setAlignment(Element.ALIGN_LEFT);
         column.setLeading(printData.getLeading() != null ? printData.getLeading() : printData.getPrintTemplates().getLeading());
 
-        for (PrintDataPhrase printDataPhrase: printData.getPrintDataPhrases().values()){
+        for (PrintDataPhrase printDataPhrase : printData.getPrintDataPhrases().values()) {
             String text = getText(doc, printDataPhrase.getName());
             if (StringUtils.isNotEmpty(text)) {
                 text = text.replace("||", "");
                 Phrase phrase = getPhrase(printDataPhrase, text);
 //                column.addText( Chunk.NEWLINE );
                 column.addText(phrase);
-                column.addText( Chunk.NEWLINE );
-                column.addText( Chunk.NEWLINE );
+                column.addText(Chunk.NEWLINE);
+                column.addText(Chunk.NEWLINE);
             }
         }
 
@@ -736,21 +763,52 @@ public class Print {
         column.go();
     }
 
+    /**
+     * Вписывает данные в PDF строку
+     * @param printData данные для печати
+     * @param content
+     * @param doc основной документ
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException reflexion exception
+     * @throws DocumentException
+     */
     private void drawOnePhrase(PrintData printData, PdfContentByte content, Object doc) throws IllegalAccessException, InvocationTargetException, DocumentException {
         String text = getText(doc, printData.getName());
-        if (StringUtils.isNotBlank(text) ) {
+        if (StringUtils.isNotBlank(text)) {
             text = text.replace("||", "");
             Rectangle rectangle = drawRectangle(printData, content);
 
             Phrase phrase = getPhrase(printData, text);
-            if (printData.getRotate() == null){
+            if(printData.getFontSize()==null)
+                printData.setFontSize((byte) 7);
+
+            if (printData.getRotate() == null) {
                 ColumnText column = new ColumnText(content);
                 column.setAlignment(Element.ALIGN_LEFT);
 
                 column.setLeading(printData.getLeading() != null ? printData.getLeading() : printData.getPrintTemplates().getLeading());
                 column.addText(phrase);
                 column.setSimpleColumn(rectangle);
-                column.go();
+                int status=column.go(true);
+                Byte fontBackUp=printData.getFontSize();
+                if(ColumnText.hasMoreText(status))
+                {
+                    text=text.replaceAll("\n","")
+                            .replaceAll(" +"," ");
+                    while(ColumnText.hasMoreText(status)&&printData.getFontSize()>5)
+                    {
+                        column.setLeading(printData.getFontSize());
+                        printData.setFontSize((byte) (printData.getFontSize()-1));
+                        phrase = getPhrase(printData, text);
+                        column.setSimpleColumn(rectangle);
+                        column.setText(phrase);
+                        status=column.go(true);
+                    }
+                }
+                column.setSimpleColumn(rectangle);
+                column.setText(phrase);
+                column.go(false);
+                printData.setFontSize(fontBackUp);
             } else {  // �������
                 ColumnText.showTextAligned(content, Element.ALIGN_CENTER, phrase, Utilities.millimetersToPoints(printData.getLlx()), Utilities.millimetersToPoints(printData.getLly()), printData.getRotate());
             }
@@ -765,7 +823,7 @@ public class Print {
                 Utilities.millimetersToPoints(printData.getUry())
         );
 
-        if(printData.isBorder()){
+        if (printData.isBorder()) {
             rectangle.setBorder(Rectangle.BOX);
             rectangle.setBorderWidth(1);
             rectangle.setBorderColor(BaseColor.BLACK);
@@ -774,41 +832,119 @@ public class Print {
         return rectangle;
     }
 
+    /**
+     * Вписывает данные в PDF таблицу
+     * @param printData данные для печати
+     * @param content
+     * @param doc весь документ
+     * @throws DocumentException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException reflexion exception
+     */
     private void drawTextInTable(PrintData printData, PdfContentByte content, Object doc) throws DocumentException, IllegalAccessException, InvocationTargetException {
         byte leading = printData.getLeading() != null ? printData.getLeading() : printData.getPrintTemplates().getLeading();
-        Collection<PrintDataTable> printDataTables =  printData.getPrintDataTables().values();
-//            ColumnText column = new ColumnText(content);
-        PdfPTable table = new PdfPTable(printDataTables.size()); // column count
+        if(printData.getLeading()==null)
+            printData.setLeading(leading);
 
-        float[] widths = new float[printDataTables.size()];  // column width
-        int i = 0;
-        for(PrintDataTable printDataTable: printDataTables){
-            widths[i++] = Utilities.millimetersToPoints(printDataTable.getWidth());
-        }
-        table.setTotalWidth(widths);
-        table.setLockedWidth(true);
-        String text = getText(doc, printData.getName());
-        StringTokenizer tokenizer = new StringTokenizer(text, "||");
-        while (tokenizer.hasMoreTokens()){
-            Phrase phrase = getPhrase(printData, tokenizer.nextToken());
-            table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
-            table.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
-            table.getDefaultCell().setLeading(leading, 0);
-            table.addCell(phrase);
-        }
+        Collection<PrintDataTable> printDataTables = printData.getPrintDataTables().values();
 
         ColumnText column = new ColumnText(content);
         column.setAlignment(Element.ALIGN_LEFT);
-
         column.setLeading(leading);
-        column.setSimpleColumn(Utilities.millimetersToPoints(printData.getLlx()), Utilities.millimetersToPoints(printData.getLly()), Utilities.millimetersToPoints(printData.getUrx()), Utilities.millimetersToPoints(printData.getUry()));
-        column.addElement(table);
-        column.go();
+
+        float[] widths = new float[printDataTables.size()];  // column width
+        int i = 0;
+        for (PrintDataTable printDataTable : printDataTables) {
+            widths[i++] = Utilities.millimetersToPoints(printDataTable.getWidth());
+        }
+
+        PdfPTable table = new PdfPTable(printDataTables.size()); // column count
+        table.setTotalWidth(widths);
+        table.getDefaultCell().setLeading(leading, 0);
+
+        String text = getText(doc, printData.getName());
+        textWithDelimiters2PdfTable2Columntext(text,table,printData,column);
+
+        int status=column.go(true);
+        Byte fontBackUp=printData.getFontSize();
+        // впихиваем записи в графу
+            if(ColumnText.hasMoreText(status))
+            {
+                if(printData.getFontSize()==null||printData.getFontSize()<=5)
+                    printData.setFontSize(printData.getPrintTemplates().getFontSize());
+                if(printData.getName().equals("g19Cs2")) {
+                    StringTokenizer tokenizer = new StringTokenizer(text, "||");
+                    int totalCount = 0;
+                    StringBuilder plombs = new StringBuilder();
+                    // считаем общее количество пломб и группируем все пломбы водну строку
+                    while (tokenizer.hasMoreTokens()) {
+                        String quantityString = tokenizer.nextToken().trim();
+                        if (StringUtils.isNumeric(quantityString))
+                            totalCount += Integer.parseInt(quantityString);
+                        if (tokenizer.hasMoreTokens()) {
+                            if (plombs.length() > 0)
+                                plombs.append(",");
+                            plombs.append(tokenizer.nextToken().trim());
+                        }
+                    }
+                    text= totalCount +"||"+plombs.toString();
+//                    if(printData.getFontSize()<5)
+//                        printData.setFontSize((byte) 7);
+                }
+                table.getDefaultCell().setPaddingTop(0);
+                table.getDefaultCell().setPaddingBottom(0);
+                status=column.go(true);
+
+                while(ColumnText.hasMoreText(status)&&(printData.getFontSize()>=5))
+                {
+                    column.setText(new Phrase(""));
+                    table = new PdfPTable(printDataTables.size()); // column count
+                    table.getDefaultCell().setPaddingTop(0);
+                    table.getDefaultCell().setPaddingBottom(0);
+                    table.setTotalWidth(widths);
+
+                    table.getDefaultCell().setLeading(printData.getFontSize(), 0);
+
+                    textWithDelimiters2PdfTable2Columntext(text,table,printData,column);
+                    status=column.go(true);
+                    if(printData.getFontSize()>=5)
+                        printData.setFontSize((byte) (printData.getFontSize()-1));
+                }
+            }
+            column.setText(new Phrase(""));
+            column.setSimpleColumn(Utilities.millimetersToPoints(printData.getLlx()), Utilities.millimetersToPoints(printData.getLly()), Utilities.millimetersToPoints(printData.getUrx()), Utilities.millimetersToPoints(printData.getUry()));
+            column.addElement(table);
+            column.go(false);
+        printData.setFontSize(fontBackUp);
     }
 
     /**
+     * генерирует PDF таблицу из текстовой строки с дарзделителями и вписывает ее в объект ColumnText
+     * @param text текст с разделителями
+     * @param table таблица для заполнения
+     * @param printData данные для печати
+     * @param column column to add table
+     */
+    private void textWithDelimiters2PdfTable2Columntext(String text, PdfPTable table,PrintData printData,ColumnText column)
+    {
+        table.setLockedWidth(true);
+        table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
+        table.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+        StringTokenizer tokenizer = new StringTokenizer(text, "||");
+        while (tokenizer.hasMoreTokens()) {
+            Phrase phrase = getPhrase(printData, tokenizer.nextToken());
+
+            table.addCell(phrase);
+        }
+        column.setSimpleColumn(Utilities.millimetersToPoints(printData.getLlx()), Utilities.millimetersToPoints(printData.getLly()), Utilities.millimetersToPoints(printData.getUrx()), Utilities.millimetersToPoints(printData.getUry()));
+        column.addElement(table);
+    }
+
+
+    /**
      * invokes doc (smgs) object method by its name to build print string
-     * @param doc smgs
+     *
+     * @param doc        smgs
      * @param columnName method name
      * @return print string
      * @throws IllegalAccessException
@@ -840,6 +976,7 @@ public class Print {
         byte fontSize = printData.getFontSize() != null ? printData.getFontSize() : parent.getFontSize();
         String fontFamily = printData.getFontFamily() != null ? printData.getFontFamily() : parent.getFontFamily();
 
+
         Font font = FontFactory.getFont(fontFamily, BaseFont.IDENTITY_H, BaseFont.EMBEDDED, fontSize, (!printData.isBold() ? Font.NORMAL : Font.BOLD));
         Font font_ch = FontFactory.getFont("kaiti_gb2312", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, fontSize, (!printData.isBold() ? Font.NORMAL : Font.BOLD));
 
@@ -852,13 +989,12 @@ public class Print {
 //        byte leading = printData.getLeading() != null ? printData.getLeading() : parent.getLeading();
 //        phrase.setLeading(leading);
 
-        if(printData.isUnderline()) {
+        if (printData.isUnderline()) {
             underline(phrase);
         }
 
         return phrase;
     }
-
 
 
     private Phrase getPhrase(PrintDataPhrase printDataPhrase, String text) {
@@ -879,7 +1015,7 @@ public class Print {
 //        byte leading = printDataPhrase.getLeading() != null ? printDataPhrase.getLeading() : printData.getLeading() != null ? printData.getLeading() : parent.getLeading();
 //        phrase.setLeading(leading);
 
-        if(printDataPhrase.getUnderline() || printData.isUnderline()) {
+        if (printDataPhrase.getUnderline() || printData.isUnderline()) {
             underline(phrase);
         }
 

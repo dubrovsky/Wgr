@@ -18,6 +18,7 @@ Ext.define('TK.view.avisocim.AvisoCimList', {
         config.columns = {
             items:[
                 {text: this.headerID, dataIndex: 'hid', renderer:this.rendererLocked, flex:1, maxWidth:100, minWidth:70},
+                {text: this.headerName, dataIndex: 'profile', minWidth:70},
                 {
                     text:this.headerCreation,
                     columns: [{

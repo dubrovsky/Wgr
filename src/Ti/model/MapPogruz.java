@@ -1,25 +1,23 @@
 package Ti.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
 /**
  * Класс MapPogruz используется для отображения модели 1 записи списка в карте перегзрузки
  */
-public class MapPogruz {
+public class MapPogruz implements Serializable {
 
     /**
      * ID cimsmgs
      */
-    @JsonProperty
     private Long cs_hid;
     /**
      * № вагона(платформы)/ Nr.platformy
      */
-    @JsonProperty
     private String nvag;
     /**
      * Префикс и контейнера / Nr.Kontenera
@@ -29,12 +27,11 @@ public class MapPogruz {
     /**
      * Префикс и контейнера / Nr.Kontenera из бд
      */
-    @JsonProperty("utin_db")
+//    @JsonProperty("utin_db")
     private String utiN_db;
     /**
      * Номер отправки (номер SMGS) / №SMGS
      */
-    @JsonProperty
     private String g694;
 //    /**
 //     * Номер отправки (номер SMGS) / №SMGS из базы данных
@@ -55,12 +52,12 @@ public class MapPogruz {
     /**
      * Тип контейнера
      */
-    @JsonProperty
     private String uti_type;
     /**
      * Пломбы /PLOMBY
      */
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
+//    @JsonFormat(shape = JsonFormat.Shape.STRING)
+//    @JsonProperty("znak")
     private List<String> znak;
     /**
      * Вес тары контейнера / tara kg
@@ -88,7 +85,6 @@ public class MapPogruz {
     @JsonProperty("kolos")
     private Byte kolOs;
 
-    @JsonProperty
     boolean isSelected;
 
 

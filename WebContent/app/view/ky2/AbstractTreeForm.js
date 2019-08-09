@@ -33,7 +33,7 @@ Ext.define('TK.view.ky2.AbstractTreeForm', {
             items: this.buildTopToolbarItems()
         }, {
             xtype: 'toolbar',
-            dock: 'bottom',
+            dock: 'top',
             ui: 'footer',
             defaults: {
                 hidden: true
@@ -54,15 +54,19 @@ Ext.define('TK.view.ky2.AbstractTreeForm', {
                 xtype: 'tbfill',  // ->
                 hidden: false
             },{
-                text: 'Сохранить',
+                text: this.btnSave,
                 iconCls: 'save',
                 action: 'save'
-            }/*, {
+            },{
+                text: this.btnSaveExit,
+                iconCls: 'save_close',
+                action: 'saveExit'
+            }, {
                 text: this.btnClose,
-                iconCls: 'exit',
+                iconCls: 'close1',
                 hidden: false,
-                handler: this.close.bind(this)
-            }*/);
+                action: 'close'
+            });
     },
 
     buildTopToolbarItems: function() {

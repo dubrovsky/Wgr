@@ -33,7 +33,7 @@ public class Sta_A extends CimSmgsSupport_A implements NsiStaDAOAware, RoadDAOAw
         }
         staE.setManagement(getManagementDAO().findById(staE.getManagement().getManagUn(), false));
         staE.prepare4save(getUser());
-        getStaEDAO().makePersistent(staE);
+        getStaEDAO().merge(staE);
         setJSONData(Constants.convert2JSON_True());
         return SUCCESS;
     }

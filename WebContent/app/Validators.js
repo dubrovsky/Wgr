@@ -40,7 +40,7 @@ Ext.define('TK.Validators', {
                 result =  TK.Validators.vagNumUzkLegth(val);
                 return Ext.isString(result) ? result : TK.Validators.vagNumUzkLastDigit(val);
             default:
-                return this.vagNumText;
+                return TK.Validators.vagNumLastDigitText;
         }
     },
 
@@ -106,6 +106,12 @@ Ext.define('TK.Validators', {
         }
         var result = remainders[sum % 11];
         return result === parseInt(val[10]) ? true : this.kontNumLastDigitText;
+    },
+    validExcel:function (value) {
+        var ext=value.split('.').pop().toLowerCase();
+        if(ext==='xls'||ext==='xlsx')
+            return true;
+        return TK.Validators.notXLS;
     }
 
 

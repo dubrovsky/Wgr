@@ -14,30 +14,13 @@ Ext.define('TK.view.edit.Cimsmgs_g4_detailpanel', {
     itemId:'g4_panel',
     title:this.labelReceiver,
     initComponent: function() {
-
+        // поля для хранения оригиналов имен
+        this.backG4='';
+        this.backG4R='';
         var config = {};
         Ext.apply(this, config);
 
         this.title=this.labelReceiver;
-
-        // this.getComponent('name_4').getComponent('smgs.g1_1').fieldLabel=this.labelName;
-        // this.getComponent('name_4').getComponent('smgs.g1r_1').fieldLabel=this.labelNameRu;
-        //
-        // this.getComponent('code_4').getComponent('smgs.g5_E').fieldLabel=this.labelReceiverCod;
-        //
-        // this.getComponent('code_1_4').getComponent('smgs.g15_1_1').fieldLabel=this.labelCountryCode;
-        // this.getComponent('code_1_4').getComponent('smgs.g17_1_1').fieldLabel=this.labelZip;
-        //
-        // this.getComponent('strn_4').getComponent('smgs.g16_1_1').fieldLabel=this.labelCountry;
-        // this.getComponent('strn_4').getComponent('smgs.g16r_1').fieldLabel=this.labelCountryRu;
-        //
-        // this.getComponent('city_4').getComponent('smgs.g18_1_1').fieldLabel=this.labelCity;
-        // this.getComponent('city_4').getComponent('smgs.g18r_1').fieldLabel=this.labelCityRu;
-        //
-        // this.getComponent('address_4').getComponent('smgs.g19_1').fieldLabel=this.labelAdress;
-        // this.getComponent('address_4').getComponent('smgs.g19r_1').fieldLabel=this.labelAdressRu;
-        //
-        // this.getComponent('dop_4').getComponent('smgs.g4_dop_info').fieldLabel=this.labelOptInfo;
 
         this.items=[
             {
@@ -322,29 +305,6 @@ Ext.define('TK.view.edit.Cimsmgs_g4_detailpanel', {
             _g4r += row3;
         }
         g.setValue((_g4 ? _g4+'\n': '') + _g4r);
-//         var _g4a = (this.getComponent('name_4').getComponent('smgs.g1_1').getValue() ? this.getComponent('name_4').getComponent('smgs.g1_1').getValue() +'\n': '');
-//
-//         var _g4b = (this.getComponent('address_4').getComponent('smgs.g19_1').getValue() ? this.getComponent('address_4').getComponent('smgs.g19_1').getValue() : '') +
-//             (this.getComponent('city_4').getComponent('smgs.g18_1_1').getValue() ? ' ' + this.getComponent('city_4').getComponent('smgs.g18_1_1').getValue() : '');
-//
-//         var _g4c = (this.getComponent('strn_4').getComponent('smgs.g16_1_1').getValue() ?' '+ this.getComponent('strn_4').getComponent('smgs.g16_1_1').getValue() : '') +
-//             (this.getComponent('code_1_4').getComponent('smgs.g17_1_1').getValue() ? ' ' + this.getComponent('code_1_4').getComponent('smgs.g17_1_1').getValue() : '') +
-//             (this.getComponent('vat_4').getComponent('smgs.g110_1').getValue() ? ' VAT:' + this.getComponent('vat_4').getComponent('smgs.g110_1').getValue() : '');
-//         var _g4 = _g4a + _g4b  + _g4c ;
-//         // формирование  ру инфо
-//         var _g4ra = (this.getComponent('name_4').getComponent('smgs.g1r_1').getValue() ? this.getComponent('name_4').getComponent('smgs.g1r_1').getValue() +'\n': '');
-//
-//         var _g4rb = (this.getComponent('address_4').getComponent('smgs.g19r_1').getValue() ? this.getComponent('address_4').getComponent('smgs.g19r_1').getValue() : '') +
-//             (this.getComponent('city_4').getComponent('smgs.g18r_1').getValue() ? ' ' + this.getComponent('city_4').getComponent('smgs.g18r_1').getValue() : '');
-//
-//         var _g4rc = (this.getComponent('strn_4').getComponent('smgs.g16r_1').getValue() ?' '+ this.getComponent('strn_4').getComponent('smgs.g16r_1').getValue(): '') +
-//             (this.getComponent('code_1_4').getComponent('smgs.g17_1_1').getValue() ? ' ' + this.getComponent('code_1_4').getComponent('smgs.g17_1_1').getValue() : '') +
-//             (this.getComponent('vat_4').getComponent('smgs.g110_1').getValue() ? ' VAT:' + this.getComponent('vat_4').getComponent('smgs.g110_1').getValue() : '');
-//
-//         var _g4di=this.getComponent('dop_4').getComponent('smgs.g4_dop_info').getValue()?'\n'+this.getComponent('dop_4').getComponent('smgs.g4_dop_info').getValue():'';
-//         var _g4r = _g4ra + _g4rb  + _g4rc+_g4di;
-        // result  ru
-
     },
     copyValues2MainFlds:function () {
         for (var prop in this.bufData) {
@@ -352,6 +312,9 @@ Ext.define('TK.view.edit.Cimsmgs_g4_detailpanel', {
                 this.getComponent('smgs.' + prop).setValue(this.bufData[prop]);
             }
         }
+        // восстановление ориганалов имен
+        this.getComponent('name_4').getComponent('smgs.g1_1').setValue(this.backG4);
+        this.getComponent('name_4').getComponent('smgs.g1r_1').setValue(this.backG4R);
     },
     copyValues2Buf:function () {
         this.bufData = {};

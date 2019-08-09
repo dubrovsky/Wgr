@@ -105,8 +105,8 @@ Ext.define('TK.view.smgs2.Smgs2List', {
         config.columns.items.push(
             {text: this.headerVagNum, dataIndex: 'vags', width: 95, renderer: TK.Utils.renderLongStr},
             {text: this.headerContNum, dataIndex: 'konts', width: 95, renderer: TK.Utils.renderLongStr},
-            {text: this.headerSenderName, dataIndex: 'g1',flex:1, renderer: TK.Utils.renderLongStr},
-            {text: this.headerReceiverName, dataIndex: 'g4',flex:1, renderer: TK.Utils.renderLongStr}
+            {text: this.headerSenderName, dataIndex: 'g1',minWidth: 150,flex:1, renderer: TK.Utils.renderLongStr},
+            {text: this.headerReceiverName, dataIndex: 'g4',minWidth: 120,flex:1, renderer: TK.Utils.renderLongStr}
         );
 
         if(tkUser.hasPriv('CIM_DOC2DOC')  || tkUser.hasPriv('CIM_ADD_AVISO2DOC')){
@@ -115,8 +115,11 @@ Ext.define('TK.view.smgs2.Smgs2List', {
             if(controller.docsInRoute(menuItem).getByKey('invoicelist')){
                 config.columns.items.push({text: this.headerInv, dataIndex: 'invQty',width: 55, renderer: this.renderInvQty});
             }*/
-            config.columns.items.push({text: this.headerInv, dataIndex: 'invQty',width: 55, renderer: this.renderInvQty});
-            config.columns.items.push({text: this.headerNPoezd, dataIndex: 'npoezd', width: 85, renderer: TK.Utils.renderLongStr});
+            config.columns.items.push({text: this.headerInv, dataIndex: 'invQty',width: 60, renderer: this.renderInvQty});
+            config.columns.items.push({text: this.headerNPoezd, dataIndex: 'npoezd', width: 85, renderer: TK.Utils.renderLongStr,
+                beforeRender: function() {
+                this.getMenu().add({});
+            }});
         }
     },
     buildTopToolbar: function(config) {
@@ -145,7 +148,8 @@ Ext.define('TK.view.smgs2.Smgs2List', {
                 {xtype:'splitbutton', text: this.btnCopy, iconCls:'copy', action:'copy',
                     menu: [
                         {text: this.btnCopy, action:'copy', iconCls:'copy'},
-                        {text: 'Копия, выбрать...', action:'showCopySelectedWin', iconCls:'copySelected'}
+                        {text: this.btnCopyAviso, action:'copy2aviso', iconCls:'copy'},
+                        {text: this.btnCopySelect, action:'showCopySelectedWin', iconCls:'copySelected'}
                     ]
                 },'-',
                 {text: this.btnEdit,iconCls:'edit', action:'edit'},'-'
@@ -250,5 +254,25 @@ Ext.define('TK.view.smgs2.Smgs2List', {
         else
             return '';
 
+    },
+
+    listeners:{
+        afterrender: function(c) {
+            var menu = c.headerCt.getMenu();
+            var menuItem = menu.add({
+                itemid:'searchTrainHeader',
+                text: this.menuTrSearch,
+                icon:'./images/loupe.png',
+                action:'searchTrains'
+            });
+            menu.on('beforeshow', function() {
+                var currentDataIndex = menu.activeHeader.dataIndex;
+                if (currentDataIndex === 'npoezd') {
+                    menuItem.show();
+                } else {
+                    menuItem.hide();
+                }
+            });
+        }
     }
 });

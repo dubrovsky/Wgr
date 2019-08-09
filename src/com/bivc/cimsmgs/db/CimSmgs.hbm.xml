@@ -1028,6 +1028,9 @@
         <property name="g4_dop_info" type="string">
             <column name="G_4_DOP_INFO" length="512"/>
         </property>
+        <property name="g16_dop_info" type="string">
+            <column name="G_16_DOP_INFO" length="100"/>
+        </property>
         <property name="vagVedNum" type="string" formula="(select distinct v.hid_ved from VED_VAG v where v.hid_cs=hid and v.hid_cs !=0 and v.hid_cs is not null)">
         </property>
 

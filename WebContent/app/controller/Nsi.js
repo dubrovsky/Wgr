@@ -20,7 +20,8 @@ Ext.define('TK.controller.Nsi', {
         'TK.model.NsiSta',
         'TK.model.SmgsOtpr',
         'TK.model.SmgsPlat',
-        'TK.view.edit.OtpavitelEdit'
+        'TK.view.edit.OtpavitelEdit',
+        'TK.view.edit.StationCatalogEdit'
     ],
 
     views: ['nsi.ListDir'],
@@ -38,6 +39,10 @@ Ext.define('TK.controller.Nsi', {
         {
             ref: 'otpaviteledit',
             selector: 'sel_otpaviteledit'
+        },
+        {
+            ref: 'stationedit',
+            selector: 'sel_stationedit'
         }
     ],
     init: function () {
@@ -64,6 +69,18 @@ Ext.define('TK.controller.Nsi', {
             },
             'otpaviteledit button[action="save"]': {
                 click: this.onSave
+            },
+            'stationedit button[action="close"]': {
+                click: this.onCloseSta
+            },
+            'stationedit button[action="save"]': {
+                click: this.onSaveSta
+            },
+            'stationedit button[action="adm"]': {
+                click: this.staManagBind
+            },
+            'stationedit button[action="road"]': {
+                click: this.nsiRoad
             }
         });
     },
@@ -249,6 +266,15 @@ Ext.define('TK.controller.Nsi', {
                     {text: this.headerCode, dataIndex: 'roadNo'},
                     {text: this.headerName, dataIndex: 'roadName', flex: 1, renderer: TK.Utils.renderLongStr}
                 ];
+                config.items.listeners = {
+                    itemdblclick: function(dv, record, item, index, e) {
+                        var data = record.data,
+                            staform=Ext.ComponentQuery.query('#stationeditid #stationForm')[0];
+                        staform.getComponent('road').getComponent('roadname').setValue(data['roadName']);
+                        staform.getComponent('road').getComponent('roadun').setValue(data['roadUn']);
+                        this.up().close();
+                    }
+                }
             }
         });
     },
@@ -261,15 +287,19 @@ Ext.define('TK.controller.Nsi', {
         this.doLayout();
         view.up('window').close();
     },
-    nsiManagement: function () {
+
+    // справочник администрации жел. дор.
+    nsiManagement: function (query) {
         return Ext.widget('nsilist', {
 //            title:'Поиск по справочнику администраций железных дорог',
             width: 600,
+            search: query,
             buildTitle: function (config) {
                 config.title = this.titleManagement;
+                config.sender
             },
             buildStoreModel: function () {
-                return ['managNo', 'managName', 'managUn', 'countryname'];
+                return ['managNo', 'managName', 'managUn', 'countryname', 'mnamerus'];
             },
             buildUrlPrefix: function () {
                 return 'Nsi_management';
@@ -277,25 +307,55 @@ Ext.define('TK.controller.Nsi', {
             buildColModel: function (config) {
                 config.items.columns = [
                     {text: this.headerCode, dataIndex: 'managNo'},
-                    {text: this.headerName, dataIndex: 'managName', flex: 1, renderer: TK.Utils.renderLongStr},
-                    {text: this.headerCountry, dataIndex: 'countryname', renderer: TK.Utils.renderLongStr}
+                    {text: this.headerZhD, dataIndex: 'mnamerus', renderer: TK.Utils.renderLongStr},
+                    {text: this.headerCountry, dataIndex: 'countryname', renderer: TK.Utils.renderLongStr},
+                    {text: this.headerName, dataIndex: 'managName', flex: 1, renderer: TK.Utils.renderLongStr}
                 ];
+                // config.items.listeners = {
+                //     itemdblclick: function(dv, record, item, index, e) {
+                //         var data = record.data,
+                //             staform=Ext.ComponentQuery.query('#stationeditid #stationForm')[0];
+                //         staform.getComponent('adm').getComponent('managno').setValue(data['managNo']);
+                //         staform.getComponent('countryname').setValue(data['countryname']);
+                //         staform.getComponent('mnamerus').setValue(data['mnamerus']);
+                //         staform.getComponent('managun').setValue(data['managUn']);
+                //         this.up().close();
+                //     }
+                // }
             }
         });
     },
+    staManagBind:function( btn)
+    {
+
+         var nsiGrid = this.getController('Nsi').nsiManagement(btn.up().getComponent('managno').getValue()).getComponent(0)/*, gridAction = nsiGrid.down('actioncolumn')*/;
+         nsiGrid.on('itemdblclick', this.staManagDbl);
+    },
+    staManagDbl:function(grid,record)
+    {
+                var data = record.data,
+                    staform=Ext.ComponentQuery.query('#stationeditid #stationForm')[0];
+                staform.getComponent('adm').getComponent('managno').setValue(data['managNo']);
+                staform.getComponent('countryname').setValue(data['countryname']);
+                staform.getComponent('mnamerus').setValue(data['mnamerus']);
+                staform.getComponent('managun').setValue(data['managUn']);
+                this.up().close();
+    },
+    // отображение справочника станций
     nsiSta: function (query) {
         var me = this,
-            onRoad = Ext.bind(function () {
-                var nsiGrid1 = this.getController('Nsi').nsiRoad().getComponent(0);
-                nsiGrid1.on('itemdblclick', this.getController('Nsi').selectRoad2Sta, win.getComponent(0));
-            }, this),
-            onManager = Ext.bind(function () {
-                var nsiGrid1 = this.getController('Nsi').nsiManagement().getComponent(0);
-                nsiGrid1.on('itemdblclick', this.getController('Nsi').selectManager2Sta, win.getComponent(0));
-            }, this),
+            // onRoad = Ext.bind(function () {
+            //     var nsiGrid1 = this.getController('Nsi').nsiRoad().getComponent(0);
+            //     nsiGrid1.on('itemdblclick', this.getController('Nsi').selectRoad2Sta, win.getComponent(0));
+            // }, this),
+            // onManager = Ext.bind(function () {
+            //     var nsiGrid1 = this.getController('Nsi').nsiManagement().getComponent(0);
+            //     nsiGrid1.on('itemdblclick', this.getController('Nsi').selectManager2Sta, win.getComponent(0));
+            // }, this),
             win = Ext.widget('nsieditlist', {
 //                title:'Поиск по справочнику станций ж.д.',
                 width: 1000,
+                itemId: 'staGrid',
                 prefix: 'staE',
                 editPrivileg: 'CIM_DIR_STA',
                 search: query,
@@ -314,10 +374,10 @@ Ext.define('TK.controller.Nsi', {
                             xtype: 'actioncolumn', width: 55,
                             items: [
                                 {
-                                    icon: './resources/images/save.gif',
-                                    tooltip: this.ttipSave,
+                                    icon:'./resources/images/edit.png',
+                                    tooltip: me.tooltipEdit,
                                     action: 'save',
-                                    handler: me.onSaveRecord,
+                                    handler: me.onEditRecordSta,
                                     getClass: this.onGetClass,
                                     scope: this
                                 },
@@ -331,13 +391,15 @@ Ext.define('TK.controller.Nsi', {
                                 }
                             ]
                         },
-                        {text: this.headerStn,dataIndex: 'staName',flex: 1, editor: {xtype: 'textfield',maxLength: 100}, renderer: TK.Utils.renderLongStr },
-                        {text: this.headerStn1,dataIndex: 'staNameCh', flex: 1, editor: {xtype: 'textfield', maxLength: 100},renderer: TK.Utils.renderLongStr},
-                        {text: this.headerStn2,dataIndex: 'staNameEn',flex: 1, editor: {xtype: 'textfield', maxLength: 100},renderer: TK.Utils.renderLongStr },
-                        {text: this.headerCode, dataIndex: 'staNo', editor: {xtype: 'textfield', maxLength: 8}},
-                        {text: this.headerZhD, dataIndex: 'roadname', editor: {xtype: 'trigger', maxLength: 254,triggerCls: 'dir', onTriggerClick: onRoad, editable: false }},
-                        {text: this.headerCodeAdm,dataIndex: 'managno',editor: {xtype: 'trigger', maxLength: 5,triggerCls: 'dir',onTriggerClick: onManager,editable: false}},
-                        {text: this.headerCountry,dataIndex: 'countryname'/*editor:{xtype:'textfield', maxLength:232},*/ }
+                        {text: this.headerStn,dataIndex: 'staName',flex: 2},
+                        {text: this.headerStn1,dataIndex: 'staNameCh', flex: 2},
+                        {text: this.headerStn2,dataIndex: 'staNameEn',flex: 2},
+                        {text: this.headerCode, dataIndex: 'staNo',flex: 1},
+                        {text: this.headerZhD,dataIndex: 'mnamerus',flex: 1},
+                        // {text: this.headerZhD, dataIndex: 'roadname', editor: {xtype: 'trigger', maxLength: 254,triggerCls: 'dir', onTriggerClick: onRoad, editable: false }},
+                        {text: this.headerCodeAdm,dataIndex: 'managno',flex: 1},
+                        {text: this.headerCountry,dataIndex: 'countryname',flex: 1 }
+
                     ];
                 },
                 newRecord: function () {
@@ -363,7 +425,7 @@ Ext.define('TK.controller.Nsi', {
                     data[this.prefix + '.staNameCh'] = rec.data['staNameCh'];
                     data[this.prefix + '.staNameEn'] = rec.data['staNameEn'];
                     data[this.prefix + '.staNo'] = rec.data['staNo'];
-                    data[this.prefix + '.road.roadUn'] = rec.data['roadun'];
+                    data[this.prefix + '.road.roadun'] = rec.data['roadun'];
                     data[this.prefix + '.management.managUn'] = rec.data['managun'];
                     return data;
                 }
@@ -864,9 +926,52 @@ Ext.define('TK.controller.Nsi', {
 //
 //         return win;
     },
+
+    // закрываем окно добавление/редактивраония станции
+    onCloseSta:function(button)
+    {
+
+        if(button.up().up().getItemId()==='stationeditid') {
+            button.up().up().close();
+            return;
+        }
+    },
     // закрываем окно добавление/редактивраония перевозчика
     onClose: function (button) {
         button.up().up().up().destroy();
+    },
+
+    // сохраняем запись об станции
+    onSaveSta: function (button) {
+        var form = button.up().up().getComponent('stationForm');
+        var rec = form.getValues();
+        var owner = Ext.ComponentQuery.query('#staGrid')[0];
+        var grid = owner.down('gridpanel');
+        var data = {};
+        var prefix = owner.prefix;
+        if (form.isValid()) {
+            data[prefix + '.stUn'] = rec['stUn'];
+            data[prefix + '.staName'] = rec['staName'];
+            data[prefix + '.staNameCh'] = rec['staNameCh'];
+            data[prefix + '.staNameEn'] = rec['staNameEn'];
+            data[prefix + '.staNo'] = rec['staNo'];
+            data[prefix + '.road.roadUn'] =rec['roadun'];
+            data[prefix + '.management.managUn'] = rec['managun'];
+            Ext.Ajax.request({
+                url: owner.buildUrlPrefix() + '_save.do',
+                params: data,
+                success: function (response, options) {
+                    grid.store.load();
+                    form.up().close();
+                },
+                failure: function (response, options) {
+                    TK.Utils.makeErrMsg(response, 'Error!..');
+                }
+            });
+        }
+        else {
+            Ext.Msg.alert(this.titleErrorWarning, this.warningFillErrors);
+        }
     },
     // сохраняем запись об отправителе
     onSave: function (button) {
@@ -1161,7 +1266,7 @@ Ext.define('TK.controller.Nsi', {
     },
     selectPlatG4: function (view, record, item, index) {
         var data = record.data;
-        this.getComponent('dorR').setValue(data['dorR']);
+        this.getComponent('adm').getComponent('dorR').setValue(data['dorR']);
         this.getComponent('platR').setValue(data['platR']);
         this.getComponent('primR').setValue(data['primR']);
         this.getComponent('kplat').setValue(data['kplat']);
@@ -1169,6 +1274,15 @@ Ext.define('TK.controller.Nsi', {
         if (this.getComponent('kplat2')) {
             this.getComponent('kplat2').setValue(data['kplat2']);
         }
+        view.up('window').close();
+    },
+    selectPlatG23manag:function(view, record)
+    {
+
+        var data = record.data;
+        this.getComponent('adm').getComponent('dorR').setValue(data['mnamerus']);
+        this.getComponent('adm').getComponent('codPer').setValue(data['managNo']);
+
         view.up('window').close();
     },
     selectGroup: function (view, record, item, index) {
@@ -1279,6 +1393,10 @@ Ext.define('TK.controller.Nsi', {
 
             return win;
         }
+        if (btn.up('nsieditlist').itemId === 'staGrid') {
+            return Ext.create('TK.view.edit.StationCatalogEdit').show();
+        }
+
         {
             var owner = btn.up('nsieditlist'), grid = owner.getComponent(0), /*ind = grid.store.getCount(),*/
                 r = owner.newRecord(), rowEditing = grid.plugins[0];
@@ -1347,7 +1465,17 @@ Ext.define('TK.controller.Nsi', {
             }
         });
     },
+    // редактирование записи об перевозчике
+    onEditRecordSta: function (grid, rowIndex, colIndex) {
+        var sta = grid.store.getAt(rowIndex),
+            win= Ext.create('TK.view.edit.StationCatalogEdit').show();
 
+        var form = win.getComponent('stationForm').getForm();
+        form.loadRecord(sta);
+
+        win.show();
+        return win;
+    },
     // редактирование записи об перевозчике
     onEditRecord: function (grid, rowIndex, colIndex) {
         var stran = grid.store.getAt(rowIndex);

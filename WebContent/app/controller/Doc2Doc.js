@@ -14,7 +14,10 @@ Ext.define('TK.controller.Doc2Doc', {
         'Ext.layout.container.HBox',
         'Ext.resizer.Splitter',
         'TK.Utils',
+        'TK.Validators',
+        'TK.model.VgCtGrTreeNode',
         'TK.view.edit.UploadDoc9FormWin',
+        'TK.view.edit.UploadFormWin',
         'TK.view.edit.UploadPogruzListFormWin',
         'TK.view.pogruz.Map2BaseSelectForm',
         'TK.view.pogruz.PoezdSelectForm'
@@ -32,6 +35,11 @@ Ext.define('TK.controller.Doc2Doc', {
     },{
         ref: 'uploadPogruzListForm',
         selector: 'uploadPogruzListFormWin > form'
+    }, {ref: 'vgCtGrTreeWin',
+        selector: 'vgCtGrTreeFormWin'
+    }, {
+        ref: 'vgCtGrTree',
+        selector: 'vgCtGrTreeFormWin > treepanel'
     }
     ],
     init: function() {
@@ -50,6 +58,21 @@ Ext.define('TK.controller.Doc2Doc', {
             },
             'cimsmgs button[action="contsListCimSmgs"]': {
                 click: this.onContListOnForm
+            },
+            'smgs2 menuitem[action="vagsListSmgs2"]': {
+                click: this.onContListOnForm
+            },
+            'smgs2 menuitem[action="contsListSmgs2"]': {
+                click: this.onContListOnForm
+            },
+            'vgCtGrTreeFormWin button[action="uploadVagsXLS"]': {
+                click: this.onUploadVagsContList
+            },
+            'uploadFormWin button[action="uploadXLSvags"]': {
+                click: this.onUploadXLSvags
+            },
+            'vgCtGrTreeFormWin button[action="uploadContsXLS"]': {
+                click: this.onUploadVagsContList
             },
             'cimsmgslist button[action="doc2doc"] menuitem[action="dopList"]': {
                 click: this.dopListOnList
@@ -320,7 +343,7 @@ Ext.define('TK.controller.Doc2Doc', {
             hid = form.findField('smgs.hid').getValue();
 
         if(!hid){
-            Ext.Msg.show({title: 'Предупреждение', msg: 'Сохраните документ', buttons: Ext.Msg.OK, icon: Ext.Msg.WARNING});
+            Ext.Msg.show({title: this.warnTitle, msg: this.saveMgs, buttons: Ext.Msg.OK, icon: Ext.Msg.WARNING});
             return;
         }
 
@@ -328,9 +351,19 @@ Ext.define('TK.controller.Doc2Doc', {
             type: form.findField('smgs.type').getValue(),
             hid: hid,
             docId: form.findField('smgs.docType1').getValue(),
-            routeId: form.findField('smgs.route.hid').getValue()
+            routeId: form.findField('smgs.route.hid').getValue(),
+            groupBy:''
         };
-
+        switch (btn.action) {
+            case 'contsListCimSmgs':
+                data['groupBy']=7;
+                break;
+            case 'vagsListSmgs2':
+                data['groupBy']=12;
+                break;
+            case 'contsListSmgs2':
+                data['groupBy']=11;
+        }
         this.contsList(data);
     },
     contsList: function(data) {
@@ -341,7 +374,7 @@ Ext.define('TK.controller.Doc2Doc', {
             '&type=' + data['type']+
             '&docId=' + data['docId'] +
             '&token=1' +
-            '&groupBy=7' +
+            '&groupBy='+ data['groupBy'] +
             '&search.routeId=' + data['routeId'] +
             '&search.docType=filecimsmgs',
             '_self','');
@@ -380,7 +413,7 @@ Ext.define('TK.controller.Doc2Doc', {
             Ext.Msg.show({title: 'Предупреждение', msg: 'Сохраните документ', buttons: Ext.Msg.OK, icon: Ext.Msg.WARNING});
             return;
         }
-        
+
         var data = {
             type: form.findField('smgs.type').getValue(),
             hid: hid,
@@ -454,7 +487,7 @@ Ext.define('TK.controller.Doc2Doc', {
             return false;
         }
         var win = Ext.widget('uploadPogruzListFormWin');
-
+        win.down('form').getComponent('uploadField').validator=TK.Validators.validExcel;
         this.getUploadPogruzListForm().getForm().findField('hid_cs').setValue(grid.getSelectionModel().getLastSelected().get('hid'));
         this.getUploadPogruzListForm().getForm().findField('name').setValue('');
         win.parent=this;
@@ -518,26 +551,13 @@ Ext.define('TK.controller.Doc2Doc', {
                 url: url,
                 scope:this,
                 success: function(form, action) {
-
                     this.getUploadPogruzListForm().setLoading(false);
-                    // console.log(Ext.decode(action.response.responseText.replace('success: true,','')));
                     var win= Ext.create('TK.view.pogruz.Map2BaseSelectForm');
                     win.parent=this;
                     // decoding response and load to store of result table.
                     win.localStore.loadRawData(Ext.JSON.decode(action.response.responseText.replace('success: true,','')));
-                      // win.localStore.load();
                     win.show();
                     this.getUploadPogruzListForm().up('window').close();
-                    // Ext.Msg.show({
-                    //         title: this.successMsgTitle,
-                    //         msg: 'Ok',
-                    //         buttons: Ext.Msg.OK,
-                    //         icon: Ext.Msg.INFO,
-                    //         scope: this,
-                    //         fn: function(){
-                    //             this.getUploadPogruzListForm().up('window').close();
-                    //         }
-                    // });
                 },
                 failure: function (form, action) {
                     this.getUploadPogruzListForm().setLoading(false);
@@ -546,5 +566,167 @@ Ext.define('TK.controller.Doc2Doc', {
             });
         }
 
+    },
+    /**
+     * создание окна загрузки XLS файлами c контейнерами/вагонами
+     * @param btn
+     */
+    onUploadVagsContList:function (btn) {
+
+        var win = Ext.widget('uploadFormWin');
+        win.down('form').getComponent('uploadField').validator=TK.Validators.validExcel;
+        win.down('form').getComponent('uploadName').setValue(btn.action);
+        win.dockedItems.items[0].getComponent('savebtn').action='uploadXLSvags';
+
+        win.show();
+    },
+
+    /**
+     * Отправляем XLS файл c вагонами/контейнерами на сервер
+     * @param btn
+     */
+    onUploadXLSvags:function(btn)
+    {
+        var url='Doc2Doc_uploadXLSvags.do';
+        var form = btn.up().up().down('form');
+        if(form.isValid()){
+            form.setLoading(true);
+            form.submit({
+                url: url,
+                scope:this,
+                success: function(form2, action) {
+                    var response=Ext.JSON.decode(action.response.responseText.replace('success: true,','')),
+                        vagsConts=response['rows'],type=response['type'];
+
+                    this.importContsVagsFromXLS(vagsConts,type);
+                    form.setLoading(false);
+                    form.up('window').close();
+                },
+                failure: function (form2, action) {
+                    form.setLoading(false);
+                    TK.Utils.makeErrMsg(action.response, this.errorMsg);
+                }
+            });
+        }
+    },
+    /**
+     * Ипортирует данные вагонов/контейнеров полученные от сервера в результате обработки XLS файла
+     * @param conts список записей
+     * @param type тип перевозки
+     */
+    importContsVagsFromXLS:function(conts,type)
+    {
+        var rootNode=this.getVgCtGrTree().getStore().getRootNode(),
+            rootVag=rootNode.childNodes[0],
+            rootVagData=rootVag?rootVag.data:{},
+            rootCont= rootVag?rootVag.childNodes[0]:null,
+            rootContData=rootCont?rootCont.data:{},
+            rootGruzData=rootCont?rootCont.childNodes[0].data:{};
+        rootNode.removeAll();
+
+        for(var i=0;i<conts.length;i++)
+        {
+            var cont=conts[i],vagModel=null;
+
+            for(var n=0;n<rootNode.childNodes.length;n++)
+            {
+                if(cont['nvag']===rootNode.childNodes[n].data['nvag'])
+                {
+                    vagModel=rootNode.childNodes[n];
+                    break;
+                }
+            }
+            // вагон нет в дереве
+            if(!vagModel)
+            {
+                var nvagT=cont['nvag'] ? cont['nvag'] : 'xxxxx';
+                //создаем вагон
+                vagModel= Ext.create('TK.model.VgCtGrTreeNode', {
+
+                    nvag:nvagT,
+                    klientName:cont['klientName']?cont['klientName']:rootVagData['klientName']?rootVagData['klientName']:'',
+                    vagOtm:rootVagData['vagOtm']?rootVagData['vagOtm']:'',
+                    grPod:cont['grPod']?cont['grPod']:rootVagData['grPod']?'grPod':'',
+                    taraVag:cont['taraVag']?cont['taraVag']:rootVagData['taraVag']?'taraVag':'',
+                    kolOs:cont['kolOs']?cont['kolOs']:rootVagData['kolOs']?'kolOs':'',
+                    rod:rootVagData['rod']?rootVagData['rod']:'',
+
+                    text: nvagT,
+                    who: 'vag',
+                    leaf: false,
+                    iconCls: 'vag' + (i + 1),
+                    style: {
+                        'color': 'red'
+                    },
+                    expanded:true
+            });
+            rootNode.appendChild(vagModel);
+            }
+            if(type==='uploadContsXLS')
+            {
+            var utiNT=cont['utiN']?cont['utiN']:rootContData['utiN']?rootContData['utiN']:'xxxxx',
+                //создаем контейнер
+                contModel = Ext.create('TK.model.VgCtGrTreeNode', {
+                utiN:utiNT,
+                sizeFoot:cont['sizeFoot']?cont['sizeFoot']:rootVagData['sizeFoot']?rootVagData['sizeFoot']:'',
+                taraKont:cont['taraKont']?cont['taraKont']:rootVagData['taraKont']?rootVagData['taraKont']:'',
+                utiType:cont['utiType']?cont['utiType']:rootVagData['utiType']?rootVagData['utiType']:'',
+                grpod:cont['grPod']?cont['grPod']:rootVagData['grPod']?rootVagData['grPod']:'',
+
+                text: utiNT,
+                who: 'cont',
+                iconCls: 'cont3',
+                expanded:true,
+                style: {
+                    'color': 'red'
+                }
+            });
+            vagModel.appendChild(contModel);
+            }
+
+            // создаем груз
+            var kgvnT= rootGruzData['kgvn']?rootGruzData['kgvn']:'',
+                gruzModel = Ext.create('TK.model.VgCtGrTreeNode', {
+                    kgvn: kgvnT,
+                    nzgr: rootGruzData['nzgr']?rootGruzData['nzgr']:'',
+                    nzgrEu: rootGruzData['nzgrEu']?rootGruzData['nzgrEu']:'',
+                    ekgvn: rootGruzData['ekgvn']?rootGruzData['ekgvn']:'',
+                    enzgr: rootGruzData['enzgr']?rootGruzData['enzgr']:'',
+                    massa: cont['netto']?cont['netto']:rootGruzData['massa']?rootGruzData['massa']:'',
+                    upak:rootGruzData['upak']?rootGruzData['upak']:'',
+                    places:cont['places']?cont['places']:rootGruzData['places']?rootGruzData['places']:'',
+
+                    text: kgvnT,
+                    who: 'gryz',
+                    iconCls: 'gryz',
+                    leaf:true
+                });
+            var plombObj;
+            if(type==='uploadContsXLS') {
+                contModel.appendChild(gruzModel);
+                plombObj=contModel;
+            }
+            if(type==='uploadVagsXLS') {
+                vagModel.appendChild(gruzModel);
+                plombObj=vagModel;
+            }
+
+            if(cont['znak']) {
+                for (var pl = 0; pl < cont['znak'].length; pl++)
+                {
+                    plombObj.plombsObj = {};
+                    plombObj.plombsObj[pl]={hid:'',kpl:1,sort:pl,type:null,znak:cont['znak'][pl]};
+                }
+            }
+        }
+
+        // Выбираем первый вагон в дереве
+        rootNode=this.getVgCtGrTree().getStore().getRootNode();
+        if(rootNode.childNodes[0])
+        {
+            this.getVgCtGrTree().getSelectionModel().select(rootNode.childNodes[0]);
+            this.getController('docs.VgCtGrTreeDetailController').onTreeNodeClick( this.getVgCtGrTree(),rootNode.childNodes[0]);
+        }
     }
 });
+

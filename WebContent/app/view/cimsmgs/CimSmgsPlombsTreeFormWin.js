@@ -15,7 +15,8 @@ Ext.define('TK.view.cimsmgs.CimSmgsPlombsTreeFormWin', {
             {xtype:'numberfield', fieldLabel:this.labelTotal, name:"kpl", maxLength:3, width:55, allowDecimals:false, minValue:0},
             {xtype:'hidden', name:"type"},
             {xtype:'hidden', name:"sort"},
-            {xtype:'hidden', name:"hid"}
+            {xtype:'hidden', name:"hid"},
+            {xtype:'hidden', name:"id"}
         ];
     },
 

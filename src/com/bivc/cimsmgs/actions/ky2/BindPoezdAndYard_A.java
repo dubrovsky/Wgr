@@ -17,8 +17,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author p.dzeviarylin
@@ -35,7 +37,7 @@ public class BindPoezdAndYard_A extends CimSmgsSupport_A {
             switch (BindPoezdAndYard_A.Action.valueOf(action.toUpperCase())) {
                 case GET_POEZD_AND_YARD_FOR_BIND:
                     return getPoezdAndYardForBind();
-                case BIND_POEZD_TO_YARD:
+                case BIND_POEZD_AND_YARD:
                     return bindPoezdToYard();
                 default:
                     throw new RuntimeException("Unknown action");
@@ -46,7 +48,31 @@ public class BindPoezdAndYard_A extends CimSmgsSupport_A {
         }
     }
 
-    private String bindPoezdToYard() {
+    private String bindPoezdToYard() throws Exception {
+        final PoezdBindDTO poezdBindDTO = defaultDeserializer.read(PoezdBindDTO.class, poezdObj);
+        List<YardSectorBindDTO> yardSectorsBindDTO = defaultDeserializer.read(new ArrayList<YardSectorBindDTO>() {}.getClass().getGenericSuperclass(), yardSectorsObj);
+
+        Poezd poezd = poezdDAO.findById(poezdBindDTO.getHid(), false);
+        final List<YardSector> yardSectors = yardSectorDAO.findAll(getUser().getUsr());
+
+        poezd.bindPoezdToYard(poezdBindDTO.getVagons(), yardSectors, mapper);
+        poezdDAO.makePersistent(poezd);
+
+        for (YardSectorBindDTO yardSectorBindDTO : yardSectorsBindDTO){
+            for(YardSector yardSector: yardSectors){
+                if (Objects.equals(yardSector.getHid(), yardSectorBindDTO.getHid())) {  // found sector
+                    yardSector.bindYardToPoezd(yardSectorBindDTO, poezd.getVagons(), mapper, yardSectors);
+                    yardSectorDAO.makePersistent(yardSector);
+                    break;
+                }
+            }
+        }
+        /*for(YardSector yardSector: yardSectors){
+            yardSector.bindYardToPoezd(yardSectorsBindDTO, poezd.getVagons(), mapper);
+            yardSectorDAO.makePersistent(yardSector);
+        }*/
+
+        setJSONData(defaultSerializer.write(new Response<>()));
         return SUCCESS;
     }
 
@@ -84,6 +110,8 @@ public class BindPoezdAndYard_A extends CimSmgsSupport_A {
 
     private String action;
     private String dataObj;
+    private String poezdObj;
+    private String yardSectorsObj;
     private Long poezdHid;
 
     public void setAction(String action) {
@@ -98,5 +126,13 @@ public class BindPoezdAndYard_A extends CimSmgsSupport_A {
         this.poezdHid = poezdHid;
     }
 
-    enum Action {GET_POEZD_AND_YARD_FOR_BIND, BIND_POEZD_TO_YARD}
+    public void setPoezdObj(String poezdObj) {
+        this.poezdObj = poezdObj;
+    }
+
+    public void setYardSectorsObj(String yardSectorsObj) {
+        this.yardSectorsObj = yardSectorsObj;
+    }
+
+    enum Action {GET_POEZD_AND_YARD_FOR_BIND, BIND_POEZD_AND_YARD}
 }

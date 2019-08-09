@@ -3,6 +3,7 @@ package Ti.DataProcessing.Tools;
 import Ti.model.MapPogruz;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -13,8 +14,15 @@ import java.util.List;
 
 public class DataProcessingTools {
 
-    public static List<MapPogruz> DeserializeMapPeregruz(String json) {
-        ObjectMapper objectMapper = new ObjectMapper();
+
+    /**
+     * deserialize json string to List<MapPogruz>
+     * @param json string
+     * @param objectMapper mapper
+     * @return List<MapPogruz>
+     */
+    public static List<MapPogruz> DeserializeMapPeregruz(String json, ObjectMapper objectMapper) {
+//        ObjectMapper objectMapper = new ObjectMapper();
         //add this line
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);

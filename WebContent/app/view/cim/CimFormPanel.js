@@ -17,9 +17,11 @@ Ext.define('TK.view.cim.CimFormPanel', {
         this.buildItems(config);
         Ext.apply(this, config);
         this.callParent(arguments);
+
     },
     buildItems: function(config) {
         var me = this;
+        me.overflowX= 'auto';
         config.deltaY=61;
         config.items =
         [
@@ -44,8 +46,10 @@ Ext.define('TK.view.cim.CimFormPanel', {
             {x:265, y:3, xtype:'datefield', name:'smgs.aviso_cod_dat', itemId:'smgs.aviso_cod_dat', width:80,hidden :true},
             {x:373, y:8, xtype:'label', text:this.labelVsegoSmgs,itemId:'lab_vsego',hidden :true},
             {x:453, y:3, xtype:'numberfield', name:'smgs.amount', itemId:'smgs.amount', minValue:0, value:0, width:45,hidden :true},
-            {x:509, y:8, xtype:'label', text:this.labelWagenNum,itemId:'lab_wag_n',hidden :true},
-            {x:593, y:3, name:'smgs.npoezd', itemId:'smgs.npoezd', maxLength:32, width:300,hidden :true},
+            {x:525, y:38, xtype:'label', text:this.labelWagenNum,itemId:'lab_wag_n'},
+            {x:613, y:33, name:'smgs.npoezd', itemId:'smgs.npoezd', maxLength:32, width:300},
+            {x:513, y:8, xtype:'label', text:this.labelTeplatename,hidden :true,itemId:'lab_tpl_name'},
+            {x:613, y:3, name:'smgs.profile', itemId:'smgs.profile', maxLength:32, width:300,hidden :true},
             {
                 x: 334,
                 y: 13+this.deltaY,
@@ -771,7 +775,7 @@ Ext.define('TK.view.cim.CimFormPanel', {
             },
             {
                 xtype: 'detailpanel',
-                x: 450, y: 560, width: 400,
+                x: 450, y: 560, width: 600,
                 itemId: 'g13_panel',
                 title: this.labelCommercTerms,
                 items: [
@@ -788,7 +792,7 @@ Ext.define('TK.view.cim.CimFormPanel', {
                                 triggerCls: 'dir'
                             },
                             {xtype: 'textarea', fieldLabel: this.labelTextRu, itemId: "text", maxLength: 500},
-                            {xtype: 'textarea', fieldLabel: this.labelText, itemId: "text2", maxLength: 240},
+                            {xtype: 'textarea', fieldLabel: this.labelText, itemId: "text2", maxLength: 500},
                             {xtype: 'hidden', itemId: "fieldNum", value: '13'},
                             {xtype: 'hidden', itemId: "sort"},
                             {xtype: 'hidden', itemId: "hid"}

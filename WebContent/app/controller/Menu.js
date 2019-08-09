@@ -3,6 +3,18 @@ Ext.define('TK.controller.Menu', {
     requires: [
         'Ext.tab.Panel',
         'TK.Utils',
+        'TK.VTypes',
+        'TK.view.ky.avto.into.List',
+        'TK.view.ky.avto.out.List',
+        'TK.view.ky.poezd.into.List',
+        'TK.view.ky.poezd.out.List',
+        'TK.view.ky.reports.Report1',
+        'TK.view.ky.reports.Report2',
+        'TK.view.ky.reports.Report3',
+        'TK.view.ky.reports.Report4',
+        'TK.view.ky.reports.Report5',
+        'TK.view.ky.reports.Report6',
+        'TK.view.ky.yard.List',
         'TK.view.logs.List',
         'TK.view.nsi.ListDir',
         'TK.view.printtmpl.List',
@@ -108,7 +120,21 @@ Ext.define('TK.controller.Menu', {
                 root.appendChild({text:'User guide', iconCls:'instr', id:'instr',
                     children:[
                         {text:"1.Регистрация и авторизация в Портале", leaf:true, id:'instr1', iconCls:'paragr' },
-                        {text:"2.Меню Портала", leaf:true, id:'instr2', iconCls:'paragr' }
+                        {text:"2.Меню Портала", leaf:true, id:'instr2', iconCls:'paragr' }/*,
+                        {text:"3.Ввод и просмотр грузосопроводительной документации в Портале", leaf:true, id:'instr3', iconCls:'paragr' },
+                        {text:"4.Работа с Инструкциями для формирования накладных", leaf:true, id:'instr4', iconCls:'paragr' },
+                        {text:"5.Формирование накладных СМГС", leaf:true, id:'instr5', iconCls:'paragr' },
+                        {text:"6.Формирование накладных ЦИМ", leaf:true, id:'instr6', iconCls:'paragr' },
+                        {text:"7.Формирование накладных CMR", leaf:true, id:'instr7', iconCls:'paragr' },
+                        {text:"8.Формирование накладных ГУ-29к(27в)", leaf:true, id:'instr8', iconCls:'paragr' },
+                        {text:"9.Формирование коммерческих документов", leaf:true, id:'instr9', iconCls:'paragr' },
+                        {text:"10.Обмен с ТБЦ", leaf:true, id:'instr10', iconCls:'paragr' },
+                        {text:"11.Обмен с БЧ", leaf:true, id:'instr11', iconCls:'paragr' },
+                        {text:"12.Настройка печати", leaf:true, id:'instr12', iconCls:'paragr' },
+                        {text:"13.Обмен с ФТС", leaf:true, id:'instr13', iconCls:'paragr' },
+                        {text:"14.Выгрузка/загрузка в/из файл(а)", leaf:true, id:'instr14', iconCls:'paragr'},
+                        {text:"15.Обмен с Порталом БТЛЦ", leaf:true, id:'instr15', iconCls:'paragr' },
+                        {text:"16.Обмен с УПК ТДГ", leaf:true, id:'instr16', iconCls:'paragr' }*/
                     ]});
                 if (tkUser.hasPriv('CIM_INFTKBREST')) {
                     root.appendChild({text:'Информация ТК Брест', iconCls:'info', leaf:true, id:'info'});
@@ -179,6 +205,9 @@ Ext.define('TK.controller.Menu', {
         switch (doc) {
             case 'cimsmgs':
                 grid = Ext.widget('cimsmgslist', {/*title:'Журнал CIM/SMGS',*/ inPack:false});
+                //очищаем параметры фильтрации списка документов
+                if(grid.getStore().proxy.extraParams)
+                    grid.getStore().proxy.extraParams=[];
                 gridParams = {'search.routeId':routeId, 'search.type':1, 'task':'list'};
 //                grid.initGrid({'search.routeId':routeId, 'search.type':1, 'task':'list'});
                 break;
@@ -189,6 +218,10 @@ Ext.define('TK.controller.Menu', {
                 break;
             case 'smgs2':
                 grid = Ext.widget('smgs2list', {inPack:false});
+                //очищаем параметры фильтрации списка документов
+                if(grid.getStore().proxy.extraParams)
+                    grid.getStore().proxy.extraParams=[];
+
                 gridParams = {'search.routeId':routeId, 'search.type':12, 'task':'list'};
                 break;
             case 'aviso':
@@ -236,6 +269,10 @@ Ext.define('TK.controller.Menu', {
             // CIM
             case 'cim':
                 grid = Ext.widget('cimlist', {/*title:'Журнал ЦИМ',*/ inPack:false});
+                //очищаем параметры фильтрации списка документов
+                if(grid.getStore().proxy.extraParams)
+                    grid.getStore().proxy.extraParams=[];
+
                 gridParams = {'search.routeId':routeId, 'search.type':7, 'task':'list'};
 //                grid.initGrid({'search.routeId':routeId, 'search.type':7, 'task':'list'});
                 break;
@@ -295,13 +332,23 @@ Ext.define('TK.controller.Menu', {
                 grid = Ext.widget('kypoezdintolist');
                 break;
 
-            case 'poezd2in':
-                gridParams = {action:'list', direction:1, routeId:routeId};
+            case 'poezd2innar':
+                gridParams = {action:'list', direction:1, routeId:routeId, koleya:2};
                 grid = Ext.widget('ky2poezdintolist');
                 break;
 
-            case 'poezd2out':
-                gridParams = {action:'list', direction:2, routeId:routeId};
+            case 'poezd2outnar':
+                gridParams = {action:'list', direction:2, routeId:routeId, koleya:2};
+                grid = Ext.widget('ky2poezdoutlist');
+                break;
+
+            case 'poezd2inwide':
+                gridParams = {action:'list', direction:1, routeId:routeId, koleya:1};
+                grid = Ext.widget('ky2poezdintolist');
+                break;
+
+            case 'poezd2outwide':
+                gridParams = {action:'list', direction:2, routeId:routeId, koleya:1};
                 grid = Ext.widget('ky2poezdoutlist');
                 break;
 
@@ -524,7 +571,9 @@ function translate (me,cur_lang) {
             filecimsmgs :'Графика ЦИМ/СМГС',  avisogu29k  :'Инструкция ГУ для ЦКП', cim :'CIM', avisocim    :'Инструкция CIM',
             files       :'Прочие документы',cmr         :'CMR', fileavisogu29k:'Графика Инструкция ГУ',  gu27v:'ГУ-27в',
             avisogu29k1 :'Инструкция ГУ для агентов', avisocimsmgs:'Инструкция ЦИМ/СМГС', ved :'Вагонная/передаточная ведомость',exit:'Выход',
-            poezdin: 'Поезда, прибытие',poezd2in: 'Поезда2, прибытие',poezd2out: 'Поезда2, отправление', poezdout: 'Поезда, отправление',
+            poezdin: 'Поезда, прибытие', poezdout: 'Поезда, отправление',
+            poezd2inwide: 'Поезд 1520мм(прибытие)',poezd2outwide: 'Поезд 1520мм(отправление)',
+            poezd2innar: 'Поезд 1435мм(прибытие)',poezd2outnar: 'Поезд 1435мм(отправление)',
             avtoin: 'Авто, прибытие', avtoout: 'Авто, отправление', avto2in: 'Авто2, прибытие', avto2out: 'Авто2, отправление'
         },
 

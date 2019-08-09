@@ -12,7 +12,7 @@ Ext.define('TK.model.ky2.PoezdBindTreeNode', {
         {name: 'sort', type: 'int'},
 
         // poezd
-        {name:'direction', type:'int'},
+        {name:'direction', type:'int', useNull: true},
         {name:'nppr', type:'string'},
 
         // vag
@@ -29,9 +29,9 @@ Ext.define('TK.model.ky2.PoezdBindTreeNode', {
         {name:'name', type:'string'},
 
         // yard
-        {name:'x', type:'int'},
-        {name:'y', type:'int'},
-        {name:'z', type:'int'},
+        {name:'x', type:'int', useNull: true},
+        {name:'y', type:'int', useNull: true},
+        {name:'z', type:'int', useNull: true},
         {name:'contsInYardSector', type:'int'},
         {name:'placesInYardSector', type:'int'},
 

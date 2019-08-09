@@ -20,28 +20,60 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Pdf_A extends CimSmgsSupport_A implements ServletResponseAware, SmgsDAOAware, VedDAOAware, PrintTemplatesDAOAware {
     final static private Logger log = LoggerFactory.getLogger(Pdf_A.class);
 
+    /**
+     * execute generates PDF file for smgs or ved
+     * @return PDF output stream
+     * @throws DocumentException
+     * @throws IOException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException
+     * @throws IllegalAccessException
+     * @throws SQLException
+     */
     public String execute() throws DocumentException, IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, SQLException {
 //        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         ByteArrayOutputStream baos = null;
-
+        Map<Object,List<PrintTemplates>> smgsTemplatesObject = new HashMap<>();
         log.info("Print");
 
         if (smgs != null) {
-            // check in route and user
+
+            String hIDsInput[] = getQuery().split(",");
             List<PrintTemplates> printTemplatesList = new ArrayList<>();
             printTemplatesList.add(findMainPrintTemplate());
 
-            smgs = smgsDao.findById2(smgs);
-            if (smgs.hasDopList()) {     // todo - group doplist by docs type: smgs, cimsmgs ...
-                doc = new DocDir(new BigDecimal(11));
-                printTemplatesList.add(checkDefaultTemplate());
-            }
+            List<PrintTemplates> printTemplatesListDopList = new ArrayList<>();
+            printTemplatesListDopList.add(findMainPrintTemplate());
+            printTemplatesListDopList.add(checkDefaultTemplate());
+            for (String s:hIDsInput ) {
 
-            baos = (print == null ? new Print().generatePdf(printTemplatesList, smgs, isView) : print.generatePdf(printTemplatesList, smgs, isView));
+                smgs = smgsDao.findById(Long.parseLong(s),false);
+
+                if (smgs.hasDopList()) {
+                    smgsTemplatesObject.put(smgs,printTemplatesListDopList);
+                }
+                else
+                    smgsTemplatesObject.put(smgs,printTemplatesList);
+
+            }
+            baos = (print == null ? new Print().generatePdf(smgsTemplatesObject, isView) : print.generatePdf(smgsTemplatesObject, isView));
+//            String hIDsInput[] = getQuery().split(",");
+//            // check in route and user
+//            List<PrintTemplates> printTemplatesList = new ArrayList<>();
+//            printTemplatesList.add(findMainPrintTemplate());
+//
+//            smgs = smgsDao.findById2(smgs);
+//            if (smgs.hasDopList()) {     // todo - group doplist by docs type: smgs, cimsmgs ...
+//                doc = new DocDir(new BigDecimal(11));
+//                printTemplatesList.add(checkDefaultTemplate());
+//            }
+//
+//            baos = (print == null ? new Print().generatePdf(printTemplatesList, smgs, isView) : print.generatePdf(printTemplatesList, smgs, isView));
         }
         else if (ved != null) {
             ved = vedDao.findById2(ved);
@@ -52,7 +84,7 @@ public class Pdf_A extends CimSmgsSupport_A implements ServletResponseAware, Smg
                 for (VedVag vag : ved.getVags()) {
                     if(StringUtils.isNotBlank(vag.getPerVed())) {
                         if (map.containsKey(vag.getPerVed().trim())) {
-                            map.get(vag.getPerVed().trim()).add(vag);    
+                            map.get(vag.getPerVed().trim()).add(vag);
                         }
                         else {
                             List<VedVag> lst = new ArrayList<>();
@@ -77,6 +109,10 @@ public class Pdf_A extends CimSmgsSupport_A implements ServletResponseAware, Smg
 //            os.close();
 
         return null;
+    }
+    public PrintTemplates findMainPrintTemplatePublic()
+    {
+        return findMainPrintTemplate();
     }
 
     private PrintTemplates findMainPrintTemplate() {

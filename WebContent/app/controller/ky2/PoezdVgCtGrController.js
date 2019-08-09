@@ -6,6 +6,7 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
         'ky2.PoezdVgCtGrTreeForm',
         'ky2.poezd.into.PoezdVgCtGrTreeForm',
         'ky2.poezd.out.PoezdVgCtGrTreeForm'
+
     ],
     models: [
         'ky2.PoezdVgCtGrTreeNode'
@@ -38,11 +39,20 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
         ref: 'addGryzBtn',
         selector: 'ky2vgctgrtreeform button[action=addGryz]'
     }, {
+        ref: 'addPlombBtn',
+        selector: 'ky2vgctgrtreeform button[action=addPlomb]'
+    }, {
         ref: 'delBtn',
         selector: 'ky2vgctgrtreeform button[action=del]'
     }, {
         ref: 'saveBtn',
         selector: 'ky2vgctgrtreeform button[action=save]'
+    }, {
+        ref: 'saveExitBtn',
+        selector: 'ky2vgctgrtreeform button[action=saveExit]'
+    }, {
+        ref: 'closeBtn',
+        selector: 'ky2vgctgrtreeform button[action=close]'
     }, {
         ref: 'vagpanel',
         selector: 'ky2vgctgrtreeform > tabpanel > #vag'
@@ -52,6 +62,9 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
     }, {
         ref: 'gryzpanel',
         selector: 'ky2vgctgrtreeform > tabpanel > #gryz'
+    }, {
+        ref: 'plombpanel',
+        selector: 'ky2vgctgrtreeform > tabpanel > #plomb'
     }],
     init: function () {
         this.control({
@@ -73,6 +86,9 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
             'ky2vgctgrtreeform button[action=addGryz]': {
                 click: this.onAddGryzClick
             },
+            'ky2vgctgrtreeform button[action=addPlomb]': {
+                click: this.onAddPlombClick
+            },
             'ky2vgctgrtreeform button[action=addCont]': {
                 click: this.onAddContClick
             },
@@ -82,43 +98,59 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
             'ky2vgctgrtreeform button[action=save]': {
                 click: this.onSaveClick
             },
+            'ky2vgctgrtreeform button[action=saveExit]': {
+                click: this.onSaveExit
+            },
             'ky2vgctgrtreeform > tabpanel > form field': {
                 blur: this.onVgCtGrFormUpdateData
+            },
+            'ky2vgctgrtreeform > tabpanel > #cont > numberfield': {
+                blur: this.onGrBruttoUpdateData
             }
+
         });
     },
 
     editVgCtGrInto: function (btn) {
-        this.editVgCtGr('ky2vgctgrtreeformpoezdinto', 'TK.model.ky2.PoezdVgCtGrTreeNode');
+        this.editVgCtGrCheck('ky2vgctgrtreeformpoezdinto', 'TK.model.ky2.PoezdVgCtGrTreeNode');
     },
 
     editVgCtGrOut: function (btn) {
-        this.editVgCtGr('ky2vgctgrtreeformpoezdout', 'TK.model.ky2.PoezdVgCtGrTreeNode');
+        this.editVgCtGrCheck('ky2vgctgrtreeformpoezdout', 'TK.model.ky2.PoezdVgCtGrTreeNode');
     },
 
-    editVgCtGr: function (xtype, modelClsName) {
+    editVgCtGrCheck: function (xtype, modelClsName) {
         var poezdlist = this.getPoezdlist();
         if (!TK.Utils.isRowSelected(poezdlist)) {
             return false;
         }
+        this.editVgCtGr(xtype, modelClsName, poezdlist.getSelectionModel().getLastSelected().get('hid'));
+    },
+
+    editVgCtGr: function (xtype, modelClsName, poezdHid) {
+        // var poezdlist = this.getPoezdlist();
+        // if (!TK.Utils.isRowSelected(poezdlist)) {
+        //     return false;
+        // }
 
         var url = 'ky2/secure/PoezdVgCtGr.do';
 
         Ext.Ajax.request({
             url: url,
-            params: {hid: poezdlist.getSelectionModel().getLastSelected().get('hid'), action: 'edit'},
+            params: {hid: poezdHid, action: 'edit'},
             scope: this,
             success: function (response) {
                 var respObj = Ext.decode(response.responseText);
                 var poezdObj = respObj['rows'][0];
 
-                var vagoncontainer = Ext.widget(xtype, {title: 'Вагон/Контейнер/Груз'});
+                var vagoncontainer = Ext.widget(xtype, {title: this.titleTree + poezdObj['nppr']});
 
                 //// fill tree
                 var vags = poezdObj['vagons'];
                 var rootNode = this.getTreepanel().getStore().getRootNode();
                 // rootNode.removeAll();
                 rootNode.set('hid', poezdObj['hid']);
+                rootNode.set('dprb', poezdObj['dprb']);
                 // vagoncontainer.setPoezdId(poezdObj['hid']);
 
                 if (vags && !Ext.Object.isEmpty(vags)) {
@@ -179,6 +211,7 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
         for (var contIndx in conts) {
             var cont = conts[contIndx],
                 gryzy = cont['gruzs'],
+                plombs = cont['plombs'],
                 contModel = Ext.create('TK.model.ky2.PoezdVgCtGrTreeNode', {
                     text: cont['nkon'],
                     who: 'cont',
@@ -202,6 +235,9 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
 
             if (gryzy && !Ext.Object.isEmpty(gryzy)) {
                 this.initGryzyNodes(gryzy, contModel, contIndx);
+            }
+            if (plombs && !Ext.Object.isEmpty(plombs)) {
+                this.initPlombsNodes(plombs, contModel, contIndx);
             }
         }
     },
@@ -232,6 +268,32 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
         }
     },
 
+    initPlombsNodes: function (plombs, parentModel, parentIndx) {
+        for (var plombIndx in plombs) {
+            var plomb = plombs[plombIndx],
+                plombModel = Ext.create('TK.model.ky2.PoezdVgCtGrTreeNode', {
+                    text: plomb['znak'],
+                    who: 'plomb',
+                    iconCls: 'doc_new',
+                    leaf: true,
+                    expanded: false
+                });
+
+            this.getPlombpanel().items.each(function (plombItem, index, length) {
+                if (plombItem.isXType('field')) {
+                    plombModel.set(plombItem.getName(), plomb[plombItem.getName()]);
+                } else if (plombItem.isXType('fieldcontainer')) {
+                    plombItem.items.each(function (item, index, length) {
+                        if (item.isXType('field')) {
+                            plombModel.set(item.getName(), plomb[item.getName()]);
+                        }
+                    });
+                }
+            });
+            parentModel.appendChild(plombModel);
+        }
+    },
+
     onTreeNodeClick: function (treepanel, record, item, index) {
         var tabBar = this.getTabpanel().getTabBar();
         if (tabBar.isHidden()) {
@@ -259,6 +321,7 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
         // change buttons visibillity
         if (this.getSaveBtn().isHidden()) {
             this.getSaveBtn().show();
+            this.getSaveExitBtn().show();
         }
         if (this.getDelBtn().isHidden()) {
             this.getDelBtn().show();
@@ -281,6 +344,9 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
                         this.getAddContBtn().show();
                     }
                 }
+                if (this.getAddPlombBtn().isVisible()) {
+                    this.getAddPlombBtn().hide();
+                }
 
                 break;
             case 'cont':
@@ -289,6 +355,9 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
                 }
                 if (this.getAddGryzBtn().isHidden()) {
                     this.getAddGryzBtn().show();
+                }
+                if (this.getAddPlombBtn().isHidden()) {
+                    this.getAddPlombBtn().show();
                 }
 
                 break;
@@ -300,6 +369,9 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
                     if (this.getAddContBtn().isHidden()) {
                         this.getAddContBtn().show();
                     }
+                    if (this.getAddPlombBtn().isVisible()) {
+                        this.getAddPlombBtn().hide();
+                    }
 
                 } else if (record.get('otpravka') === 'GRUZ') {
                     if (this.getAddGryzBtn().isHidden()) {
@@ -308,12 +380,18 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
                     if (this.getAddContBtn().isVisible()) {
                         this.getAddContBtn().hide();
                     }
+                    if (this.getAddPlombBtn().isVisible()) {
+                        this.getAddPlombBtn().hide();
+                    }
                 } else {
                     if (this.getAddGryzBtn().isHidden()) {
                         this.getAddGryzBtn().show();
                     }
                     if (this.getAddContBtn().isHidden()) {
                         this.getAddContBtn().show();
+                    }
+                    if (this.getAddPlombBtn().isVisible()) {
+                        this.getAddPlombBtn().hide();
                     }
                 }
 
@@ -332,7 +410,8 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
                 leaf: true,
                 who: who,
                 iconCls: iconCls ? iconCls : who,
-                sort: sort
+                sort: sort,
+                dprb: parentModelNode.get('dprb')
             })
         );
 
@@ -382,6 +461,11 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
         this.addVgCtGr(parentModelNode, 'gryz');
     },
 
+    onAddPlombClick: function (btn) {
+        var selectedModelNode = this.getTreepanel().getSelectionModel().getLastSelected();
+        this.addVgCtGr(selectedModelNode, 'plomb', 'doc_new');
+    },
+
     onDelClick: function (btn) {
         var selectedModelNode = this.getTreepanel().getSelectionModel().getLastSelected();
         var parentModelNode = selectedModelNode.parentNode;
@@ -390,6 +474,7 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
         this.getDelBtn().hide();
         this.getAddContBtn().hide();
         this.getAddGryzBtn().hide();
+        this.getAddPlombBtn().hide();
 
         if (parentModelNode && parentModelNode.get('who') === 'vag' && !parentModelNode.hasChildNodes()) {
             parentModelNode.set('otpravka', undefined);
@@ -417,10 +502,29 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
             rec.set(field.getName(), newVal);
             if (field.getName() === 'kgvn' ||
                 field.getName() === 'nkon' ||
+                field.getName() === 'znak' ||
                 field.getName() === 'nvag') {
                 rec.set('text', newVal);
             }
         }
+    },
+
+    onGrBruttoUpdateData: function (field) {
+        var rec = field.up('form').getRecord(),
+            oldVal = rec.get(field.getName()),
+            newVal = field.getSubmitValue();
+        if (oldVal !== newVal) {
+            rec.set(field.getName(), newVal);
+            if (field.getName() === 'massa_tar' ||
+                field.getName() === 'massa_brutto') {
+                rec.set('massa_brutto_all', rec.get('massa_tar') + rec.get('massa_brutto'));
+                field.up('form').down('#massa_brutto_all').setValue(rec.get('massa_brutto_all'));
+            }
+        }
+    },
+
+    onSaveExit: function () {
+        this.onSaveClick(1);
     },
 
     onSaveClick: function (btn) {
@@ -440,12 +544,17 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
             scope: this,
             success: function (response) {
                 this.getCenter().setLoading(false);
-                var respObj = Ext.decode(response.responseText);
-                var poezdObj = respObj['rows'][0];
-                var rootNode = this.getTreepanel().getStore().getRootNode();
-                var vags = poezdObj['vagons'];
-                if (vags && !Ext.Object.isEmpty(vags)) {
-                    this.initVagsHids(vags, rootNode);
+                if (Ext.isNumber(btn)) {
+                    this.getCloseBtn().fireEvent('click', this.getCloseBtn());
+                }
+                else {
+                    var respObj = Ext.decode(response.responseText);
+                    var poezdObj = respObj['rows'][0];
+                    var rootNode = this.getTreepanel().getStore().getRootNode();
+                    var vags = poezdObj['vagons'];
+                    if (vags && !Ext.Object.isEmpty(vags)) {
+                        this.initVagsHids(vags, rootNode);
+                    }
                 }
             },
             failure: function (response) {
@@ -562,6 +671,7 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
 
             if (contNodeModel.hasChildNodes()) {
                 this.saveGryzy(contNodeModel, contDataObj);
+                this.savePlombs(contNodeModel, contDataObj);
             }
 
             contIndex++;
@@ -572,24 +682,46 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
         var gryzIndex = 0;
 
         dataObj['gruzs'] = [];
-        nodeModel.eachChild(function (gryzNodeModel) {
-            var gruzDataObj = {};
+        nodeModel.eachChild(function (nodeModel) {
+            if (nodeModel.get('who') === 'gryz') {
+                var gruzDataObj = {};
+                this.getGryzpanel().items.each(function (gryzItem, index, length) {
+                    if (gryzItem.isXType('field')) {
+                        gruzDataObj[gryzItem.getName()] = nodeModel.get(gryzItem.getName());
+                    } else if (gryzItem.isXType('fieldcontainer')) {
+                        gryzItem.items.each(function (item) {
+                            if (item.isXType('field')) {
+                                gruzDataObj[item.getName()] = nodeModel.get(item.getName());
+                            }
+                        }, this);
+                    }
+                }, this);
+                // gruzDataObj['sort'] = gryzIndex;
+                dataObj['gruzs'].push(gruzDataObj);
 
-            this.getGryzpanel().items.each(function (gryzItem, index, length) {
-                if (gryzItem.isXType('field')) {
-                    gruzDataObj[gryzItem.getName()] = gryzNodeModel.get(gryzItem.getName());
-                } else if (gryzItem.isXType('fieldcontainer')) {
-                    gryzItem.items.each(function (item) {
-                        if (item.isXType('field')) {
-                            gruzDataObj[item.getName()] = gryzNodeModel.get(item.getName());
-                        }
-                    }, this);
-                }
-            }, this);
-            // gruzDataObj['sort'] = gryzIndex;
-            dataObj['gruzs'].push(gruzDataObj);
+                gryzIndex++;
+            }
+        }, this);
+    },
 
-            gryzIndex++;
+    savePlombs: function (nodeModel, dataObj) {
+        dataObj['plombs'] = [];
+        nodeModel.eachChild(function (nodeModel) {
+            if (nodeModel.get('who') === 'plomb') {
+                var plombDataObj = {};
+                this.getPlombpanel().items.each(function (plombItem) {
+                    if (plombItem.isXType('field')) {
+                        plombDataObj[plombItem.getName()] = nodeModel.get(plombItem.getName());
+                    } else if (plombItem.isXType('fieldcontainer')) {
+                        plombItem.items.each(function (item) {
+                            if (item.isXType('field')) {
+                                plombDataObj[item.getName()] = nodeModel.get(item.getName());
+                            }
+                        }, this);
+                    }
+                }, this);
+                dataObj['plombs'].push(plombDataObj);
+            }
         }, this);
     }
 

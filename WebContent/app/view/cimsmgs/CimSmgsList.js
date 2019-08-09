@@ -104,7 +104,10 @@ Ext.define('TK.view.cimsmgs.CimSmgsList', {
         );
 
         if(tkUser.hasPriv('CIM_DOC2DOC')){
-            config.columns.items.push({text: this.headerNPoezd, dataIndex: 'npoezd', width: 90, renderer: TK.Utils.renderLongStr});
+            config.columns.items.push({text: this.headerNPoezd, dataIndex: 'npoezd', width: 90, renderer: TK.Utils.renderLongStr,
+                beforeRender: function() {
+                    this.getMenu().add({});
+                }});
         }
     },
     buildTopToolbar:function (config) {
@@ -136,6 +139,7 @@ Ext.define('TK.view.cimsmgs.CimSmgsList', {
                 {xtype:'splitbutton', text: this.btnCopy, iconCls:'copy', action:'copy',
                     menu: [
                         {text: this.btnCopy, action:'copy', iconCls:'copy'},
+                        {text: this.btnCopyAviso, action:'copy2aviso', iconCls:'copy'},
                         {text: this.btnCopySelect, action:'showCopySelectedWin', iconCls:'copySelected'}
                     ]
                 },
@@ -227,5 +231,24 @@ Ext.define('TK.view.cimsmgs.CimSmgsList', {
             return this.titleVagVed;
         else
             return '';
+    },
+    listeners:{
+        afterrender: function(c) {
+            var menu = c.headerCt.getMenu();
+            var menuItem = menu.add({
+                itemid:'searchTrainHeader',
+                text: this.menuTrSearch,
+                icon:'./images/loupe.png',
+                action:'searchTrains'
+            });
+            menu.on('beforeshow', function() {
+                var currentDataIndex = menu.activeHeader.dataIndex;
+                if (currentDataIndex === 'npoezd') {
+                    menuItem.show();
+                } else {
+                    menuItem.hide();
+                }
+            });
+        }
     }
 });

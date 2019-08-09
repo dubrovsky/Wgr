@@ -44,9 +44,10 @@ Ext.define('TK.view.avisocimsmgs.AvisoCimSmgsForm', {
             {x:265, y:33, xtype:'datefield', name:'smgs.aviso_cod_dat', itemId:'smgs.aviso_cod_dat', width:80},
             {x:373, y:38, xtype:'label', text:this.labelVsegoSmgs},
             {x:483, y:33, xtype:'numberfield', name:'smgs.amount', itemId:'smgs.amount', minValue:0, value:0, width:45},
-            {x:559, y:38, xtype:'label', text:this.labelWagenNum},
-            {x:643, y:33, name:'smgs.npoezd', itemId:'smgs.npoezd', maxLength:32, width:350},
-
+            {x:559, y:28, xtype:'label', text:this.labelWagenNum},
+            {x:643, y:23, name:'smgs.npoezd', itemId:'smgs.npoezd', maxLength:32, width:350},
+            {x:544, y:58, xtype:'label', text:this.labelTeplatename},
+            {x:643, y:53, name:'smgs.profile', itemId:'smgs.profile', maxLength:32, width:350},
 
             {x:400, y:136, xtype:'checkbox', name:'smgs.g1c', inputValue:'1', itemId:'smgs.g1c', boxLabel:this.labelDopList},
             {xtype:'textarea',x:134, y:159, width:355, height:105, readOnly:true, name:'disp.g1', itemId:'disp.g1', submitValue:false},

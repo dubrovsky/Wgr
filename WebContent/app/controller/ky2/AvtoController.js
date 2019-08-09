@@ -84,22 +84,8 @@ Ext.define('TK.controller.ky2.AvtoController', {
             },
             'ky2avtooutform button[action="save"]': {
                 click: this.saveAvto
-            },
-            'ky2avtooutform button[action="close"]': {
-                click: this.onExit
-            },
-            'ky2avtointoform button[action="close"]': {
-                click: this.onExit
             }
         });
-    },
-
-    onExit:function(btn){
-	    var menu = this.getMenutree(),
-            node = menu.lastSelectedLeaf;
-
-        menu.selModel.select(node, false, true);
-        menu.fireEvent('itemclick', menu.view, node);
     },
 
     createAvtoInto: function (btn) {
@@ -207,7 +193,8 @@ Ext.define('TK.controller.ky2.AvtoController', {
                 callback: function (avto, operation, success) {
                     if (success) {
                         if (Ext.isNumber(close)) {
-                            this.onExit();
+                            var closeBtn = form.down('button[action="close"]');
+                            closeBtn.fireEvent('click',closeBtn);
                         }
                         else {
                             form.loadRecord(avto);

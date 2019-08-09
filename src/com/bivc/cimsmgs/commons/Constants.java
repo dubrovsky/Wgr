@@ -1,6 +1,7 @@
 package com.bivc.cimsmgs.commons;
 
 import Ti.model.MapPogruz;
+import Ti.model.VagSmgs2;
 import com.bivc.cimsmgs.actions.exchange.Tdg_A;
 import com.bivc.cimsmgs.db.*;
 import com.bivc.cimsmgs.db.nsi.*;
@@ -311,6 +312,8 @@ public class Constants {
                 buffer.append(javascriptString(elem.getG1_dop_info()));
                 buffer.append("',g4_dop_info:'");
                 buffer.append(javascriptString(elem.getG4_dop_info()));
+                buffer.append("',g16_dop_info:'");
+                buffer.append(javascriptString(elem.getG16_dop_info()));
                 buffer.append("',vags:'");
                 for (CimSmgsCarList vag : elem.getCimSmgsCarLists().values()) {
                     buffer.append(javascriptString(vag.getNvag()));
@@ -902,6 +905,8 @@ public class Constants {
                 buffer.append(javascriptString(elem.getG4()));
                 buffer.append("',hid:'");
                 buffer.append(elem.getHid());
+                buffer.append("',npoezd:'");
+                buffer.append(elem.getNpoezd()!=null?elem.getNpoezd():"");
                 buffer.append("',src:'");
 //                buffer.append(buildDoctype(elem.getType()));
                 buffer.append(elem.getDocType1());
@@ -948,6 +953,8 @@ public class Constants {
                 buffer.append(javascriptString(elem.getG694()));
                 buffer.append("',amount:'");
                 buffer.append(elem.getAmount());
+                buffer.append("',profile:'");
+                buffer.append(elem.getProfile()!= null ?elem.getProfile():"");
                 buffer.append("',g1:'");
                 buffer.append(javascriptString(elem.getG1r()));
                 buffer.append("',g4:'");
@@ -3297,6 +3304,8 @@ public class Constants {
                 buffer.append(javascriptString(elem.getManagName()));
                 buffer.append("',managUn:'");
                 buffer.append(elem.getManagUn());
+                buffer.append("',mnamerus:'");
+                buffer.append(elem.getMNameRus());
                 Countrys country = elem.getCountrys();
                 if (country != null) {
                     buffer.append("',countryname:'");
@@ -3936,7 +3945,7 @@ public class Constants {
      * @return
      */
     public static String convert2JSON_mapPogruz(List<MapPogruz> data) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
 
         if (data != null && data.size() > 0) {
             buffer.append("{");

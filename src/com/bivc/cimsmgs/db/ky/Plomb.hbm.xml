@@ -19,6 +19,9 @@
         <property name="znak" type="string">
             <column length="128" name="ZNAK"/>
         </property>
+        <property name="station" type="string">
+            <column length="100" name="STATION"/>
+        </property>
         <property name="sort" type="java.lang.Byte">
             <column name="SORT" precision="2" scale="0"/>
         </property>

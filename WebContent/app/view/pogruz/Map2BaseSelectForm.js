@@ -31,8 +31,7 @@ Ext.define('TK.view.pogruz.Map2BaseSelectForm', {
                         viewConfig: {
                             stripeRows: true,
                             singleSelect: true,
-                            enableTextSelection: true,
-
+                            enableTextSelection: true
                         },
                         columns: [
                             {xtype: 'rownumberer', width: 40,sortable: false },
@@ -102,7 +101,6 @@ Ext.define('TK.view.pogruz.Map2BaseSelectForm', {
         });
 
         var selJson = Ext.encode(Ext.Array.pluck(sel, 'data'));
-        // console.log(selJson);
         params['jsonData'] = selJson;
         if (sel.length > 0) {
             form.setLoading(true);

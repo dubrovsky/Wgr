@@ -123,7 +123,7 @@ Ext.define('TK.controller.ky2.YardController', {
                     win.setLoading(false);
                     if (success) {
                         win.close();
-                        this.getKy2YardsStore().reload();
+                        this.getYardlist().getStore().reload();
                     }
                 },
                 scope: this

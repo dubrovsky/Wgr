@@ -157,8 +157,8 @@ public class Yard_A extends CimSmgsSupport_A {
         Yard deleted = yardDAO.getById(dto.getHid(), false);
 
         log.debug("Checking if a Yard with id: {} has Kont entity bound", deleted.getHid());
-        if(deleted.getKont() != null) {
-            throw new RuntimeException("Нельзя удалять место на контейнерной площадке, т.к. на этом месте находится контейнер - " + deleted.getKont().getNkon());
+        if(!deleted.getKonts().isEmpty()) {
+            throw new RuntimeException("Нельзя удалять место на контейнерной площадке, т.к. на этом месте находится контейнер");
 //            log.debug("Yard with id: {} has Kont entity bound. Unbinding Kont entity with id: {}", deleted.getHid(), deleted.getKont().getHid());
 
 //            deleted.getKont().unbindYard();

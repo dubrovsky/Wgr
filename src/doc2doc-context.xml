@@ -96,6 +96,8 @@
     <!--<bean id="doc2ExcelContList" class="com.bivc.cimsmgs.doc2doc.Doc2ExcelContList"/>-->
     <bean id="smgs2ExcelContList_pl" class="com.bivc.cimsmgs.doc2doc.Smgs2ExcelContList_pl"/>
     <bean id="cimSmgs2ExcelContList_de" class="com.bivc.cimsmgs.doc2doc.CimSmgs2ExcelContList_de"/>
+    <bean 
+id="smgs2ExcelContList" class="com.bivc.cimsmgs.doc2doc.Smgs2ExcelContVagList"/>
     <bean id="cimSmgs2ExcelDopList_de" class="com.bivc.cimsmgs.doc2doc.CimSmgs2ExcelDopList_de"/>
 
 
@@ -111,6 +113,9 @@
           p:cimSmgs2CimSmgs4ContList-ref="cimSmgs2CimSmgs4ContList"
           p:smgs2ExcelContList_pl-ref="smgs2ExcelContList_pl"
           p:cimSmgs2ExcelContList_de-ref="cimSmgs2ExcelContList_de"
+          
+p:smgs2ExcelContList-ref="smgs2ExcelContList"
+          p:smgs2ExcelVagList-ref="smgs2ExcelContList"
           p:cimSmgs2ExcelDopList_de-ref="cimSmgs2ExcelDopList_de"
           p:defaultSerializer-ref="defaultSerializer"
     />

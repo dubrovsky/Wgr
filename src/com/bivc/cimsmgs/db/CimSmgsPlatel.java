@@ -33,6 +33,11 @@ public class CimSmgsPlatel implements Serializable {
 	private String strana;
 	private byte flag;
     private String primR1;
+    private String codDir;
+    private String codPer;
+    private String namePer;
+    private String nDog;
+    private Date datDog;
 
 	public CimSmgsPlatel() {
 	}
@@ -46,7 +51,7 @@ public class CimSmgsPlatel implements Serializable {
 			String plat, String prim, Date dattr, Date locked, String unLock,
             Byte sort, String kplat, String kplat1, String kplat2,
 			String kplat3, String dorR, String platR, String primR,
-			String strana, byte flag) {
+			String strana, byte flag, String nDog, Date datDog) {
 		this.hid = hid;
 		this.cimSmgs = cimSmgs;
 		this.dor = dor;
@@ -65,6 +70,8 @@ public class CimSmgsPlatel implements Serializable {
 		this.primR = primR;
 		this.strana = strana;
 		this.flag = flag;
+		this.nDog=nDog;
+		this.datDog=datDog;
 	}
 
 	public Long getHid() {
@@ -219,7 +226,37 @@ public class CimSmgsPlatel implements Serializable {
         this.primR1 = primR1;
     }
 
-    @Override
+	public String getCodDir() {
+		return codDir;
+	}
+
+	public String getCodPer() {
+		return codPer;
+	}
+
+	public String getNamePer() {return namePer;}
+
+	public void setCodDir(String codDir) {
+		this.codDir = codDir;
+	}
+
+	public void setCodPer(String codPer) {
+		this.codPer = codPer;
+	}
+
+	public void setNamePer(String namePer) {
+		this.namePer = namePer;
+	}
+
+	public String getnDog() { return nDog; }
+
+	public Date getDatDog() { return datDog; }
+
+	public void setnDog(String nDog) { this.nDog = nDog; }
+
+	public void setDatDog(Date datDog) { this.datDog = datDog; }
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -239,11 +276,16 @@ public class CimSmgsPlatel implements Serializable {
                 Objects.equals(platR, that.platR) &&
                 Objects.equals(primR, that.primR) &&
                 Objects.equals(strana, that.strana) &&
-                Objects.equals(primR1, that.primR1);
+				Objects.equals(codDir, that.codDir) &&
+				Objects.equals(codPer, that.codPer) &&
+				Objects.equals(namePer, that.namePer) &&
+                Objects.equals(primR1, that.primR1)&&
+				Objects.equals(datDog, that.datDog) &&
+				Objects.equals(nDog, that.nDog);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(hid, cimSmgs != null ? cimSmgs.getHid() : "", dor, plat, prim, sort, kplat, kplat1, kplat2, kplat3, dorR, platR, primR, strana, flag, primR1);
+        return Objects.hash(hid, cimSmgs != null ? cimSmgs.getHid() : "", dor, plat, prim, sort, kplat, kplat1, kplat2, kplat3, dorR, platR, primR, strana, flag, primR1,codDir,codPer,namePer,nDog,datDog);
     }
 }

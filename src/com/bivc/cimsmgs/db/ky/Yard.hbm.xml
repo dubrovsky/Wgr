@@ -44,7 +44,7 @@
             <column length="20" name="UN"/>
         </property>
 
-        <set fetch="select" inverse="true" lazy="true" sort="natural" name="konts" table="KY_KONT" batch-size="50" cascade="all, delete-orphan">
+        <set fetch="select" inverse="true" lazy="true" sort="natural" name="konts" table="KY_KONT" batch-size="50" >
             <key>
                 <column name="HID_KY" precision="20" scale="0"/>
             </key>

@@ -127,6 +127,7 @@ Ext.define('TK.controller.docs.Docs9TreeDetailController', {
     },
 
     onDocs9FormUpdateData: function(field){
+
         var rec = this.getDocs9panel().getRecord(),
             oldVal = rec.get(field.getName()),
             newVal = field.getSubmitValue(),
@@ -180,16 +181,22 @@ Ext.define('TK.controller.docs.Docs9TreeDetailController', {
     },
 
     onSaveClick: function(btn){
+        // проверка на дубликаты и склейка номеров документов
+        this.getController("docs.PlombsTreeDetailController").checkField('ndoc',this.getTreepanel(),['ncas','text1','text2','dat','ncopy','code','fieldNum'],this);
+    },
+    /**
+     * Удаление старых и сохранение новых документов
+     */
+    saveFunc:function()
+    {
         var ownerDoc = this.getWin().getOwnerDoc(),
             dataObj = ownerDoc.dataObj[ownerDoc.getVagCollectionName()];
-
         if(this.getTreepanel().getRootNode().hasChildNodes() && dataObj){
             this.clearAllDocs9InDataObj();
             this.saveDocs9();
             ownerDoc.fireEvent('onChangeDocs9DisplField', ownerDoc);
         }
     },
-
     onSearchFieldKeyPress:function(field, event){
         if(event.getKey() == event.ENTER) {
             this.getSearchBtn().fireEvent('click', this.getSearchBtn());

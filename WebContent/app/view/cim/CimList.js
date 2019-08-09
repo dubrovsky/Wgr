@@ -32,8 +32,11 @@ Ext.define('TK.view.cim.CimList', {
                 {text:this.headerCim, dataIndex:'numClaim', width:80, renderer: this.rendererPrint},
                 {text:  this.headerContNum, dataIndex:'konts', width:100, renderer:TK.Utils.renderLongStr},
                 {text: this.headerSenderName, dataIndex: 'g1', flex:1, renderer: TK.Utils.renderLongStr},
-                {text: this.headerReceiverName, dataIndex: 'g4',  flex:1, renderer: TK.Utils.renderLongStr}
-
+                {text: this.headerReceiverName, dataIndex: 'g4',  flex:1, renderer: TK.Utils.renderLongStr},
+                {text: this.headerNPoezd, dataIndex: 'npoezd', width: 85, renderer: TK.Utils.renderLongStr,
+                    beforeRender: function() {
+                        this.getMenu().add({});
+                    }}
             ],
             defaults:{}
         };
@@ -65,7 +68,8 @@ Ext.define('TK.view.cim.CimList', {
                 {xtype:'splitbutton', text: this.btnCopy, iconCls:'copy', action:'copy',
                     menu: [
                         {text: this.btnCopy, action:'copy', iconCls:'copy'},
-                        {text: 'Копия, выбрать...', action:'showCopySelectedWin', iconCls:'copySelected'}
+                        {text: this.btnCopyAviso, action:'copy2aviso', iconCls:'copy'},
+                        {text: this.btnCopySelect, action:'showCopySelectedWin', iconCls:'copySelected'}
                     ]
                 },'-',
                 {text: this.btnEdit,iconCls:'edit', action:'edit'},'-'
@@ -87,5 +91,25 @@ Ext.define('TK.view.cim.CimList', {
 //        config.dockedItems[0].items.push({text: this.btnBindPrint,iconCls:'bind', action:'bindPrintTmpl'},'-');
         config.dockedItems[0].items.push({text:this.btnHistory, iconCls:'history', action:'history'}, '-');
 
+    },
+    // adding train search button
+    listeners:{
+        afterrender: function(c) {
+            var menu = c.headerCt.getMenu();
+            var menuItem = menu.add({
+                itemid:'searchTrainHeader',
+                text: this.menuTrSearch,
+                icon:'./images/loupe.png',
+                action:'searchTrains'
+            });
+            menu.on('beforeshow', function() {
+                var currentDataIndex = menu.activeHeader.dataIndex;
+                if (currentDataIndex === 'npoezd') {
+                    menuItem.show();
+                } else {
+                    menuItem.hide();
+                }
+            });
+        }
     }
 });

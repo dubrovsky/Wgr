@@ -79,25 +79,41 @@ Ext.define('TK.controller.ky2.PoezdController', {
             'ky2poezdoutform button[action="save"]': {
                 click: this.savePoezd
             },
+            'ky2poezdintoform button[action="saveExit"]': {
+                click: this.saveExit
+            },
+            'ky2poezdoutform button[action="saveExit"]': {
+                click: this.saveExit
+            },
             // 'ky2basepoezdform radiogroup#koleya': {
             //     change: this.onKoleyaChange
             // }
-            'ky2poezdoutform button[action="close"]': {
-                click: this.onExit
+            'ky2poezdintoform button[action="editVgCtGr"]': {
+                click: this.toVgCtGrInto
             },
-            'ky2poezdintoform button[action="close"]': {
-                click: this.onExit
+            'ky2poezdoutform button[action="editVgCtGr"]': {
+                click: this.toVgCtGrOut
             }
+
 
         });
     },
 
-    onExit:function(btn){
-	    var menu = this.getMenutree(),
-            node = menu.lastSelectedLeaf;
+    toVgCtGrInto: function (btn) {
+        this.toVgCtGr('ky2vgctgrtreeformpoezdinto', 'TK.model.ky2.PoezdVgCtGrTreeNode');
+    },
 
-        menu.selModel.select(node, false, true);
-        menu.fireEvent('itemclick', menu.view, node);
+    toVgCtGrOut: function (btn) {
+        this.toVgCtGr('ky2vgctgrtreeformpoezdout', 'TK.model.ky2.PoezdVgCtGrTreeNode');
+    },
+
+    toVgCtGr: function (xtype, modelClsName) {
+        var record = this.getPoezdform().getRecord();
+        if (record.get('hid') == null) {
+            Ext.Msg.alert(this.warningMsg, this.warningText);
+            return false;
+        }
+        this.getController('ky2.PoezdVgCtGrController').editVgCtGr(xtype, modelClsName, record.get('hid'));
     },
 
     createPoezdInto: function (btn) {
@@ -111,9 +127,10 @@ Ext.define('TK.controller.ky2.PoezdController', {
             extraParams = poezdlist.getStore().getProxy().extraParams,
             poezd = Ext.create(modelClsName, {
                 'route.hid': extraParams['routeId'],
-                direction: extraParams['direction']
+                direction: extraParams['direction'],
+                koleya: extraParams['koleya']
             }),
-            poezdcontainer = Ext.widget(xtype, {title: this.getTitleByDirection(extraParams['direction'])});
+            poezdcontainer = Ext.widget(xtype, {title: this.getTitleByDirection(extraParams['direction'], extraParams['koleya'])});
 
         poezdcontainer.down('form').loadRecord(poezd);
         poezdcontainer.down('form').initFieldsWithDefaultsValues();
@@ -184,7 +201,11 @@ Ext.define('TK.controller.ky2.PoezdController', {
             }
         });
     },
-    savePoezd: function () {
+    saveExit: function () {
+        this.savePoezd(1);
+    },
+
+    savePoezd: function (close) {
         var form = this.getPoezdform();
         if (form.isValid()) {
             var poezd = form.getRecord(),
@@ -200,9 +221,15 @@ Ext.define('TK.controller.ky2.PoezdController', {
                 params: {action: 'save'},
                 callback: function (poezd, operation, success) {
                     if (success) {
-                        form.loadRecord(poezd);
-                        if (newPoezd) {       // packdoc will be available after save
-                            poezd.setPackDoc(Ext.create('TK.model.PackDoc', {hid: poezd.get('packDoc.hid')}));
+                        if (Ext.isNumber(close)) {
+                            var closeBtn = form.down('button[action="close"]');
+                            closeBtn.fireEvent('click',closeBtn);
+                        }
+                        else {
+                            form.loadRecord(poezd);
+                            if (newPoezd) {       // packdoc will be available after save
+                                poezd.setPackDoc(Ext.create('TK.model.PackDoc', {hid: poezd.get('packDoc.hid')}));
+                            }
                         }
                     }
                     this.getCenter().setLoading(false);
@@ -235,12 +262,12 @@ Ext.define('TK.controller.ky2.PoezdController', {
         store.getProxy().extraParams = {action: 'poezds_dir_for_poezd_bind', direction: direction, routeId: poezdModel.get('route.hid')};
         store.load();
     },
-    getTitleByDirection: function (direction) {
+    getTitleByDirection: function (direction, koleya) {
         switch (direction) {
             case 1:
-                return this.titleCreateInto;
+                return (koleya === 1 ? this.titleCreateIntoWide : this.titleCreateIntoNar);
             case 2:
-                return this.titleCreateOut;
+                return (koleya === 1 ? this.titleCreateOutWide : this.titleCreateOutNar);
             default:
                 return "";
         }

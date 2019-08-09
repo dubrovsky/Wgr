@@ -1,5 +1,9 @@
 package com.bivc.cimsmgs.dto.ky2;
 
+import com.bivc.cimsmgs.formats.json.serializers.DateTimeSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import java.util.Date;
 import java.util.TreeSet;
 
 /**
@@ -9,7 +13,26 @@ public class PoezdDTO {
 
     private Long hid;
     private Byte direction;
+    private String nppr;
+    @JsonSerialize(using = DateTimeSerializer.class)
+    private Date dprb;
     private TreeSet<VagonDTO> vagons = new TreeSet<>();
+
+    public String getNppr() {
+        return nppr;
+    }
+
+    public void setNppr(String nppr) {
+        this.nppr = nppr;
+    }
+
+    public Date getDprb() {
+        return dprb;
+    }
+
+    public void setDprb(Date dprb) {
+        this.dprb = dprb;
+    }
 
     public Long getHid() {
         return hid;

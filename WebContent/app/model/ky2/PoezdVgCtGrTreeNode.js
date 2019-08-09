@@ -35,11 +35,14 @@ Ext.define('TK.model.ky2.PoezdVgCtGrTreeNode', {
 
         // kont
         {name: 'nkon', type: 'string'},
+        {name: 'notp', type: 'string'},
         {name: 'dprbDate', type: 'string', useNull: true},
         {name: 'dprbTime', type: 'string', useNull: true, defaultValue: null},
         {name: 'dprb', type: 'string', useNull: true},
         {name: 'poruz', type: 'boolean'},
         {name: 'massa_tar', type: 'int', useNull: true},
+        {name: 'massa_brutto', type: 'int', useNull: true},
+        {name: 'massa_brutto_all', type: 'int', useNull: true},
         {name: 'pod_sila', type: 'float', useNull: true},
         {name: 'type', type: 'int', useNull: true},
         {name: 'vid', type: 'string'},
@@ -57,6 +60,11 @@ Ext.define('TK.model.ky2.PoezdVgCtGrTreeNode', {
         'upak',
         {name: 'places', type: 'int', useNull: true},
         {name: 'massa', type: 'int', useNull: true},
+
+        // plomb
+        'znak',
+        'station',
+        {name: 'kpl', type: 'int', useNull: true},
 
         // tree node fields
         'who',

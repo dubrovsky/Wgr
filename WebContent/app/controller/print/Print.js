@@ -75,6 +75,7 @@ Ext.define('TK.controller.print.Print', {
                 task: form.findField('search.docType').getValue()
             };
         params[doc.prefix + '.hid'] = hid;
+        params['query'] = hid;
         this.doPrint1(doc, params);
     },
 
@@ -108,22 +109,38 @@ Ext.define('TK.controller.print.Print', {
         // var list = btn.up('grid');
         if(TK.Utils.isRowSelected(list))
         {
-            var datas = list.getSelectionModel().getLastSelected().data,
-                doc = tkUser.docs.getByKey(this.getMenutree().lastSelectedLeaf.id.split('_')[3]),
-                params = {};
 
-            params['docId'] = doc['hid'];
-            params['routeId'] = datas['routeId'] || datas[doc.prefix+'.route.hid'];
-            params['search.type'] = datas['type'] || datas[doc.prefix+'.type'];
-            params[doc.prefix+'.hid'] = datas['hid'] || datas[doc.prefix+'.hid'];
-            params['task'] = doc['name'];
-            Ext.apply(params, args);
+            Ext.Msg.show({title:this.printTitle, msg: this.printMsg+'('+list.selModel.getSelection().length+')', buttons: Ext.Msg.YESNO,
+                closable: false, icon: Ext.Msg.QUESTION, scope: this,
+                fn: function(buttonId) {
+                    //print confirmation
+                    if(buttonId === 'yes')
+                    {
+                        var hids=[],datas = list.getSelectionModel().getLastSelected().data,
+                            doc = tkUser.docs.getByKey(this.getMenutree().lastSelectedLeaf.id.split('_')[3]),
+                            params = {};
 
-            this.doPrint1(doc, params);
+                        Ext.Array.each(list.getSelectionModel().getSelection(),function (item) {
+                            hids.push(item.data.hid);
+                        });
+
+                        params['docId'] = doc['hid'];
+                        params['routeId'] = datas['routeId'] || datas[doc.prefix+'.route.hid'];
+                        params['search.type'] = datas['type'] || datas[doc.prefix+'.type'];
+                        params[doc.prefix+'.hid'] = datas['hid'] || datas[doc.prefix+'.hid'];
+                        params['task'] = doc['name'];
+                        params['query'] = hids.join(',');
+                        Ext.apply(params, args);
+
+                         this.doPrint1(doc, params);
+                    }
+                }
+            });
         }
     },
 // печать
     doPrint1: function(doc, datas){
+
         Ext.Ajax.request({
             url: 'PrintTemplates_printWinParams.do',
             params: {
@@ -138,7 +155,6 @@ Ext.define('TK.controller.print.Print', {
                     pagesArr = winParams['pages'],
                     nBlanks = winParams['nBlanks'],
                     pdfParams = {};
-
                 if(!datas['isView']) {
                     pdfParams['status'] = 17;
                 }
@@ -151,6 +167,7 @@ Ext.define('TK.controller.print.Print', {
                 pdfParams['route.hid'] = datas['routeId'];
                 pdfParams['isView'] = datas['isView'];
                 pdfParams['templHid'] = datas['templHid'];
+                pdfParams['query'] = datas['query'];
 
                 if(datas['isView'] || (pagesArr.length === 1 && nBlanks === 0)){
                     window.open('Pdf.do?' + Ext.Object.toQueryString(pdfParams),'_blank','');
@@ -193,6 +210,7 @@ Ext.define('TK.controller.print.Print', {
                                 handler: function(btn){
                                     var panel = btn.up('window').down('form');
                                     if(panel.getForm().isValid()){
+
                                         Ext.apply(pdfParams, panel.getValues());
                                         window.open('Pdf.do?' + Ext.Object.toQueryString(pdfParams),'_blank','');
                                     } else {

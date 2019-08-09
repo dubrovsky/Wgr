@@ -12,9 +12,9 @@ import java.util.Locale;
  * Created by peter on 21.02.14.
  */
 public interface PoezdDAO extends GenericDAO<Poezd, Long> {
-    List<Poezd> findAll(Integer limit, Integer start, Long routeId, Byte direction, List<Filter> filters, Usr usr, Locale locale);
+    List<Poezd> findAll(Integer limit, Integer start, Long routeId, Byte direction, List<Filter> filters, Usr usr, Locale locale, Byte koleya);
 
-    Long countAll(Long routeId, Byte direction, List<Filter> filters, Usr usr, Locale locale);
+    Long countAll(Long routeId, Byte direction, List<Filter> filters, Usr usr, Locale locale, Byte koleya);
 
     List<Poezd> findByNppr(String nppr);
 

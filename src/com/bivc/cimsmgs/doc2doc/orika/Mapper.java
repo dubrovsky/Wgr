@@ -27,6 +27,7 @@ public class Mapper extends ConfigurableMapper {
 
         factory.classMap(Kont.class, KontDTO.class)
                 .fieldAToB("gruzs", "gruzs")
+                .fieldAToB("plombs", "plombs")
                 .byDefault()
                 .register();
 

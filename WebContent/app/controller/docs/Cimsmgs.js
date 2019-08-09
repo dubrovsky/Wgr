@@ -12,7 +12,7 @@ Ext.define('TK.controller.docs.Cimsmgs', {
         'Ext.form.field.TextArea',
         'Ext.grid.column.Action',
         'TK.Utils',
-        'TK.model.CimSmgsOtpr'
+        'TK.view.ved.List'
     ],
 
     views:[
@@ -112,9 +112,7 @@ Ext.define('TK.controller.docs.Cimsmgs', {
             function(btn){
                 var nsiGrid = this.nsiOtpr(form.down('textarea[name=smgs.g1r]').getValue()).getComponent(0)/*, gridAction = nsiGrid.down('actioncolumn')*/;
                 nsiGrid.on('itemdblclick', this.selectOtprG1, form.getComponent('g1_panel'));
-            },
-            this
-        );
+            },this);
         // нажатие кнопки выбора страны получателя
         form.down('button[action=poluch]').on('click',
             function(btn){
@@ -264,18 +262,25 @@ Ext.define('TK.controller.docs.Cimsmgs', {
     },
     onChangeData:function (btn, ev) {
         var panel, tabpanels;
-        if (btn.itemId.indexOf('g19') == -1) {
+        if (btn.itemId.indexOf('g19') === -1) {
             panel = this.getComponent(btn.itemId + 'panel');
         }
         // установка кода отправителя
-        if(btn.itemId.indexOf('g1') != -1){
+        if(btn.itemId.indexOf('g1') !== -1){
+
             var value=this.getComponent('smgs.g2').getValue();
             this.getComponent('g1_panel').getComponent('code').getComponent('smgs.g2_E').setValue(value);
+            // сохранение оригиналов наименования.
+            this.getComponent('g1_panel').backG1=this.getComponent('g1_panel').getComponent('name').getComponent('smgs.g1').getValue();
+            this.getComponent('g1_panel').backG1R=this.getComponent('g1_panel').getComponent('name').getComponent('smgs.g1r').getValue();
         }
         // установка кода получателя
-        if(btn.itemId.indexOf('g4') != -1){
+        if(btn.itemId.indexOf('g4') !== -1){
             var value=this.getComponent('smgs.g5').getValue();
             this.getComponent('g4_panel').getComponent('code_4').getComponent('smgs.g5_E').setValue(value);
+            // сохранение оригиналов наименования.
+            this.getComponent('g4_panel').backG4=this.getComponent('g4_panel').getComponent('name_4').getComponent('smgs.g1_1').getValue();
+            this.getComponent('g4_panel').backG4R=this.getComponent('g4_panel').getComponent('name_4').getComponent('smgs.g1r_1').getValue();
         }
         /*else {
             panel = this.getComponent('g19v_panel');
@@ -396,10 +401,10 @@ Ext.define('TK.controller.docs.Cimsmgs', {
                     ],
                     defaults:{sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false}
                 };
-            },
-            newRecord:function () {
-                return Ext.create('TK.model.CimSmgsOtpr', {hid:'', g1:'', g1r:'',g_1_5k:'',g15_1:'', g11:'', g12:'', g13:'', g16_1:'', g16r:'', g17_1:'', g18_1:'', g18r_1:'', g19_1:'', g19r:'', g110:'', g2:'', g3:'',g_2inn:'',dop_info:''});
             }
+            // newRecord:function () {
+            //     return Ext.create('TK.model.CimSmgsOtpr', {hid:'', g1:'', g1r:'',g_1_5k:'',g15_1:'', g11:'', g12:'', g13:'', g16_1:'', g16r:'', g17_1:'', g18_1:'', g18r_1:'', g19_1:'', g19r:'', g110:'', g2:'', g3:'',g_2inn:'',dop_info:''});
+            // }
         });
     },
 

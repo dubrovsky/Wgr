@@ -85,7 +85,13 @@ Ext.define('TK.controller.docs.PlombsTreeDetailController', {
         return this.getController("docs.VgCtGrTreeDetailController").isContOtpr();
     },
 
-    onPlombsWinShow: function(widget, ownerDoc){
+    /**
+     * Отображение окна пломб
+     * @param widget виджет
+     * @param ownerDoc основной документ
+     * @param selPlombHid hid выбранной пломбы
+     */
+    onPlombsWinShow: function(widget, ownerDoc,record){
         var win = Ext.widget(widget),
             tree = this.getTreepanel(),
             treeStore = tree.getStore(),
@@ -111,6 +117,33 @@ Ext.define('TK.controller.docs.PlombsTreeDetailController', {
         /// END fill tree
 
         win.show();
+        // делаем пломбы выбранной в дереве, если в окно попали через двойно мелчок по пломбе в графе 19
+        if(typeof record==='object'&&record.self.getName( )==='TK.model.tables.Plomb')
+        {
+            rootNode.findChildBy(function(child){
+
+                var treeHid = child.data.hid;
+                // if((!child.data.kpl||record.data.kpl===child.data.kpl)&&(record.data.znak===child.data.znak)
+                //     &&(record.data.sort===child.data.sort)&&(!child.data.c_hid||record.data.c_hid===child.data.c_hid))
+                if(record.data['id'])
+                {
+                    if(child.data['id']===record.data['id'])
+                    {
+                        tree.getSelectionModel().select(child);
+                        this.onTreeNodeClick(tree,child);
+                    }
+                }
+                else
+                {
+                    if(child.data['hid']===record.data['hid'])
+                    {
+                        tree.getSelectionModel().select(child);
+                        this.onTreeNodeClick(tree,child);
+                    }
+                }
+            },this,true);
+        }
+        this.onExpandAllClick();
     },
 
     loopVagsNodes: function(vags, rootNode){
@@ -316,7 +349,20 @@ Ext.define('TK.controller.docs.PlombsTreeDetailController', {
         this.fireEvent('collapseAllClick', this.getTreepanel(), this.getWin());
     },
 
+    /**
+     * Сохранение записей о пломбах
+     * @param btn
+     */
     onSaveClick: function(btn){
+
+        // проверка на дубликаты и склейка номеров пломб
+        this.checkField('znak',this.getTreepanel(),['kpl'],this);
+    },
+    /**
+     * Удаление старых и сохранение новых пломб
+     */
+    saveFunc:function()
+    {
         var ownerDoc = this.getWin().getOwnerDoc(),
             dataObj = ownerDoc.dataObj[ownerDoc.getVagCollectionName()];
 
@@ -327,8 +373,126 @@ Ext.define('TK.controller.docs.PlombsTreeDetailController', {
         }
     },
 
-    savePlombs: function(){
+    /**
+     * checkField проверяет есть ли среди введенных записей выбранного поля записи разделенные , и ;
+     * @param field имя поля
+     * @param tree ссылка на дерево
+     * @param fields массив остальных полей записи
+     * @param controller контроллер дерева
+     */
+    checkField:function(field,tree,fields,controller)
+    {
+        var res='';
+        tree.getRootNode().eachChild(function(parentNodeModel) {
+            parentNodeModel.eachChild(function(plombsModel) {
+                if(plombsModel.data[field])
+                if((plombsModel.data[field].split(',').length>1)||plombsModel.data[field].split(';').length>1)
+                {
+                    res= res+plombsModel.data[field]+'<br>';
+                }
+            },this);
+        },this);
+        if(res) {
+            Ext.Msg.show({
+                title: this.msgTitle, msg: this.msgSplit + res, buttons: Ext.Msg.YESNO, height: 200, width: 410,
+                closable: false, icon: Ext.Msg.QUESTION, scope: this, cls: 'overflowY',
+                fn: function (buttonId) {
+                    //подтверждение обработки записи
+                    if (buttonId === 'yes') {
+                        this.processRecords(field, tree, fields);
+                        // очистка формы
+                        tree.up().down('form').items.each(function (item, index, length) {
+                            item.setValue('');
+                            controller.saveFunc();
+                        });
+                    }
+                }
+            });
+        }
+        else
+            controller.saveFunc();
+    },
 
+    /**
+     * Ищем и обрабатываем записи введенные через разделительный знак
+     * @param tree ссылка на дерево записей
+     * @param field ключевое поле, в котром записи разделены разделительным знаком
+     * @param fields массив остальных полей записи
+     */
+    processRecords:function(field,tree,fields)
+    {
+        var modelName=tree.getStore().model.modelName;
+        tree.getRootNode().eachChild(function(parentNodeModel) {
+            var plombs2tree=[]
+            parentNodeModel.eachChild(function(model) {
+                var mainField=model.data[field],
+                    copyFields=[],
+                    kpl=model.data['kpl'],
+                    znakArr=[],
+                    // вначале разбиваем по ,
+                    znakArr2=mainField.split(','),
+                    who= model.data['who'];
+
+                fields.forEach(function (item) {
+                    copyFields[item]=model.data[item];
+                })
+
+                for(var ix=0;ix<znakArr2.length;ix++)
+                {
+                    // потом разбиваем разбитое по ;
+                    znakArr=znakArr.concat(znakArr2[ix].split(';'));
+                }
+                for(var ix=0;ix<znakArr.length;ix++)
+                {
+                    var exists=false;
+                    for (dx=0;dx<plombs2tree.length;dx++)
+                    {
+                        if(plombs2tree[dx].data[field].toUpperCase()===znakArr[ix].toUpperCase())
+                        {
+
+                            if(who==='plombs')
+                                plombs2tree[dx].data['kpl']=plombs2tree[dx].data['kpl']+kpl;
+
+                            exists=true;
+                            break;
+                        }
+                    }
+                    if(!exists)
+                    {
+                        var newModel=Ext.create(modelName, {
+                            leaf: true,
+                            who: who,
+                            iconCls: 'doc_new',
+                            text:znakArr[ix].trim(),
+                            kpl:kpl
+                        })
+                        newModel.data[field]=znakArr[ix].trim();
+
+                        fields.forEach(function (item) {
+                            newModel.data[item]=copyFields[item];
+                        })
+
+                        plombs2tree.push(newModel);
+                    }
+                }
+            },this);
+            // удаляем записи
+            while (parentNodeModel.firstChild) {
+                parentNodeModel.removeChild(parentNodeModel.firstChild);
+            }
+            // записываем новые записи
+            for(var ix=0;ix<plombs2tree.length;ix++)
+            {
+                parentNodeModel.appendChild(plombs2tree[ix]);
+                parentNodeModel.set('leaf', false);
+                parentNodeModel.expand();
+            }
+        },this);
+    },
+    /**
+     * сохранение пломб
+     */
+    savePlombs: function(){
         this.getTreepanel().getRootNode().eachChild(function(parentNodeModel) {
             if(parentNodeModel.hasChildNodes()){
                 var plombsIndex = 0,
@@ -339,12 +503,14 @@ Ext.define('TK.controller.docs.PlombsTreeDetailController', {
                     parentDataObj[this.getWin().getOwnerDoc().getPlombsCollectionName()] = {};
 
                     parentNodeModel.eachChild(function(plombsModel) {
+                        // console.log(plombsModel);
                         parentDataObj[this.getWin().getOwnerDoc().getPlombsCollectionName()][plombsIndex] = {};
 
                         this.getPlombspanel().items.each(function(plombsItem,index,length){
                             parentDataObj[this.getWin().getOwnerDoc().getPlombsCollectionName()][plombsIndex][plombsItem.getName()] = plombsModel.get(plombsItem.getName());
                         }, this);
                         parentDataObj[this.getWin().getOwnerDoc().getPlombsCollectionName()][plombsIndex]['sort'] = plombsIndex;
+                        parentDataObj[this.getWin().getOwnerDoc().getPlombsCollectionName()][plombsIndex]['id'] = plombsModel.data['id'];
                         plombsIndex++;
                     }, this);
                 }
@@ -380,18 +546,39 @@ Ext.define('TK.controller.docs.PlombsTreeDetailController', {
             }
         }
     },
-
+    /**
+     * установка отображаемых значений пломб
+     * @param controller контроллер
+     * @param docForm основной документ
+     */
     setDisplayedPlombsFields: function(controller, docForm){
-        controller.getDocForm().getComponent('smgs.g2012').setValue(docForm.dataObj['g2012']);
+        if(controller.getDocForm().getComponent('smgs.g2012').xtype==='textarea')
+            controller.getDocForm().getComponent('smgs.g2012').setValue(docForm.dataObj['g2012']);
+        else
+        {
+            this.setG2012DataObj(controller,controller.getDocForm());
+        }
     },
-
+    /**
+     * Обход и перезаполнение хранилища пломб
+     * @param controller контроллер
+     * @param docForm основной документ
+     */
     setG2012DataObj: function(controller, docForm){
         var vags = docForm.dataObj[docForm.getVagCollectionName()],
             plombsResult = '',
             delim = '',
             plombsCount = 0,
             vagsCount = 0,
-            contsCount = 0;
+            contsCount = 0,
+            plStore;
+
+        // очищаем таблицу пломб
+        if(controller.getDocForm().getComponent('smgs.g2012')&&controller.getDocForm().getComponent('smgs.g2012').xtype==='g19plombsmgs2')
+        {
+            plStore=controller.getDocForm().getComponent('smgs.g2012').getComponent('g19grid').getStore();
+            plStore.removeAll();
+        }
 
         if(vags && !Ext.Object.isEmpty(vags)){
             for(var vagIndx in vags){
@@ -412,14 +599,13 @@ Ext.define('TK.controller.docs.PlombsTreeDetailController', {
 
                                 for (var plombsIndx in plombs) {
                                     plomb = plombs[plombsIndx];
-
                                     if (vagIndx == 0 && !vags[1] && contIndx == 0 && !conts[1]) { // only 1 vag and 1 cont
                                         plombsResult += delim;
                                         plombsResult += (plomb['kpl'] ? plomb['kpl'] + 'x  ' : '');
                                         plombsResult += (plomb['znak'] ? plomb['znak'] : '');
                                         delim = ', ';
                                     }
-
+                                    this.addPlomb2Store(plStore,plomb,cont);
                                     var kpl = parseInt(plomb['kpl']);
                                     plombsCount += isNaN(kpl) ? 0 : kpl;
                                 }
@@ -441,7 +627,7 @@ Ext.define('TK.controller.docs.PlombsTreeDetailController', {
                                 plombsResult += (plomb['znak'] ? plomb['znak'] : '');
                                 delim = ', ';
                             }
-
+                            this.addPlomb2Store(plStore,plomb);
                             var kpl = parseInt(plomb['kpl']);
                             plombsCount += isNaN(kpl) ? 0 : kpl;
                         }
@@ -455,5 +641,25 @@ Ext.define('TK.controller.docs.PlombsTreeDetailController', {
             plombsResult = 'verschlüsse / пломбы ' + plombsCount + ' (Siehe Nachweisung / см.ведомость)';
         }
         docForm.dataObj['g2012'] = plombsResult;
+    },
+    /**
+     * занечение пломбы в хранилище таблицы пломб
+     * @param plStore хранилище мломб
+     * @param plomb пломба
+     */
+    addPlomb2Store:function (plStore,plomb,cont) {
+        if(plStore)
+        {
+            plStore.add(
+                {
+                    'hid':plomb['hid'],
+                    'kpl':plomb['kpl'] ? plomb['kpl']: '',
+                    'znak':plomb['znak'] ? plomb['znak']: '',
+                    'sort':plomb['sort'],
+                    'c_hid':cont?cont['hid']:null,
+                    'id':plomb['id']
+                }
+            )
+        }
     }
 });

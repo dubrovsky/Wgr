@@ -265,6 +265,7 @@ public class CimSmgs extends ActionSupport implements Serializable {
     private String g_16_33r;
     private String g1_dop_info;
     private String g4_dop_info;
+    private String g16_dop_info;
     private String vagVedNum;
 
     private Map<Integer, CimSmgsDocs> cimSmgsDocses7 = new TreeMap<>();
@@ -308,6 +309,106 @@ public class CimSmgs extends ActionSupport implements Serializable {
     private Byte g26c;
     private String ga661;
     private String ga662;
+
+    //    private String g23a;
+    private String g23b;
+    private String g74_1;
+    private String g74_2;
+    private Byte type;
+    private String gs_48;
+    private Byte gs_22;
+    private String gs_24;
+    private String gs_141_1;
+    private Date gs_141_2;
+    private String gs_66_1;
+
+    private String g18B1a;
+    private String g18B1b;
+    private String g18B1c;
+    private String g18B1d;
+    private Long amount;
+
+    private String aviso_num;
+    private Date aviso_dat;
+    private Date aviso_cod_dat;
+    private BigDecimal aviso_stavka;
+    private String g11_prim;
+    private String g_1_5k;
+    private String g_4_5k;
+    private Route route;
+    private PackDoc packDoc;
+    private String g4prim;
+    private String guInf;
+    private String perevozchik;
+    private String tarifShema;
+    private String tarifVOtpr;
+    private Long platezhKm;
+    private Long platezhRub;
+    private String platezhKop;
+    private String provozPlata;
+    private String zpuInfo;
+    private String trueInfo;
+    //    private String zajavNo;
+    private String vizaNo;
+    private String perevozSign;
+    private Date perevozDate;
+    private String sborCennost1;
+    private String sborCennost2;
+    private String otprItogo;
+    private String tbcNomer;
+    private Byte tbcStatus = (byte) 0;
+    private String zakazNo;
+    private Byte cim;
+    private Byte incoterms;
+    private String kodUslPost;
+    private Byte frankofracht;
+    private String otmPoluch;
+    private Byte vidKontOtpr;
+    private String platform;
+    private String docNum;
+    private String tehUslG12;
+    private String grOtpFio;
+    private String g104;
+    private String g164;
+    private String npoezd;
+    //    private String konPrim;
+    private String vagPrim;
+    private String nettoPref;
+    private String taraPref;
+    private String bruttoPref;
+    private String kontKol;
+    private String g2_1;
+    private String g5_1;
+    private BigDecimal docType1;
+    private String plat;
+    private String plat1;
+    private Byte gu;
+    private String sborCennost11;
+    private String sborCennost21;
+    private String sborCennost22;
+    private String ftsNomer;
+    private Byte ftsStatus = (byte) 0;
+    private String zpuInfo1;
+    private String index_p;
+    private String n_ppv;
+    private Integer nppr;
+    private Date dprb;
+    private String g_2inn;
+    private String g_5inn;
+    private String ftsDocId;
+    private Map<Integer, CimSmgsDocs> cimSmgsDocses136 = new TreeMap<>();
+    private String g_24_bcn;
+    private String g36;
+    private String g25Txt;
+    private String g2_;
+    private String g5_;
+    private String n_packet;
+    private String g7_;
+    private String g3_;
+    private Integer sort;
+    private Integer kind;
+    private String send_br;
+    private Character src;
 
     public String getVagVedNum() {
         return vagVedNum;
@@ -415,105 +516,7 @@ public class CimSmgs extends ActionSupport implements Serializable {
 
 
 
-    //    private String g23a;
-    private String g23b;
-    private String g74_1;
-    private String g74_2;
-    private Byte type;
-    private String gs_48;
-    private Byte gs_22;
-    private String gs_24;
-    private String gs_141_1;
-    private Date gs_141_2;
-    private String gs_66_1;
 
-    private String g18B1a;
-    private String g18B1b;
-    private String g18B1c;
-    private String g18B1d;
-    private Long amount;
-
-    private String aviso_num;
-    private Date aviso_dat;
-    private Date aviso_cod_dat;
-    private BigDecimal aviso_stavka;
-    private String g11_prim;
-    private String g_1_5k;
-    private String g_4_5k;
-    private Route route;
-    private PackDoc packDoc;
-    private String g4prim;
-    private String guInf;
-    private String perevozchik;
-    private String tarifShema;
-    private String tarifVOtpr;
-    private Long platezhKm;
-    private Long platezhRub;
-    private String platezhKop;
-    private String provozPlata;
-    private String zpuInfo;
-    private String trueInfo;
-    //    private String zajavNo;
-    private String vizaNo;
-    private String perevozSign;
-    private Date perevozDate;
-    private String sborCennost1;
-    private String sborCennost2;
-    private String otprItogo;
-    private String tbcNomer;
-    private Byte tbcStatus = (byte) 0;
-    private String zakazNo;
-    private Byte cim;
-    private Byte incoterms;
-    private String kodUslPost;
-    private Byte frankofracht;
-    private String otmPoluch;
-    private Byte vidKontOtpr;
-    private String platform;
-    private String docNum;
-    private String tehUslG12;
-    private String grOtpFio;
-    private String g104;
-    private String g164;
-    private String npoezd;
-    //    private String konPrim;
-    private String vagPrim;
-    private String nettoPref;
-    private String taraPref;
-    private String bruttoPref;
-    private String kontKol;
-    private String g2_1;
-    private String g5_1;
-    private BigDecimal docType1;
-    private String plat;
-    private String plat1;
-    private Byte gu;
-    private String sborCennost11;
-    private String sborCennost21;
-    private String sborCennost22;
-    private String ftsNomer;
-    private Byte ftsStatus = (byte) 0;
-    private String zpuInfo1;
-    private String index_p;
-    private String n_ppv;
-    private Integer nppr;
-    private Date dprb;
-    private String g_2inn;
-    private String g_5inn;
-    private String ftsDocId;
-    private Map<Integer, CimSmgsDocs> cimSmgsDocses136 = new TreeMap<>();
-    private String g_24_bcn;
-    private String g36;
-    private String g25Txt;
-    private String g2_;
-    private String g5_;
-    private String n_packet;
-    private String g7_;
-    private String g3_;
-    private Integer sort;
-    private Integer kind;
-    private String send_br;
-    private Character src;
 
     public Character getSrc() {
         return src;
@@ -1069,12 +1072,20 @@ public class CimSmgs extends ActionSupport implements Serializable {
         return g4_dop_info;
     }
 
+    public String getG16_dop_info() {
+        return g16_dop_info;
+    }
+
     public void setG1_dop_info(String g1_dop_info) {
         this.g1_dop_info = g1_dop_info;
     }
 
     public void setG4_dop_info(String g4_dop_info) {
         this.g4_dop_info = g4_dop_info;
+    }
+
+    public void setG16_dop_info(String g16_dop_info) {
+        this.g16_dop_info = g16_dop_info;
     }
     /*public Set<CimSmgsInvoiceBrief> getInvoicesBrief() {
         return invoicesBrief;
@@ -3818,34 +3829,6 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
         {
             row3.append(g1_dop_info);
         }
-
-//        if (StringUtils.isNotBlank(g2_1)) {
-//            row1.append(row1.length() > 0 ? " " : "");
-//            row1.append("ТГНЛ ").append(g2_1);
-//        }
-//        row1.append(row1.length() > 0 ? ";" : "");
-
-
-
-        // 2 row
-
-
-        // 3 row
-     //   row3.append(StringUtils.isNotBlank(g15_1) ? g15_1 : "");
-
-//
-//        row3.append(row3.length() > 0 ? ";" : "");
-//
-//        if (StringUtils.isNotBlank(g18r_1)) {
-//            row3.append(row3.length() > 0 ? " " : "");
-//            row3.append(g18r_1);
-//            row3.append(row3.length() > 0 ? ";" : "");
-//        }
-
-
-        // g1_dop_info
-
-
         // result
         if (row1.length() > 0)
         {
@@ -4005,9 +3988,31 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
 //        return (_g1.length() > 0 ? _g1 : "") + _g1r +" "+ g1_dop_info;
     }
 
+    /**
+     * Generates print string for g2 smgs2.
+     * @return print string
+     */
+    public String buildG2Print() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append(g162r!=null?g162r+" ":"").append(g163r!=null?g163r:"");
+        stringBuilder.append("\n");
+        stringBuilder.append(g16_dop_info!=null?g16_dop_info:"");
+
+        return stringBuilder.toString();
+    }
+
+    /**
+     * Гр2. Станция отправления - код станции
+     * @return строкадля печати
+     */
+    public String buildG17_Print() {
+        return (getG171()!=null? getG171()+" ":"")+StringUtils.defaultString(g17);
+    }
+
     public String buildGuG2Print() {
         StringBuffer g = new StringBuffer();
-        if (g2_1 != null) {
+        if (g2_1!= null) {
 //            g.append("ТГНЛ ");
             g.append(g2_1);
 //            g.append("\n");
@@ -4410,7 +4415,7 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
 
     /**
      * Generates print string for g4 CIM/SMGS.
-     * @return
+     * @return string for print
      */
     public String buildG4Cs() {
         StringBuilder result = new StringBuilder();
@@ -4537,6 +4542,28 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
 //        String _g4r = _g4ra + (_g4ra != null && _g4ra.trim().length() > 0 ? "\n" : "") + _g4rb
 //                + (_g4rb != null && _g4rb.trim().length() > 0 ? "\n" : "") + _g4rc;
 //        return (_g4.length() > 0 ? _g4 : "") + _g4r+" "+ g4_dop_info;
+    }
+    /**
+     * Generates print string for g5 smgs2.
+     * @return print string
+     */
+    public String buildG5Print() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append(g101r!=null?g101r+" ":"").append(g102r!=null?g102r:"");
+        stringBuilder.append("\n");
+        stringBuilder.append(g2017!=null?g2017:"");
+
+        return stringBuilder.toString();
+    }
+
+    /**
+     * Гр5. Станция назначения - справа, сверху
+     * @return строкадля печати
+     */
+    public String buildG121_Print() {
+
+        return (g12!=null?g12+" ":"")+StringUtils.defaultString(g121);
     }
 
     public String buildG10CsPrint() {
@@ -4896,35 +4923,86 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
         return _f722.trim();
     }
 
+    /**
+     * Строим графу 23 для печати
+     * @return строкадля печати
+     */
     public String buildG4SmgsPrint() {
         String _f7 = "";
         String _f7_1 = "";
-        String _f722 = "";
+//        String _f722 = "";
+        StringBuilder _f722 = new StringBuilder();
         CimSmgsDocs docs[] = cimSmgsDocses7.values().toArray(new CimSmgsDocs[0]);
         Arrays.sort(docs, new Compare());
         for (CimSmgsPlatel elem : cimSmgsPlatels.values()) {
-            if ((elem.getDor() != null) || (elem.getDorR() != null)) {
-                _f722 += "оплата по " +
-                        (elem.getDor() != null ? elem.getDor() : "") + " " +
-                        (elem.getDorR() != null ? elem.getDorR() : "") + " ";
+            if(elem.getDorR()!=null)
+            {
+                _f722.append(elem.getDorR()).append(" ");
             }
-            if (elem.getPlat() != null || elem.getPlatR() != null) {
-                _f722 += "производится " +
-                        (elem.getPlat() != null ? elem.getPlat() : "") + " " +
-                        (elem.getPlatR() != null ? elem.getPlatR() : "") + " ";
+            if(elem.getPlatR()!=null)
+            {
+                _f722.append(elem.getPlatR()).append(" ");
             }
-            if (elem.getPrim() != null || elem.getPrimR() != null) {
-                _f722 += " " + (elem.getPrim() != null ? elem.getPrim() + " " : "") +
-                        (elem.getPrimR() != null ? elem.getPrimR() + " " : "");
+            if(elem.getPrimR()!=null)
+            {
+                _f722.append(elem.getPrimR()).append(" ");
             }
-            _f722 += (elem.getKplat() != null ? "код плательщика " + elem.getKplat() : "") +
-                    (elem.getKplat1() != null ? " п/к " + elem.getKplat1() : "") +
-                    (elem.getKplat2() != null ? "/" + elem.getKplat2() : "") +
-                    "\n";
-        }
-        _f722 += (g4prim != null ? g4prim : "");
+            if(elem.getKplat()!=null)
+            {
+                _f722.append("код:").append(elem.getKplat());
+            }
 
-        return _f722.trim();
+            if(elem.getKplat1()!=null)
+            {
+                if(elem.getKplat()!=null)
+                    _f722.append("/");
+                _f722.append(elem.getKplat1());
+            }
+
+            if(elem.getKplat3()!=null)
+            {
+                if(elem.getKplat()!=null||elem.getKplat1()!=null)
+                    _f722.append("/");
+                _f722.append(elem.getKplat3());
+            }
+
+            if(elem.getPrim()!=null)
+            {
+                _f722.append(elem.getPrim()).append(" ");
+            }
+
+            if(elem.getnDog()!=null)
+            {
+                _f722.append(elem.getnDog()).append(" ");
+            }
+
+            if(elem.getDatDog()!=null)
+            {
+                _f722.append(new SimpleDateFormat("dd.MM.yyyy").format(elem.getDatDog()));
+            }
+            _f722.append("\n");
+//            if ((elem.getDor() != null) || (elem.getDorR() != null)) {
+//                _f722 += "оплата по " +
+//                        (elem.getDor() != null ? elem.getDor() : "") + " " +
+//                        (elem.getDorR() != null ? elem.getDorR() : "") + " ";
+//            }
+//            if (elem.getPlat() != null || elem.getPlatR() != null) {
+//                _f722 += "производится " +
+//                        (elem.getPlat() != null ? elem.getPlat() : "") + " " +
+//                        (elem.getPlatR() != null ? elem.getPlatR() : "") + " ";
+//            }
+//            if (elem.getPrim() != null || elem.getPrimR() != null) {
+//                _f722 += " " + (elem.getPrim() != null ? elem.getPrim() + " " : "") +
+//                        (elem.getPrimR() != null ? elem.getPrimR() + " " : "");
+//            }
+//            _f722 += (elem.getKplat() != null ? "код плательщика " + elem.getKplat() : "") +
+//                    (elem.getKplat1() != null ? " п/к " + elem.getKplat1() : "") +
+//                    (elem.getKplat2() != null ? "/" + elem.getKplat2() : "") +
+//                    "\n";
+        }
+//        _f722 += (g4prim != null ? g4prim : "");
+
+        return _f722.toString();
     }
 
     public String buildG6Print() {
@@ -7719,6 +7797,10 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
         return _g28;
     }*/
 
+    /**
+     * Текст - Копия
+     * @return строкадля печати
+     */
     public String buildGCopyTextPrint() {
         for(Status status: getStatuses()) {
             if (status.getStatusDir().getHid().intValue() == 17) {
@@ -8241,94 +8323,279 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
 
     //////////////////// Smgs2 print templates
 
+    /**
+     * Гр15-18. Наименование груза, род упаковки, кол-во мест, масса
+     * @return строкадля печати
+     */
     public String buildG15Cs2Print(){
-        StringBuffer result = new StringBuffer();
-        for(CimSmgsCarList car: getCimSmgsCarLists().values()){
-            for(CimSmgsKonList kont: car.getCimSmgsKonLists().values()){
-                String prefix = "";
-                for(CimSmgsGruz gruz: kont.getCimSmgsGruzs().values()){
-                    result.append(prefix);
-                    prefix = " || ";
-                    result.append(StringUtils.defaultString(gruz.getKgvn()));
-                    if(StringUtils.isNotBlank(gruz.getKgvn()) || StringUtils.isNotBlank(gruz.getNzgr())){
-                        result.append(" ГНГ ");
+        String prefix = "";
+        int contCount=0;
+        boolean first=true;
+
+        StringBuilder result = new StringBuilder();
+
+        List<CimSmgsGruz> allGryzes = new ArrayList<>();
+        for(CimSmgsCarList car: getCimSmgsCarLists().values()) {
+            contCount = contCount + car.getCimSmgsKonLists().size();
+            for (CimSmgsKonList kont : car.getCimSmgsKonLists().values()) {
+                for (CimSmgsGruz gruz : kont.getCimSmgsGruzs().values()) {
+                    boolean add=true;
+                    for (CimSmgsGruz gruzFromlist:allGryzes) {
+                        if(((gruzFromlist.getKgvn() == null) || gruzFromlist.getKgvn().equals(gruz.getKgvn())) &&
+                                ((gruzFromlist.getEkgvn() == null) || gruzFromlist.getEkgvn().equals(gruz.getEkgvn())) &&
+                                ((gruzFromlist.getNzgr() == null) || gruzFromlist.getNzgr().equals(gruz.getNzgr())) &&
+                                ((gruzFromlist.getUpak() == null) || gruzFromlist.getUpak().equals(gruz.getUpak())))
+                        {
+                            gruzFromlist.setPlaces(gruzFromlist.getPlaces()+gruz.getPlaces());
+                            gruzFromlist.setMassa(gruzFromlist.getMassa().add(gruz.getMassa()));
+                            add=false;
+                        }
                     }
-                    result.append(StringUtils.defaultString(gruz.getNzgr()));
-                    result.append("\n");
-                    result.append(StringUtils.defaultString(gruz.getEkgvn()));
-                    if(StringUtils.isNotBlank(gruz.getEkgvn()) || StringUtils.isNotBlank(gruz.getEnzgr())){
-                        result.append(" ЕТСНГ ");
-                    }
-                    result.append(StringUtils.defaultString(gruz.getEnzgr()));
-
-                    result.append(prefix);
-
-                    result.append(StringUtils.defaultString(gruz.getUpak()) );
-
-                    result.append(prefix);
-
-                    result.append(gruz.getPlaces() != null ? gruz.getPlaces() : "");
-
-                    result.append(prefix);
-
-                    if(gruz.getMassa() != null){
-                        result.append("Н: ").append(gruz.getMassa());
-                    }
+                    if(add)
+                        allGryzes.add(gruz);
                 }
             }
         }
+
+
+
+//        for(CimSmgsCarList car: getCimSmgsCarLists().values()){
+//            contCount=contCount+car.getCimSmgsKonLists().size();
+//            for(CimSmgsKonList kont: car.getCimSmgsKonLists().values()){
+//                for(CimSmgsGruz gruz: kont.getCimSmgsGruzs().values()){
+            for (CimSmgsGruz gruz:allGryzes) {
+                result.append(prefix);
+                prefix = " || ";
+//                    result.append(StringUtils.defaultString(gruz.getKgvn()));
+//                    if(StringUtils.isNotBlank(gruz.getKgvn()) || StringUtils.isNotBlank(gruz.getNzgr())){
+//                        result.append(" ГНГ ");
+//                    }
+//                    result.append(StringUtils.defaultString(gruz.getNzgr()));
+//                    result.append("\n");
+//                    result.append(StringUtils.defaultString(gruz.getEkgvn()));
+//                    if(StringUtils.isNotBlank(gruz.getEkgvn()) || StringUtils.isNotBlank(gruz.getEnzgr())){
+//                        result.append(" ЕТСНГ ");
+//                    }
+//                    result.append(StringUtils.defaultString(gruz.getEnzgr()));
+
+                if (StringUtils.isNotBlank(gruz.getKgvn()) || StringUtils.isNotBlank(gruz.getNzgr())) {
+                    result.append("ГНГ-").append(StringUtils.defaultString(gruz.getKgvn()));
+                }
+                if (StringUtils.isNotBlank(gruz.getEkgvn()) || StringUtils.isNotBlank(gruz.getEnzgr())) {
+                    result.append(" ЕТСНГ-").append(StringUtils.defaultString(gruz.getEkgvn()));
+                }
+                result.append("\n");
+                result.append(StringUtils.defaultString(gruz.getNzgr()));
+                result.append(StringUtils.defaultString(gruz.getNzgrEu()));
+
+
+                result.append(prefix);
+                if (first && contCount > 0) {
+                    result.append("КОНТЕЙНЕРЫ\n-------\n");
+                }
+                result.append(StringUtils.defaultString(gruz.getUpak()));
+
+                result.append(prefix);
+                if (first) {
+                    if (contCount > 0)
+                        result.append(contCount).append("\n-----\n");
+                    first = false;
+                }
+                result.append(gruz.getPlaces() != null ? gruz.getPlaces() : "");
+                result.append(prefix);
+
+                if (gruz.getMassa() != null) {
+                    result.append(gruz.getMassa());
+                }
+            }
+//                }
+//            }
+//        }
         return result.toString();
     }
 
+    /**
+     * Гр 15 Наименование груза как таблица с одной колонкой
+     * @return строкадля печати
+     */
+    public String buildG15v2Cs2Print()
+    {
+        StringBuilder result =  new StringBuilder();
+        String prefix = " || ";
+
+        for(CimSmgsCarList car: getCimSmgsCarLists().values()) {
+            for (CimSmgsKonList kont : car.getCimSmgsKonLists().values()) {
+
+                for (CimSmgsGruz gruz : kont.getCimSmgsGruzs().values()) {
+
+                    if (StringUtils.isNotBlank(gruz.getKgvn()) || StringUtils.isNotBlank(gruz.getNzgr())) {
+                        result.append("ГНГ-").append(StringUtils.defaultString(gruz.getKgvn()));
+                    }
+                    if (StringUtils.isNotBlank(gruz.getEkgvn()) || StringUtils.isNotBlank(gruz.getEnzgr())) {
+                        result.append(" ЕТСНГ-").append(StringUtils.defaultString(gruz.getEkgvn()));
+                    }
+                    result.append("\n");
+                    result.append(StringUtils.defaultString(gruz.getNzgr()));
+                    result.append(StringUtils.defaultString(gruz.getNzgrEu()));
+//                    System.out.println(StringUtils.defaultString(gruz.getNzgrEu()));
+                    result.append(prefix);
+                }
+            }
+        }
+        if(g11_prim!=null)
+            result.append(prefix).append(g11_prim);
+        return result.toString();
+    }
+    public String buildPlacesPrint()
+    {
+        int places=0;
+
+        for(CimSmgsCarList car: getCimSmgsCarLists().values()) {
+            for (CimSmgsKonList kont : car.getCimSmgsKonLists().values()) {
+
+                for (CimSmgsGruz gruz : kont.getCimSmgsGruzs().values()) {
+                    if(gruz.getPlaces()!=null)
+                        places=places+ gruz.getPlaces();
+                }
+            }
+        }
+
+        if(places==0)
+            return "";
+
+        return "ИТОГО: || "+Integer.toString(places);
+    }
+
+    public String buildKontsCountPrint()
+    {
+        int countCount=0;
+        for(CimSmgsCarList car: getCimSmgsCarLists().values()) {
+            if(car.getCimSmgsKonLists()!=null)
+                countCount=countCount+car.getCimSmgsKonLists().size();
+        }
+        if(countCount==0)
+            return "";
+        return "КОНТЕЙНЕРЫ:"+countCount;
+    }
+
+    /**
+     * Гр 16-18 Род упаковки, кол-во мест, масса
+     * @return строкадля печати
+     */
+    public String buildG161718Cs2Print(){
+        int kontCount=0;
+        BigDecimal netto= new BigDecimal(0),brutto= new BigDecimal(0),tara= new BigDecimal(0);
+        for(CimSmgsCarList car: getCimSmgsCarLists().values()) {
+
+            kontCount+=car.getCimSmgsKonLists().values().size();
+        }
+        int grCount=0;
+        for(CimSmgsCarList car: getCimSmgsCarLists().values()) {
+
+            for (CimSmgsKonList kon : car.getCimSmgsKonLists().values()) {
+
+                for (CimSmgsGruz gruz : kon.getCimSmgsGruzs().values()) {
+                    if(gruz.getPlaces()!=null)
+                        grCount+=gruz.getPlaces();
+                    if(gruz.getMassa() != null)
+                        netto=netto.add(gruz.getMassa());
+                }
+            }
+        }
+
+        StringBuilder result= new StringBuilder();
+        String prefix = " || ";
+        result.append("КОНТЕЙНЕР").append(prefix).append(kontCount).append(prefix).append(netto.doubleValue()>0?"H:"+netto:"").append(prefix)
+                .append("------").append(prefix).append("-").append(prefix).append(g24T!=null&&g24T.doubleValue()>0?"Т:"+g24T:"").append(prefix)
+                .append("МЕСТА").append(prefix).append(grCount).append(prefix).append(g24B!=null?"Б:"+g24B:"").append(prefix);
+
+        return result.toString();
+    }
+
+    //графа 5
+    public String buildG5Cs2Print()
+    {
+        StringBuilder builder = new StringBuilder();
+        if(getG101r()!=null)
+            builder.append(getG101r()).append(" ");
+
+        if(getG102r()!=null)
+            builder.append(getG102r()).append("\n");
+
+        if (getG2017()!=null)
+            builder.append(getG2017());
+
+        return builder.toString();
+    }
+
+    /**
+     * Гр6. Пограничные станции переходов
+     * @return строкадля печати
+     */
     public String buildG6Cs2Print() {
         String _f13 = "";
         for (CimSmgsDocs elem : cimSmgsDocses13.values()) {
-            _f13 = _f13 + (elem.getText() != null ? elem.getText() + "  " : "");
-            _f13 = _f13 + (elem.getText2() != null ? elem.getText2() + "  " : "");
-            _f13 = _f13 + (elem.getRoad_s_name_r() != null ? elem.getRoad_s_name_r() : "");
-            _f13 += " ";
+            _f13 = _f13 + (elem.getText3() != null ? elem.getText3() + "-" : "");
+            _f13 = _f13 + (elem.getText2() != null ? elem.getText2() + "-" : "");
+            _f13 = _f13 + (elem.getText() != null ? elem.getText(): "");
+//            _f13 = _f13 + (elem.getRoad_s_name_r() != null ? elem.getRoad_s_name_r() : "");
+            _f13 += "\n";
         }
 
         return _f13;
     }
 
-    public String buildG7Cs2Print(){
+    /**
+     * Гр7-12. Вагон
+     * @return строкадля печати
+     */
+    public String buildG7Cs2Print() {
         StringBuilder result = new StringBuilder();
         String prefix = "";
-        for(CimSmgsCarList car: getCimSmgsCarLists().values()){
-            result.append(prefix);
-            prefix = " || ";
-            result.append(StringUtils.defaultString(car.getNvag()));
-            result.append(
-                    car.getScep() != null && StringUtils.isNotBlank(car.getRefSecNo()) || car.getRefSecKol() != null ?
-                            " PC" +
-                                    (StringUtils.isNotBlank(car.getRefSecNo()) ? " - " + car.getRefSecNo() : "") +
-                                    (car.getRefSecKol() != null ? "(" + car.getRefSecKol() + ")"  : "")
-                            :
-                            ""
-            );
-            result.append(StringUtils.isNotBlank(car.getRod()) ? " " + car.getRod() : "");
-            result.append(StringUtils.isNotBlank(car.getKlientName()) ? ", " + car.getKlientName() : "");
-            result.append(StringUtils.isNotBlank(car.getNameSob()) ? ", " + car.getNameSob() : "");
+        if (getCimSmgsCarLists().values().size() < 2)
+        {
+            for (CimSmgsCarList car : getCimSmgsCarLists().values()) {
+                result.append(prefix);
+                prefix = " || ";
+                result.append(StringUtils.defaultString(car.getNvag()));
+                result.append(
+                        car.getScep() != null && StringUtils.isNotBlank(car.getRefSecNo()) || car.getRefSecKol() != null ?
+                                " PC" +
+                                        (StringUtils.isNotBlank(car.getRefSecNo()) ? " - " + car.getRefSecNo() : "") +
+                                        (car.getRefSecKol() != null ? "(" + car.getRefSecKol() + ")" : "")
+                                :
+                                ""
+                );
+                result.append(StringUtils.isNotBlank(car.getRod()) ? " " + car.getRod() : "");
+                result.append(StringUtils.isNotBlank(car.getKlientName()) ? ", " + car.getKlientName() : "");
+                result.append(StringUtils.isNotBlank(car.getNameSob()) ? ", " + car.getNameSob() : "");
 
-            result.append(prefix);
-            result.append(StringUtils.defaultString(car.getVagOtm()));
+                result.append(prefix);
+                result.append(StringUtils.defaultString(car.getVagOtm()));
 
-            result.append(prefix);
-            result.append(car.getGrPod() != null ? car.getGrPod() : "");
+                result.append(prefix);
+                result.append(car.getGrPod() != null ? car.getGrPod() : "");
 
-            result.append(prefix);
-            result.append(car.getKolOs() != null ? car.getKolOs() : "");
+                result.append(prefix);
+                result.append(car.getKolOs() != null ? car.getKolOs() : "");
 
-            result.append(prefix);
-            result.append(car.getTaraVag() != null ? car.getTaraVag() : "");
+                result.append(prefix);
+                result.append(car.getTaraVag() != null ? car.getTaraVag() : "");
 
-            result.append(prefix);
-            result.append(StringUtils.defaultString(car.getCicternType()));
+                result.append(prefix);
+                result.append(StringUtils.defaultString(car.getCicternType()));
+            }
+        }
+        else {
+            result.append("Соглавно ведомости вагонов").append(" || ").append(" || ").append(" || ").append(" || ").append(" || ");
         }
         return result.toString();
     }
 
+    /**
+     * Гр19. Пломбы
+     * @return строкадля печати
+     */
     public String buildG19Cs2Print(){
         StringBuffer result = new StringBuffer();
         String prefix = "";
@@ -8343,6 +8610,10 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
         return result.toString();
     }
 
+    /**
+     * Гр20. Погружено
+     * @return строкадля печати
+     */
     public String buildG20Cs2Print(){
         if(getG22() == null){
             return "";
@@ -8351,35 +8622,54 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
         }
     }
 
+    /**
+     * Контейнер смгс2
+     * @return строкадля печати
+     */
     public String buildGKontCs2Print() {
         StringBuffer result = new StringBuffer();
-        for(CimSmgsCarList car: getCimSmgsCarLists().values()) {
-            String prefix = "";
-            for (CimSmgsKonList kont : car.getCimSmgsKonLists().values()) {
-                result.append(prefix);
-                prefix = " ";
-                result.append(StringUtils.defaultString(kont.getUtiN()));
+        if(getCimSmgsCarLists().values().size()<2) {
+            for (CimSmgsCarList car : getCimSmgsCarLists().values()) {
+                for (CimSmgsKonList kont : car.getCimSmgsKonLists().values()) {
+                    result.append(StringUtils.defaultString(kont.getUtiN()));
+                    if (result.length() > 0)
+                        result.append(" - ");
+                    result.append(StringUtils.defaultString(kont.getUtiType()));
+                    result.append(kont.getGrpod() != null ? (" (" + kont.getGrpod() + ") ") : "");
+//                result.append(kont.getSizeFoot() != null ? kont.getSizeFoot() : "");
+                    result.append(kont.getTaraKont() != null ? kont.getTaraKont() : "");
 
-                if(StringUtils.isNotBlank(kont.getVid())){
-                    result.append(" - ").append(kont.getVid());
-                }
-
-                if(kont.getTaraKont() != null){
-                    result.append(" (").append(kont.getTaraKont()).append(")");
+                    result.append("\n");
                 }
             }
+        }
+        else
+        {
+            result.append("Соглавно ведомости контейнеров");
         }
         return result.toString();
     }
 
+    /**
+     * Тара смгс 2
+     * @return строкадля печати
+     */
     public String buildG24TCs2Print(){
         return getG24T() != null ? "Т: " + getG24T() : "";
     }
 
+    /**
+     * Брутто смгс 2
+     * @return строкадля печати
+     */
     public String buildG24BCs2Print(){
         return getG24B() != null ? "Б: " + getG24B() : "";
     }
 
+    /**
+     * Гр22. Перевозчики
+     * @return строка для печати
+     */
     public String buildG22Cs2Print() {
         StringBuffer result = new StringBuffer();
         String prefix = "";
@@ -8387,6 +8677,8 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
             result.append(prefix);
             prefix = " || ";
             result.append(StringUtils.defaultString(perevoz.getNamPer()));
+            if(perevoz.getCodePer()!=null&&perevoz.getCodePer().length()>0)
+                result.append(" - ").append(perevoz.getCodePer());
 
             result.append(prefix);
             result.append(StringUtils.defaultString(perevoz.getStBeg())).append("\n").append(StringUtils.defaultString((perevoz.getStEnd())));
@@ -8397,24 +8689,44 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
         return result.toString();
     }
 
+    /**
+     * Гр1. Отправитель, подпись
+     * @return строка для печати
+     */
     public String buildG14_Print(){
         return g14;
     }
 
     final public String DOP_LIST_PRINT_CS2 = "Смотри доп. лист";
 
+    /**
+     * Гр3. Заявления отправителя
+     * @return строка для печати
+     */
     public String buildZayav_otprCs2Print(){
         return zayav_otpr_c != null && zayav_otpr_c == 1 ? DOP_LIST_PRINT_CS2 : getZayav_otpr();
     }
 
+    /**
+     * Гр23. Уплата провозных платежей смгс2
+     * @return строка для печати
+     */
     public String buildG23Cs2Print(){
         return g7c != null && g7c == 1 ? DOP_LIST_PRINT_CS2 : buildG4SmgsPrint();
     }
 
+    /**
+     * Гр25. Информация, не предн. для перервозчика смгс2
+     * @return строка для печати
+     */
     public String buildG25Cs2Print(){
         return g141c != null && g141c == 1 ? DOP_LIST_PRINT_CS2 : getG15r();
     }
 
+    /**
+     * Гр28. Отметки для вып. тамож... смгс2
+     * @return строка для печати
+     */
     public String buildG28Cs2Print(){
         return g26c != null && g26c == 1 ? DOP_LIST_PRINT_CS2 : getG26();
     }
@@ -8481,6 +8793,10 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
         return getG694();
     }
 
+    /**
+     * Перевозчик смгс 2
+     * @return строка для печати
+     */
     public String buildPerevozCs2Print() {
         for(CimSmgsPerevoz perevoz: getCimSmgsPerevoz().values()){
             return StringUtils.defaultString(perevoz.getNamPer());
@@ -8832,7 +9148,8 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
                 Objects.equals(send_br, cimSmgs1.send_br) &&
                 Objects.equals(src, cimSmgs1.src)&&
                 Objects.equals(src, cimSmgs1.g1_dop_info)&&
-                Objects.equals(src, cimSmgs1.g4_dop_info);
+                Objects.equals(src, cimSmgs1.g4_dop_info)&&
+                Objects.equals(src, cimSmgs1.g16_dop_info);
     }
 
     @Override
@@ -8850,6 +9167,6 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
                 g11_prim, g_1_5k, g_4_5k, route != null ? route.getHid() : "", packDoc != null ? packDoc.getHid() : "", g4prim, guInf, perevozchik, tarifShema, tarifVOtpr, platezhKm, platezhRub, platezhKop, provozPlata, zpuInfo, trueInfo, vizaNo, perevozSign,
                 perevozDate, sborCennost1, sborCennost2, otprItogo, tbcNomer, tbcStatus, zakazNo, cim, incoterms, kodUslPost, frankofracht, otmPoluch, vidKontOtpr, platform, docNum, tehUslG12,
                 grOtpFio, g104, g164, npoezd, vagPrim, nettoPref, taraPref, bruttoPref, kontKol, g2_1, g5_1, docType1, plat, plat1, gu, sborCennost11, sborCennost21, sborCennost22, ftsNomer,
-                ftsStatus, zpuInfo1, index_p, n_ppv, nppr, dprb, g_2inn, g_5inn, ftsDocId, g_24_bcn, g36, g25Txt, g2_, g5_, n_packet, g7_, g3_, sort, kind, send_br, src,g1_dop_info,g4_dop_info);
+                ftsStatus, zpuInfo1, index_p, n_ppv, nppr, dprb, g_2inn, g_5inn, ftsDocId, g_24_bcn, g36, g25Txt, g2_, g5_, n_packet, g7_, g3_, sort, kind, send_br, src,g1_dop_info,g4_dop_info,g16_dop_info);
     }
 }

@@ -4,7 +4,7 @@ Ext.define('TK.model.Cim', {
     fields: [
         'dattr','altered','un',
         'numClaim', 'konts',
-        'g1', 'g4','src',
+        'g1', 'g4','src','npoezd',
         {name:'hid', type:'int'},
         'type','print',
         {name:'packId', type:'int'},

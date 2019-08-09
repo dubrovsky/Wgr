@@ -36,6 +36,8 @@ Ext.define('TK.controller.Docs', {
         'Ext.util.MixedCollection',
         'Ext.window.Window',
         'TK.Utils',
+        'TK.view.edit.SelectCopy2AvisoElements',
+        'TK.view.pogruz.PoezdSelectForm',
         'TK.view.stat.Form'
     ],
 
@@ -82,6 +84,9 @@ Ext.define('TK.controller.Docs', {
             },
             'viewport > tabpanel > grid[inPack=false] button[action="copy"] menuitem[action="copy"]': {
                 click: this.onCopy
+            },
+            'viewport > tabpanel > grid[inPack=false] button[action="copy"] menuitem[action="copy2aviso"]': {
+                click: this.onCopy2AvisoInit
             },
             'viewport > tabpanel > grid[inPack=true] button[action="copy"]': {
                 click: this.onCopyInPack
@@ -199,6 +204,11 @@ Ext.define('TK.controller.Docs', {
             'viewport > tabpanel > form button[action="epd2DocRewrite"]': {
                 click: this.epd2DocRewrite
             },
+
+            // поиск поезда
+            'docslist menuitem[action=searchTrains]': {
+                click: this.trainSearch
+            },
             'window > grid button[action="copySelectedDocs"]': {
                 click: this.onCopySelected
             },
@@ -219,7 +229,24 @@ Ext.define('TK.controller.Docs', {
             },
             'avisocim':{
                 prepareData4RemoteSave: this.onPrepareData4RemoteSave
+            },
+            'ky2poezdoutform button[action="close"]': {
+                click: this.onExit
+            },
+            'ky2poezdintoform button[action="close"]': {
+                click: this.onExit
+            },
+            'ky2avtooutform button[action="close"]': {
+                click: this.onExit
+            },
+            'ky2avtointoform button[action="close"]': {
+                click: this.onExit
+            },
+            'ky2vgctgrtreeform button[action=close]': {
+                click: this.onExit
             }
+
+
         });
     },
     onActivateList:function(panel){
@@ -231,11 +258,20 @@ Ext.define('TK.controller.Docs', {
         }, scope:this});
 
     },
+    /**
+     * запуск действия при активации формы
+     * @param panel
+     */
     onActivateForm:function(panel){
         var task = panel.getForm().findField('task'),
             params = {task: task.getValue()},
             form = panel.getForm(),
-            doc = tkUser.docs.getByKey(panel.xtype) || tkUser.docs.getByKey(panel.xtype+'list'); // 2d may be when activate child of the list
+            doc = tkUser.docs.getByKey(panel.xtype) || tkUser.docs.getByKey(panel.xtype+'list'), // 2d may be when activate child of the list
+            unSel = panel.getForm().findField('unSel'),unSelArr;
+
+        if(unSel)// создание массива невыбранных полей при трансформации документа в шаблон
+            unSelArr=unSel.getValue().split(',');
+
         this.getCenter().getEl().mask('Request...','x-mask-loading');
         if(form.findField(doc.prefix+'.hid').getValue()){
             params[doc.prefix + '.hid'] = form.findField(doc.prefix+'.hid').getValue();
@@ -258,8 +294,21 @@ Ext.define('TK.controller.Docs', {
                     panel.dataObj = {};
                 } else {
                     panel.dataObj = Ext.decode(response.responseText)['doc'];
+
+                    // убираем невыбранные поля при создании шаблона из докуента
+                    if(unSelArr) // инициализация массива говорит о то, что мы трансформируем документ в шаблон
+                    switch (doc.name) {
+                        case 'aviso2':
+                            this.clear2aviso2Fields(panel.dataObj,unSelArr);
+                            break;
+                        case 'avisocim':
+                            break;
+                        case 'avisocimsmgs':
+                            break;
+                    }
                     panel.initForm(doc.prefix);
                 }
+
                 panel.un('activate', this.onActivateForm, this);
                 this.getCenter().getEl().unmask();
             },
@@ -576,6 +625,284 @@ Ext.define('TK.controller.Docs', {
         this.getCenter().remove(this.getCenter().getComponent(0), true);
         this.getCenter().resumeLayouts(true);
     },
+    /**
+     * выводим меню копирования документа в шаблон
+     * @param btn
+     */
+    onCopy2AvisoInit:function(btn)
+    {
+        var list = btn.up('grid'),
+            menuItem = this.getMenutree().lastSelectedLeaf,
+            docName = menuItem.id.split('_')[3],
+            docsInPack = tkUser.docsInPack(docName, this.docsInRoute(menuItem));
+        if(!TK.Utils.isRowSelected(list)){
+            return;
+        }
+
+        var win= Ext.create('TK.view.edit.SelectCopy2AvisoElements',{
+            btn:btn,
+            controller:this
+        });
+        var selStore=win.getComponent('sel2avisoGrid').getStore(),num=1,textName=docName+'_'+num;
+
+        while(this[textName])
+        {
+            var txt=this[textName].split('|');
+            selStore.add(
+                {
+                    'num' :txt[0],
+                    'text':txt[1],
+                    'nGraph':txt[2],
+                    'isSelected':false
+                }
+            )
+            num++;
+            textName=docName+'_'+num;
+        }
+        if(selStore.getCount()===0)
+        {
+            selStore.add(
+                {
+                    'num' :-1,
+                    'text':this.all,
+                    'nGraph':'',
+                    'isSelected':false
+                });
+        }
+        win.show();
+    },
+    /**
+     * создает копию документа в шаблон с выбранными графами
+     * @param btn
+     * @param unSel
+     */
+    onCopy2Aviso:function(btn,unSel)
+    {
+        var list = btn.up('grid'),
+            menuItem = this.getMenutree().lastSelectedLeaf,
+            docName = menuItem.id.split('_')[3],
+            docsInPack = tkUser.docsInPack(docName, this.docsInRoute(menuItem)),
+            data = list.selModel.getLastSelected().data,controller, avisoName='',doc,focus,item;
+        if(docName!=='smgs2'&&docName!=='cim'&&docName!=='cimsmgs')
+            return;
+        switch (docName) {
+            case 'smgs2':
+                controller = this.findController('Aviso2');
+                avisoName='aviso2';
+                item=docsInPack.items[0];
+                break;
+            case 'cim':
+                controller = this.findController('Avisocim');
+                item=docsInPack.items[2];
+                avisoName='avisocim';
+                break;
+            case 'cimsmgs':
+                controller = this.findController('Avisocimsmgs');
+                item=docsInPack.items[3];
+                avisoName='avisocimsmgs';
+            break;
+        }
+        this.getCenter().suspendLayouts();
+
+        initObj = function(item, data,unSel){
+            var initObj, prefix = item.prefix;
+            if(docName === item.name){
+                initObj = {task:'copy',unSel:unSel};
+                initObj[prefix + '.hid'] = data.hid;
+            } else {
+                initObj = {task:'create'};
+            }
+            initObj[prefix + '.route.hid'] = data.routeId;
+            return initObj;
+        };
+
+        doc = this.getCenter().add({xtype:avisoName, title:this.titleCopy2Aviso, closable:false});
+        doc.initServiceFields(initObj(item, data,unSel));
+        controller.initEvents(doc);
+        if(docName === item.name){
+            doc.on('activate', this.onActivateForm, this);
+            focus = doc;
+        }
+
+        this.getCenter().setActiveTab(focus);
+        this.getCenter().remove(this.getCenter().getComponent(0), true);
+        this.getCenter().resumeLayouts(true);
+    },
+    /**
+     * очищает не выбранные поля документа при преобразовании его в шаблон
+     * @param doc документ
+     * @param unSel массив невыбранных полей
+     */
+    clear2aviso2Fields:function (doc,unSel) {
+        var
+            g1smgs2=['g1r','g2_E','g15_1','g16r','g18r_1','g19r','g17_1','g1_dop_info','g2','g2_','g_2inn','g14'],
+            g2smgs2=['g162r','g163r','g171','g17','g16_dop_info'],
+            g3smgs2=['zayav_otpr'],
+            g4smgs2=['g4r','g5_E','g45_1','g46r','g48r','g49r','g47_1','g4_dop_info','g5','g5_','g_5inn'],
+            g5smgs2=['g101r','g102r','g12','g121','g2017'],
+            g15smgs2=['g11_prim'],
+            g25smgs2=['g15r'],
+            g28smgs2=['g26'],
+            additinal=['g694','g281','g281Disp'];
+        for(var i=0;i<unSel.length;i++)
+        {
+            // удаляем вагоны полностью если не выбраны одновременно Вагон, Груз, Контейнер, Приложенные документы
+            if(unSel.indexOf('7')!==-1&&unSel.indexOf('8')!==-1&&unSel.indexOf('10')!==-1&&unSel.indexOf('11')!==-1&&unSel.indexOf('14')!==-1)
+            {
+                doc.cimSmgsCarLists={};
+            }
+
+            // удаляем невыбранные пункты
+            switch (unSel[i]) {
+                case '1': //Отправитель
+                    this.clearField(doc,g1smgs2);
+                    break;
+                case '2'://Станция отправления
+                    this.clearField(doc,g2smgs2);
+                    break;
+                case '3'://Заявления отправителя
+                    this.clearField(doc,g3smgs2);
+                    break;
+                case '4'://Получатель
+                    this.clearField(doc,g4smgs2);
+                    break;
+                case '5'://Станция назначения
+                    this.clearField(doc,g5smgs2);
+                    break;
+                case '6'://Погранпереходы
+                    doc.cimSmgsDocses13={};
+                    break;
+                case '7'://Вагон
+                    this.clearCars(doc);
+                    break;
+                case '8'://Груз
+                    this.clearCargo(doc);
+                    break;
+                case '9'://Груз дополнительная информация
+                    this.clearField(doc,g15smgs2);
+                    break;
+                case '10'://Контейнер
+                    this.clearConts(doc);
+                    break;
+                case '11'://Пломбы
+                    this.clearPlombs(doc);
+                    break;
+                case '12'://Перевозчики
+                    doc.cimSmgsPerevoz={};
+                    break;
+                case '13'://Провозные платежи
+                    doc.cimSmgsPlatels={};
+                    break;
+                case '14'://Приложенные документы
+                    this.clearAdditionalDocs(doc);
+                    break;
+                case '15'://Информация не предназначенная для перевозчика
+                    this.clearField(doc,g25smgs2);
+                    break;
+                case '16'://Отметки таможни
+                    this.clearField(doc,g28smgs2);
+                    break;
+            }
+        }
+        this.clearField(doc,additinal);
+    },
+    /**
+     * функция очистки полей по списку
+     * @param doc документ
+     * @param field список полей
+     */
+    clearField:function(doc,field)
+    {
+        for(var i=0;i<field.length;i++)
+        {
+            doc[field[i]]='';
+        }
+    },
+    /**
+     * очистка записей о вагоне
+     * @param doc документ
+     */
+    clearCars:function(doc)
+    {
+        var carList=doc.cimSmgsCarLists;
+
+        for (var carNum in carList) {
+           var car=carList[carNum];
+            for (var propertyName in car) {
+
+                if(propertyName!=='cimSmgsKonLists'&&propertyName!=='sort')
+                {
+                    car[propertyName]=null;
+                }
+            }
+            car['nvag']='xxxxx';
+        }
+
+    },
+    /**
+     * очистка записей о контейнерах
+     * @param doc документ
+     */
+    clearConts:function(doc)
+    {
+        var carList=doc.cimSmgsCarLists;
+        for (var carNum in carList) {
+            var conList = carList[carNum].cimSmgsKonLists;
+            for (var conNum in conList) {
+                var cont=conList[conNum];
+                for (var propertyName in cont) {
+
+                    if((propertyName!=='cimSmgsDocses9')&&(propertyName!=='cimSmgsGruzs')&&(propertyName!=='cimSmgsPlombs')&&propertyName!=='sort')
+                    {
+                        cont[propertyName]=null;
+                    }
+                }
+                cont['utiN']='xxxxx';
+            }
+        }
+    },
+    /**
+     * очистка записей о грузах
+     * @param doc документ
+     */
+    clearCargo:function(doc)
+    {
+        var carList=doc.cimSmgsCarLists;
+        for (var carNum in carList) {
+            var conList = carList[carNum].cimSmgsKonLists;
+            for (var conNum in conList) {
+                conList[conNum].cimSmgsGruzs={};
+            }
+        }
+    },
+    /**
+     * очистка записей о пломбах
+     * @param doc документ
+     */
+    clearPlombs:function(doc)
+    {
+        var carList=doc.cimSmgsCarLists;
+        for (var carNum in carList) {
+            var conList = carList[carNum].cimSmgsKonLists;
+            for (var conNum in conList) {
+                conList[conNum].cimSmgsPlombs={};
+            }
+        }
+    },
+    /**
+     * удаление дополнительных докуентов
+     * @param doc документ
+     */
+    clearAdditionalDocs:function(doc)
+    {
+        var carList=doc.cimSmgsCarLists;
+        for (var carNum in carList) {
+            var conList = carList[carNum].cimSmgsKonLists;
+            for (var conNum in conList) {
+                conList[carNum].cimSmgsDocses9={};
+            }
+        }
+    },
     onCopyInPack:function(btn){
         var list = btn.up('grid');
         if(!TK.Utils.isRowSelected(list)){
@@ -598,6 +925,7 @@ Ext.define('TK.controller.Docs', {
         form.on('activate', this.onActivateForm, this);
         this.getCenter().setActiveTab(form);
     },
+    // generates parames to send to backend
     initDelRstrObj: function(prefix, list,operation)
     {
         var initObj = {task:operation},data= {packId:'',hid:''},
@@ -624,16 +952,17 @@ Ext.define('TK.controller.Docs', {
         }
         return initObj;
     },
+    // delete records
     onDelete: function(btn){
         var list = btn.up('grid');
   		if(!TK.Utils.isRowSelected(list)){
   			return;
   		}
   		var doc = tkUser.docs.getByKey(this.getMenutree().lastSelectedLeaf.id.split('_')[3]);
-        console.log(Ext.String.capitalize(doc.prefix) + '_delete.do');
 		Ext.Msg.show({title:this.delTitle, msg: this.delMsg+'('+list.selModel.getSelection().length+')', buttons: Ext.Msg.YESNO,
 		    closable: false, icon: Ext.Msg.QUESTION, scope: this,
 		    fn: function(buttonId) {
+		    //delete confirmation
 				if(buttonId === 'yes')
 			    {
 			        Ext.Ajax.request({
@@ -699,7 +1028,6 @@ Ext.define('TK.controller.Docs', {
         //         initObj[prefix + '.hid'] = data.hid;
         //         return initObj;
         //     };
-        console.log(Ext.String.capitalize(doc.prefix) + '_restore.do');
         Ext.Ajax.request({
             url: Ext.String.capitalize(doc.prefix) + '_restore.do',
             // params: initObj(doc.prefix, data),
@@ -1261,6 +1589,7 @@ Ext.define('TK.controller.Docs', {
         }).show();
     },
     setPackHids:function(hid){
+
          for(var i = 0; i < this.getCenter().items.getCount(); i++){
             var cmp =   this.getCenter().getComponent(i),
                 field,
@@ -1268,6 +1597,7 @@ Ext.define('TK.controller.Docs', {
                         tkUser.docs.getByKey(cmp.xtype+'list');
             if(cmp.isXType('form')) {   // form
                 field = cmp.getForm().findField(doc.prefix+'.packDoc.hid') /*|| cmp.getForm().findField(doc.prefix+'.hid')*/;  // last 4 epd
+                if(field) // on doc.prefix=ved FIX
                 field.setRawValue(hid);
             } else if(cmp.isXType('grid')){  // invoices
                 cmp.store.proxy.extraParams['search.packId'] = hid;
@@ -1449,6 +1779,9 @@ Ext.define('TK.controller.Docs', {
 
                     var params = {};
                     params['docId'] = doc['hid'];
+                    // smgs hid
+                    params['query'] = form.findField('smgs.hid').getValue();
+
                     params['routeId'] = form.findField(doc.prefix+'.route.hid').getValue();
                     params['search.type'] = form.findField(doc.prefix+'.type') ? form.findField(doc.prefix+'.type').getValue() : '';
                     params[doc.prefix+'.hid'] = form.findField(doc.prefix+'.hid').getValue();
@@ -2120,6 +2453,23 @@ Ext.define('TK.controller.Docs', {
         } else {
             TK.Utils.failureDataMsg();
         }
+    },
+    //trainSearch диалог поиск поезда по дате
+    trainSearch:function()
+    {
+        var win= Ext.create('TK.view.pogruz.PoezdSelectForm');
+        var routeId=Ext.ComponentQuery.query('docslist')[0].getStore().getAt(0).get('routeId');
+        var type=Ext.ComponentQuery.query('docslist')[0].getStore().getAt(0).get('type');
+
+        win.routeId=routeId;
+        win.type=type;
+        win.mode='listsearch';
+        win.parentStore=Ext.ComponentQuery.query('docslist')[0].getStore();
+
+        var btn= Ext.ComponentQuery.query('#poezdSeltopTBar > #buttonTrSrch')[0];
+        btn.fireHandler();
+        win.localStore.load();
+        win.show();
     },
     epd2DocRewrite: function(btn){
         var panel = btn.up('form'),

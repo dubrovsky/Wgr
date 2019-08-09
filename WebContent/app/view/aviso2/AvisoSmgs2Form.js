@@ -17,6 +17,11 @@ Ext.define('TK.view.aviso2.AvisoSmgs2Form', {
         'Ext.form.field.Trigger',
         'Ext.layout.container.HBox',
         'Ext.layout.container.VBox',
+        'TK.view.components.g15contsmgs2',
+        'TK.view.components.g15gruzsmgs2',
+        'TK.view.components.g19plombsmgs2',
+        'TK.view.components.g23platelsmgs2',
+        'TK.view.components.g7vagsmgs2',
         'TK.view.edit.DetailPanel',
         'TK.view.edit.DetailTabPanel',
         'TK.view.edit.Smgs2_g1_detailpanel',
@@ -37,6 +42,7 @@ Ext.define('TK.view.aviso2.AvisoSmgs2Form', {
             {xtype:'hidden', name:'search.docType', itemId:'search.docType', value:'aviso2'},
             {xtype:'hidden', name:'smgs.tbcStatus', itemId:'smgs.tbcStatus'},
             {xtype:'hidden', name:'smgs.g25', itemId:'smgs.g25'},
+            {xtype:'hidden', name:'unSel', itemId:'unSel'}, //служебное поле списка невыбранных граф при трансформации документа в шаблон
 
             {x:9, y:8, xtype:'label', text:'№:'},
             {x:45, y:3, name:'smgs.aviso_num', itemId:'smgs.aviso_num', maxLength:20, width:50},
@@ -48,11 +54,14 @@ Ext.define('TK.view.aviso2.AvisoSmgs2Form', {
             {x:453, y:3, xtype:'numberfield', name:'smgs.amount', itemId:'smgs.amount', minValue:0, value:0, width:45},
             {x:509, y:8, xtype:'label', text:this.labelWagenNum},
             {x:593, y:3, name:'smgs.npoezd', itemId:'smgs.npoezd', maxLength:32, width:300},
+            {x:493, y:38, xtype:'label', text:this.labelTeplatename},
+            {x:593, y:33, name:'smgs.profile', itemId:'smgs.profile', maxLength:32, width:300},
 
             {xtype:'hidden', name:'smgs.g171', itemId:'smgs.g171'},
             {xtype:'hidden', name:'smgs.g12', itemId:'smgs.g12'},
 
-            {x:11, y:86, xtype: 'displayfield', itemId:'smgs.perevozchik', width:160, /*cls: 'rotate',*/ hideLabel: true},
+            // перевозчкик левый верхний угол
+            {x: -20, y: 220, xtype: 'displayfield', itemId: 'smgs.perevozchik', width: 160, cls: 'rotate90', hideLabel: true},
 
             //// 1. Отправитель
             {x:506, y:87, name:'smgs.g2_', itemId:'smgs.g2_', maxLength: 32, width: 112},
@@ -81,19 +90,22 @@ Ext.define('TK.view.aviso2.AvisoSmgs2Form', {
             {x:920, y:26, name:'smgs.g694', itemId:'smgs.g694', maxLength:50, width:248},
 
             // 2. Станция отправления
-            {x:1061, y:82, name:'smgs.g17', itemId:'smgs.g17', maxLength:6, width:109},
-            {x:627, y:111, xtype:'trigger', name:"smgs.g162r", itemId:"smgs.g162r", maxLength:80, triggerCls:'dir', width:280},
-            {x:920, y:111, name:'smgs.g163r', itemId:'smgs.g163r', maxLength:6, width:250},
+            {x: 1061, y: 82, name: 'smgs.g171', itemId: 'smgs.g171', maxLength: 6, width: 30, height: 18},
+            {x: 1096, y: 82, name: 'smgs.g17', itemId: 'smgs.g17', maxLength: 6, width: 74, height: 18},
+            {x: 627, y: 95,xtype: 'trigger',name: "smgs.g162r",itemId: "smgs.g162r",maxLength: 80,triggerCls: 'dir', width: 340, height: 18},
+            {x: 970, y: 96, name: 'smgs.g163r', itemId: 'smgs.g163r', maxLength: 6, width: 70, height: 18},
+            {x: 627, y: 116,name: 'smgs.g16_dop_info',itemId: 'smgs.g16_dop_info',maxLength: 80, width: 543, height: 18},
 
             // 3. Заявления отправителя
             {x:627, y:161, xtype:'textarea', name:'smgs.zayav_otpr', itemId:'smgs.zayav_otpr', maxLength:1024, width:540, height:228},
-            {x:814, y:138, xtype:'checkbox', name:'smgs.zayav_otpr_c', inputValue:'1', itemId:'smgs.zayav_otpr_c', boxLabel:'Доп. лист'},
+            {x:814, y:138, xtype:'checkbox', name:'smgs.zayav_otpr_c', inputValue:'1', itemId:'smgs.zayav_otpr_c', boxLabel: this.btnDopList},
 
             // 5. Станция назначения
-            {x:510, y:346, name:'smgs.g121', itemId:'smgs.g121', maxLength:6, width:110},
-            {x:5, y:378, xtype:'trigger', name:"smgs.g101r", itemId:"smgs.g101r", maxLength:80, triggerCls:'dir', width:370},
+            {x: 510, y: 346, name: 'smgs.g12', itemId: 'smgs.g12', maxLength: 2, width: 30},
+            {x: 545, y: 346, name: 'smgs.g121', itemId: 'smgs.g121', maxLength: 6, width: 74},
+            {x: 5,  y: 378,xtype: 'trigger', name: "smgs.g101r",itemId: "smgs.g101r",maxLength: 80,triggerCls: 'dir', width: 497},
             {x:5, y:405, name: 'smgs.g2017', itemId:'smgs.g2017', maxLength:250, width:613},
-            {x:383, y:378, name:'smgs.g102r', itemId:'smgs.g102r', maxLength:80, width:236},
+            {x: 510, y: 378, name: 'smgs.g102r', itemId: 'smgs.g102r', maxLength: 80, width: 108},
 
             // 6. Пограничные станции переходов
             {xtype:'textarea', x:5, y:452, width:375, height:178, readOnly:true, name:'disp.g6', itemId:'disp.g6', submitValue:false},
@@ -128,7 +140,7 @@ Ext.define('TK.view.aviso2.AvisoSmgs2Form', {
             },
 
             // 23. Уплата провозных платежей
-            {xtype:'textarea', x:5, y:1095, width:550, height:183, readOnly:true, name:'disp.g23', itemId:'disp.g23', submitValue:false},
+            {xtype:'g23platelsmgs2', x:5, y:1095, width:550, height:183, readOnly:true, name:'disp.g23', itemId:'disp.g23', submitValue:false},
             {
                 xtype:'button',
                 text:this.btnChange,
@@ -152,7 +164,7 @@ Ext.define('TK.view.aviso2.AvisoSmgs2Form', {
             {x:1092, y:1360, xtype:'checkbox', name:'smgs.g141c', inputValue:'1', itemId:'smgs.g141c', boxLabel:'Доп. лист'},
 
             // 26. Дата заключения договора перевозки
-            {x:60, y:1511, xtype:'datefield', name:'smgs.g281', itemId:'smgs.g281', width:80},
+            {x: 60, y: 1511, xtype: 'datefield', name: 'smgs.g281', itemId: 'smgs.g281',format: 'm.d.Y', width: 90},
 
             // 28. Отметки для выполнения таможенных и других административных формальностей
             {x:560, y:1500, xtype:'textarea', name:'smgs.g26', itemId:'smgs.g26', maxLength:128, width:610, height:180},
@@ -165,17 +177,18 @@ Ext.define('TK.view.aviso2.AvisoSmgs2Form', {
 
             // Контейнер
 
-            {xtype:'textarea', x:3, y:1015, width:556, height:58, readOnly:true, name:'disp.g7k', itemId:'disp.g7k', submitValue:false},
-            {x:437, y:1017, xtype:'label', text:this.labelConts},
+            {xtype:'g15contsmgs2', x:3, y:1015, width:553, height:58, readOnly:true, name:'disp.g7k', itemId:'disp.g7k', submitValue:false},
+            // {x:437, y:1017, xtype:'label', text:this.labelConts},
             // 7-12. Вагон
-            {xtype:'textarea', x:383, y:447, width:560, height:186, readOnly:true, name:'disp.g7v', itemId:'disp.g7v', submitValue:false},
+            {xtype:'g7vagsmgs2', x:383, y:447, width:560, height:186, readOnly:true, name:'disp.g7v', itemId:'disp.g7v', submitValue:false},
             // 15-18. Груз
-            {xtype:'textarea', x:3, y:655, width:903, height:322, readOnly:true, name:'disp.g7g', itemId:'disp.g7g', submitValue:false},
+            {xtype:'g15gruzsmgs2', x:3, y:655, width:906, height:320, readOnly:true, name:'disp.g7g', itemId:'disp.g7g', submitValue:false},
 
             {
                 xtype:'button',
                 text:this.labelVagKontGruz,
                 x:174, y:636,
+                itemId: 'btnVgCtGr',
                 action:'changeVgCtGr'
             },
 
@@ -218,10 +231,14 @@ Ext.define('TK.view.aviso2.AvisoSmgs2Form', {
             // нетто, тара, брутто
             {xtype:'hidden', name:'smgs.g24N', itemId:'smgs.g24N'},
             {x:792, y:975, xtype:'label', text:'Т: ', style:'font-weight:bold;'},
-            {x:808, y:975, xtype:'numberfield', name:'smgs.g24T', itemId:'smgs.g24T', maxLength:10, width:100, minValue:0, readOnly: true},
+            {x:808, y:975, xtype:'numberfield', name:'smgs.g24T', itemId:'smgs.g24T', maxLength:10, width:100, minValue:0, readOnly: true,height:18},
             {x:792, y:997, xtype:'label', text:'Б: ', style:'font-weight:bold;'},
-            {x:808, y:997, xtype:'numberfield', name:'smgs.g24B', itemId:'smgs.g24B', maxLength:10, width:100, minValue:0},
+            {x:808, y:994, xtype:'numberfield', name:'smgs.g24B', itemId:'smgs.g24B', maxLength:10, width:100, minValue:0,height:18},
 
+            // общее количество контейнеров
+            {x: 558,y: 975,xtype: 'textarea', name:'smgs.ctcount',itemId: 'smgs.ctcount',width: 117,height:39,readOnly: true,submitValue: false},
+            //общеее количество мест
+            {x: 674,y: 975,xtype: 'textarea', name: 'smgs.plcount',itemId: 'smgs.plcount', width: 117, height:39, readOnly: true, submitValue: false},
             //// 1. Отправитель
             {xtype:'smgs2_g1_detailpanel'},
 //             {
@@ -566,7 +583,8 @@ Ext.define('TK.view.aviso2.AvisoSmgs2Form', {
                         tabItems:[
                             {xtype:'trigger', fieldLabel:this.labelCodeStn, itemId:"text", maxLength:500, triggerCls:'dir', width:210},
                             {xtype:'textarea', fieldLabel:this.labelName, itemId:"text2", maxLength:240, width:200},
-                            {xtype:'textfield', labelWidth: 120, fieldLabel:'Сокр. наим. ж.д. ', itemId:"road_s_name_r", maxLength:24, width:200},
+                            {xtype: 'textfield',labelWidth: 120,fieldLabel:this.labelText3, itemId: "text3", maxLength: 240,width: 200},
+                            {xtype: 'textfield',labelWidth: 120,fieldLabel:this.labelText4, itemId: "text4", maxLength: 3,width: 200},
                             {xtype:'hidden', itemId:"code", value:'1'},
                             {xtype:'hidden', itemId:"fieldNum", value:'13'},
                             {xtype:'hidden', itemId:"sort"},
@@ -574,11 +592,35 @@ Ext.define('TK.view.aviso2.AvisoSmgs2Form', {
                         ]
                     }
                 ],
-                setDisplayedField:function () {
-                    var _f13 = '', _f13_1 = '', g = this.ownerCt.getComponent('disp.g6'), tabP = this.getComponent('g6_panel_tab_13');
+                validatePanel:function()
+                {
+                    var validRes=true;
+                    Ext.ComponentQuery.query('#g6_panel > #g6_panel_tab_13')[0].items.each(
+                        function (item) {
+                            item.items.each(
+                                function (item)
+                                {
+                                    if(!item.isValid())
+                                        validRes=false;
+                                }
+                            )
+                        }
+                    )
+                    if(!validRes)
+                        Ext.Msg.show({title:this.errorTitle,msg:this.errorMsgValid,buttons: Ext.Msg.OK,icon: Ext.Msg.QUESTION, modal:true});
+
+                    return validRes;
+                },
+                setDisplayedField: function () {
+                    var _f13 = '', _f13_1 = '', g = this.ownerCt.getComponent('disp.g6'),
+                        tabP = this.getComponent('g6_panel_tab_13');
                     tabP.items.each(
                         function (item, index, length) {
-                            _f13 += item.getComponent('text').getValue() + " " + item.getComponent('text2').getValue() + " " + item.getComponent('road_s_name_r').getValue() + "\n";
+                            _f13 +=
+                                (item.getComponent('text3').getValue()?item.getComponent('text3').getValue()+'-':'')+
+                                (item.getComponent('text2').getValue()?item.getComponent('text2').getValue()+'-':'')+
+                                (item.getComponent('text').getValue()?item.getComponent('text').getValue():'')+
+                                '\n';
                         }
                     );
                     g.setValue((_f13 + _f13_1));
@@ -633,10 +675,11 @@ Ext.define('TK.view.aviso2.AvisoSmgs2Form', {
             {
                 xtype:'button',
                 text:this.btnChange,
-                x:1009, y:636,
+                itemId:'btnPlomb',
+                x:1009, y:635,
                 action:'changePlombs'
             },
-            {x:910, y:693, xtype:'textarea', name: 'smgs.g2012', itemId:'smgs.g2012', maxLength:160, width:260, height:203, readOnly: true},
+            {x:910, y:693, xtype:'g19plombsmgs2', name: 'smgs.g2012', itemId:'smgs.g2012', maxLength:160, width:260, height:203, readOnly: true},
             /* {x:910, y:693, width:260, height:203, xtype:'detailgrid', hideHeaders:true, itemId:'g19_panel',
                  doc:'smgs',
                  coll:'cimSmgsPlombs',
@@ -675,29 +718,60 @@ Ext.define('TK.view.aviso2.AvisoSmgs2Form', {
 
             // 22. Перевозчики
             {
-                xtype:'detailpanel',
-                x:700, y:1000, width:400,
-                itemId:'g22_panel',
-                title:'Перевозчики',
-                items:[
+                xtype: 'detailpanel',
+                x: 700, y: 1000, width: 400,
+                itemId: 'g22_panel',
+                title: this.titleCarriers,
+                items: [
                     {
-                        xtype:'detailtabpanel',
-                        tabCollectionName:'cimSmgsPerevoz',
-                        itemId:'g22_panel_tab',
+                        xtype: 'detailtabpanel',
+                        tabCollectionName: 'cimSmgsPerevoz',
+                        itemId: 'g22_panel_tab',
                         plugins : [Ext.create('Ext.ux.TabReorderer', {
                             listeners:{Drop:this.dragTab}})],
-                        tabItems:[
-                            {xtype:'trigger', fieldLabel:'Перевозчик', itemId:"namPer", maxLength:80, triggerCls:'dir'},
-                            {xtype:'trigger', fieldLabel:'Участок от', itemId:"stBeg", maxLength:48, triggerCls:'dir'},
-                            {xtype:'trigger', fieldLabel:'Участок до', itemId:"stEnd", maxLength:48, triggerCls:'dir'},
-                            {xtype:'textfield', fieldLabel:'Код станции от', itemId:"codStBeg", maxLength:6},
-                            {xtype:'textfield', fieldLabel:'Код станции до', itemId:"codStEnd", maxLength:6},
-                            {xtype:'hidden', itemId:"sort"},
-                            {xtype:'hidden', itemId:"hid"}
+                        tabItems: [
+                            {
+                                xtype: 'fieldcontainer',
+                                fieldLabel: this.labelCarrier,
+                                layout: 'hbox',
+                                itemId: 'per',
+                                items:[
+                                    {xtype: 'textfield',itemId: "namPer",maxLength: 80,flex:10},
+                                    {xtype: 'trigger',itemId: "codePer",maxLength: 4, flex:3, triggerCls: 'dir'}
+                                ]
+                            },
+
+                            {xtype: 'trigger',fieldLabel: this.labelFrom,itemId: "stBeg",maxLength: 48,triggerCls: 'dir'},
+
+                            {
+                                xtype: 'fieldcontainer',
+                                fieldLabel: this.labelStationFrom,
+                                layout: 'hbox',
+                                itemId: 'codBeg',
+                                items:[
+                                    {xtype: 'textfield', itemId: "admStBeg", maxLength: 2,flex:1,enforceMaxLength:true},
+                                    {xtype: 'textfield', itemId: "codStBeg", maxLength: 6,flex:10}
+                                ]
+                            },
+
+                            {xtype: 'trigger',fieldLabel: this.labelTo,itemId: "stEnd",maxLength: 48,triggerCls: 'dir'},
+
+                            {
+                                xtype: 'fieldcontainer',
+                                fieldLabel: this.labelStationFrom,
+                                layout: 'hbox',
+                                itemId: 'codEnd',
+                                items:[
+                                    {xtype: 'textfield', itemId: "admStEnd", maxLength: 2,flex:1,enforceMaxLength:true},
+                                    {xtype: 'textfield', itemId: "codStEnd", maxLength: 6,flex:10}
+                                ]
+                            },
+                            {xtype: 'hidden', itemId: "sort"},
+                            {xtype: 'hidden', itemId: "hid"}
                         ]
                     }
                 ],
-                setDisplayedField:function () {
+                setDisplayedField: function () {
                     var g = this.ownerCt.getComponent('disp.g22').el.dom.firstChild,
                         tab = this.getComponent('g22_panel_tab'),
                         row,
@@ -709,7 +783,7 @@ Ext.define('TK.view.aviso2.AvisoSmgs2Form', {
 
                         cell = row.insertCell(-1);
                         cell.className = 'td perevoz-td1';
-                        cell.innerHTML = item.getComponent('namPer').getValue();
+                        cell.innerHTML = item.getComponent('per').getComponent('namPer').getValue() +" - " +item.getComponent('per').getComponent('codePer').getValue();
 
                         cell = row.insertCell(-1);
                         cell.className = 'td perevoz-td2';
@@ -717,10 +791,10 @@ Ext.define('TK.view.aviso2.AvisoSmgs2Form', {
 
                         cell = row.insertCell(-1);
                         cell.className = 'td perevoz-td3';
-                        cell.innerHTML = item.getComponent('codStBeg').getValue() + "<br>" + item.getComponent('codStEnd').getValue()
+                        cell.innerHTML = item.getComponent('codBeg').getComponent('codStBeg').getValue() + "<br>" + item.getComponent('codEnd').getComponent('codStEnd').getValue()
                     }, this);
                 },
-                copyValues2MainFlds:function () {
+                copyValues2MainFlds: function () {
                     this.items.each(function (item, index, length) {
                         if (item.items) { // tabpanel
                             item.removeAll();
@@ -732,6 +806,14 @@ Ext.define('TK.view.aviso2.AvisoSmgs2Form', {
                                         tab.getComponent(prp).setValue(val);
                                     }
                                 }
+                                tab.getComponent('per').getComponent('namPer').setValue(this.bufData[tCN][prop]['namPer']);
+                                tab.getComponent('per').getComponent('codePer').setValue(this.bufData[tCN][prop]['codePer']);
+
+                                tab.getComponent('codBeg').getComponent('admStBeg').setValue(this.bufData[tCN][prop]['admStBeg']);
+                                tab.getComponent('codBeg').getComponent('codStBeg').setValue(this.bufData[tCN][prop]['codStBeg']);
+
+                                tab.getComponent('codEnd').getComponent('admStEnd').setValue(this.bufData[tCN][prop]['admStEnd']);
+                                tab.getComponent('codEnd').getComponent('codStEnd').setValue(this.bufData[tCN][prop]['codStEnd']);
                             }
                         }
                         else if (item.itemId) { // input field
@@ -739,7 +821,7 @@ Ext.define('TK.view.aviso2.AvisoSmgs2Form', {
                         }
                     }, this);
                 },
-                copyValues2Buf:function () { // panel
+                copyValues2Buf: function () { // panel
                     this.bufData = {};
                     this.items.each(function (item, index, length) {
                         if (item.items) { // tabpanel
@@ -748,14 +830,21 @@ Ext.define('TK.view.aviso2.AvisoSmgs2Form', {
                             item.items.each(function (itm, ind, len) { // tab
                                 this.bufData[tCN][ind] = {};
                                 itm.items.each(function (field, i, l) { // fields
-                                    this.bufData[tCN][ind][field.itemId] = field.getValue();
+                                    if(field.xtype==='fieldcontainer')
+                                    {
+                                        field.items.each(function (field) {
+                                            this.bufData[tCN][ind][field.itemId] = field.getValue();
+                                        },this);
+                                    }
+                                    else
+                                        this.bufData[tCN][ind][field.itemId] = field.getValue();
                                 }, this);
                             }, this);
                         }
 
                     }, this);
                 },
-                initBuf:function () {
+                initBuf: function () {
                     this.bufData = {};
                     var tCN = this.getComponent('g22_panel_tab').tabCollectionName;
                     this.bufData[tCN] = this.ownerCt.dataObj[tCN];
@@ -764,72 +853,131 @@ Ext.define('TK.view.aviso2.AvisoSmgs2Form', {
 
             // 23. Уплата провозных платежей
             {
-                xtype:'detailpanel',
-                x:400, y:1060, width:400,
-                itemId:'g23_panel',
-                title:this.labelPayers,
-                items:[
+                xtype: 'detailpanel',
+                x: 400, y: 1060, width: 400, height:492,
+                itemId: 'g23_panel',
+                title: this.labelPayers,
+                items: [
                     {
-                        xtype:'detailtabpanel',
-                        tabCollectionName:'cimSmgsPlatels',
-                        itemId:'g23_panel_tab',
-                        tabItems:[
-                            {xtype:'combo', fieldLabel:this.labelBukvKod, itemId:"dorR", maxLength:5, width:50, typeAhead:true, forceSelection:true, triggerAction:'all', selectOnFocus:true,
-                                store:['ВР', 'РЖД', 'БЧ', 'УЗ', 'ЧФМ', 'ЛГ', 'ЛДЗ', 'ЭВР', 'КЗХ', 'ГР', 'УТИ', 'ЗЧ', 'МТЗ', 'ДСВН', 'НЕОП', 'КЗД', 'ПКП', 'БДЖ', 'ЧФР', 'ЧД', 'МАВ', 'ЖСР', 'АЗ', 'АРМ', 'КРГ', 'ТЖД', 'ТРК', 'АФГ', 'ТЦДД', 'ДБ', 'РАИ']},
-                            {xtype:'trigger', fieldLabel:this.labelPayerName, itemId:"platR", maxLength:45, triggerCls:'dir', width:200},
-                            {xtype:'textarea', fieldLabel:this.labelThrough, itemId:"primR", maxLength:70, width:250},
-                            {xtype:'textfield', fieldLabel:this.labelPayerKod1, maxLength:50, itemId:"kplat", width:200},
-                            {xtype:'textfield', fieldLabel:this.labelPayerKod2, itemId:"kplat1", maxLength:50, width:200},
-                            {xtype:'hidden', itemId:"sort"},
-                            {xtype:'hidden', itemId:"hid"}
+                        xtype: 'detailtabpanel',
+                        modal:true,
+                        tabCollectionName: 'cimSmgsPlatels',
+                        itemId: 'g23_panel_tab',
+                        tabItems: [
+                            {
+                                xtype: 'fieldcontainer',
+                                fieldLabel: this.labelBukvKod,
+                                layout: 'hbox',
+                                itemId: 'adm',
+                                items:[
+                                    {xtype: 'textfield',itemId: "codPer",  maxLength: 2,flex:1},
+                                    {xtype: 'trigger',itemId: "dorR",  maxLength: 5,flex: 5, triggerCls: 'dir'}
+                                ]
+                            },
+                            {xtype: 'trigger',fieldLabel: this.labelPayerName, itemId: "platR", maxLength: 45, triggerCls: 'dir', width: 200},
+                            {xtype: 'textarea', fieldLabel: this.labelThrough, itemId: "primR", maxLength: 70, width: 250},
+                            {xtype: 'textfield', fieldLabel: this.labelPayerKod1, maxLength: 50, itemId: "kplat", width: 200},
+                            {xtype: 'textfield', fieldLabel: this.labelPayerKod2, itemId: "kplat1", maxLength: 50, width: 200},
+                            {xtype: 'textfield', fieldLabel: this.labelPayerKod2, itemId: "kplat3", maxLength: 50, width: 200},
+                            {xtype: 'textarea', fieldLabel: this.labelPrim, itemId: "prim", maxLength: 70, width: 250},
+                            {
+                                xtype: 'fieldcontainer',
+                                fieldLabel: this.labelBukvKod,
+                                layout: 'hbox',
+                                itemId: 'dog',
+                                items:[
+                                    {xtype: 'textfield',itemId: "nDog",  maxLength: 20,flex:5},
+                                    {xtype: 'datefield',itemId: "datDog",format: 'm.d.Y', flex: 3}
+                                ]
+                            },
+                            {xtype: 'hidden', itemId: "sort"},
+                            {xtype: 'hidden', itemId: "hid"}
                         ]
                     }
                 ],
-                setDisplayedField:function () {
-                    var _f722 = '', g = this.ownerCt.getComponent('disp.g23'), tabP;
+                setDisplayedField: function () {
+                    var  g = this.ownerCt.getComponent('disp.g23'), tabP,gStore;
 
+                    gStore=g.getComponent('g23grid').getStore();
+                    if(gStore)
+                        gStore.removeAll();
                     tabP = this.getComponent('g23_panel_tab');
                     tabP.items.each(
                         function (item, index, length) {
-                            if (item.getComponent('dorR').getValue()) {
-                                _f722 += 'оплата по ' + item.getComponent('dorR').getValue() + ' ';
+                            var _f722 = '';
+                            if (item.getComponent('adm').getComponent('dorR').getValue()) {
+                                _f722 += item.getComponent('adm').getComponent('dorR').getValue() + ' ';
                             }
                             if (item.getComponent('platR').getValue()) {
-                                _f722 += 'производится ' + item.getComponent('platR').getValue() + ' ';
+                                _f722 += item.getComponent('platR').getValue() + ' ';
                             }
                             if (item.getComponent('primR').getValue()) {
                                 _f722 += ' ' + item.getComponent('primR').getValue() + ' ';
                             }
-                            _f722 += (item.getComponent('kplat').getValue() ? 'код плательщика ' + item.getComponent('kplat').getValue() : '') +
-                                (item.getComponent('kplat1').getValue() ? ' п/к ' + item.getComponent('kplat1').getValue() : '') +
-                                '; ';
+                            if (item.getComponent('kplat').getValue())
+                            {
+                                _f722+='код ' + item.getComponent('kplat').getValue();
+                            }
+                            if (item.getComponent('kplat1').getValue())
+                            {
+                                _f722+=item.getComponent('kplat').getValue()?'/':'';
+                                _f722+=item.getComponent('kplat1').getValue();
+                            }
+                            if (item.getComponent('kplat3').getValue())
+                            {
+                                if(item.getComponent('kplat').getValue()||item.getComponent('kplat1').getValue())
+                                    _f722+='/';
+                                _f722+=item.getComponent('kplat3').getValue()+' ';
+                            }
+                            if (item.getComponent('prim').getValue())
+                            {
+                                _f722+=item.getComponent('prim').getValue()+' ';
+                            }
+                            if (item.getComponent('dog').getComponent('nDog').getValue())
+                            {
+                                _f722+=item.getComponent('dog').getComponent('nDog').getValue()+' ';
+                            }
+                            if (item.getComponent('dog').getComponent('datDog').getValue())
+                            {
+                                _f722+=Ext.Date.format(item.getComponent('dog').getComponent('datDog').getValue(), 'd.m.Y'+' ');
+                            }
+                            gStore.add(
+                                {
+                                    'sort':item.getComponent('sort').getValue(),
+                                    'text':_f722
+                                }
+                            )
+
                         }
                     );
-                    g.setValue(_f722);
+                    // g.setValue(_f722);
                     //this.ownerCt.renderG20();
                 },
-                copyValues2MainFlds:function () {
+                copyValues2MainFlds: function () {
                     this.items.each(function (item, index, length) {
                         if (item.items) { // tabpanel
                             item.removeAll();
                             var tab, val, tCN = item.tabCollectionName;
                             for (var prop in this.bufData[tCN]) { // tab
                                 tab = item.onAddTab();
-//	        					tab = item.getActiveTab();
                                 for (var prp in this.bufData[tCN][prop]) {// fields
                                     if (tab.getComponent(prp) && (val = this.bufData[tCN][prop][prp])) {
                                         tab.getComponent(prp).setValue(val);
                                     }
                                 }
+                                tab.getComponent('adm').getComponent('codPer').setValue(this.bufData[tCN][prop]['codPer']);
+                                tab.getComponent('adm').getComponent('dorR').setValue(this.bufData[tCN][prop]['dorR']);
+
+                                tab.getComponent('dog').getComponent('nDog').setValue(this.bufData[tCN][prop]['nDog']);
+                                tab.getComponent('dog').getComponent('datDog').setValue(this.bufData[tCN][prop]['datDog']);
                             }
-//					    	item.setActiveTab(0);
                         }
                         else if (item.itemId) { // input field
                             item.setValue(this.bufData[item.itemId.split('.')[1]]);
                         }
                     }, this);
                 },
-                copyValues2Buf:function () { // panel
+                copyValues2Buf: function () { // panel
                     this.bufData = {};
                     this.items.each(function (item, index, length) {
                         if (item.items) { // tabpanel
@@ -838,18 +986,28 @@ Ext.define('TK.view.aviso2.AvisoSmgs2Form', {
                             item.items.each(function (itm, ind, len) { // tab
                                 this.bufData[tCN][ind] = {};
                                 itm.items.each(function (field, i, l) { // fields
-                                    this.bufData[tCN][ind][field.itemId] = field.getValue();
+                                    if(field.xtype==='fieldcontainer')
+                                    {
+                                        field.items.each(function (field) {
+                                            this.bufData[tCN][ind][field.itemId] = field.getValue();
+                                        },this);
+                                    }
+                                    else
+                                    {
+                                        this.bufData[tCN][ind][field.itemId] = field.getValue();
+                                    }
                                 }, this);
                             }, this);
                         }
                     }, this);
                 },
-                initBuf:function () {
+                initBuf: function () {
                     this.bufData = {};
                     var tCN = this.getComponent('g23_panel_tab').tabCollectionName;
                     this.bufData[tCN] = this.ownerCt.dataObj[tCN];
                 }
-            }/*,
+            }
+            /*,
 
             // 24. Документы, приложенные отправителем
             {
@@ -1393,10 +1551,10 @@ Ext.define('TK.view.aviso2.AvisoSmgs2Form', {
 
     initServiceFields:function (data, initGrids, dataObj) {
         this.getForm().setValues(data);
-
         if (this.getForm().findField('task').getValue() === 'copy') {
             this.getForm().findField('smgs.status').setValue('');
         }
+
         if(dataObj){
             this.dataObj = dataObj;
         }

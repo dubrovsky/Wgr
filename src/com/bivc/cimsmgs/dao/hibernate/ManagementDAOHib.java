@@ -21,9 +21,29 @@ public class ManagementDAOHib extends GenericHibernateDAO<Management, Long> impl
         crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 20 : limit);
         crit.addOrder(Order.asc("managName"));
         if (query != null && query.trim().length() > 0) {
-            crit.add(Restrictions.or(Restrictions.ilike("managName", query.trim(), MatchMode.ANYWHERE),
-                    Restrictions.ilike("managNo", query.trim(), MatchMode.ANYWHERE)));
+//            crit.add(Restrictions.or(Restrictions.ilike("managName", query.trim(), MatchMode.ANYWHERE),
+//                    Restrictions.ilike("managNo", query.trim(), MatchMode.ANYWHERE)));
+            crit.createAlias("countrys","countrys")
+                    .add(Restrictions.or(                    Restrictions.disjunction()
+                    .add(Restrictions.ilike("managName", query.trim(), MatchMode.ANYWHERE))
+                    .add(Restrictions.ilike("managNo", query.trim(), MatchMode.ANYWHERE))
+                    .add(Restrictions.ilike("MNameRus", query.trim(), MatchMode.ANYWHERE)),
+                            Restrictions.ilike("countrys.countryName", query.trim(), MatchMode.ANYWHERE)
+                    ))  .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+            ;
+//            crit.add(
+//                    Restrictions.disjunction()
+//                            .add(Restrictions.ilike("managName", query.trim(), MatchMode.ANYWHERE))
+//                            .add(Restrictions.ilike("managNo", query.trim(), MatchMode.ANYWHERE))
+//                            .add(Restrictions.ilike("MNameRus", query.trim(), MatchMode.ANYWHERE))
+//            )
+//            .createAlias("countrys","countrys")
+//                    .add(Restrictions.ilike("countrys.countryName", query.trim(), MatchMode.ANYWHERE))
+//            .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         }
+
+
+
         return listAndCast(crit);
     }
 
@@ -38,8 +58,24 @@ public class ManagementDAOHib extends GenericHibernateDAO<Management, Long> impl
         Criteria crit = getSession().createCriteria(getPersistentClass());
         crit.setProjection(Projections.rowCount());
         if (query != null && query.trim().length() > 0) {
-            crit.add(Restrictions.or(Restrictions.ilike("managName", query.trim(), MatchMode.ANYWHERE),
-                    Restrictions.ilike("managNo", query.trim(), MatchMode.ANYWHERE)));
+//            crit.add(Restrictions.or(Restrictions.ilike("managName", query.trim(), MatchMode.ANYWHERE),
+//                    Restrictions.ilike("managNo", query.trim(), MatchMode.ANYWHERE)));
+
+            crit.createAlias("countrys","countrys")
+                    .add(Restrictions.or(                    Restrictions.disjunction()
+                                    .add(Restrictions.ilike("managName", query.trim(), MatchMode.ANYWHERE))
+                                    .add(Restrictions.ilike("managNo", query.trim(), MatchMode.ANYWHERE))
+                                    .add(Restrictions.ilike("MNameRus", query.trim(), MatchMode.ANYWHERE)),
+                            Restrictions.ilike("countrys.countryName", query.trim(), MatchMode.ANYWHERE)
+                    ))  .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+//            crit.add(
+//                    Restrictions.disjunction()
+//                            .add(Restrictions.ilike("managName", query.trim(), MatchMode.ANYWHERE))
+//                            .add(Restrictions.ilike("managNo", query.trim(), MatchMode.ANYWHERE))
+//                            .add(Restrictions.ilike("MNameRus", query.trim(), MatchMode.ANYWHERE))
+//            )
+//                    .createAlias("countrys","countrys")
+//                    .add(Restrictions.ilike("countrys.countryName", query.trim(), MatchMode.ANYWHERE));
         }
         return (Long) crit.uniqueResult();
     }

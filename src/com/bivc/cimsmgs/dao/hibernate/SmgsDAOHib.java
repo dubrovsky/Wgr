@@ -27,24 +27,29 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
 //        log.info("findAll");
         Criteria crit = getSession().createCriteria(getPersistentClass(), "smgs");
 
+
+        if (search.getNpoezd() != null)
+            crit.add(Restrictions.eq("npoezd", search.getNpoezd()));
+
         crit.createAlias("packDoc", "pack").
                 createAlias("pack.usrGroupsDir", "gr").
                 add(Restrictions.in("gr.name", usr.getTrans())).
                 add(Restrictions.eq("pack.deleted", search.getDeleted() != 0));
         if (search.getRouteId() != null)
             crit.createAlias("route", "route").
-                add(Restrictions.eq("route.hid", search.getRouteId()));
+                    add(Restrictions.eq("route.hid", search.getRouteId()));
+
 
         // добавлено для выбора документов по нескольком маршрутам для передаточной ведомости
         if (!search.getRouteIds().isEmpty()) {
-            DetachedCriteria vedVagCriteria = DetachedCriteria.forClass(VedVag.class,"vedvag");
+            DetachedCriteria vedVagCriteria = DetachedCriteria.forClass(VedVag.class, "vedvag");
             vedVagCriteria.add(Property.forName("vedvag.hidCs").eqProperty("smgs.hid"));
             crit.createAlias("route", "route").
                     add(Restrictions.in("route.hid", search.getRouteIds())).
                     add(Subqueries.notExists(vedVagCriteria.setProjection(Projections.property("hid"))));
         }
 
-        if(search.getType() == 112)
+        if (search.getType() == 112)
             crit.add(Restrictions.in("type", new Byte[]{1, 12}));
         else
             crit.add(Restrictions.eq("type", search.getType()));
@@ -52,6 +57,7 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
         if (start >= 0) { // for local stat excell report, start == -1
             crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 20 : limit);
         }
+
         crit.addOrder(Order.desc("dattr"));
 
         if (StringUtils.isNotEmpty(search.getStatus())) {
@@ -185,6 +191,9 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
     public Long countAll(Search search, Usr usr) {
 //        log.info("countAll");
         Criteria crit = getSession().createCriteria(getPersistentClass(), "smgs");
+
+        if (search.getNpoezd() != null)
+            crit.add(Restrictions.eq("npoezd", search.getNpoezd()));
         crit.createAlias("packDoc", "pack").
                 createAlias("pack.usrGroupsDir", "gr").
                 add(Restrictions.in("gr.name", usr.getTrans())).
@@ -661,10 +670,11 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
 
     /**
      * findTrainDate finds trains and smgs quantity by date period
+     *
      * @param limit
      * @param start
      * @param search search parameters
-     * @param usr user
+     * @param usr    user
      * @return list of CimSmgsTrainDateDTO objects
      */
     public List<CimSmgsTrainDateDTO> findTrainDate(Integer limit, Integer start, Search search, Usr usr) {
@@ -719,10 +729,11 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
 
     /**
      * findSmgsTrainDate finds list of SMGSs by date period and train number
+     *
      * @param limit
      * @param start
      * @param search search parameters
-     * @param usr user
+     * @param usr    user
      * @return CimSmgs LList
      */
     public List<CimSmgs> findSmgsTrainDate(Integer limit, Integer start, Search search, Usr usr) {
@@ -789,7 +800,7 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
 //        String[] npoezds = npoezd.trim().split("\\s*[,;]\\s*");
         String[] npoezds = npoezd.split("[,;]");
         Disjunction disjunction = Restrictions.disjunction();
-        for(String poezd: npoezds){
+        for (String poezd : npoezds) {
 //            disjunction.add(Restrictions.sqlRestriction("',' || lower(replace({alias}.n_poezd, ' ', '')) || ',' LIKE '%,' || lower(?) || ',%'", poezd, StandardBasicTypes.STRING));
             disjunction.add(Restrictions.sqlRestriction("CONCAT(',' , lower({alias}.n_poezd) , ',') LIKE CONCAT('%,' , lower(?) , ',%')", poezd, StandardBasicTypes.STRING));
         }
@@ -800,6 +811,46 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
 //        crit.add(Restrictions.ne("kind", 1));
         crit.addOrder(Order.asc("sort"));
         return listAndCast(crit);
+    }
+
+    /**
+     * findDocsByNPoezdAndDateInterval getes list of CimSmgs by train numbers, date interval, user, route and document type
+     * @param npoezds array of train numbers
+     * @param search search object with search paramentrs
+     * @param usr user
+     * @return
+     */
+    public List<CimSmgs> findDocsByNPoezdAndDateInterval(String[] npoezds, Search search, Usr usr) {
+        Criteria crit = getSession().createCriteria(getPersistentClass());
+        if (search != null) {
+
+            if (search.getDeleted() != null)
+                crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans())).
+                        add(Restrictions.eq("pack.deleted", search.getDeleted() != 0));
+            if (search.getRouteId() != null)
+                crit.createAlias("route", "route").
+                        add(Restrictions.eq("route.hid", search.getRouteId()));
+            if (search.getType() != null) {
+                crit.add(Restrictions.eq("type", search.getType()));
+            }
+            Date date1 = search.getDate1();
+            Date date2 = search.getDate2();
+            if (search.getDate1() != null) {
+                crit.add(Restrictions.gt("altered", date1));
+            }
+            if (search.getDate2() != null) {
+                crit.add(Restrictions.le("altered", date2));
+            }
+            Disjunction disjunction = Restrictions.disjunction();
+            for (String poezd : npoezds) {
+                disjunction.add(Restrictions.sqlRestriction("CONCAT(',' , lower({alias}.n_poezd) , ',') LIKE CONCAT('%,' , lower(?) , ',%')", poezd, StandardBasicTypes.STRING));
+            }
+            crit.add(disjunction);
+
+        }
+        List<CimSmgs> cimSmgs = crit.list();
+        return cimSmgs;
+
     }
 
     /*@Override
@@ -815,7 +866,7 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
 //        String[] npoezds = npoezd.trim().split("\\s*[,;]\\s*");
         String[] npoezds = npoezd.split("[,;]");
         Disjunction disjunction = Restrictions.disjunction();
-        for(String poezd: npoezds){
+        for (String poezd : npoezds) {
 //            disjunction.add(Restrictions.sqlRestriction("',' || lower(replace({alias}.n_poezd, ' ', '')) || ',' LIKE '%,' || lower(?) || ',%'", poezd, StandardBasicTypes.STRING));
             disjunction.add(Restrictions.sqlRestriction("CONCAT(',' , lower({alias}.n_poezd) , ',') LIKE CONCAT('%,' , lower(?) , ',%')", poezd, StandardBasicTypes.STRING));
         }
@@ -837,7 +888,7 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
 //        String[] npoezds = npoezd.trim().split("\\s*[,;]\\s*");
         String[] npoezds = npoezd.split("[,;]");
         Disjunction disjunction = Restrictions.disjunction();
-        for(String poezd: npoezds){
+        for (String poezd : npoezds) {
 //            disjunction.add(Restrictions.sqlRestriction("',' || lower(replace({alias}.n_poezd, ' ', '')) || ',' LIKE '%,' || lower(?) || ',%'", poezd, StandardBasicTypes.STRING));
             disjunction.add(Restrictions.sqlRestriction("CONCAT(',' , lower({alias}.n_poezd) , ',') LIKE CONCAT('%,' , lower(?) , ',%')", poezd, StandardBasicTypes.STRING));
         }
@@ -858,7 +909,7 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
         StringBuilder npoezdBuilder = new StringBuilder();
         String prefix = "";
         npoezdBuilder.append("(");
-        for(int i = 0; i < npoezds.length; i++){
+        for (int i = 0; i < npoezds.length; i++) {
             npoezdBuilder.append(prefix);
             prefix = " OR ";
 //            npoezdBuilder.append("',' || lower(replace(cs.npoezd, ' ', '')) || ',' LIKE '%,' || lower(" + ":npoezd" + i + ") || ',%'");
@@ -879,7 +930,7 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
                         "               INNER JOIN car.cimSmgsKonLists kon" +
                         "               INNER JOIN kon.cimSmgsGruzs gruz" +
                         "           WHERE route.hid = :routeId AND cs1.type = :type AND (cs1.kind != 1 or cs1.kind is NULL) AND " +
-                        npoezdBuilder.toString().replace("{prefix}", "cs1")+
+                        npoezdBuilder.toString().replace("{prefix}", "cs1") +
                         "           ) as places" +
                         "       )" +
                         "   FROM CimSmgs cs" +
@@ -892,7 +943,7 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
         q.setByte("type", type);
         q.setLong("routeId", routeId);
 
-        for(int i = 0; i < npoezds.length; i++){
+        for (int i = 0; i < npoezds.length; i++) {
             q.setString("npoezd" + i, npoezds[i]);
         }
 
@@ -907,7 +958,7 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
 //        String[] npoezds = npoezd.trim().split("\\s*[,;]\\s*");
         String[] npoezds = npoezd.split("[,;]");
         Disjunction disjunction = Restrictions.disjunction();
-        for(String poezd: npoezds){
+        for (String poezd : npoezds) {
 //            disjunction.add(Restrictions.sqlRestriction("',' || lower(replace({alias}.n_poezd, ' ', '')) || ',' LIKE '%,' || lower(?) || ',%'", poezd, StandardBasicTypes.STRING));
             disjunction.add(Restrictions.sqlRestriction("CONCAT(',', lower({alias}.n_poezd), ',') LIKE CONCAT('%,' , lower(?) , ',%')", poezd, StandardBasicTypes.STRING));
         }
@@ -918,12 +969,17 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
 //        crit.add(Restrictions.ne("kind", 1));
         return (Long) crit.uniqueResult();
     }
-
+    public CimSmgs findById3(Long id) {
+        Criteria crit = getSession().createCriteria(getPersistentClass());
+        crit.add(Restrictions.eq("hid", id));
+        return (CimSmgs) crit.uniqueResult();
+    }
     public CimSmgs findById1(Long id) {
         String query = "SELECT new CimSmgs(smgs.un) FROM CimSmgs smgs WHERE smgs.hid = :id";
         Query q = getSession().createQuery(query);
         q.setParameter("id", id);
-        return (CimSmgs) q.uniqueResult();
+        CimSmgs smgs =(CimSmgs) q.uniqueResult();
+        return smgs;
     }
 
     public CimSmgs findById2(CimSmgs smgs) {
@@ -1074,7 +1130,7 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
         crit.createCriteria("packDoc", "pack").add(Restrictions.idEq(packDocHid)).
                 add(Restrictions.eq("pack.deleted", false));
 
-        return (CimSmgs)crit.uniqueResult();
+        return (CimSmgs) crit.uniqueResult();
     }
 
     /* for Updatable */

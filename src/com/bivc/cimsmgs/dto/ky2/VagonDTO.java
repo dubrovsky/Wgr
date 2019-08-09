@@ -3,6 +3,7 @@ package com.bivc.cimsmgs.dto.ky2;
 import com.bivc.cimsmgs.db.ky.Otpravka;
 import com.bivc.cimsmgs.formats.json.serializers.DateSerializer;
 import com.bivc.cimsmgs.formats.json.serializers.DateTimeDeserializer;
+import com.bivc.cimsmgs.formats.json.serializers.DateTimeSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -24,7 +25,7 @@ public class VagonDTO implements Comparable<VagonDTO> {
     @JsonDeserialize(using = DateTimeDeserializer.class)
     private Date dprbTime;*/
 
-    @JsonSerialize(using = DateSerializer.class)
+    @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeserializer.class)
     private Date dprb;
 

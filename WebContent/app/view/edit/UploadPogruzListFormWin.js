@@ -14,10 +14,9 @@ Ext.define('TK.view.edit.UploadPogruzListFormWin', {
     buildFormItems: function () {
         var items = this.callParent(arguments);
         items.splice(0, 0,
-            {xtype: 'textfield', name: "hid_cs", text: '43553', allowBlank: true},
-            {xtype: 'textfield', name: "name", text: '', allowBlank: true},
-            {xtype: 'textfield', name: "query", text: '', allowBlank: true},
-            {xtype: 'textfield', name: "query1", text: '', allowBlank: true}
+            {xtype: 'hidden', name: "hid_cs", text: '', allowBlank: true},
+            {xtype: 'hidden', name: "query", text: '', allowBlank: true},
+            {xtype: 'hidden', name: "query1", text: '', allowBlank: true}
         );
         return items;
     }

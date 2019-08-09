@@ -4,6 +4,11 @@
 Ext.define('TK.controller.docs.Smgs2', {
     extend: 'Ext.app.Controller',
 
+    requires: [
+        'TK.view.ved.List'
+    ],
+
+
     views: [
         'smgs2.Smgs2List',
         'smgs2.Smgs2Form',
@@ -75,14 +80,18 @@ Ext.define('TK.controller.docs.Smgs2', {
         });
     },
 
-    initEvents: function(form){
-
+    initEvents: function(form,sort){
+        form.getComponent('disp.g7v').getComponent('g7grid').on('edit', this.saveG7);
+        form.getComponent('disp.g7g').getComponent('g15grid').on('itemdblclick', this.dblclickG15);
+        form.getComponent('disp.g7k').getComponent('g15Kgrid').on('itemdblclick', this.dblclickG15);
+        form.getComponent('smgs.g2012').getComponent('g19grid').on('itemdblclick', this.dblclickG19);
+        form.getComponent('disp.g23').getComponent('g23grid').on('itemdblclick', this.dblclickG23);
         form.getComponent('smgs.g24B').on('change', this.getController('Nsi').onG24B);
         form.getComponent('smgs.g24N').on('change', this.getController('Nsi').onG24);
         form.getComponent('smgs.g24T').on('change', this.getController('Nsi').onG24);
 
         Ext.each(form.query('button[action=change]'), function(item, index) {
-            item.on('click', Ext.bind(this.onChangeData, form));
+            item.on('click', Ext.bind(this.onChangeData, form,sort));
         }, this);
 
         // нажатие кнопки выбора отправителя
@@ -150,8 +159,8 @@ Ext.define('TK.controller.docs.Smgs2', {
                         var nsiGrid = this.getController('Nsi').nsiSta(tab.getComponent('stEnd').getValue()).getComponent(0);
                         nsiGrid.on('itemdblclick', this.selectStaG22StEnd, tab);
                     }, this);
-                    tab.getComponent('namPer').onTriggerClick = Ext.bind(function(){
-                        var nsiGrid = this.getController('Nsi').nsiCarrier(/*tab.getComponent('namPer').getValue()*/).getComponent(0);
+                    tab.getComponent('per').getComponent('codePer').onTriggerClick = Ext.bind(function(){
+                        var nsiGrid = this.getController('Nsi').nsiCarrier().getComponent(0);
                         nsiGrid.on('itemdblclick', this.selectCarrier, tab);
                     }, this);
                 }
@@ -166,6 +175,10 @@ Ext.define('TK.controller.docs.Smgs2', {
                     tab.getComponent('platR').onTriggerClick = Ext.bind(function(){
                         var nsiGrid = this.getController('Nsi').nsiPlat(tab.getComponent('platR').getValue()).getComponent(0)/*, gridAction = nsiGrid.down('actioncolumn')*/;
                         nsiGrid.on('itemdblclick', this.getController('Nsi').selectPlatG4, tab);
+                    }, this);
+                    tab.getComponent('adm').getComponent('dorR').onTriggerClick = Ext.bind(function(){
+                        var nsiGrid = this.getController('Nsi').nsiManagement(tab.getComponent('adm').getComponent('dorR').getValue()).getComponent(0)/*, gridAction = nsiGrid.down('actioncolumn')*/;
+                        nsiGrid.on('itemdblclick', this.getController('Nsi').selectPlatG23manag, tab);
                     }, this);
                 }
             },
@@ -268,17 +281,86 @@ Ext.define('TK.controller.docs.Smgs2', {
         var g24B = vagonPanel.ownerCt.down('numberfield[name=smgs.g24B]');
         g24B.setValue(parseFloat(netto + tara));
     },*/
+    /**
+     * saveG7 сохраняет введенные значения в таблицу G7 в основную запись
+     * @param editor
+     * @param record
+     * @param opt
+     */
+    saveG7:function(editor, record,opt)
+    {
+        var g7tableRecs,
+            docForm,
+            g7recs;
+        if(record.grid)
+            g7tableRecs=record.grid.getStore().data.items;
+        else
+            g7tableRecs=editor.getStore().data.items;
+
+
+        docForm=Ext.ComponentQuery.query('viewport > tabpanel > smgs2')[0];
+        if(!docForm)
+            docForm=Ext.ComponentQuery.query('viewport > tabpanel > aviso2')[0];
+
+        g7recs=docForm.dataObj[docForm.getVagCollectionName()];
+        for(var vagIndx in g7recs){
+
+            var vag = g7recs[vagIndx],
+                vaghid=vag['hid'];
+            for (var i=0;i<g7tableRecs.length;i++)
+            {
+                if(g7tableRecs[i].data['hid']===vaghid)
+                {
+                    vag['nvag']=g7tableRecs[i].data['nvag'];
+                    vag['rod']=g7tableRecs[i].data['rod'];
+                    vag['klientName']=g7tableRecs[i].data['klientName'];
+                    vag['vagOtm']=g7tableRecs[i].data['vagOtm'];
+                    vag['grPod']=g7tableRecs[i].data['grPod'];
+                    vag['kolOs']=g7tableRecs[i].data['kolOs'];
+                    vag['taraVag']=g7tableRecs[i].data['taraVag'];
+                    vag['sort']=g7tableRecs[i].data['sort']-1;
+                }
+            }
+        }
+    },
+    /**
+     * двойной щелчок по таблице графы 15
+     */
+    dblclickG15:function(grid,record)
+    {
+        var btn =Ext.ComponentQuery.query('viewport > tabpanel > smgs2 #btnVgCtGr')[0];
+        if(!btn)
+            btn=Ext.ComponentQuery.query('viewport > tabpanel > aviso2 #btnVgCtGr')[0];
+        btn.fireEvent('click',btn,record);
+    },
+    /**
+     * двойной щелчок по таблице графы 19
+     */
+    dblclickG19:function(grid,record)
+    {
+        var btn =Ext.ComponentQuery.query('viewport > tabpanel > smgs2 #btnPlomb')[0];
+        if(!btn)
+            btn =Ext.ComponentQuery.query('viewport > tabpanel > aviso2 #btnPlomb')[0];
+        btn.fireEvent('click',btn,record);
+    },
+    dblclickG23:function(grid,record)
+    {
+        var btn =Ext.ComponentQuery.query('viewport > tabpanel > smgs2 #g23_')[0];
+        if(!btn)
+            btn =Ext.ComponentQuery.query('viewport > tabpanel > aviso2 #g23_')[0];
+        btn.fireEvent('click',btn,record.data['sort']);
+    },
     onSavePerevozDetailPanelClick: function(perevozPanel){
         var vagPanelTab = perevozPanel.getComponent('g22_panel_tab'),
             perevozchik = perevozPanel.up('smgs2').down('displayfield[itemId="smgs.perevozchik"]');
 
         perevozchik.setValue('');
         vagPanelTab.items.each(function (perevozTab, ind, length) {
-            perevozchik.setValue(perevozTab.getComponent('namPer').getValue());
+            perevozchik.setValue(perevozTab.getComponent('per').getComponent('namPer').getValue());
             return false;
         });
     },
-    /*onTaraKontChange: function(field, newValue, oldValue){
+    /*onTaraKontChange: function(field, newValue, oldValue){items
         var val = parseFloat(newValue);
         if (isNaN(val)){
             return;
@@ -294,18 +376,18 @@ Ext.define('TK.controller.docs.Smgs2', {
         comp.removeCls('div-active');
         comp.addCls('bg-c-white');
     },
-    onChangeData:function(btn){
+    onChangeData:function(btn,sort){
         var panel, tabpanels;
-        if(btn.itemId.indexOf('g7') == -1){
+        if(btn.itemId.indexOf('g7') === -1){
             panel = this.getComponent(btn.itemId + 'panel');
         }
         // установка кода отправителя
-        if(btn.itemId.indexOf('g1') != -1){
+        if(btn.itemId.indexOf('g1') !== -1){
             var value=this.getComponent('smgs.g2_').getValue();
             this.getComponent('g1_panel').getComponent('smgs.g2_E').setValue(value);
         }
         // установка кода получателя
-        if(btn.itemId.indexOf('g4') != -1){
+        if(btn.itemId.indexOf('g4') !== -1){
             var value=this.getComponent('smgs.g5_').getValue();
             this.getComponent('g4_panel').getComponent('smgs.g5_E').setValue(value);
         }
@@ -323,6 +405,19 @@ Ext.define('TK.controller.docs.Smgs2', {
         }
 
         panel.show();
+        // устновка активной панели, той что была выбрана по двойному счелчку
+        if((btn.itemId.indexOf('g23_') !== -1)&&(sort)&&(typeof sort!=='object')){
+
+            var tabPanel=panel.getComponent('g23_panel_tab');
+            for(var i=0;i<tabPanel.items.length;i++)
+            {
+                if(tabPanel.items.items[i].getComponent('sort').getValue()===sort)
+                {
+                    tabPanel.setActiveTab(tabPanel.items.items[i]);
+                    break;
+                }
+            }
+        }
         this.maskPanel(true);
     },
     // занечение значений выбранного отправителя в форму
@@ -341,7 +436,7 @@ Ext.define('TK.controller.docs.Smgs2', {
         //индекс отправителя
         this.getComponent('smgs.g17_1').setValue(data['g17_1']);
         //доп. инфо отправителя
-        this.getComponent('smgs.g1_dop_info').setValue(data['dop_info']);
+        this.getComponent('smgs.g1_dop_info').setValue(data['g1']+' '+data['g19_1']+' '+data['g18_1']+' '+data['g16_1']+'\n' +data['dop_info']);
         // код отправителя
         this.getComponent('smgs.g2_E').setValue(data['g2']);
         // код ОКПО отправителя
@@ -373,7 +468,7 @@ Ext.define('TK.controller.docs.Smgs2', {
         // код ИНН получателя
         this.getComponent('code_p5').getComponent('smgs.g_5inn').setValue(data['g_2inn']);
         //доп. инфо получателя
-        this.getComponent('smgs.g4_dop_info').setValue(data['dop_info']);
+        this.getComponent('smgs.g4_dop_info').setValue(data['g1']+' '+data['g19_1']+' '+data['g18_1']+' '+data['g16_1']+'\n' +data['dop_info']);
         view.up('window').close();
     },
     selectCountriesG1: function(view, record, item, index) {
@@ -388,20 +483,14 @@ Ext.define('TK.controller.docs.Smgs2', {
         this.getComponent('g4_panel').getComponent('strn').getComponent('smgs.g16r_1').setValue(data['krnaim']);
         view.up('window').close();
     },
+    // установка 2 станция отправления
     selectStaG162: function(view, record, item, index) {
         var data = record.data;
         this.getComponent('smgs.g162r').setValue(data['staName']);
         this.getComponent('smgs.g163r').setValue(data['mnamerus']);
+        this.getComponent('smgs.g16_dop_info').setValue(data['staNameEn']+' '+data['staNameCh']);
         this.getComponent('smgs.g171').setValue(data['managno']);
         this.getComponent('smgs.g17').setValue(data['staNo']);
-        /*this.getComponent('smgs.g691').setValue(data['managno']);
-        if(this.getComponent('smgs.g171')){
-            this.getComponent('smgs.g171').setValue(data['managno']);
-        }
-        if(this.getComponent('smgs.g17')){
-            this.getComponent('smgs.g17').setValue(data['staNo']);
-        }*/
-        // this.getComponent('smgs.g692').setValue(data['staNo']);
         view.up('window').close();
     },
     selectStaG101r: function(view, record, item, index) {
@@ -409,7 +498,7 @@ Ext.define('TK.controller.docs.Smgs2', {
         this.getComponent("smgs.g101r").setValue(data['staName']);
         //this.getComponent("smgs.g_10_3r").setValue(data['mnamerus']);
         this.getComponent("smgs.g102r").setValue(data['mnamerus']);
-        //this.getComponent("smgs.g12").setValue(data['managno']);
+        this.getComponent("smgs.g2017").setValue(data['staNameEn']+' '+data['staNameCh']);
         this.getComponent("smgs.g121").setValue(data['staNo']);
         this.getComponent("smgs.g12").setValue(data['managno']);
         view.up('window').close();
@@ -418,25 +507,29 @@ Ext.define('TK.controller.docs.Smgs2', {
         var data = record.data;
         this.getComponent('text').setValue(data.staNo);
         this.getComponent('text2').setValue(data.staName);
-        this.getComponent('road_s_name_r').setValue(data.mnamerus);
+        this.getComponent('text3').setValue(data.mnamerus);
+        this.getComponent('text4').setValue(data.managno);
         view.up('window').close();
     },
     selectStaG22StBeg: function(view, record, item, index) {
         var data = record.data;
-        this.getComponent('codStBeg').setValue(data.staNo);
+        this.getComponent('codBeg').getComponent('codStBeg').setValue(data.staNo);
+        this.getComponent('codBeg').getComponent('admStBeg').setValue(data.managno);
         this.getComponent('stBeg').setValue(data.staName);
-        this.getComponent('namPer').setValue(data.mnamerus);
+        this.getComponent('per').getComponent('namPer').setValue(data.mnamerus);
         view.up('window').close();
     },
     selectStaG22StEnd: function(view, record, item, index) {
         var data = record.data;
-        this.getComponent('codStEnd').setValue(data.staNo);
+        this.getComponent('codEnd').getComponent('codStEnd').setValue(data.staNo);
+        this.getComponent('codEnd').getComponent('admStEnd').setValue(data.managno);
         this.getComponent('stEnd').setValue(data.staName);
         view.up('window').close();
     },
     selectCarrier: function(view, record, item, index) {
         var data = record.data;
-        this.getComponent('namPer').setValue(data.carrNameShort + ' ' + data.carrNo);
+        this.getComponent('per').getComponent('namPer').setValue(data.carrNameShort);
+        this.getComponent('per').getComponent('codePer').setValue(data.carrNo);
         view.up('window').close();
     },
     /*selectGng:function (view, record, item, index) {
@@ -456,14 +549,14 @@ Ext.define('TK.controller.docs.Smgs2', {
     isContOtpr: function () {
         return this.getController("docs.VgCtGrTreeDetailController").isContOtpr();
     },
-    onSmgs2VgCtGrWinShow: function(btn){
-        this.fireEvent('showVgCtGrWin', 'smgs2VgCtGrTreeformWin', btn.up('docsform'));
+    onSmgs2VgCtGrWinShow: function(btn,selHid){
+        this.fireEvent('showVgCtGrWin', 'smgs2VgCtGrTreeformWin', btn.up('docsform'),selHid);
     },
     onCimDocs9WinShow: function(btn){
         this.fireEvent('showDocs9Win', 'smgs2Docs9TreeformWin', btn.up('docsform'));
     },
-    onCimPlombsWinShow: function(btn){
-        this.fireEvent('showPlombsWin', 'smgs2PlombsTreeformWin', btn.up('docsform'));
+    onCimPlombsWinShow: function(btn,selPlombHid){
+        this.fireEvent('showPlombsWin', 'smgs2PlombsTreeformWin', btn.up('docsform'),selPlombHid);
     },
     setDisplayedVgCtGrFields: function(docForm){
         this.fireEvent('displayedVgCtGrFields', this, docForm);
@@ -478,7 +571,6 @@ Ext.define('TK.controller.docs.Smgs2', {
     setG2012DataObj: function(docForm){
         this.fireEvent('savePlombsToDataObj', this, docForm);
     },
-
     onCellDblClick: function(view, td, cIndex, record){
         var center = this.getCenter(),
             grid, gridParams = {},

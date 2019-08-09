@@ -2,6 +2,7 @@ package com.bivc.cimsmgs.dto.ky2;
 
 import com.bivc.cimsmgs.formats.json.serializers.DateSerializer;
 import com.bivc.cimsmgs.formats.json.serializers.DateTimeDeserializer;
+import com.bivc.cimsmgs.formats.json.serializers.DateTimeSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -15,6 +16,7 @@ public class KontDTO implements Comparable<KontDTO>{
 
     private Long hid;
     private String nkon;
+    private String notp;
 
     /*@JsonSerialize(using = DateSerializer.class)
     @JsonDeserialize(using = DateTimeDeserializer.class)
@@ -24,11 +26,13 @@ public class KontDTO implements Comparable<KontDTO>{
     @JsonDeserialize(using = DateTimeDeserializer.class)
     private Date dprbTime;*/
 
-    @JsonSerialize(using = DateSerializer.class)
+    @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeserializer.class)
     private Date dprb;
     private Boolean poruz;
     private Long massa_tar;
+    private Long massa_brutto;
+    private Long massa_brutto_all;
     private Float pod_sila;
     private String type;
     private String vid;
@@ -45,6 +49,7 @@ public class KontDTO implements Comparable<KontDTO>{
     private Byte sort;
 
     private TreeSet<GruzDTO> gruzs = new TreeSet<>();
+    private TreeSet<PlombDTO> plombs = new TreeSet<>();
 
     public String getNkon() {
         return nkon;
@@ -54,7 +59,15 @@ public class KontDTO implements Comparable<KontDTO>{
         this.nkon = nkon;
     }
 
-    /*public Date getDprbDate() {
+    public String getNotp() {
+        return notp;
+    }
+
+    public void setNotp(String notp) {
+        this.notp = notp;
+    }
+
+/*public Date getDprbDate() {
         return dprbDate;
     }
 
@@ -69,6 +82,22 @@ public class KontDTO implements Comparable<KontDTO>{
     public void setDprbTime(Date dprbTime) {
         this.dprbTime = dprbTime;
     }*/
+
+    public Long getMassa_brutto() {
+        return massa_brutto;
+    }
+
+    public void setMassa_brutto(Long massa_brutto) {
+        this.massa_brutto = massa_brutto;
+    }
+
+    public Long getMassa_brutto_all() {
+        return massa_brutto_all;
+    }
+
+    public void setMassa_brutto_all(Long massa_brutto_all) {
+        this.massa_brutto_all = massa_brutto_all;
+    }
 
     public Boolean getPoruz() {
         return poruz;
@@ -217,5 +246,13 @@ public class KontDTO implements Comparable<KontDTO>{
 
     public void setDprb(Date dprb) {
         this.dprb = dprb;
+    }
+
+    public TreeSet<PlombDTO> getPlombs() {
+        return plombs;
+    }
+
+    public void setPlombs(TreeSet<PlombDTO> plombs) {
+        this.plombs = plombs;
     }
 }

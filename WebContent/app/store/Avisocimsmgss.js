@@ -1,5 +1,11 @@
 Ext.define('TK.store.Avisocimsmgss', {
     extend: 'Ext.data.Store',
+
+    requires: [
+        'TK.Utils',
+        'TK.model.Avisocimsmgs'
+    ],
+
     model: 'TK.model.Avisocimsmgs',
     pageSize: 20,
     proxy: {

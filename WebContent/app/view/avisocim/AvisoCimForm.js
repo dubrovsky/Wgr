@@ -40,8 +40,10 @@ Ext.define('TK.view.avisocim.AvisoCimForm', {
         this.getComponent('cimformpanel').getComponent('smgs.aviso_cod_dat').show();
         this.getComponent('cimformpanel').getComponent('lab_vsego').show();
         this.getComponent('cimformpanel').getComponent('smgs.amount').show();
-        this.getComponent('cimformpanel').getComponent('lab_wag_n').show();
-        this.getComponent('cimformpanel').getComponent('smgs.npoezd').show();
+        // this.getComponent('cimformpanel').getComponent('lab_wag_n').show();
+        // this.getComponent('cimformpanel').getComponent('smgs.npoezd').show();
+        this.getComponent('cimformpanel').getComponent('lab_tpl_name').show();
+        this.getComponent('cimformpanel').getComponent('smgs.profile').show();
         this.getComponent('cimformpanel').getComponent('smgs.type').setValue('14');
         this.getComponent('cimformpanel').getComponent('smgs.docType1').setValue('29');
         this.getComponent('cimformpanel').getComponent('search.docType').setValue('avisocim');

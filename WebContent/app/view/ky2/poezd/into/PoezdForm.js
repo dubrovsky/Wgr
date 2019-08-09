@@ -16,7 +16,7 @@ Ext.define('TK.view.ky2.poezd.into.PoezdForm', {
                 defaults: {
                     anchor: '100%'
                 },
-                width:300,
+                width:400,
                 items: [{
                     labelWidth: '140px',
                     fieldLabel:'Дата',
@@ -29,7 +29,8 @@ Ext.define('TK.view.ky2.poezd.into.PoezdForm', {
                     name : 'dprbTime',
                     xtype: 'timefield',
                     //snapToIncrement: true,
-                    altFormats:'H:i'
+                    // altFormats:'H:i',
+                    format:'H:i'
                 }]
             });
 
@@ -76,7 +77,7 @@ Ext.define('TK.view.ky2.poezd.into.PoezdForm', {
             var form = this.getForm(),
                 now = new Date();
             form.findField('dprbDate').setValue(now);
-            //form.findField('dprbTime').setValue(now);
+            form.findField('dprbTime').setValue(now);
         },
         buildTopToolbar: function(config){
             TK.view.ky2.poezd.BasePoezdForm.prototype.buildTopToolbar.apply(this, arguments);

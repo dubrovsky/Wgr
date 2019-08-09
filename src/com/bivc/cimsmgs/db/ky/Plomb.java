@@ -13,6 +13,7 @@ public class Plomb implements Serializable, Comparable<Plomb> {
 	private Kont kont;
 	private Short kpl;
 	private String znak;
+	private String station;
 	private Date dattr;
 	private Byte sort;
     private String trans;
@@ -24,7 +25,15 @@ public class Plomb implements Serializable, Comparable<Plomb> {
         return ReflectionToStringBuilder.toStringExclude(this, "kont");
     }
 
-    public Date getAltered() {
+	public String getStation() {
+		return station;
+	}
+
+	public void setStation(String station) {
+		this.station = station;
+	}
+
+	public Date getAltered() {
         return altered;
     }
 

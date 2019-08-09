@@ -66,6 +66,8 @@ public interface SmgsDAO extends GenericDAO<CimSmgs, Long> {
 
     public List<CimSmgs> findDocByNPoezd(String npoezd, Byte type, long routeId);
 
+    public List<CimSmgs>findDocsByNPoezdAndDateInterval(String[] npoezds, Search search, Usr usr);
+
     public List<CimSmgs> findKontVedByNPoezd(String npoezd, Byte type, long routeId);
 
     public List<Map> findData4SummaryDoc(String npoezd, Byte type, long routeId);

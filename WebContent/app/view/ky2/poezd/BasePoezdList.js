@@ -5,7 +5,10 @@ Ext.define('TK.view.ky2.poezd.BasePoezdList', {
     buildColumns:function (config) {
         config.columns = {
             items:[
-                {text:'ID', dataIndex:'hid', flex:1, maxWidth:100, minWidth:70},
+                {text:this.headerPoezdNum, dataIndex:'nppr', width: 150},
+                {text:this.headerPoezdNumM, dataIndex:'npprm', width: 150},
+                {text:this.headerVagCount, dataIndex:'vagCount', flex:1, maxWidth:100},
+                {text:this.headerKontCount, dataIndex:'kontCount', flex:1, maxWidth:100},
                 {
                     text:this.headerCreation,
                     columns: [{
@@ -20,11 +23,9 @@ Ext.define('TK.view.ky2.poezd.BasePoezdList', {
                         width: 100
                     }]
                 },
-                {text:this.headerPoezdNum, dataIndex:'nppr', flex:1},
-                {text:this.headerVagCount, dataIndex:'vagCount', flex:1},
-                {text:this.headerKontCount, dataIndex:'kontCount', flex:1},
-                {text:this.headerKoleya, dataIndex:'koleya', width:70},
-                {text:this.freeSpace, flex:3}
+                {text:'ID', dataIndex:'hid', flex:1, maxWidth:100, minWidth:70}
+                 // ,{text:this.headerKoleya, dataIndex:'koleya', width:70},
+                // {text:this.freeSpace, flex:3}
             ]
         };
 

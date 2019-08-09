@@ -3,6 +3,7 @@ package com.bivc.cimsmgs.actions;
 import Ti.DataProcessing.Tools.DataProcessingTools;
 import com.bivc.cimsmgs.commons.Constants;
 import com.bivc.cimsmgs.commons.Print;
+import com.bivc.cimsmgs.commons.Search;
 import com.bivc.cimsmgs.dao.DocDirDAO;
 import com.bivc.cimsmgs.dao.DocDirDAOAware;
 import com.bivc.cimsmgs.dao.FieldsAccessFobiddenDAO;
@@ -43,6 +44,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -53,36 +55,49 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
 
     public String list() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         log.info("list");
-        List<CimSmgs> smgslist = getSmgsDAO().findAll(getLimit(), getStart(), getSearch(), getUser().getUsr());
-        Long total = getSmgsDAO().countAll(getSearch(), getUser().getUsr());
+        List<CimSmgs> smgslist;
+        Long total;
+
+        // filter documents list
+        Search search = getSearch();
+        if (search!=null&&search.getParams()!=null&&search.getParams().length>1&&search.getParams()[0].equals("smgslistfilter")) {
+            smgslist = new ArrayList<>();
+                smgslist.addAll(getSmgsDAO().findDocsByNPoezdAndDateInterval(search.getParams()[1].split(","), search,getUser().getUsr()));
+            total = (long) smgslist.size();
+        }
+        else { // just get all list records
+            smgslist = getSmgsDAO().findAll(getLimit(), getStart(), getSearch(), getUser().getUsr());
+            total = getSmgsDAO().countAll(getSearch(), getUser().getUsr());
+        }
+        // convert to json
         switch (getSearch().getType()) {
-            case 1:
+            case 1:// SMGS
                 setJSONData(convert2JSON_CimSmgsList(smgslist, total, getUser()));
                 break;
-            case 2:
-            case 12:
+            case 2://СМГС(SMGS)
+            case 12:///СМГС2(SMGS2)
             case 112:
                 setJSONData(convert2JSON_SmgsList(smgslist, total, getUser()));
                 break;
-            case 3:
-            case 6:
-            case 10:
-            case 11:
+            case 3:// AVISO SMGS for CKP
+            case 6:// AVISO GU for CKP
+            case 10://AVISO CIMSMGS
+            case 11://AVISO SMGS2
                 setJSONData(convert2JSON_AvisoList(smgslist, total));
                 break;
-            case 14:
+            case 14:// AVISO CIM
                 setJSONData(convert2JSON_AvisoList(smgslist, total));
                 break;
-            case 8:
-            case 4:
+            case 8: //gu27v
+            case 4:// AVISO SMGS for agents
                 setJSONData(convert2JSON_Gu29kList(smgslist, total));
                 break;
-            case 5:
-            case 7:
-            case 9:
+            case 5://CMR
+            case 7://CIM
+            case 9://Словацкая накладная
                 setJSONData(convert2JSON_CimList(smgslist, total));
                 break;
-            case 0:
+            case 0:// EPD
                 setJSONData(convert2JSON_EpdList(smgslist, total));
                 break;
             /* case -1: // stat
@@ -97,15 +112,14 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
     }
 
     // get list of train numbrers and  count of smgs that are binded to the train in some period
-    public String cimsmgsDate()
-    {
+    public String cimsmgsDate() {
         List<CimSmgsTrainDateDTO> dtos = getSmgsDAO().findTrainDate(getLimit(),getStart(),getSearch(),getUser().getUsr());
         setJSONData(convert2JSON_trainDate(dtos));
         return SUCCESS;
     }
+
 // get list of smgs that are  binded to the chosen train in some period
-    public String cimsmgsTrain()
-    {
+    public String cimsmgsTrain() {
         List<CimSmgs> smgsHIDs = getSmgsDAO().findSmgsTrainDate(getLimit(),getStart(),getSearch(),getUser().getUsr());
         setJSONData(convert2JSON_trainDateList(smgsHIDs));
         return SUCCESS;
@@ -164,8 +178,8 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
             saveEpd(smgs.getPackDoc(), EPD_ACTION.ADD);
         }
 
-        setJSONData(convert2JSON_Smgs_Save_Results(smgs, "smgs", defaultSerializer.setView(getView()).setLocale(getLocale()).write(smgs)));
-//        setJSONData(convert2JSON_Smgs_Save_Results(smgs, "smgs", cimSmgsKonListSerializer.setLocale(getLocale()).write(smgs)));
+//        setJSONData(convert2JSON_Smgs_Save_Results(smgs, "smgs", defaultSerializer.setView(getView()).setLocale(getLocale()).write(smgs)));
+        setJSONData(convert2JSON_Smgs_Save_Results(smgs, "smgs", cimSmgsKonListSerializer.setLocale(getLocale()).write(smgs)));
         return SUCCESS;
     }
 
@@ -186,7 +200,6 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
         smgs = getSmgsDAO().merge(smgs);
         log.debug("Updated the information of a Doc entry with hid: {}", smgs.getHid());
     }
-
 
 
     public String restore() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
@@ -262,16 +275,14 @@ public class Smgs_A extends CimSmgsSupport_A implements SmgsDAOAware, NsiSmgsG1D
         setJSONData(convert2JSON_True());
         return SUCCESS;
     }
-    private void restoreDelete(Boolean delete)
-    {
+
+    private void restoreDelete(Boolean delete) {
         if(smgs==null) {
             String hIDsInput[]=getQuery1().split(",");
             Long hIDs[]= DataProcessingTools.stringArrToLongList(hIDsInput);
             // checking if record to delete is alone
-            if(hIDs!=null)
-            {
-                for(int i=0;i<hIDs.length;i++)
-                {
+            if (hIDs != null) {
+                for (int i = 0; i < hIDs.length; i++) {
                     smgs = getSmgsDAO().getById(hIDs[i], true);
                     if(smgs != null){
                         PackDoc packDoc = smgs.getPackDoc();

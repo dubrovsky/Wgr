@@ -49,6 +49,7 @@ Ext.define('TK.view.edit.DetailPanel', {
 		    scope:this
 		}];
 	},
+    validatePanel:function(){return true},
     setDisplayedField:function(){},
 	copyValues2MainFlds:function(){},
 	copyValues2Buf:function(){},
@@ -57,6 +58,10 @@ Ext.define('TK.view.edit.DetailPanel', {
     beforeSave:function() {},
     afterSave:function() {},
     onSave:function() {    // rewrite smgs gruz
+        if(!this.validatePanel())
+        {
+            return;
+        }
         this.beforeSave();
 		this.copyValues2Buf();
 		this.setDisplayedField();

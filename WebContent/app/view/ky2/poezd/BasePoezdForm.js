@@ -3,37 +3,41 @@ Ext.define('TK.view.ky2.poezd.BasePoezdForm', {
     alias:'widget.ky2basepoezdform',
 
     // region: 'west',
-    // width: 400,
     // split: true,
+    //     width: 400
 
     buildItems: function(config) {
         config.items = [{
             xtype:'textfield',
-            labelWidth: '150px',
+            width:400,
+            labelWidth: 150,
             fieldLabel: this.labelNppr,
             //decimalPrecision: 0,
             name: 'nppr',
             maxLength: 5
         },{
             xtype:'textfield',
-            labelWidth: '150px',
+            width:400,
+            labelWidth: 150,
             fieldLabel: this.labelNpprm,
             //decimalPrecision: 0,
             name: 'npprm',
             maxLength: 10
-        },{
+        }/*,{
             xtype: 'radiogroup',
-            labelWidth: '150px',
-            fieldLabel: this.labelKoleya,
+            hidden: true,
+            // width:400,
+            // labelWidth: 150,
+            // fieldLabel: this.labelKoleya,
             itemId:'koleya',
-            columns: 1,
-            vertical: true,
-            allowBlank: false,
+            // columns: 1,
+            // vertical: true,
+            // allowBlank: false,
             items: [
                 {boxLabel: this.labelKoleyaWide, name: 'koleya', inputValue: 1},
                 {boxLabel: this.labelKoleyaNarow, name: 'koleya', inputValue: 2}
             ]
-        }/*,{
+        }*//*,{
             xtype: 'combo',
             queryMode: 'local',
             forceSelection: true,
@@ -41,12 +45,6 @@ Ext.define('TK.view.ky2.poezd.BasePoezdForm', {
             name: 'line',
             itemId:'line',
             store: []
-        },{
-            xtype:'textfield',
-            fieldLabel: this.labelClient,
-            name: 'gruzotpr',
-            maxLength: 128,
-            anchor: '99%'
         },{
             xtype: 'fieldcontainer',
             layout: {
@@ -67,22 +65,33 @@ Ext.define('TK.view.ky2.poezd.BasePoezdForm', {
             }]
         }*/,{
             xtype:'textfield',
-            labelWidth: '150px',
+            width:400,
+            labelWidth: 150,
             fieldLabel: this.labelDep,
             name: 'punkt_otpr',
             maxLength: 96
             // anchor: '99%'
         },{
             xtype:'textfield',
-            labelWidth: '150px',
+            width:400,
+            labelWidth: 150,
             fieldLabel: this.labelDest,
             name: 'punkt_nazn',
             maxLength: 96
             // anchor: '99%'
+        }, {
+            xtype: 'textfield',
+            fieldLabel: this.labelClient,
+            name: 'gruzotpr',
+            maxLength: 128,
+            labelWidth: 150,
+            width:400
         }]
     },
     buildTopToolbar: function(config){
         config.tbar = this.buildButtons();
+        config.tbar.push({text: '+Вагон/Контейнер/Груз', iconCls:'edit', action:'editVgCtGr'})
+
     }
 
 });

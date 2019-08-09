@@ -37,39 +37,40 @@ Ext.define('TK.view.ky2.PoezdVgCtGrTreeForm', {
         return [{
             title: 'Вагон',
             itemId: 'vag',
+            defaults: {
+                labelWidth: 150
+            },
             items: [
                 {xtype:'textfield', fieldLabel:'№ вагона', name:"nvag", maxLength:13, allowBlank: false},
                 {
                     name : 'dprb',
                     xtype: 'datefield',
                     fieldLabel: 'Прибытие',
-                    altFormats:'d.m.y'
+                    altFormats:'d.m.y H:i',
+                    format:'d.m.y H:i',
+                    readOnly: true
                 },
-                /*{
-                    xtype: 'fieldcontainer',
-                    layout: {
-                        type: 'hbox',
-                        defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
-                    },
-                    fieldLabel: 'Прибытие',
-                    items: [{
-                        name : 'dprbDate',
-                        xtype: 'datefield',
-                        altFormats:'d.m.y',
-                        width: 80
-                    },{
-                        xtype: 'displayfield',
-                        value: 'Дата'
-                    },{
-                        name : 'dprbTime',
-                        xtype: 'timefield',
-                        altFormats:'H:i',
-                        width: 80
-                    },{
-                        xtype: 'displayfield',
-                        value: 'Время'
-                    }]
-                },*/
+                // {
+                //     xtype:'fieldset',
+                //     title: 'Прибытие',
+                //     layout: 'anchor',
+                //     defaults: {
+                //         labelWidth: 138
+                //     },
+                //     width:305,
+                //     items: [{
+                //         fieldLabel:'Дата',
+                //         name : 'dprbDate',
+                //         xtype: 'datefield',
+                //         altFormats:'d.m.y'
+                //     },{
+                //         fieldLabel:'Время',
+                //         name : 'dprbTime',
+                //         xtype: 'timefield',
+                //         //snapToIncrement: true,
+                //         altFormats:'H:i'
+                //     }]
+                // },
                 {
                     xtype: 'combo',
                     queryMode: 'local',
@@ -78,14 +79,14 @@ Ext.define('TK.view.ky2.PoezdVgCtGrTreeForm', {
                     name:'line',
                     allowBlank: false,
                     store: [['1', '1'], ['2', '2']]
-                },{
+                }/*,{
                     xtype:'textfield',
                     fieldLabel: 'Код принадлежности',
                     name: 'kpv',
                     maxLength: 28
-                },{
+                }*/,{
                     xtype:'numberfield',
-                    fieldLabel: 'Подъемная сила',
+                    fieldLabel: 'Грузоподъемность',
                     decimalPrecision: 2,
                     minValue:0,
                     name: 'podSila',
@@ -98,22 +99,23 @@ Ext.define('TK.view.ky2.PoezdVgCtGrTreeForm', {
                     maxLength: 2
                 },{
                     xtype:'numberfield',
-                    fieldLabel: 'Масса тары',
+                    fieldLabel: 'Тара вагона',
                     decimalPrecision: 0,
                     name: 'masTar',
                     maxLength: 20
-                },{
+                }/*,{
                     xtype: 'combo',
                     queryMode: 'local',
                     fieldLabel: 'Футовость',
                     name: 'foot',
                     store: ['20','40','60','80','2x20']
-                },{
+                }*/,{
                     xtype:'textarea',
                     fieldLabel: 'Собственник',
                     name: 'sobstv',
+                    width:400,
                     maxLength: 128
-                },{
+                },/*{
                     xtype:'checkbox',
                     name: 'poruz',
                     fieldLabel: 'Порожний?',
@@ -170,7 +172,7 @@ Ext.define('TK.view.ky2.PoezdVgCtGrTreeForm', {
                     fieldLabel: 'Примечание',
                     name: 'prim',
                     maxLength: 512
-                },
+                },*/
                 {xtype:'hidden', name:"sort"},
                 {xtype:'hidden', name:"otpravka"},
                 {xtype:'hidden', name:"hid"}
@@ -178,6 +180,9 @@ Ext.define('TK.view.ky2.PoezdVgCtGrTreeForm', {
         },{
             title: 'Контейнер',
             itemId: 'cont',
+            defaults: {
+                labelWidth: 150
+            },
             items: [
                 {
                     fieldLabel: 'Номер контейнера',
@@ -188,18 +193,29 @@ Ext.define('TK.view.ky2.PoezdVgCtGrTreeForm', {
                     enableKeyEvents: true,
                     allowBlank: false
                 },{
+                    fieldLabel: 'Отправка №',
+                    xtype:'textfield',
+                    name: 'notp',
+                    itemId: 'notp',
+                    maxLength: 11,
+                    enableKeyEvents: true,
+                    allowBlank: false
+                },{
                     name : 'dprb',
                     xtype: 'datefield',
                     fieldLabel: 'Прибытие',
-                    altFormats:'d.m.y'
-                },/*{
+                    altFormats:'d.m.y H:i',
+                    format:'d.m.y H:i',
+                    readOnly: true
+
+                }/*,{
                     xtype:'fieldset',
                     title: 'Прибытие',
                     layout: 'anchor',
                     defaults: {
-                        anchor: '100%'
+                        labelWidth: 138
                     },
-                    width:250,
+                    width:305,
                     items: [{
                         fieldLabel:'Дата',
                         name : 'dprbDate',
@@ -212,21 +228,35 @@ Ext.define('TK.view.ky2.PoezdVgCtGrTreeForm', {
                         //snapToIncrement: true,
                         altFormats:'H:i'
                     }]
-                },*/{
+                }*/,{
                     xtype:'checkbox',
                     name: 'poruz',
-                    fieldLabel: 'Порожний?',
+                    fieldLabel: 'Порожний',
                     inputValue: true,
                     uncheckedValue: false
                 },{
                     xtype:'numberfield',
-                    fieldLabel: 'Масса тары',
+                    fieldLabel: 'Брутто груза',
+                    decimalPrecision: 0,
+                    name: 'massa_brutto',
+                    maxLength: 20
+                },{
+                    xtype:'numberfield',
+                    fieldLabel: 'Масса тары контейнера',
                     decimalPrecision: 0,
                     name: 'massa_tar',
                     maxLength: 20
                 },{
                     xtype:'numberfield',
-                    fieldLabel: 'Подъемная сила',
+                    fieldLabel: 'Общая масса брутто',
+                    decimalPrecision: 2,
+                    minValue: 0,
+                    name: 'massa_brutto_all',
+                    itemId: 'massa_brutto_all',
+                    maxLength: 20
+                },{
+                    xtype:'numberfield',
+                    fieldLabel: 'Грузоподъемность',
                     decimalPrecision: 2,
                     minValue: 0,
                     name: 'pod_sila',
@@ -239,18 +269,20 @@ Ext.define('TK.view.ky2.PoezdVgCtGrTreeForm', {
                     store: ['20','30','40','40HC','45']
                 },{
                     xtype:'textfield',
-                    fieldLabel: 'Вид',
+                    fieldLabel: 'Типоразмер контейнера',
                     name: 'vid',
                     maxLength: 28
                 },{
                     xtype:'textfield',
                     fieldLabel: 'Признак собственности',
                     name: 'prizn_sob',
-                    maxLength: 128
+                    maxLength: 128,
+                    width:400
                 },{
                     xtype:'textfield',
                     fieldLabel: 'Собственник',
                     name: 'naim_sob',
+                    width:400,
                     maxLength: 128
                 }/*,{
                     xtype: 'fieldcontainer',
@@ -277,6 +309,7 @@ Ext.define('TK.view.ky2.PoezdVgCtGrTreeForm', {
                     xtype:'textfield',
                     fieldLabel: 'Клиент',
                     name: 'gruzotpr',
+                    width:400,
                     maxLength: 128
                 }/*,{
                     xtype: 'fieldcontainer',
@@ -300,25 +333,20 @@ Ext.define('TK.view.ky2.PoezdVgCtGrTreeForm', {
                     xtype:'textfield',
                     fieldLabel: 'Пункт отправления',
                     name: 'punkt_otpr',
-                    maxLength: 96,
-                    anchor: '99%'
+                    width:400,
+                    maxLength: 96
                 },{
                     xtype:'textfield',
                     fieldLabel: 'Пункт назначения',
                     name: 'punkt_nazn',
-                    maxLength: 96,
-                    anchor: '99%'
-                },{
-                    name : 'teh_obsl',
-                    xtype: 'datefield',
-                    fieldLabel: 'След. тех. обсл.',
-                    altFormats:'d.m.y'
+                    width:400,
+                    maxLength: 96
                 },{
                     name : 'prim',
                     xtype: 'textarea',
                     fieldLabel: 'Примечание',
-                    maxLength: 128,
-                    anchor: '90%'
+                    width:400,
+                    maxLength: 128
                 },
 
                 {xtype:'hidden', name:"sort"},
@@ -327,6 +355,9 @@ Ext.define('TK.view.ky2.PoezdVgCtGrTreeForm', {
         },{
             title: "Груз",
             itemId: 'gryz',
+            defaults: {
+                labelWidth: 150
+            },
             items: [
                 {
                     xtype:'textfield',
@@ -355,6 +386,7 @@ Ext.define('TK.view.ky2.PoezdVgCtGrTreeForm', {
                     xtype:'textarea',
                     fieldLabel: 'Наименование груза ГНГ',
                     name: 'nzgr',
+                    width:400,
                     maxLength: 4000
                 },{
                     xtype:'textfield',
@@ -375,6 +407,36 @@ Ext.define('TK.view.ky2.PoezdVgCtGrTreeForm', {
                     minValue: 0,
                     decimalPrecision: 3,
                     maxLength: 14
+                },
+                {xtype:'hidden', name:"sort"},
+                {xtype:'hidden', name:"hid"}
+            ]
+        },{
+            title: "Пломба",
+            itemId: 'plomb',
+            defaults: {
+                labelWidth: 150
+            },
+            items: [
+                {
+                    xtype:'textfield',
+                    fieldLabel: 'Станция наложения',
+                    name: 'station',
+                    width: 400,
+                    maxLength: 100
+                },{
+                    xtype:'textfield',
+                    fieldLabel: 'Пломба',
+                    name: 'znak',
+                    width: 400,
+                    maxLength: 10
+                },{
+                    xtype:'numberfield',
+                    fieldLabel: 'Количество',
+                    name: 'kpl',
+                    minValue: 0,
+                    decimalPrecision: 0,
+                    maxLength: 2
                 },
                 {xtype:'hidden', name:"sort"},
                 {xtype:'hidden', name:"hid"}
@@ -400,6 +462,10 @@ Ext.define('TK.view.ky2.PoezdVgCtGrTreeForm', {
             text: '+ Груз',
             action: 'addGryz',
             iconCls: 'gryz'
+        },{
+            text: '+ Пломба',
+            action: 'addPlomb',
+            iconCls: 'doc_new'
         }];
     }
 });

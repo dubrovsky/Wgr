@@ -61,8 +61,8 @@ public class Poezd_A extends CimSmgsSupport_A {
                 (List<Filter>) defaultDeserializer.read(new ArrayList<Filter>() {
                 }.getClass().getGenericSuperclass(), filter) :
                 Collections.EMPTY_LIST;
-        List<Poezd> list = poezdDAO.findAll(getLimit(), getStart(), getRouteId(), getDirection(), filters, getUser().getUsr(), getLocale());
-        Long total = poezdDAO.countAll(getRouteId(), getDirection(), filters, getUser().getUsr(), getLocale());
+        List<Poezd> list = poezdDAO.findAll(getLimit(), getStart(), getRouteId(), getDirection(), filters, getUser().getUsr(), getLocale(), getKoleya());
+        Long total = poezdDAO.countAll(getRouteId(), getDirection(), filters, getUser().getUsr(), getLocale(), getKoleya());
 
         log.debug("Found {} Poezd entries.", total);
 
@@ -191,6 +191,7 @@ public class Poezd_A extends CimSmgsSupport_A {
 
     private String action;
     private Byte direction;
+    private Byte koleya;
     private long routeId;
 
     enum Action {LIST, EDIT, SAVE, DELETE, POEZDS_DIR_FOR_POEZD_BIND}
@@ -211,6 +212,14 @@ public class Poezd_A extends CimSmgsSupport_A {
     private IPoezdService poezdService;
     @Autowired
     private com.bivc.cimsmgs.doc2doc.orika.Mapper mapper;
+
+    public Byte getKoleya() {
+        return koleya;
+    }
+
+    public void setKoleya(Byte koleya) {
+        this.koleya = koleya;
+    }
 
     public Byte getDirection() {
         return direction;

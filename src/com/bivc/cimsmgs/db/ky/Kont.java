@@ -4,6 +4,7 @@ package com.bivc.cimsmgs.db.ky;
 
 import com.bivc.cimsmgs.doc2doc.orika.Mapper;
 import com.bivc.cimsmgs.dto.ky2.GruzDTO;
+import com.bivc.cimsmgs.dto.ky2.PlombDTO;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import java.io.Serializable;
@@ -27,6 +28,8 @@ public class Kont implements Serializable, Comparable<Kont> {
     private String trans;
 //    private Set<KontStatusHistory> kontStatusHistory;
     private Long massa_tar;
+    private Long massa_brutto;
+    private Long massa_brutto_all;
     private Float pod_sila;
     private String type;
     private String vid;
@@ -50,6 +53,7 @@ public class Kont implements Serializable, Comparable<Kont> {
     private Date altered;
 
     private String nkon;
+    private String notp;
 
     private Date dprb;
 
@@ -67,12 +71,36 @@ public class Kont implements Serializable, Comparable<Kont> {
     private Boolean poruz;
     private Byte sort;
     private Set<Gruz> gruzs = new TreeSet<>();
-//    private Set<Plomb> plombs = new TreeSet<>();
+    private Set<Plomb> plombs = new TreeSet<>();
     private String prim;
     private Date dyard;
     private NsiKyOwners owner;
     private String punkt_otpr;
     private String punkt_nazn;
+
+    public Long getMassa_brutto() {
+        return massa_brutto;
+    }
+
+    public void setMassa_brutto(Long massa_brutto) {
+        this.massa_brutto = massa_brutto;
+    }
+
+    public Long getMassa_brutto_all() {
+        return massa_brutto_all;
+    }
+
+    public void setMassa_brutto_all(Long massa_brutto_all) {
+        this.massa_brutto_all = massa_brutto_all;
+    }
+
+    public String getNotp() {
+        return notp;
+    }
+
+    public void setNotp(String notp) {
+        this.notp = notp;
+    }
 
     public String getPunkt_nazn() {
         return punkt_nazn;
@@ -252,6 +280,62 @@ public class Kont implements Serializable, Comparable<Kont> {
         this.prevStatus = prevStatus;
     }
 
+    public Set<Plomb> getPlombs() {
+        return plombs;
+    }
+
+    public void setPlombs(Set<Plomb> plombs) {
+        this.plombs = plombs;
+    }
+
+
+    public void updatePlombs(TreeSet<PlombDTO> dtos, Mapper mapper) {
+        // delete
+        Set<Plomb> plombsToRemove = new HashSet<>();
+        for (Plomb plomb : getPlombs()) {
+            boolean found = false;
+            for (PlombDTO plombDTO : dtos) {
+                if (Objects.equals(plomb.getHid(), plombDTO.getHid())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                plombsToRemove.add(plomb);
+            }
+        }
+        for (Plomb plomb : plombsToRemove) {
+            removePlomb(plomb);
+        }
+
+        // update
+        Set<PlombDTO> dtoToRemove = new HashSet<>();
+        for (Plomb plomb : getPlombs()) {
+            for (PlombDTO plombDTO : dtos) {
+                if (Objects.equals(plomb.getHid(), plombDTO.getHid())) {
+                    mapper.map(plombDTO, plomb);
+                    dtoToRemove.add(plombDTO);
+                    break;
+                }
+            }
+        }
+        dtos.removeAll(dtoToRemove);
+
+        // insert
+        for (PlombDTO plombDTO : dtos) {
+            Plomb plomb = mapper.map(plombDTO, Plomb.class);
+            addPlomb(plomb);
+        }
+    }
+
+
+    private Plomb addPlomb(Plomb plomb) {
+        plombs.add(plomb);
+        plomb.setKont(this);
+        return plomb;
+    }
+
+
     public void updateGruzs(TreeSet<GruzDTO> dtos, Mapper mapper) {
         // delete
         Set<Gruz> gruzyToRemove = new HashSet<>();
@@ -295,6 +379,11 @@ public class Kont implements Serializable, Comparable<Kont> {
         gruzs.remove(gruz);
         gruz.setVagon(null);
     }
+
+    private void removePlomb(Plomb plomb) {
+        plombs.remove(plomb);
+    }
+
 
     public Vagon getVagon() {
         return vagon;
@@ -587,14 +676,6 @@ public class Kont implements Serializable, Comparable<Kont> {
     public void setGruzs(Set<Gruz> gruzs) {
         this.gruzs = gruzs;
     }
-
-    /*public Set<Plomb> getPlombs() {
-        return this.plombs;
-    }
-
-    public void setPlombs(Set<Plomb> plombs) {
-        this.plombs = plombs;
-    }*/
 
     public Date getDprbDate() {
         return this.dprbDate != null ? this.dprbDate : this.dprb;

@@ -16,7 +16,7 @@
         <property name="descr" type="string">
             <column name="DESCR" length="100"/>
         </property>
-        <set name="yards" table="KY_KONT_YARD" inverse="true" lazy="true" fetch="select">
+        <set name="yards" table="KY_KONT_YARD" inverse="true" lazy="true" fetch="select" batch-size="50">
             <key>
                 <column name="HID_SECTOR" precision="20" scale="0" not-null="true"/>
             </key>

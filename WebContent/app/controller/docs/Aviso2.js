@@ -65,11 +65,15 @@ Ext.define('TK.controller.docs.Aviso2', {
             }
         });
     },
-    initEvents: function(form){
+    initEvents: function(form,sort){
         Ext.each(form.query('button[action=change]'), function(item, index) {
-            item.on('click', Ext.bind(this.onChangeData, form));
+            item.on('click', Ext.bind(this.onChangeData, form,sort));
         }, this);
-
+        form.getComponent('disp.g7v').getComponent('g7grid').on('edit', this.getController('docs.Smgs2').saveG7);
+        form.getComponent('disp.g7g').getComponent('g15grid').on('itemdblclick', this.getController('docs.Smgs2').dblclickG15);
+        form.getComponent('disp.g7k').getComponent('g15Kgrid').on('itemdblclick', this.getController('docs.Smgs2').dblclickG15);
+        form.getComponent('smgs.g2012').getComponent('g19grid').on('itemdblclick', this.getController('docs.Smgs2').dblclickG19);
+        form.getComponent('disp.g23').getComponent('g23grid').on('itemdblclick', this.getController('docs.Smgs2').dblclickG23);
         form.getComponent('smgs.g24B').on('change', this.getController('Nsi').onG24B);
         form.getComponent('smgs.g24N').on('change', this.getController('Nsi').onG24);
         form.getComponent('smgs.g24T').on('change', this.getController('Nsi').onG24);
@@ -136,6 +140,10 @@ Ext.define('TK.controller.docs.Aviso2', {
                     tab.getComponent('stEnd').onTriggerClick = Ext.bind(function(){
                         var nsiGrid = this.getController('Nsi').nsiSta(tab.getComponent('stEnd').getValue()).getComponent(0);
                         nsiGrid.on('itemdblclick', this.getController('docs.Smgs2').selectStaG22StEnd, tab);
+                    }, this);
+                    tab.getComponent('per').getComponent('codePer').onTriggerClick = Ext.bind(function(){
+                        var nsiGrid = this.getController('Nsi').nsiCarrier(/*tab.getComponent('namPer').getValue()*/).getComponent(0);
+                        nsiGrid.on('itemdblclick',  this.getController('docs.Smgs2').selectCarrier, tab);
                     }, this);
                 }
             },
@@ -274,21 +282,21 @@ Ext.define('TK.controller.docs.Aviso2', {
 
         perevozchik.setValue('');
         vagPanelTab.items.each(function (perevozTab, ind, length) {
-            perevozchik.setValue(perevozTab.getComponent('namPer').getValue());
+            perevozchik.setValue(perevozTab.getComponent('per').getComponent('namPer').getValue());
             return false;
         });
     },
     isContOtpr: function () {
         return this.getController("docs.VgCtGrTreeDetailController").isContOtpr();
     },
-    onSmgs2VgCtGrWinShow: function(btn){
-        this.fireEvent('showVgCtGrWin', 'avisosmgs2VgCtGrTreeformWin', btn.up('docsform'));
+    onSmgs2VgCtGrWinShow: function(btn,selHid){
+        this.fireEvent('showVgCtGrWin', 'avisosmgs2VgCtGrTreeformWin', btn.up('docsform'),selHid);
     },
     onCimDocs9WinShow: function(btn){
         this.fireEvent('showDocs9Win', 'avisosmgs2Docs9TreeformWin', btn.up('docsform'));
     },
-    onCimPlombsWinShow: function(btn){
-        this.fireEvent('showPlombsWin', 'avisosmgs2PlombsTreeformWin', btn.up('docsform'));
+    onCimPlombsWinShow: function(btn,selPlombHid){
+        this.fireEvent('showPlombsWin', 'avisosmgs2PlombsTreeformWin', btn.up('docsform'),selPlombHid);
     },
     setDisplayedVgCtGrFields: function(docForm){
         this.fireEvent('displayedVgCtGrFields', this, docForm);

@@ -6,6 +6,16 @@ Ext.define('TK.model.ky2.YardBase', {
         {name: 'x', type: 'int', useNull: true},
         {name: 'y', type: 'int', useNull: true},
         {name: 'z', type: 'int', useNull: true},
+        // {name: 'nkon4List',
+        //      convert : function (v, rec) {
+        //         var nkons = '';
+        //          Ext.Array.each(rec.get('konts'), function(kont) {
+        //                  nkons += kont.nkon + ' ';
+        //              });
+        //         return nkons;
+        //      }
+        // },
+        {name: 'konts'},
 
         {name: 'hid', type: 'int', useNull: true},
 

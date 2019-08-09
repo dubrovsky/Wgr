@@ -319,10 +319,10 @@ Ext.define('TK.controller.docs.Cim', {
         me.getComponent('naim').getComponent('smgs.g4').setValue(data['g1']);
         me.getComponent('smgs.g5_E').setValue(data['g2']);
         me.getComponent('strn').getComponent('smgs.g_4_5k').setValue(data['g_1_5k']);
-        me.getComponent('strn').getComponent('smgs.g46_1').setValue(data['g16r']);
+        me.getComponent('strn').getComponent('smgs.g46_1').setValue(data['g16_1']);
         me.getComponent('smgs.g17_1_1').setValue(data['g17_1']);
-        me.getComponent('smgs.g48_1').setValue(data['g18r_1']);
-        me.getComponent('smgs.g49').setValue(data['g19r']);
+        me.getComponent('smgs.g48_1').setValue(data['g18_1']);
+        me.getComponent('smgs.g49').setValue(data['g19_1']);
         me.getComponent('smgs.g110_1').setValue(data['g110']);
         me.getComponent('smgs.g4_dop_info').setValue(data['dop_info']);
         view.up('window').close();

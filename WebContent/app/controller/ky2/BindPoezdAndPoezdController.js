@@ -1,9 +1,9 @@
 Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
     extend: 'Ext.app.Controller',
 
-    sourceVagModels: [],
-    selectedNodesLeft: [],
-    selectedNodesRight: [],
+    sourceVagModels: [], // to use in after drop event
+    selectedNodesLeft: [], // last selection
+    selectedNodesRight: [], // last selection
     views: [
         'ky2.poezd.into.PoezdsOutDir',
         'ky2.poezd.out.PoezdsIntoDir',
@@ -83,10 +83,22 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
             'ky2poezd2poezdbindtreeforminto treepanel#treepanelRight': {
                 selectionchange: this.selectionchangeRight
             },
+            'ky2poezd2poezdbindtreeformout treepanel#treepanelLeft': {
+                selectionchange: this.selectionchangeLeft
+            },
+            'ky2poezd2poezdbindtreeformout treepanel#treepanelRight': {
+                selectionchange: this.selectionchangeRight
+            },
             'ky2poezd2poezdbindtreeforminto button[action=moveRight]': {
                 click: this.moveNodesRight
             },
             'ky2poezd2poezdbindtreeforminto button[action=moveLeft]': {
+                click: this.moveNodesLeft
+            },
+            'ky2poezd2poezdbindtreeformout button[action=moveRight]': {
+                click: this.moveNodesRight
+            },
+            'ky2poezd2poezdbindtreeformout button[action=moveLeft]': {
                 click: this.moveNodesLeft
             }
         });
@@ -141,22 +153,26 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
                     this.getTreepanelLeft().setTitle(poezd1Obj['nppr']);
                     var rootNode = this.getTreepanelLeft().getStore().getRootNode();
                     if (vags && !Ext.Object.isEmpty(vags)) {
-                        rootNode.set('hid', poezd1Obj['hid']); // poezd hid
+                        /*rootNode.set('hid', poezd1Obj['hid']); // poezd hid
+                        rootNode.set('poezdHid', poezd1Obj['hid']); // poezd hid
                         rootNode.set('direction', poezd1Obj['direction']);
                         rootNode.set('nppr', poezd1Obj['nppr']);
-                        this.initVagsNodes(vags, rootNode, false);
-                        // rootNode.expand();
+                        rootNode.set('who', 'poezd');
+                        this.initVagsNodes(vags, rootNode, false);*/
+                        this.initRootNode(rootNode, poezd1Obj, vags);
                     }
 
                     vags = poezd2Obj['vagons'];
                     this.getTreepanelRight().setTitle(poezd2Obj['nppr']);
                     rootNode = this.getTreepanelRight().getStore().getRootNode();
                     if (vags && !Ext.Object.isEmpty(vags)) {
-                        rootNode.set('hid', poezd2Obj['hid']);   // // poezd hid
+                        /*rootNode.set('hid', poezd2Obj['hid']);   // // poezd hid
+                        rootNode.set('poezdHid', poezd2Obj['hid']); // poezd hid
                         rootNode.set('direction', poezd2Obj['direction']);
                         rootNode.set('nppr', poezd2Obj['nppr']);
-                        this.initVagsNodes(vags, rootNode, false);
-                        // rootNode.expand();
+                        rootNode.set('who', 'poezd');
+                        this.initVagsNodes(vags, rootNode, false);*/
+                        this.initRootNode(rootNode, poezd2Obj, vags);
                     }
                     /// END fill tree
 
@@ -168,6 +184,15 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
                 this.getCenter().setLoading(false);
             }
         });
+    },
+
+    initRootNode: function(rootNode, dataObj, vags) {
+        rootNode.set('hid', dataObj['hid']); 
+        rootNode.set('poezdHid', dataObj['hid']); // poezd hid
+        rootNode.set('direction', dataObj['direction']);
+        rootNode.set('nppr', dataObj['nppr']);
+        rootNode.set('who', 'poezd');
+        this.initVagsNodes(vags, rootNode, false);
     },
 
     initVagsNodes: function (vags, rootNode, isYard) {    //isYard - poezd for yard
@@ -240,7 +265,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
                     who: 'gryz',
                     poezdHid: parentModel.get('poezdHid'),
                     vagHid: parentModel.get('who') === 'cont' ? parentModel.parentNode.get('hid') : parentModel.get('hid'),
-                    contHid: parentModel.get('who') === 'cont' ?  parentModel.get('hid') : null,
+                    contHid: parentModel.get('who') === 'cont' ? parentModel.get('hid') : null,
                     iconCls: 'gryz',
                     leaf: true,
                     allowDrop: false,
@@ -273,25 +298,27 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
     },
 
     bindPoezdToPoezd: function (btn) {
-        var dataObjLeft = {
-            hid: this.getTreepanelLeft().getRootNode().get('hid'),
+        /*var dataObjLeft = {
+            hid: this.getTreepanelLeft().getRootNode().get('poezdHid'),
             direction: this.getTreepanelLeft().getRootNode().get('direction'),
             nppr: this.getTreepanelLeft().getRootNode().get('nppr')
         };
 
         if (this.getTreepanelLeft().getRootNode().hasChildNodes()) {
             dataObjLeft = this.bindVags(dataObjLeft, this.getTreepanelLeft());
-        }
+        }*/
+        var dataObjLeft = this.bindPoezd(this.getTreepanelLeft().getRootNode());
+        var dataObjRight = this.bindPoezd(this.getTreepanelRight().getRootNode());
 
-        var dataObjRight = {
-            hid: this.getTreepanelRight().getRootNode().get('hid'),
+        /*var dataObjRight = {
+            hid: this.getTreepanelRight().getRootNode().get('poezdHid'),
             direction: this.getTreepanelRight().getRootNode().get('direction'),
             nppr: this.getTreepanelRight().getRootNode().get('nppr')
         };
 
         if (this.getTreepanelRight().getRootNode().hasChildNodes()) {
             dataObjRight = this.bindVags(dataObjRight, this.getTreepanelRight());
-        }
+        }*/
 
         var url = 'ky2/secure/BindPoezdAndPoezd.do';
         this.getCenter().setLoading(true);
@@ -310,12 +337,26 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         });
     },
 
-    bindVags: function (dataObj, treepanel) {
+    bindPoezd: function(rootNodeModel){
+        var dataObj = {
+            hid: rootNodeModel.get('poezdHid'),
+            direction: rootNodeModel.get('direction'),
+            nppr: rootNodeModel.get('nppr')
+        };
+
+        if (rootNodeModel.hasChildNodes()) {
+            dataObj = this.bindVags(dataObj, rootNodeModel);
+        }
+
+        return dataObj;
+    },
+
+    bindVags: function (dataObj, rootNodeModel) {
         var vagIndex = 0;
 
         dataObj['vagons'] = [];
 
-        treepanel.getRootNode().eachChild(function (vagNodeModel) { // write vags
+        rootNodeModel.eachChild(function (vagNodeModel) { // write vags
             var vagDataObj = {};
             vagDataObj['hid'] = vagNodeModel.get('hid');
             vagDataObj['sort'] = vagNodeModel.get('sort');
@@ -338,17 +379,17 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         return dataObj;
     },
 
-    bindConts: function (vagNodeModel, vagDataObj) {
+    bindConts: function (parentNodeModel, parentDataObj) {      // can be vag or yard
         var contIndex = 0;
-        vagDataObj['konts'] = [];
+        parentDataObj['konts'] = [];
 
-        vagNodeModel.eachChild(function (contNodeModel) {  // write conts
+        parentNodeModel.eachChild(function (contNodeModel) {  // write conts
             var contDataObj = {};
             contDataObj['hid'] = contNodeModel.get('hid');
             contDataObj['sort'] = contNodeModel.get('sort');
             contDataObj['nkon'] = contNodeModel.get('nkon');
 
-            vagDataObj['konts'].push(contDataObj);
+            parentDataObj['konts'].push(contDataObj);
 
             if (contNodeModel.hasChildNodes()) {
                 this.bindGryzy(contNodeModel, contDataObj);
@@ -384,15 +425,18 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
     },
 
     selectionchangeLeft: function (selModel, selected) {
-        this.selectionchange(selModel, selected, this.selectedNodesLeft);
+        this.selectionchange(selModel, selected, this.selectedNodesLeft/*, this.checkSelected, this*/);
     },
 
     selectionchangeRight: function (selModel, selected) {
-        this.selectionchange(selModel, selected, this.selectedNodesRight);
+        this.selectionchange(selModel, selected, this.selectedNodesRight/*, this.checkSelected, this*/);
     },
 
-    selectionchange: function (selModel, selected, selectedNodes, checkSelectedFn) {
-        var checkSelected = checkSelectedFn || this.checkSelected; // in yards another checkSelectedFn
+    selectionchange: function (selModel, selected, selectedNodes, checkSelectedFn, fnScope) {// in yards another checkSelectedFn
+        var checkSelected = this.checkSelected.bind(this);
+        if (checkSelectedFn) {
+            checkSelected = checkSelectedFn.bind(fnScope);
+        }
         if (selModel.getLastSelected() && selected[0]) {
             if (selected.length > 1 && !checkSelected(selected)) { // has wrong selection
                 for (var i = 0; i < selected.length; i++) {      // remove last selections
@@ -454,11 +498,33 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
     },
 
     moveNodesRight: function (btn) {
-        this.moveNodes(this.getTreepanelLeft(), this.getTreepanelRight());
+        this.moveNodes(this.getTreepanelLeft(), this.getTreepanelRight(), this.checkBeforeMoveToVag, this.afterDropToVag, this);
     },
 
     moveNodesLeft: function (btn) {
-        this.moveNodes(this.getTreepanelRight(), this.getTreepanelLeft());
+        this.moveNodes(this.getTreepanelRight(), this.getTreepanelLeft(), this.checkBeforeMoveToVag, this.afterDropToVag, this);
+    },
+
+    moveNodes: function (sourcePanel, targetPanel, beforeMoveFn, afterMoveFn, fnScope) {
+        var sourceNodes = sourcePanel.getSelectionModel().getSelection();
+        if (sourceNodes.length === 0) {
+            return;
+        }
+
+        var targetNode = targetPanel.getSelectionModel().getLastSelected(); // move only in one place
+        if (!targetNode || targetPanel.getSelectionModel().getSelection().length > 1) {
+            return;
+        }
+
+        if (!beforeMoveFn.call(fnScope, sourceNodes, targetNode)) {
+            return;
+        }
+
+        for (var y = 0; y < sourceNodes.length; y++) {
+            targetNode.insertChild(targetNode.childNodes.length, sourceNodes[y]); // appendChild don't work, no need to remove before insert
+        }
+
+        afterMoveFn.call(fnScope, sourceNodes, targetNode);
     },
 
     beforeDropToVag: function (targetModel, position, dragData) {
@@ -497,7 +563,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         return isDrop;
     },
 
-    cacheDistinctSourceModels: function(isDrop, sourceParentModel, sourceVagModels){
+    cacheDistinctSourceModels: function (isDrop, sourceParentModel, sourceVagModels) {
         if (isDrop) {    // save distinct sourceVagModels
             var found = false;
             for (var y = 0; y < sourceVagModels.length; y++) {
@@ -514,28 +580,6 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
                 sourceVagModels.pop(); // clear array
             }
         }
-    },
-
-    moveNodes: function (sourcePanel, targetPanel) {
-        var sourceNodes = sourcePanel.getSelectionModel().getSelection();
-        if (sourceNodes.length === 0) {
-            return;
-        }
-
-        var targetNode = targetPanel.getSelectionModel().getLastSelected(); // move only in one place
-        if (!targetNode || targetPanel.getSelectionModel().getSelection().length > 1) {
-            return;
-        }
-
-        if(!this.checkBeforeMoveToVag(sourceNodes, targetNode)) {
-            return;
-        }
-
-        for (var y = 0; y < sourceNodes.length; y++) {
-            targetNode.insertChild(targetNode.childNodes.length, sourceNodes[y]); // appendChild don't work, no need to remove before insert
-        }
-
-        this.afterDropToVag(sourceNodes, targetNode);
     },
 
     afterDropToVag: function (records, targetVagModel) {

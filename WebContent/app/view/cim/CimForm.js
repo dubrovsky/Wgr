@@ -502,6 +502,8 @@ Ext.define('TK.view.cim.CimForm', {
         if(dataObj){
             this.dataObj = dataObj;
         }
+        // прячем дубль наследованной панели
+        this.getComponent('cimformpanel').child('[xtype=toolbar]').hide();
     },
     initBuffers: function(){
         this.getComponent('cimformpanel').getComponent('g1_panel').initBuf();
@@ -525,9 +527,6 @@ Ext.define('TK.view.cim.CimForm', {
         this.getComponent('cimformpanel').getComponent('g9_panel').setDisplayedField();
         this.getComponent('cimformpanel').getComponent('g13_panel').setDisplayedField();
         // this.getComponent('g18v_panel').setDisplayedField();
-
-        // прчем дубль наследованной панели
-        this.getComponent('cimformpanel').child('[xtype=toolbar]').hide();
 
         // инициализация заполнения полей
         this.getComponent('cimformpanel').fireEvent('onChangeVgCtGrDisplField', this);

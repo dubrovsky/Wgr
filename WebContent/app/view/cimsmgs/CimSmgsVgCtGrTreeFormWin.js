@@ -33,6 +33,7 @@ Ext.define('TK.view.cimsmgs.CimSmgsVgCtGrTreeFormWin', {
     },
 
     buildTabPanelItems: function(){
+        var hideSMGS2=!!(this.xtype === 'smgs2VgCtGrTreeformWin' || 'avisosmgs2VgCtGrTreeformWin');
         return [{
             title: this.titleVag,
             itemId: 'vag',
@@ -58,10 +59,10 @@ Ext.define('TK.view.cimsmgs.CimSmgsVgCtGrTreeFormWin', {
             title: this.titleCont,
             itemId: 'cont',
             items: [
-                {xtype:'textfield', fieldLabel:this.labelNotes, name:"notes", maxLength:80, width:100},
+                {xtype: hideSMGS2?'hidden':'textfield', fieldLabel:this.labelNotes, name:"notes", maxLength:80, width:100},
                 {xtype:'textfield', fieldLabel:this.labelContNum, name:"utiN", maxLength:16, width:100, validator: TK.Validators.kontNum},
                 {xtype:'numberfield', fieldLabel:this.labelSize, name:"sizeFoot", maxLength:5, width:100, allowDecimals:false, minValue:0},
-                {xtype:'numberfield', fieldLabel:this.labelSizeMm, name:"sizeMm", maxLength:12, width:100, allowDecimals:false, minValue:0},
+                {xtype:hideSMGS2?'hidden':'numberfield', fieldLabel:this.labelSizeMm, name:"sizeMm", maxLength:12, width:100, allowDecimals:false, minValue:0},
                 {xtype:'numberfield', fieldLabel:this.labelTaraCont, name:"taraKont", maxLength:5, width:100, allowDecimals:false, minValue:0},
                 {xtype:'textfield', fieldLabel:this.labelContSize, name:"utiType", maxLength:16, width:100},
                 {xtype:'numberfield', fieldLabel:this.labelMaxLoad, name:"grpod", maxLength:9, width:100, minValue:0, decimalPrecision:3},
@@ -86,7 +87,7 @@ Ext.define('TK.view.cimsmgs.CimSmgsVgCtGrTreeFormWin', {
                 },
                 {xtype:'textarea', fieldLabel:this.labelNameEtsng, name:"enzgr", maxLength:4000, width:250},
                 {xtype:'numberfield', fieldLabel:this.labelMassa, name:'massa', maxLength:14, width:80, minValue:0, decimalPrecision:3},
-                {xtype:'trigger', fieldLabel:this.labelPackForeign, name:"upakForeign", maxLength:50, triggerCls:'dir', width:100,
+                {xtype:hideSMGS2?'hidden':'trigger', fieldLabel:this.labelPackForeign, name:"upakForeign", maxLength:50, triggerCls:'dir', width:100,
                     onTriggerClick: function(e){
                         this.fireEvent("ontriggerclick", this, e);
                     }
@@ -138,5 +139,37 @@ Ext.define('TK.view.cimsmgs.CimSmgsVgCtGrTreeFormWin', {
                 {xtype:'hidden', name:"hid"}
             ]
         }];
+    },
+    buildTopToolbarItems: function() {
+        return [{
+            xtype: 'textfield',
+            itemId: 'searchField',
+            enableKeyEvents: true
+        }, {
+            text: this.btnSearch,
+            action: 'search'
+        },
+            '-', {
+                text: this.btnExpandAll,
+                action: 'expandAll',
+                iconCls: 'minus'
+            }, '-', {
+                text: this.btnCollapseAll,
+                action: 'collapseAll',
+                iconCls: 'plus'
+            }, '-',
+            // загрузка XLS файлов вагонов/контейнеров
+            {text: this.btnImportXLSvag, itemId: 'uploadVagsSmgs2',action:'uploadVagsXLS', iconCls:'excel'},
+            {text: this.btnImportXLSCont, itemId: 'uploadContsSmgs2',action:'uploadContsXLS', iconCls:'excel'}
+            // {
+            //     text: 'спрятать вагоны',
+            //     action: 'hideVag',
+            //     iconCls: 'plus'
+            // }, '-',{
+            //     text: 'показать вагоны',
+            //     action: 'showVag',
+            //     iconCls: 'plus'
+            // }
+            ];
     }
 });

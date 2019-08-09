@@ -1,8 +1,12 @@
 package com.bivc.cimsmgs.actions;
 
+import Ti.DataProcessing.ImportXLS;
+import Ti.DataProcessing.ImportXLSSmgs2Cont;
+import Ti.DataProcessing.ImportXLSSmgs2Vag;
 import Ti.DataProcessing.Tools.DataProcessingTools;
 import Ti.DataProcessing.ImportXLSMapPogruz;
 import Ti.model.MapPogruz;
+import Ti.model.VagSmgs2;
 import com.bivc.cimsmgs.commons.Constants;
 import com.bivc.cimsmgs.commons.Search;
 import com.bivc.cimsmgs.dao.Doc2DocTemplatesDAO;
@@ -13,6 +17,7 @@ import com.bivc.cimsmgs.doc2doc.Doc2Doc;
 import com.bivc.cimsmgs.exceptions.BusinessException;
 import com.bivc.cimsmgs.exchange.PrilDocLoader;
 import com.bivc.cimsmgs.formats.json.Serializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
 import org.apache.struts2.interceptor.SessionAware;
@@ -25,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
@@ -36,15 +42,23 @@ public class Doc2Doc_A extends CimSmgsSupport_A implements ServletRequestAware, 
     @Autowired
     private Doc2Doc aviso2CimSmgs;
 
+    @Autowired
+    private ObjectMapper jacksonObjectMapper;
+
     private Doc2Doc aviso2SmgsGu;
     private Doc2Doc smgs2Invoice;
     private Doc2Doc file2SmgsInvoice;
     private Doc2Doc aviso2SmgsAppend;
-    private Doc2Doc smgs2Smgs4ContList;
     private Doc2Doc cimSmgs2CimSmgs4ContList;
     private Doc2Doc cimSmgs2ExcelContList_de;
-    private Doc2Doc smgs2ExcelContList_pl;
     private Doc2Doc cimSmgs2ExcelDopList_de;
+    private Doc2Doc smgs2Smgs4ContList;
+    private Doc2Doc smgs2ExcelContList_pl;
+
+    private Doc2Doc smgs2ExcelContList;
+    private Doc2Doc smgs2ExcelVagList;
+
+
 
     private HttpServletResponse servletResponse;
     private Map<String, Object> session;
@@ -119,68 +133,32 @@ public class Doc2Doc_A extends CimSmgsSupport_A implements ServletRequestAware, 
         return SUCCESS;
     }
 
-//    /**
-//     * uploadPogruzList preparing data for processing Peregruzlist
-//     *
-//     * @return
-//     * @throws Exception
-//     */
-//    @Deprecated
-//    public String uploadPogruzList3() throws Exception {
-//        log.info("uploadPogruzList");
-//        ArrayList<String> res = new ArrayList<>();
-//        List<CimSmgs> smgses = new ArrayList<>();
-//        List<Long> smgsHIDs = new ArrayList<>();
-//        Date date[] = new Date[2];
-//        switch (getName()) {
-//            // checking processing stile
-//            case "trainlist": {
-////                res.add("trainlist");
-////                res.add(getQuery());
-////                res.add(getQuery1());
-//                List<String> trainList = Arrays.asList(getQuery().split(","));
-//
-//                // processing dates
-//                date = DataProcessingTools.parseDateString(getQuery1());
-//                setSearch(new Search());
-//                getSearch().setDate1(date[0]);
-//                getSearch().setDate2(date[1]);
-//
-//                for (String train : trainList) {
-//                    getSearch().setNpoezd(train);
-//                    smgses.addAll(getSmgsDAO().findSmgsTrainDate(0, 0, getSearch(), getUser().getUsr()));
-//                }
-//
-////                res.add(Integer.toString(smgses.size()));
-//
-//                for (CimSmgs smgs : smgses) {
-//                    smgsHIDs.add(smgs.getHid());
-////                    res.add(smgs.getHid().toString());
-//                }
-//            }
-//            break;
-//            case "smgslist": {
-////                res.add("smgslist");
-////                res.add(getQuery());
-//                List<String> strHidList = Arrays.asList(getQuery().split(","));
-//                for (String hidSTR : strHidList) {
-//                    smgsHIDs.add(Long.parseLong(hidSTR));
-//                }
-//
-//            }
-//            break;
-//            default: {
-////                res.add("single smgs");
-//                smgsHIDs.add(getHid_cs());
-//            }
-//        }
-//
-//        res = new PrilDocLoader().processMapPeregruz2(smgsHIDs, new FileInputStream(fileData));
-//
-//        setJSONData(res.isEmpty() ? Constants.convert2JSON_True() : Constants.convert2JSONUploadDoc9Result(defaultSerializer.write(res)));
-//
-//        return SUCCESS;
-//    }
+    public String uploadXLSvags() throws Exception {
+        log.info("uploadPogruzList");
+
+        ImportXLS importXLS =null;
+        switch (getName())
+        {
+            case "uploadVagsXLS":{importXLS= new ImportXLSSmgs2Vag();}break;
+            case "uploadContsXLS":{importXLS= new ImportXLSSmgs2Cont();}break;
+        }
+//        ImportXLSSmgs2Vag importXLSSmgs2Vag = new ImportXLSSmgs2Vag();
+
+        ArrayList<?> vagSmgs2s = null;
+        if (importXLS.init(new FileInputStream(fileData))) {
+            vagSmgs2s = importXLS.processSheet();
+            if (importXLS.getErrors().size() < 2) {
+                setJSONData("{success: true,'rows': "+defaultSerializer.write(vagSmgs2s)+",'type':'"+getName()+"'}");
+            }
+            else {
+                setJSONData(Constants.convert2JSONUploadDoc9Result(defaultSerializer.write(importXLS.getErrors())));
+            }
+        }
+        else {
+            setJSONData(Constants.convert2JSONUploadDoc9Result(defaultSerializer.write(importXLS.getErrors())));
+        }
+        return SUCCESS;
+    }
 
     /**
      * uploadPogruzList preparing data for processing Peregruzlist
@@ -260,7 +238,7 @@ public class Doc2Doc_A extends CimSmgsSupport_A implements ServletRequestAware, 
      */
     public String uploadPeregruz2BaseList() throws Exception {
 
-        List<MapPogruz> list = DataProcessingTools.DeserializeMapPeregruz(getServletRequest().getParameter("jsonData"));
+        List<MapPogruz> list = DataProcessingTools.DeserializeMapPeregruz(getServletRequest().getParameter("jsonData"), jacksonObjectMapper);
         if (list != null) {
 //            setJSONData(Constants.convert2JSONUploadDoc9Result( list.toString()));
             ArrayList<String> res=new PrilDocLoader().processPeregruz2BaseList(list);
@@ -578,5 +556,21 @@ public class Doc2Doc_A extends CimSmgsSupport_A implements ServletRequestAware, 
 
     public Doc2Doc getAviso2CimSmgs() {
         return aviso2CimSmgs;
+    }
+
+    public Doc2Doc getSmgs2ExcelContList() {
+        return smgs2ExcelContList;
+    }
+
+    public Doc2Doc getSmgs2ExcelVagList() {
+        return smgs2ExcelVagList;
+    }
+
+    public void setSmgs2ExcelContList(Doc2Doc smgs2ExcelContList) {
+        this.smgs2ExcelContList = smgs2ExcelContList;
+    }
+
+    public void setSmgs2ExcelVagList(Doc2Doc smgs2ExcelVagList) {
+        this.smgs2ExcelVagList = smgs2ExcelVagList;
     }
 }

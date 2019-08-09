@@ -51,15 +51,15 @@ public class GruzBindDTO implements Comparable<GruzBindDTO> {
             return BEFORE;
         }
 
-        Comparable thisHid = this.getHid();
-        Comparable thatHid = that.getHid();
+        Comparable thisSort = this.getSort();
+        Comparable thatSort = that.getSort();
 
-        if (thisHid == null) {
+        if (thisSort == null) {
             return AFTER;
-        } else if (thatHid == null) {
+        } else if (thatSort == null) {
             return BEFORE;
         } else {
-            return thisHid.compareTo(thatHid);
+            return thisSort.compareTo(thatSort);
         }
     }
 }

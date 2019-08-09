@@ -3,7 +3,7 @@ Ext.define('TK.model.Avisocimsmgs', {
 
     fields: [
         'dattr','altered','un','status',
-        'numClaim', 'konts', 'gng', 'avizo_num','locked', 'comments', 'npoezd',
+        'numClaim','profile', 'konts', 'gng', 'avizo_num','locked', 'comments', 'npoezd',
         'g1', 'g4','graf','src',
         {name:'hid', type:'int'},
         {name:'ready', type:'int'},

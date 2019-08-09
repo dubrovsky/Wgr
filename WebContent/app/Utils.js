@@ -48,6 +48,9 @@ Ext.define('TK.Utils', {
         meta.style = 'white-space:normal;';
         return value;
     },
+    renderNonZeroStr: function (value, meta) {
+        return value!==0?value:'';
+    },
     isRowSelected: function (grid) {
         if (grid.selModel.getCount() == 0) {
             Ext.Msg.show({
@@ -211,6 +214,63 @@ Ext.define('TK.Utils', {
                 component.setValue(this.translit_en(text));
             }
         }
-    }
+    },
+    /**
+     * Method used to compare 2 objects.
+     * @param {Object} one the first object
+     * @param {Object} two the second object
+     * @param {Array} [skippedProperties] - optional array of properties to be skipped by this comparison
+     * @return {Boolean}
+     */
+    deepEquals: function (one, two, skippedProperties) {
+        /**
+         * Returns true if object one equals object two
+         * @private
+         * @param {Object} one
+         * @param {Object} two
+         * @param {Array} skippedProperties optional
+         */
+        function objectEquals(one, two, skippedProperties) {
+            var equals = true;
+            if (!one || !two) {
+                return false;
+            }
 
+            for (var propertyName in one) {
+                if (skippedProperties.indexOf(propertyName) > -1) {
+                    continue;
+                }
+
+                if (one[propertyName] != null && two[propertyName] == null) {
+                    equals = false;
+                } else if (one[propertyName] != null && two[propertyName] != null) {
+                    if (typeof one[propertyName] == 'object' && typeof two[propertyName] == 'object') {
+                        equals = equals && Ext.Object.deepEquals(one[propertyName], two[propertyName], skippedProperties);
+                    } else {
+                        equals = equals && (one[propertyName] == two[propertyName]);
+                    }
+                }
+            }
+
+            return equals;
+        }
+
+        var oneEqualsTwo = objectEquals(one, two, skippedProperties || []),
+            twoEqualsOne = objectEquals(two, one, skippedProperties || []);
+
+        return (oneEqualsTwo && twoEqualsOne);
+    },
+    firstContainsSecond:function (first,second,skippedProperties) {
+
+        for (var propertyName in second) {
+            console.log(propertyName)
+            if (skippedProperties.indexOf(propertyName) > -1) {
+                console.log('skip'+propertyName)
+            }
+            else
+            if(first[propertyName]==null||first[propertyName]!==second[propertyName])
+                return false;
+        }
+        return true;
+    }
 });

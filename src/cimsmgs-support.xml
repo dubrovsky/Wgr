@@ -189,10 +189,16 @@
         <action name="Doc2Doc_uploadPeregruz2BaseList" method="uploadPeregruz2BaseList" class="doc2doc_A">
             <result name="success" type="json"/>
         </action>
-        <action name="Doc2Doc_uploadPogruzListTrain" method="uploadPogruzListTrain" class="doc2doc_A">
+        <action 
+name="Doc2Doc_uploadXLSvags" method="uploadXLSvags" class="doc2doc_A">
             <result name="success" type="json"/>
             <interceptor-ref name="fileUploadStack"/>
         </action>
+    
+<!--<action name="Doc2Doc_uploadPogruzListTrain" method="uploadPogruzListTrain" class="doc2doc_A">-->
+            <!--<result name="success" type="json"/>-->
+            <!--<interceptor-ref name="fileUploadStack"/>-->
+        <!--</action>-->
     </package>
 
     <package name="project-support" namespace="/" extends="cimsmgs-default">

@@ -73,6 +73,9 @@
         <property name="nkon" type="string">
             <column length="14" name="NKON"/>
         </property>
+        <property name="notp" type="string">
+            <column length="14" name="NOTP"/>
+        </property>
         <property name="dprb" type="timestamp">
             <column length="7" name="DPRB"/>
         </property>
@@ -85,6 +88,12 @@
 
         <property name="massa_tar" type="java.lang.Long">
             <column precision="20" scale="0" name="MASSA_TAR"/>
+        </property>
+        <property name="massa_brutto" type="java.lang.Long">
+            <column precision="20" scale="0" name="MASSA_BRUTTO"/>
+        </property>
+        <property name="massa_brutto_all" type="java.lang.Long">
+            <column precision="20" scale="0" name="MASSA_BRUTTO_ALL"/>
         </property>
         <property name="pod_sila" type="java.lang.Float">
             <column precision="20" scale="2" name="POD_SILA"/>
@@ -170,6 +179,12 @@
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.ky.Gruz"/>
         </set>
+        <set fetch="select" inverse="true" lazy="true" name="plombs" sort="natural" table="KY_PLOMB" batch-size="50" cascade="all, delete-orphan">
+            <key>
+                <column name="HID_KONT" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.Plomb"/>
+        </set>
 
         <!--<set fetch="select" inverse="true" lazy="true" name="gruzs" sort="natural" table="KY_GRUZ" batch-size="50"
              cascade="delete">
@@ -178,12 +193,7 @@
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.ky.Gruz"/>
         </set>-->
-        <!--<set fetch="select" inverse="true" lazy="true" name="plombs" sort="natural" table="KY_PLOMB" batch-size="50" cascade="delete">
-            <key>
-                <column name="HID_KONT" precision="20" scale="0"/>
-            </key>
-            <one-to-many class="com.bivc.cimsmgs.db.ky.Plomb"/>
-        </set>
+        <!--
         <set fetch="select" inverse="true" lazy="true" name="kontStatusHistory" sort="natural"
              table="KY_KONT_STATUS_HISTORY" batch-size="50" cascade="delete">
             <key>

@@ -29,7 +29,7 @@ public class PoezdDAOHib extends GenericHibernateDAO<Poezd, Long> implements Poe
     private static final Logger log = LoggerFactory.getLogger(PoezdDAOHib.class);
 
     @Override
-    public List<Poezd> findAll(Integer limit, Integer start, Long routeId, Byte direction, List<Filter> filters, Usr usr, Locale locale) {
+    public List<Poezd> findAll(Integer limit, Integer start, Long routeId, Byte direction, List<Filter> filters, Usr usr, Locale locale, Byte koleya) {
         log.debug("Finding all Poezd entries.");
 
         Criteria crit = getSession().createCriteria(getPersistentClass());
@@ -40,6 +40,7 @@ public class PoezdDAOHib extends GenericHibernateDAO<Poezd, Long> implements Poe
             crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 20 : limit);
         }
         crit.add(Restrictions.eq("direction", direction));
+        crit.add(Restrictions.eq("koleya", koleya));
         crit.addOrder(Order.desc("dattr"));
 
         applyFilter(filters, crit, locale);
@@ -50,11 +51,12 @@ public class PoezdDAOHib extends GenericHibernateDAO<Poezd, Long> implements Poe
 
 
     @Override
-    public Long countAll(Long routeId, Byte direction, List<Filter> filters, Usr usr, Locale locale) {
+    public Long countAll(Long routeId, Byte direction, List<Filter> filters, Usr usr, Locale locale, Byte koleya) {
         Criteria crit = getSession().createCriteria(getPersistentClass());
         crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans()));
         crit.createAlias("route", "route").add(Restrictions.eq("route.hid", routeId));
         crit.add(Restrictions.eq("direction", direction));
+        crit.add(Restrictions.eq("koleya", koleya));
 
         crit.setProjection(Projections.countDistinct("hid"));
 

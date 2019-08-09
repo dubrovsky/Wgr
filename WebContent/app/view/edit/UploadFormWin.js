@@ -48,6 +48,7 @@ Ext.define('TK.view.edit.UploadFormWin', {
             xtype: 'tbfill'
         },{
             text: this.btnSave,
+            itemId:'savebtn',
             iconCls: 'save',
             action: 'upload'
         }, {
@@ -59,7 +60,8 @@ Ext.define('TK.view.edit.UploadFormWin', {
 
     buildFormItems: function() {
         return [
-            {xtype:'filefield', fieldLabel: this.labelFile, name: 'upload', allowBlank: false, buttonText: this.labelUpload}
+            {xtype:'filefield', fieldLabel: this.labelFile, name: 'upload',itemId:'uploadField', allowBlank: false, buttonText: this.labelUpload},
+            {xtype: 'hidden', name: "name",itemId:'uploadName', text: '', allowBlank: true}
         ];
     }
 });

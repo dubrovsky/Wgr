@@ -56,6 +56,8 @@ Ext.define('TK.view.aviso.Form', {
             {x:453, y:30, name:'smgs.zakazNo', itemId:'smgs.zakazNo', maxLength:20, width:100},
             {x:509, y:8, xtype:'label', text:this.labelWagenNum},
             {x:593, y:3, name:'smgs.npoezd', itemId:'smgs.npoezd', maxLength:32, width:350},
+            {x:493, y:38, xtype:'label', text:this.labelTeplatename},
+            {x:593, y:33, name:'smgs.profile', itemId:'smgs.profile', maxLength:32, width:350},
 
             {xtype:'textarea', x:935, y:4, width:350, height:55, name:'smgs.guInf', itemId:'smgs.guInf'},
             {xtype:'textarea', x:89, y:110, width:590, height:114, readOnly:true, name:'disp.g1', itemId:'disp.g1', submitValue:false},

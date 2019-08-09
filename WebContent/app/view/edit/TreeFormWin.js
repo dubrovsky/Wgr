@@ -10,7 +10,7 @@ Ext.define('TK.view.edit.TreeFormWin', {
     ],
 
     y: 0,
-    width: 600,
+    width: 700,
     height: 600,
     modal: true,
     config: {

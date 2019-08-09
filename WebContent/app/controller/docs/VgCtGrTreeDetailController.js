@@ -48,6 +48,12 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
     }, {
         ref: 'searchField',
         selector: 'vgCtGrTreeFormWin textfield#searchField'
+    },{
+        ref: 'uploadVagsSmgs2',
+        selector: 'vgCtGrTreeFormWin button#uploadVagsSmgs2'
+    },{
+        ref: 'uploadContsSmgs2',
+        selector: 'vgCtGrTreeFormWin button#uploadContsSmgs2'
     }, {
         ref: 'addVagBtn',
         selector: 'vgCtGrTreeFormWin button[action=addVag]'
@@ -81,6 +87,7 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
                     showVgCtGrWin: this.onVgCtGrWinShow,
                     expandAllClick: this.expandAllTreeClick,
                     collapseAllClick: this.collapseAllTreeClick,
+                    hideVag: this.hideVags,
                     displayedVgCtGrFields: this.setDisplayedVgCtGrFields
                 }
             }
@@ -120,6 +127,12 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
             'vgCtGrTreeFormWin button[action=collapseAll]': {
                 click: this.onCollapseAllClick
             },
+            'vgCtGrTreeFormWin button[action=hideVag]': {
+                click: this.hideVags
+            },
+            'vgCtGrTreeFormWin button[action=showVag]': {
+                click: this.showVags
+            },
             'vgCtGrTreeFormWin textfield#searchField': {
                 keypress: this.onSearchFieldKeyPress
             },
@@ -152,6 +165,7 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
         // return this.getG25_kField().getValue();
         var g25Field = this.getCenter().getActiveTab().getForm().findField('smgs.g25');
         var value = g25Field.getGroupValue ? g25Field.getGroupValue() : g25Field.getValue();
+
         if (!value) value = 2;
         return parseInt(value) === 2;
     },
@@ -206,7 +220,6 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
         if (this.getDelBtn().isHidden()) {
             this.getDelBtn().show();
         }
-
         switch (newTabItemId) {
             case 'danGryz':
                 if (this.getAddDanGryzBtn().isHidden()) {
@@ -261,12 +274,11 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
         }
     },
 
-    onVgCtGrWinShow: function (widget, ownerDoc) {
+    onVgCtGrWinShow: function (widget, ownerDoc, record) {
         var win = Ext.widget(widget),
             tree = this.getTreepanel(),
             treeStore = tree.getStore(),
             rootNode = treeStore.getRootNode();
-
         //проверка является ли форма документа вложеной или все компоненты находятся на формe
         if (ownerDoc.ownerCt.ownerCt.xtype && ownerDoc.ownerCt.ownerCt.xtype === 'tabpanel')
             ownerDoc = ownerDoc.ownerCt;
@@ -283,6 +295,29 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
         /// END fill tree
 
         win.show();
+        // делаем пломбы выбранной в дереве, если в окно попали через двойно мелчок по пломбе в графе 19
+        if (typeof record === 'object'&&record.data) {
+            rootNode.findChildBy(function (child) {
+                var treeHid = child.data.hid;
+
+                if (record.data.hid === treeHid) {
+                    tree.getSelectionModel().select(child);
+                    this.onTreeNodeClick(tree, child);
+                }
+            }, this, true);
+        }
+        this.onExpandAllClick();
+
+        if(this.isContOtpr())
+        {
+            this.getUploadVagsSmgs2().hide();
+            this.getUploadContsSmgs2().show();
+        }
+        else
+        {
+            this.getUploadVagsSmgs2().show();
+            this.getUploadContsSmgs2().hide();
+        }
     },
 
     initVagsNodes: function (vags, rootNode) {
@@ -290,14 +325,15 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
             var vag = vags[vagIndx],
                 conts = vag[this.getWin().getOwnerDoc().getContCollectionName()],
                 gruzy = vag[this.getWin().getOwnerDoc().getGryzCollectionName()],
+                vagText = vag['nvag'] ? vag['nvag'] : '',
                 vagModel = Ext.create('TK.model.VgCtGrTreeNode', {
-                    text: vag['nvag'],
+                    // text: vag['sort']+1+'-'+ vagText,
+                    text: vagText,
                     who: 'vag',
                     leaf: false,
-                    iconCls: 'vag',
+                    iconCls: 'vag' + (vag['sort'] + 1),
                     expanded: ((conts && conts['0']) || (gruzy && gruzy['0'])) && vagIndx == 0
                 });
-
             this.getVagpanel().items.each(function (item, index, length) {
                 vagModel.set(item.getName(), vag[item.getName()]);
             });
@@ -322,17 +358,17 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
     initContsNodes: function (conts, vagIndx, vagModel) {
         for (var contIndx in conts) {
             var cont = conts[contIndx],
-                gryzy = cont[this.getWin().getOwnerDoc().getGryzCollectionName()],
-                contModel = Ext.create('TK.model.VgCtGrTreeNode', {
-                    text: cont['utiN'],
-                    who: 'cont',
-                    iconCls: 'cont3',
-                    leaf: gryzy && gryzy['0'] ? false : true,
-                    expanded: vagIndx == 0 && gryzy && gryzy['0'] && contIndx == 0,
-                    style: {
-                        'color': 'red'
-                    }
-                });
+                gryzy = cont[this.getWin().getOwnerDoc().getGryzCollectionName()];
+            contModel = Ext.create('TK.model.VgCtGrTreeNode', {
+                text: cont['utiN'],
+                who: 'cont',
+                iconCls: 'cont3',
+                leaf: gryzy && gryzy['0'] ? false : true,
+                expanded: vagIndx == 0 && gryzy && gryzy['0'] && contIndx == 0,
+                style: {
+                    'color': 'red'
+                }
+            });
 
             this.getContpanel().items.each(function (item, index, length) {
                 contModel.set(item.getName(), cont[item.getName()]);
@@ -398,6 +434,11 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
                 field.getName() == 'utiN' ||
                 field.getName() == 'nvag' ||
                 field.getName() == 'numOon') {
+                // if(field.getName() =='nvag')
+                // {
+                //     newVal=rec.data['sort']+1+'-'+newVal;
+                // }
+
                 rec.set('text', newVal);
             }
         }
@@ -461,13 +502,28 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
     onAddVagClick: function (btn) {
         this.addVgCtGr(this.getTreepanel().getRootNode(), 'vag');
     },
-
+    /**
+     * добавляет элемент в дерево вагонов
+     * @param parentModelNode родительский узел
+     * @param who тип элемента
+     * @param iconCls иконка
+     */
     addVgCtGr: function (parentModelNode, who, iconCls) {
+        var srt = 0,
+            icnCls = '';
+        if (who === 'vag' && parentModelNode.lastChild) {
+            srt = parentModelNode.lastChild.data['sort'] + 1;
+            icnCls = 'vag' + (srt + 1);
+        } else
+            icnCls = iconCls ? iconCls : who;
+
         var childModelNode = parentModelNode.appendChild(
             Ext.create('TK.model.VgCtGrTreeNode', {
                 leaf: true,
                 who: who,
-                iconCls: iconCls ? iconCls : who
+                sort: srt,
+                // text:srt+1+'-',
+                iconCls: icnCls
             })
         );
 
@@ -578,7 +634,30 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
             });
         }
     },
+    hideVags:function(treepanel, win)
+    {
 
+
+        var rootNode = this.getTreepanel().getStore().getRootNode();
+
+            rootNode.eachChild(function (vagNodeModel) { // write vags
+
+                if(vagNodeModel.get('who')==='vag')
+                    vagNodeModel.set('cls','hideTreeNode');
+    },this);
+    },
+    showVags:function(treepanel, win)
+    {
+
+
+        var rootNode = this.getTreepanel().getStore().getRootNode();
+
+        rootNode.eachChild(function (vagNodeModel) { // write vags
+
+            if(vagNodeModel.get('who')==='vag')
+                vagNodeModel.set('cls','showTreeNode');
+        },this);
+    },
     onSaveClick: function (btn) {
         var dataObj = {};
 
@@ -911,6 +990,7 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
     },
 
     onDropContToVag: function (node, data, vagModelNode) {
+
         var contModelNode = data.records[0];
         if (contModelNode.parentNode.get('who') !== 'vag') {
             contModelNode.remove();
@@ -956,13 +1036,37 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
 
         }
     },
-
+    /**
+     * действия перед перетаскиванием узла в дереве
+     * @param node
+     * @param data
+     * @param overModel
+     * @returns {boolean}
+     */
     onBeforedropContToVag: function (node, data, overModel) {
+        var rootNode = this.getTreepanel().getStore().getRootNode(),
+            totalNodes = rootNode.childNodes.length;
+
+        // изменение порядка вагонов в дереве.
+        if ((overModel.get('who') === 'vag') && (data.records[0].get('who') === 'vag')) {
+            var whereSrt = overModel.data['sort'],
+                sortIdx = 0;
+            rootNode.insertChild(whereSrt === totalNodes - 1 ? totalNodes : whereSrt, data.records[0]);
+            rootNode.eachChild(function (vagNodeModel) { // write vags
+                // var vagTxt=vagNodeModel.data['nvag']?vagNodeModel.data['nvag']:'';
+                vagNodeModel.set('sort', sortIdx);
+                vagNodeModel.set('iconCls', 'vag' + (sortIdx + 1));
+                // vagNodeModel.set('text',sortIdx+1+'-'+vagTxt);
+                vagNodeModel.commit();
+                sortIdx++;
+            }, this);
+            return false;
+        }
+
         return ((overModel.get('who') === 'vag') && (data.records[0].get('who') === 'cont') && (overModel.id !== data.records[0].parentNode.id));
     },
 
     setDisplayedVgCtGrFields: function (controller, docForm) {
-
 
         //проверка является ли форма документа вложеной или все компоненты находятся на формe
         docForm = docForm.title ? docForm : docForm.ownerCt;
@@ -978,9 +1082,8 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
         }
     },
 
+    // генерирует отображаемые поля с вагонами
     setDisplayedVagFields: function (controller, vags, vagDisplField) {
-
-
         var vagResult = '',
             contResult = '',
             gryzResult = '',
@@ -990,10 +1093,52 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
             conts,
             contsMassa = 0,
             contDisplField = controller.getKontDispField(),
-            gryzDisplField = controller.getGruzDispField();
+            gryzDisplField = controller.getGruzDispField(),
+            vagStoreTab, grStore,kontStore, ctCount = 0, plCount = 0;
+        // очищаем хранилище компонента g7vagsmgs2, если он присутствует на форме
+        if (controller.getDocForm().getComponent('disp.g7v') && controller.getDocForm().getComponent('disp.g7v').xtype === 'g7vagsmgs2') {
+            vagStoreTab = controller.getDocForm().getComponent('disp.g7v').getComponent('g7grid').getStore();
+            vagStoreTab.removeAll();
+        }
+        if (controller.getDocForm().getComponent('disp.g7g') && controller.getDocForm().getComponent('disp.g7g').xtype === 'g15gruzsmgs2') {
+            grStore = controller.getDocForm().getComponent('disp.g7g').getComponent('g15grid').getStore();
+            grStore.removeAll();
+        }
+        if(controller.getDocForm().getComponent('disp.g7k')&&controller.getDocForm().getComponent('disp.g7k').xtype==='g15contsmgs2')
+        {
+            kontStore=controller.getDocForm().getComponent('disp.g7k').getComponent('g15Kgrid').getStore();
+            kontStore.removeAll();
+        }
+
 
         for (var vagIndx in vags) {
             vag = vags[vagIndx];
+
+// заполнение хранилища компонента g7vagsmgs2 для отображения таблицы вагонов если оно существует
+            if (vagStoreTab)
+                vagStoreTab.add(
+                    {
+                        'hid': vag['hid'],
+                        'sort': vag['sort'] + 1,
+                        'nvag': vag['nvag'],
+                        'rod': vag['rod'],
+                        'klientName': vag['klientName'],
+                        'vagOtm': vag['vagOtm'],
+                        'grPod': vag['grPod'],
+                        'kolOs': vag['kolOs'],
+                        'taraVag': vag['taraVag']
+                    }
+                )
+            // подсчет количества контейнеров и мест занимаемых грузом
+
+            for (var ctIndx in vag.cimSmgsKonLists) {
+                ctCount++;
+                for (var grIndx in vag.cimSmgsKonLists[ctIndx].cimSmgsGruzs) {
+                    if (vag.cimSmgsKonLists[ctIndx].cimSmgsGruzs[grIndx]['places']) {
+                        plCount += vag.cimSmgsKonLists[ctIndx].cimSmgsGruzs[grIndx]['places'];
+                    }
+                }
+            }
 
             if (vagIndx == '0' && !vags['1']) {  // only 1 vag
                 vagResult = (vag['nvag'] ? '№ вагона/Wagen Nr ' + vag['nvag'] + '\n' : '');
@@ -1008,7 +1153,7 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
             if (this.isContOtpr()) {
                 conts = vag[controller.getDocForm().getContCollectionName()];
                 if (conts) {
-                    contsGryzyResult = this.setDisplayedContFields(controller, conts, gryzyGngMap);
+                    contsGryzyResult = this.setDisplayedContFields(controller, conts, gryzyGngMap,kontStore);
                     contResult += contsGryzyResult['contResult'];
                     contsMassa += contsGryzyResult['contsMassa'];
                 }
@@ -1019,29 +1164,46 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
                 }
             }
         }
-
-        vagDisplField.setValue(vagResult);
-        contDisplField.setValue(contResult);
+        // старое поле для отображения
+        // vagDisplField.setValue(vagResult);
+        if (contDisplField)
+            contDisplField.setValue(contResult);
         controller.getDocForm().getComponent('smgs.g24N').setValue(gryzyGngMap.sum('massa'));
         controller.getDocForm().getComponent('smgs.g24T').setValue(contsMassa);
-
+        if(controller.getDocForm().xtype==='smgs2'||controller.getDocForm()==='aviso2')
+        {
+            controller.getDocForm().getComponent('smgs.ctcount').setValue('КОНТЕЙНЕРОВ:\n' + ctCount);
+            controller.getDocForm().getComponent('smgs.plcount').setValue('ИТОГО:\n' + plCount);
+        }
         if (gryzyGngMap.getCount() > 0) {
             if (gryzyGngMap.getCount() > 1) {
                 gryzResult = 'Сборный груз: Sammelgut:\n\n'/* + gryzResult*/;
             }
-            gryzResult += this.setDisplayedGryzFields(controller, gryzyGngMap, vags);
-            gryzDisplField.setValue(gryzResult);
+
+            gryzResult += this.setDisplayedGryzFields(controller, gryzyGngMap, vags, grStore);
+            // gryzDisplField.setValue(gryzResult);
         } else {
-            gryzDisplField.setValue('');
+            // gryzDisplField.setValue('');
         }
     },
 
-    setDisplayedContFields: function (controller, conts, gryzyGngMap) {
+    setDisplayedContFields: function (controller, conts, gryzyGngMap,kontStore) {
         var contResult = '',
             contsMassa = 0;
 
         for (var contIndx in conts) {
             var cont = conts[contIndx];
+            if(kontStore)
+            kontStore.add(
+                {
+                    'hid':cont['hid'],
+                    'utiN':cont['utiN'],
+                    'sizeFoot':cont['sizeFoot'],
+                    'taraKont':cont['taraKont'],
+                    'utiType':cont['utiType'],
+                    'grpod':cont['grpod']
+                }
+            )
 
             contResult += (cont['sizeFoot'] ? '1x' + cont['sizeFoot'] : '');
             contResult += (cont['notes'] ? ' ' + cont['notes'] : '');
@@ -1065,55 +1227,120 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
         };
     },
 
-    groupGruzByKgvn: function (gryzy, gryzMap) {
-        for (var gryzIndx in gryzy) {
-            var gryz = gryzy[gryzIndx],
-                gruzTemp = gryz['kgvn'] ? gryzMap.get(gryz['kgvn'].trim()) : null;
+    groupGruzByKgvn: function (gruzy, gruzMap) {
+        for (var gruzIndx in gruzy) {
 
+            var gruz = gruzy[gruzIndx],
+                gruzTemp = null;
+            gruzMap.each(function (gruztmp) {
+                if ((gruztmp['kgvn'] === gruz['kgvn']) && (gruztmp['ekgvn'] === gruz['ekgvn']) && (gruztmp['nzgr'] === gruz['nzgr']) && (gruztmp['upak'] === gruz['upak'])) {
+                    gruzTemp = gruztmp;
+                }
+            }, this);
             if (!gruzTemp) {
-                gruzTemp = Ext.clone(gryz);
+                gruzTemp = Ext.clone(gruz);
                 gruzTemp['places'] = 0;
                 gruzTemp['massa'] = 0;
                 gruzTemp['upakGroupsRu'] = {};
                 gruzTemp['upakGroupsDe'] = {};
-                gryzMap.add(gryz['kgvn'] ? gryz['kgvn'].trim() : Ext.Number.randomInt(1, 100000), gruzTemp);
+                gruzMap.add(gruzTemp['hid'], gruzTemp);
             }
-
             var massa = 0;
-            if (gryz['massa']) {
-                massa = parseFloat(gryz['massa']);
+            if (gruz['massa']) {
+                massa = parseFloat(gruz['massa']);
                 gruzTemp['massa'] += isNaN(massa) ? 0 : massa;
             }
 
             var places = 0;
-            if (gryz['places']) {
-                places = parseInt(gryz['places']);
+            if (gruz['places']) {
+                places = parseInt(gruz['places']);
                 gruzTemp['places'] += isNaN(places) ? 0 : places;
             }
 
-            var upak = (gryz['upak'] && Ext.String.trim(gryz['upak']) ? Ext.String.trim(gryz['upak']) : 'Место');
+            var upak = (gruz['upak'] && Ext.String.trim(gruz['upak']) ? Ext.String.trim(gruz['upak']) : 'Место');
             if (!gruzTemp['upakGroupsRu'][upak]) {
                 gruzTemp['upakGroupsRu'][upak] = 0;
             }
             gruzTemp['upakGroupsRu'][upak] += isNaN(places) ? 0 : places;
 
-            upak = (gryz['upakForeign'] && Ext.String.trim(gryz['upakForeign']) ? Ext.String.trim(gryz['upakForeign']) : 'Kolli');
+            upak = (gruz['upakForeign'] && Ext.String.trim(gruz['upakForeign']) ? Ext.String.trim(gruz['upakForeign']) : 'Kolli');
             if (!gruzTemp['upakGroupsDe'][upak]) {
                 gruzTemp['upakGroupsDe'][upak] = 0;
             }
             gruzTemp['upakGroupsDe'][upak] += isNaN(places) ? 0 : places;
+
+
         }
+//         console.log(gryzy);
+//         console.log(gryzMap);
+//         for(var gryzIndx in gryzy) {
+//             var gryz = gryzy[gryzIndx],
+//                 gruzTemp = gryz['kgvn'] ? gryzMap.get(gryz['kgvn'].trim()) : null;
+//
+//                 if(gruzTemp&&((gruzTemp['ekgvn']!==gryz['ekgvn'])||(gruzTemp['nzgr']!==gruz['nzgr'])||(gruzTemp['upak']!==gruz['upak'])))
+//                     gruzTemp=null;
+// // заполнение хранилища грузов дл яотображения в табличной форме Г15
+//             if(!gruzTemp){
+//                 gruzTemp = Ext.clone(gryz);
+//                 gruzTemp['places'] = 0;
+//                 gruzTemp['massa'] = 0;
+//                 gruzTemp['upakGroupsRu'] = {};
+//                 gruzTemp['upakGroupsDe'] = {};
+//                 gryzMap.add(gryz['kgvn'] ? gryz['kgvn'].trim() : Ext.Number.randomInt(1, 100000), gruzTemp);
+//             }
+//
+//             var massa = 0;
+//             if(gryz['massa']){
+//                 massa = parseFloat(gryz['massa']);
+//                 gruzTemp['massa'] += isNaN(massa) ? 0 : massa;
+//             }
+//
+//             var places = 0;
+//             if(gryz['places']){
+//                 places = parseInt(gryz['places']);
+//                 gruzTemp['places'] += isNaN(places) ? 0 : places;
+//             }
+//
+//             var upak = (gryz['upak'] && Ext.String.trim(gryz['upak']) ? Ext.String.trim(gryz['upak']) : 'Место');
+//             if(!gruzTemp['upakGroupsRu'][upak]){
+//                 gruzTemp['upakGroupsRu'][upak] = 0;
+//             }
+//             gruzTemp['upakGroupsRu'][upak] += isNaN(places) ? 0 : places;
+//
+//             upak = (gryz['upakForeign'] && Ext.String.trim(gryz['upakForeign']) ? Ext.String.trim(gryz['upakForeign']) : 'Kolli');
+//             if(!gruzTemp['upakGroupsDe'][upak]){
+//                 gruzTemp['upakGroupsDe'][upak] = 0;
+//             }
+//             gruzTemp['upakGroupsDe'][upak] += isNaN(places) ? 0 : places;
+//
+//         }
+//         console.log(gryzMap);
     },
 
-    setDisplayedGryzFields: function (controller, gryzyGngMap, vags) {
+    setDisplayedGryzFields: function (controller, gryzyGngMap, vags, grStore) {
+
         var gryzResult = '',
             g11PrimResult = '';
 
         gryzyGngMap.each(function (gryz, gryzIndx) {
+
+                if (grStore) {
+                    grStore.add(
+                        {
+                            'hid': gryz['hid'],
+                            'nzgr': (gryz['kgvn'] ? 'ГНГ- ' + gryz['kgvn'] : '') + (gryz['ekgvn'] ? ' ЕТ СНГ- ' + gryz['ekgvn'] : '') + (gryz['nzgr'] ? '<br>' + gryz['nzgr'] : '') + (gryz['nzgrEu'] ? ' ' + gryz['nzgrEu'] : ''),
+                            'rod': gryz['upak'],
+                            'places': gryz['places'],
+                            'massa': gryz['massa'],
+                            'sort': grStore.getCount()
+                        }
+                    )
+                }
                 gryzResult += (gryz['nzgr'] ? gryz['nzgr'] : '');
                 gryzResult += (gryz['nzgrEu'] ? '\n' + gryz['nzgrEu'] : '');
                 gryzResult += (gryz['kgvn'] ? '\nГНГ- ' + gryz['kgvn'] : '');
                 gryzResult += (gryz['ekgvn'] ? '\nЕТ СНГ- ' + gryz['ekgvn'] : '');
+
 
                 // gryzResult += (gryz['upak'] ? '\nУпаковка- ' + gryz['upak'] : '');
                 gryzResult += '\n';

@@ -12,5 +12,5 @@ Ext.define('TK.model.CimSmgs', {
         {name: 'check', type: 'boolean', defaultValue:false},
         'type','print','locked',
         {name:'packId', type:'int'},
-        {name:'routeId', type:'int'},'g1_dop_info','g4_dop_info']
+        {name:'routeId', type:'int'},'g1_dop_info','g4_dop_info','g16_dop_info']
 });

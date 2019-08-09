@@ -1,3 +1,6 @@
+/**
+ *  класс для модели отображающий строку XLS файла контейнеров
+ */
 package com.bivc.cimsmgs.doc2doc;
 
 import com.bivc.cimsmgs.actions.Doc2Doc_A;

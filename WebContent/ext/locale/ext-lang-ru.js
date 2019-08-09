@@ -382,6 +382,7 @@ Ext.define("TK.locale.ru.view.DocsList", {
     btnPrintView:"Просмотр PDF",
     btnCreate   :'Создать',
     btnCopy     :'Копия',
+    btnCopyAviso:'Копировать в шаблон',
     btnCopySelect:'Копия, выбрать...',
     btnEdit      :'Редактировать',
     btnDelete   :'Удалить',
@@ -450,6 +451,7 @@ Ext.define("TK.locale.ru.view.DocsList", {
     txtNotApproved  :'Не согласована',
     txtBlocked      :'Заблокирована',
     headerStatus  :'Статус',
+    headerName  :'Имя<br/>инструкции',
     headerInstrNum:'№ инструкции',
     headerGNG:'ГНГ',
     headerComments:'Замечания',
@@ -492,7 +494,8 @@ Ext.define("TK.locale.ru.view.avisogu29k.List", {
 Ext.define("TK.locale.ru.view.cim.CimList", {
     override :"TK.view.cim.CimList",
     headerCim:'Цим',
-    title    :'Журнал ЦИМ'
+    title    :'Журнал ЦИМ',
+    menuTrSearch  :'Поиск поезда'
 
 });
 
@@ -503,7 +506,8 @@ Ext.define("TK.locale.ru.view.cimsmgs.CimSmgsList", {
     headerExchBch   :'Iftmin',
     title           :'Журнал ЦИМ/СМГС',
     headerVagVed    :'Вагонная ведомость',
-    titleVagVed     :'ведомость'
+    titleVagVed     :'ведомость',
+    menuTrSearch    :'Поиск поезда'
 });
 
 Ext.define("TK.locale.ru.view.cmr.List", {
@@ -571,7 +575,8 @@ Ext.define("TK.locale.ru.view.smgs2.Smgs2List", {
     headerExchBch :'Iftmin',
     headerAvisoNum:'№ Авизо',
     headerVagVed  :'Вагонная ведомость',
-    titleVagVed   :'ведомость'
+    titleVagVed   :'ведомость',
+    menuTrSearch  :'Поиск поезда'
 });
 
 
@@ -795,6 +800,8 @@ Ext.define("TK.locale.ru.view.edit.DetailGrid", {
 
 Ext.define("TK.locale.ru.view.edit.DetailPanel", {
     override:"TK.view.edit.DetailPanel",
+    errorTitle    :'Ошибка',
+    errorMsgValid :'Проверьте правильность заполнения полей',
     btnSave :'Сохранить',
     btnClose:'Закрыть',
     labelSender     :'Отправитель',
@@ -817,6 +824,7 @@ Ext.define("TK.locale.ru.view.edit.DetailPanel", {
     labelSenderCod  :'Код Отправителя',
     labelReceiverCod:'Код Получателя',
     labelReceiver   :'Получатель'
+
 
 });
 Ext.define("TK.locale.ru.view.edit.Cimsmgs_g1_detailpanel", {
@@ -927,6 +935,7 @@ Ext.define("TK.locale.ru.view.edit.OtpavitelEdit", {
 
 Ext.define("TK.locale.ru.view.DocsForm", {
     override      :"TK.view.DocsForm",
+
     btnSave       :'Сохранить',
     btnSaveExit   :'Сохр-ть и Выйти',
     btnSavePrint  :'Сохр-ть и Печать PDF',
@@ -956,6 +965,7 @@ Ext.define("TK.locale.ru.view.DocsForm", {
     labelPayerName  :'Наименование плательщика',
     labelPayerNameRu:'Наименование плательщика(рус)',
     labelThrough    :'Способ оплаты (Через что)',
+    labelPrim    :'Примечание',
     labelPayerKod1  :'Код плательщика',
     labelPayerKod2  :'Подкод кода плательщика',
     labelPayerKod3  :'Подкод подкода плательщика',
@@ -989,6 +999,8 @@ Ext.define("TK.locale.ru.view.DocsForm", {
     labelPackForeign:'Упаковка',
 
     labelCodeStn     :'Код станции',
+    labelText3       :'Дорога ',
+    labelText4       :'Код администрации',
     labelBorderStn   :'Пограничные станции перехода',
     labelCodeDoc     :'Код документа',
     labelText        :'Текст',
@@ -1012,6 +1024,7 @@ Ext.define("TK.locale.ru.view.DocsForm", {
     labelFile             :'Файл',
     labelFileSearch       :'Обзор...',
     labelWagenNum         :'Номер поезда:',
+    labelTeplatename        :'Имя инструкции:',
     labelDocSort         :'Порядковый номер:',
     labelDocSummary         :'Сводная:',
     
@@ -1026,6 +1039,16 @@ Ext.define("TK.locale.ru.view.DocsForm", {
     labelCodyDo   :'Коды действуют до:',
     labelWagenNum   :'Номер поезда:',
     labelVsegoSmgs:'ВСЕГО SMGS:',
+    labelCarrier  :'Перевозчик',
+    labelFrom     :'Станция от',
+    labelTo       :'Станция до',
+    labelStationFrom   :'Станция от(код)',
+    labelStationTo     :'Станция до(код)',
+    titleCarriers      :'Перевозчики',
+    btnVed          :'Ведомость',
+    btnVag          :'Вагонаая',
+    btnCont         :'Контейнерная'
+
 
 });
 
@@ -1319,6 +1342,7 @@ Ext.define("TK.locale.ru.controller.exchange.Agreements", {
 Ext.define("TK.locale.ru.controller.Docs", {
     override:"TK.controller.Docs",
 
+    titleCopy2Aviso:'Копия в шаблон',
     titleList   :'Журнал ',
     titleEdit   :'Ред.',
     titleCopy   :'Копия ',
@@ -1379,7 +1403,24 @@ Ext.define("TK.locale.ru.controller.Docs", {
 
     titleDocsCopy: 'Список докуметов для копирования',
     headerName: 'Наименование',
-    btnCopy: 'Копировать'
+    btnCopy: 'Копировать',
+    all:            'Документ целиком',
+    smgs2_1        :'1|Отправитель|1',
+    smgs2_2        :'2|Станция отправления|2',
+    smgs2_3        :'3|Заявления отправителя|3',
+    smgs2_4        :'4|Получатель|4',
+    smgs2_5        :'5|Станция назначения|5',
+    smgs2_6        :'6|Погранпереходы|6',
+    smgs2_7        :'7|Вагон|7-12',
+    smgs2_8        :'8|Груз|15-18',
+    smgs2_9        :'9|Груз, дополнительная информация|15доп.',
+    smgs2_10        :'10|Контейнер|15',
+    smgs2_11        :'11|Пломбы|19',
+    smgs2_12        :'12|Перевозчики|22',
+    smgs2_13        :'13|Провозные платежи|23',
+    smgs2_14        :'14|Приложенные документы|24',
+    smgs2_15        :'15|Информация не предназначенная для перевозчика|25',
+    smgs2_16        :'16|Отметки таможни|28'
 });
 
 Ext.define("TK.locale.ru.controller.Ajax", {
@@ -1525,7 +1566,9 @@ Ext.define("TK.locale.ru.controller.Doc2Doc", {
     titleContList:'Введите номер поезда(-ов[,])',
     labelWagenNums   :'Номер поезда(-ов[,]):',
     btnClose :'Закрыть',
-    titleFilterPer:'Фильтр поездов'
+    titleFilterPer  :'Фильтр поездов',
+    warnTitle       :'Предупреждение',
+    saveMgs         :'Сохраните документ'
 });
 
 Ext.define("TK.locale.ru.controller.User", {
@@ -1548,6 +1591,12 @@ Ext.define("TK.locale.ru.controller.Nsi", {
     btnSearch      :'Обзор...',
     titleErrorWarning   :'Внимание',
     warningFillErrors   :'Поля подчеркнутые красным содержат слишком много символов'
+});
+
+Ext.define("TK.locale.ru.controller.docs.PlombsTreeDetailController", {
+    override       :"TK.controller.docs.PlombsTreeDetailController",
+    msgTitle    :'Внимание',
+    msgSplit    :'Данные записи сожержат разделители: , ; <br>Разделить на отдельные записи:<br>'
 });
 
 Ext.define("TK.locale.ru.view.nsi.List", {
@@ -1614,7 +1663,8 @@ Ext.define("TK.locale.ru.view.nsi.List", {
 
     ttipSave:'Сохранить',
     ttipDel :'Удалить',
-    btnClose:'Закрыть'
+    btnClose:'Закрыть',
+    tooltipEdit:'Редактировать'
 });
 
 Ext.define("TK.locale.ru.controller.print.Print", {
@@ -1624,7 +1674,9 @@ Ext.define("TK.locale.ru.controller.print.Print", {
     textPrint: "Печать",
     textPages: 'Страницы на печать',
     textPage: 'Страница ',
-    textPageBack: '(оборот)'
+    textPageBack: '(оборот)',
+    printTitle:'Печать',
+    printMsg:'Будут распечатаны документ(-ы)'
 });
 
 Ext.define("TK.locale.ru.controller.print.PrintTemplates", {
@@ -1660,7 +1712,9 @@ Ext.define("TK.locale.ru.view.edit.TreeFormWin", {
     btnPlombText: '+ Пломба',
     btnSearch: 'Поиск',
     btnExpandAll: 'Все развернуть',
-    btnCollapseAll: 'Все свернуть'
+    btnCollapseAll: 'Все свернуть',
+    btnImportXLSvag:'Импорт вагонов',
+    btnImportXLSCont:'Импорт котейнеров'
 });
 
 Ext.define("TK.locale.ru.view.cimsmgs.CimSmgsDocs9TreeFormWin", {
@@ -1700,7 +1754,8 @@ Ext.define("TK.locale.ru.Validators", {
     vagNumUzkText: 'Это поле должно содержать номер узкого вагона в формате 123456789012',
     vagNumShirText: 'Это поле должно содержать номер узкого вагона в формате 12345678',
     vagNumLastDigitText: 'Неверная контрольная цифра',
-    kontNumLastDigitText: 'Неверная контрольная цифра'
+    kontNumLastDigitText: 'Неверная контрольная цифра',
+    notXLS          :'Выбран не xls/xlsx файл'
 });
 
 
@@ -1885,6 +1940,53 @@ Ext.define("TK.locale.ru.view.pogruz.Map2BaseSelectForm", {
 Ext.define("TK.locale.ru.view.components.PagingSizeChangerPlugin", {
     override: "TK.view.components.PagingSizeChangerPlugin",
     displayText           :'записей на странице'
+});
+
+Ext.define("TK.locale.ru.view.edit.StationCatalogEdit", {
+    override: "TK.view.edit.StationCatalogEdit",
+
+    title        :'Станция',
+    btnSave         :'Сохранить',
+    btnCancel       :'Отмена',
+    lblStaRu      :'Станция(рус)',
+    lblStaEn      :'Станция(англ)',
+    lblStaCn      :'Станция(кит)',
+    lblStaNo      :'Код',
+    lblMnamerus   :'Железная<br>дорога',
+    lblManagno    :'Код<br>администрации',
+    lblCtryNam    :'Страна'
+});
+
+
+Ext.define("Ext.locale.ru.grid.plugin.RowEditing", {
+    override: "Ext.grid.plugin.RowEditing",
+
+    saveBtnText:'Сохранить',
+    cancelBtnText:'Отмена',
+    errorsText:'Ошибка',
+    dirtyText:'Подтвердите или отмените изменения',
+    chEvery:'Заменить все на ',
+    chEmpty:'Заменить пустые на '
+});
+
+Ext.define("TK.locale.ru.view.components.g7vagsmgs2", {
+    override: "TK.view.components.g7vagsmgs2",
+
+    drophlp        :'Перетащите запись в желаемое место'
+});
+Ext.define("TK.locale.ru.view.components.g19plombsmgs2", {
+    override: "TK.view.components.g19plombsmgs2",
+
+    totalCount        :'Итого'
+});
+Ext.define("TK.locale.ru.view.edit.SelectCopy2AvisoElements", {
+    override: "TK.view.edit.SelectCopy2AvisoElements",
+
+    title   :'Создание шаблона',
+    headtext    :'Пункт',
+    headngraph  :'N графы',
+    choose      :'Выбрать',
+    cancel      :'Отмена'
 });
 
 Ext.define("TK.locale.ru.view.ky.yard.List", {
@@ -2165,9 +2267,10 @@ Ext.define("TK.locale.ru.view.ky2.poezd.BasePoezdList", {
     headerUser        :'Пользователь',
 
     headerPoezdNum    :'Номер поезда',
+    headerPoezdNumM   :'Международный номер поезда',
     headerKoleya      :'Колея',
     headerVagCount    :'Количество вагонов',
-    headerKontCount   :'Количество контейнеров',
+    headerKontCount   :'Количество контейнеров не выгружено',
     freeSpace         :'',
 
     // title:'Список поездов по прибытию',
@@ -2433,13 +2536,17 @@ Ext.define("TK.locale.ru.controller.ky2.PoezdController", {
     override:"TK.controller.ky2.PoezdController",
 
     titleCreate: 'Создание поезда',
-    titleCreateInto: 'Создание поезда к.???? по прибытию',
-    titleCreateOut: 'Создание поезда к.???? по отправлению',
+    titleCreateIntoWide: 'Создание поезда к.1520 по прибытию',
+    titleCreateOutWide: 'Создание поезда к.1520 по отправлению',
+    titleCreateIntoNar: 'Создание поезда к.1435 по прибытию',
+    titleCreateOutNar: 'Создание поезда к.1435 по отправлению',
     titleEdit: 'Редактирование поезда',
     delTitle :'Удаление...',
     delMsg   :'Вы действительно хотите удалить..?',
     maskMsg :'Запрос данных...',
-    errorMsg:'Внимание! Ошибка...'
+    errorMsg:'Внимание! Ошибка...',
+    warningMsg:'Внимание!',
+    warningText:'Поезд не сохранен....'
 });
 
 Ext.define("TK.locale.ru.controller.ky.Vagon", {
@@ -2574,9 +2681,8 @@ Ext.define("TK.locale.ru.view.ky2.poezd.BasePoezdForm", {
     labelKoleyaNarow  :'Узкая',
     labelClient       :'Клиент',
     labelDep          :'Станция формирования поезда',
-    labelDest         :'Станция назначения поезда',
+    labelDest         :'Станция назначения поезда'
 
-    title:'Список автомобилей по прибытию'
 
 });
 
@@ -2632,4 +2738,18 @@ Ext.define("TK.locale.ru.controller.ky2.AvtoController", {
     delMsg   :'Вы действительно хотите удалить..?',
     maskMsg :'Запрос данных...',
     errorMsg:'Внимание! Ошибка...'
+});
+
+Ext.define("TK.locale.ru.controller.ky2.PoezdVgCtGrController", {
+    override:"TK.controller.ky2.PoezdVgCtGrController",
+
+    titleTree       : 'Вагон/Контейнер/Груз по поезду №'
+});
+
+Ext.define("TK.locale.ru.view.ky2.AbstractTreeForm", {
+    override:"TK.view.ky2.AbstractTreeForm",
+
+    btnSave       :'Сохранить',
+    btnSaveExit   :'Сохранить и Выйти',
+    btnClose       : 'Закрыть'
 });
