@@ -159,13 +159,12 @@ public class Vagon implements Serializable, Comparable<Vagon> {
     }
 
     public void bindKonts(Set<KontBindDTO> dtos, Mapper mapper, List<YardSector> yardSectors) {
-        // update
+        // update kont that not moved
         Set<KontBindDTO> dtoToRemove = new HashSet<>();
         for (KontBindDTO kontDTO : dtos) {
             for (Kont kont : getKonts()) {
                 if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
                     mapper.map(kontDTO, kont);  // update kont, sort can change
-//                    log.info("Update kont - {}", kont.getNkon());
                     dtoToRemove.add(kontDTO);
                     break;
                 }
@@ -202,6 +201,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
         dtos.removeAll(dtoToRemove);
 
         if (!dtos.isEmpty()) { // still have conts - may be when remove cont in same poesd between vagons
+            dtoToRemove.clear();
             for (KontBindDTO kontDTO : dtos) {
                 found = false;
                 for (Vagon vagon : getPoezd().getVagons()) {
@@ -210,6 +210,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
                             mapper.map(kontDTO, kont);
                             bindKont(kont);
                             log.info("Move kont in same poezd, kont - {}", kont.getNkon());
+                            dtoToRemove.add(kontDTO);
                             found = true;
                             break;
                         }
@@ -219,6 +220,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
                     }
                 }
             }
+            dtos.removeAll(dtoToRemove);
         }
     }
 
@@ -262,6 +264,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
         dtos.removeAll(dtoToRemove);
 
         if (!dtos.isEmpty()) { // still have conts - may be when remove cont in same poesd between vagons
+            dtoToRemove.clear();
             for (KontBindDTO kontDTO : dtos) {
                 found = false;
                 for (Vagon vagon : getPoezd().getVagons()) {
@@ -270,6 +273,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
                             mapper.map(kontDTO, kont);
                             bindKont(kont);
                             log.info("Move kont in same poezd, kont - {}", kont.getNkon());
+                            dtoToRemove.add(kontDTO);
                             found = true;
                             break;
                         }
@@ -279,6 +283,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
                     }
                 }
             }
+            dtos.removeAll(dtoToRemove);
         }
     }
 

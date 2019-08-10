@@ -86,8 +86,18 @@ public class YardSector implements Serializable {
         this.yards = kontYards;
     }
 
-    public void bindYardToPoezd(YardSectorBindDTO yardSectorBindDTO, Set<Vagon> vagons, Mapper mapper, List<YardSector> yardSectors) {
+    public void bindYardToPoezd(YardSectorBindDTO yardSectorBindDTO, Set<Vagon> vagons, Mapper mapper/*, List<YardSector> yardSectors*/) {
         for (YardBindDTO yardBindDTO : yardSectorBindDTO.getYards()) {
+            for (Yard yard : getYards()) {
+                if (Objects.equals(yard.getHid(), yardBindDTO.getHid())) {
+                    mapper.map(yardBindDTO, yard); // update
+                    yard.bindKonts(yardBindDTO.getKonts(), mapper, vagons);
+                    break;
+                }
+            }
+        }
+
+        /*for (YardBindDTO yardBindDTO : yardSectorBindDTO.getYards()) {
             if (yardBindDTO.getHid() != null) {
                 for (Yard yard : getYards()) {
                     if (Objects.equals(yard.getHid(), yardBindDTO.getHid())) {
@@ -157,6 +167,6 @@ public class YardSector implements Serializable {
                     }
                 }
             }
-        }
+        }*/
     }
 }

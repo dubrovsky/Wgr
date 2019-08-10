@@ -135,7 +135,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
                     //// fill trees
                     var vags = poezdObj['vagons'];
                     this.getTreepanelLeft().setTitle(poezdObj['nppr']);
-                    var rootNode = this.getTreepanelLeft().getStore().getRootNode();
+                    var rootNode = this.getTreepanelLeft().getRootNode();
                     if (vags && !Ext.Object.isEmpty(vags)) {
                         /*rootNode.set('hid', poezdObj['hid']); // poezd hid
                         rootNode.set('direction', poezdObj['direction']);
@@ -146,7 +146,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
                     }
 
                     this.getTreepanelRight().setTitle('Контейнерная площадка');
-                    rootNode = this.getTreepanelRight().getStore().getRootNode();
+                    rootNode = this.getTreepanelRight().getRootNode();
                     if (yardSectorArr && yardSectorArr.length > 0) {
                         this.initYardSectorNodes(yardSectorArr, rootNode);
                     }
@@ -231,7 +231,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
             }, this);
             yardSectorModel.appendChild(yardModel);     // view without yard places
             if (conts && conts.length > 0) {
-                this.initContsNodes(conts, yardModel, yardSectorModel);
+                this.initContsNodes(conts, yardModel/*, yardSectorModel*/);
                 // this.initContsNodes(conts, yardModel, yardSectorModel);
                 contsSum += conts.length;
             }
@@ -239,7 +239,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
         return contsSum;
     },
 
-    initContsNodes: function (conts, yardModel, yardSectorModel) {
+    initContsNodes: function (conts, yardModel/*, yardSectorModel*/) {
         for (var contIndx in conts) {
             var cont = conts[contIndx],
                 gryzy = cont['gruzs'],
@@ -247,9 +247,9 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
                     text: cont['nkon'],
                     who: 'cont',
                     yardHid: yardModel.get('hid'),
-                    x: yardModel.get('x'),
-                    y: yardModel.get('y'),
-                    z: yardModel.get('z'),
+                    // x: yardModel.get('x'),
+                    // y: yardModel.get('y'),
+                    // z: yardModel.get('z'),
                     yardSectorHid: yardModel.get('yardSectorHid'),
                     iconCls: 'cont3',
                     allowDrop: false,
@@ -264,7 +264,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
             // yardSectorModel.appendChild(contModel);
 
             if (gryzy && !Ext.Object.isEmpty(gryzy)) {
-                this.getController('ky2.BindPoezdAndPoezdController').initGryzyNodes(gryzy, contModel, contIndx, false, 'TK.model.ky2.PoezdBindTreeNode');
+                this.getController('ky2.BindPoezdAndPoezdController').initGryzyNodes(gryzy, contModel, contIndx, false/*, 'TK.model.ky2.PoezdBindTreeNode'*/);
             }
         }
     },
@@ -282,10 +282,18 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
             return true;
         }
 
+        // parent model can be yardsectors or yard
         var yardsectors = Ext.Array.filter(selected, function (item, index, array) {
             return item.get('who') === 'yardsector';
         });
-        if (yardsectors.length !== 0) {   // yardsectors can't be more than 1
+        if (yardsectors.length !== 0) {   // yardsectors can't be more than 1, it's checked in first if
+            return false;
+        }
+
+        var yards = Ext.Array.filter(selected, function (item, index, array) {
+            return item.get('who') === 'yard';
+        });
+        if (yards.length !== 0) {   // yards can't be more than 1, it's checked in first if
             return false;
         }
 
@@ -317,7 +325,8 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
             // check source
             isDrop = sourceModel.get('who') === 'cont';
             if (isDrop) { // can be moved cont
-                isDrop = sourceParentModel.get('who') === 'yardsector' || sourceParentModel.get('who') === 'vag'; // yo move in same tree
+                // isDrop = sourceParentModel.get('who') === 'yardsector' || sourceParentModel.get('who') === 'vag'; // yo move in same tree
+                isDrop = sourceParentModel.get('who') === 'yard' || sourceParentModel.get('who') === 'vag'; // yo move in same tree
             }
 
             // check target
@@ -331,7 +340,8 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
                 isDrop = sourceParentModel.get('hid') !== targetModel.get('hid'); // prevent dropping in same node
             }
 
-            this.getController('ky2.BindPoezdAndPoezdController').cacheDistinctSourceModels(isDrop, sourceParentModel, sourceParentModel.get('who') === 'yardsector' ? this.sourceYardModels : this.sourceVagModels);
+            // this.getController('ky2.BindPoezdAndPoezdController').cacheDistinctSourceModels(isDrop, sourceParentModel, sourceParentModel.get('who') === 'yardsector' ? this.sourceYardModels : this.sourceVagModels);
+            this.getController('ky2.BindPoezdAndPoezdController').cacheDistinctSourceModels(isDrop, sourceParentModel, sourceParentModel.get('who') === 'yard' ? this.sourceYardModels : this.sourceVagModels);
             if (!isDrop) {
                 break;
             }
@@ -349,15 +359,18 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
             // check source
             isDrop = sourceModel.get('who') === 'cont';
             if (isDrop) {
-                isDrop = (sourceParentModel.get('who') === 'vag' && sourceParentModel.get('otpravka') === 'CONT') || sourceParentModel.get('who') === 'yardsector';
+                // isDrop = (sourceParentModel.get('who') === 'vag' && sourceParentModel.get('otpravka') === 'CONT') || sourceParentModel.get('who') === 'yardsector';
+                isDrop = (sourceParentModel.get('who') === 'vag' && sourceParentModel.get('otpravka') === 'CONT') || sourceParentModel.get('who') === 'yard'; // can be moved in same yard
             }
 
             // check target
             if (isDrop) { // can be dropped only in yardsector
                 isDrop = targetModel.get('who') === 'yardsector';
+                // isDrop = targetModel.get('who') === 'yard';
             }
             if (isDrop && (!optParams || optParams['checkFreePlaces'])) { // check free places
                 isDrop = (targetModel.get('contsInYardSector') + records.length <= targetModel.get('placesInYardSector'));
+                // isDrop = (targetModel.parentNode.get('contsInYardSector') + records.length <= targetModel.parentNode.get('placesInYardSector'));
             }
             if (isDrop) {
                 isDrop = sourceParentModel.get('hid') !== targetModel.get('hid'); // prevent dropping in same node
@@ -385,11 +398,13 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
         this.getController('ky2.BindPoezdAndPoezdController').sortChildNodes(targetVagModel);
 
         for (var i = 0; i < records.length; i++) {
-            if (records[i].get('yardSectorHid')) { // diff trees - move from yard
+            // if (records[i].get('yardSectorHid')) { // diff trees - move from yard
+            if (records[i].get('yardHid')) { // diff trees - move from yard
                 for (var y = 0; y < this.sourceYardModels.length; y++) {
-                    if (records[i].get('yardSectorHid') === this.sourceYardModels[y].get('hid')) {
-                        this.sourceYardModels[y].set('contsInYardSector', (this.sourceYardModels[y].get('contsInYardSector') - 1));
-                        this.updateYardSectorModelText(this.sourceYardModels[y]);
+                    // if (records[i].get('yardSectorHid') === this.sourceYardModels[y].get('hid')) {
+                    if (records[i].get('yardHid') === this.sourceYardModels[y].get('hid')) { // this.sourceYardModels here yards
+                        this.sourceYardModels[y].parentNode.set('contsInYardSector', (this.sourceYardModels[y].parentNode.get('contsInYardSector') - 1));
+                        this.updateYardSectorModelText(this.sourceYardModels[y].parentNode);
                         break;
                     }
                 }
@@ -407,11 +422,14 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
             }
             records[i].set('yardSectorHid', null);
             records[i].set('yardHid', null);
-            records[i].set('x', null);
-            records[i].set('y', null);
-            records[i].set('z', null);
-            records[i].set('poezdHid', targetVagModel.get('poezdHid'));
-            records[i].set('vagHid', targetVagModel.get('hid'));
+            // records[i].set('x', null);
+            // records[i].set('y', null);
+            // records[i].set('z', null);
+            records[i].set('poezdHid', records[i].parentNode.parentNode.get('poezdHid'));
+            records[i].set('vagHid', records[i].parentNode.get('hid'));
+
+            // records[i].set('poezdHid', targetVagModel.get('poezdHid'));
+            // records[i].set('vagHid', targetVagModel.get('hid'));
         }
 
         this.getTreepanelLeft().getSelectionModel().deselectAll(true);
@@ -422,29 +440,87 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
         this.sourceYardModels = [];
     },
 
-    afterDropToYard: function (records, targetYardModel) {
-        for (var i = 0; i < this.sourceVagModels.length; i++) {
-            this.getController('ky2.BindPoezdAndPoezdController').sortChildNodes(this.sourceVagModels[i]);
-        }
-
-        for (var i = 0; i < records.length; i++) {
-            if (records[i].get('yardSectorHid')) { // same tree
-                for (var y = 0; y < this.sourceYardModels.length; y++) {
-                    if (records[i].get('yardSectorHid') === this.sourceYardModels[y].get('hid')) {
-                        this.sourceYardModels[y].set('contsInYardSector', (this.sourceYardModels[y].get('contsInYardSector') - 1));
+    moveContsToFreeYards: function (records, targetYardSectorModel) {
+        if (targetYardSectorModel.get('who') === 'yardsector') {
+            for (var i = 0; i < records.length; i++) {
+                this.moveContToFreeYard(records[i], targetYardSectorModel);
+                /*if (records[i].get('who') === 'cont') {
+                    var freeYard;
+                    targetYardSectorModel.eachChild(function (yardModel) {
+                        if (!yardModel.hasChildNodes()) {
+                            freeYard = yardModel;
+                            return false;
+                        }
+                    });
+                    if (freeYard) {
+                        freeYard.insertChild(freeYard.childNodes.length, records[i]); // appendChild don't work, no need to remove before insert
                     }
-                    this.updateYardSectorModelText(this.sourceYardModels[y]);
+                }*/
+            }
+        }
+    },
+
+    moveContToFreeYard: function(contModel, targetYardSectorModel){
+        if (contModel.get('who') === 'cont') {
+            var freeYard;
+            targetYardSectorModel.eachChild(function (yardModel) {
+                if (!yardModel.hasChildNodes()) {
+                    freeYard = yardModel;
+                    return false;
+                }
+            });
+            if (freeYard) {
+                freeYard.insertChild(freeYard.childNodes.length, contModel); // appendChild don't work, no need to remove before insert
+            }
+        }
+    },
+
+    afterDropToYard: function (records, targetModel) {
+        if (targetModel.get('who') === 'yardsector') { // remove records from sector to free yards
+            this.moveContsToFreeYards(records, targetModel);
+        }
+        for (var i = 0; i < records.length; i++) {
+            if (records[i].get('vagHid')) {  // diff trees - move from poezd
+                for (var y = 0; y < this.sourceVagModels.length; y++) {
+                    if (records[i].get('vagHid') === this.sourceVagModels[y].get('hid')) {
+                        if (!this.sourceVagModels[y].hasChildNodes()) {
+                            this.sourceVagModels[y].set('otpravka', undefined);
+                        } else {
+                            this.getController('ky2.BindPoezdAndPoezdController').sortChildNodes(this.sourceVagModels[y]);
+                        }
+                        break;
+                    }
+                }
+            } else { // same tree
+                // if (records[i].get('yardSectorHid')) { // same tree
+                for (var y = 0; y < this.sourceYardModels.length; y++) { // // this.sourceYardModels here yardsectors
+                    // if (records[i].get('yardSectorHid') === this.sourceYardModels[y].get('hid')) {
+                    if (records[i].get('yardHid') === this.sourceYardModels[y].get('hid')) {
+                        this.sourceYardModels[y].set('contsInYardSector', (this.sourceYardModels[y].get('contsInYardSector') - 1));
+                        this.updateYardSectorModelText(this.sourceYardModels[y]);
+                        break;
+                    }
                 }
             }
-            records[i].set('yardSectorHid', targetYardModel.get('hid'));
-            records[i].set('yardHid', null);
+
+            records[i].set('yardSectorHid', records[i].parentNode.parentNode.get('hid'));
+            records[i].set('yardHid', records[i].parentNode.get('hid'));
+
+            /*if(targetModel.get('who') === 'yard') { // !!!!!!!
+                records[i].set('yardSectorHid', targetModel.get('yardSectorHid'));
+                records[i].set('yardHid', targetModel.get('hid'));
+            } else { // yardsector -- added tp empty yard
+                records[i].set('yardSectorHid', targetModel.get('hid'));
+                records[i].set('yardHid', records[i].parentNode.get('hid'));
+            }*/
+
             records[i].set('poezdHid', null);
             records[i].set('vagHid', null);
             records[i].set('sort', 0);
         }
 
-        targetYardModel.set('contsInYardSector', (targetYardModel.get('contsInYardSector') + records.length));
-        this.updateYardSectorModelText(targetYardModel);
+        targetModel.set('contsInYardSector', (targetModel.get('contsInYardSector') + records.length));
+        this.updateYardSectorModelText(targetModel);
 
         this.getTreepanelLeft().getSelectionModel().deselectAll(true);
         this.getTreepanelRight().getSelectionModel().deselectAll(true);
@@ -464,8 +540,8 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
 
     moveAllNodesRight: function (btn) {
         var contNodes = [];
-        this.getTreepanelLeft().getRootNode().eachChild(function (model1) {
-            if (model1.get('who') === 'cont') {
+        this.getTreepanelLeft().getRootNode().eachChild(function (vagModel) {
+            /*if (model1.get('who') === 'cont') {
                 contNodes.push(model1);
             } else {
                 model1.eachChild(function (model2) {
@@ -473,7 +549,12 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
                         contNodes.push(model2);
                     }
                 });
-            }
+            }*/
+            vagModel.eachChild(function (model2) {
+                if (model2.get('who') === 'cont') { // can be gruz or cont
+                    contNodes.push(model2);
+                }
+            });
         });
         if (contNodes.length === 0) {
             return;
@@ -481,6 +562,9 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
 
         var targetNode = this.getTreepanelRight().getSelectionModel().getLastSelected(); // move only in one place
         if (!targetNode || this.getTreepanelRight().getSelectionModel().getSelection().length > 1) {
+            return;
+        }
+        if (targetNode.get('who') !== 'yardsector') {
             return;
         }
         if (targetNode.get('contsInYardSector') >= targetNode.get('placesInYardSector')) {
@@ -494,8 +578,9 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
         var insertedContsNodes = []; // not all nodes can be inserted
         var contsInYardSector = targetNode.get('contsInYardSector');
         for (var i = 0; i < contNodes.length; i++) {
-            if (contsInYardSector < targetNode.get('placesInYardSector')) {
-                targetNode.insertChild(targetNode.childNodes.length, contNodes[i]); // appendChild don't work, no need to remove before insert
+            if (contsInYardSector < targetNode.get('placesInYardSector')) { // check free places
+                // targetNode.insertChild(targetNode.childNodes.length, contNodes[i]); // appendChild don't work, no need to remove before insert
+                this.moveContToFreeYard(contNodes[i], targetNode);
                 contsInYardSector++;
                 insertedContsNodes.push(contNodes[i]);
             } else {
@@ -566,7 +651,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
             yardDataObj['z'] = nodeModel.get('z');
             yardSectorDataObj['yards'].push(yardDataObj);
 
-            if (nodeModel.get('who') === 'cont') {
+            /*if (nodeModel.get('who') === 'cont') {
                 yardDataObj['hid'] = nodeModel.get('yardHid');// no yard places
                 var yardModel = Ext.create('TK.model.ky2.PoezdBindTreeNode', {
                     hid: nodeModel.get('yardHid'),
@@ -576,12 +661,12 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
                 yardModel.appendChild(nodeModel.copy(null, true));  // work only copt
                 this.getController('ky2.BindPoezdAndPoezdController').bindConts(yardModel, yardDataObj);  // add cont to virtual place
                 yardModel.destroy();
-            } else {
-                yardDataObj['hid'] = nodeModel.get('hid');
-                if (nodeModel.hasChildNodes()) {
-                    this.getController('ky2.BindPoezdAndPoezdController').bindConts(nodeModel, yardDataObj);
-                }
+            } else {*/
+            yardDataObj['hid'] = nodeModel.get('hid');
+            if (nodeModel.hasChildNodes()) {
+                this.getController('ky2.BindPoezdAndPoezdController').bindConts(nodeModel, yardDataObj);
             }
+            // }
             yardIndex++;
         }, this);
     }

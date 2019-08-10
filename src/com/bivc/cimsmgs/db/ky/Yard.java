@@ -53,6 +53,7 @@ public class Yard implements Serializable {
     }
 
     public void bindKonts(TreeSet<KontBindDTO> dtos, Mapper mapper, Set<Vagon> toVags) {
+        // update kont that not moved
         Set<KontBindDTO> dtoToRemove = new HashSet<>();
         for (KontBindDTO kontDTO : dtos) {
             for (Kont kont : getKonts()) {
@@ -66,7 +67,7 @@ public class Yard implements Serializable {
         }
         dtos.removeAll(dtoToRemove);
 
-        // insert
+        // insert from poezd
         dtoToRemove.clear();
         boolean found = false;
         for (KontBindDTO kontDTO : dtos) {
@@ -88,7 +89,8 @@ public class Yard implements Serializable {
         }
         dtos.removeAll(dtoToRemove);
 
-        if (!dtos.isEmpty()) { // still have conts - may be when remove cont in same poesd between vagons
+        if (!dtos.isEmpty()) { // still have conts - may be when remove conts between yards
+            dtoToRemove.clear();
             found = false;
             for (KontBindDTO kontDTO : dtos) {
                 for (Yard yard : getSector().getYards()) {
@@ -97,6 +99,7 @@ public class Yard implements Serializable {
                             mapper.map(kontDTO, kont);
                             bindKont(kont);
                             log.info("Move kont in same yard, kont - {}", kont.getNkon());
+                            dtoToRemove.add(kontDTO);
                             found = true;
                             break;
                         }
@@ -106,13 +109,13 @@ public class Yard implements Serializable {
                     }
                 }
             }
+            dtos.removeAll(dtoToRemove);
         }
     }
 
     private Kont bindKont(Kont kont) {
         kont.setYard(this);
         kont.setVagon(null);
-        kont.setYard(null);
         kont.setAvto(null);
         return kont;
     }

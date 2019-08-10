@@ -61,7 +61,7 @@ public class BindPoezdAndYard_A extends CimSmgsSupport_A {
         for (YardSectorBindDTO yardSectorBindDTO : yardSectorsBindDTO){
             for(YardSector yardSector: yardSectors){
                 if (Objects.equals(yardSector.getHid(), yardSectorBindDTO.getHid())) {  // found sector
-                    yardSector.bindYardToPoezd(yardSectorBindDTO, poezd.getVagons(), mapper, yardSectors);
+                    yardSector.bindYardToPoezd(yardSectorBindDTO, poezd.getVagons(), mapper/*, yardSectors*/);
                     yardSectorDAO.makePersistent(yardSector);
                     break;
                 }
