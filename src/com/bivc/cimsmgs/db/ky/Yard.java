@@ -52,7 +52,7 @@ public class Yard implements Serializable {
         this.konts = konts;
     }
 
-    public void bindKonts(TreeSet<KontBindDTO> dtos, Mapper mapper, Set<Vagon> toVags) {
+    public void bindKonts(TreeSet<KontBindDTO> dtos, Mapper mapper, Set<Vagon> toVags, List<YardSector> yardSectors) {
         // update kont that not moved
         Set<KontBindDTO> dtoToRemove = new HashSet<>();
         for (KontBindDTO kontDTO : dtos) {
@@ -89,18 +89,23 @@ public class Yard implements Serializable {
         }
         dtos.removeAll(dtoToRemove);
 
-        if (!dtos.isEmpty()) { // still have conts - may be when remove conts between yards
+        if (!dtos.isEmpty()) { // still have conts - may be when remove conts between yards or yardsectores
             dtoToRemove.clear();
             found = false;
             for (KontBindDTO kontDTO : dtos) {
-                for (Yard yard : getSector().getYards()) {
-                    for (Kont kont : yard.getKonts()) {
-                        if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
-                            mapper.map(kontDTO, kont);
-                            bindKont(kont);
-                            log.info("Move kont in same yard, kont - {}", kont.getNkon());
-                            dtoToRemove.add(kontDTO);
-                            found = true;
+                for (YardSector yardSector : yardSectors) {
+                    for (Yard yard : yardSector.getYards()) {
+                        for (Kont kont : yard.getKonts()) {
+                            if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
+                                mapper.map(kontDTO, kont);
+                                bindKont(kont);
+                                log.info("Move kont in same yard, kont - {}", kont.getNkon());
+                                dtoToRemove.add(kontDTO);
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (found) {
                             break;
                         }
                     }
@@ -110,6 +115,12 @@ public class Yard implements Serializable {
                 }
             }
             dtos.removeAll(dtoToRemove);
+        }
+
+        if (!dtos.isEmpty()) {
+            for (KontBindDTO kontDTO : dtos) {
+                log.warn("Kont {} was not bound, something wrong!!!", kontDTO.getNkon());
+            }
         }
     }
 

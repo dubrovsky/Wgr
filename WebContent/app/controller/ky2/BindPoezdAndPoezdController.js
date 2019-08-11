@@ -359,7 +359,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         rootNodeModel.eachChild(function (vagNodeModel) { // write vags
             var vagDataObj = {};
             vagDataObj['hid'] = vagNodeModel.get('hid');
-            vagDataObj['sort'] = vagNodeModel.get('sort');
+            // vagDataObj['sort'] = vagNodeModel.get('sort');
             vagDataObj['otpravka'] = vagNodeModel.get('otpravka');
             vagDataObj['nvag'] = vagNodeModel.get('nvag');
 

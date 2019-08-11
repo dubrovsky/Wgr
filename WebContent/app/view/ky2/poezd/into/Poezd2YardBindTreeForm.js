@@ -1,5 +1,5 @@
 Ext.define('TK.view.ky2.poezd.into.Poezd2YardBindTreeForm', {
-    extend: 'TK.view.ky2.AbstractBindTreeForm',
+    extend: 'TK.view.ky2.poezd.AbstractPoezd2YardBindTreeForm',
     alias: 'widget.ky2poezd2yardbindtreeforminto',
 
     buildTreeLeftPanelStore: function () {
@@ -8,16 +8,5 @@ Ext.define('TK.view.ky2.poezd.into.Poezd2YardBindTreeForm', {
 
     buildTreeRightPanelStore: function () {
         return 'ky2.YardBindTreeNodes';
-    },
-
-    buildTreeLeftPanelTopToolbarItems: function () {
-        var items = this.callParent(arguments);
-        items.push('-',
-            {
-                text: 'Переместить все >>',
-                action: 'moveRightAll'
-            }
-        );
-        return items;
     }
 });

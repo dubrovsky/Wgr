@@ -12,7 +12,7 @@ public class VagonBindDTO implements Comparable<VagonBindDTO> {
     private Long hid;
     private String nvag;
     private Otpravka otpravka;
-    private Short sort;
+//    private Short sort;
     private TreeSet<GruzBindDTO> gruzs = new TreeSet<>();
     private TreeSet<KontBindDTO> konts = new TreeSet<>();
 
@@ -77,11 +77,11 @@ public class VagonBindDTO implements Comparable<VagonBindDTO> {
         this.otpravka = otpravka;
     }
 
-    public Short getSort() {
+    /*public Short getSort() {
         return sort;
     }
 
     public void setSort(Short sort) {
         this.sort = sort;
-    }
+    }*/
 }

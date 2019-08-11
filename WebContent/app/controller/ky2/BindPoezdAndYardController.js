@@ -10,7 +10,8 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
         'ky2.poezd.into.Poezd2PoezdBindTreeForm',
         'ky2.poezd.out.Poezd2PoezdBindTreeForm',
         'ky2.poezd.into.Poezd2YardBindTreeForm',
-        'ky2.poezd.out.Poezd2YardBindTreeForm'
+        'ky2.poezd.out.Poezd2YardBindTreeForm',
+        'ky2.poezd.AbstractPoezd2YardBindTreeForm'
     ],
     models: [
         'ky2.YardBindTreeNode',
@@ -98,6 +99,18 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
             },
             'ky2poezd2yardbindtreeformout button[action=save]': {
                 click: this.bindPoezdAndYard
+            },
+            'ky2poezd2yardbindtreeforminto button[action=hideVags]': {
+                click: this.hideVagsLeft
+            },
+            'ky2poezd2yardbindtreeforminto button[action=showVags]': {
+                click: this.showVagsLeft
+            },
+            'ky2poezd2yardbindtreeformout button[action=hideVags]': {
+                click: this.hideVagsLeft
+            },
+            'ky2poezd2yardbindtreeformout button[action=showVags]': {
+                click: this.showVagsLeft
             }
         });
     },
@@ -668,6 +681,22 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
             }
             // }
             yardIndex++;
+        }, this);
+    },
+
+    hideVagsLeft: function (btn) {
+        this.getTreepanelLeft().getRootNode().eachChild(function (vagNodeModel) {
+            if (vagNodeModel.get('who') === 'vag') {
+                vagNodeModel.set('cls', 'hideTreeNode');
+            }
+        }, this);
+    },
+
+    showVagsLeft: function (btn) {
+        this.getTreepanelLeft().getRootNode().eachChild(function (vagNodeModel) {
+            if (vagNodeModel.get('who') === 'vag') {
+                vagNodeModel.set('cls', 'showTreeNode');
+            }
         }, this);
     }
 });

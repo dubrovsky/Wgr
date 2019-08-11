@@ -222,6 +222,12 @@ public class Vagon implements Serializable, Comparable<Vagon> {
             }
             dtos.removeAll(dtoToRemove);
         }
+
+        if(!dtos.isEmpty()) {
+            for (KontBindDTO kontDTO : dtos) {
+                log.warn("Kont {} was not bound, something wrong!!!", kontDTO.getNkon());
+            }
+        }
     }
 
     public void bindKonts(Set<KontBindDTO> dtos, Mapper mapper, Set<Vagon> toVags) {
@@ -285,6 +291,12 @@ public class Vagon implements Serializable, Comparable<Vagon> {
             }
             dtos.removeAll(dtoToRemove);
         }
+
+        if(!dtos.isEmpty()) {
+            for (KontBindDTO kontDTO : dtos) {
+                log.warn("Kont {} was not bound, something wrong!!!", kontDTO.getNkon());
+            }
+        }
     }
 
     public void bindGruzs(TreeSet<GruzBindDTO> dtos, Mapper mapper, Set<Vagon> toVags) {
@@ -342,6 +354,12 @@ public class Vagon implements Serializable, Comparable<Vagon> {
                         break;
                     }
                 }
+            }
+        }
+
+        if(!dtos.isEmpty()) {
+            for (GruzBindDTO grusDTO : dtos) {
+                log.warn("Gruz {} was not bound, something wrong!!!", grusDTO.getKgvn());
             }
         }
     }

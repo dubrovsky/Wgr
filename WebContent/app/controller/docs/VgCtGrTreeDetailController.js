@@ -48,10 +48,10 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
     }, {
         ref: 'searchField',
         selector: 'vgCtGrTreeFormWin textfield#searchField'
-    },{
+    }, {
         ref: 'uploadVagsSmgs2',
         selector: 'vgCtGrTreeFormWin button#uploadVagsSmgs2'
-    },{
+    }, {
         ref: 'uploadContsSmgs2',
         selector: 'vgCtGrTreeFormWin button#uploadContsSmgs2'
     }, {
@@ -296,7 +296,7 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
 
         win.show();
         // делаем пломбы выбранной в дереве, если в окно попали через двойно мелчок по пломбе в графе 19
-        if (typeof record === 'object'&&record.data) {
+        if (typeof record === 'object' && record.data) {
             rootNode.findChildBy(function (child) {
                 var treeHid = child.data.hid;
 
@@ -308,13 +308,10 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
         }
         this.onExpandAllClick();
 
-        if(this.isContOtpr())
-        {
+        if (this.isContOtpr()) {
             this.getUploadVagsSmgs2().hide();
             this.getUploadContsSmgs2().show();
-        }
-        else
-        {
+        } else {
             this.getUploadVagsSmgs2().show();
             this.getUploadContsSmgs2().hide();
         }
@@ -634,29 +631,19 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
             });
         }
     },
-    hideVags:function(treepanel, win)
-    {
-
-
+    hideVags: function (treepanel, win) {
         var rootNode = this.getTreepanel().getStore().getRootNode();
-
-            rootNode.eachChild(function (vagNodeModel) { // write vags
-
-                if(vagNodeModel.get('who')==='vag')
-                    vagNodeModel.set('cls','hideTreeNode');
-    },this);
-    },
-    showVags:function(treepanel, win)
-    {
-
-
-        var rootNode = this.getTreepanel().getStore().getRootNode();
-
         rootNode.eachChild(function (vagNodeModel) { // write vags
-
-            if(vagNodeModel.get('who')==='vag')
-                vagNodeModel.set('cls','showTreeNode');
-        },this);
+            if (vagNodeModel.get('who') === 'vag')
+                vagNodeModel.set('cls', 'hideTreeNode');
+        }, this);
+    },
+    showVags: function (treepanel, win) {
+        var rootNode = this.getTreepanel().getStore().getRootNode();
+        rootNode.eachChild(function (vagNodeModel) { // write vags
+            if (vagNodeModel.get('who') === 'vag')
+                vagNodeModel.set('cls', 'showTreeNode');
+        }, this);
     },
     onSaveClick: function (btn) {
         var dataObj = {};
@@ -1094,7 +1081,7 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
             contsMassa = 0,
             contDisplField = controller.getKontDispField(),
             gryzDisplField = controller.getGruzDispField(),
-            vagStoreTab, grStore,kontStore, ctCount = 0, plCount = 0;
+            vagStoreTab, grStore, kontStore, ctCount = 0, plCount = 0;
         // очищаем хранилище компонента g7vagsmgs2, если он присутствует на форме
         if (controller.getDocForm().getComponent('disp.g7v') && controller.getDocForm().getComponent('disp.g7v').xtype === 'g7vagsmgs2') {
             vagStoreTab = controller.getDocForm().getComponent('disp.g7v').getComponent('g7grid').getStore();
@@ -1104,9 +1091,8 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
             grStore = controller.getDocForm().getComponent('disp.g7g').getComponent('g15grid').getStore();
             grStore.removeAll();
         }
-        if(controller.getDocForm().getComponent('disp.g7k')&&controller.getDocForm().getComponent('disp.g7k').xtype==='g15contsmgs2')
-        {
-            kontStore=controller.getDocForm().getComponent('disp.g7k').getComponent('g15Kgrid').getStore();
+        if (controller.getDocForm().getComponent('disp.g7k') && controller.getDocForm().getComponent('disp.g7k').xtype === 'g15contsmgs2') {
+            kontStore = controller.getDocForm().getComponent('disp.g7k').getComponent('g15Kgrid').getStore();
             kontStore.removeAll();
         }
 
@@ -1153,7 +1139,7 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
             if (this.isContOtpr()) {
                 conts = vag[controller.getDocForm().getContCollectionName()];
                 if (conts) {
-                    contsGryzyResult = this.setDisplayedContFields(controller, conts, gryzyGngMap,kontStore);
+                    contsGryzyResult = this.setDisplayedContFields(controller, conts, gryzyGngMap, kontStore);
                     contResult += contsGryzyResult['contResult'];
                     contsMassa += contsGryzyResult['contsMassa'];
                 }
@@ -1170,8 +1156,7 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
             contDisplField.setValue(contResult);
         controller.getDocForm().getComponent('smgs.g24N').setValue(gryzyGngMap.sum('massa'));
         controller.getDocForm().getComponent('smgs.g24T').setValue(contsMassa);
-        if(controller.getDocForm().xtype==='smgs2'||controller.getDocForm()==='aviso2')
-        {
+        if (controller.getDocForm().xtype === 'smgs2' || controller.getDocForm() === 'aviso2') {
             controller.getDocForm().getComponent('smgs.ctcount').setValue('КОНТЕЙНЕРОВ:\n' + ctCount);
             controller.getDocForm().getComponent('smgs.plcount').setValue('ИТОГО:\n' + plCount);
         }
@@ -1187,23 +1172,23 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
         }
     },
 
-    setDisplayedContFields: function (controller, conts, gryzyGngMap,kontStore) {
+    setDisplayedContFields: function (controller, conts, gryzyGngMap, kontStore) {
         var contResult = '',
             contsMassa = 0;
 
         for (var contIndx in conts) {
             var cont = conts[contIndx];
-            if(kontStore)
-            kontStore.add(
-                {
-                    'hid':cont['hid'],
-                    'utiN':cont['utiN'],
-                    'sizeFoot':cont['sizeFoot'],
-                    'taraKont':cont['taraKont'],
-                    'utiType':cont['utiType'],
-                    'grpod':cont['grpod']
-                }
-            )
+            if (kontStore)
+                kontStore.add(
+                    {
+                        'hid': cont['hid'],
+                        'utiN': cont['utiN'],
+                        'sizeFoot': cont['sizeFoot'],
+                        'taraKont': cont['taraKont'],
+                        'utiType': cont['utiType'],
+                        'grpod': cont['grpod']
+                    }
+                )
 
             contResult += (cont['sizeFoot'] ? '1x' + cont['sizeFoot'] : '');
             contResult += (cont['notes'] ? ' ' + cont['notes'] : '');
