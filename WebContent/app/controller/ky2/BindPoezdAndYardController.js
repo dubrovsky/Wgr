@@ -30,6 +30,9 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
         ref: 'poezdlist',
         selector: 'viewport > tabpanel grid'
     }, {
+        ref: 'poezdform',
+        selector: 'viewport > tabpanel ky2bindtreeform'
+    }, {
         ref: 'treepanelLeft',
         selector: 'ky2bindtreeform > treepanel#treepanelLeft'
     }, {
@@ -100,6 +103,12 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
             'ky2poezd2yardbindtreeformout button[action=save]': {
                 click: this.bindPoezdAndYard
             },
+            'ky2poezd2yardbindtreeforminto button[action=saveExit]': {
+                click: this.bindPoezdAndYardAndExit
+            },
+            'ky2poezd2yardbindtreeformout button[action=saveExit]': {
+                click: this.bindPoezdAndYardAndExit
+            },
             'ky2poezd2yardbindtreeforminto button[action=hideVags]': {
                 click: this.hideVagsLeft
             },
@@ -111,30 +120,50 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
             },
             'ky2poezd2yardbindtreeformout button[action=showVags]': {
                 click: this.showVagsLeft
+            },
+            'ky2vgctgrtreeform button[action=getPoesdAndYardForBind]': {
+                click: this.getPoesdIntoAndYardForBindFromVgCntGr
             }
         });
     },
 
+    getPoesdIntoAndYardForBindFromVgCntGr: function (btn) {
+        var rootNode = btn.up('panel').down('treepanel').getRootNode();
+        if (rootNode.get('direction') === 1)
+            this.getPoesdAndYardForBind('ky2poezd2yardbindtreeforminto', rootNode.get('hid'));
+        else
+            this.getPoesdAndYardForBind('ky2poezd2yardbindtreeformout', rootNode.get('hid'));
+    },
+
     getPoesdIntoAndYardForBind: function (btn) {
-        this.getPoesdAndYardForBind('ky2poezd2yardbindtreeforminto');
+        this.getPoesdOutAndYardForBindCheck('ky2poezd2yardbindtreeforminto');
     },
 
     getPoesdOutAndYardForBind: function (btn) {
-        this.getPoesdAndYardForBind('ky2poezd2yardbindtreeformout');
+        this.getPoesdOutAndYardForBindCheck('ky2poezd2yardbindtreeformout');
     },
 
-    getPoesdAndYardForBind: function (widget) {
+    getPoesdOutAndYardForBindCheck: function (widget) {
         var poezdlist = this.getPoezdlist();
         if (!TK.Utils.isRowSelected(poezdlist)) {
             return false;
         }
+        this.getPoesdAndYardForBind(widget, poezdlist.getSelectionModel().getLastSelected().get('hid'));
+    },
 
+    getPoesdAndYardForBind: function (widget, poezdHId) {
+        // var poezdlist = this.getPoezdlist();
+        // if (!TK.Utils.isRowSelected(poezdlist)) {
+        //     return false;
+        // }
+        //
         this.getCenter().setLoading(true);
         Ext.Ajax.request({
             url: 'ky2/secure/BindPoezdAndYard.do',
             params: {
                 action: 'get_poezd_and_yard_for_bind',
-                'poezdHid': poezdlist.getSelectionModel().getLastSelected().get('hid')
+                'poezdHid': poezdHId
+                // 'poezdHid': poezdlist.getSelectionModel().getLastSelected().get('hid')
             },
             scope: this,
             callback: function (options, success, response) {
@@ -605,7 +634,11 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
         }
     },
 
-    bindPoezdAndYard: function (btn) {
+    bindPoezdAndYardAndExit: function () {
+        this.bindPoezdAndYard(1);
+    },
+
+    bindPoezdAndYard: function (close) {
         var dataObjLeft = this.getController('ky2.BindPoezdAndPoezdController').bindPoezd(this.getTreepanelLeft().getRootNode());
         var dataObjRight = this.bindYardSectors(this.getTreepanelRight().getRootNode());
 
@@ -621,7 +654,13 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
             scope: this,
             success: function (response) {
                 this.getCenter().setLoading(false);
-                var respObj = Ext.decode(response.responseText);
+                if (Ext.isNumber(close)) {
+                    var closeBtn = this.getPoezdform().down('button[action="close"]');
+                    closeBtn.fireEvent('click',closeBtn);
+                }
+                else {
+                    var respObj = Ext.decode(response.responseText);
+                }
             },
             failure: function (response) {
                 this.getCenter().setLoading(false);

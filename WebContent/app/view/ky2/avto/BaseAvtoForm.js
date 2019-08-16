@@ -168,6 +168,21 @@ Ext.define('TK.view.ky2.avto.BaseAvtoForm', {
     },
     buildTopToolbar: function (config) {
         config.tbar = this.buildButtons();
+        config.tbar.splice(1, 0,
+            {
+                text: this.btnSaveExit,
+                formBind: true,
+                disabled: true,
+                iconCls: 'save_close',
+                action: 'saveExit'
+            }, '-'
+            , {
+                text:this.btnClose,
+                iconCls:'close1',
+                action:'close'
+            } ,'-'
+        );
+
     }/*,
     initFieldsWithDefaultsValues: function() {
         var form = this.getForm(),

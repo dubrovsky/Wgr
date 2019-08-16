@@ -2,26 +2,13 @@ Ext.define('TK.model.ky2.YardBase', {
     extend: 'Ext.data.Model',
 
     fields: [
-
         {name: 'x', type: 'int', useNull: true},
         {name: 'y', type: 'int', useNull: true},
         {name: 'z', type: 'int', useNull: true},
-        // {name: 'nkon4List',
-        //      convert : function (v, rec) {
-        //         var nkons = '';
-        //          Ext.Array.each(rec.get('konts'), function(kont) {
-        //                  nkons += kont.nkon + ' ';
-        //              });
-        //         return nkons;
-        //      }
-        // },
         {name: 'konts'},
-
         {name: 'hid', type: 'int', useNull: true},
-
         {name: 'sector.hid', type: 'int', useNull: true},
         {name: 'sector.name', persist: false}
-
     ],
     belongsTo: [{
         model: 'TK.model.ky.YardSector',
@@ -54,19 +41,16 @@ Ext.define('TK.model.ky2.YardBase', {
             }
         },
         encodeFilters: function (filters) {
-            var min = [],
-                length = filters.length,
-                i = 0;
+            var filtersForServer = [],
+                length = filters.length;
 
-            for (; i < length; i++) {
-                min[i] = {
-//                 source: filters[i].property.split('.')[0],
+            for (var i = 0; i < length; i++) {
+                filtersForServer[i] = {
                     property: filters[i].property.split('.')[0],
                     value: filters[i].value
                 };
             }
-            return Ext.encode(min);
-
+            return Ext.encode(filtersForServer);
         }
     }
 });

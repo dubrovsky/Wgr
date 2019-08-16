@@ -46,12 +46,18 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
             'ky2bindtreeform': {
                 beforedestroy: this.clearBindForm
             },
-            'ky2poezdsout4poezdintodir button[action="getPoesdAndPoezdForBind"]': {
+            'ky2poezdintolist button[action="showPoezdsOutDir4PoezdIntoBind"]': {
+                click: this.getPoesdIntoAndPoezdOutForBind
+            },
+            'ky2poezdoutlist button[action="showPoezdsIntoDir4PoezdOutBind"]': {
+                click: this.getPoesdOutAndPoezdIntoForBind
+            },
+            /*'ky2poezdsout4poezdintodir button[action="getPoesdAndPoezdForBind"]': {
                 click: this.getPoesdIntoAndPoezdOutForBind
             },
             'ky2poezdsinto4poezdoutdir button[action="getPoesdAndPoezdForBind"]': {
                 click: this.getPoesdOutAndPoezdIntoForBind
-            },
+            },*/
             'ky2poezd2poezdbindtreeforminto treepanel#treepanelLeft > treeview': {
                 drop: this.dropToVag,
                 nodedragover: this.beforeDropToVag
@@ -74,9 +80,9 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
             'ky2poezd2poezdbindtreeformout button[action=save]': {
                 click: this.bindPoezdToPoezd
             },
-            'ky2poezd2poezdbindtreeforminto radiogroup': {
+            /*'ky2poezd2poezdbindtreeforminto radiogroup': {
                 change: this.changeLeftView
-            },
+            },*/
             'ky2poezd2poezdbindtreeforminto treepanel#treepanelLeft': {
                 selectionchange: this.selectionchangeLeft
             },
@@ -105,15 +111,15 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
     },
 
     getPoesdIntoAndPoezdOutForBind: function (btn) {
-        this.getPoesdAndPoezdForBind(this.getPoezdoutdir(), 'ky2poezd2poezdbindtreeforminto', '+ На поезд по отправлению');
+        this.getPoesdAndPoezdForBind(/*this.getPoezdoutdir(),*/ 'ky2poezd2poezdbindtreeforminto', '+ На поезд по отправлению', 2);
     },
 
     getPoesdOutAndPoezdIntoForBind: function (btn) {
-        this.getPoesdAndPoezdForBind(this.getPoezdintodir(), 'ky2poezd2poezdbindtreeformout', '+ На поезд по прибытию');
+        this.getPoesdAndPoezdForBind(/*this.getPoezdintodir(),*/ 'ky2poezd2poezdbindtreeformout', '+ На поезд по прибытию', 1);
     },
 
-    getPoesdAndPoezdForBind: function (poezdDir, widget, title) {
-        var poezdlist = this.getPoezdlist(),
+    getPoesdAndPoezdForBind: function (/*poezdDir*/ widget, title, direction) {
+        /*var poezdlist = this.getPoezdlist(),
             poezdModel = poezdlist.getSelectionModel().getLastSelected(),
             poezdsDir = poezdDir.getSelectionModel().getSelection(),
             poezdDirModel = poezdsDir.length > 0 ? poezdsDir[0] : null;
@@ -126,54 +132,57 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
                 icon: Ext.Msg.ERROR
             });
             return false;
+        }*/
+
+        var poezdlist = this.getPoezdlist();
+        if (!TK.Utils.isRowSelected(poezdlist)) {
+            return false;
         }
 
         this.getCenter().setLoading(true);
-
+        var poezdModel = poezdlist.getSelectionModel().getLastSelected();
         Ext.Ajax.request({
             url: 'ky2/secure/BindPoezdAndPoezd.do',
             params: {
-                action: 'get_poezd_and_poezd_for_bind',
-                'poezd1Hid': poezdModel.get('hid'),
-                'poezd2Hid': poezdDirModel.get('hid')
+                // action: 'get_poezd_and_poezd_for_bind',
+                poezd1Hid: poezdModel.get('hid'),
+                action: 'get_poezd_and_all_poezds_for_bind',
+                routeId: poezdModel.get('route.hid'),
+                direction: direction
+                /* 'poezd1Hid': poezdModel.get('hid'),
+                 'poezd2Hid': poezdDirModel.get('hid')*/
             },
             scope: this,
             callback: function (options, success, response) {
                 if (success) {
-                    poezdDir.up('window').close();
+                    // poezdDir.up('window').close();
 
                     var respObj = Ext.decode(response.responseText);
                     var poezd1Obj = respObj['rows'][0];
-                    var poezd2Obj = respObj['rows'][1];
+                    var poezd2ArrObj = respObj['rows'][1];
 
                     var bindcontainer = Ext.widget(widget, {title: title});
 
                     //// fill trees
                     var vags = poezd1Obj['vagons'];
-                    this.getTreepanelLeft().setTitle(poezd1Obj['nppr']);
+                    this.getTreepanelLeft().setTitle("Поезд № " + poezd1Obj['nppr']);
                     var rootNode = this.getTreepanelLeft().getRootNode();
                     if (vags && !Ext.Object.isEmpty(vags)) {
-                        /*rootNode.set('hid', poezd1Obj['hid']); // poezd hid
-                        rootNode.set('poezdHid', poezd1Obj['hid']); // poezd hid
-                        rootNode.set('direction', poezd1Obj['direction']);
-                        rootNode.set('nppr', poezd1Obj['nppr']);
-                        rootNode.set('who', 'poezd');
-                        this.initVagsNodes(vags, rootNode, false);*/
                         this.initRootNode(rootNode, poezd1Obj, vags);
                     }
 
-                    vags = poezd2Obj['vagons'];
+                    this.getTreepanelRight().setTitle("Поезда");
+                    rootNode = this.getTreepanelRight().getRootNode();
+                    if (poezd2ArrObj && poezd2ArrObj.length > 0) {
+                        this.initPoezdsNodes(poezd2ArrObj, rootNode);
+                    }
+
+                    /*vags = poezd2Obj['vagons'];
                     this.getTreepanelRight().setTitle(poezd2Obj['nppr']);
                     rootNode = this.getTreepanelRight().getRootNode();
                     if (vags && !Ext.Object.isEmpty(vags)) {
-                        /*rootNode.set('hid', poezd2Obj['hid']);   // // poezd hid
-                        rootNode.set('poezdHid', poezd2Obj['hid']); // poezd hid
-                        rootNode.set('direction', poezd2Obj['direction']);
-                        rootNode.set('nppr', poezd2Obj['nppr']);
-                        rootNode.set('who', 'poezd');
-                        this.initVagsNodes(vags, rootNode, false);*/
                         this.initRootNode(rootNode, poezd2Obj, vags);
-                    }
+                    }*/
                     /// END fill tree
 
                     this.getCenter().remove(this.getCenter().getComponent(0), true);
@@ -186,8 +195,33 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         });
     },
 
-    initRootNode: function(rootNode, dataObj, vags) {
-        rootNode.set('hid', dataObj['hid']); 
+    initPoezdsNodes: function (poezdsArr, rootNode) {
+        for (var i = 0; i < poezdsArr.length; i++) {
+            var poezd = poezdsArr[i],
+                vags = poezd['vagons'],
+                poezdModel = Ext.create('TK.model.ky2.PoezdBindTreeNode', {
+                    text: poezd['nppr'],
+                    who: 'poezd',
+                    leaf: false,
+                    iconCls: 'vag',
+                    allowDrag: false,
+                    allowDrop: false,
+                    expanded: true
+                });
+
+            Ext.Object.each(poezd, function (prop, value) {
+                poezdModel.set(prop, value);
+            }, this);
+
+            rootNode.appendChild(poezdModel);
+            if (vags && vags.length > 0) {
+                this.initVagsNodes(vags, poezdModel, false);
+            }
+        }
+    },
+
+    initRootNode: function (rootNode, dataObj, vags) {
+        rootNode.set('hid', dataObj['hid']);
         rootNode.set('poezdHid', dataObj['hid']); // poezd hid
         rootNode.set('direction', dataObj['direction']);
         rootNode.set('nppr', dataObj['nppr']);
@@ -205,7 +239,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
                     who: 'vag',
                     poezdHid: rootNode.get('hid'),
                     leaf: false,
-                    iconCls: 'vag',
+                    iconCls: 'vag1',
                     allowDrag: false,
                     expanded: true
                     // expanded: (conts && conts['0']) || (gruzy && gruzy['0'])
@@ -298,33 +332,15 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
     },
 
     bindPoezdToPoezd: function (btn) {
-        /*var dataObjLeft = {
-            hid: this.getTreepanelLeft().getRootNode().get('poezdHid'),
-            direction: this.getTreepanelLeft().getRootNode().get('direction'),
-            nppr: this.getTreepanelLeft().getRootNode().get('nppr')
-        };
-
-        if (this.getTreepanelLeft().getRootNode().hasChildNodes()) {
-            dataObjLeft = this.bindVags(dataObjLeft, this.getTreepanelLeft());
-        }*/
         var dataObjLeft = this.bindPoezd(this.getTreepanelLeft().getRootNode());
-        var dataObjRight = this.bindPoezd(this.getTreepanelRight().getRootNode());
-
-        /*var dataObjRight = {
-            hid: this.getTreepanelRight().getRootNode().get('poezdHid'),
-            direction: this.getTreepanelRight().getRootNode().get('direction'),
-            nppr: this.getTreepanelRight().getRootNode().get('nppr')
-        };
-
-        if (this.getTreepanelRight().getRootNode().hasChildNodes()) {
-            dataObjRight = this.bindVags(dataObjRight, this.getTreepanelRight());
-        }*/
+        // var dataObjRight = this.bindPoezd(this.getTreepanelRight().getRootNode());
+        var dataObjRight = this.bindPoezds(this.getTreepanelRight().getRootNode());
 
         var url = 'ky2/secure/BindPoezdAndPoezd.do';
         this.getCenter().setLoading(true);
         Ext.Ajax.request({
             url: url,
-            params: {dataObj: Ext.encode([dataObjLeft, dataObjRight]), action: 'bind_poezd_to_poezd'},
+            params: {poezdObj: Ext.encode(dataObjLeft), poezdsObj: Ext.encode(dataObjRight), action: 'bind_poezd_to_poezd'},
             scope: this,
             success: function (response) {
                 this.getCenter().setLoading(false);
@@ -337,9 +353,23 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         });
     },
 
-    bindPoezd: function(rootNodeModel){
+    bindPoezds: function (rootNodeModel) {
+        var dataObj = [];
+
+        if (rootNodeModel.hasChildNodes()) {
+            var poezdIndex = 0;
+            rootNodeModel.eachChild(function (poezdNodeModel) {
+                dataObj.push(this.bindPoezd(poezdNodeModel));
+                poezdIndex++;
+            }, this);
+        }
+
+        return dataObj;
+    },
+
+    bindPoezd: function (rootNodeModel) {
         var dataObj = {
-            hid: rootNodeModel.get('poezdHid'),
+            hid: rootNodeModel.get('poezdHid') || rootNodeModel.get('hid'),
             direction: rootNodeModel.get('direction'),
             nppr: rootNodeModel.get('nppr')
         };
@@ -415,14 +445,14 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         }, this);
     },
 
-    changeLeftView: function (field, newValue, oldValue) {
+    /*changeLeftView: function (field, newValue, oldValue) {
         switch (newValue['leftBindView']) {
             case 'all':
                 break;
             case 'noVags':
                 break;
         }
-    },
+    },*/
 
     selectionchangeLeft: function (selModel, selected) {
         this.selectionchange(selModel, selected, this.selectedNodesLeft/*, this.checkSelected, this*/);
@@ -466,6 +496,13 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
     checkSelected: function (selected) {
         if (!selected || selected.length < 2) {
             return true;
+        }
+
+        var poezds = Ext.Array.filter(selected, function (item, index, array) {
+            return item.get('who') === 'poezd';
+        });
+        if (poezds.length !== 0) {   // poezds can't be more than 1
+            return false;
         }
 
         var vags = Ext.Array.filter(selected, function (item, index, array) {
@@ -539,9 +576,9 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
 
             isDrop = false;
             // check source
-            isDrop = sourceModel.get('who') !== 'vag'; // vag can't be moved
+            isDrop = sourceModel.get('who') !== 'vag' && sourceModel.get('who') !== 'poezd'; // vag, poezd can't be moved
             if (isDrop) { // can be moved cont in vag, gruz in vag
-                isDrop = sourceParentModel.get('who') === 'vag';
+                isDrop = sourceParentModel.get('who') === 'vag';  // sourceParentModel can be only vag
             }
 
             // check target

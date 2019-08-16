@@ -23,4 +23,8 @@ public interface PoezdDAO extends GenericDAO<Poezd, Long> {
     List<Poezd> findPoezdsDir(Integer limit, Integer start, List<Filter> filters, Usr usr, Long routeId, Byte direction);
 
     Long countPoezdsDir(List<Filter> filters, Usr usr, Long routeId, Byte direction);
+
+    List<Poezd> findAllPresentPoezds(Usr usr, long routeId, Byte direction);
+
+    List<Poezd> findByIds(List<Long> ids);
 }

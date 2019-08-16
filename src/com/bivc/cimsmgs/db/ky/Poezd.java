@@ -258,12 +258,43 @@ public class Poezd implements Serializable {
         return (this.getPackDoc() != null && this.getPackDoc().getHid() != null);
     }
 
-    public void bindPoezdToPoezd(Set<VagonBindDTO> dtos, Set<Vagon> vagOut, Mapper mapper) {
+    public void bindPoezdsToPoezd(Set<VagonBindDTO> dtos, Set<Vagon> vagonsOut, Mapper mapper, List<Poezd> poezds) {
+        for (VagonBindDTO vagonIntoDTO : dtos) {
+            for (Vagon vagon : getVagons()) {
+                if (Objects.equals(vagon.getHid(), vagonIntoDTO.getHid())) {
+                    mapper.map(vagonIntoDTO, vagon); // update otpravka
+                    if (vagonIntoDTO.getOtpravka() == Otpravka.CONT) {
+                        vagon.bindKontsToPoezdKonts(vagonIntoDTO.getKonts(), mapper, vagonsOut, poezds);
+                    }  else if (vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
+                        vagon.bindGruzsToPoezdGruzs(vagonIntoDTO.getGruzs(), mapper, vagonsOut, poezds);
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    public void bindPoezdToPoezds(Set<VagonBindDTO> dtos, List<Poezd> poezdsOut, Mapper mapper) {
+        for (VagonBindDTO vagonIntoDTO : dtos) {
+            for (Vagon vagon : getVagons()) {
+                if (Objects.equals(vagon.getHid(), vagonIntoDTO.getHid())) {
+                    mapper.map(vagonIntoDTO, vagon); // update otpravka
+                    if (vagonIntoDTO.getOtpravka() == Otpravka.CONT) {
+                        vagon.bindKontsToPoezdsKonts(vagonIntoDTO.getKonts(), mapper, poezdsOut);
+                    } else if (vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
+                        vagon.bindGruzsToPoezdsGruzs(vagonIntoDTO.getGruzs(), mapper, poezdsOut);
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    /*public void bindPoezdToPoezd(Set<VagonBindDTO> dtos, Set<Vagon> vagOut, Mapper mapper) {
         for (Vagon vagon : getVagons()) {
             for (VagonBindDTO vagonIntoDTO : dtos) {
                 if (Objects.equals(vagon.getHid(), vagonIntoDTO.getHid())) {
                     mapper.map(vagonIntoDTO, vagon); // update otpravka
-//                    log.info("Update vagon - {}", vagon.getNvag());
                     if (vagonIntoDTO.getOtpravka() == Otpravka.CONT) {
                         vagon.bindKonts(vagonIntoDTO.getKonts(), mapper, vagOut);
                     } else if (vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
@@ -273,14 +304,14 @@ public class Poezd implements Serializable {
                 }
             }
         }
-    }
+    }*/
 
     public void bindPoezdToYard(Set<VagonBindDTO> dtos, List<YardSector> yardSectors, Mapper mapper) {
         for (VagonBindDTO vagonIntoDTO : dtos) {
             for (Vagon vagon : getVagons()) {
                 if (Objects.equals(vagon.getHid(), vagonIntoDTO.getHid())) {
                     mapper.map(vagonIntoDTO, vagon); // update otpravka
-                    vagon.bindKonts(vagonIntoDTO.getKonts(), mapper, yardSectors);
+                    vagon.bindKontsToYardKonts(vagonIntoDTO.getKonts(), mapper, yardSectors);
                     break;
                 }
             }

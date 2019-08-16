@@ -4,8 +4,10 @@ import com.bivc.cimsmgs.actions.CimSmgsSupport_A;
 import com.bivc.cimsmgs.commons.Filter;
 import com.bivc.cimsmgs.commons.Response;
 import com.bivc.cimsmgs.dao.PoezdDAO;
+import com.bivc.cimsmgs.dao.VagonDAO;
 import com.bivc.cimsmgs.db.PackDoc;
 import com.bivc.cimsmgs.db.ky.Poezd;
+import com.bivc.cimsmgs.db.ky.Vagon;
 import com.bivc.cimsmgs.doc2doc.Mapper;
 import com.bivc.cimsmgs.dto.ky.PoezdBaseDTO;
 import com.bivc.cimsmgs.dto.ky.PoezdDTO;
@@ -44,6 +46,8 @@ public class Poezd_A extends CimSmgsSupport_A {
                     return list();
                 case POEZDS_DIR_FOR_POEZD_BIND:
                     return poezdsDir4PoezdBind();
+                case CREATE_POEZDOUT_FROM_POEZDINTO:
+                    return createPoezdOutFromPoezdInto();
                 default:
                     throw new RuntimeException("Unknown action");
             }
@@ -189,12 +193,40 @@ public class Poezd_A extends CimSmgsSupport_A {
         return SUCCESS;
     }
 
+    public String createPoezdOutFromPoezdInto() {
+        Poezd poezdInto = poezdDAO.getById(getHid(), false);
+        log.debug("Found poezd to copy to poezdOut: {}", poezdInto);
+
+        // copy
+        Poezd poezdCopy = copyPoezdMapper.map(poezdInto, Poezd.class);
+        // set props
+        poezdCopy.setDirection((byte) 2);
+
+        // save new pack and poezd
+        PackDoc pack = new PackDoc(poezdCopy.getRoute(), getUser().getUsr().getGroup());
+        pack.addPoezdItem(poezdCopy);
+        getPackDocDAO().makePersistent(pack);
+
+        for (Vagon vagonInto : poezdInto.getVagons()) {
+            Vagon vagonCopy = copyPoezdMapper.map(vagonInto, Vagon.class);
+
+            // set props
+            vagonCopy.setPoezd(poezdCopy);
+            vagonCopy.setDirection((byte) 2);
+
+            // save
+            vagonDAO.makePersistent(vagonCopy);
+        }
+
+        return SUCCESS;
+    }
+
     private String action;
     private Byte direction;
     private Byte koleya;
     private long routeId;
 
-    enum Action {LIST, EDIT, SAVE, DELETE, POEZDS_DIR_FOR_POEZD_BIND}
+    enum Action {LIST, EDIT, SAVE, DELETE, POEZDS_DIR_FOR_POEZD_BIND, CREATE_POEZDOUT_FROM_POEZDINTO}
 
     private List<Filter> filters;
     private String filter;
@@ -202,6 +234,8 @@ public class Poezd_A extends CimSmgsSupport_A {
 
     @Autowired
     private PoezdDAO poezdDAO;
+    @Autowired
+    private VagonDAO vagonDAO;
     @Autowired
     private Mapper kypoezdMapper;
     @Autowired
@@ -212,6 +246,8 @@ public class Poezd_A extends CimSmgsSupport_A {
     private IPoezdService poezdService;
     @Autowired
     private com.bivc.cimsmgs.doc2doc.orika.Mapper mapper;
+    @Autowired
+    private com.bivc.cimsmgs.doc2doc.orika.CopyPoezdMapper copyPoezdMapper;
 
     public Byte getKoleya() {
         return koleya;

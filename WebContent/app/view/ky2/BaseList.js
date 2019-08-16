@@ -11,6 +11,5 @@ Ext.define('TK.view.ky2.BaseList', {
         if(tkUser.hasPriv('CIM_DELETE')){
             config.tbar.push({text: this.btnDelete,iconCls:'del',itemId:'del', action:'delete'},{xtype: 'tbseparator', itemId:'del1'});
         }
-
     }
 });

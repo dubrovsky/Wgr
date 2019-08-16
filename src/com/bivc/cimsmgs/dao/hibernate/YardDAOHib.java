@@ -4,6 +4,7 @@ import com.bivc.cimsmgs.commons.Constants;
 import com.bivc.cimsmgs.commons.Filter;
 import com.bivc.cimsmgs.dao.YardDAO;
 import com.bivc.cimsmgs.db.Usr;
+import com.bivc.cimsmgs.db.ky.Kont;
 import com.bivc.cimsmgs.db.ky.Yard;
 import com.bivc.cimsmgs.db.ky.YardSectorGroups;
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +15,8 @@ import org.hibernate.criterion.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import static com.bivc.cimsmgs.db.ky.Yard.FilterFields.PLACE;
 
 //import com.bivc.cimsmgs.db.KontYard;
 //import com.bivc.cimsmgs.db.KontYard_StorageType;
@@ -32,15 +35,15 @@ public class YardDAOHib extends GenericHibernateDAO<Yard, Long> implements YardD
         }
         crit.addOrder(Order.desc("dattr"));
 
-        applyFilter(filters, crit, locale);
+        applyFilter(filters, crit, null);
 
         return listAndCast(crit);
     }
 
     @Override
     public List<Yard> findAll(Integer limit, Integer start, List<Filter> filters, Locale locale, Usr usr) {
-        Criteria crit = getSession().createCriteria(getPersistentClass(), "yard");
-        crit.createAlias("sector", "sector");
+        final Criteria crit = getSession().createCriteria(getPersistentClass(), "yard1");
+        final Criteria sectorCrit = crit.createAlias("sector", "sector");
 
         DetachedCriteria yardSectorGroups =
                 DetachedCriteria.forClass(YardSectorGroups.class, "ysg").
@@ -55,15 +58,15 @@ public class YardDAOHib extends GenericHibernateDAO<Yard, Long> implements YardD
         }
         crit.addOrder(Order.desc("dattr"));
 
-//        applyFilter(filters, crit, locale);
+        applyFilter(filters, crit, sectorCrit);
 
         return listAndCast(crit);
     }
 
     @Override
     public Long countAll(List<Filter> filters, Locale locale, Usr usr) {
-        Criteria crit = getSession().createCriteria(getPersistentClass(), "yard");
-        crit.createAlias("sector", "sector");
+        final Criteria crit = getSession().createCriteria(getPersistentClass(), "yard1");
+        final Criteria sectorCrit = crit.createAlias("sector", "sector");
         crit.setProjection(Projections.countDistinct("hid"));
 
         DetachedCriteria yardSectorGroups =
@@ -74,7 +77,7 @@ public class YardDAOHib extends GenericHibernateDAO<Yard, Long> implements YardD
                         add(Property.forName("ysg.id.yardSectorId").eqProperty("sector.hid"));
         crit.add(Subqueries.exists(yardSectorGroups));
 
-        applyFilter(filters, crit, locale);
+        applyFilter(filters, crit, sectorCrit);
 
         return (Long) crit.uniqueResult();
     }
@@ -85,7 +88,7 @@ public class YardDAOHib extends GenericHibernateDAO<Yard, Long> implements YardD
 //        crit.add(Restrictions.in("trans", usr.getTrans()));
         crit.setProjection(Projections.countDistinct("hid"));
 
-        applyFilter(filters, crit, locale);
+        applyFilter(filters, crit, null);
 
         return (Long) crit.uniqueResult();
     }
@@ -103,7 +106,7 @@ public class YardDAOHib extends GenericHibernateDAO<Yard, Long> implements YardD
 
 //        crit.createCriteria("sector").addOrder(Order.desc("name"));
 
-        applyFilter(filters, crit, locale);
+        applyFilter(filters, crit, null);
 
         return listAndCast(crit);
     }
@@ -116,7 +119,7 @@ public class YardDAOHib extends GenericHibernateDAO<Yard, Long> implements YardD
 
         crit.add(Restrictions.eq("empty", true));
 
-        applyFilter(filters, crit, locale);
+        applyFilter(filters, crit, null);
 
         return (Long) crit.uniqueResult();
     }
@@ -133,9 +136,9 @@ public class YardDAOHib extends GenericHibernateDAO<Yard, Long> implements YardD
     @Override
     public List<Yard> findAll4Report2(List<Filter> filters, Usr usr, Locale locale) {
         Criteria crit = getSession().createCriteria(getPersistentClass());
-        applyFilter(filters, crit, locale);
+        applyFilter(filters, crit, null);
 
-        if(Constants.findObjectByFieldValue(filters, "property", "sector") != null){
+        if (Constants.findObjectByFieldValue(filters, "property", "sector") != null) {
             crit.addOrder(Order.asc("sector.hid"));
         } else {
             crit.createCriteria("sector").addOrder(Order.asc("hid"));
@@ -153,19 +156,25 @@ public class YardDAOHib extends GenericHibernateDAO<Yard, Long> implements YardD
         getSession().delete(yard);
     }*/
 
-    private void applyFilter(List<Filter> filters, Criteria crit, Locale locale) {
-        if(filters != null && filters.size() > 0){
-            for(Filter filter: filters){
-                if(StringUtils.isNotBlank(filter.getProperty()) && StringUtils.isNotBlank(filter.getValue())){
+    private void applyFilter(List<Filter> filters, Criteria crit, Criteria sectorCrit) {
+        if (filters != null && filters.size() > 0) {
+            DetachedCriteria kontsCrit =
+                    DetachedCriteria.forClass(Kont.class, "kont").
+                            setProjection(Property.forName("hid")).
+                            add(Property.forName("kont.yard.hid").eqProperty("yard1.hid"));
+
+            for (Filter filter : filters) {
+                if (StringUtils.isNotBlank(filter.getProperty()) && StringUtils.isNotBlank(filter.getValue())) {
                     Date date;
-                    switch (Yard.FilterFields.valueOf(filter.getProperty().toUpperCase())){
-                        case NKON:
-                            crit.createCriteria("kont").add(Restrictions.ilike(Yard.FilterFields.NKON.getName(), StringUtils.trim(filter.getValue()), MatchMode.ANYWHERE));
-                            break;
+                    switch (Yard.FilterFields.valueOf(filter.getProperty().toUpperCase())) {
+
                         case SECTOR:
-                            crit.createCriteria("sector", "sector").add(Restrictions.eq(Yard.FilterFields.SECTOR.getName(), Integer.valueOf(StringUtils.trim(filter.getValue()))));
-                            break;
-                        case X:
+                            if (sectorCrit != null) {
+//                                sectorCrit.add(Restrictions.eq(Yard.FilterFields.SECTOR.getName(), Integer.valueOf(StringUtils.trim(filter.getValue()))));
+                                sectorCrit.add(Restrictions.eq("sector.hid", Integer.valueOf(StringUtils.trim(filter.getValue()))));
+                                break;
+                            }
+                        /*case X:
                             crit.add(Restrictions.eq(Yard.FilterFields.X.getName(), Long.valueOf(StringUtils.trim(filter.getValue()))));
                             break;
                         case Y:
@@ -173,14 +182,30 @@ public class YardDAOHib extends GenericHibernateDAO<Yard, Long> implements YardD
                             break;
                         case Z:
                             crit.add(Restrictions.eq(Yard.FilterFields.Z.getName(), Long.valueOf(StringUtils.trim(filter.getValue()))));
+                            break;*/
+                        /*case NKON:
+                            crit.createCriteria("kont").add(Restrictions.ilike(Yard.FilterFields.NKON.getName(), StringUtils.trim(filter.getValue()), MatchMode.ANYWHERE));
+                            break;*/
+                        case NKON:
+                            kontsCrit.add(Restrictions.ilike(Yard.FilterFields.NKON.getName(), StringUtils.trim(filter.getValue()), MatchMode.ANYWHERE));
+                            boolean found = false;
+                            for (Filter filter1 : filters) {
+                                if (Yard.FilterFields.valueOf(filter1.getProperty().toUpperCase()) == PLACE && Integer.parseInt(filter1.getValue()) != -1) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if(!found){
+                                crit.add(Subqueries.exists(kontsCrit));
+                            }
                             break;
                         case PLACE:
-                            switch (Integer.valueOf(filter.getValue())){
+                            switch (Integer.parseInt(filter.getValue())) {
                                 case 0:
-                                    crit.add(Restrictions.eq("empty", true));
+                                    crit.add(Subqueries.notExists(kontsCrit));
                                     break;
                                 case 1:
-                                    crit.add(Restrictions.eq("empty", false));
+                                    crit.add(Subqueries.exists(kontsCrit));
                                     break;
 
                             }

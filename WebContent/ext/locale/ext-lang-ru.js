@@ -2270,7 +2270,6 @@ Ext.define("TK.locale.ru.view.ky2.poezd.BasePoezdList", {
     headerPoezdNumM   :'Международный номер поезда',
     headerKoleya      :'Колея',
     headerVagCount    :'Количество вагонов',
-    headerKontCount   :'Количество контейнеров не выгружено',
     freeSpace         :'',
 
     // title:'Список поездов по прибытию',
@@ -2291,8 +2290,12 @@ Ext.define("TK.locale.ru.view.ky2.poezd.into.PoezdList", {
     // headerPoezdNum        :'Номер поезда',
     // headerKoleya        :'Колея',
     headerDateIn        :'Прибытие',
+    headerKontCount   :'Количество контейнеров не выгружено',
 
-    title:'Список поездов по прибытию',
+    btnToPoezdOut   : 'На поезд по отпр.',
+    btnToYard     : 'На конт. площадку',
+
+    title:'Список поездов по прибытию'
 
     // btnCreate   :'Создать поезд',
     // btnEdit     :'Редактировать поезд',
@@ -2310,6 +2313,10 @@ Ext.define("TK.locale.ru.view.ky2.poezd.out.PoezdList", {
     // headerPoezdNum        :'Номер поезда',
     // headerKoleya        :'Колея',
     headerDateOut        :'Отправление',
+    headerKontCount :'Количество контейнеров погружено',
+
+    btnFromPoezdInto   : 'С поезда по приб.',
+    btnFromYard     : 'С конт. площадки',
 
     title:'Список поездов по отправлению'
 });
@@ -2749,7 +2756,17 @@ Ext.define("TK.locale.ru.controller.ky2.PoezdVgCtGrController", {
 Ext.define("TK.locale.ru.view.ky2.AbstractTreeForm", {
     override:"TK.view.ky2.AbstractTreeForm",
 
-    btnSave       :'Сохранить',
-    btnSaveExit   :'Сохранить и Выйти',
-    btnClose       : 'Закрыть'
+    btnSave       : 'Сохранить',
+    btnSaveExit   : 'Сохранить и Выйти',
+    btnClose      : 'Закрыть',
+    btnEditPoezd  : 'Редактировать поезд'
+});
+Ext.define("TK.locale.ru.ky2.AbstractBindTreeForm", {
+    override:"TK.view.ky2.AbstractBindTreeForm",
+
+    btnSave       : 'Сохранить',
+    btnSaveExit   : 'Сохранить и Выйти',
+    btnClose      : 'Закрыть',
+    btnEditPoezd  : 'Редактировать поезд',
+    btnVgCtGr     : '+Вагон/Контейнер/Груз'
 });

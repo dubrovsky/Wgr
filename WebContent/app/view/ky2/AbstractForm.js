@@ -27,34 +27,17 @@ Ext.define('TK.view.ky2.AbstractForm', {
                 disabled: true,
                 action: 'save',
                 iconCls:'save'
-            }
-            ,'-'
-            ,{
-                text:this.btnSaveExit,
-                formBind: true,
-                disabled: true,
-                iconCls:'save_close',
-                action:'saveExit'
-            }
-            ,'-'
-            );
+            });
         }
 
-        buttons.push({
-            text:this.btnClose,
-            iconCls:'close1',
-            action:'close'
-        }
-        ,'-'
-        ,{
+        buttons.push(
+        {
             text: this.btnCancel,
             iconCls:'delete1',
             handler: function(btn) {
                 btn.up('form').getForm().reset();
             }
-        }
-        ,'-'
-        );
+        });
 
         return buttons;
     },

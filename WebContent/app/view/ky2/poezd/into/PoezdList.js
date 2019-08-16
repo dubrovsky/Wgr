@@ -21,8 +21,9 @@ Ext.define('TK.view.ky2.poezd.into.PoezdList', {
     buildTopToolbar: function (config) {
         this.callParent(arguments);
         config.tbar.splice(8, 0,
-            {text: '+ На поезд по отпр.', iconCls:'bind', action:'showPoezdsOutDir4PoezdIntoBind'},'-',
-            {text: '+ На конт. площадку', iconCls:'bind', action:'getPoesdAndYardForBind'},'-'
+            {text: this.btnToPoezdOut, iconCls:'bind', action:'showPoezdsOutDir4PoezdIntoBind'},'-',
+            {text: this.btnToYard, iconCls:'bind', action:'getPoesdAndYardForBind'},'-',
+            {text: '+ Поезд по отправлению', iconCls:'train', action:'createPoezdOutFromInto'},'-'
         );
     }
 });

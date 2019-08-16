@@ -1,9 +1,11 @@
 Ext.define('TK.controller.ky2.YardController', {
     extend: 'Ext.app.Controller',
+    mixins: ['TK.controller.FilterUtils'],
 
     views: [
         'ky2.yard.YardList',
-        'ky2.yard.YardForm'
+        'ky2.yard.YardForm',
+        'ky2.yard.Filter'
     ],
     stores: [
         'ky2.Yards',
@@ -35,6 +37,12 @@ Ext.define('TK.controller.ky2.YardController', {
             },
             'ky2yardlist button[action="delete"]': {
                 click: this.deleteYard
+            },
+            'ky2yardlist button[action="filterKontYard"]': {
+                click: this.filterKontYard
+            },
+            'ky2yardfilter button[action="applyFilterKontYard"]': {
+                click: this.applyFilterKontYard
             },
             'ky2yardform button[action="save"]': {
                 click: this.saveYard
@@ -117,6 +125,7 @@ Ext.define('TK.controller.ky2.YardController', {
             win.setLoading(true);
 
             yard.set(values);
+            yard.set('konts', []);
             yard.save({
                 params: {action: 'save'},
                 callback: function (yard, operation, success) {
@@ -130,6 +139,16 @@ Ext.define('TK.controller.ky2.YardController', {
             });
         } else {
             Ext.Msg.alert('Warning', 'Form is not valid');
+        }
+    },
+    filterKontYard: function(btn){
+        var win = Ext.widget('ky2yardfilter');
+        this.initFilter(win.down('form').getForm(), btn.up('grid').getStore());
+    },
+    applyFilterKontYard:function(btn){
+        var form = btn.up('form').getForm();
+        if (form.isValid()) {
+            this.applyFilter(form, this.getYardlist().getStore());
         }
     }
 });

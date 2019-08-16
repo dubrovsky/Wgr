@@ -75,15 +75,37 @@ Ext.define('TK.view.ky2.AbstractBindTreeForm', {
     },
 
     buildBottomToolbarItems: function () {
-        return ['->', {
-            text: 'Сохранить',
-            iconCls: 'save',
-            action: 'save'
-        }];
+        return [];
     },
 
     buildTopToolbarItems: function () {
-        return [];
+        return [{
+            xtype: 'tbfill',  // ->
+            hidden: false
+        }, {
+            text: this.btnEditPoezd,
+            iconCls: 'edit',
+            action: 'editPoezd'
+        }, {
+            text: this.btnVgCtGr,
+            iconCls: 'edit',
+            action: 'editVgCtGr'
+        }, {
+            xtype: 'tbfill',  // ->
+            hidden: false
+        }, {
+            text: this.btnSave,
+            iconCls: 'save',
+            action: 'save'
+        }, {
+            text: this.btnSaveExit,
+            iconCls: 'save_close',
+            action: 'saveExit'
+        }, {
+            text: this.btnClose,
+            iconCls: 'close1',
+            action: 'close'
+        }];
     },
 
     buildTreeLeftPanelStore: function () {

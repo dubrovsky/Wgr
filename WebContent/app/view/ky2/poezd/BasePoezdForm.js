@@ -88,9 +88,23 @@ Ext.define('TK.view.ky2.poezd.BasePoezdForm', {
             width:400
         }]
     },
-    buildTopToolbar: function(config){
+    buildTopToolbar: function(config) {
         config.tbar = this.buildButtons();
-        config.tbar.push({text: '+Вагон/Контейнер/Груз', iconCls:'edit', action:'editVgCtGr'})
+        config.tbar.push({text: '+Вагон/Контейнер/Груз', iconCls: 'edit', action: 'editVgCtGr'});
+        config.tbar.splice(1, 0,
+            {
+                text: this.btnSaveExit,
+                formBind: true,
+                disabled: true,
+                iconCls: 'save_close',
+                action: 'saveExit'
+            }, '-'
+            , {
+                text:this.btnClose,
+                iconCls:'close1',
+                action:'close'
+            } ,'-'
+        );
 
     }
 

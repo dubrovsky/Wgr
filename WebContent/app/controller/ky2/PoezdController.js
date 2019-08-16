@@ -51,6 +51,9 @@ Ext.define('TK.controller.ky2.PoezdController', {
             'ky2poezdintolist button[action="edit"]': {
                 click: this.editPoezdInto
             },
+            'ky2poezdintolist button[action="createPoezdOutFromInto"]': {
+                click: this.createPoezdOutFromPoezdInto
+            },
             'ky2poezdoutlist button[action="edit"]': {
                 click: this.editPoezdOut
             },
@@ -64,12 +67,12 @@ Ext.define('TK.controller.ky2.PoezdController', {
             'ky2poezdintolist button[action="delete"]': {
                 click: this.deletePoezd
             },
-            'ky2poezdintolist button[action="showPoezdsOutDir4PoezdIntoBind"]': {
+            /*'ky2poezdintolist button[action="showPoezdsOutDir4PoezdIntoBind"]': {
                 click: this.showPoezdsOutDir4PoezdIntoBind
             },
             'ky2poezdoutlist button[action="showPoezdsIntoDir4PoezdOutBind"]': {
                 click: this.showPoezdsIntoDir4PoezdOutBind
-            },
+            },*/
             'ky2poezdoutlist button[action="delete"]': {
                 click: this.deletePoezd
             },
@@ -93,10 +96,27 @@ Ext.define('TK.controller.ky2.PoezdController', {
             },
             'ky2poezdoutform button[action="editVgCtGr"]': {
                 click: this.toVgCtGrOut
+            },
+            'ky2bindtreeform button[action="editVgCtGr"]': {
+                click: this.toVgCtGrFromOutside
+            },
+            'ky2vgctgrtreeform button[action=editPoezd]': {
+                click: this.editPoezdFromOutside
+            },
+            'ky2bindtreeform button[action=editPoezd]': {
+                click: this.editPoezdFromOutside
             }
 
 
         });
+    },
+
+    toVgCtGrFromOutside: function (btn) {
+        var rootNode = btn.up('panel').down('treepanel').getRootNode();
+        if (rootNode.get('direction') === 1)
+            this.getController('ky2.PoezdVgCtGrController').editVgCtGr('ky2vgctgrtreeformpoezdinto', 'TK.model.ky2.PoezdVgCtGrTreeNode', rootNode.get('hid'));
+        else
+            this.getController('ky2.PoezdVgCtGrController').editVgCtGr('ky2vgctgrtreeformpoezdout', 'TK.model.ky2.PoezdVgCtGrTreeNode', rootNode.get('hid'));
     },
 
     toVgCtGrInto: function (btn) {
@@ -138,19 +158,36 @@ Ext.define('TK.controller.ky2.PoezdController', {
 
         this.getCenter().add(poezdcontainer);
     },
+
+    editPoezdFromOutside: function (btn) {
+        var rootNode = btn.up('panel').down('treepanel').getRootNode();
+        if (rootNode.get('direction') === 1)
+            this.editPoezd('ky2poezdintoform', 'TK.model.ky2.PoezdInto', rootNode.get('hid'));
+        else
+            this.editPoezd('ky2poezdoutform', 'TK.model.ky2.PoezdOut', rootNode.get('hid'));
+    },
+
     editPoezdInto: function (btn) {
-        this.editPoezd('ky2poezdintoform', 'TK.model.ky2.PoezdInto');
+        this.editPoezdCheck('ky2poezdintoform', 'TK.model.ky2.PoezdInto');
     },
     editPoezdOut: function (btn) {
-        this.editPoezd('ky2poezdoutform', 'TK.model.ky2.PoezdOut');
+        this.editPoezdCheck('ky2poezdoutform', 'TK.model.ky2.PoezdOut');
     },
-    editPoezd: function (xtype, modelClsName) {
+    editPoezdCheck: function (widget, modelClsName) {
         var poezdlist = this.getPoezdlist();
         if (!TK.Utils.isRowSelected(poezdlist)) {
             return false;
         }
+        this.editPoezd(widget, modelClsName, poezdlist.getSelectionModel().getLastSelected().get('hid'));
+    },
 
-        var hid = poezdlist.getSelectionModel().getLastSelected().get('hid');
+    editPoezd: function (xtype, modelClsName, poezdHid) {
+        // var poezdlist = this.getPoezdlist();
+        // if (!TK.Utils.isRowSelected(poezdlist)) {
+        //     return false;
+        // }
+
+        // var hid = poezdlist.getSelectionModel().getLastSelected().get('hid');
 
         this.getCenter().remove(this.getCenter().getComponent(0), true);
         var poezdcontainer = this.getCenter().add(Ext.widget(xtype, {title: this.titleEdit}));
@@ -159,7 +196,7 @@ Ext.define('TK.controller.ky2.PoezdController', {
 
         var poezd = Ext.ModelManager.getModel(modelClsName);
 
-        poezd.load(hid, {
+        poezd.load(poezdHid, {
             scope: this,
             //params:{action: serverAction},
             params: {action: 'edit'},
@@ -173,6 +210,7 @@ Ext.define('TK.controller.ky2.PoezdController', {
             }
         });
     },
+
     deletePoezd: function () {
         var poezdlist = this.getPoezdlist();
         if (!TK.Utils.isRowSelected(poezdlist)) {
@@ -201,6 +239,7 @@ Ext.define('TK.controller.ky2.PoezdController', {
             }
         });
     },
+
     saveExit: function () {
         this.savePoezd(1);
     },
@@ -262,6 +301,7 @@ Ext.define('TK.controller.ky2.PoezdController', {
         store.getProxy().extraParams = {action: 'poezds_dir_for_poezd_bind', direction: direction, routeId: poezdModel.get('route.hid')};
         store.load();
     },
+
     getTitleByDirection: function (direction, koleya) {
         switch (direction) {
             case 1:
@@ -271,8 +311,47 @@ Ext.define('TK.controller.ky2.PoezdController', {
             default:
                 return "";
         }
+    },
+    createPoezdOutFromPoezdInto: function(btn){
+        var poezdlist = this.getPoezdlist();
+        if(!TK.Utils.isRowSelected(poezdlist)){
+            return false;
+        }
+
+        var poezd = poezdlist.getSelectionModel().getLastSelected();
+        Ext.Msg.show({
+            title:'Подтверждение',
+            msg: 'Создать поезд по отправлению?',
+            buttons: Ext.Msg.YESNO,
+            icon: Ext.Msg.QUESTION,
+            scope: this,
+            fn: function(buttonId) {
+                if(buttonId === 'yes'){
+                    this.getCenter().setLoading(true);
+                    Ext.Ajax.request({
+                        url: poezd.getProxy().url,
+                        params: {
+                            action: 'create_poezdout_from_poezdinto',
+                            hid: poezd.get('hid')
+                        },
+                        scope: this,
+                        success: function(response, options) {
+                            this.getCenter().setLoading(false);
+                            Ext.Msg.show({
+                                title: '',
+                                msg: 'Ok',
+                                buttons: Ext.Msg.OK,
+                                icon: Ext.Msg.INFO
+                            });
+                            // var text = Ext.decode(response.responseText);
+                        },
+                        failure: function(response){
+                            this.getCenter().setLoading(false);
+                            TK.Utils.makeErrMsg(response, 'Error...');
+                        }
+                    });
+                }
+            }
+        })
     }
-
-
-
 });

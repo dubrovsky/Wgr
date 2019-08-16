@@ -17,10 +17,7 @@ import org.hibernate.type.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created by peter on 21.02.14.
@@ -47,7 +44,6 @@ public class PoezdDAOHib extends GenericHibernateDAO<Poezd, Long> implements Poe
 
         return listAndCast(crit);
     }
-
 
 
     @Override
@@ -77,13 +73,13 @@ public class PoezdDAOHib extends GenericHibernateDAO<Poezd, Long> implements Poe
         Criteria crit = getSession().createCriteria(getPersistentClass());
         crit.add(Restrictions.like("nppr", poezdPrefix.name(), MatchMode.START).ignoreCase());
         crit.add(Restrictions.conjunction()
-                        .add(Restrictions.ge(dateProp, new GregorianCalendar(year, 0, 1).getTime()))
-                        .add(Restrictions.lt(dateProp, new GregorianCalendar(year, 11, 31).getTime()))
+                .add(Restrictions.ge(dateProp, new GregorianCalendar(year, 0, 1).getTime()))
+                .add(Restrictions.lt(dateProp, new GregorianCalendar(year, 11, 31).getTime()))
         );
         crit.setProjection(Projections.sqlProjection("MAX(TO_NUMBER(SUBSTR({alias}.NPPR,3))) as nppr", new String[]{"nppr"}, new Type[]{new IntegerType()}));            //max(to_number(substr(nppr,3)))
-        try{
-            return (Integer)crit.uniqueResult();
-        } catch (Exception ex){
+        try {
+            return (Integer) crit.uniqueResult();
+        } catch (Exception ex) {
             return -1;
         }
 
@@ -103,6 +99,32 @@ public class PoezdDAOHib extends GenericHibernateDAO<Poezd, Long> implements Poe
     }
 
     @Override
+    public List<Poezd> findAllPresentPoezds(Usr usr, long routeId, Byte direction) {
+        Criteria crit = getSession().createCriteria(getPersistentClass());
+        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans()));
+        crit.createAlias("route", "route").add(Restrictions.eq("route.hid", routeId));
+        crit.add(Restrictions.eq("direction", direction));
+        if (direction == 2) { // out
+            crit.add(Restrictions.or(Restrictions.isNull("dotp"), Restrictions.gt("dotp", new Date())));
+        } else { // into
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(new Date());
+            cal.add(Calendar.DATE, -5);    // minus 5 days
+            Date dateBefore = cal.getTime();
+            crit.add(Restrictions.or(Restrictions.isNull("dprb"), Restrictions.between("dprb", dateBefore, new Date())));
+        }
+
+        return listAndCast(crit);
+    }
+
+    @Override
+    public List<Poezd> findByIds(List<Long> ids) {
+        Criteria crit = getSession().createCriteria(getPersistentClass());
+        crit.add(Restrictions.in("hid", ids));
+        return listAndCast(crit);
+    }
+
+    @Override
     public Long countPoezdsDir(List<Filter> filters, Usr usr, Long routeId, Byte direction) {
         Criteria crit = getSession().createCriteria(getPersistentClass());
         crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans()));
@@ -115,11 +137,11 @@ public class PoezdDAOHib extends GenericHibernateDAO<Poezd, Long> implements Poe
     }
 
     private void applyFilter(List<Filter> filters, Criteria crit, Locale locale) {
-        if(CollectionUtils.isNotEmpty(filters)){
-            for(Filter filter: filters){
-                if(StringUtils.isNotBlank(filter.getProperty()) && StringUtils.isNotBlank(filter.getValue())){
+        if (CollectionUtils.isNotEmpty(filters)) {
+            for (Filter filter : filters) {
+                if (StringUtils.isNotBlank(filter.getProperty()) && StringUtils.isNotBlank(filter.getValue())) {
                     Date date;
-                    switch (Poezd.FilterFields.valueOf(filter.getProperty().toUpperCase())){
+                    switch (Poezd.FilterFields.valueOf(filter.getProperty().toUpperCase())) {
                         case NPPR:
                             crit.add(Restrictions.ilike(Poezd.FilterFields.NPPR.getName(), StringUtils.trim(filter.getValue()), MatchMode.ANYWHERE));
                             break;

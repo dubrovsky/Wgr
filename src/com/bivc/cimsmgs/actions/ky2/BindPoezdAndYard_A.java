@@ -50,7 +50,7 @@ public class BindPoezdAndYard_A extends CimSmgsSupport_A {
 
     private String bindPoezdToYard() throws Exception {
         final PoezdBindDTO poezdBindDTO = defaultDeserializer.read(PoezdBindDTO.class, poezdObj);
-        List<YardSectorBindDTO> yardSectorsBindDTO = defaultDeserializer.read(new ArrayList<YardSectorBindDTO>() {}.getClass().getGenericSuperclass(), yardSectorsObj);
+        final List<YardSectorBindDTO> yardSectorsBindDTO = defaultDeserializer.read(new ArrayList<YardSectorBindDTO>() {}.getClass().getGenericSuperclass(), yardSectorsObj);
 
         Poezd poezd = poezdDAO.findById(poezdBindDTO.getHid(), false);
         final List<YardSector> yardSectors = yardSectorDAO.findAll(getUser().getUsr());
