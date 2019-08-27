@@ -128,6 +128,7 @@ public class ImportXLSMapPogruz extends ImportXLS {
 
             // column M
             test = getStringCellValue(safeGetCell(row_num + 1, 12)).trim();
+            System.out.println(test);
             grPod = new BigDecimal(parseNumirec(test,getErrors(),8));
 
             // column N

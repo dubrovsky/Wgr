@@ -12,14 +12,17 @@ Ext.define('TK.view.cimsmgs.CimSmgsDocs9TreeFormWin', {
 
     // title: this.titleDocs,
 
-    buildFormItems: function(){
+    buildFormItems: function(opt1,opt2,opt3){
+
+        var hideText2=this.xtype==='smgs2Docs9TreeformWin'?true:false;
+
         return [
             {xtype:'trigger', fieldLabel:this.labelCustomsCode, name:"ncas", maxLength:6, triggerCls:'dir', width:100,
                 onTriggerClick: function(e){
                     this.fireEvent("ontriggerclick", this, e);
             }},
             {xtype:'textarea', fieldLabel:this.labelTextRu, name:"text1", maxLength:500, width:200},
-            {xtype:'textarea', fieldLabel:this.labelText, name:"text2", maxLength:240, width:200},
+            {xtype:hideText2?'hidden':'textarea', fieldLabel:this.labelText, name:"text2", maxLength:240, width:200},
             {xtype:'textfield', fieldLabel:this.labelDocNum, name:"ndoc", maxLength:56, width:200},
             {xtype:'datefield', fieldLabel:this.labelDate, name:"dat", width:80},
             {xtype:'numberfield', fieldLabel:this.labelTotal, name:"ncopy", maxLength:10, width:200, allowDecimals:false, minValue:0},

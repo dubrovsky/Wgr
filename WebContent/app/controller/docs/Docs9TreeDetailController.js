@@ -338,7 +338,6 @@ Ext.define('TK.controller.docs.Docs9TreeDetailController', {
         //проверка является ли форма документа вложеной или все компоненты находятся на формe
         if(ownerDoc.ownerCt.ownerCt.xtype&&ownerDoc.ownerCt.ownerCt.xtype==='tabpanel')
             ownerDoc=ownerDoc.ownerCt;
-
         win.setOwnerDoc(ownerDoc);
 
         rootNode.removeAll();
@@ -474,7 +473,6 @@ Ext.define('TK.controller.docs.Docs9TreeDetailController', {
 
     setDisplayedDocs9Fields: function(controller, docForm){
         docForm=docForm.title?docForm:docForm.ownerCt;
-
         var vags = docForm.dataObj[docForm.getVagCollectionName()],
             // docs9DisplField = this.getCimsmgs().getComponent('disp.g9'),
 
@@ -493,6 +491,7 @@ Ext.define('TK.controller.docs.Docs9TreeDetailController', {
                     if (conts && !Ext.Object.isEmpty(conts)) {
 
                         for (var contIndx in conts) {
+
                             var cont = conts[contIndx];
 
                             docs9 = cont[docForm.getDocs9CollectionName()];
@@ -512,18 +511,52 @@ Ext.define('TK.controller.docs.Docs9TreeDetailController', {
     buildDisplayedDocs9String: function(docs9) {
         var docs9Result = '';
         if(docs9 && !Ext.Object.isEmpty(docs9)){
-
+            var len=Object.keys(docs9).length,
+                used=[],count=0;
+            used.length=len;
+            used.fill(false);
             for(var docs9Indx in docs9){
                 var doc9 = docs9[docs9Indx];
+                if(!used[count++])
+                {
+                    used[count-1]=true;
+                    var str='';
+                    str += (doc9['text'] ? doc9['text'] + ':' : '');
+                    str += (doc9['text2'] ? doc9['text2'] + '  ' : '');
+                    str += (doc9['ndoc'] ? doc9['ndoc'] + '  ' : '');
+                    str += (doc9['dat'] ? 'от ' + doc9['dat'] + '  ' : '');
+                    str += (doc9['ncopy'] ? doc9['ncopy'] + ' экз '  : '');
+                    if(doc9['text']&&doc9['ncas']&&(doc9['text'].toLowerCase()===doc9['ncas'].toLowerCase()))
+                    {
+                        var count2=0;
+                        for(var docs9Indx2 in docs9){
+                            var doc9_2=docs9[docs9Indx2];
+                            if(!used[count2++]&&doc9_2['text']&&doc9_2['ncas']&&(doc9['text'].toLowerCase()===doc9_2['text'].toLowerCase())&&(doc9_2['text'].toLowerCase()===doc9_2['ncas'].toLowerCase()))
+                            {
+                                used[count2-1]=true;
+                                var str_tmp='';
+                                str_tmp += (doc9_2['text2'] ? doc9_2['text2'] + '  ' : '');
+                                str_tmp += (doc9_2['ndoc'] ? doc9_2['ndoc'] + '  ' : '');
+                                str_tmp += (doc9_2['dat'] ? 'от ' + doc9_2['dat'] + '  ' : '');
+                                str_tmp += (doc9_2['ncopy'] ? doc9_2['ncopy'] + ' экз '  : '');
+                                if(str.length>0&&str_tmp.length>0)
+                                    str+=',';
+                                str+=str_tmp;
+                            }
+                        }
+                    }
+                    docs9Result+=str+'\n'
+                }
 
-                docs9Result += (doc9['text'] ? doc9['text'] + '  ' : '');
-                docs9Result += (doc9['text2'] ? doc9['text2'] + '  ' : '');
-                docs9Result += (doc9['ndoc'] ? doc9['ndoc'] + '  ' : '');
-                docs9Result += (doc9['dat'] ? 'от ' + doc9['dat'] + '  ' : '');
-                docs9Result += (doc9['ncopy'] ? doc9['ncopy'] + ' экз '  : '');
-                docs9Result += '\n';
+                // docs9Result += (doc9['text'] ? doc9['text'] + '  ' : '');
+                // docs9Result += (doc9['text2'] ? doc9['text2'] + '  ' : '');
+                // docs9Result += (doc9['ndoc'] ? doc9['ndoc'] + '  ' : '');
+                // docs9Result += (doc9['dat'] ? 'от ' + doc9['dat'] + '  ' : '');
+                // docs9Result += (doc9['ncopy'] ? doc9['ncopy'] + ' экз '  : '');
+                // docs9Result += '\n';
             }
         }
+
         return docs9Result;
     }
 });

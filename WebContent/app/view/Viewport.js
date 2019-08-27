@@ -86,9 +86,10 @@ Ext.define('TK.view.Viewport', {
                         fields:['code', 'language'],
                         data:[
                             ['ru', 'Русский'],
+                            ['pl', 'Polski'],
                             ['en', 'English'],
-                            ['zh_CN', '中国的'],
-                            ['de', 'Deutsch']
+                            ['de', 'Deutsch'],
+                            ['zh_CN', '中国的']
                         ]
                     }),
                     displayField: 'language',
@@ -107,7 +108,7 @@ Ext.define('TK.view.Viewport', {
                     },
                     listConfig:{
                         getInnerTpl:function () {
-                            return '<div><img src="resources/images/flag_{code}.jpg" align="left">&nbsp;{language}</div>';
+                            return '<div><img src="resources/images/flag_{code}.png" align="left">&nbsp;{language}</div>';
                         }
                     }
                 }));

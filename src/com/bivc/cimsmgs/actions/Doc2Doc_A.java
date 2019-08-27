@@ -55,8 +55,12 @@ public class Doc2Doc_A extends CimSmgsSupport_A implements ServletRequestAware, 
     private Doc2Doc smgs2Smgs4ContList;
     private Doc2Doc smgs2ExcelContList_pl;
 
+    //ведомость контейнеров смгс2
     private Doc2Doc smgs2ExcelContList;
+    //ведомость вагонов смгс2
     private Doc2Doc smgs2ExcelVagList;
+    // шаблоны документов
+    private Doc2Doc excelTpls;
 
 
 
@@ -572,5 +576,13 @@ public class Doc2Doc_A extends CimSmgsSupport_A implements ServletRequestAware, 
 
     public void setSmgs2ExcelVagList(Doc2Doc smgs2ExcelVagList) {
         this.smgs2ExcelVagList = smgs2ExcelVagList;
+    }
+
+    public Doc2Doc getExcelTpls() {
+        return excelTpls;
+    }
+
+    public void setExcelTpls(Doc2Doc excelTpls) {
+        this.excelTpls = excelTpls;
     }
 }

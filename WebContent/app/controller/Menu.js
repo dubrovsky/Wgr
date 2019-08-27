@@ -597,7 +597,19 @@ function translate (me,cur_lang) {
             filecimsmgs :'Graphics ЦИМ/СМГС',avisogu29k  :'Templates GU for CKP',cim:'CIM', avisocim    :'Templates CIM',
             files       :'Other documents',cmr         :'CMR',fileavisogu29k:'Graphics Templates GU', gu27v       :'GU-27v',
             avisogu29k1 :'Templates GU for agents', avisocimsmgs:'Templates CIM/SMGS',  ved:'Wagon and transfer list',exit:'出口',
-            poezdin: 'Trains, in', poezdout: 'Trains, out', avtoin: 'Avto, in', avtoout: 'Avto, out'}
+            poezdin: 'Trains, in', poezdout: 'Trains, out', avtoin: 'Avto, in', avtoout: 'Avto, out'},
+
+        pl: {
+            user   :'Users',userGroups  :'Groups', project:'Projects',log :'Logs',stat :'Statistics',
+            print  :"Print templates",nsimanager:'Handbooks',instr   :'User guide',changepw:'Password change',
+            treeExit    :'Exit', epd:'EPD', smgs:'SMGS', invoicelist :'Invoice',  aviso	 :'Templates SMGS for CKP',
+            cimsmgs	    :'CIM/SMGS', aviso1	    :'Templates SMGS for agents', slovnakl    :'Slovak waybill', smgs2 :'SMGS2',
+            aviso2	    :'Templates SMGS2', gu29k:'GU-29k',  doplist:'Extra sheet', filesmgs    :'Graphics SMGS',
+            filegu29k   :'Graphics GU', fileaviso   :'Graphics Templates SMGS', fileinvoice :'Graphics Invoice',
+            filecimsmgs :'Graphics CIM/SMGS',  avisogu29k  :'Templates GU for CKP', cim :'CIM', avisocim    :'Templates CIM',
+            files       :'Other documents', cmr :'CMR', fileavisogu29k:'Graphics Templates GU', gu27v  :'GU-27v',
+            avisogu29k1 :'Templates GU for agents', avisocimsmgs:'Templates CIM/SMGS',  ved :'Wagon and transfer list', exit:'Exit',
+            poezdin: 'Trains, in', poezdout: 'Trains, out', avtoin: 'Avto, in', avtoout: 'Avto, out'},
     };
 
     // documents localisation

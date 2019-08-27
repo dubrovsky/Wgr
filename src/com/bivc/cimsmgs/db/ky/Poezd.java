@@ -318,7 +318,7 @@ public class Poezd implements Serializable {
         }
     }
 
-    public void updateVags(Set<VagonDTO> dtos, Mapper mapper) {
+    public Map<String, List<?>> updateVags(Set<VagonDTO> dtos, Mapper mapper) {
         // delete
         Set<Vagon> vagsToRemove = new HashSet<>();
         for (Vagon vagon : getVagons()) {
@@ -359,15 +359,17 @@ public class Poezd implements Serializable {
         dtos.removeAll(vagsDtoToRemove);
 
         // insert
+        Map<String, List<?>> contGruz4History = new HashMap<>(2);
         for (VagonDTO vagonIntoDTO : dtos) {
             Vagon vagon = mapper.map(vagonIntoDTO, Vagon.class);
             addVagon(vagon);
             if (vagonIntoDTO.getOtpravka() == Otpravka.CONT) {
-                vagon.updateKonts(vagonIntoDTO.getKonts(), mapper);
+                contGruz4History.put("cont", vagon.updateKonts(vagonIntoDTO.getKonts(), mapper));
             } else if (vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
                 vagon.updateGruzs(vagonIntoDTO.getGruzs(), mapper);
             }
         }
+        return contGruz4History;
     }
 
     public Vagon addVagon(Vagon vagon) {

@@ -516,7 +516,8 @@ Ext.define('TK.controller.docs.Smgs2', {
         this.getComponent('codBeg').getComponent('codStBeg').setValue(data.staNo);
         this.getComponent('codBeg').getComponent('admStBeg').setValue(data.managno);
         this.getComponent('stBeg').setValue(data.staName);
-        this.getComponent('per').getComponent('namPer').setValue(data.mnamerus);
+        if(!this.getComponent('per').getComponent('namPer').getValue())
+            this.getComponent('per').getComponent('namPer').setValue(data.mnamerus);
         view.up('window').close();
     },
     selectStaG22StEnd: function(view, record, item, index) {

@@ -4,6 +4,9 @@ Ext.define('TK.Utils', {
     arren: new Array('Q','q','Ya', 'ya', 'Yu', 'yu', 'Ch', 'ch', 'Sh', 'sh', 'Sh', 'sh', 'Zh', 'zh', 'A', 'a', 'B', 'b', 'V', 'v', 'G', 'g', 'D', 'd', 'E', 'e', 'E', 'e', 'Z', 'z', 'I', 'i', 'J', 'j', 'K', 'k', 'L', 'l', 'M', 'm', 'N', 'n', 'O', 'o', 'P', 'p', 'R', 'r', 'S', 's', 'T', 't', 'U', 'u', 'F', 'f', 'H', 'h', 'C', 'c', 'Y', 'y', '`', '`', '\'', '\'', 'E', 'e'),
     arrde: new Array('Ä','ä','Ö','ö','ẞ','ß','Ü','ü','W','w'),
     arrde_en: new Array('Ae','ae','Oe','oe','Ss','ss','Ue','ue','V','v'),
+    arrpl: new Array('Ą',	'ą','Ć','ć','Ę','ę','Ł','ł','Ń','ń','Ó','ó','Ś','ś','Ź','ź','Ż','ż'),
+    arrpl_en: new Array('A','a','C','c','E','e','L','l','N','n','O','o','S','s','Z','z','Z','z'),
+
     makeErrMsg: function (response, title) {
         var msg = response.statusText ? response.statusText : '';
         if (response.responseText) {
@@ -197,6 +200,14 @@ Ext.define('TK.Utils', {
         }
         return text;
     },
+    translit:function(text,arrayFrom,arrayTo)
+    {
+        for (var i = 0; i < arrayFrom.length; i++) {
+            var reg = new RegExp(arrayFrom[i], "g");
+            text = text.replace(reg, arrayTo[i]);
+        }
+        return text;
+    },
 
     /**
      * translit text to chosen destination and paste to entered component.
@@ -208,10 +219,12 @@ Ext.define('TK.Utils', {
     {
         if(text&&component)
         {   if(lang==='ru')
-                component.setValue(this.translit_ru(text));
+                component.setValue(this.translit(text,this.arrru,this.arren));
             if(lang==='en') {
-                text=this.translit_de(text);
-                component.setValue(this.translit_en(text));
+
+                text=this.translit(text,this.arrde,this.arrde_en);
+                text=this.translit(text,this.arrpl,this.arrpl_en);
+                component.setValue(this.translit(text,this.arren,this.arrru));
             }
         }
     },
@@ -263,9 +276,9 @@ Ext.define('TK.Utils', {
     firstContainsSecond:function (first,second,skippedProperties) {
 
         for (var propertyName in second) {
-            console.log(propertyName)
+            // console.log(propertyName)
             if (skippedProperties.indexOf(propertyName) > -1) {
-                console.log('skip'+propertyName)
+                // console.log('skip'+propertyName)
             }
             else
             if(first[propertyName]==null||first[propertyName]!==second[propertyName])

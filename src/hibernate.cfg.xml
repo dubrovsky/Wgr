@@ -19,6 +19,7 @@
         <property name="hibernate.use_sql_comments">true</property>
         <property name="hibernate.connection.pool_size">0</property>
         <property name="hibernate.current_session_context_class">thread</property>
+        <property name="hibernate.jdbc.batch_size">20</property>
 
 <!--
         <property name="hibernate.connection.url">jdbc:oracle:thin:@localhost:41521:TK</property>
@@ -167,6 +168,7 @@
         <mapping resource="com/bivc/cimsmgs/db/ky/NsiVagUzky.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/ky/NsiAvto.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/ky/NsiKont.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/ky/KontGruzHistory.hbm.xml"/>
 
         <event type="merge">
             <listener class="org.springframework.orm.hibernate3.support.IdTransferringMergeEventListener"/>

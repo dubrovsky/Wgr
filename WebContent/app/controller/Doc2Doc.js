@@ -71,6 +71,12 @@ Ext.define('TK.controller.Doc2Doc', {
             'uploadFormWin button[action="uploadXLSvags"]': {
                 click: this.onUploadXLSvags
             },
+            'uploadFormWin button[action="downloaduploadContsXLS"]': {
+                click: this.onDownloadTpl
+            },
+            'uploadFormWin button[action="downloaduploadVagsXLS"]': {
+                click: this.onDownloadTpl
+            },
             'vgCtGrTreeFormWin button[action="uploadContsXLS"]': {
                 click: this.onUploadVagsContList
             },
@@ -338,6 +344,10 @@ Ext.define('TK.controller.Doc2Doc', {
             Ext.Msg.show({title: 'Ошибка', msg: 'Нет документов в данном маршруте', buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR});
         }
     },
+    /**
+     * Заполнени еданных для генерации XLS файла контейнеров/вагонов
+     * @param btn кнопка вызова
+     */
     onContListOnForm: function(btn){
         var form = btn.up('form').getForm(),
             hid = form.findField('smgs.hid').getValue();
@@ -366,9 +376,13 @@ Ext.define('TK.controller.Doc2Doc', {
         }
         this.contsList(data);
     },
+    /**
+     * отправка запроса и загрузка сгененрированного XLS файла
+     * @param data
+     */
     contsList: function(data) {
-        window.open(
-            'Doc2Doc_download.do?' +
+
+        var url=            'Doc2Doc_download.do?' +
             'search.npoezd=' + (data['npoezd'] ? data['npoezd'] : '') +
             '&hid=' + (data['hid'] ? data['hid'] : '') +
             '&type=' + data['type']+
@@ -376,9 +390,30 @@ Ext.define('TK.controller.Doc2Doc', {
             '&token=1' +
             '&groupBy='+ data['groupBy'] +
             '&search.routeId=' + data['routeId'] +
-            '&search.docType=filecimsmgs',
-            '_self','');
+            (data['docType']?'&search.docType='+data['docType']:'&search.docType=filecimsmgs');
+        window.open(url,'_self','');
         this.runProgressBar4LongOperation();
+    },
+    /**
+     * скачиваем шаблон для импорта через EXCEL данных о вагон/контейнер/груз
+     * @param btn кнопка вызова
+     */
+    onDownloadTpl:function(btn)
+    {
+        var data={
+            'groupBy':13
+        };
+        switch (btn.action) {
+            case 'downloaduploadVagsXLS':
+            {
+                data['docType']='VAG_TEMPLATE_CS2.xls';
+            }break;
+            case 'downloaduploadContsXLS':
+            {
+                data['docType']='CONTS_TEMPLATE_CS2.xls';
+            }break;
+        }
+        this.contsList(data);
     },
     dopListOnList: function(btn){
         var grid = btn.up('docslist');
@@ -578,8 +613,14 @@ Ext.define('TK.controller.Doc2Doc', {
         win.down('form').getComponent('uploadName').setValue(btn.action);
         win.dockedItems.items[0].getComponent('savebtn').action='uploadXLSvags';
 
+        if(btn.action==='uploadContsXLS'||btn.action==='uploadVagsXLS')
+        {
+            win.dockedItems.items[0].getComponent('downloadTpl').hidden=false;
+            win.dockedItems.items[0].getComponent('downloadTpl').action='download'+btn.action;
+        }
         win.show();
     },
+
 
     /**
      * Отправляем XLS файл c вагонами/контейнерами на сервер
@@ -619,10 +660,21 @@ Ext.define('TK.controller.Doc2Doc', {
         var rootNode=this.getVgCtGrTree().getStore().getRootNode(),
             rootVag=rootNode.childNodes[0],
             rootVagData=rootVag?rootVag.data:{},
-            rootCont= rootVag?rootVag.childNodes[0]:null,
-            rootContData=rootCont?rootCont.data:{},
+            rootCont,
+            rootContData,
+            rootGruzData;
+
+        if(type==='uploadContsXLS')
+        {
+            rootCont= rootVag?rootVag.childNodes[0]:null;
+            rootContData=rootCont?rootCont.data:{};
             rootGruzData=rootCont?rootCont.childNodes[0].data:{};
-        rootNode.removeAll();
+        }
+        if(type==='uploadVagsXLS') {
+            rootGruzData=rootVag?rootVag.childNodes[0].data:{};
+        }
+
+            rootNode.removeAll();
 
         for(var i=0;i<conts.length;i++)
         {

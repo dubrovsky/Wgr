@@ -3,10 +3,14 @@ package Ti.DataProcessing;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellReference;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public abstract class ImportXLS {
 
@@ -63,9 +67,16 @@ public abstract class ImportXLS {
      */
     public static String getStringCellValue(Cell cell) {
         cell.setCellType(CellType.STRING);
-        return cell.getStringCellValue();
+        return cell.getStringCellValue().trim();
     }
-
+    public Date getDateCell(Cell cell)
+    {
+        if (cell.getCellTypeEnum()==CellType.STRING)
+        {
+            return parseDate(cell.getStringCellValue(),errors,cell.getColumnIndex());
+        }
+        return cell.getDateCellValue();
+    }
     /**
      * Метод безопасно считывает ячейку.
      *
@@ -98,16 +109,32 @@ public abstract class ImportXLS {
     {
         if(!test.isEmpty()) {
             if (StringUtils.isNumeric(test.replaceAll(",", "").replaceAll("\\.", ""))) {
-                return test;
+                return test.replaceAll(",", ".");
             }
             else {
                 if(errors!=null&&column_num!=null)
-                    errors.add("Data:" + test + "  Row:" + new Integer(column_num + 2) + " Column:"+String.valueOf((char)(column_num + 64+1)));
+                    errors.add("Data:" + test + "  Row:" + (column_num + 2) + " Column:"+ CellReference.convertNumToColString(column_num));
                 return  "-1";
             }
         }
         else
             return "0";
+    }
+    Date parseDate(String test, ArrayList<String> errors, Integer column_num)
+    {
+        Date date=null;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        if(!test.isEmpty()) {
+            try {
+                date=simpleDateFormat.parse(test);
+            }
+            catch (ParseException e) {
+                getErrors().add("Wrong date:"+test+ "  Row:" + (column_num + 2) + " Column:"+ CellReference.convertNumToColString(column_num));
+                return null;
+            }
+        }
+
+        return date;
     }
 
     /**
@@ -123,7 +150,6 @@ public abstract class ImportXLS {
      */
     public boolean init(InputStream inputStream) {
         Workbook workbook;
-        Cell cell;
         try {
             workbook = WorkbookFactory.create(inputStream);
             setDatatypeSheet(workbook.getSheetAt(0));

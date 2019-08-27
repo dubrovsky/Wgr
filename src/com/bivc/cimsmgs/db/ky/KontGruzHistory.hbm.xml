@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.ky.KontGruzHistory" table="KY_KONT_GRUZ_HISTORY_HID">
+        <id name="hid" type="java.lang.Long">
+            <column name="HID" precision="20" scale="0" not-null="true"/>
+            <generator class="sequence">
+                <param name="sequence">KY_KONT_STATUS_HISTORY_HID</param>
+            </generator>
+        </id>
+        <many-to-one class="com.bivc.cimsmgs.db.ky.Poezd" fetch="select" name="poezd">
+            <column name="HID_POEZD" precision="20" scale="0"/>
+        </many-to-one>
+        <many-to-one class="com.bivc.cimsmgs.db.ky.Vagon" fetch="select" name="vagon">
+            <column name="HID_VAGON" precision="20" scale="0"/>
+        </many-to-one>
+        <many-to-one class="com.bivc.cimsmgs.db.ky.YardSector" fetch="select" name="yardSector">
+            <column name="HID_SECTOR" precision="20" scale="0"/>
+        </many-to-one>
+        <many-to-one class="com.bivc.cimsmgs.db.ky.Yard" fetch="select" name="yard">
+            <column name="HID_YARD" precision="20" scale="0"/>
+        </many-to-one>
+        <many-to-one class="com.bivc.cimsmgs.db.ky.Avto" fetch="select" name="avto">
+            <column name="HID_AVTO" precision="20" scale="0"/>
+        </many-to-one>
+        <many-to-one class="com.bivc.cimsmgs.db.ky.Kont" fetch="select" name="kont">
+            <column name="HID_KONT" precision="20" scale="0"/>
+        </many-to-one>
+        <many-to-one class="com.bivc.cimsmgs.db.ky.Gruz" fetch="select" name="gruz">
+            <column name="HID_GRUZ" precision="20" scale="0"/>
+        </many-to-one>
+
+        <property name="koleya" type="java.lang.Byte">
+            <column name="KOLEYA" precision="1" scale="0" not-null="true"/>
+        </property>
+        <property name="direction" type="java.lang.Byte">
+            <column name="DIRECTION" precision="1" scale="0" not-null="true"/>
+        </property>
+
+        <property name="dateOperation" type="timestamp">
+            <column length="7" name="DATE_OPERATION"/>
+        </property>
+        <property name="un" type="string" update="false">
+            <column length="20" name="UN"/>
+        </property>
+    </class>
+</hibernate-mapping>

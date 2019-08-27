@@ -30,8 +30,8 @@ public class CopyPoezdMapper extends ConfigurableMapper {
                 .field("route", "route")
                 .field("nppr", "nppr")
                 .field("npprm", "npprm")
-                .field("punkt_otpr", "punkt_otpr")
-                .field("punkt_nazn", "punkt_nazn")
+                .field("punkt_otpr", "punkt_nazn")
+                .field("punkt_nazn", "punkt_otpr")
                 .field("gruzotpr", "gruzotpr")
                 .field("koleya", "koleya")
                 .register();

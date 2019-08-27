@@ -11,19 +11,23 @@ Ext.define('TK.controller.ky2.PoezdController', {
         'ky2.poezd.into.PoezdsOutDir',
         'ky2.BasePoezdsDir',
         'ky2.AbstractList',
-        'ky2.AbstractForm'
+        'ky2.AbstractForm',
+        'ky2.poezd.PoezdsImportDir',
+        'ky2.BasePoezdsImportDir'
     ],
     stores: [
         'ky2.PoezdsBase',
         'ky2.PoezdsInto',
         'ky2.PoezdsOut',
-        'ky2.PoezdsDir'
+        'ky2.PoezdsDir',
+        'ky2.PoezdsImportDir'
     ],
     models: [
         'ky2.PoezdBase',
         'ky2.PoezdInto',
         'ky2.PoezdOut',
         'ky2.PoezdDir',
+        'ky2.PoezdImportDir',
         'PackDoc'
     ],
     refs: [{
@@ -35,9 +39,12 @@ Ext.define('TK.controller.ky2.PoezdController', {
     }, {
         ref: 'menutree',
         selector: 'viewport > menutree'
-    }, {
+    }, {     // PoezdsImportDir
         ref: 'poezdform',
         selector: 'viewport > tabpanel ky2abstractform#ky2poezdform'
+    }, {
+        ref: 'poezdsImportDir',
+        selector: 'ky2poezdsimportdir > ky2basepoezdsimportdir'
     }],
 
     init: function () {
@@ -66,6 +73,12 @@ Ext.define('TK.controller.ky2.PoezdController', {
             },
             'ky2poezdintolist button[action="delete"]': {
                 click: this.deletePoezd
+            },
+            'ky2poezdintolist button[action="showPoezdsImportDir"]': {
+                click: this.showPoezdsImportDir
+            },
+            'ky2poezdsimportdir button[action="getPoesdsForImport"]': {
+                click: this.importPoesd
             },
             /*'ky2poezdintolist button[action="showPoezdsOutDir4PoezdIntoBind"]': {
                 click: this.showPoezdsOutDir4PoezdIntoBind
@@ -300,6 +313,67 @@ Ext.define('TK.controller.ky2.PoezdController', {
 
         store.getProxy().extraParams = {action: 'poezds_dir_for_poezd_bind', direction: direction, routeId: poezdModel.get('route.hid')};
         store.load();
+    },
+
+    showPoezdsImportDir: function () {
+        var poezdlist = this.getPoezdlist();
+        if (!TK.Utils.isRowSelected(poezdlist)) {
+            return false;
+        }
+
+        var win = Ext.widget('ky2poezdsimportdir'),
+            store = win.down('grid').getStore(),
+            poezdModel = poezdlist.getSelectionModel().getLastSelected();
+
+        store.load({
+             params: {
+                 action: 'import_poezd_list'/*,
+                 routeId: poezdModel.get('route.hid')*/
+             }
+        });
+    },
+
+    importPoesd: function() {
+        var poezdlist = this.getPoezdlist(),
+            poezdModel = poezdlist.getSelectionModel().getLastSelected(),
+            poezdsDir = this.getPoezdsImportDir().getSelectionModel().getSelection(),
+            poezdDirModel = poezdsDir.length > 0 ? poezdsDir[0] : null;
+
+        if (poezdDirModel == null) {
+            Ext.Msg.show({
+                title: 'Ошибка',
+                msg: 'Не выбрано значение',
+                buttons: Ext.Msg.OK,
+                icon: Ext.Msg.ERROR
+            });
+            return false;
+        }
+
+        this.getCenter().setLoading(true);
+
+        Ext.Ajax.request({
+            url: this.getPoezdlist().getStore().getProxy().url,
+            params: {
+                n_packet: poezdDirModel.get('n_packet'),
+                n_poezd: poezdDirModel.get('n_poezd'),
+                ved_nomer: poezdDirModel.get('ved_nomer'),
+                action: 'import_poesd',
+                koleya: poezdModel.get('koleya'),
+                direction: poezdModel.get('direction'),
+                routeId: poezdModel.get('route.hid')
+            },
+            scope: this,
+            callback: function (options, success, response) {
+                this.getCenter().setLoading(false);
+                if (success) {
+                    this.getPoezdsImportDir().up('window').close();
+                    this.getPoezdlist().getStore().reload();
+
+                } else {
+                    TK.Utils.makeErrMsg(response, 'Error!..');
+                }
+            }
+        });
     },
 
     getTitleByDirection: function (direction, koleya) {

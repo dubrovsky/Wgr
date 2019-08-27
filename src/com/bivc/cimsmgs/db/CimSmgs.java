@@ -6119,15 +6119,52 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
     }
 
     public String buildG23Print() {
-        String _f9 = "";
+        StringBuilder _f9 = new StringBuilder();
+        StringBuilder print = new StringBuilder();
+        int count=0;
+        boolean used[] = new boolean[cimSmgsDocses9.values().size()];
+        Arrays.fill(used,false);
+
         for (CimSmgsDocs elem : cimSmgsDocses9.values()) {
-            _f9 += (elem.getText() != null ? elem.getText() + " " : "");
-            _f9 += (elem.getNdoc() != null ? elem.getNdoc() + " " : "");
-            _f9 += (elem.getDat() != null ? "от " + new SimpleDateFormat("dd.MM.yyyy").format(elem.getDat()) + " " : "");
-            _f9 += (elem.getNcopy() != null ? elem.getNcopy() + " экз " : "");
-            _f9 += "\n";
+            if (!used[count++]) {
+                used[count - 1] = true;
+                StringBuilder str = new StringBuilder();
+                str.append(elem.getText() != null ? elem.getText() + ":" : "");
+                str.append(elem.getNdoc() != null ? elem.getNdoc() + " " : "");
+                str.append(elem.getDat() != null ? "от " + new SimpleDateFormat("dd.MM.yyyy").format(elem.getDat()) + " " : "");
+                str.append(elem.getNcopy() != null ? elem.getNcopy() + " экз " : "");
+                if (elem.getText() != null && elem.getNcas() != null && elem.getText().toLowerCase().equals(elem.getNcas().toLowerCase())) {
+                    int count2 = 0;
+                    for (CimSmgsDocs elem2 : cimSmgsDocses9.values()) {
+                        if (!used[count2++] && elem2.getText() != null && elem2.getNcas() != null && elem2.getText().toLowerCase().equals(elem2.getNcas().toLowerCase()) && elem2.getText().toLowerCase().equals(elem.getText().toLowerCase())) {
+                            StringBuilder tmp = new StringBuilder();
+                            used[count2 - 1] = true;
+                            tmp.append(elem.getNdoc() != null ? elem.getNdoc() + " " : "");
+                            tmp.append(elem.getDat() != null ? "от " + new SimpleDateFormat("dd.MM.yyyy").format(elem.getDat()) + " " : "");
+                            tmp.append(elem.getNcopy() != null ? elem.getNcopy() + " экз " : "");
+                            if (str.length()>0 && tmp.length() > 0) {
+                                    str.append(",");
+                            }
+                            str.append(tmp);
+                        }
+                    }
+                }
+                print.append(str).append("\n");
+            }
         }
-        return _f9;
+
+
+////            _f9 += (elem.getText() != null ? elem.getText() + " " : "");
+////            _f9 += (elem.getNdoc() != null ? elem.getNdoc() + " " : "");
+////            _f9 += (elem.getDat() != null ? "от " + new SimpleDateFormat("dd.MM.yyyy").format(elem.getDat()) + " " : "");
+////            _f9 += (elem.getNcopy() != null ? elem.getNcopy() + " экз " : "");
+////            _f9 += "\n";
+//
+//        }
+//        for (String key:printMap.keySet()) {
+//            _f9.append(key+(printMap.get(key).isEmpty()?"":":"+printMap.get(key))).append("\n");
+//        }
+        return print.toString();
     }
 
     public String buildG24CimPrint() {
@@ -8346,13 +8383,32 @@ Map<Byte, CimSmgsDocs> cimSmgsDocses7, Map<Byte, CimSmgsDocs> cimSmgsDocses9,
                                 ((gruzFromlist.getNzgr() == null) || gruzFromlist.getNzgr().equals(gruz.getNzgr())) &&
                                 ((gruzFromlist.getUpak() == null) || gruzFromlist.getUpak().equals(gruz.getUpak())))
                         {
-                            gruzFromlist.setPlaces(gruzFromlist.getPlaces()+gruz.getPlaces());
-                            gruzFromlist.setMassa(gruzFromlist.getMassa().add(gruz.getMassa()));
+                            if(gruz.getPlaces()!=null)
+                                gruzFromlist.setPlaces((gruzFromlist.getPlaces() != null ? gruzFromlist.getPlaces() : 0) + gruz.getPlaces());
+                            if(gruz.getMassa()!=null)
+                                gruzFromlist.setMassa((gruzFromlist.getMassa()!=null?gruzFromlist.getMassa().add(gruz.getMassa()):gruz.getMassa()) );
                             add=false;
                         }
                     }
-                    if(add)
-                        allGryzes.add(gruz);
+                    if(add) {
+                        CimSmgsGruz temp=new CimSmgsGruz();
+                        if(gruz.getKgvn() != null)
+                            temp.setKgvn(gruz.getKgvn());
+                        if(gruz.getEkgvn() != null)
+                            temp.setEkgvn(gruz.getEkgvn());
+                        if(gruz.getNzgr() != null)
+                            temp.setNzgr(gruz.getNzgr());
+                        if(gruz.getNzgrEu() != null)
+                            temp.setNzgrEu(gruz.getNzgrEu());
+                        if(gruz.getMassa() != null)
+                            temp.setMassa(gruz.getMassa());
+                        if(gruz.getPlaces() != null)
+                            temp.setPlaces(gruz.getPlaces());
+
+                        if(gruz.getUpak() != null)
+                            temp.setUpak(gruz.getUpak());
+                        allGryzes.add(temp);
+                    }
                 }
             }
         }

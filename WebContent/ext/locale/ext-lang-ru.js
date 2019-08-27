@@ -278,12 +278,49 @@ Ext.define("Ext.locale.ru.grid.PropertyColumnModel", {
     override: "Ext.grid.PropertyColumnModel",
     nameText: "Название",
     valueText: "Значение",
-    dateFormat: "d.m.Y"
+    dateFormat: "d.m.Y",
+    trueText: "true",
+    falseText: "false"
+});
+
+Ext.define("Ext.locale.ru.grid.BooleanColumn", {
+    override: "Ext.grid.BooleanColumn",
+    trueText: "true",
+    falseText: "false",
+    undefinedText: '&#160;'
+});
+
+Ext.define("Ext.locale.ru.grid.NumberColumn", {
+    override: "Ext.grid.NumberColumn",
+    format: '0,000.00'
+});
+
+Ext.define("Ext.locale.ru.grid.DateColumn", {
+    override: "Ext.grid.DateColumn",
+    format: 'm/d/Y'
+});
+
+Ext.define("Ext.locale.ru.form.field.Time", {
+    override: "Ext.form.field.Time",
+    minText: "Время в данном поле должно быть больше или равно {0}",
+    maxText: "Время в данном поле должно быть меньше или равно {0}",
+    invalidText: "{0} неверное время",
+    format: "g:i A",
+    altFormats: "g:ia|g:iA|g:i a|g:i A|h:i|g:i|H:i|ga|ha|gA|h a|g a|g A|gi|hi|gia|hia|g|H"
+});
+
+Ext.define("Ext.locale.ru.form.CheckboxGroup", {
+    override: "Ext.form.CheckboxGroup",
+    blankText: "Вы должны выбрать  хотябы один элемент в группе"
+});
+
+Ext.define("Ext.locale.ru.form.RadioGroup", {
+    override: "Ext.form.RadioGroup",
+    blankText: "You must select one item in this group"
 });
 
 Ext.define("Ext.locale.ru.window.MessageBox", {
     override: "Ext.window.MessageBox",
-    titleErrorWarning:'sdfsddsfdsfdsf',
     buttonText: {
         ok: "OK",
         cancel: "Отмена",
@@ -299,7 +336,6 @@ Ext.define("Ext.locale.ru.Component", {
     textDelMsgBox   :'Запись будет удалена',
     titleEditWindow  :'Редактивароние записи',
     titleAddWindow  :'Добавление записи'
-
 });
 
 //////////////////////////////////
@@ -407,16 +443,14 @@ Ext.define("TK.locale.ru.view.DocsList", {
 
     btnCont     :'Контейнерная',
     btnVag      :'Повагонная',
-    /*btnContList  :'Ведомость',
-     btnSmgs  :'СМГС',*/
+    btnContsList: 'Ведомость конт/ваг',
+    btnSmgs: 'СМГС',
 
-    btnContsList:'Ведомость конт/ваг',
     btnDopList  :'Доп. лист',
     btnUploadCSDocs9:'Док. отпр.',
     btnUploadPogruzList:'Лист погрузки',
     btnUploadPogruzListPoezd:'Лист погруз. для поезда',
     btnContsList1:'Ведомость',
-    btnSmgs     :'СМГС',
 
     btnPlusDocs :'+ Документы',
     btnPlusSmgsInv :'+ СМГС и Инвойсы',
@@ -466,10 +500,12 @@ Ext.define("TK.locale.ru.view.avisocim.AvisoCimList", {
     override      :"TK.view.avisocim.AvisoCimList",
     title         :'Журнал Инструкций CIM'
 });
+
 Ext.define("TK.locale.ru.view.aviso2.AvisoSmgs2List", {
     override      :"TK.view.aviso2.AvisoSmgs2List",
     title         :'Журнал Инструкций СМГС2'
 });
+
 Ext.define("TK.locale.ru.view.aviso.List", {
     override:"TK.view.aviso.List",
 
@@ -479,28 +515,26 @@ Ext.define("TK.locale.ru.view.aviso.List", {
 Ext.define("TK.locale.ru.view.avisocimsmgs.AvisoCimSmgsList", {
     override:"TK.view.avisocimsmgs.AvisoCimSmgsList",
 
-
     title:'Журнал Инструкций ЦИМ/СМГС'
-
 });
 
 Ext.define("TK.locale.ru.view.avisogu29k.List", {
     override:"TK.view.avisogu29k.List",
 
     title:'Журнал Инструкций ГУ'
-
 });
 
 Ext.define("TK.locale.ru.view.cim.CimList", {
     override :"TK.view.cim.CimList",
+
     headerCim:'Цим',
     title    :'Журнал ЦИМ',
     menuTrSearch  :'Поиск поезда'
-
 });
 
 Ext.define("TK.locale.ru.view.cimsmgs.CimSmgsList", {
     override        :"TK.view.cimsmgs.CimSmgsList",
+
     headerCimsmgs   :'Номер отправки',
     headerDateTransp:'Дата отправки',
     headerExchBch   :'Iftmin',
@@ -512,50 +546,51 @@ Ext.define("TK.locale.ru.view.cimsmgs.CimSmgsList", {
 
 Ext.define("TK.locale.ru.view.cmr.List", {
     override        :"TK.view.cmr.List",
+
     headerDateTransp:'Дата трансп.',
     headerCMR       :'ЦMP',
     title           :'Журнал ЦМP'
-
 });
 
 Ext.define("TK.locale.ru.view.slovnakl.List", {
     override        :"TK.view.slovnakl.List",
+
     headerSlov       :'Словацкая накл',
     title           :'Журнал словацких накладных'
 });
 
 Ext.define("TK.locale.ru.view.epd.List", {
     override:"TK.view.epd.List",
-    title   :'Журнал ЭПД'
 
+    title   :'Журнал ЭПД'
 });
 
 Ext.define("TK.locale.ru.view.gu27v.List", {
     override        :"TK.view.gu27v.List",
+
     headerGu27v     :'ГУ-27в',
     headerDateTransp:'Дата трансп.',
     headerAvisoNum  :'№ Авизо',
     title           :'Журнал ГУ'
-
 });
 
 Ext.define("TK.locale.ru.view.gu29k.List", {
     override        :"TK.view.gu29k.List",
+
     headerGu29k     :'ГУ-29к',
     headerDateTransp:'Дата трансп.',
     headerAvisoNum  :'№ Авизо',
     title           :'Журнал ГУ'
-
 });
 
 Ext.define("TK.locale.ru.view.invoice.List", {
     override:"TK.view.invoice.List",
+
     title   :'Журнал Инвойсов',
     headerNum: '№ инвойса',
     headerNumOtpr: '№ отправки',
     headerNumCont: '№ контейнера',
     headerDateOtpr: 'Дата отправки'
-
 });
 
 Ext.define("TK.locale.ru.view.smgs.List", {
@@ -578,7 +613,6 @@ Ext.define("TK.locale.ru.view.smgs2.Smgs2List", {
     titleVagVed   :'ведомость',
     menuTrSearch  :'Поиск поезда'
 });
-
 
 Ext.define("TK.locale.ru.view.file.List", {
     override:"TK.view.file.List",
@@ -626,7 +660,6 @@ Ext.define("TK.locale.ru.view.printtmpl.List", {
     btnBindToRoute: 'Привязать к маршруту',
     btnBindToBlank: 'Привязать к бланку',
     btnBlanks: 'Бланки'
-    
 });
 
 Ext.define("TK.locale.ru.view.printtmpl.Form", {
@@ -778,7 +811,6 @@ Ext.define("TK.locale.ru.view.edit.DetailGrid", {
     headerType         :'тип',
     headerTotal        :'Итого:',
 
-
     titleColumn: 'Колонка',
     titleDesc: 'Описание',
     titleCoordLeft: 'Координаты левого<br/>нижнего угла, мм',
@@ -841,16 +873,17 @@ Ext.define("TK.locale.ru.view.edit.DetailTabPanel", {
 
 Ext.define("TK.locale.ru.view.edit.VgCtGrTreeFormWin", {
     override: "TK.view.edit.VgCtGrTreeFormWin",
+
     labelName1      :'Название',
     labelWagons       :'Вагоны',
     labelWagonNum     :'№ вагона',
-    labelWagonsTonnage:'Тоннаж',
-    labelWagonsTara   :'Тара',
-    labelWagonsAxes   :'Оси',
+    labelWagonsTonnage: 'Грузоподъемность, тн',
+    labelWagonsTara: 'Тара, тн',
+    labelWagonsAxes: 'Кол-во осей',
     labelConts   :'Контейнера',
-    labelSize    :'Размер',
+    labelSize: 'Футовость',
     labelSizeMm  :'Размер(мм)',
-    labelTaraCont: 'Тара, вес',
+    labelTaraCont: 'Тара, кг',
     labelNotes  :'Текст перед № контейнера',
     labelCategory:'Категория',
     labelContNum :'№ Контейнера',
@@ -875,7 +908,7 @@ Ext.define("TK.locale.ru.view.edit.VgCtGrTreeFormWin", {
     labelWagonsKind:'Род вагона',
 
     labelContSize:'Типоразмер',
-    labelMaxLoad:'Макс. грузопод.',
+    labelMaxLoad: 'Макс.<br>грузопод., тн',
 
     labelNameRu: 'Название(рус)',
     labelName: 'Название',
@@ -907,6 +940,7 @@ Ext.define("TK.locale.ru.view.edit.PlombsTreeFormWin", {
     labelZnak: 'Пломба',
     labelTotal: 'Кол-во'
 });
+
 Ext.define("TK.locale.ru.view.edit.OtpavitelEdit", {
     override: "TK.view.edit.OtpavitelEdit",
     labelOtprName:'Наименование',
@@ -957,9 +991,10 @@ Ext.define("TK.locale.ru.view.DocsForm", {
     btnFtsReady   :'ФТС готов',
     btnFtsNotReady:'ФТС отмена',
 
-    labelNotes:'Примечание ',
+    labelNotes: 'Текст перед № контейнера',
 
     labelPayers     :'Плательщики',
+    labelNumDate: 'Номер и дата договора',
     labelBukvKod    :'Букв. код ж/д администрации',
     labelBukvKodRu  :'Букв. код ж/д администрации(рус)',
     labelPayerName  :'Наименование плательщика',
@@ -974,9 +1009,8 @@ Ext.define("TK.locale.ru.view.DocsForm", {
     labelPaymentRu  :'Способ оплаты(рус)',
 
     labelConts   :'Контейнера',
-    labelSize    :'Размер',
+    labelSize: 'Футовость',
     labelSizeMm  :'Размер(мм)',
-    labelNotes  :'Текст перед № контейнера',
     labelNotesVag  :'Текст перед № вагона',
     labelCategory:'Категория',
     labelContNum :'№ Контейнера',
@@ -986,7 +1020,7 @@ Ext.define("TK.locale.ru.view.DocsForm", {
     labelCargo    :'Груз',
     labelCode     :'Код ',
     labelNetto    :'Нетто ',
-    labelTara     :'Тара ',
+    labelTara: 'Тара, тн',
     labelBrutto   :'Брутто ',
     labelCodeGng  :'Код ГНГ',
     labelNameRuGng:'Название(рус)',
@@ -1014,9 +1048,9 @@ Ext.define("TK.locale.ru.view.DocsForm", {
 
     labelWagons       :'Вагоны',
     labelWagonNum     :'№ вагона',
-    labelWagonsTonnage:'Тоннаж',
-    labelWagonsTara   :'Тара',
-    labelWagonsAxes   :'Оси',
+    labelWagonsTonnage: 'Грузоподъемность, тн',
+    labelWagonsTara: 'Тара, тн',
+    labelWagonsAxes: 'Кол-во осей',
 
     labelZayavSenderPayers:'Заявления отправителя/Плательщики',
     labelZayavSender      :'Заявления отправителя',
@@ -1037,7 +1071,6 @@ Ext.define("TK.locale.ru.view.DocsForm", {
 
     labelDate: 'Дата',
     labelCodyDo   :'Коды действуют до:',
-    labelWagenNum   :'Номер поезда:',
     labelVsegoSmgs:'ВСЕГО SMGS:',
     labelCarrier  :'Перевозчик',
     labelFrom     :'Станция от',
@@ -1048,8 +1081,6 @@ Ext.define("TK.locale.ru.view.DocsForm", {
     btnVed          :'Ведомость',
     btnVag          :'Вагонаая',
     btnCont         :'Контейнерная'
-
-
 });
 
 Ext.define("TK.locale.ru.view.aviso.Form", {
@@ -1099,7 +1130,6 @@ Ext.define("TK.locale.ru.view.avisocimsmgs.AvisoCimSmgsForm", {
     labelVsegoSmgs:'ВСЕГО CIM/SMGS:',
     labelZakazNum :'Номер заказа:'
 });
-
 
 Ext.define("TK.locale.ru.view.avisogu29k.Form", {
     override:"TK.view.avisogu29k.Form",
@@ -1222,7 +1252,6 @@ Ext.define("TK.locale.ru.view.invoice.Form", {
     lableCombo3: 'Приложение к инвойсу',
     lableCombo4: 'Грузовая ведомость',
     lableCombo5: 'Манифест'
-    
 });
 
 Ext.define("TK.locale.ru.view.nsi.EditList", {
@@ -1267,9 +1296,9 @@ Ext.define("TK.locale.ru.view.smgs.Form", {
     override:"TK.view.smgs.Form",
 
     labelWagonNum     :'№ вагона (гр.27)',
-    labelWagonsTonnage:'Тоннаж (гр.28)',
-    labelWagonsTara   :'Тара (гр.30)',
-    labelWagonsAxes   :'Оси (гр.29)',
+    labelWagonsTonnage: 'Грузоподъемность (гр.28), тн',
+    labelWagonsTara: 'Тара (гр.30), тн',
+    labelWagonsAxes: 'Кол-во осей (гр.29)',
     labelContNum      :'Номер (гр.9;19)',
     labelSize         :'Размер (гр.9)',
     labelVid          :'Вид (гр.18)'
@@ -1529,6 +1558,7 @@ Ext.define("TK.locale.ru.controller.Logs", {
 
 Ext.define("TK.locale.ru.controller.Menu", {
     override:"TK.controller.Menu",
+
     errorMsg:'Внимание! Ошибка...'
 });
 
@@ -1559,13 +1589,14 @@ Ext.define("TK.locale.ru.controller.Doc2Doc", {
     titleDownldInv:'Загрузка Инвойсов',
     errorMsg:'Внимание! Ошибка...',
     successMsgTitle:'Операция завершена успешно',
+    btnClose: 'Закрыть',
+    btnSave: 'Сохранить',
     btnFind  :'Найти',
-    btnSave  :'Сохранить',
+
     btnContList  :'Ведомость',
     btnSmgs  :'Накладная',
     titleContList:'Введите номер поезда(-ов[,])',
     labelWagenNums   :'Номер поезда(-ов[,]):',
-    btnClose :'Закрыть',
     titleFilterPer  :'Фильтр поездов',
     warnTitle       :'Предупреждение',
     saveMgs         :'Сохраните документ'
@@ -1664,7 +1695,8 @@ Ext.define("TK.locale.ru.view.nsi.List", {
     ttipSave:'Сохранить',
     ttipDel :'Удалить',
     btnClose:'Закрыть',
-    tooltipEdit:'Редактировать'
+    tooltipEdit: 'Редактировать',
+    tooltipDel: 'Удалить'
 });
 
 Ext.define("TK.locale.ru.controller.print.Print", {
@@ -1690,7 +1722,6 @@ Ext.define("TK.locale.ru.controller.print.PrintTemplates", {
     btnClose: 'Закрыть',
     msgTitle: 'Предупреждение',
     msgMsg: 'Следует выбрать строку из таблицы с данными'
-
 });
 
 Ext.define("TK.locale.ru.view.edit.TreeFormWin", {
@@ -1758,7 +1789,6 @@ Ext.define("TK.locale.ru.Validators", {
     notXLS          :'Выбран не xls/xlsx файл'
 });
 
-
 Ext.define("TK.locale.ru.view.edit.UploadDoc9FormWin", {
     override: "TK.view.edit.UploadDoc9FormWin",
 
@@ -1775,7 +1805,8 @@ Ext.define("TK.locale.ru.view.edit.UploadFormWin", {
     btnClose: 'Закрыть',
     btnSave: 'Сохранить',
     labelUpload: 'Загрузить',
-    labelFile: 'Файл'
+    labelFile: 'Файл',
+    downloadTpl:'Cкачать шаблон'
 });
 
 Ext.define("TK.locale.ru.view.ved.List", {
@@ -1811,7 +1842,6 @@ Ext.define("TK.locale.ru.controller.docs.Ved", {
     btnSelect       :'Выбрать',
     btnClose        :'Закрыть',
     labelDocs :     'Список накладных',
-    labelFilter :   'Фильтр',
     headerNumClaim :'Номер СМГС',
     headerVags :    'Номер вагона',
     headerCreate :  'Дата создания',
@@ -1821,11 +1851,12 @@ Ext.define("TK.locale.ru.controller.docs.Ved", {
     headerRoute :   'Маршрут',
     headerGng :     'ГНГ',
     filterText:     'Фильтр',
-    filterHeader:   'Данные',
-    claerAll:       'Очистить все',
     duplicateAll:   'Размножить все',
     duplicateEmpty: 'Размножить пустые',
-    userfiltr: "Фильтр"
+    labelFilter: 'Фильтр',
+    filterHeader: 'Данные',
+    userfiltr: "Фильтр",
+    claerAll: 'Очистить все'
 });
 
 Ext.define("TK.locale.ru.view.ved.Form", {
@@ -1866,8 +1897,8 @@ Ext.define("TK.locale.ru.view.ved.VagsList", {
     colTextNstn: 'Станция<br>назначения',
     colTextKontNum: '№<br>контейнера',
     colTextKontType: 'Типоразмер<br>контейнера',
-    colTextKontGp: 'Макс грузоп-ть<br>контейнера',
-    colTextKontTara: 'Тара<br>контейнера',
+    colTextKontGp: 'Макс грузоп-ть<br>контейнера, тн',
+    colTextKontTara: 'Тара<br>контейнера, кг',
     colTextPlaces: 'Мест',
     colTextPack: 'Упаковка',
     colTextGruz: 'Код груза',
@@ -1926,15 +1957,15 @@ Ext.define("TK.locale.ru.view.pogruz.Map2BaseSelectForm", {
     headerFoot      :'Фут-сть<br/><b>лист</b>',
     headerContSize  :'Типоразмер<br/><b>лист</b>',
     headerPlomb     :'Пломбы<br/><b>лист</b>',
-    headerTara      :'Тара<br/>конт-ра<br/><b>лист</b>',
+    headerTara: 'Тара<br/>конт-ра, кг<br/><b>лист</b>',
     headerMaxLoad   :'Груз-сть<br/>конт-ра<br/><b>лист</b>',
-    headerTaraVag   :'Тара<br/>вагона<br/><b>лист</b>',
+    headerTaraVag: 'Тара<br/>вагона, тн<br/><b>лист</b>',
     headerMaxLoadVag:'Груз-сть<br/>вагона<br/><b>лист</b>',
-    headerKolOs     :'Оси<br/><b>лист</b>',
+    headerKolOs: 'Кол-во осей<br/><b>лист</b>',
     headerId        :'Id<br/><b>база</b>',
 
     btnOk           :'Выбрать',
-    btnCancel       :'Отмена'
+    btnCancel: 'Отмена',
 });
 
 Ext.define("TK.locale.ru.view.components.PagingSizeChangerPlugin", {
@@ -1956,7 +1987,6 @@ Ext.define("TK.locale.ru.view.edit.StationCatalogEdit", {
     lblManagno    :'Код<br>администрации',
     lblCtryNam    :'Страна'
 });
-
 
 Ext.define("Ext.locale.ru.grid.plugin.RowEditing", {
     override: "Ext.grid.plugin.RowEditing",

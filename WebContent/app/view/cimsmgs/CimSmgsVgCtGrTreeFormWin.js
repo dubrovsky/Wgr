@@ -33,7 +33,7 @@ Ext.define('TK.view.cimsmgs.CimSmgsVgCtGrTreeFormWin', {
     },
 
     buildTabPanelItems: function(){
-        var hideSMGS2=!!(this.xtype === 'smgs2VgCtGrTreeformWin' || 'avisosmgs2VgCtGrTreeformWin');
+        var hideSMGS2=!!(this.xtype === 'smgs2VgCtGrTreeformWin' ||this.xtype === 'avisosmgs2VgCtGrTreeformWin');
         return [{
             title: this.titleVag,
             itemId: 'vag',

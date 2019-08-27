@@ -18,9 +18,10 @@
         <div class="switch-langs">
             <div>
                 <s:a href="Locale.do?lang=ru"><img src="images/rus.png" alt="Русский" title="Русский"></s:a>
+                <s:a href="Locale.do?lang=pl"><img src="images/pl.png" alt="Polski" title="Polski"></s:a>
                 <s:a href="Locale.do?lang=en"><img src="images/eng.png" alt="English" title="English"></s:a>
-                <s:a href="Locale.do?lang=zh_CN"><img src="images/chn.png" alt="中国的" title="中国的"></s:a>
                 <s:a href="Locale.do?lang=de"><img src="images/de.png" alt="Deutsch" title="Deutsch"></s:a>
+                <s:a href="Locale.do?lang=zh_CN"><img src="images/chn.png" alt="中国的" title="中国的"></s:a>
             </div>
 
         </div>
@@ -33,7 +34,9 @@
                 <s:if test="#parameters['login_error'] != null && #session['SPRING_SECURITY_LAST_EXCEPTION'] != null">
                     <div class="error">
                         <s:text name="denied"/>. <br/>
-                        <s:text name="reason"/>: <s:property value="#session['SPRING_SECURITY_LAST_EXCEPTION'].message"/>
+                        <%--<s:set var="loc" value="#session['SPRING_SECURITY_LAST_EXCEPTION'].message"/>--%>
+                        <s:text name="reason"/>: <s:text name="%{#session['SPRING_SECURITY_LAST_EXCEPTION'].message}" />
+                        <%--<s:text name="reason"/>: <s:property value="#session['SPRING_SECURITY_LAST_EXCEPTION'].message"/>--%>
                     </div>
                 </s:if>
 

@@ -22,7 +22,8 @@ public class UserDetailsServiceImpl1 implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         if (username == null || username.trim().length() == 0)
-            throw new UsernameNotFoundException("Не задано имя пользователя");
+            throw new UsernameNotFoundException("login.no_usr_name");
+//            throw new UsernameNotFoundException("Не задано имя пользователя");
 
         String login = username.trim();
         try {
@@ -30,7 +31,8 @@ public class UserDetailsServiceImpl1 implements UserDetailsService {
             UsrDAO dao1 = new UsrDAOHib();
             Usr usr = dao1.findByName(login);
             if (usr == null)
-                throw new UsernameNotFoundException("Пользователь с таким именем не найден.");
+//                throw new UsernameNotFoundException("Пользователь с таким именем не найден");
+                throw new UsernameNotFoundException("login.no_usr_with_this_name");
 
 //      StringTokenizer st = new StringTokenizer(usr.getFunc(), ",");
 //      List<GrantedAuthority> gaList = new ArrayList<GrantedAuthority>();
@@ -52,7 +54,8 @@ public class UserDetailsServiceImpl1 implements UserDetailsService {
 //      return new myUser(usr.getUn(), usr.getPs(), true, true, true, usr.isLocked(), gaList, usr,trans);
 
             if (usr.getGroup() == null)
-                throw new UsernameNotFoundException("Пользователь не принадлежит ни к одной из групп приложения.");
+//                throw new UsernameNotFoundException("Пользователь не принадлежит ни к одной из групп приложения.");
+            throw new UsernameNotFoundException("login.no_group_for_user");
 
             List<String> privs;
             if (!usr.isSu()) {

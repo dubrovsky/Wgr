@@ -672,7 +672,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
     }
 
 
-    public void updateKonts(TreeSet<KontDTO> dtos, Mapper mapper) {
+    public List<Kont> updateKonts(TreeSet<KontDTO> dtos, Mapper mapper) {
         // delete
         Set<Kont> kontsToRemove = new HashSet<>();
         for (Kont kont : getKonts()) {
@@ -706,13 +706,16 @@ public class Vagon implements Serializable, Comparable<Vagon> {
         }
         dtos.removeAll(dtoToRemove);
 
+        List<Kont> kontsForHistory = new ArrayList<>(dtos.size());
         // insert
         for (KontDTO kontDTO : dtos) {
             Kont kont = mapper.map(kontDTO, Kont.class);
             addKont(kont);
+            kontsForHistory.add(kont);
             kont.updateGruzs(kontDTO.getGruzs(), mapper);
             kont.updatePlombs(kontDTO.getPlombs(), mapper);
         }
+        return kontsForHistory;
     }
 
     private void removeKont(Kont kont) {

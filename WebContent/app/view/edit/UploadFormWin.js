@@ -44,7 +44,15 @@ Ext.define('TK.view.edit.UploadFormWin', {
     },
 
     buildBottomToolbarItems: function() {
-        return [{
+        return [
+            {
+                text: this.downloadTpl,
+                itemId:'downloadTpl',
+                iconCls: 'excel',
+                action: 'downloadTpl',
+                hidden:true
+            },
+            {
             xtype: 'tbfill'
         },{
             text: this.btnSave,

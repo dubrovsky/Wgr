@@ -186,7 +186,7 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
                     who: 'vag',
                     leaf: false,
                     iconCls: 'vag',
-                    expanded: ((conts && conts['0']) || (gruzy && gruzy['0'])) && vagIndx == 0
+                    expanded: true
                 });
 
             this.getVagpanel().items.each(function (vagItem, index, length) {
@@ -224,8 +224,8 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
                     text: cont['nkon'],
                     who: 'cont',
                     iconCls: 'cont3',
-                    leaf: gryzy && gryzy['0'] ? false : true,
-                    expanded: vagIndx == 0 && gryzy && gryzy['0'] && contIndx == 0
+                    leaf: gryzy && gryzy['0'] ? false : true/*,
+                    expanded: vagIndx == 0 && gryzy && gryzy['0'] && contIndx == 0*/
                 });
 
             this.getContpanel().items.each(function (contItem, index, length) {
@@ -431,10 +431,18 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
             })
         );
 
+        if(who === 'vag'){
+            this.setVagDefaultProps(childModelNode);
+        }
+
         parentModelNode.set('leaf', false);
         parentModelNode.expand();
         this.getTreepanel().getSelectionModel().select(childModelNode);
         this.getTreepanel().fireEvent('itemclick', this.getTreepanel(), childModelNode);
+    },
+
+    setVagDefaultProps: function(vagNodeModel) {
+        vagNodeModel.set('line', vagNodeModel.previousSibling ? vagNodeModel.previousSibling.get('line') : null);
     },
 
     onAddContClick: function (btn) {

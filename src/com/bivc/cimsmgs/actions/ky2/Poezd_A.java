@@ -2,6 +2,7 @@ package com.bivc.cimsmgs.actions.ky2;
 
 import com.bivc.cimsmgs.actions.CimSmgsSupport_A;
 import com.bivc.cimsmgs.commons.Filter;
+import com.bivc.cimsmgs.commons.HibernateUtil;
 import com.bivc.cimsmgs.commons.Response;
 import com.bivc.cimsmgs.dao.PoezdDAO;
 import com.bivc.cimsmgs.dao.VagonDAO;
@@ -11,17 +12,23 @@ import com.bivc.cimsmgs.db.ky.Vagon;
 import com.bivc.cimsmgs.doc2doc.Mapper;
 import com.bivc.cimsmgs.dto.ky.PoezdBaseDTO;
 import com.bivc.cimsmgs.dto.ky.PoezdDTO;
+import com.bivc.cimsmgs.dto.ky2.PoezdImportDTO;
 import com.bivc.cimsmgs.formats.json.Deserializer;
 import com.bivc.cimsmgs.formats.json.Serializer;
 import com.bivc.cimsmgs.services.ky.IPoezdService;
+import com.bivc.cimsmgs.sql.Select;
+import com.isc.utils.dbStore.dbPaketTool;
+import com.isc.utils.dbStore.dbTool;
+import com.isc.utils.dbStore.sequenceFields;
+import com.isc.utils.dbStore.stPack;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.connection.ConnectionProvider;
+import org.hibernate.engine.SessionFactoryImplementor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by peter on 21.02.14.
@@ -48,6 +55,10 @@ public class Poezd_A extends CimSmgsSupport_A {
                     return poezdsDir4PoezdBind();
                 case CREATE_POEZDOUT_FROM_POEZDINTO:
                     return createPoezdOutFromPoezdInto();
+                case IMPORT_POEZD_LIST:
+                    return importPoezdList();
+                case IMPORT_POESD:
+                    return importPoezd();
                 default:
                     throw new RuntimeException("Unknown action");
             }
@@ -82,6 +93,206 @@ public class Poezd_A extends CimSmgsSupport_A {
         );
 
 //        setJSONData(poezdIntoToListSerializer.setLocale(getLocale()).write(response));
+        return SUCCESS;
+    }
+
+    public String importPoezdList() throws Exception {
+//      dbConnector dbc = new dbConnector();
+//      Class.forName("oracle.jdbc.OracleDriver");
+        SessionFactoryImplementor sessionFactoryImplementation = (SessionFactoryImplementor) HibernateUtil.getSessionFactory();
+        ConnectionProvider connectionProvider = sessionFactoryImplementation.getConnectionProvider();
+
+        dbTool dbt = new dbTool(connectionProvider.getConnection(), null);
+        stPack st = new stPack();
+        dbt.read(st, Select.getSqlFile("ky/bringing/poezdList"), null);
+
+        List<PoezdImportDTO> poezdImportDTOS = new ArrayList<>(st.getRowCount());
+        for (int i = 0; i < st.getRowCount(); i++) {
+            poezdImportDTOS.add(
+                    new PoezdImportDTO(st.getTxt(i, "DATTR"), st.getTxt(i, "N_POEZD"), st.getTxt(i, "N_PACKET"), st.getTxt(i, "VED_NOMER"), st.getTxt(i, "COUNT_NVAG"))
+            );
+//            System.out.println(
+//                    "DATTR: " + st.getTxt(i, "DATTR") + ", " +
+//                            "N_POEZD: " + st.getTxt(i, "N_POEZD") + ", " +
+//                            "N_PACKET: " + st.getTxt(i, "N_PACKET") + ", " +
+//                            "VED_NOMER: " + st.getTxt(i, "VED_NOMER") + ", " +
+//                            "COUNT_NVAG: " + st.getTxt(i, "COUNT_NVAG")
+//            );
+        }
+
+        setJSONData(
+                defaultSerializer
+                        .setLocale(getLocale())
+                        .write(
+                                new Response<>(
+                                        poezdImportDTOS,
+                                        (long) poezdImportDTOS.size()
+                                )
+                        )
+        );
+
+        return SUCCESS;
+    }
+
+    public String importPoezd() throws Exception {
+        System.out.println("routeId - " + routeId + ", n_poezd - " + n_poezd + ", ved_nomer - " + ved_nomer + ", n_packet - " + n_packet + ", koleya - " + koleya + ", direction - " + direction);
+
+        SessionFactoryImplementor sessionFactoryImplementation = (SessionFactoryImplementor) HibernateUtil.getSessionFactory();
+        ConnectionProvider connectionProvider = sessionFactoryImplementation.getConnectionProvider();
+
+        dbTool dbt = new dbTool(connectionProvider.getConnection(), null);
+
+        Vector keyNm = new Vector();
+        keyNm.add("HID");
+
+        stPack stw = new stPack("VAG_PER_VED");
+        stw.setObject(0, "N_POEZD", n_poezd);
+        stw.setObject(0, "N_PACKET", n_packet);
+        stw.setObject(0, "VED_NOMER", ved_nomer);
+        dbt.read(stw, "VAG_PER_VED", "WHERE 1=0", null);
+
+        stPack st2 = new stPack("POEZD");
+        st2.getInfo().keyName = keyNm;
+
+        dbt.read(st2, Select.getSqlFile("ky/bringing/poezd"), stw, 0, "N_POEZD,N_PACKET,VED_NOMER");
+        stw.setPack(0, st2);
+
+        dbt.readChildData(st2, "VAGON_HID", Select.getSqlFile("ky/bringing/vagon_hid"), -1, "NPPR,N_PACKET,VED_NOMER");
+        dbt.readChildData(st2, "VAGON_HID", "VAGON", Select.getSqlFile("ky/bringing/vagon"), null, "HID_VAG");
+        dbt.readChildData(st2, "VAGON", "KONT_HID", Select.getSqlFile("ky/bringing/kont_hid"), null, "NPPR,N_PACKET,VED_NOMER,NVAG");
+        dbt.readChildData(st2, "KONT_HID", "KONT", Select.getSqlFile("ky/bringing/kont"), null, "HID_KONT");
+        dbt.readChildData(st2, "KONT", "GRUZ_KONT", Select.getSqlFile("ky/bringing/gruz_kont"), null, "HID_KONT");
+        dbt.readChildData(st2, "VAGON", "GRUZ_VAG", Select.getSqlFile("ky/bringing/gruz_vag"), null, "HID_VAG");
+        dbt.readChildData(st2, "KONT", "PLOMB_KONT", Select.getSqlFile("ky/bringing/plomb_kont"), null, "HID_KONT");
+        dbt.readChildData(st2, "VAGON", "PLOMB_VAG", Select.getSqlFile("ky/bringing/plomb_vag"), null, "HID_VAG");
+
+        dbPaketTool dbpt = new dbPaketTool(dbt);
+
+        stPack st_seq = new stPack();
+
+        Date d = new Date();
+
+        dbt.read(st_seq, "select NextVal('PACK_DOC_HID') AS NV", null);
+        stPack st_packDoc = new stPack("PACK_DOC");
+        st_packDoc.setObject(0,"HID", st_seq.getObject(0,"NV"));
+        st_packDoc.setObject(0,"HID_ROUTE", routeId);
+        st_packDoc.setObject(0,"UN", getUser().getUsr().getUn());
+        st_packDoc.setObject(0,"TRANS", getUser().getUsr().getGroup().getName());
+        st_packDoc.setObject(0,"DATTR", d);
+        dbt.save("PACK_DOC", st_packDoc, 0, null);
+
+        st_seq = new stPack();
+        dbt.read(st_seq, "select NextVal('KY_POEZD_HID') AS NV", null);
+        st2.setObject(0, "HID", st_seq.getObject(0,"NV"));
+        st2.setObject(0, "HID_PACK", st_packDoc.getObject(0,"HID"));
+        st2.setObject(0, "HID_ROUTE", st_packDoc.getObject(0,"HID_ROUTE"));
+        st2.setObject(0, "KOLEYA", koleya);
+        st2.setObject(0, "DIRECTION", direction);
+        st2.setObject(0, "TRANS", st_packDoc.getObject(0,"TRANS"));
+        st2.setObject(0, "UN", st_packDoc.getObject(0,"UN"));
+        st2.setObject(0, "ALTERED", d);
+        st2.setObject(0,"DATTR", d);
+        dbt.save("KY_POEZD", st2, -1, null);
+
+        sequenceFields sq = new sequenceFields().addSequence("HID", "KY_VAGON_HID");
+        String[][] fillParentKey = new String[][]{
+          {"HID", "HID_POEZD"},
+          {"UN", "UN"},
+          {"ALTERED", "ALTERED"},
+          {"DATTR", "DATTR"},
+          {"TRANS", "TRANS"}
+        };
+        dbpt.fillRownum("VAGON", "SORT", st2);
+        dbpt.save("VAGON", "KY_VAGON", keyNm, fillParentKey, st2, sq);
+
+        sq = new sequenceFields().addSequence("HID", "KY_KONT_HID");
+        fillParentKey = new String[][] {
+          {"HID", "HID_VAGON"},
+          {"UN", "UN"},
+          {"ALTERED", "ALTERED"},
+          {"DATTR", "DATTR"},
+          {"TRANS", "TRANS"}
+        };
+        dbpt.fillRownum("KONT", "SORT", st2);
+        dbpt.save("KONT", "KY_KONT", keyNm, fillParentKey, st2, sq);
+
+        sq = new sequenceFields().addSequence("HID", "KY_GRUZ_HID");
+        fillParentKey = new String[][] {
+          {"HID", "HID_KONT"},
+          {"UN", "UN"},
+          {"ALTERED", "ALTERED"},
+          {"DATTR", "DATTR"},
+          {"TRANS", "TRANS"}
+        };
+        dbpt.fillRownum("GRUZ_KONT", "SORT", st2);
+        dbpt.save("GRUZ_KONT", "KY_GRUZ", keyNm, fillParentKey, st2, sq);
+
+        fillParentKey = new String[][] {
+          {"HID", "HID_VAGON"},
+          {"UN", "UN"},
+          {"ALTERED", "ALTERED"},
+          {"DATTR", "DATTR"},
+          {"TRANS", "TRANS"}
+        };
+        dbpt.fillRownum("GRUZ_VAG", "SORT", st2);
+        dbpt.save("GRUZ_VAG", "KY_GRUZ", keyNm, fillParentKey, st2, sq);
+
+        sq = new sequenceFields().addSequence("HID", "KY_PLOMB_HID");
+        fillParentKey = new String[][] {
+          {"HID", "HID_KONT"},
+          {"UN", "UN"},
+          {"ALTERED", "ALTERED"},
+          {"DATTR", "DATTR"},
+          {"TRANS", "TRANS"}
+        };
+        dbpt.fillRownum("PLOMB_KONT", "SORT", st2);
+        dbpt.save("PLOMB_KONT", "KY_PLOMB", keyNm, fillParentKey, st2, sq);
+
+        fillParentKey = new String[][] {
+          {"HID", "HID_VAGON"},
+          {"UN", "UN"},
+          {"ALTERED", "ALTERED"},
+          {"DATTR", "DATTR"},
+          {"TRANS", "TRANS"}
+        };
+        dbpt.fillRownum("PLOMB_VAG", "SORT", st2);
+        dbpt.save("PLOMB_VAG", "KY_PLOMB", keyNm, fillParentKey, st2, sq);
+
+        sq = new sequenceFields().addSequence("HID", "KY_KONT_GRUZ_HISTORY_HID");
+        fillParentKey = new String[][] {
+          {"HID", "HID_KONT"},
+          {"UN", "UN"},
+          {"DATTR", "DATE_OPERATION"},
+          {"HID_POEZD", "HID_POEZD"},
+          {"KOLEYA", "KOLEYA"},
+          {"DIRECTION", "DIRECTION"},
+          {"HID_VAGON","HID_VAGON"}
+        };
+        dbpt.fillNewPaket("KONT", "KONT_HISTORY", fillParentKey, st2);
+        dbpt.save("KONT_HISTORY", "KY_KONT_GRUZ_HISTORY", keyNm, fillParentKey, st2, sq);
+
+        fillParentKey = new String[][] {
+          {"HID", "HID_GRUZ"},
+          {"UN", "UN"},
+          {"DATTR", "DATE_OPERATION"},
+          {"HID_POEZD", "HID_POEZD"},
+          {"KOLEYA", "KOLEYA"},
+          {"DIRECTION", "DIRECTION"},
+          {"HID_VAGON","HID_VAGON"}
+        };
+        dbpt.fillNewPaket("GRUZ_VAG", "GRUZ_HISTORY", fillParentKey, st2);
+        dbpt.save("GRUZ_HISTORY", "KY_KONT_GRUZ_HISTORY", keyNm, fillParentKey, st2, sq);
+
+        dbt.commit();
+
+        log.debug(st2.toString());
+
+        setJSONData(
+                defaultSerializer
+                        .write(
+                                new Response<>()
+                        )
+        );
         return SUCCESS;
     }
 
@@ -225,8 +436,23 @@ public class Poezd_A extends CimSmgsSupport_A {
     private Byte direction;
     private Byte koleya;
     private long routeId;
+    private String n_packet;
+    private String n_poezd;
+    private String ved_nomer;
 
-    enum Action {LIST, EDIT, SAVE, DELETE, POEZDS_DIR_FOR_POEZD_BIND, CREATE_POEZDOUT_FROM_POEZDINTO}
+    public void setN_packet(String n_packet) {
+        this.n_packet = n_packet;
+    }
+
+    public void setN_poezd(String n_poezd) {
+        this.n_poezd = n_poezd;
+    }
+
+    public void setVed_nomer(String ved_nomer) {
+        this.ved_nomer = ved_nomer;
+    }
+
+    enum Action {LIST, EDIT, SAVE, DELETE, POEZDS_DIR_FOR_POEZD_BIND, CREATE_POEZDOUT_FROM_POEZDINTO, IMPORT_POEZD_LIST, IMPORT_POESD}
 
     private List<Filter> filters;
     private String filter;

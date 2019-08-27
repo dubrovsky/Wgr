@@ -28,6 +28,9 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         ref: 'poezdlist',
         selector: 'viewport > tabpanel grid'
     }, {
+        ref: 'poezdform',
+        selector: 'viewport > tabpanel ky2bindtreeform'
+    }, {
         ref: 'poezdoutdir',
         selector: 'ky2poezdsout4poezdintodir > ky2basepoezdsdir'
     }, {
@@ -79,6 +82,12 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
             },
             'ky2poezd2poezdbindtreeformout button[action=save]': {
                 click: this.bindPoezdToPoezd
+            },
+            'ky2poezd2poezdbindtreeforminto button[action=saveExit]': {
+                click: this.bindPoezdToPoezdAndExit
+            },
+            'ky2poezd2poezdbindtreeformout button[action=saveExit]': {
+                click: this.bindPoezdToPoezdAndExit
             },
             /*'ky2poezd2poezdbindtreeforminto radiogroup': {
                 change: this.changeLeftView
@@ -206,7 +215,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
                     iconCls: 'vag',
                     allowDrag: false,
                     allowDrop: false,
-                    expanded: true
+                    expanded: false
                 });
 
             Ext.Object.each(poezd, function (prop, value) {
@@ -331,7 +340,11 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         });
     },
 
-    bindPoezdToPoezd: function (btn) {
+    bindPoezdToPoezdAndExit: function () {
+        this.bindPoezdToPoezd(1);
+    },
+
+    bindPoezdToPoezd: function (close) {
         var dataObjLeft = this.bindPoezd(this.getTreepanelLeft().getRootNode());
         // var dataObjRight = this.bindPoezd(this.getTreepanelRight().getRootNode());
         var dataObjRight = this.bindPoezds(this.getTreepanelRight().getRootNode());
@@ -344,7 +357,13 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
             scope: this,
             success: function (response) {
                 this.getCenter().setLoading(false);
-                var respObj = Ext.decode(response.responseText);
+                if (Ext.isNumber(close)) {
+                    var closeBtn = this.getPoezdform().down('button[action="close"]');
+                    closeBtn.fireEvent('click',closeBtn);
+                }
+                else {
+                    var respObj = Ext.decode(response.responseText);
+                }
             },
             failure: function (response) {
                 this.getCenter().setLoading(false);

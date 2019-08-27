@@ -17,8 +17,11 @@
  */
 /**
  * Russian translation
+ *
  * By ZooKeeper (utf-8 encoding)
- * 6 November 2007*/
+ *
+ * 6 November 2007
+*/
 Ext.onReady(function() {
 
     if (Ext.Date) {
@@ -29,6 +32,8 @@ Ext.onReady(function() {
         Ext.Date.getShortMonthName = function(month) {
             return Ext.Date.shortMonthNames[month];
         };
+
+
 
         Ext.Date.monthNumbers = {
             'Jan': 0,
@@ -56,6 +61,7 @@ Ext.onReady(function() {
         };
     }
 
+
     if (Ext.util && Ext.util.Format) {
         Ext.apply(Ext.util.Format, {
             thousandSeparator: '.',
@@ -74,23 +80,23 @@ Ext.define("Ext.locale.de.view.View", {
 
 Ext.define("Ext.locale.de.grid.plugin.DragDrop", {
     override: "Ext.grid.plugin.DragDrop",
-    dragText: "{0} ausgewählte Zeilen"
+    dragText: '{0} ausgewählte Zeilen'
 });
 
 Ext.define("Ext.locale.de.tab.Tab", {
     override: "Ext.tab.Tab",
-    closeText: "diesen Register schließen"
+    closeText: 'Diesen Register schließen'
 });
 
 Ext.define("Ext.locale.de.form.field.Base", {
     override: "Ext.form.field.Base",
-    invalidText: "der Wert in diesem Feld ist falsch"
+    invalidText: 'Der Wert in diesem Feld ist falsch'
 });
 
 // changing the msg text below will affect the LoadMask
 Ext.define("Ext.locale.de.view.AbstractView", {
     override: "Ext.view.AbstractView",
-    loadingText: "herunterladen..."
+    loadingText: 'Ladevorgang...'
 });
 
 Ext.define("Ext.locale.de.picker.Date", {
@@ -110,57 +116,57 @@ Ext.define("Ext.locale.de.picker.Date", {
 
 Ext.define("Ext.locale.de.picker.Month", {
     override: "Ext.picker.Month",
-    okText: "&#160;OK&#160;",
-    cancelText: "Abbrechen"
+    okText: '&#160;OK&#160;',
+    cancelText: 'Abbrechen'
 });
 
 Ext.define("Ext.locale.de.toolbar.Paging", {
     override: "Ext.PagingToolbar",
-    beforePageText: "Seite",
-    afterPageText: "aus{0}",
-    firstText: "Erste Seite",
-    prevText: "Vorhergehende Seite",
-    nextText: "Nächste Seite",
-    lastText: "Letzte Seite",
-    refreshText: "Aktualisieren",
-    displayMsg: "die Einträge von {0} - {1} bis {2}",
-    emptyMsg: ' keine Daten für Anzeige '
+    beforePageText: 'Seite',
+    afterPageText: 'aus{0}',
+    firstText: 'Erste Seite',
+    prevText: 'Vorhergehende Seite',
+    nextText: 'Nächste Seite',
+    lastText: 'Letzte Seite',
+    refreshText: 'Aktualisieren',
+    displayMsg: 'Die Einträge von {0} - {1} bis {2}',
+    emptyMsg: 'Keine Daten für Anzeige '
 });
 
 Ext.define("Ext.locale.de.form.field.Text", {
     override: "Ext.form.field.Text",
-    minLengthText: "Die minimale Länge dieses Feldes {0}",
-    maxLengthText: "Die maximale Länge dieses Feldes {0}",
-    blankText: "Dieses Feld ist auszufüllen ",
+    minLengthText: 'Mindestlänge dieses Feldes {0}',
+    maxLengthText: 'Maximallänge dieses Feldes {0}',
+    blankText: 'Dieses Feld ist auszufüllen ',
     regexText: "",
     emptyText: null
 });
 
 Ext.define("Ext.locale.de.form.field.Number", {
     override: "Ext.form.field.Number",
-    minText: "Feldwert nicht unter {0}",
-    maxText: "Feldwert nicht über {0}",
-    nanText: "{0} ist keine Zahl",
-    negativeText: "Der Wert kann nicht negativ sein"
+    minText: 'Der Wert in diesem Feld dart nicht geringer sein {0}',
+    maxText: 'Der Wert in diesem Feld dart nicht gröβer sein {0}',
+    nanText: '{0} ist keine Zahl',
+    negativeText: 'Der Wert darf nicht negativ sein'
 });
 
 Ext.define("Ext.locale.de.form.field.Date", {
     override: "Ext.form.field.Date",
-    disabledDaysText: "Nicht verfügbar",
-    disabledDatesText: "Nicht verfügbar",
-    minText: "Das Datum in diesem Feld hat später zu sein {0}",
-    maxText: "Das Datum in diesem Feld hat früher zu sein {0}",
-    invalidText: "{0} Falsches Datum - das Datum soll im Format {1} anzugeben",
-    format: "d.m.y",
-    altFormats: "d.m.y|d/m/Y|d-m-y|d-m-Y|d/m|d-m|dm|dmy|dmY|d|Y-m-d"
+    disabledDaysText: 'Nicht verfügbar',
+    disabledDatesText: 'Nicht verfügbar',
+    minText: 'Ein späteres Datum in diesem Feld wählen {0}',
+    maxText: 'Ein früheres Datum  in diesem Feld wählen {0}',
+    invalidText: '{0} Falsches Datum - das Datum ist im Format {1} anzugeben',
+    format: 'd.m.y',
+    altFormats: 'd.m.y|d/m/Y|d-m-y|d-m-Y|d/m|d-m|dm|dmy|dmY|d|Y-m-d'
 });
 
 Ext.define("Ext.locale.de.form.field.ComboBox", {
     override: "Ext.form.field.ComboBox",
-    valueNotFoundText: undefined
+    valueNotFoundText: 'undefined',
 }, function() {
     Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
-        loadingText: "Herunterladen..."
+        loadingText: 'Ladevorgang...'
     });
 });
 
@@ -254,49 +260,87 @@ Ext.define("Ext.locale.de.form.field.HtmlEditor", {
 
 Ext.define("Ext.locale.de.form.Basic", {
     override: "Ext.form.Basic",
-    waitTitle: "Bitte warten..."
+    waitTitle: 'Bitte warten...'
 });
 
 Ext.define("Ext.locale.de.grid.header.Container", {
     override: "Ext.grid.header.Container",
-    sortAscText: "Ansteigend sortieren",
-    sortDescText: "Absteigend sortieren",
-    lockText: "Spalte sichern",
-    unlockText: "Spalte entsichern",
-    columnsText: "Spalten"
+    sortAscText: 'Ansteigend sortieren',
+    sortDescText: 'Absteigend sortieren',
+    lockText: 'Spalte sichern',
+    unlockText: 'Spalte freigeben',
+    columnsText: 'Spalten'
 });
 
 Ext.define("Ext.locale.de.grid.GroupingFeature", {
     override: "Ext.grid.feature.Grouping",
     emptyGroupText: '(Leer)',
-    groupByText: 'Nach diesem Feld gruppieren',
+    groupByText: 'Entsprechend diesem Feld gruppieren',
     showGroupsText: 'Den Gruppen nach anzeigen '
 });
 
 Ext.define("Ext.locale.de.grid.PropertyColumnModel", {
     override: "Ext.grid.PropertyColumnModel",
-    nameText: "Bezeichnung",
-    valueText: "Beduetung",
-    dateFormat: "d.m.Y"
+    nameText: 'Bezeichnung',
+    valueText: 'Der Wert',
+    dateFormat: 'd.m.Y',
+    trueText: "true",
+    falseText: "false"
+});
+
+Ext.define("Ext.locale.en.grid.BooleanColumn", {
+    override: "Ext.grid.BooleanColumn",
+    trueText: "true",
+    falseText: "false",
+    undefinedText: '&#160;'
+});
+
+Ext.define("Ext.locale.en.grid.NumberColumn", {
+    override: "Ext.grid.NumberColumn",
+    format: '0,000.00'
+});
+
+Ext.define("Ext.locale.en.grid.DateColumn", {
+    override: "Ext.grid.DateColumn",
+    format: 'm/d/Y'
+});
+
+Ext.define("Ext.locale.en.form.field.Time", {
+    override: "Ext.form.field.Time",
+    minText: "The time in this field must be equal to or after {0}",
+    maxText: "The time in this field must be equal to or before {0}",
+    invalidText: "{0} is not a valid time",
+    format: "g:i A",
+    altFormats: "g:ia|g:iA|g:i a|g:i A|h:i|g:i|H:i|ga|ha|gA|h a|g a|g A|gi|hi|gia|hia|g|H"
+});
+
+Ext.define("Ext.locale.en.form.CheckboxGroup", {
+    override: "Ext.form.CheckboxGroup",
+    blankText: "You must select at least one item in this group"
+});
+
+Ext.define("Ext.locale.en.form.RadioGroup", {
+    override: "Ext.form.RadioGroup",
+    blankText: "You must select one item in this group"
 });
 
 Ext.define("Ext.locale.de.window.MessageBox", {
     override: "Ext.window.MessageBox",
     buttonText: {
-        ok: "OK",
-        cancel: "Abbrechen ",
-        yes: "Ja",
-        no: "Nein"
+        ok: 'OK',
+        cancel: 'Abbrechen',
+        yes: 'Ja',
+        no: 'Nein'
     }
 });
 
 // This is needed until we can refactor all of the locales into individual files
 Ext.define("Ext.locale.de.Component", {
     override: "Ext.Component",
-    titleDelMsgBox  :'Datensatz löschen?',
-    textDelMsgBox   :'Der Datensatz wird gelöscht',
-    titleEditWindow  :'Datensatz bearbeiten',
-    titleAddWindow  :'Eintrag hinzufügen'
+    titleDelMsgBox: 'Eintragung löschen?',
+    textDelMsgBox: 'Der Eintragung wird gelöscht',
+    titleEditWindow: 'Eintragung editieren',
+    titleAddWindow: 'Ergänzung hinzufügen',
 });
 
 //////////////////////////////////
@@ -306,8 +350,8 @@ Ext.define("Ext.locale.de.Component", {
 Ext.define("TK.locale.de.view.Viewport", {
     override     :"TK.view.Viewport",
     headerPortal :'Portal der TransContainer OAG',
-    headerUser   :'Benutzer:',
-    headerLangLbl:'Sprache wählen:'
+    headerUser: 'Der Benutzer',
+    headerLangLbl: 'Sprache wählen'
 });
 
 Ext.define("TK.locale.de.view.MenuTree", {
@@ -371,112 +415,111 @@ Ext.define("TK.locale.de.stat.List", {
 Ext.define("TK.locale.de.view.DocsList", {
     override:"TK.view.DocsList",
 
-    btnStat    :"Statistik",
-    btnRestore    :"Gelöschte",
-    btnDestroy    :"Dauerhaft löschen",
-    btnPrint   :"PDF-Ausdruck",
-    btnPrintView   :"View PDF",
+    btnStat: 'Statistik',
+    btnRestore: 'Wiederherstellen',
+    btnDestroy: 'Dauerhaft löschen',
+    btnPrint: 'PDF-Ausdruck',
+    btnPrintView: 'PDF- Durchsicht',
     btnCreate  :'Erstellen',
     btnCopy    :'Kopie',
-    btnCopyAviso:'Copy to template',
-    btnCopySelect    :'Copy, select...',
+    btnCopyAviso: 'Копировать в шаблон',
+    btnCopySelect: 'Kopie, wählen...',
     btnEdit    :'Editieren',
     btnDelete  :'Löschen',
-    btnMakeSmgs:'Eine SMGS erstellen',
-    btnMakeCimSmgs:'Eine ZIM/SMGS erstellen ',
-    btnAppend2Smgs:'Eine SMGS ergänzen',
-    btnAppend2CimSmgs:'Eine ZIM/SMGS ergänzen',
+    btnMakeSmgs: 'SMGS erstellen',
+    btnMakeCimSmgs: 'CIM/SMGS erstellen ',
+    btnAppend2Smgs: 'In die SMGS einsetzen',
+    btnAppend2CimSmgs: 'In die CIM/SMGS einsetzen',
     btnMakeGU  :'GU erstellen',
-    btnDownload:'Uploaden',
-    btnHistory :'Historie',
+    btnDownload: 'Hochladen',
+    btnHistory: 'Geschichte',
     btnBindPrint :'Ausdruck anbinden',
     btnSelectPrint :'Muster auswählen',
     btnExch    :'Austausch',
-    btnExchTBC :'TBZ',
+    btnExchTBC: 'TBC',
     btnExchBCh1:'Zum Editieren öffnen / schließen',
-    btnExchBCh :'BC',
+    btnExchBCh: 'BCH',
     btnExchFTS :'FTS',
     btnExchBTLC :'BTLC',
     btnExchTdgFTS:'TDG',
     btnReports :'Berichte',
     btnView    :'Durchsehen',
-    btnCont    :'Containers',
-    btnVag     :'Wagons',
-    /*btnContList  :'Liste',
-     btnSmgs  :'SMGS',*/
 
-    btnContsList :'Wagon/Vertrags liste',
+    btnCont: 'Konteiner',
+    btnVag: 'Wagenweise',
+    btnContsList: 'Wagen/Konteinerliste',
+    btnSmgs: 'Smgs',
+
     btnDopList :'Zusatzblatt',
-    btnUploadCSDocs9 :'Absender dok.',
-    btnUploadPogruzList:'Frachtliste',
-    btnUploadPogruzListPoezd:'Cargo List. for trains',
+    btnUploadCSDocs9: 'Absender der Unterlagen.',
+    btnUploadPogruzList: 'Beladungsliste',
+    btnUploadPogruzListPoezd: 'Zugfrachtliste',
     btnContsList1 :'Liste',
-    btnSmgs :'SMGS',
 
-    lableDeleted: 'Löschen?',
-
-    btnPlusDocs :'+ Dokumente',
+    btnPlusDocs: '+ Unterlagen',
     btnPlusSmgsInv :'SMGS und Rechnungen',
     btnPlusInv :'+ Rechnungen',
 
+    lableDeleted: 'Gelöschte?',
+
     headerID          :'ID',
-    headerProject          :'Projekt',
+    headerProject: 'Das Projekt',
     headerRoute          :'Route',
-    headerDoc          :'Dokument',
+    headerDoc: 'Unterlage',
     headerCreation    :'Erstellung',
     headerDateTime    :'Datum und Zeit',
-    headerUser        :'Benutzer',
-    headerSenderName  :'Bezeichnung des Absenders',
-    headerReceiverName:'Empfängerbezeichnung',
-    headerContNum     :'Cont. Nummer.',
+    headerUser: 'Der Benutzer',
+    headerSenderName: 'Bezeichnung des Absenders <br/>',
+    headerReceiverName: 'Empfängerbezeichnung <br/>',
+    headerContNum: 'Konteinernummer <br/> ',
     headerDescr       :'Beschreibung',
-    headerVagNum      :'Wagennummer',
     headerInv           :'Rechnungen',
-    headerNPoezd      :'Zugnummer',
+    headerNPoezd: 'Zug<br/>nummer',
+    headerVagNum: 'Wagennummer <br/>',
     headerFileName    :'Dateiname',
-    headerContentType :'Inhaltstyp',
+    headerContentType: 'Inhaltstyp<br/>',
     headerSizeByte    :'Größe, Byte',
 
     warnTitle:'Warnung',
-    warnMsg  :'Es ist eine Zeile aus der Datentabelle zu wählen',
+    warnMsg: 'Eine Zeile aus der Datentabelle ist auszuwählen',
 
-    txtForApproval:'Zur Vereinbarung ',
+    txtForApproval: 'Zur Abstimmung ',
     txtApproved:'Vereinbart ',
     txtWork:'in Arbeit',
     txtNotApproved:'Nicht vereinbart',
     txtBlocked:'Gesperrt',
-
     headerStatus  :'Status',
-    headerName  :'Name der<br/>Vorlage',
-    headerInstrNum:'Template No.',
-    headerGNG:'NHM',
+    headerName: 'Bezeichnung der<br/>Anleitung',
+    headerInstrNum: 'Einweisungsnummer',
+    headerGNG: 'GNG',
     headerComments:'Bemerkungen',
 
     statusBlocked  :'Gesperrt',
-    status4Approval:'Zur Vereinbarung',
-    statusAgreed   :'Agreed',
+    status4Approval: 'Zur Abstimmung ',
+    statusAgreed: 'Vereinbart',
     statusNotAgreed:'Nicht vereinbart'
-
 });
+
 Ext.define("TK.locale.de.view.avisocim.AvisoCimList", {
     override      :"TK.view.avisocim.AvisoCimList",
-    title         :'CIM template register'
+    title: 'CIM-Anweisungsheft'
 });
+
 Ext.define("TK.locale.de.view.aviso2.AvisoSmgs2List", {
     override      :"TK.view.aviso2.AvisoSmgs2List",
-    title         :'SMGS2 template register'
+    title: 'SMGS2 Anweisungsheft'
 });
 
 Ext.define("TK.locale.de.view.aviso.List", {
     override:"TK.view.aviso.List",
 
-    title:'SMGS-Anweisungsheft'
+   title: 'SMGS template register'
 });
 
 Ext.define("TK.locale.de.view.avisocimsmgs.AvisoCimSmgsList", {
     override:"TK.view.avisocimsmgs.AvisoCimSmgsList",
 
-    title:' ZIM/SMGS-Anweisungsheft'
+    title: 'CIM/SMGS-Anweisungsheft',
 });
 
 Ext.define("TK.locale.de.view.avisogu29k.List", {
@@ -497,68 +540,69 @@ Ext.define("TK.locale.de.view.avisogu29k.List", {
 
 Ext.define("TK.locale.de.view.cim.CimList", {
     override :"TK.view.cim.CimList",
-    headerCim:'CIM',
-    title    :'ZIM-Heft',
-    menuTrSearch  :'Filter train'
 
+    headerCim:'CIM',
+    title: 'CIM-Heft',
+    menuTrSearch  :'Filter train'
 });
 
 Ext.define("TK.locale.de.view.cimsmgs.CimSmgsList", {
     override        :"TK.view.cimsmgs.CimSmgsList",
-    headerCimsmgs   :'Num CIM/SMGS',
-    headerDateTransp:'Date CIM/SMGS',
+    
+    title: 'CIM/SMGS-Heft',
+    headerCimsmgs: 'Versandnummer',
+    headerDateTransp: 'Abfertigungsdatum',
     headerExchBch   :'Iftmin',
-    title           :'ZIM/SMGS-Heft',
-    menuTrSearch  :'Filter train'
-
+    menuTrSearch: 'Поиск поезда'
 });
 
 Ext.define("TK.locale.de.view.cmr.List", {
     override        :"TK.view.cmr.List",
-    headerDateTransp:'Transp. Datum.',
+
+    headerDateTransp: 'Beförderungsdatum.',
     headerCMR       :'CMR',
     title           :'CMR-Heft'
-
 });
 
 Ext.define("TK.locale.de.view.slovnakl.List", {
     override        :"TK.view.slovnakl.List",
+
     headerSlov       :'Slowakischer Frachtbrief',
     title           :'Heft slowakischer Frachtbriefe'
 });
 
 Ext.define("TK.locale.de.view.epd.List", {
     override:"TK.view.epd.List",
+    
     title   :'EPD-Heft'
-
 });
 
 Ext.define("TK.locale.de.view.gu27v.List", {
     override        :"TK.view.gu27v.List",
+
     headerGu27v     :'GU-27v',
-    headerDateTransp:'Transportdatum.',
+    headerDateTransp: 'Beförderungsdatum.',
     headerAvisoNum  :'Avisonummer',
     title           :'GU-Heft'
-
 });
 
 Ext.define("TK.locale.de.view.gu29k.List", {
     override        :"TK.view.gu29k.List",
+
     headerGu29k     :'GU-29k',
-    headerDateTransp:'Transportdatum.',
+    headerDateTransp: 'Beförderungsdatum.',
     headerAvisoNum  :'Avisonummer',
     title           :'GU-Heft'
-
 });
 
 Ext.define("TK.locale.de.view.invoice.List", {
     override:"TK.view.invoice.List",
-    title   :'Rechnungsheft',
-    headerNum: '№ inv',
-    headerNumOtpr: '№',
-    headerNumCont: '№ cont',
-    headerDateOtpr: 'Date inv'
 
+    title   :'Rechnungsheft',
+    headerNum: 'Rechnungsnummer',
+    headerNumOtpr: 'Versendungsnummer',
+    headerNumCont: 'Konteinernummer',
+    headerDateOtpr: 'Abfertigungsdatum'
 });
 
 Ext.define("TK.locale.de.view.smgs.List", {
@@ -577,27 +621,28 @@ Ext.define("TK.locale.de.view.smgs2.Smgs2List", {
     headerExchTBC :'TBC',
     headerExchBch :'Iftmin',
     headerAvisoNum:'Avisonummer',
+    headerVagVed: 'Wagenliste',
+    titleVagVed: 'Liste',
     menuTrSearch  :'Filter train'
 });
-
 
 Ext.define("TK.locale.de.view.file.List", {
     override:"TK.view.file.List",
     title   :'Graphikheft',
-    headerNumOtpr: '№ Shipment',
-    headerNumCont: '№ cont',
-    headerDateOtpr: 'Data Shipment'
+    headerNumOtpr: 'Versendungsnummer',
+    headerNumCont: 'Konteinernummer',
+    headerDateOtpr: 'Abfertigungsdatum'
 });
 
 Ext.define("TK.locale.de.view.logs.List", {
     override    :"TK.view.logs.List",
-    title       :'Portallogs',
+    title: 'Portallogin',
     headerDate  :'Datum',
-    headerUser  :'Benutzer',
+    headerUser: 'Der Benutzer',
     headerHost  :'Host',
     headerAgent :'Ausführungsumfeld',
     headerLog   :'Log',
-    headerThread:'Thread',
+    headerThread: 'Strom',
     headerFile  :'Datei',
     headerMethod:'Verfahren',
     btnFilter   :'Filter'
@@ -612,7 +657,7 @@ Ext.define("TK.locale.de.view.project.List", {
     btnCreate   :'Erstellen',
     btnEdit     :'Editieren',
     btnDelete   :'Löschen ',
-    delMsg1     :'Löschung von…',
+    delMsg1: 'Löschung...',
     delMsg2     :'Wollen Sie das laufende Projekt tatsächlich löschen?'
 });
 
@@ -627,7 +672,6 @@ Ext.define("TK.locale.de.view.printtmpl.List", {
     btnBindToRoute: 'An die Route anbinden',
     btnBindToBlank: 'Am Formblatt anbinden',
     btnBlanks: 'Formblätter'
-
 });
 
 Ext.define("TK.locale.de.view.printtmpl.Form", {
@@ -642,9 +686,9 @@ Ext.define("TK.locale.de.view.printtmpl.Form", {
     fieldLabelPageSize: 'Papierabmessungen, mm',
     fieldLabelWidth: 'Breite',
     fieldLabelHeight: 'Höhe',
-    fieldLabelFont: 'Die Schrift als Default-Wert für das komplette Dokument',
+    fieldLabelFont: 'Schrift als Default-Wert für die gesamte Unterlage',
     fieldLabelFontName: 'Bezeichnung',
-    fieldLabelFontSize: 'Größe',
+    fieldLabelFontSize: 'Abmessung',
     fieldLabelFontSpace: 'Zeilenabstand',
     fieldLabelSyncXY: 'Die Veränderungen nach X oder Y  synchronisieren',
     fieldLabelMoveHor: 'Alles waagerecht verschieben, mm',
@@ -664,17 +708,17 @@ Ext.define("TK.locale.de.view.user.List", {
     headerSu      :'Verwalter?',
     headerEmail   :'E-mail',
     btnCreate     :'Erstellen',
+    btnEdit: 'Editieren',
     btnCopy       :'Kopieren',
-    btnEdit       :'Editieren',
     btnRefresh    :'Aktualisieren',
 
     textYes: 'Ja',
-    textNo: 'nein'
+    textNo: 'Nein'
 });
 
 Ext.define("TK.locale.de.view.user.ListGroups", {
     override   :"TK.view.user.ListGroups",
-    title      :'Gruppenliste',
+    title: 'Benutzerliste',
     headerName :'Name',
     headerDescr:'Beschreibung',
     btnSelect  :'Wählen',
@@ -686,7 +730,7 @@ Ext.define("TK.locale.de.view.user.ListGroups", {
 
 Ext.define("TK.locale.de.view.user.ListPrivs", {
     override   :"TK.view.user.ListPrivs",
-    title      :'Vorrechtsliste ',
+    title: 'Benutzerliste',
     headerName :'Name',
     headerDescr:'Beschreibung',
     btnSelect  :'Wählen',
@@ -698,10 +742,10 @@ Ext.define("TK.locale.de.view.user.Form", {
     override       :"TK.view.user.Form",
     title          :'Editor',
     labelLogin     :'Login<span class="x-required">*</span>',
-    labelLogin1    :'Login:',
-    labelPass      :'Das Passwort<span class="x-required">*</span>',
+    labelLogin1: 'Login',
+    labelPass: 'Passwort<span class="x-required">*</span>',
     labelPass1     :'Passwortbestätigung<span class="x-required">*</span>',
-    labelPass2     :'Neues Passwort:',
+    labelPass2: 'Neues Passwort',
     labelFIO       :'Name  (Nach-, Vor- und Vatersname)',
     labelEmail     :'E-mail',
     labelLocked    :'Abgeschaltet?',
@@ -718,9 +762,9 @@ Ext.define("TK.locale.de.view.user.Form", {
 Ext.define("TK.locale.de.view.user.FormGroups", {
     override    :"TK.view.user.FormGroups",
     title       :'Editor',
-    vTypeLabelGr:'Eine Gruppe mit solchem Namen existiert bereits, dieses Feld kann nur Buchstaben,  Zahlen und _ enthalten',
+    vTypeLabelGr: 'Eine Gruppe mit solchem Namen existiert bereits, dieses Feld darf nur Buchstaben,  Zahlen und _ enthalten',
     labelName   :'Name<span class="x-required">*</span>',
-    labelName1  :'Name:',
+    labelName1: 'Name',
     labelDescr  :'Beschreibung',
     btnSave     :'Speichern',
     btnClose    :'Schließen'
@@ -740,60 +784,58 @@ Ext.define("TK.locale.de.view.project.Form", {
     labelAvailable  :'Verfügbar',
     headerName      :'Bezeichnung',
     headerDescr     :'Beschreibung',
-    saveMsg         :'Datenspeicherung läuft'
+    saveMsg: 'Daten werden gespeichert'
 });
 
 Ext.define("TK.locale.de.view.edit.DetailGrid", {
     override :"TK.view.edit.DetailGrid",
-    btnAdd   :"Ergänzen",
-    btnDelete:"Löschen",
-    btnCopy  :"Kopieren",
+    btnAdd: 'Ergänzen',
+    btnDelete: 'Löschen',
+    btnCopy: 'Kopieren',
     btnOk    :'Ok',
 
     headerName         :'Bezeichnung',
     headerRoutesGr     :'Gruppen',
-    headerRoutesDocs   :'Dokumente',
-    headerRoutesCodeTbc:'Tbc-Code',
-    headerRoutesCodeCustoms:'Zollamtcode',
-    headerRoutesEmailMask: 'Email, maske',
-    headerRoutesForDeleted: 'Zum Löschen?',
+    headerRoutesDocs: 'Unterlagen',
+    headerRoutesCodeTbc: 'TBC-Kode',
+    headerRoutesCodeCustoms: 'Zollamtkode',
+    headerRoutesEmailMask: 'E-mail, Maske',
+    headerRoutesForDeleted: 'Für gelöschte?',
     headerContNum      :'Nummer',
-    headerContSize     :'Größe',
-    headerContVid      :'Ansicht',
+    headerContSize: 'Abmessung',
+    headerContVid: 'Art',
     headerContNum1     :'Nummer',
-    headerContSize1    :'Größe',
-    headerContVid1     :'Ansicht',
+    headerContSize1: 'Abmessung',
+    headerContVid1: 'Art',
     headerCodeTNVED    :'HS-Code',
     headerPack: 'Verpackung',
-    headerPackVid: 'Ansicht',
-    headerPackKod: 'Code',
+    headerPackVid: 'Art',
+    headerPackKod: 'Kode',
     headerGoodsDescr   :'Warenbeschreibung',
     headerPackage      :'Verpackungsart',
     headerPackNum      :'Anzahl von Verpackungen/Kolli',
-
-    headerBrutto       :'brutto (kg)',
-    headerNetto        :'netto (kg)',
+    headerBrutto: 'Brutto (kg)',
+    headerNetto: 'Netto (kg)',
     headerQuantity     :'Anzahl',
     headerProdUnit     :'Warenmesseinheit',
     headerProdPrice    :'Wareneinheitspreis',
     headerTotalValue   :'Gesamtwert',
     headerType         :'Typ',
-    headerTotal        :'Gesamt:',
-
+    headerTotal: 'Gesamt',
 
     titleColumn: 'Spalte',
     titleDesc: 'Beschreibung',
-    titleCoordLeft: 'Koordinaten der linken unteren Ecke, mm',
-    titleCoordRight: 'Koordinaten der rechten oberen Ecke, mm',
+    titleCoordLeft: 'Koordinaten des  unteren linken Winkels, mm',
+    titleCoordRight: 'Koordinaten des oberen rechten Winkels, mm',
     titleColumnFont: 'Schrift einer bestimmten Spalte',
     titleColumnFontName: 'Bezeichnung',
-    titleColumnFontSize: 'Größe',
+    titleColumnFontSize: 'Abmessung',
     titleColumnFontBold: 'Fett?',
     titleColumnFontUpper: ' Großbuchstaben?',
     titleColumnFontSpace: 'Zeilenabstand',
     titleRotate: 'Drehung',
     titleBorder: 'Grenze?',
-    titleStroke: 'Zu unterstreichen?',
+    titleStroke: 'Unterstreichen?',
     titlePage: 'Seite',
     titlePrint: 'Ausdrucken?',
     titleTable: 'Tabelle?',
@@ -802,31 +844,30 @@ Ext.define("TK.locale.de.view.edit.DetailGrid", {
 
 Ext.define("TK.locale.de.view.edit.DetailPanel", {
     override:"TK.view.edit.DetailPanel",
-    errorTitle    :'Error',
-    errorMsgValid :'Überprüfen Sie die Felder',
-
+    errorTitle: 'Fehler',
+    errorMsgValid: 'Richtigkeit der Felderausfüllung prüfen',
     btnSave :'Speichern',
     btnClose:'Schließen',
     labelSender     :'Der Absender',
     labelName       :'Bezeichnung',
-    labelName1      :'Name',
+    labelName1: 'Bezeichnung',
     labelNameEu     :'EU-Bezeichnung',
-    labelNameRu     :'Bezeichnung (russ)',
-    labelNameCh     :'Bezeichnung (chin)',
+    labelNameRu: 'Bezeichnung (rus)',
+    labelNameCh: 'Bezeichnung (China)',
     labelDate       :'Datum',
-    labelTotal      :'Menge',
+    labelTotal: 'Anzahl',
     labelCountry    :'Land',
-    labelCountryRu  :'Land (russ)',
-    labelCountryCode:'Landescode',
+    labelCountryRu: 'Land (rus)',
+    labelCountryCode: 'Landeskode',
     labelZip        :'Index',
     labelCity       :'Stadt',
-    labelCityRu     :'Stadt (russ)',
+    labelCityRu: 'Stadt (rus)',
     labelAdress     :'Anschrift',
-    labelAdressRu   :'Anschrift (russ)',
-    labelOptInfo    :'Opt. info',
-    labelSenderCod  :'Absender code',
-    labelReceiverCod:'Empfänger code',
-    labelReceiver   :'Empfänger'
+    labelAdressRu: 'Anschrift (rus)',
+    labelOptInfo: 'Weitere Info',
+    labelSenderCod: 'Absender Kode',
+    labelReceiverCod: 'Empfängerkode',
+    labelReceiver: 'Empfänger',
 });
 
 Ext.define("TK.locale.de.view.edit.DetailTabPanel", {
@@ -837,52 +878,53 @@ Ext.define("TK.locale.de.view.edit.DetailTabPanel", {
 
 Ext.define("TK.locale.de.view.edit.VgCtGrTreeFormWin", {
     override: "TK.view.edit.VgCtGrTreeFormWin",
+
     labelName1      :'Bezeichnung',
-    labelWagons       :'die Wagen',
+    labelWagons: 'Die Wagen',
     labelWagonNum     :'Wagennummer',
-    labelWagonsTonnage:'Ladeinhalt',
-    labelWagonsTara   :'Verpackung',
+    labelWagonsTonnage: 'Tonnage, t',
+    labelWagonsTara: 'Verpackung ,t',
     labelWagonsAxes   :'Achsen',
-    labelConts   :'Container',
+    labelConts: 'Die Konteiner',
     labelSize    :'Abmessung',
     labelSizeMm  :'Abmessung, mm',
     labelTaraCont: 'Verpackung, Gewicht',
-    labelNotes  :'Text vor Containernummer',
-    labelCategory:'Klasse',
-    labelContNum :'Containernummer',
+    labelNotes: 'Text vor der Konteinernummer',
+    labelCategory: 'Gattung',
+    labelContNum: 'Konteinernummer',
     labelDescr   :'Beschreibung',
-    labelVid     :'Ansicht',
+    labelVid: 'Art',
     labelCargo    :'Fracht',
-    labelCode     :'Code',
     labelNetto    :'Netto',
     labelTara     :'Verpackung',
     labelBrutto   :'Brutto',
-    labelCodeGng  :'NHM-Code',
-    labelNameRuGng:'Bezeichnung (russ)',
+    labelCodeGng: 'GNG -Kode',
+    labelNameRuGng: 'Bezeichnung (rus)',
     labelNameChGng:'Bezeichnung (China)',
-    labelCodeEtsng:'ET GUS-Code',
+    labelCodeEtsng: 'ET GUS-Kode',
     labelNameEtsng:'Bezeichnung',
     labelMassa    :'Gewicht, kg',
     labelMesta    :'Kollis',
-    labelPack     :'Verpackung (russ)',
+    labelPack: 'Verpackung (rus)',
     labelPackForeign:'Verpackung',
 
-    labelWagonsGiven:'Wagon is given',
-    labelWagonsOwner:"Wagon's owner",
-    labelWagonsKind:"Wagon's kind",
+    labelWagonsGiven: 'Der Wagen  ist berietgestellt',
+    labelWagonsOwner: 'Wageninhaber',
+    labelWagonsKind: 'Wagenart',
 
-    labelContSize:'Size Type',
-    labelMaxLoad:'Max load',
+    labelContSize: 'Typabmessung',
+    labelMaxLoad: 'Maximale Lastfähigkeit, t',
 
-    labelNameRu: 'Name(ru)',
-    labelName: 'Name',
-    labelOON: 'OON',
-    labelClass: 'Class',
-    labelZnak: 'Marks',
-    labelGrUpak: 'Packing group',
-    labelAvKart: '№ emerg. card',
+    labelNameRu: 'Bezeichnung (rus)',
+    labelName: 'Bezeichnung',
+    labelCode: 'Kode',
+    labelOON: 'UN',
+    labelClass: 'Klasse',
+    labelZnak: 'Zeichen',
+    labelGrUpak: 'Verpackungsgruppe',
+    labelAvKart: 'Unfallmerkblattnummer',
     labelStamp: 'Stamp',
-    labelDopInf: 'Add. info '
+    labelDopInf: 'Weitere Info'
 });
 
 
@@ -890,128 +932,129 @@ Ext.define("TK.locale.de.view.edit.Docs9TreeFormWin", {
     override: "TK.view.edit.Docs9TreeFormWin",
 
     labelCustomsCode: 'Zollcode',
-    labelTextRu: 'Text (russ)',
+    labelTextRu: 'Text (rus)',
     labelText: 'Text',
-    labelDocNum: 'Dokumentennummer',
+    labelDocNum: 'Unterlagennummer',
     labelDate: 'Datum',
-    labelTotal: 'Menge'
+    labelTotal: 'Anzahl'
 });
 
 Ext.define("TK.locale.de.view.edit.PlombsTreeFormWin", {
     override: "TK.view.edit.PlombsTreeFormWin",
 
     labelZnak: 'Plombe',
-    labelTotal: 'Menge'
+    labelTotal: 'Anzahl'
 });
+
 Ext.define("TK.locale.de.view.edit.OtpavitelEdit", {
     override: "TK.view.edit.OtpavitelEdit",
-
     labelOtprName:'Bezeichnung',
-    labelOtprNameRu:'Bezeichnung (russ)',
+    labelOtprNameRu: 'Bezeichnung (rus)',
     labelCountry:'Land',
     labelCountryRu:'Land (russ)',
-    labelCountryCode:'Landescode',
+    labelCountryCode: 'Landeskode',
     labelEmail:'E-mail',
     labelPhone:'Telefon',
-    labelFax:'Faxgerät',
+    labelFax: 'Fax',
     labelCity:'Stadt',
-    labelCityRu:'Stadt (russ)',
+    labelCityRu: 'Stadt (rus)',
     labelAdress:'Anschrift',
-    labelAdressRu:'Anschrift, russ',
+    labelAdressRu: 'Anschrift, rus',
     labelZip:'Index',
     labelVat:'VAT',
-    labelSenRecCode:'Code des Absenders / Empfängers',
-    labelOKPO: 'OKPO-Code:',
-    labelCliCode:'Kundencode',
-    labelNNcode:'INN-Code',
-    labelDopInfo:'Weitere Info.',
+    labelSenRecCode: 'Absender / Empfänger-Kode',
+    labelCliCode: 'Kundenkode',
+    labelNNcode: 'StIdNr -Kode',
+    labelDopInfo: 'Weitere Infos.',
+    labelOKPO: 'OKPO-Kode',
 
     closeBtn:'Speichern',
     saveBtn:'Speichern'
 });
+
 Ext.define("TK.locale.de.view.DocsForm", {
     override      :"TK.view.DocsForm",
+
     btnSave       :'Speichern',
     btnSaveExit   :'Speichern und EXIT',
     btnSavePrint  :'Speichern und PDF-Ausdruck',
     btnClose      :'Schließen',
-    btnSign       :'EZP unterschreiben',
-    btnChange     :'Andern',
-    btnChangePlomb     :'Изменить пломбы',
+    btnSign: 'ECP unterschreiben',
+    btnChange: 'Ӓndern',
+    btnChangePlomb: 'Plomben  ändern',
     btnChangeWagen:'Wagen ändern',
-    btnChangeCont :'Container ändern',
+    btnChangeCont: 'Konteiner ändern',
     btnChangeGr   :'Fracht ändern',
     btnCopyEpd    :'mit EPD kopieren',
     btnDopList :'Zusatzblatt',
-    btnContsList :'Wagon/Vertrags liste',
-    btnCopy20     :'Kopie in der Gr.20',
-    btnTbcReady   :'Tbc fertig',
-    btnTbcNotReady:'Tbc abbrechen',
-    btnBchReady   :'Fertig',
-    btnBchNotReady:'Abbruch',
-    btnFtsReady   :'Fts fertig',
-    btnFtsNotReady:'Fts Abbruch',
+    btnContsList: 'Wagen/Konteinerliste',
+    btnCopy20: 'Kopie in der Spalte 20',
+    btnTbcReady: 'TBC fertig',
+    btnTbcNotReady: 'TBC abbrechen',
+    btnBchReady: 'Iftmin ist beendet',
+    btnBchNotReady: 'Iftmin- Abbruch',
+    btnFtsReady: 'FTS fertig',
+    btnFtsNotReady: 'FTS Abbruch',
 
-    labelNotes:'Anmerkung',
+    labelNotes: 'Text vor der Containernummer',
 
     labelPayers     :'Zahler',
-    labelBukvKod    :'ABC-Code der Eisenbahnverwaltung',
-    labelBukvKodRu  :'ABC-Code der Eisenbahnverwaltung (russ)',
+    labelNumDate: 'Contract number and date',
+    labelBukvKod: 'ABC-Kode der Eisenbahnverwaltung',
+    labelBukvKodRu: 'ABC-Kode der Eisenbahnverwaltung (rus)',
     labelPayerName  :'Zahlerbezeichnung',
-    labelPayerNameRu:'Zahlerbezeichnung (russ)',
-    labelThrough    :'Zahlungsart',
+    labelPayerNameRu: 'Zahlerbezeichnung (rus)',
+    labelThrough: 'Zahlungsart (Weise)',
     labelPrim       :'Anmerkungen',
-    labelPayerKod1  :'Zahlercode',
-    labelPayerKod2  :'Zahleruntercode',
-    labelPayerKod3  :'Untercode des Zahleruntercodes',
-    labelPayerKod4  :'Reserv. für Zusatzcode',
+    labelPayerKod1: 'Zahlerkode',
+    labelPayerKod2: 'Unterkode der Zahlerkode',
+    labelPayerKod3: 'Unterkode der Zahlerkode',
+    labelPayerKod4: 'Reserv. für Zusatzkode',
     labelPayment    :'Zahlungsart',
-    labelPaymentRu  :'Zahlungsart (russ)',
+    labelPaymentRu: 'Zahlungsart (rus)',
 
-    labelConts   :'Die Container',
+    labelConts: 'Die Konteiner',
     labelSize    :'Abmessung',
     labelSizeMm  :'Abmessung, mm',
-    labelNotes  :'Text vor der Containernummer',
-    labelNotesVag  :'Текст перед № вагона',
-    labelCategory:'Klasse',
-    labelContNum :'DContainernummer',
+    labelNotesVag: 'Text vor der Wagennummer',
+    labelCategory: 'Gattung',
+    labelContNum: 'Konteinernummer',
     labelDescr   :'Beschreibung',
     labelVid     :'Art',
 
     labelCargo    :'Fracht',
-    labelCode     :'Code',
+    labelCode: 'Kode',
     labelNetto    :'Netto',
     labelTara     :'Verpackung',
     labelBrutto   :'Brutto',
-    labelCodeGng  :'Gng-Code',
-    labelNameRuGng:'Name (russ)',
-    labelNameChGng:'Der Name(chin)',
-    labelCodeEtsng:'ETSNG-Code',
-    labelNameEtsng:'Name',
+    labelCodeGng: 'GNG -Kode',
+    labelNameRuGng: 'Bezeichnung (rus)',
+    labelNameChGng: 'Bezeichnung (China)',
+    labelCodeEtsng: 'ET GUS-Kode',
+    labelNameEtsng: 'Bezeichnung',
     labelMassa    :'Gewicht, kg',
     labelMesta    :'Kollis',
-    labelPack     :'Verpackung (russ)',
+    labelPack: 'Verpackung (rus)',
     labelPackForeign:'Verpackung',
 
-    labelCodeStn     :'Stationscode',
-    labelText3       :'Road name',
-    labelText4       :'Road code',
-    labelPogrStn:    'Ausfahrtsgrenzstationen',
+    labelCodeStn: 'Stationskode',
+    labelText3: 'Abkürzung der Eisenbahn',
+    labelText4: 'Verwaltungskode',
     labelBorderStn   :'Grenzübergangsstationen',
-    labelCodeDoc     :'Dokumentencode',
+    labelCodeDoc: 'Unterlagenkode',
     labelText        :'Text',
     labelTextEu      :'EU-Text',
-    labelTextRu      :'Text (russ)',
-    labelSenderDocs  :'Vom Absender beigelegten Dokumente',
+    labelTextRu: 'Text (rus)',
+    labelSenderDocs: 'Vom Absender beigefügten Unterlagen ',
     labelCustomsCode :'Zollcode',
-    labelDocNum      :'Dokumentennummer',
+    labelDocNum: 'Unterlagennummer',
     labelCommercTerms:'Geschäftsbedingungen',
     labelPogrStn: 'Ausfahrtsgrenzstationen',
 
-    labelWagons       :'Wagen',
+    labelWagons: 'Die Wagen',
     labelWagonNum     :'Wagennummer',
-    labelWagonsTonnage:'Ladeinhalt',
-    labelWagonsTara   :'Verpackung',
+    labelWagonsTonnage: 'Tonnage, t',
+    labelWagonsTara: 'Verpackung,t',
     labelWagonsAxes   :'Achsen',
 
     labelZayavSenderPayers:'Absendererklärung/Zahler',
@@ -1019,42 +1062,40 @@ Ext.define("TK.locale.de.view.DocsForm", {
     labelSenderNotes      :'Besondere Absendererklärungen',
     labelFile             :'Datei',
     labelFileSearch       :'Übersicht',
-    labelWagenNum         :'Zugnummer:',
-    labelTeplatename        :'Name der Vorlage:',
+    labelWagenNum: 'Zugnummer',
+    labelTeplatename: 'Anleitungsbezeichnung',
     labelDocSort         :'Laufende Nummer',
     labelDocSummary         :'Kumulativ',
 
-    labelTGNL: 'TGNL-Code:',
-    labelOKPO: 'OKPO-Code:',
-    labelINN: 'INN-Code:',
+    labelTGNL: 'TGNL-Kode',
+    labelOKPO: 'OKPO-Kode',
+    labelINN: 'StIdNr -Kode',
 
-    labelVagKontGruz: 'Wagen / Container/ Fracht',
-    btnPrintView   :"View PDF",
+    labelVagKontGruz: 'Wagen/Konteiner/Fracht',
+    btnPrintView: 'PDF- Durchsicht',
 
     labelDate: 'Datum',
-    labelCodyDo   :'Code expires:',
-    labelVsegoSmgs:'Total SMGS:',
-    labelCarrier  :'Carries',
-    labelFrom     :'Station from',
-    labelTo       :'Station to',
-    labelStationFrom   :'Station from(code)',
-    labelStationTo     :'Station to(code)',
+    labelCodyDo: 'Die Kodes gelten bis',
+    labelVsegoSmgs: 'SMGS insgesamt',
+    labelCarrier: 'Beförderer',
+    labelFrom: 'Station von',
+    labelTo: 'Station bis',
+    labelStationFrom: 'Station von (Kode)',
+    labelStationTo: 'Station bis(Kode)',
     titleCarriers      :'Carriers',
     btnVed          :'List',
     btnVag          :'Wagon',
     btnCont         :'Container'
-
 });
 
 Ext.define("TK.locale.de.view.aviso.Form", {
     override:"TK.view.aviso.Form",
 
-    btnForAgree :'Zur Vereinbarung',
+    btnForAgree: 'Zur Abstimmung ',
     btnAgreed   :'Vereinbart',
-
     btnNotAgreed:'Nicht vereinbart',
 
-    labelCodyDo   :'Die Codes gelten bis:',
+    labelCodyDo: 'Die Kodes gelten bis',
     labelVsegoSmgs:'SMGS insgesamt',
     labelZakazNum :'Bestellungsnummer'
 });
@@ -1062,54 +1103,54 @@ Ext.define("TK.locale.de.view.aviso.Form", {
 Ext.define("TK.locale.de.view.aviso2.AvisoSmgs2Form", {
     override:"TK.view.aviso2.AvisoSmgs2Form",
 
-    btnForAgree :'Zur Vereinbarung',
+    btnForAgree: 'Zur Abstimmung ',
     btnAgreed   :'Vereinbart',
     btnNotAgreed:'Nicht vereinbart',
 
-    labelCodyDo   :'Die Codes gelten bis:',
+    labelCodyDo: 'Die Kodes gelten bis',
     labelVsegoSmgs:'SMGS insgesamt',
-    labelZakazNum :'Die Bestellungsnummer'
+    labelZakazNum: 'Bestellungsnummer'
 });
 
 Ext.define("TK.locale.de.view.aviso.Form1", {
     override:"TK.view.aviso.Form1",
 
-    btnForAgree :'Zur Vereinbarung',
+    btnForAgree: 'Zur Abstimmung ',
     btnAgreed   :'Vereinbart',
     btnNotAgreed:'Nicht vereinbart',
 
-    labelCodyDo   :'Die Codes gelten bis:',
+    labelCodyDo: 'Die Kodes gelten bis',
     labelVsegoSmgs:'SMGS insgesamt',
-    labelZakazNum :'Die Bestellungsnummer'
+    labelZakazNum: 'Bestellungsnummer'
 });
 
-Ext.define("TK.locale.de.view.avisocimsmgs.CimSmgsForm", {
-    override:"TK.view.avisocimsmgs.CimSmgsForm",
+Ext.define("TK.locale.de.view.avisocimsmgs.AvisoCimSmgsForm", {
+    override: "TK.view.avisocimsmgs.AvisoCimSmgsForm",
 
-    btnForAgree :'Zur Vereinbarung',
-    btnAgreed   :'Ivereinbart',
+    btnForAgree: 'Zur Abstimmung ',
+    btnAgreed: 'Vereinbart',
     btnNotAgreed:'Nicht vereinbart',
 
-    labelCodyDo   :'Die Codes gelten bis:',
-    labelVsegoSmgs:'CIM/SMGS insgesamt',
-    labelZakazNum :'Die Bestellungsnummer'
+    labelCodyDo: 'Die Kodes gelten bis',
+    labelVsegoSmgs: 'CIMSMGS insgesamt',
+    labelZakazNum: 'Bestellungsnummer'
 });
 
 Ext.define("TK.locale.de.view.avisogu29k.Form", {
     override:"TK.view.avisogu29k.Form",
 
-    btnForAgree :'Zur Vereinbarung',
+    btnForAgree: 'Zur Abstimmung ',
     btnAgreed   :'Vereinbart',
     btnNotAgreed:'Nicht vereinbart',
 
     labelVsegoGU    :'GU insgesamt',
-    labelZakazNum   :'Die Bestellungsnummer',
-    labelSender1    :'Absender',
+    labelZakazNum: 'Bestellungsnummer',
+    labelSender1: 'Der Absender',
     labelReceiver1  :'Empfänger',
     labelStnSender  :'Abfertigungsstation',
     labelStnReceiver:'Bestimmungsstation',
     labelPayers1    :'Zahler',
-    labelCodesTill  :'Die Codes gelten bis',
+    labelCodesTill: 'Die Kodes gelten bis',
     labelGU         :'GU',
     labelGU29       :'GU29k',
     labelGU27       :'GU27v'
@@ -1118,15 +1159,15 @@ Ext.define("TK.locale.de.view.avisogu29k.Form", {
 Ext.define("TK.locale.de.view.avisogu29k.Form1", {
     override:"TK.view.avisogu29k.Form1",
 
-    btnForAgree :'Zur Vereinbarung',
+    btnForAgree: 'Zur Abstimmung ',
     btnAgreed   :'Vereinbart',
     btnNotAgreed:'Nicht vereinbart',
 
     labelVsegoGU    :'GU insgesamt',
-    labelZakazNum   :'Die Bestellungsnummer',
-    labelSender1    :'Absender',
+    labelZakazNum: 'Bestellungsnummer',
+    labelSender1: 'Der Absender',
     labelReceiver1  :'Empfänger',
-    labelStnSender  :'Abfertigunsstation',
+    labelStnSender: 'Abfertigungsstation',
     labelStnReceiver:'Bestimmungsstation',
     labelPayers1    :'Zahler',
     labelCodesTill  :'Die Kodes gelten bis',
@@ -1139,7 +1180,7 @@ Ext.define("TK.locale.de.view.cim.CimForm", {
     override:"TK.view.cim.CimForm",
 
     labelWagonOtpr  :'Versendungsnummer',
-    labelContPrivate:'Eigene („P“)'
+    labelContPrivate: 'Eigener („P“)'
 });
 
 Ext.define("TK.locale.de.view.slovnakl.Form", {
@@ -1165,9 +1206,9 @@ Ext.define("TK.locale.de.view.epd.Form", {
     labelReceiverName  :'Frachtempfängerbezeichnung',
     labelReceiverAdress:'Frachtempfängeranschrift',
     labelStnSenderName :'Abfertigungsstationbezeichnung',
-    labelStnSenderCode :'Abfertigungsstationcode',
+    labelStnSenderCode: 'Kode der Abfertigungsstation',
     labelStnReceiverName :'Bestimmungsstationsbezeichnung',
-    labelStnReceiverCode :'Bestimmungsstationcode'
+    labelStnReceiverCode: 'Kode der Bestimmungsstation'
 });
 
 Ext.define("TK.locale.de.view.file.Form", {
@@ -1196,33 +1237,34 @@ Ext.define("TK.locale.de.view.invoice.Form", {
     labelSenderName     :'Absenderbezeichnung',
     labelSellerAdress   :'Verkäuferanschrift',
     labelSenderAdress   :'Absenderanschrift',
-    labelSenderCountry  :'Absenderland, Code',
-    labelSenderZip      :'Absenderpostcode',
+    labelSenderCountry: 'Absenderland, Kode',
+    labelSenderZip: 'Absenderpostkode',
     labelSenderCity     :'Absenderstadt',
     labelBuyerName      :'Käuferbezeichnung',
     labelReceiverName   :'Empfängerbezeichnung',
-    labelReceiverCountry:'Empfängerland, Code',
-    labelReceiverZip    :'Empfängerpostcode',
+    labelReceiverCountry: 'Empfängerland, Kode',
+    labelReceiverZip: 'Empfängerpostkode',
     labelReceiverCity   :'Empfängerstadt',
     labelBuyerAdress    :'Käuferanschrift',
     labelReceiverAdress :'Empfängeranschrift',
-    labelDeliveryCode   :'Lieferbedingungscode',
+    labelDeliveryCode: 'Lieferbedingungskode',
     labelDeliveryPlace  :'Lieferungsort',
     labelCurrency       :'Rechnungswährung',
     labelNote           :'Anmerkung',
 
     lableCombo1: 'Rechnung',
-    lableCombo2: 'Eingangsrechnung',
+    lableCombo2: 'Rechnung',
     lableCombo3: 'Rechnungsanlage',
     lableCombo4: 'Frachtliste',
-    lableCombo5: 'Ladungsmanifest'
-
+    lableCombo5: 'Ladungsmanifest',
 });
 
 Ext.define("TK.locale.de.view.nsi.EditList", {
     override:"TK.view.nsi.EditList",
 
-    btnAdd:'Ergänzen'
+    btnAdd: 'Ergänzen',
+    btnDelete: 'Löschen',
+    btnEdit: 'Editieren'
 });
 
 Ext.define("TK.locale.de.view.nsi.ListDir", {
@@ -1238,8 +1280,8 @@ Ext.define("TK.locale.de.view.nsi.ListDir", {
 
     nsiSta      :'Eisenbahnstationdirectory',
     nsiCountries:'Länderdirectory',
-    nsiGng      :'NHM-Codes-Directory',
-    nsiEtsng    :'ET SNG-Codes-Directory',
+    nsiGng: 'NHM-Kode-Directory',
+    nsiEtsng: 'ET SNG-Kode-Directory',
     nsiCurrency :'Währungsdirectory',
     nsiTnved    :'HS-Directory',
     nsiDeliv    :'Directory von Lieferbedingungen',
@@ -1248,22 +1290,22 @@ Ext.define("TK.locale.de.view.nsi.ListDir", {
     nsiPlat     :'Zahlerdirectory in Bezug auf Eisenbahnen (Spediteure)',
     nsiManagement:'Directory der Eisenbahnverwaltungen',
     nsiCountriesGd:'Directory der Eisenbahnländer',
-    nsiDocG23   :'Dokumentenartendirectory',
+    nsiDocG23: 'Unterlagenartendirectory',
     nsiVeterin	:'Veterinärfrachtdirectory',
     nsiKarantin	:'Quarantänefrachtdirectory',
     nsiDangCode	:'Gefahrengutdirectory',
-    gruzyLink	:'!!!!Cargo list, with financial insurance'
+    gruzyLink: 'Frachtliste, die einer Finanzgarantie beim Transit benötigt'
 });
 
 Ext.define("TK.locale.de.view.smgs.Form", {
     override:"TK.view.smgs.Form",
 
-    labelWagonNum     :'Wagennummer (Gr.27',
-    labelWagonsTonnage:'Ladeinhalt (Gr.28)',
-    labelWagonsTara   :'Verpackung (Gr.30)',
-    labelWagonsAxes   :'Achsen (Gr.29)',
-    labelContNum      :'Nummer (Gr.9; 19)',
-    labelSize         :'Abmessung (Gr.9)',
+    labelWagonNum: 'Wagennummer (Spalte 27)',
+    labelWagonsTonnage: 'Tonnage(Spalte 28), t',
+    labelWagonsTara: 'Verpackung (Spalte 30), t',
+    labelWagonsAxes: 'Achsen (Spalte 29)',
+    labelContNum: 'Nummer (Spalte 9; 19)',
+    labelSize: 'Abmessung ( Spalte 9)',
     labelVid          :'Art (Gr.18)'
 });
 
@@ -1273,26 +1315,26 @@ Ext.define("TK.locale.de.view.stat.Form", {
     lableDate          :'Erstellungsdatum',
     lableDate1         :' von ',
     lableDate2         :'bis',
-    lableZakazNum      :'Die Bestellungsnummer',
+    lableZakazNum: 'Bestellungsnummer',
     lableStatus        :'Status',
-    lableUser          :'Benutzer',
+    lableUser: 'Der Benutzer',
     lableCountrySender :'Frachtabfertigungsland',
     lableCountryRceiver:'Bestimmungsland',
-    lableDeleted        :'Löschen?',
+    lableDeleted: 'Gelöschte?',
     lableStnPogr       :'Grenzübergangsstation',
     lableStnSender     :'Abfertigungsstation',
     lableStnReciver    :'Bestimmungsstation',
     lableSender        :'Frachtabsender',
     lableReceiver      :'Frachtempfänger',
     lableCargoName     :'Frachtbezeichnung',
-    lableContSize      :'Containerabmessungstyp',
+    lableContSize: 'Typ Abmessung vom Konteiner',
     lablePayer         :'Zahler für Tarif und Dienstleistungen',
-    lableKontNum         :'Containernummer',
+    lableKontNum: 'Konteinernummer',
 
     btnFind :'Finden',
     btnClose:'Schließen',
     btnReset:'Zurücksetzen',
-    lableCombo1: 'Anleitung zur Bestätigung durch einen Agente',
+    lableCombo1: 'Anleitung zur Bestätigung durch einen Agenten',
     lableCombo2: 'Anleitung vom Agenten bestätig ',
     lableCombo3: 'Anleitung vom Agenten nicht bestätigt',
     lableCombo4: 'Anleitung gesperrt',
@@ -1302,100 +1344,100 @@ Ext.define("TK.locale.de.view.stat.Form", {
 Ext.define("TK.locale.de.controller.exchange.Senders", {
     override:"TK.controller.exchange.Senders",
 
-    maskMsg  :'Datenabruf',
+    maskMsg: 'Datenabruf...',
     showTitle:'Achtung',
     showMsg1 :'Gesendet!',
     showMsg2 :'Fehler!',
     showMsg3 :'Gespeichert!',
-    errorMsg :'Achtung! Fehler!',
-    waitMsg  :'Datei wird geladen',
+    errorMsg: 'Achtung! Fehler…',
+    waitMsg: 'Datei.. wird hochgeladen',
     waitMsg1 :'Daten werden gespeichert',
 
     btnSave  :'Speichern',
-    btnExport:'Export in',
+    btnExport: 'Export in FTS',
     btnClose :'Schließen',
 
-    titleFTS    :' mit FTS',
+    titleFTS: 'Austausch mit FTS',
 
     labelWagenNum   :'Zugnummer',
-    labelWagenNums   :'Nummer des Zuges (der Züge):',
+    labelWagenNums: 'Nummer des Zuges (der Züge)',
     labelWagenInd   :'Zugindex',
-    labelPPVInd     :'PPV-Nummer:',
-    labelInputDate  :'Ankunftsdatum:'
+    labelPPVInd: 'PPV-Nummer',
+    labelInputDate: 'Ankunftsdatum'
 });
 
 Ext.define("TK.locale.de.controller.exchange.Agreements", {
     override:"TK.controller.exchange.Agreements",
 
-    maskMsg  :'Datenabruf',
-    errorMsg :'Achtung! Fehler!'
+    maskMsg: 'Datenabruf...',
+    errorMsg: 'Achtung! Fehler…'
 });
 
 Ext.define("TK.locale.de.controller.Docs", {
     override:"TK.controller.Docs",
 
-    titleCopy2Aviso:'Copy to aviso',
+    titleCopy2Aviso: 'Copy to template',
     titleList   :'Heft',
     titleEdit   :'Editieren',
     titleCopy   :'Kopie',
     titletPrint :'Ausdruck',
     titletStat  :'Statistik',
     titleReports:'Berichte',
-    titleHistory:'Dokumentengeschichte',
+    titleHistory: 'Unterlagengeschichte',
     titleUpload :'Hochladen der Anleitung im XML-Format',
     titleFTS    :'Austausch mit FTS',
-    titleContList:'Geben Sie die Zugnummer ein',
+    titleContList: 'Nummer des Zuges (-Züge[,]ein)',
 
     lableSettings  :'Einstellung',
     lableFace      :'Vorderseite',
     lableBack      :'Rückseite',
     lableTraneNum  :'Zug (Nummer)',
-    labelSelectFile:'Dateiauswahl zwecks Hochladen',
+    labelSelectFile: 'Dateiauswahl zum Hochladen',
     labelFile      :'Datei',
     labelUn        :'Login',
     labelUnName    :'Name, Vorname und Vatersname',
-    labelUnEmail   :'Email',
+    labelUnEmail: 'E-mail',
     labelUnGroup   :'Gruppe',
     labelGU         :'GU',
     labelGU29       :'GU29k',
     labelGU27       :'GU27v',
-    labelWagenNum   :'Zugnummer:',
-    labelWagenNums   :'Nummer des Zuges (der Züge):',
-    labelWagenInd   :'Zugindex:',
-    labelPPVInd     :'PPV-Nummer:',
-    labelInputDate  :'Ankunftsdatum:',
+    labelWagenNum: 'Zugnummer',
+    labelWagenNums: 'Nummer des Zuges (der Züge)',
+    labelWagenInd: 'Zugindex',
+    labelPPVInd: 'PPV-Nummer',
+    labelInputDate: 'Ankunftsdatum',
 
     btnPrint :'Ausdruck',
     btnFind  :'Finden',
-    btnSearch:'Übersicht…',
+    btnSearch: 'Übersicht',
     btnSave  :'Speichern',
     btnClose :'Schließen',
-    btnExport:'Export in das FTS',
+    btnExport: 'Export in FTS',
     btnContList  :'Liste',
     btnSmgs  :'Frachtbrief',
 
-    delTitle :'löschen...',
-    delMsg   :'Wollen Sie tatsächlich löschen?',
+    delTitle: 'Löschung...',
+    delMsg: 'Wollen Sie tatsächlich.. löschen?',
     maskMsg  :'Datenabruf...',
     showTitle:'Achtung',
     showMsg1 :'Gesendet!',
     showMsg2 :'Fehler!',
     showMsg3 :'Gespeichert!',
-    errorMsg :'Achtung! Fehler!',
-    waitMsg  :'Hochladen einer Datei',
+    errorMsg: 'Achtung! Fehler…',
+    waitMsg: 'Datei.. wird hochgeladen',
     waitMsg1 :'Daten werden gespeichert',
 
-    titlePrint: "Printing",
-    labelBlank: "With blank?",
-    textPrint: "Print",
+    titlePrint: 'Druckeinstellung',
+    labelBlank: 'Mit Formblatt?',
+    textPrint: 'Drucken',
 
     headerData:'Erstellungsdatum',
     headerMsg :'Mitteilung',
     headerWho :'Wer?',
 
-    titleDocsCopy: 'Docs list for copy',
-    headerName: 'Name',
-    btnCopy: 'Copy',
+    titleDocsCopy: 'Liste von Unterlagen, die zu Kopieren sind',
+    headerName: 'Bezeichnung',
+    btnCopy: 'Kopieren',
     all:            'Whole document',
     smgs2_1        :'1|Sender|1',
     smgs2_2        :'2|Departure station|2',
@@ -1418,28 +1460,28 @@ Ext.define("TK.locale.de.controller.Docs", {
 Ext.define("TK.locale.de.controller.Ajax", {
     override:"TK.controller.Ajax",
 
-    errorMsg:'Achtung! Fehler!'
+    errorMsg: 'Achtung! Fehler…'
 });
 
 Ext.define("TK.locale.de.controller.docs.Aviso", {
     override:"TK.controller.docs.Aviso",
 
-    maskMsg :'Datenabruf',
-    errorMsg:'Achtung! Fehler!'
+    maskMsg: 'Datenabruf...',
+    errorMsg: 'Achtung! Fehler…'
 });
 
 Ext.define("TK.locale.de.controller.docs.Avisogu29k", {
     override:"TK.controller.docs.Avisogu29k",
 
-    maskMsg :'Datenabruf',
-    errorMsg:'Achtung! Fehler!'
+    maskMsg: 'Datenabruf...',
+    errorMsg: 'Achtung! Fehler…'
 });
 
 Ext.define("TK.locale.de.controller.docs.Cim", {
     override:"TK.controller.docs.Cim",
 
-    maskMsg :'Datenabruf',
-    errorMsg:'Achtung! Fehler!'
+    maskMsg: 'Datenabruf...',
+    errorMsg: 'Achtung! Fehler…'
 });
 
 Ext.define("TK.locale.de.controller.docs.Cimsmgs", {
@@ -1447,23 +1489,23 @@ Ext.define("TK.locale.de.controller.docs.Cimsmgs", {
 
     titleOtpr         :'Absender/Empfänger Directory',
     headerOtprName    :'Bezeichnung',
-    headerOtprName1   :'Bezeichnung (russ)',
+    headerOtprName1: 'Bezeichnung (rus)',
     headerOtprEmail   :'E-mail',
     headerOtprPhone   :'Telefon',
-    headerOtprFax     :'Faxgerät',
-    headerOtprStrCode :'Landescode',
+    headerOtprFax: 'Fax',
+    headerOtprStrCode: 'Landeskode',
     headerOtprStr     :'Land',
-    headerOtprStr1    :'Land (russ)',
+    headerOtprStr1: 'Land (rus)',
     headerOtprZip     :'Index',
     headerOtprCity    :'Stadt',
-    headerOtprCity1   :'Der Stadt (russ)',
+    headerOtprCity1: 'Stadt (rus)',
     headerOtprAdress  :'Anschrift',
-    headerOtprAdress1 :'Anschrift, russ',
+    headerOtprAdress1: 'Anschrift, rus',
     headerOtprVat     :'VAT',
-    headerOtprSendCode:'Code des Absenders / Empfängers',
-    headerOtprClCode  :'Kundencode',
-    headerINN         :'INN-Code:',
-    headerCountryCode :'Land, Code',
+    headerOtprSendCode: 'Absender / Empfänger-Kode',
+    headerOtprClCode: 'Kundenkode',
+    headerINN: 'StIdNr -Kode',
+    headerCountryCode: 'Landeskode',
     headerDopInfo     :'Weitere Info',
     tooltipEdit       :'Editieren',
     tooltipDel        :'Löschen'
@@ -1480,10 +1522,10 @@ Ext.define("TK.locale.de.controller.docs.Epd", {
 Ext.define("TK.locale.de.controller.docs.File", {
     override:"TK.controller.docs.File",
 
-    waitMsg1:'Datenspeicherung läuft',
-    delTitle:'Löschung',
-    delMsg  :' Wollen Sie tatsächlich löschen?',
-    errorMsg:'Achtung! Fehler!'
+    waitMsg1: 'Daten werden gespeichert',
+    delTitle: 'Löschung...',
+    delMsg: 'Wollen Sie tatsächlich.. löschen?',
+    errorMsg: 'Achtung! Fehler…'
 });
 
 Ext.define("TK.locale.de.controller.docs.Gu27v", {
@@ -1514,7 +1556,7 @@ Ext.define("TK.locale.de.controller.Logs", {
     lableDate  :'Erstellungsdatum',
     lableDate1 :'von',
     lableDate2 :'bis',
-    labelUser  :'Benutzer',
+    labelUser: 'Der Benutzer',
 
     btnFind:'Finden'
 });
@@ -1522,15 +1564,15 @@ Ext.define("TK.locale.de.controller.Logs", {
 Ext.define("TK.locale.de.controller.Menu", {
     override:"TK.controller.Menu",
 
-    errorMsg:'Achtung! Fehler!'
+    errorMsg: 'Achtung! Fehler…'
 });
 
 Ext.define("TK.locale.de.controller.Project", {
     override:"TK.controller.Project",
 
-    maskMsg  :'Datenabruf',
-    errorMsg :'Achtung! Fehler!',
-    showTitle:'Achtung! Löschen verboten',
+    maskMsg: 'Datenabruf...',
+    errorMsg: 'Achtung! Fehler…',
+    showTitle: 'Achtung! Löschen verboten...',
     showMsg  :'Vor dem Löschen eines Projektes sollten alle EPD aus seinen Routen gelöscht werden'
 });
 
@@ -1540,7 +1582,7 @@ Ext.define("TK.locale.de.controller.docs.Smgs", {
     titleEpd:'EPD nicht hochgeladen',
     titleDownldInv:'Hochladen der Rechnungen ',
     msgEpd  :'Zum Hochladen ist die Registerkarte mit EPD einzusetzen',
-    errorMsg:'Achtung! Fehler!',
+    errorMsg: 'Achtung! Fehler…',
     btnFind  :'Finden',
     btnSave  :'Speichern',
     btnClose :'Schließen'
@@ -1550,15 +1592,17 @@ Ext.define("TK.locale.de.controller.Doc2Doc", {
     override:"TK.controller.Doc2Doc",
 
     titleDownldInv:'Hochladen der Rechnungen',
-    errorMsg:'Achtung! Fehler!',
-    successMsgTitle:'Die Operation wurde erfolgreich abgeschlossen',
+    errorMsg: 'Achtung! Fehler…',
+    successMsgTitle: 'Die Operation erfolgreich abgeschlossen',
     btnFind  :'Finden',
     btnSave  :'Speichern',
     btnContList  :'Liste',
+
     btnSmgs  :'Frachtbrief',
-    titleContList:'Geben Sie die Zugnummer ein',
+    titleContList: 'Nummer des Zuges (-Züge[,]ein)',
     labelWagenNums   :'Nummer des Zuges (der Züge)',
     btnClose :'Schließen',
+    titleFilterPer: 'Filter der Züge',
     warnTitle       :'Warning',
     saveMgs         :'Save the document'
 });
@@ -1566,23 +1610,23 @@ Ext.define("TK.locale.de.controller.Doc2Doc", {
 Ext.define("TK.locale.de.controller.User", {
     override:"TK.controller.User",
 
-    maskMsg :'Datenabruf',
-    errorMsg:'Achtung! Fehler!',
-    waitMsg1:'Die Daten werden gespeichert',
-    titleNoUser :'Warnung',
-    msgNoUser   :'Wählen Sie einen Benutzer aus, um eine Operation auszuführen'
+    maskMsg: 'Datenabruf...',
+    errorMsg: 'Achtung! Fehler…',
+    waitMsg1: 'Daten werden gespeichert',
+    titleNoUser: 'Achtung',
+    msgNoUser: 'Kein Benutzer gewählt'
 });
 
 Ext.define("TK.locale.de.controller.Nsi", {
     override       :"TK.controller.Nsi",
     titleUpload    :'Directory hochladen',
-    labelSelectFile:'Dateiauswahl zwecks Hochladen',
+    labelSelectFile: 'Dateiauswahl zum Hochladen',
     labelFile      :'Datei',
     btnSave        :'Speichern',
     btnClose       :'Schließen',
-    btnSearch      :'Die Übersicht',
-    titleErrorWarning   :'Warnung',
-    warningFillErrors   :'Unterstrichene Felder sind zu lang'
+    btnSearch: 'Übersicht',
+    titleErrorWarning: 'Achtung',
+    warningFillErrors: 'Die rot unterstrichenen Felder enthalten zu viele Zeichen'
 });
 
 Ext.define("TK.locale.de.controller.docs.PlombsTreeDetailController", {
@@ -1594,8 +1638,8 @@ Ext.define("TK.locale.de.controller.docs.PlombsTreeDetailController", {
 Ext.define("TK.locale.de.view.nsi.List", {
     override:"TK.view.nsi.List",
 
-    title1           :"Gruppe",
-    titleRoad        :'Strassendirectory',
+    title1: 'Gruppen',
+    titleRoad: 'Eisenbahndirectory',
     titleRoute        :'Routendirectory',
     titleProject        :'Projektendirectory',
     titleManagement  :'Directory der Eisenbahnverwaltungen',
@@ -1605,104 +1649,106 @@ Ext.define("TK.locale.de.view.nsi.List", {
     titleDangerous   :'Gefahrengutdirectory',
     titleKarantin    :'Quarantänefrachtdirectory',
     titleVeterin     :' Veterinärfrachtdirectory ',
-    titleGng         :'NHM-Codes-Directory…',
-    titleEtsng       :'ET SNG-Codes-Directory…',
-    titleDocs        :'Dokumentenartendirectory',
+    titleGng: 'NHM-Kode-Directory',
+    titleEtsng: 'ET SNG-Kode-Directory',
+    titleDocs: 'Unterlagenartendirectory',
     titlePlat        :'Zahlerdirectory in Bezug auf Eisenbahnen (Spediteure)',
     titleOtpr        :'Directory juristischer Personen (von Absendern/Empfängern)',
-    titleDocs1       :'Dokumentendirectory',
+    titleDocs1: 'Unterlagendirectory',
     titleCurrency    :'Währungsdirectory',
-    titleTnved       :'HS-Directory …..',
+    titleTnved: 'HS-Directory',
     titleDeliv       :'Directory von Lieferbedingungen',
     titleUpak        :'Directory von Verpackungsarten',
 
     headerName       :'Bezeichnung',
-    headerProject    :'Projekt',
+    headerProject: 'Das Projekt',
     headerRoute      :'Route',
     headerDescr      :'Beschreibung',
-    headerCode       :'Code',
+    headerCode: 'Kode',
     headerCountryRu  :'Land(russ)',
     headerCountry    :'Land',
-    headerCountryS   :'Land,kürz',
-    headerStn        :'Station (russ)',
-    headerStn1       :'Station (chin)',
+    headerCountryS: 'Land,abkürz',
+    headerStn: 'Station (rus)',
+    headerStn1: 'Station (China)',
     headerStn2       :'Station (eng)',
     headerZhD        :'Eisenbahn',
-    headerCodeAdm    :'Verwaltungscode',
+    headerCodeAdm: 'Verwaltungskode',
     headerWay        :'Bahn',
-    headerWayCode    :'Bahncode',
-    headerCoedEdi    :'UN/EDIFACT-Code',
+    headerWayCode: 'Bahnkode',
+    headerCoedEdi: 'UN/EDIFACT-Kode',
     headerCustCode   :'Zollcode',
-    headerName1      :'Bezeichnung (russ)',
-    headerName2      :'Bezeichnung (ch)',
+    headerName1: 'Bezeichnung (rus)',
+    headerName2: 'Bezeichnung (China)',
     headerName3      :' Bezeichnung (andere)',
     headerPayerMeth  :'Zahlungsart',
-    headerPayerCode  :'Zahlungscode',
-    headerPayerCode1 :'Codeuntercode',
-    headerPayerCode2 :'Unterkode des Unterkodes',
-    headerCountryCode:'Land, Code',
+    headerPayerCode: 'Zahlerkode',
+    headerPayerCode1: 'Unterkode des Kodes',
+    headerPayerCode2: 'Unterkode des Kodes',
+    headerCountryCode: 'Landeskode',
     headerCountryName:'Landbezeichnung',
     headerCity       :'Stadt',
     headerAddress    :'Anschrift',
     headerOtprZip    :'Index',
     headerDopInfo    :'Weitere Info',
 
-    carrierTitle    :'Trägerdirectory',
+    carrierTitle: 'Befördererdirectory',
     headerSt        :'Station',
-    headerCar       :'Träger, nummer',
-    headerCarName   :'Träger, bezeichnung',
+    headerCar: 'Beförderer, Nummer',
+    headerCarName: 'Beförderer,Bezeichnung',
     headerCarShort  :'Träger, bezeichnung',
 
     ttipSave:'speichern',
-    ttipDel :'löschen',
-    btnClose:'schließen'
+    ttipDel: 'Löschen',
+    btnClose: 'Schließen',
+    tooltipEdit: 'Bearbeiten',
+    tooltipDel: 'Delete'
 });
 
 Ext.define("TK.locale.de.controller.print.Print", {
     override: "TK.controller.print.Print",
-    titlePrint: "Druckeinstellungen",
-    labelBlank: "Mit Formblatt?",
-    textPrint: "Ausdruck",
-    textPages: 'zum Ausdruck bestimmte Seiten',
+    titlePrint: 'Druckeinstellung',
+    labelBlank: 'Mit Formblatt?',
+    textPrint: 'Drucken',
+    textPages: 'Zum Ausdruck bestimmte Seiten',
     textPage: 'Seite',
-    textPageBack: 'Umlauf',
-    printTitle:'Print documents',
-    printMsg:'Document(-s) will be printed'
+    textPageBack: '(Auf der Rückseite drucken )',
+    printTitle: 'Печать',
+    printMsg: 'Будут распечатаны документ(-ы)'
 });
 
 Ext.define("TK.locale.de.controller.print.PrintTemplates", {
     override: "TK.controller.print.PrintTemplates",
 
     titleText: 'Ausdruckvorlage anbinden',
-    titleSelectText: 'Muster auswählen',
+    titleSelectText: 'Druckmuster auswählen',
     columnText: 'Bezeichnung',
     btnBindText: 'anbinden',
-    btnBindPrintText: 'Печать',
-    btnClose: 'Закрыть',
-    msgTitle: 'Предупреждение',
-    msgMsg: 'Следует выбрать строку из таблицы с данными'
+    btnBindPrintText: 'Ausdruck',
+    btnClose: 'Schließen',
+    msgTitle: 'Warnung',
+    msgMsg: 'Please, select a record'
 });
 
 Ext.define("TK.locale.de.view.edit.TreeFormWin", {
     override: "TK.view.edit.TreeFormWin",
 
-    titleVag: 'Wagen',
-    titleCont: 'Container',
+    titleVag: 'Der Wagen',
+    titleCont: 'Der Konteiner',
     titleCargo: 'Fracht',
-    titleDanCargo: 'Dan Cargo',
+    titleDanCargo: 'Gefahrengut',
 
-    btnDel: 'löschen',
-    btnClose: 'schließen',
+    btnDel: 'Löschen',
+    btnClose: 'Schließen',
     btnSave: 'speichern',
-    btnVagText: '+ Wagen',
-    btnContText: '+ Container',
+    btnVagText: '+ ein Wagen',
+    btnContText: '+ Konteiner',
     btnCargoText: '+ Fracht',
-    btnDanCargoText: '+ Dan.Cargo',
-    btnDocText: '+ Dokument',
+    btnDanCargoText: '+ Gefahrengut',
+    btnDocText: '+ Unterlage',
     btnPlombText: '+ Plombe',
-    btnSearch: 'Search',
-    btnExpandAll: 'Alles öffnen',
-    btnCollapseAll: 'Alles schließen',
+    btnSearch: 'Empfänger',
+    btnExpandAll: 'Alles maximieren',
+    btnCollapseAll: 'Alles minimieren',
     btnImportXLSvag:'Wagon list import',
     btnImportXLSCont:'Container list import'
 });
@@ -1710,19 +1756,19 @@ Ext.define("TK.locale.de.view.edit.TreeFormWin", {
 Ext.define("TK.locale.de.view.cimsmgs.CimSmgsDocs9TreeFormWin", {
     override: "TK.view.cimsmgs.CimSmgsDocs9TreeFormWin",
 
-    title: 'Die vom Absender beigefügten Dokumente'
+    title: 'Vom Absender beigefügten Unterlagen '
 });
 
 Ext.define("TK.locale.de.view.cimsmgs.CimSmgsVgCtGrTreeFormWin", {
     override: "TK.view.cimsmgs.CimSmgsVgCtGrTreeFormWin",
 
-    title: 'Wagen/Container/Fracht'
+    title: 'Wagen/Konteiner/Fracht'
 });
 
 Ext.define("TK.locale.de.view.cimsmgs.CimSmgsPlombsTreeFormWin", {
     override: "TK.view.cimsmgs.CimSmgsPlombsTreeFormWin",
 
-    title: 'Plomben'
+    title: 'Plombs'
 });
 
 /*
@@ -1740,195 +1786,199 @@ Ext.define("Ext.locale.de.form.field.Base", {
 Ext.define("TK.locale.de.Validators", {
     override: "TK.Validators",
 
-    kontNumText: 'Das Feld soll die Nummer des Containers in der Form ABCD1234567 entalten',
-    vagNumText: 'Das Feld soll die Nummer des Wagens für 1520 mm (8 Symbole )oder der Wagens für 1435 mm (12 Symbole) enthalten',
-    vagNumUzkText: 'Das Feld enthält die Nummer das Wagens für 1435mm in folgender 123456789012 Form',
-    vagNumShirText: 'Das Feld enthält die Nummer das Wagens für 1520mm in folgender 12345678 Form',
-    vagNumLastDigitText: 'Falsche Kontrollnummer',
-    kontNumLastDigitText: 'Falsche Kontrollnummer',
-    notXLS          :'Not a xls/xlsx file'
+    kontNumText: 'Diese Feld hat die Nummer des Konteiners im Format ABCD1234567 zu entalten',
+    vagNumText: 'Dieses Feld hat die Nummer eines schmalen Wagens (8 Symbole )oder eines breiten Wagens für  (12 Symbole) zu enthalten',
+    vagNumUzkText: 'Dieses Feld hat die Nummer eines schmalen Wagens  im Format 123456789012 zu enthalten',
+    vagNumShirText: 'Dieses Feld hat die Nummer eines schmalen Wagens  im Format 12345678 zu enthalten',
+    vagNumLastDigitText: 'Falsche Kontrollzahlen',
+    kontNumLastDigitText: 'Falsche Kontrollzahlen',
+    notXLS: 'Выбран не xls/xlsx файл'
 });
-
 
 Ext.define("TK.locale.de.view.edit.UploadDoc9FormWin", {
     override: "TK.view.edit.UploadDoc9FormWin",
 
     labelCustomsCode: 'Zollcode',
-    labelTextRu: 'Bezeichnung(russ)',
-    labelText: 'Bezeichnung'
+    labelTextRu: 'Text (rus)',
+    labelText: 'Text'
 });
 
 Ext.define("TK.locale.de.view.edit.UploadFormWin", {
     override: "TK.view.edit.UploadFormWin",
 
-    title: 'Absender dok.',
-    titleUpload: 'Uploaden',
+    title: 'Documents attached by sender',
+    titleUpload: 'Hochladung',
     btnClose: 'Schließen',
     btnSave: 'Speichern',
-    labelUpload: 'Uploaden',
-    labelFile: 'Datei'
+    labelUpload: 'Hochladen',
+    labelFile: 'Datei',
+    downloadTpl:'Download template'
 });
 
 Ext.define("TK.locale.de.view.ved.List", {
     override        :"TK.view.ved.List",
-    btnCreate       :'Create',
-    btnEdit         :'Edit',
-    btnDelete       :'Delete',
+    btnCreate: 'Erstellen',
+    btnEdit: 'Editieren',
+    btnDelete: 'Löschen',
     headerID        :'ID',
-    headerCreation  :'Creation',
-    headerDateTime  :'Date&Time',
-    headerUser      :'User',
-    headerVagVedNum :'Wagon list №',
-    headerPerVedNum :'Transfer list №',
-    headerTraneNum  :'Train №',
-    headerTraneName :'Train name',
-    headerVagCount  :'Wagon count',
-    title           :'Wagon and transfer lists',
-    btnPrint        :"Print PDF",
-    btnA4VagPrint   :"А4-Wagon list",
-    btnA3VagPrint   :"А3-Wagon list",
-    btnA4PerPrint   :"А4-Transfer list",
-    btnA3PerPrint   :"А3-Transfer list"
-
+    headerCreation: 'Erstellung',
+    headerDateTime: 'Datum und Zeit',
+    headerUser: 'Der Benutzer',
+    headerVagVedNum: 'Wagenliste №',
+    headerPerVedNum: 'Nummern der Übergabelisten',
+    headerTraneNum: 'Zugnummer',
+    headerTraneName: 'Zugbezeichnung',
+    headerVagCount: 'Wagenanzahl',
+    title: 'Listenheft',
+    btnPrint: 'PDF-Ausdruck',
+    btnA4VagPrint: 'А4-Wagenliste',
+    btnA3VagPrint: 'А3-Wagenliste',
+    btnA4PerPrint: 'А4-Übergabeliste',
+    btnA3PerPrint: 'А3-Übergabeliste',
+    delMsg1: 'Löschung...',
+    delMsg2: 'Wollen Sie die laufende Liste tatsächlich löschen?',
+    delErr1: 'Löschung...',
+    delErr2: 'Im Laufe der Löschung einer Liste ist ein Fehler aufgetreten'
 });
 
 Ext.define("TK.locale.de.controller.docs.Ved", {
     override        :"TK.controller.docs.Ved",
-    titleEdit       :'Edit',
-    waitMsg         :'Saving',
-    btnSelect       :'Select',
-    btnClose        :'Close',
-    labelDocs :'Waybill list',
-    headerNumClaim :'Waybill',
-    headerVags :'Wagon №',
-    headerCreate :'Creation date',
-    headerKont :'Container №',
-    headerTrain :'Train №',
-    headerNstn :'Destination<br/>station',
+    titleEdit: 'Editieren',
+    waitMsg: 'Daten werden gespeichert',
+    btnSelect: 'Wählen',
+    btnClose: 'Schließen',
+    labelDocs: 'Frachtbriefliste',
+    headerNumClaim: 'SMGS-Nummer',
+    headerVags: 'Wagen №',
+    headerCreate: 'Erstellungsdatum',
+    headerKont: 'Konteinernummer',
+    headerTrain: 'Zugnummer',
+    headerNstn: 'Bestimmungsstation',
     headerRoute :'Route',
-    headerGng :'NHM',
-    filterText: "Filter",
-    claerAll: "Clear all",
-    duplicateAll: "Duplicate all",
-    duplicateEmpty: "Duplicate empty",
-
+    headerGng: 'GNG',
+    filterText: 'Filter',
+    duplicateAll: 'Alle vervielfältigen',
+    duplicateEmpty: 'Leere vervielfältigen',
     labelFilter :   'Filter',
-    filterHeader:   'Data',
-    userfiltr: "Filter"
-
+    filterHeader: 'Daten',
+    userfiltr: 'Filter',
+    claerAll: 'Alles löschen'
 });
 
 Ext.define("TK.locale.de.view.ved.Form", {
     override            :"TK.view.ved.Form",
-    title               :'List',
-    fldLblNum           :'List №',
-    fldLblDate          :'Date',
-    fldLblTrain         :'Train',
-    fldLblTrainName     :'Train name',
-    fldLblCarrOutName   :'Carrier from',
-    fldLblCarrInName    :'Carrier to',
-    fldLblStnOut        :'station',
-    fldLblStnIn         :'station',
-    fldLblRoadOut       :'From road',
-    fldLblRoadIn        :'To road'
+    title: 'Liste',
+    fldLblNum: 'Listennummer',
+    fldLblDate: 'Datum',
+    fldLblTrain: 'Zug',
+    fldLblTrainName: 'Zugbezeichnung',
+    fldLblCarrOutName: 'Übergebender Beförderer',
+    fldLblCarrInName: 'Empfangender Beförderer',
+    fldLblStnOut: 'Station',
+    fldLblStnIn: 'Station',
+    fldLblRoadOut: 'Von der Bahn?',
+    fldLblRoadIn: 'Auf die Bahn'
 
 });
 
 Ext.define("TK.locale.de.view.ved.VagsList", {
     override: "TK.view.ved.VagsList",
-    title:          'Documents list',
-    colTextIndex:   '№',
-    colTextNvag:    'Wagon<br>№',
+    title: 'Unterlagenliste',
+    colTextIndex: '<br>laufende Nummer',
+    colTextNvag: 'Wagennummer<br>',
     colTextOwner:   'Wagons<br>owner',
-    colTextKind:    'Wagons<br>kind',
-    colTextGp:      'Wagons<br>max load,m.t.',
-    colTextAxes:    'Axes<br>count',
-    colTextTara:    'Wagones<br>tara,m.t.',
-    colTextPlomb:   'Plombs',
-    colTextKpl:     'Quantity',
-    colTextZnak:    'Signs',
-    colTextNstoF:   'Sealing<br>station',
-    colTextNum:     'Waybill №',
-    colTextDatpp:   'Shipping<br>date',
-    colTextKsto:    'Departure st.<br>code',
-    colTextNsto:    'Departure<br>station',
-    colTextKstn:    'Arrival st.<br>code',
-    colTextNstn:    'Arrival<br>station',
-    colTextKontNum: 'Container<br>№',
-    colTextKontType:'Container<br>type',
-    colTextKontGp:  'Container<br>max load',
-    colTextKontTara:'Container<br>tara',
-    colTextPlaces:  'Places',
-    colTextPack:    'Package',
-    colTextGruz:    'Cargo code',
-    colTextGruzName:'Cargo<br>name',
-    colTextMbrt:    'Cargo<br>weight',
-    colTextPrim:    'Notes',
-    colTextPerVed:  'Transfer<br>list № ',
-    btnAdd:         'Add',
-    btnDelete:      'Delete',
-    btnLoad:        'Close'
+    colTextKind: 'Wagenart<br>',
+    colTextGp: 'Ladefähigkeit<br>des Wagens,tonnen.',
+    colTextAxes: 'Anzahl von <br>Axen',
+    colTextTara: 'Verpackung<br>im Wagen,m.t.',
+    colTextPlomb: 'Angaben zu den Plomben',
+    colTextKpl: 'Anzahl',
+    colTextZnak: 'Zeichen',
+    colTextNstoF: 'Verplombungstation<br>',
+    colTextNum: 'Frachtbrief №',
+    colTextDatpp: 'Abnahmedatum zwecks <br>Beförderung',
+    colTextKsto: 'Kode der  <br> Absenderstation',
+    colTextNsto: 'Abfertigungs<br>station',
+    colTextKstn: 'Kode  der  <br> Empfängerstation',
+    colTextNstn: 'Bestimmungsstation <br>',
+    colTextKontNum: 'Konteiner<br>nummer',
+    colTextKontType: 'Konteinertypabmessung',
+    colTextKontGp: 'Maximale<br>konterinerlast,t',
+    colTextKontTara: 'Verpackung<br>im Konteiner, kg',
+    colTextPlaces: 'Kollis',
+    colTextPack: 'Verpackung',
+    colTextGruz: 'NHM -Kode',
+    colTextGruzName: 'Frachtbezeichnung <br>',
+    colTextMbrt: 'Fracht<br>Gewicht',
+    colTextPrim: 'Anmerkung',
+    colTextPerVed: 'Übergabe<br>liste № ',
+    btnAdd: 'Ergänzen',
+    btnDelete: 'Löschen',
+    btnLoad: 'Herunterladen...',
+    btnCancelFilters: 'Filter ablegen'
 });
 
-Ext.define("TK.locale.en.view.ved.MenuPart", {
+Ext.define("TK.locale.de.view.ved.MenuPart", {
     override: "TK.view.ved.MenuPart",
-    title: 'Routes list',
-    btnView: "Show documents"
+    title: 'Routenliste',
+    btnView: 'Unterlagen zeigen'
 });
 
-Ext.define("TK.locale.de.view.pogruz.PoezdSelectForm", {
+Ext.define("TK.locale.de.view.po.de..PoezdSelectForm", {
     override: "TK.view.pogruz.PoezdSelectForm",
     title       :'Züge',
     btnFind     :'Finden',
     btnFilter   :'Filter',
     btnClose    :'Schließen',
     btnReset    :'Zurücksetzen',
-    lableDate   :'Startdatum',
-    lableDate1  :'Enddatum',
+    lableDate: 'Datum von',
+    lableDate1: 'Datum bis',
     train       :'Zugnummer',
-    count       :'Количество',
-    btnOk       :'Anzahl',
-    btnCancel   :'Cancel'
+    count: 'Anzahl',
+    btnOk: 'Wählen',
+    btnCancel: 'Annulieren'
 });
 
-Ext.define("TK.locale.de.view.pogruz.SmgsSelectForm", {
+Ext.define("TK.locale.de.view.po.de..SmgsSelectForm", {
     override: "TK.view.pogruz.SmgsSelectForm",
-    title           :'CIM/СМГС nach Zugnummer',
+    title: 'CIM/SMGS entsprechend Zugnummer',
     btnClose        :'Schließen',
-    headerG694      :'Num<br/>CIM/SMGS',
-    headerAltered   :'Datum der Änderung',
-    btnOk           :'Anzahl',
-    btnCancel       :'Cancel',
-    headerContNum   :'Cont.<br/> Nummer',
+    headerG694: 'Versandnummer',
+    headerAltered: 'Änderungsdatum',
+    btnOk: 'Wählen',
+    btnCancel: 'Annulieren',
+    headerContNum: 'Konteinernummer',
     headerVagNum    :'Wagennummer',
     headertNstn     :'Bestimmungsstation'
 });
 
-Ext.define("TK.locale.de.view.pogruz.Map2BaseSelectForm", {
+Ext.define("TK.locale.de.view.po.de..Map2BaseSelectForm", {
     override: "TK.view.pogruz.Map2BaseSelectForm",
-    title           :'Loading list',
-    headerWagN      :'Wagennummer<br/><b>list</b>',
-    headerKonN      :'№ container<br/><b>list</b>',
-    headerKonNdb    :'№ container<br/><b>db</b>',
-    headerG694      :'№waybill<br/><b>list</b>',
-    headerKlient    :'Owner<br/><b>list</b>',
-    headerFoot      :'Größe foot<br/><b>list</b>',
-    headerContSize  :'Ansicht<br/><b>list</b>',
-    headerPlomb     :'Plomben<br/><b>list</b>',
-    headerTara      :'Verpackung<br/>container<br/><b>list</b>',
-    headerMaxLoad   :'Max load<br/>container<br/><b>list</b>',
-    headerTaraVag   :'Tara<br/>wagen<br/><b>list</b>',
-    headerMaxLoadVag:'Max load<br/>wagen<br/><b>list</b>',
-    headerKolOs     :'Achse<br/><b>list</b>',
-    headerId        :'Id<br/><b>db</b>',
+    title: 'Beladungsliste',
+    headerWagN: 'Wagennummer<br/><b>Liste</b>',
+    headerKonN: 'Konteinernummer<br/><b>liste</b>',
+    headerKonNdb: 'Konteinernummer<br/><b>Datenbank</b>',
+    headerG694: 'Versandnummer<br/><b>Liste</b>',
+    headerKlient: 'Inhaber<br/><b>Liste</b>',
+    headerFoot: 'Fuβ<br/><b>Liste</b>',
+    headerContSize: 'Typabmessung<br/><b>Liste</b>',
+    headerPlomb: 'Plomben<br/><b>Liste</b>',
+    headerTara: 'Verpackung<br/>des Konteiners, kg<br/><b>Liste</b>',
+    headerMaxLoad: 'Ladefähigketi<br/>des Konteiners<br/><b>Liste</b>',
+    headerTaraVag: 'Verpackung<br/>der Wagens, t<br/><b>Liste</b>',
+    headerMaxLoadVag: 'Ladefähigkeit<br/>des Wagens<br/><b>Liste</b>',
+    headerKolOs: 'Achse<br/><b>Liste</b>',
+    headerId: 'Id<br/><b>Datenbank</b>',
 
-    btnOk           :'Anzahl',
-    btnCancel       :'Cancel',
+    btnOk: 'Wählen',
+    btnCancel: 'Annulieren'
 });
+
 Ext.define("TK.locale.de.view.components.PagingSizeChangerPlugin", {
     override: "TK.view.components.PagingSizeChangerPlugin",
     displayText           :'einträge pro seite'
 });
+
 Ext.define("TK.locale.de.view.edit.StationCatalogEdit", {
     override: "TK.view.edit.StationCatalogEdit",
 
@@ -1943,6 +1993,7 @@ Ext.define("TK.locale.de.view.edit.StationCatalogEdit", {
     lblManagno    :'Administaration<br>code',
     lblCtryNam    :'Country name'
 });
+
 Ext.define("Ext.locale.de.grid.plugin.RowEditing", {
     override: "Ext.grid.plugin.RowEditing",
 

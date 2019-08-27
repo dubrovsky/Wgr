@@ -1210,7 +1210,7 @@ Ext.define('TK.view.smgs2.Smgs2Form', {
                             {xtype: 'textarea', fieldLabel: this.labelPrim, itemId: "prim", maxLength: 70, width: 250},
                             {
                                 xtype: 'fieldcontainer',
-                                fieldLabel: this.labelBukvKod,
+                                fieldLabel: this.labelNumDate,
                                 layout: 'hbox',
                                 itemId: 'dog',
                                 items:[
