@@ -261,6 +261,7 @@ public class Poezd implements Serializable {
     public Map<String, List<?>> bindPoezdsToPoezd(Set<VagonBindDTO> dtos, Set<Vagon> vagonsOut, Mapper mapper, List<Poezd> poezds) {
         Map<String, List<?>> contGruz4History = new HashMap<>(2);
         contGruz4History.put("konts", new ArrayList<Kont>());
+        contGruz4History.put("gruzs", new ArrayList<Gruz>());
 
         for (VagonBindDTO vagonIntoDTO : dtos) {
             for (Vagon vagon : getVagons()) {
@@ -270,7 +271,8 @@ public class Poezd implements Serializable {
                         List<Kont> konts = vagon.bindKontsToPoezdKonts(vagonIntoDTO.getKonts(), mapper, vagonsOut, poezds);
                         ((List<Kont>) contGruz4History.get("konts")).addAll(konts);
                     }  else if (vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
-                        vagon.bindGruzsToPoezdGruzs(vagonIntoDTO.getGruzs(), mapper, vagonsOut, poezds);
+                        List<Gruz> gruzs = vagon.bindGruzsToPoezdGruzs(vagonIntoDTO.getGruzs(), mapper, vagonsOut, poezds);
+                        ((List<Gruz>) contGruz4History.get("gruzs")).addAll(gruzs);
                     }
                     break;
                 }
@@ -282,6 +284,7 @@ public class Poezd implements Serializable {
     public Map<String, List<?>> bindPoezdToPoezds(Set<VagonBindDTO> dtos, List<Poezd> poezdsOut, Mapper mapper) {
         Map<String, List<?>> contGruz4History = new HashMap<>(2);
         contGruz4History.put("konts", new ArrayList<Kont>());
+        contGruz4History.put("gruzs", new ArrayList<Gruz>());
 
         for (VagonBindDTO vagonIntoDTO : dtos) {
             for (Vagon vagon : getVagons()) {
@@ -291,7 +294,8 @@ public class Poezd implements Serializable {
                         List<Kont> konts = vagon.bindKontsToPoezdsKonts(vagonIntoDTO.getKonts(), mapper, poezdsOut);
                         ((List<Kont>) contGruz4History.get("konts")).addAll(konts);
                     } else if (vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
-                        vagon.bindGruzsToPoezdsGruzs(vagonIntoDTO.getGruzs(), mapper, poezdsOut);
+                        List<Gruz> gruzs = vagon.bindGruzsToPoezdsGruzs(vagonIntoDTO.getGruzs(), mapper, poezdsOut);
+                        ((List<Gruz>) contGruz4History.get("gruzs")).addAll(gruzs);
                     }
                     break;
                 }
@@ -355,6 +359,7 @@ public class Poezd implements Serializable {
 
         Map<String, List<?>> contGruz4History = new HashMap<>(2);
         contGruz4History.put("konts", new ArrayList<Kont>());
+        contGruz4History.put("gruzs", new ArrayList<Gruz>());
         // update
         Set<VagonDTO> vagsDtoToRemove = new HashSet<>();
         for (Vagon vagon : getVagons()) {
@@ -365,7 +370,8 @@ public class Poezd implements Serializable {
                         List<Kont> konts = vagon.updateKonts(vagonIntoDTO.getKonts(), mapper);
                         ((List<Kont>) contGruz4History.get("konts")).addAll(konts);
                     } else if (vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
-                        vagon.updateGruzs(vagonIntoDTO.getGruzs(), mapper);
+                        List<Gruz> gruzs = vagon.updateGruzs(vagonIntoDTO.getGruzs(), mapper);
+                        ((List<Gruz>) contGruz4History.get("gruzs")).addAll(gruzs);
                     } else {  // can be deleted and getOtpravka is null
                         vagon.removeKonts();
                         vagon.removeGruzy();
@@ -385,7 +391,8 @@ public class Poezd implements Serializable {
                 List<Kont> konts = vagon.updateKonts(vagonIntoDTO.getKonts(), mapper);
                 ((List<Kont>) contGruz4History.get("konts")).addAll(konts);
             } else if (vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
-                vagon.updateGruzs(vagonIntoDTO.getGruzs(), mapper);
+                List<Gruz> gruzs = vagon.updateGruzs(vagonIntoDTO.getGruzs(), mapper);
+                ((List<Gruz>) contGruz4History.get("gruzs")).addAll(gruzs);
             }
         }
         return contGruz4History;

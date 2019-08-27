@@ -158,7 +158,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
         this.gruzs = gruzs;
     }
 
-    public void bindGruzsToPoezdGruzs(Set<GruzBindDTO> dtos, Mapper mapper, Set<Vagon> toVags, List<Poezd> poezds) {
+    public List<Gruz> bindGruzsToPoezdGruzs(Set<GruzBindDTO> dtos, Mapper mapper, Set<Vagon> toVags, List<Poezd> poezds) {
         // update gruz that not moved
         Set<GruzBindDTO> dtoToRemove = new HashSet<>();
         for (GruzBindDTO gruzBindDTO : dtos) {
@@ -172,6 +172,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
         }
         dtos.removeAll(dtoToRemove);
 
+        List<Gruz> gruzsForHistory = new ArrayList<>(dtos.size());
         // insert from poezd
         dtoToRemove.clear();
         boolean found = false;
@@ -181,6 +182,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
                     if (Objects.equals(toGruz.getHid(), gruzBindDTO.getHid())) {
                         mapper.map(gruzBindDTO, toGruz);  // update Gruz, sort can change
                         bindGruz(toGruz);
+                        gruzsForHistory.add(toGruz);
                         log.info("Add gruz to poezd from another poezd, gruz - {}", toGruz.getKgvn());
                         dtoToRemove.add(gruzBindDTO);
                         found = true;
@@ -204,6 +206,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
                             if (Objects.equals(gruz.getHid(), gruzBindDTO.getHid())) {
                                 mapper.map(gruzBindDTO, gruz);
                                 bindGruz(gruz);
+                                gruzsForHistory.add(gruz);
                                 log.info("Move gruz in same poezds, gruz - {}", gruz.getKgvn());
                                 dtoToRemove.add(gruzBindDTO);
                                 found = true;
@@ -227,6 +230,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
                 log.warn("Gruz {} was not bound, something wrong!!!", gruzBindDTO.getKgvn());
             }
         }
+        return gruzsForHistory;
     }
 
     public List<Kont> bindKontsToPoezdKonts(Set<KontBindDTO> dtos, Mapper mapper, Set<Vagon> toVags, List<Poezd> poezds) {
@@ -305,7 +309,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
         return kontsForHistory;
     }
 
-    public void bindGruzsToPoezdsGruzs(Set<GruzBindDTO> dtos, Mapper mapper, List<Poezd> poezdsOut) {
+    public List<Gruz> bindGruzsToPoezdsGruzs(Set<GruzBindDTO> dtos, Mapper mapper, List<Poezd> poezdsOut) {
         // update gruzs that not moved
         Set<GruzBindDTO> dtoToRemove = new HashSet<>();
         for (GruzBindDTO gruzDTO : dtos) {
@@ -319,6 +323,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
         }
         dtos.removeAll(dtoToRemove);
 
+        List<Gruz> gruzsForHistory = new ArrayList<>(dtos.size());
         // insert from poezds
         dtoToRemove.clear();
         boolean found;
@@ -330,6 +335,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
                         if (Objects.equals(gruzKont.getHid(), gruzDTO.getHid())) {
                             mapper.map(gruzDTO, gruzKont);
                             bindGruz(gruzKont);
+                            gruzsForHistory.add(gruzKont);
                             log.info("Add Gruz from another poezd, Gruz - {}", gruzKont.getKgvn());
                             dtoToRemove.add(gruzDTO);
                             found = true;
@@ -356,6 +362,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
                         if (Objects.equals(gruz.getHid(), gruzBindDTO.getHid())) {
                             mapper.map(gruzBindDTO, gruz);
                             bindGruz(gruz);
+                            gruzsForHistory.add(gruz);
                             log.info("Move gruz in same poezd, gruz - {}", gruz.getKgvn());
                             dtoToRemove.add(gruzBindDTO);
                             found = true;
@@ -375,6 +382,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
                 log.warn("Gruz {} was not bound, something wrong!!!", gruzBindDTO.getKgvn());
             }
         }
+        return gruzsForHistory;
     }
 
     public List<Kont> bindKontsToPoezdsKonts(Set<KontBindDTO> dtos, Mapper mapper, List<Poezd> poezdsOut) {
@@ -739,7 +747,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
     }
 
 
-    public void updateGruzs(TreeSet<GruzDTO> dtos, Mapper mapper) {
+    public List<Gruz> updateGruzs(TreeSet<GruzDTO> dtos, Mapper mapper) {
         // delete
         Set<Gruz> gruzyToRemove = new HashSet<>();
         for (Gruz gruz : getGruzs()) {
@@ -771,11 +779,14 @@ public class Vagon implements Serializable, Comparable<Vagon> {
         }
         dtos.removeAll(dtoToRemove);
 
+        List<Gruz> gruzsForHistory = new ArrayList<>(dtos.size());
         // insert
         for (GruzDTO gruzDto : dtos) {
             Gruz gruz = mapper.map(gruzDto, Gruz.class);
             addGruz(gruz);
+            gruzsForHistory.add(gruz);
         }
+        return gruzsForHistory;
     }
 
 

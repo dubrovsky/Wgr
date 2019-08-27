@@ -4,6 +4,7 @@ import com.bivc.cimsmgs.commons.*;
 import com.bivc.cimsmgs.dao.*;
 import com.bivc.cimsmgs.db.CimSmgs;
 import com.bivc.cimsmgs.db.PackDoc;
+import com.bivc.cimsmgs.db.ky.Gruz;
 import com.bivc.cimsmgs.db.ky.Kont;
 import com.bivc.cimsmgs.db.ky.KontGruzHistory;
 import com.opensymphony.xwork2.ActionSupport;
@@ -364,6 +365,27 @@ public class CimSmgsSupport_A extends ActionSupport implements JSONAware, UserAw
                             );
                             break;
                         }
+                        default:
+                            throw new RuntimeException("Invalid KontGruzHistoryType");
+                    }
+
+                    kontGruzHistoryDAO.makePersistent(kontGruzHistory);
+                    if (i % 20 == 0) { //20, same as the JDBC batch size
+                        //flush a batch of inserts and release memory:
+                        kontGruzHistoryDAO.flush();
+                        kontGruzHistoryDAO.clear();
+                    }
+                }
+            } else { // gruz
+                for (int i = 0; i < entries.getValue().size(); i++) {
+                    Gruz gruz = (Gruz) entries.getValue().get(i);
+                    KontGruzHistory kontGruzHistory;
+                    switch (historyType) {
+                        case POEZD:
+                            kontGruzHistory = new KontGruzHistory(
+                                    gruz.getVagon().getPoezd(), gruz.getVagon(), gruz, gruz.getVagon().getPoezd().getKoleya(), gruz.getVagon().getPoezd().getDirection(), new Date(), getUser().getUsr().getUn()
+                            );
+                            break;
                         default:
                             throw new RuntimeException("Invalid KontGruzHistoryType");
                     }
