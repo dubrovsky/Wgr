@@ -3,7 +3,6 @@ package com.bivc.cimsmgs.db.ky;
 // Generated 19.02.2014 14:19:48 by Hibernate Tools 3.4.0.CR1
 
 import com.bivc.cimsmgs.doc2doc.orika.Mapper;
-import com.bivc.cimsmgs.dto.ky2.KontBindDTO;
 import com.bivc.cimsmgs.dto.ky2.YardBindDTO;
 import com.bivc.cimsmgs.dto.ky2.YardSectorBindDTO;
 import com.fasterxml.jackson.annotation.JsonFilter;
@@ -13,10 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @JsonFilter("yardSectorFilter")
@@ -86,12 +82,16 @@ public class YardSector implements Serializable {
         this.yards = kontYards;
     }
 
-    public void bindYardToPoezd(YardSectorBindDTO yardSectorBindDTO, Set<Vagon> vagons, Mapper mapper, List<YardSector> yardSectors) {
+    public Map<String, List<?>> bindYardToPoezd(YardSectorBindDTO yardSectorBindDTO, Set<Vagon> vagons, Mapper mapper, List<YardSector> yardSectors) {
+        Map<String, List<?>> contGruz4History = new HashMap<>(2);
+        contGruz4History.put("konts", new ArrayList<Kont>());
+
         for (YardBindDTO yardBindDTO : yardSectorBindDTO.getYards()) {
             for (Yard yard : getYards()) {
                 if (Objects.equals(yard.getHid(), yardBindDTO.getHid())) {
 //                    mapper.map(yardBindDTO, yard); // update
-                    yard.bindKonts(yardBindDTO.getKonts(), mapper, vagons, yardSectors);
+                    List<Kont> konts = yard.bindKonts(yardBindDTO.getKonts(), mapper, vagons, yardSectors);
+                    ((List<Kont>) contGruz4History.get("konts")).addAll(konts);
                     break;
                 }
             }
@@ -168,5 +168,6 @@ public class YardSector implements Serializable {
                 }
             }
         }*/
+        return contGruz4History;
     }
 }

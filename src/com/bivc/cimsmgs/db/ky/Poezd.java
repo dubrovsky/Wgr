@@ -258,13 +258,17 @@ public class Poezd implements Serializable {
         return (this.getPackDoc() != null && this.getPackDoc().getHid() != null);
     }
 
-    public void bindPoezdsToPoezd(Set<VagonBindDTO> dtos, Set<Vagon> vagonsOut, Mapper mapper, List<Poezd> poezds) {
+    public Map<String, List<?>> bindPoezdsToPoezd(Set<VagonBindDTO> dtos, Set<Vagon> vagonsOut, Mapper mapper, List<Poezd> poezds) {
+        Map<String, List<?>> contGruz4History = new HashMap<>(2);
+        contGruz4History.put("konts", new ArrayList<Kont>());
+
         for (VagonBindDTO vagonIntoDTO : dtos) {
             for (Vagon vagon : getVagons()) {
                 if (Objects.equals(vagon.getHid(), vagonIntoDTO.getHid())) {
                     mapper.map(vagonIntoDTO, vagon); // update otpravka
                     if (vagonIntoDTO.getOtpravka() == Otpravka.CONT) {
-                        vagon.bindKontsToPoezdKonts(vagonIntoDTO.getKonts(), mapper, vagonsOut, poezds);
+                        List<Kont> konts = vagon.bindKontsToPoezdKonts(vagonIntoDTO.getKonts(), mapper, vagonsOut, poezds);
+                        ((List<Kont>) contGruz4History.get("konts")).addAll(konts);
                     }  else if (vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
                         vagon.bindGruzsToPoezdGruzs(vagonIntoDTO.getGruzs(), mapper, vagonsOut, poezds);
                     }
@@ -272,15 +276,20 @@ public class Poezd implements Serializable {
                 }
             }
         }
+        return contGruz4History;
     }
 
-    public void bindPoezdToPoezds(Set<VagonBindDTO> dtos, List<Poezd> poezdsOut, Mapper mapper) {
+    public Map<String, List<?>> bindPoezdToPoezds(Set<VagonBindDTO> dtos, List<Poezd> poezdsOut, Mapper mapper) {
+        Map<String, List<?>> contGruz4History = new HashMap<>(2);
+        contGruz4History.put("konts", new ArrayList<Kont>());
+
         for (VagonBindDTO vagonIntoDTO : dtos) {
             for (Vagon vagon : getVagons()) {
                 if (Objects.equals(vagon.getHid(), vagonIntoDTO.getHid())) {
                     mapper.map(vagonIntoDTO, vagon); // update otpravka
                     if (vagonIntoDTO.getOtpravka() == Otpravka.CONT) {
-                        vagon.bindKontsToPoezdsKonts(vagonIntoDTO.getKonts(), mapper, poezdsOut);
+                        List<Kont> konts = vagon.bindKontsToPoezdsKonts(vagonIntoDTO.getKonts(), mapper, poezdsOut);
+                        ((List<Kont>) contGruz4History.get("konts")).addAll(konts);
                     } else if (vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
                         vagon.bindGruzsToPoezdsGruzs(vagonIntoDTO.getGruzs(), mapper, poezdsOut);
                     }
@@ -288,6 +297,7 @@ public class Poezd implements Serializable {
                 }
             }
         }
+        return contGruz4History;
     }
 
     /*public void bindPoezdToPoezd(Set<VagonBindDTO> dtos, Set<Vagon> vagOut, Mapper mapper) {
@@ -306,16 +316,21 @@ public class Poezd implements Serializable {
         }
     }*/
 
-    public void bindPoezdToYard(Set<VagonBindDTO> dtos, List<YardSector> yardSectors, Mapper mapper) {
+    public Map<String, List<?>> bindPoezdToYard(Set<VagonBindDTO> dtos, List<YardSector> yardSectors, Mapper mapper) {
+        Map<String, List<?>> contGruz4History = new HashMap<>(2);
+        contGruz4History.put("konts", new ArrayList<Kont>());
+
         for (VagonBindDTO vagonIntoDTO : dtos) {
             for (Vagon vagon : getVagons()) {
                 if (Objects.equals(vagon.getHid(), vagonIntoDTO.getHid())) {
                     mapper.map(vagonIntoDTO, vagon); // update otpravka
-                    vagon.bindKontsToYardKonts(vagonIntoDTO.getKonts(), mapper, yardSectors);
+                    List<Kont> konts = vagon.bindKontsToYardKonts(vagonIntoDTO.getKonts(), mapper, yardSectors);
+                    ((List<Kont>) contGruz4History.get("konts")).addAll(konts);
                     break;
                 }
             }
         }
+        return contGruz4History;
     }
 
     public Map<String, List<?>> updateVags(Set<VagonDTO> dtos, Mapper mapper) {
@@ -337,6 +352,9 @@ public class Poezd implements Serializable {
             removeVagon(vagon);
         }
 
+
+        Map<String, List<?>> contGruz4History = new HashMap<>(2);
+        contGruz4History.put("konts", new ArrayList<Kont>());
         // update
         Set<VagonDTO> vagsDtoToRemove = new HashSet<>();
         for (Vagon vagon : getVagons()) {
@@ -344,7 +362,8 @@ public class Poezd implements Serializable {
                 if (Objects.equals(vagon.getHid(), vagonIntoDTO.getHid())) {
                     mapper.map(vagonIntoDTO, vagon);
                     if (vagonIntoDTO.getOtpravka() == Otpravka.CONT) {
-                        vagon.updateKonts(vagonIntoDTO.getKonts(), mapper);
+                        List<Kont> konts = vagon.updateKonts(vagonIntoDTO.getKonts(), mapper);
+                        ((List<Kont>) contGruz4History.get("konts")).addAll(konts);
                     } else if (vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
                         vagon.updateGruzs(vagonIntoDTO.getGruzs(), mapper);
                     } else {  // can be deleted and getOtpravka is null
@@ -359,12 +378,12 @@ public class Poezd implements Serializable {
         dtos.removeAll(vagsDtoToRemove);
 
         // insert
-        Map<String, List<?>> contGruz4History = new HashMap<>(2);
         for (VagonDTO vagonIntoDTO : dtos) {
             Vagon vagon = mapper.map(vagonIntoDTO, Vagon.class);
             addVagon(vagon);
             if (vagonIntoDTO.getOtpravka() == Otpravka.CONT) {
-                contGruz4History.put("cont", vagon.updateKonts(vagonIntoDTO.getKonts(), mapper));
+                List<Kont> konts = vagon.updateKonts(vagonIntoDTO.getKonts(), mapper);
+                ((List<Kont>) contGruz4History.get("konts")).addAll(konts);
             } else if (vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
                 vagon.updateGruzs(vagonIntoDTO.getGruzs(), mapper);
             }

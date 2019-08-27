@@ -2,6 +2,7 @@ package com.bivc.cimsmgs.actions.ky2;
 
 import com.bivc.cimsmgs.actions.CimSmgsSupport_A;
 import com.bivc.cimsmgs.commons.Response;
+import com.bivc.cimsmgs.dao.KontGruzHistoryDAO;
 import com.bivc.cimsmgs.dao.PoezdDAO;
 import com.bivc.cimsmgs.dao.YardDAO;
 import com.bivc.cimsmgs.dao.YardSectorDAO;
@@ -17,10 +18,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+
+import static com.bivc.cimsmgs.actions.CimSmgsSupport_A.KontGruzHistoryType.POEZD;
+import static com.bivc.cimsmgs.actions.CimSmgsSupport_A.KontGruzHistoryType.YARD;
 
 /**
  * @author p.dzeviarylin
@@ -55,14 +56,16 @@ public class BindPoezdAndYard_A extends CimSmgsSupport_A {
         Poezd poezd = poezdDAO.findById(poezdBindDTO.getHid(), false);
         final List<YardSector> yardSectors = yardSectorDAO.findAll(getUser().getUsr());
 
-        poezd.bindPoezdToYard(poezdBindDTO.getVagons(), yardSectors, mapper);
+        Map<String, List<?>> contGruz4History = poezd.bindPoezdToYard(poezdBindDTO.getVagons(), yardSectors, mapper);
         poezdDAO.makePersistent(poezd);
+        saveContGruzHistory(contGruz4History, kontGruzHistoryDAO, POEZD);
 
         for (YardSectorBindDTO yardSectorBindDTO : yardSectorsBindDTO){
             for(YardSector yardSector: yardSectors){
                 if (Objects.equals(yardSector.getHid(), yardSectorBindDTO.getHid())) {  // found sector
-                    yardSector.bindYardToPoezd(yardSectorBindDTO, poezd.getVagons(), mapper, yardSectors);
+                    contGruz4History = yardSector.bindYardToPoezd(yardSectorBindDTO, poezd.getVagons(), mapper, yardSectors);
                     yardSectorDAO.makePersistent(yardSector);
+                    saveContGruzHistory(contGruz4History, kontGruzHistoryDAO, YARD);
                     break;
                 }
             }
@@ -103,6 +106,8 @@ public class BindPoezdAndYard_A extends CimSmgsSupport_A {
     private YardDAO yardDAO;
     @Autowired
     private YardSectorDAO yardSectorDAO;
+    @Autowired
+    private KontGruzHistoryDAO kontGruzHistoryDAO;
 
     private String action;
     private String dataObj;

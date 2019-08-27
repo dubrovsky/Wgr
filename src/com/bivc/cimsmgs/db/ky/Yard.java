@@ -52,7 +52,7 @@ public class Yard implements Serializable {
         this.konts = konts;
     }
 
-    public void bindKonts(TreeSet<KontBindDTO> dtos, Mapper mapper, Set<Vagon> toVags, List<YardSector> yardSectors) {
+    public List<Kont> bindKonts(TreeSet<KontBindDTO> dtos, Mapper mapper, Set<Vagon> toVags, List<YardSector> yardSectors) {
         // update kont that not moved
         Set<KontBindDTO> dtoToRemove = new HashSet<>();
         for (KontBindDTO kontDTO : dtos) {
@@ -67,6 +67,7 @@ public class Yard implements Serializable {
         }
         dtos.removeAll(dtoToRemove);
 
+        List<Kont> kontsForHistory = new ArrayList<>(dtos.size());
         // insert from poezd
         dtoToRemove.clear();
         boolean found = false;
@@ -76,6 +77,7 @@ public class Yard implements Serializable {
                     if (Objects.equals(toKont.getHid(), kontDTO.getHid())) {
                         mapper.map(kontDTO, toKont);  // update kont, sort can change
                         bindKont(toKont);
+                        kontsForHistory.add(toKont);
                         log.info("Add kont to yard from another poezd, kont - {}", toKont.getNkon());
                         dtoToRemove.add(kontDTO);
                         found = true;
@@ -99,6 +101,7 @@ public class Yard implements Serializable {
                             if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
                                 mapper.map(kontDTO, kont);
                                 bindKont(kont);
+                                kontsForHistory.add(kont);
                                 log.info("Move kont in same yard, kont - {}", kont.getNkon());
                                 dtoToRemove.add(kontDTO);
                                 found = true;
@@ -122,6 +125,7 @@ public class Yard implements Serializable {
                 log.warn("Kont {} was not bound, something wrong!!!", kontDTO.getNkon());
             }
         }
+        return kontsForHistory;
     }
 
     private Kont bindKont(Kont kont) {

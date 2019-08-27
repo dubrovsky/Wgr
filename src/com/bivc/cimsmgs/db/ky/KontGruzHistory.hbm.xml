@@ -2,11 +2,11 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="com.bivc.cimsmgs.db.ky.KontGruzHistory" table="KY_KONT_GRUZ_HISTORY_HID">
+    <class name="com.bivc.cimsmgs.db.ky.KontGruzHistory" table="KY_KONT_GRUZ_HISTORY">
         <id name="hid" type="java.lang.Long">
             <column name="HID" precision="20" scale="0" not-null="true"/>
             <generator class="sequence">
-                <param name="sequence">KY_KONT_STATUS_HISTORY_HID</param>
+                <param name="sequence">KY_KONT_GRUZ_HISTORY_HID</param>
             </generator>
         </id>
         <many-to-one class="com.bivc.cimsmgs.db.ky.Poezd" fetch="select" name="poezd">
@@ -32,16 +32,16 @@
         </many-to-one>
 
         <property name="koleya" type="java.lang.Byte">
-            <column name="KOLEYA" precision="1" scale="0" not-null="true"/>
+            <column name="KOLEYA" precision="1" scale="0" />
         </property>
         <property name="direction" type="java.lang.Byte">
-            <column name="DIRECTION" precision="1" scale="0" not-null="true"/>
+            <column name="DIRECTION" precision="1" scale="0" />
         </property>
 
         <property name="dateOperation" type="timestamp">
             <column length="7" name="DATE_OPERATION"/>
         </property>
-        <property name="un" type="string" update="false">
+        <property name="un" type="string" >
             <column length="20" name="UN"/>
         </property>
     </class>

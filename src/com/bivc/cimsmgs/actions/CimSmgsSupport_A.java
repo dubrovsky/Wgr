@@ -4,9 +4,14 @@ import com.bivc.cimsmgs.commons.*;
 import com.bivc.cimsmgs.dao.*;
 import com.bivc.cimsmgs.db.CimSmgs;
 import com.bivc.cimsmgs.db.PackDoc;
+import com.bivc.cimsmgs.db.ky.Kont;
+import com.bivc.cimsmgs.db.ky.KontGruzHistory;
 import com.opensymphony.xwork2.ActionSupport;
 
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 //import com.bivc.isgp.db.User;
 //import com.bivc.isgp.dao.UserAware;
 
@@ -38,11 +43,11 @@ public class CimSmgsSupport_A extends ActionSupport implements JSONAware, UserAw
 
     private UsrGroupsDirDAO usrGroupsDirDAO;
 
-    public void setUsrGroupsDirDAO(UsrGroupsDirDAO dao){
+    public void setUsrGroupsDirDAO(UsrGroupsDirDAO dao) {
         usrGroupsDirDAO = dao;
     }
 
-    public UsrGroupsDirDAO getUsrGroupsDirDAO(){
+    public UsrGroupsDirDAO getUsrGroupsDirDAO() {
         return usrGroupsDirDAO;
     }
 
@@ -160,7 +165,7 @@ public class CimSmgsSupport_A extends ActionSupport implements JSONAware, UserAw
     private Integer start;
     private Integer type;
     private Search search;
-//    private Filter filter;
+    //    private Filter filter;
     private String query;
     private String query1;
     private Long hid_cs;
@@ -327,17 +332,57 @@ public class CimSmgsSupport_A extends ActionSupport implements JSONAware, UserAw
         this.docId = docId;
     }
 
-    void afterDocDestoroy(PackDoc packDoc){
+    void afterDocDestoroy(PackDoc packDoc) {
         // check and delete packDoc
-        if(packDoc.getCimSmgsFileInfs().size() == 0 && packDoc.getCsInvoices().size() == 0){
-            if(packDoc.getCimSmgses().size() == 0) {
+        if (packDoc.getCimSmgsFileInfs().size() == 0 && packDoc.getCsInvoices().size() == 0) {
+            if (packDoc.getCimSmgses().size() == 0) {
                 getPackDocDAO().makeTransient(packDoc);
-            } else if(packDoc.getCimSmgses().size() == 1){
+            } else if (packDoc.getCimSmgses().size() == 1) {
                 CimSmgs cimSmgs = packDoc.getCimSmgses().iterator().next();
-                if(cimSmgs.isEpd()){
+                if (cimSmgs.isEpd()) {
                     getPackDocDAO().makeTransient(packDoc);
                 }
             }
         }
+    }
+
+    public void saveContGruzHistory(Map<String, List<?>> contGruz4History, KontGruzHistoryDAO kontGruzHistoryDAO, KontGruzHistoryType historyType) {
+        for (Map.Entry<String, List<?>> entries : contGruz4History.entrySet()) {
+            if (entries.getKey().equals("konts")) {
+                for (int i = 0; i < entries.getValue().size(); i++) {
+                    Kont kont = (Kont) entries.getValue().get(i);
+                    KontGruzHistory kontGruzHistory;
+                    switch (historyType) {
+                        case POEZD:
+                            kontGruzHistory = new KontGruzHistory(
+                                    kont.getVagon().getPoezd(), kont.getVagon(), kont, kont.getVagon().getPoezd().getKoleya(), kont.getVagon().getPoezd().getDirection(), new Date(), getUser().getUsr().getUn()
+                            );
+                            break;
+                        case YARD: {
+                            kontGruzHistory = new KontGruzHistory(
+                                    kont.getYard().getSector(), kont.getYard(), kont, new Date(), getUser().getUsr().getUn()
+                            );
+                            break;
+                        }
+                        default:
+                            throw new RuntimeException("Invalid KontGruzHistoryType");
+                    }
+
+                    kontGruzHistoryDAO.makePersistent(kontGruzHistory);
+                    if (i % 20 == 0) { //20, same as the JDBC batch size
+                        //flush a batch of inserts and release memory:
+                        kontGruzHistoryDAO.flush();
+                        kontGruzHistoryDAO.clear();
+                    }
+                }
+            }
+        }
+    }
+
+    public enum KontGruzHistoryType {
+        POEZD,
+        YARD,
+        GRUZ,
+        AVTO
     }
 }

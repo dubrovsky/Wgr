@@ -229,7 +229,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
         }
     }
 
-    public void bindKontsToPoezdKonts(Set<KontBindDTO> dtos, Mapper mapper, Set<Vagon> toVags, List<Poezd> poezds) {
+    public List<Kont> bindKontsToPoezdKonts(Set<KontBindDTO> dtos, Mapper mapper, Set<Vagon> toVags, List<Poezd> poezds) {
         // update kont that not moved
         Set<KontBindDTO> dtoToRemove = new HashSet<>();
         for (KontBindDTO kontDTO : dtos) {
@@ -243,6 +243,8 @@ public class Vagon implements Serializable, Comparable<Vagon> {
         }
         dtos.removeAll(dtoToRemove);
 
+        List<Kont> kontsForHistory = new ArrayList<>(dtos.size());
+
         // insert from poezd
         dtoToRemove.clear();
         boolean found = false;
@@ -252,6 +254,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
                     if (Objects.equals(toKont.getHid(), kontDTO.getHid())) {
                         mapper.map(kontDTO, toKont);  // update kont, sort can change
                         bindKont(toKont);
+                        kontsForHistory.add(toKont);
                         log.info("Add kont to poezd from another poezd, kont - {}", toKont.getNkon());
                         dtoToRemove.add(kontDTO);
                         found = true;
@@ -275,6 +278,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
                             if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
                                 mapper.map(kontDTO, kont);
                                 bindKont(kont);
+                                kontsForHistory.add(kont);
                                 log.info("Move kont in same poezds, kont - {}", kont.getNkon());
                                 dtoToRemove.add(kontDTO);
                                 found = true;
@@ -298,6 +302,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
                 log.warn("Kont {} was not bound, something wrong!!!", kontDTO.getNkon());
             }
         }
+        return kontsForHistory;
     }
 
     public void bindGruzsToPoezdsGruzs(Set<GruzBindDTO> dtos, Mapper mapper, List<Poezd> poezdsOut) {
@@ -372,7 +377,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
         }
     }
 
-    public void bindKontsToPoezdsKonts(Set<KontBindDTO> dtos, Mapper mapper, List<Poezd> poezdsOut) {
+    public List<Kont> bindKontsToPoezdsKonts(Set<KontBindDTO> dtos, Mapper mapper, List<Poezd> poezdsOut) {
         // update kont that not moved
         Set<KontBindDTO> dtoToRemove = new HashSet<>();
         for (KontBindDTO kontDTO : dtos) {
@@ -386,6 +391,8 @@ public class Vagon implements Serializable, Comparable<Vagon> {
         }
         dtos.removeAll(dtoToRemove);
 
+        List<Kont> kontsForHistory = new ArrayList<>(dtos.size());
+
         // insert from poezds
         dtoToRemove.clear();
         boolean found;
@@ -397,6 +404,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
                         if (Objects.equals(poezdKont.getHid(), kontDTO.getHid())) {
                             mapper.map(kontDTO, poezdKont);
                             bindKont(poezdKont);
+                            kontsForHistory.add(poezdKont);
                             log.info("Add kont from another poezd, kont - {}", poezdKont.getNkon());
                             dtoToRemove.add(kontDTO);
                             found = true;
@@ -423,6 +431,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
                         if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
                             mapper.map(kontDTO, kont);
                             bindKont(kont);
+                            kontsForHistory.add(kont);
                             log.info("Move kont in same poezd, kont - {}", kont.getNkon());
                             dtoToRemove.add(kontDTO);
                             found = true;
@@ -442,9 +451,10 @@ public class Vagon implements Serializable, Comparable<Vagon> {
                 log.warn("Kont {} was not bound, something wrong!!!", kontDTO.getNkon());
             }
         }
+        return kontsForHistory;
     }
 
-    public void bindKontsToYardKonts(Set<KontBindDTO> dtos, Mapper mapper, List<YardSector> yardSectors) {
+    public List<Kont> bindKontsToYardKonts(Set<KontBindDTO> dtos, Mapper mapper, List<YardSector> yardSectors) {
         // update kont that not moved
         Set<KontBindDTO> dtoToRemove = new HashSet<>();
         for (KontBindDTO kontDTO : dtos) {
@@ -458,6 +468,8 @@ public class Vagon implements Serializable, Comparable<Vagon> {
         }
         dtos.removeAll(dtoToRemove);
 
+
+        List<Kont> kontsForHistory = new ArrayList<>(dtos.size());
         // insert from yard
         dtoToRemove.clear();
         boolean found;
@@ -469,6 +481,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
                         if (Objects.equals(yardKont.getHid(), kontDTO.getHid())) {
                             mapper.map(kontDTO, yardKont);
                             bindKont(yardKont);
+                            kontsForHistory.add(yardKont);
                             log.info("Add kont from another yard, kont - {}", yardKont.getNkon());
                             dtoToRemove.add(kontDTO);
                             found = true;
@@ -495,6 +508,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
                         if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
                             mapper.map(kontDTO, kont);
                             bindKont(kont);
+                            kontsForHistory.add(kont);
                             log.info("Move kont in same poezd, kont - {}", kont.getNkon());
                             dtoToRemove.add(kontDTO);
                             found = true;
@@ -514,6 +528,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
                 log.warn("Kont {} was not bound, something wrong!!!", kontDTO.getNkon());
             }
         }
+        return kontsForHistory;
     }
 
     /*public void bindKonts(Set<KontBindDTO> dtos, Mapper mapper, Set<Vagon> toVags) {

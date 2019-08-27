@@ -20,6 +20,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static com.bivc.cimsmgs.actions.CimSmgsSupport_A.KontGruzHistoryType.POEZD;
+
 /**
  * @author p.dzeviarylin
  */
@@ -68,22 +70,7 @@ public class PoezdVgCtGr_A extends CimSmgsSupport_A {
         poezd = poezdDAO.makePersistent(poezd);
         poezdDAO.flush(); // to get ids
 
-        for (Map.Entry<String, List<?>> entries : contGruz4History.entrySet()) {
-            if (entries.getKey().equals("cont")) {
-                for (int i = 0; i < entries.getValue().size(); i++) {
-					Kont kont = (Kont) entries.getValue().get(i);
-					KontGruzHistory kontGruzHistory = new KontGruzHistory(
-							kont.getVagon().getPoezd(), kont.getVagon(), kont, kont.getVagon().getPoezd().getKoleya(), kont.getVagon().getPoezd().getDirection(), new Date(), getUser().getUsr().getUn()
-					);
-					kontGruzHistoryDAO.makePersistent(kontGruzHistory);
-                    if (i % 20 == 0) { //20, same as the JDBC batch size
-                        //flush a batch of inserts and release memory:
-						kontGruzHistoryDAO.flush();
-						kontGruzHistoryDAO.clear();
-                    }
-                }
-            }
-        }
+        saveContGruzHistory(contGruz4History, kontGruzHistoryDAO, POEZD);
 
         setJSONData(
                 defaultSerializer
