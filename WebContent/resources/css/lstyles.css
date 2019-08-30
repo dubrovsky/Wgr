@@ -66,7 +66,7 @@ a:focus {
 }
 
 .btn-accent {
-    background-color : #f01414;
+    background-color : #14d014;
     border-radius: 0;
     font-weight      : bold;
     color            : whitesmoke;
@@ -99,7 +99,7 @@ input, .form-wrapper div.login {
     top           : 0;
     left          : 0;
     right         : 0;
-    border-bottom : 13px solid #f01414;
+    border-bottom : 13px solid #14d014;
 }
 
 
@@ -109,6 +109,7 @@ input, .form-wrapper div.login {
 
 .logo a {
     display : inline-block;
+    padding-bottom: 10px;
 }
 
 .logo img {
@@ -131,7 +132,7 @@ input, .form-wrapper div.login {
     width           : 100%;
     min-height      : 45em;
     height          : 100%;
-    background      : url("../../images/DB-Schenker-Zug-zwischen-Koper-und-Enns2.jpg") no-repeat center;
+/*    background      : url("../../images/DB-Schenker-Zug-zwischen-Koper-und-Enns2.jpg") no-repeat center;*/
     background-size : cover;
 }
 

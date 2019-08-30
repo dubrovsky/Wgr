@@ -23,7 +23,8 @@ Ext.define('TK.controller.ky2.ReportController', {
     getReport: function (btn) {
         var form = btn.up('form');
         if(form.isValid()) {
-            btn.up('ky2reportparams').setLoading(true);
+            window.open('ky2/secure/Report.do?reportParams=' + encodeURIComponent(Ext.encode(form.getValues())) + '&action=get_report', '_self', '');
+            /*btn.up('ky2reportparams').setLoading(true);
 
             Ext.Ajax.request({
                 url: "ky2/secure/Report.do",
@@ -39,9 +40,9 @@ Ext.define('TK.controller.ky2.ReportController', {
                     btn.up('ky2reportparams').setLoading(false);
                     TK.Utils.makeErrMsg(response, 'Error...');
                 }
-            });
+            });*/
         }
 
-        // window.open('Report_viewReport1.do?' + form.getForm().getValues(true) + urlParams, '_self', '');
+
     }
 });

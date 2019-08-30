@@ -11,18 +11,18 @@ Ext.define('TK.view.ky2.poezd.BasePoezdForm', {
             xtype:'textfield',
             width:400,
             labelWidth: 150,
-            fieldLabel: this.labelNppr,
-            //decimalPrecision: 0,
-            name: 'nppr',
-            maxLength: 5
-        },{
-            xtype:'textfield',
-            width:400,
-            labelWidth: 150,
             fieldLabel: this.labelNpprm,
             //decimalPrecision: 0,
             name: 'npprm',
             maxLength: 10
+        },{
+            xtype:'textfield',
+            width:400,
+            labelWidth: 150,
+            fieldLabel: this.labelNppr,
+            //decimalPrecision: 0,
+            name: 'nppr',
+            maxLength: 5
         }/*,{
             xtype: 'radiogroup',
             hidden: true,

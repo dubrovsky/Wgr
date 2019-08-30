@@ -25,6 +25,9 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         ref: 'center',
         selector: 'viewport > tabpanel'
     }, {
+        ref: 'menutree',
+        selector: 'viewport > menutree'
+    }, {
         ref: 'poezdlist',
         selector: 'viewport > tabpanel grid'
     }, {
@@ -54,6 +57,12 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
             },
             'ky2poezdoutlist button[action="showPoezdsIntoDir4PoezdOutBind"]': {
                 click: this.getPoesdOutAndPoezdIntoForBind
+            },
+            'ky2vgctgrtreeformpoezdinto button[action="showPoezdsOutDir4PoezdIntoBind"]': {
+                click: this.getPoesdIntoAndPoezdOutForBindFromVgCntGr
+            },
+            'ky2vgctgrtreeformpoezdout button[action="showPoezdsIntoDir4PoezdOutBind"]': {
+                click: this.getPoesdIntoAndPoezdOutForBindFromVgCntGr
             },
             /*'ky2poezdsout4poezdintodir button[action="getPoesdAndPoezdForBind"]': {
                 click: this.getPoesdIntoAndPoezdOutForBind
@@ -120,14 +129,33 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
     },
 
     getPoesdIntoAndPoezdOutForBind: function (btn) {
-        this.getPoesdAndPoezdForBind(/*this.getPoezdoutdir(),*/ 'ky2poezd2poezdbindtreeforminto', 'На поезд по отправлению', 2);
+        this.getPoesdAndPoezdForBindCheck('ky2poezd2poezdbindtreeforminto', 'На поезд по отправлению', 2);
     },
 
     getPoesdOutAndPoezdIntoForBind: function (btn) {
-        this.getPoesdAndPoezdForBind(/*this.getPoezdintodir(),*/ 'ky2poezd2poezdbindtreeformout', 'На поезд по прибытию', 1);
+        this.getPoesdAndPoezdForBindCheck('ky2poezd2poezdbindtreeformout', 'На поезд по прибытию', 1);
     },
 
-    getPoesdAndPoezdForBind: function (/*poezdDir*/ widget, title, direction) {
+    getPoesdAndPoezdForBindCheck: function (widget, title, direction) {
+        var poezdlist = this.getPoezdlist();
+        if (!TK.Utils.isRowSelected(poezdlist)) {
+            return false;
+        }
+        var poezdModel = poezdlist.getSelectionModel().getLastSelected();
+        this.getPoesdAndPoezdForBind(widget, title, direction, poezdModel.get('hid'));
+
+    },
+
+    getPoesdIntoAndPoezdOutForBindFromVgCntGr: function (btn) {
+        var rootNode = btn.up('panel').down('treepanel').getRootNode();
+        if (rootNode.get('direction') === 1)
+            this.getPoesdAndPoezdForBind('ky2poezd2poezdbindtreeforminto', 'На поезд по отправлению', 2, rootNode.get('hid'));
+        else
+            this.getPoesdAndPoezdForBind('ky2poezd2poezdbindtreeformout', 'На поезд по прибытию', 1, rootNode.get('hid'));
+    },
+
+
+    getPoesdAndPoezdForBind: function (/*poezdDir*/ widget, title, direction, poezdHid) {
         /*var poezdlist = this.getPoezdlist(),
             poezdModel = poezdlist.getSelectionModel().getLastSelected(),
             poezdsDir = poezdDir.getSelectionModel().getSelection(),
@@ -142,21 +170,18 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
             });
             return false;
         }*/
+        var menuItem    = this.getMenutree().lastSelectedLeaf,
+            routeId     = menuItem.id.split('_')[2];
 
-        var poezdlist = this.getPoezdlist();
-        if (!TK.Utils.isRowSelected(poezdlist)) {
-            return false;
-        }
 
         this.getCenter().setLoading(true);
-        var poezdModel = poezdlist.getSelectionModel().getLastSelected();
         Ext.Ajax.request({
             url: 'ky2/secure/BindPoezdAndPoezd.do',
             params: {
                 // action: 'get_poezd_and_poezd_for_bind',
-                poezd1Hid: poezdModel.get('hid'),
+                poezd1Hid: poezdHid,
                 action: 'get_poezd_and_all_poezds_for_bind',
-                routeId: poezdModel.get('route.hid'),
+                routeId: routeId,
                 direction: direction
                 /* 'poezd1Hid': poezdModel.get('hid'),
                  'poezd2Hid': poezdDirModel.get('hid')*/

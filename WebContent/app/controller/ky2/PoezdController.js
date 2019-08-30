@@ -134,11 +134,6 @@ Ext.define('TK.controller.ky2.PoezdController', {
             return false;
         }
 
-        var menuItem    = this.getMenutree().lastSelectedLeaf,
-            routeId     = menuItem.id.split('_')[2];
-            // avisoType   = menuItem.id.split('_')[3],
-            // doc = tkUser.docs.get(avisoType),
-            // grid        = btn.up('grid');
         var win = Ext.create('Ext.window.Window', {
             title: this.titleUpload,
             width: 600, y:1, modal:true,
@@ -381,14 +376,14 @@ Ext.define('TK.controller.ky2.PoezdController', {
     },
 
     showPoezdsImportDir: function () {
-        var poezdlist = this.getPoezdlist();
-        if (!TK.Utils.isRowSelected(poezdlist)) {
-            return false;
-        }
+        // var poezdlist = this.getPoezdlist();
+        // if (!TK.Utils.isRowSelected(poezdlist)) {
+        //     return false;
+        // }
 
         var win = Ext.widget('ky2poezdsimportdir'),
-            store = win.down('grid').getStore(),
-            poezdModel = poezdlist.getSelectionModel().getLastSelected();
+            store = win.down('grid').getStore();
+            // poezdModel = poezdlist.getSelectionModel().getLastSelected();
 
         store.load({
             params: {
@@ -400,10 +395,10 @@ Ext.define('TK.controller.ky2.PoezdController', {
 
     importPoesd: function () {
         var poezdlist = this.getPoezdlist(),
-            poezdModel = poezdlist.getSelectionModel().getLastSelected(),
+            // poezdModel = poezdlist.getSelectionModel().getLastSelected(),
+            extraParams = poezdlist.getStore().getProxy().extraParams,
             poezdsDir = this.getPoezdsImportDir().getSelectionModel().getSelection(),
             poezdDirModel = poezdsDir.length > 0 ? poezdsDir[0] : null;
-
         if (poezdDirModel == null) {
             Ext.Msg.show({
                 title: 'Ошибка',
@@ -423,9 +418,9 @@ Ext.define('TK.controller.ky2.PoezdController', {
                 n_poezd: poezdDirModel.get('n_poezd'),
                 ved_nomer: poezdDirModel.get('ved_nomer'),
                 action: 'import_poesd',
-                koleya: poezdModel.get('koleya'),
-                direction: poezdModel.get('direction'),
-                routeId: poezdModel.get('route.hid')
+                koleya: extraParams['koleya'],
+                direction: extraParams['direction'],
+                routeId: extraParams['routeId']
             },
             scope: this,
             callback: function (options, success, response) {

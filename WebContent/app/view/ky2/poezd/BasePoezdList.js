@@ -5,8 +5,8 @@ Ext.define('TK.view.ky2.poezd.BasePoezdList', {
     buildColumns:function (config) {
         config.columns = {
             items:[
-                {text:this.headerPoezdNum, dataIndex:'nppr', width: 150},
                 {text:this.headerPoezdNumM, dataIndex:'npprm', width: 150},
+                {text:this.headerPoezdNum, dataIndex:'nppr', width: 150},
                 {text:this.headerVagCount, dataIndex:'vagCount', flex:1, maxWidth:100},
                 {text:this.headerKontCount, dataIndex:'kontCount', flex:1, maxWidth:100},
                 {
