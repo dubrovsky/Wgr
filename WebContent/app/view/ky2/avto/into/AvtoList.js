@@ -5,7 +5,7 @@ Ext.define('TK.view.ky2.avto.into.AvtoList', {
 
     buildColumns:function (config) {
         this.callParent(arguments);
-        config.columns.items.push(
+        config.columns.items.splice(3, 0,
             {text:this.headerDateIn, dataIndex:'dprb', width:100, renderer: TK.Utils.renderLongStr}
         );
     },
@@ -21,9 +21,9 @@ Ext.define('TK.view.ky2.avto.into.AvtoList', {
     buildTopToolbar: function (config) {
         this.callParent(arguments);
         config.tbar.splice(8, 0,
-            {text: '+ На авто по отпр.', iconCls:'bind', action:'showAvtosOutDir4AvtoIntoBind'},'-',
-            {text: '+ На поезд по отпр.', iconCls:'bind', action:'showPoezdsOutDir4PoezdIntoBind'},'-',
-            {text: '+ На конт. площадку', iconCls:'bind', action:'getPoesdAndYardForBind'},'-'
+            {text: '', iconCls:'truck', action:'showAvtosOutDir4AvtoIntoBind'},'-'
+            // {text: this.btnToPoezd, iconCls:'bind', action:'showPoezdsOutDir4PoezdIntoBind'},'-',
+            // {text: this.btnToYard, iconCls:'bind', action:'getPoesdAndYardForBind'},'-'
         );
     }
 });

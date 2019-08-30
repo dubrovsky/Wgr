@@ -1017,6 +1017,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.model.ky2.PoezdBase": [],
   "TK.model.ky2.PoezdBindTreeNode": [],
   "TK.model.ky2.PoezdDir": [],
+  "TK.model.ky2.PoezdImportDir": [],
   "TK.model.ky2.PoezdInto": [],
   "TK.model.ky2.PoezdOut": [],
   "TK.model.ky2.PoezdVgCtGrTreeNode": [],
@@ -1127,6 +1128,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.store.ky2.PoezdVgCtGrTreeNodes": [],
   "TK.store.ky2.PoezdsBase": [],
   "TK.store.ky2.PoezdsDir": [],
+  "TK.store.ky2.PoezdsImportDir": [],
   "TK.store.ky2.PoezdsInto": [],
   "TK.store.ky2.PoezdsOut": [],
   "TK.store.ky2.YardBindTreeNodes": [],
@@ -1372,6 +1374,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.view.ky2.BaseAvtosDir": [],
   "TK.view.ky2.BaseList": [],
   "TK.view.ky2.BasePoezdsDir": [],
+  "TK.view.ky2.BasePoezdsImportDir": [],
   "TK.view.ky2.PoezdVgCtGrTreeForm": [],
   "TK.view.ky2.avto.AvtoBindTreeForm": [],
   "TK.view.ky2.avto.BaseAvtoForm": [],
@@ -1389,6 +1392,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.view.ky2.poezd.AbstractPoezd2YardBindTreeForm": [],
   "TK.view.ky2.poezd.BasePoezdForm": [],
   "TK.view.ky2.poezd.BasePoezdList": [],
+  "TK.view.ky2.poezd.PoezdsImportDir": [],
   "TK.view.ky2.poezd.into.Poezd2PoezdBindTreeForm": [],
   "TK.view.ky2.poezd.into.Poezd2YardBindTreeForm": [],
   "TK.view.ky2.poezd.into.PoezdForm": [],
@@ -2618,6 +2622,7 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.model.ky2.PoezdBase": [],
   "TK.model.ky2.PoezdBindTreeNode": [],
   "TK.model.ky2.PoezdDir": [],
+  "TK.model.ky2.PoezdImportDir": [],
   "TK.model.ky2.PoezdInto": [],
   "TK.model.ky2.PoezdOut": [],
   "TK.model.ky2.PoezdVgCtGrTreeNode": [],
@@ -2730,6 +2735,7 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.store.ky2.PoezdVgCtGrTreeNodes": [],
   "TK.store.ky2.PoezdsBase": [],
   "TK.store.ky2.PoezdsDir": [],
+  "TK.store.ky2.PoezdsImportDir": [],
   "TK.store.ky2.PoezdsInto": [],
   "TK.store.ky2.PoezdsOut": [],
   "TK.store.ky2.YardBindTreeNodes": [],
@@ -3443,6 +3449,9 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.view.ky2.BasePoezdsDir": [
     "widget.ky2basepoezdsdir"
   ],
+  "TK.view.ky2.BasePoezdsImportDir": [
+    "widget.ky2basepoezdsimportdir"
+  ],
   "TK.view.ky2.PoezdVgCtGrTreeForm": [
     "widget.ky2vgctgrtreeform"
   ],
@@ -3493,6 +3502,9 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "TK.view.ky2.poezd.BasePoezdList": [
     "widget.ky2basepoezdlist"
+  ],
+  "TK.view.ky2.poezd.PoezdsImportDir": [
+    "widget.ky2poezdsimportdir"
   ],
   "TK.view.ky2.poezd.into.Poezd2PoezdBindTreeForm": [
     "widget.ky2poezd2poezdbindtreeforminto"

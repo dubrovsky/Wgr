@@ -8,6 +8,7 @@ import com.bivc.cimsmgs.dto.ky2.PlombDTO;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.*;
 
 /*@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -28,9 +29,9 @@ public class Kont implements Serializable, Comparable<Kont> {
     private String trans;
 //    private Set<KontStatusHistory> kontStatusHistory;
     private Long massa_tar;
-    private Long massa_brutto;
-    private Long massa_brutto_all;
-    private Float pod_sila;
+    private BigDecimal massa_brutto;
+    private BigDecimal massa_brutto_all;
+    private BigDecimal pod_sila;
     private String type;
     private String vid;
     private String prizn_sob;
@@ -78,19 +79,19 @@ public class Kont implements Serializable, Comparable<Kont> {
     private String punkt_otpr;
     private String punkt_nazn;
 
-    public Long getMassa_brutto() {
+    public BigDecimal getMassa_brutto() {
         return massa_brutto;
     }
 
-    public void setMassa_brutto(Long massa_brutto) {
+    public void setMassa_brutto(BigDecimal massa_brutto) {
         this.massa_brutto = massa_brutto;
     }
 
-    public Long getMassa_brutto_all() {
+    public BigDecimal getMassa_brutto_all() {
         return massa_brutto_all;
     }
 
-    public void setMassa_brutto_all(Long massa_brutto_all) {
+    public void setMassa_brutto_all(BigDecimal massa_brutto_all) {
         this.massa_brutto_all = massa_brutto_all;
     }
 
@@ -329,7 +330,7 @@ public class Kont implements Serializable, Comparable<Kont> {
     }
 
 
-    private Plomb addPlomb(Plomb plomb) {
+    public Plomb addPlomb(Plomb plomb) {
         plombs.add(plomb);
         plomb.setKont(this);
         return plomb;
@@ -479,11 +480,11 @@ public class Kont implements Serializable, Comparable<Kont> {
         this.type = type;
     }
 
-    public Float getPod_sila() {
+    public BigDecimal getPod_sila() {
         return pod_sila;
     }
 
-    public void setPod_sila(Float pod_sila) {
+    public void setPod_sila(BigDecimal pod_sila) {
         this.pod_sila = pod_sila;
     }
 

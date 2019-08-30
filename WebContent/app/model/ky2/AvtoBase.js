@@ -12,6 +12,7 @@ Ext.define('TK.model.ky2.AvtoBase', {
         {name:'client', type: 'string'},
         {name:'no_avto', type: 'string'},
         {name:'no_trail', type: 'string'},
+        {name:'driver_fio', type: 'string'},
         {name:'otp_cargo', type: 'string'},
         {name:'pol_cargo', type: 'string'},
         {name:'departure', type: 'string'},

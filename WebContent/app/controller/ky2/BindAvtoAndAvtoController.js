@@ -1,6 +1,9 @@
 Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
     extend: 'Ext.app.Controller',
 
+    sourceAvtoModels: [], // to use in after drop event
+    selectedNodesLeft: [], // last selection
+    selectedNodesRight: [], // last selection
     sourceVagModel: undefined,
     views: [
         'ky2.avto.into.AvtosOutDir',
@@ -26,6 +29,9 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
         ref: 'avtolist',
         selector: 'viewport > tabpanel grid'
     }, {
+        ref: 'avtoform',
+        selector: 'viewport > tabpanel ky2avtobindtreeform'
+    }, {
         ref: 'avtooutdir',
         selector: 'ky2avtosout4avtointodir > ky2baseavtosdir'
     }, {
@@ -33,10 +39,10 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
         selector: 'ky2avtosinto4avtooutdir > ky2baseavtosdir'
     }, {
         ref: 'treepanelLeft',
-        selector: 'ky2avtobindtreeform > treepanel#treepanelLeft'
+        selector: 'ky2avto2avtobindtreeforminto > treepanel#treepanelLeft'
     }, {
         ref: 'treepanelRight',
-        selector: 'ky2avtobindtreeform > treepanel#treepanelRight'
+        selector: 'ky2avto2avtobindtreeforminto > treepanel#treepanelRight'
     }],
 
     init: function () {
@@ -46,21 +52,49 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
                 onMoveAll: this.onMoveRightAll,
                 onMove: this.onMoveRight
             },
-            'ky2avtosout4avtointodir button[action="getAvtoAndAvtoForBind"]': {
+            'ky2avtointolist button[action="showAvtosOutDir4AvtoIntoBind"]': {
                 click: this.getAvtoIntoAndAvtoOutForBind
             },
-            'ky2avtosinto4avtooutdir button[action="getAvtoAndAvtoForBind"]': {
+            'ky2avtooutlist button[action="showAvtosIntoDir4AvtoOutBind"]': {
                 click: this.getAvtoOutAndAvtoIntoForBind
             },
-            'ky2avtobindtreeform > treepanel > treeview': {
-                drop: this.onDropToVag,
-                nodedragover: this.onBeforedropToVag
+            // 'ky2avtosout4avtointodir button[action="getAvtoAndAvtoForBind"]': {
+            //     click: this.getAvtoIntoAndAvtoOutForBind
+            // },
+            // 'ky2avtosinto4avtooutdir button[action="getAvtoAndAvtoForBind"]': {
+            //     click: this.getAvtoOutAndAvtoIntoForBind
+            // },
+            'ky2avto2avtobindtreeforminto treepanel#treepanelLeft > treeview': {
+                drop: this.dropToAvto,
+                nodedragover: this.beforeDropToAvto
             },
+            'ky2avto2avtobindtreeforminto treepanel#treepanelRight > treeview': {
+                drop: this.dropToAvto,
+                nodedragover: this.beforeDropToAvto
+            },
+            'ky2avto2avtobindtreeformout treepanel#treepanelLeft > treeview': {
+                drop: this.dropToAvto,
+                nodedragover: this.beforeDropToAvto
+            },
+            'ky2avto2avtobindtreeformout treepanel#treepanelRight > treeview': {
+                drop: this.dropToAvto,
+                nodedragover: this.beforeDropToAvto
+            },
+            // 'ky2avtobindtreeform > treepanel > treeview': {
+            //     drop: this.dropToAvto,
+            //     nodedragover: this.beforeDropToAvto
+            // },
             'ky2avto2avtobindtreeforminto button[action=save]': {
                 click: this.bindAvtoToAvto
             },
             'ky2avto2avtobindtreeformout button[action=save]': {
                 click: this.bindAvtoToAvto
+            },
+            'ky2avto2avtobindtreeforminto button[action=saveExit]': {
+                click: this.bindAvtoToAvtoAndExit
+            },
+            'ky2avto2avtobindtreeformout button[action=saveExit]': {
+                click: this.bindAvtoToAvtoAndExit
             }
         });
     },
@@ -89,81 +123,64 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
     },
 
     getAvtoIntoAndAvtoOutForBind: function (btn) {
-        this.getAvtoAndAvtoForBind(this.getAvtooutdir(), 'ky2avto2avtobindtreeforminto', '+ На авто по отправлению');
+        this.getAvtoAndAvtoForBind( 'ky2avto2avtobindtreeforminto', 'На авто по отправлению', 2);
     },
 
     getAvtoOutAndAvtoIntoForBind: function (btn) {
-        this.getAvtoAndAvtoForBind(this.getAvtointodir(), 'ky2avto2avtobindtreeforminto', '+ На авто по прибытию');
+        this.getAvtoAndAvtoForBind('ky2avto2avtobindtreeforminto', 'На авто по прибытию', 1);
     },
 
-    getAvtoAndAvtoForBind: function (avtoDir, widget, title) {
-        var avtolist = this.getAvtolist(),
-            avtoModel = avtolist.getSelectionModel().getLastSelected(),
-            avtosDir = avtoDir.getSelectionModel().getSelection(),
-            avtoDirModel = avtosDir.length > 0 ? avtosDir[0] : null;
 
-        if (avtoDirModel == null) {
-            Ext.Msg.show({
-                title: 'Ошибка',
-                msg: 'Не выбрано значение',
-                buttons: Ext.Msg.OK,
-                icon: Ext.Msg.ERROR
-            });
+    getAvtoAndAvtoForBind: function (widget, title, direction) {
+        // var avtolist = this.getAvtolist(),
+        //     avtoModel = avtolist.getSelectionModel().getLastSelected(),
+        //     avtosDir = avtoDir.getSelectionModel().getSelection(),
+        //     avtoDirModel = avtosDir.length > 0 ? avtosDir[0] : null;
+        //
+        // if (avtoDirModel == null) {
+        //     Ext.Msg.show({
+        //         title: 'Ошибка',
+        //         msg: 'Не выбрано значение',
+        //         buttons: Ext.Msg.OK,
+        //         icon: Ext.Msg.ERROR
+        //     });
+        //     return false;
+        // }
+        var avtolist = this.getAvtolist();
+        if (!TK.Utils.isRowSelected(avtolist)) {
             return false;
         }
 
         this.getCenter().setLoading(true);
+        var avtoModel = avtolist.getSelectionModel().getLastSelected();
 
         Ext.Ajax.request({
             url: 'ky2/secure/BindAvtoAndAvto.do',
             params: {
-                action: 'get_avto_and_avto_for_bind',
-                'avto1Hid': avtoModel.get('hid'),
-                'avto2Hid': avtoDirModel.get('hid')
+                avto1Hid: avtoModel.get('hid'),
+                action: 'get_avto_and_all_avtos_for_bind',
+                routeId: avtoModel.get('route.hid'),
+                direction: direction
             },
             scope: this,
             callback: function (options, success, response) {
                 if (success) {
-                    avtoDir.up('window').close();
+                    // avtoDir.up('window').close();
 
                     var respObj = Ext.decode(response.responseText);
                     var avto1Obj = respObj['rows'][0];
-                    var avto2Obj = respObj['rows'][1];
+                    var avto2ArrObj = respObj['rows'][1];
 
                     var bindcontainer = Ext.widget(widget, {title: title});
                     this.getTreepanelLeft().setTitle(avto1Obj['no_avto']);
-
-                    //// fill trees
-                    // var vags = avto1Obj['vagons'];
-                    var konts = avto1Obj['konts'],
-                        gruzs = avto1Obj['gruzs'];
                     var rootNode = this.getTreepanelLeft().getStore().getRootNode();
-                    rootNode.set('text', avto1Obj['no_avto']);
-                    rootNode.set('iconCls', 'truck');
-                    rootNode.set('hid', avto1Obj['hid']); // avto hid
-                    rootNode.set('direction', avto1Obj['direction']);
-                    rootNode.set('no_avto', avto1Obj['no_avto']);
-                    if (konts && !Ext.Object.isEmpty(konts))
-                            this.initContsNodes(konts, 0, rootNode);
-                    if (gruzs && !Ext.Object.isEmpty(gruzs))
-                        this.initGryzyNodes(gruzs, rootNode);
-                        // rootNode.expand();
+                    this.initRootNode(rootNode, avto1Obj);
 
-                    this.getTreepanelRight().setTitle(avto2Obj['no_avto']);
-
-                    konts = avto2Obj['konts'];
-                    gruzs = avto2Obj['gruzs'];
+                    this.getTreepanelRight().setTitle("Автомобили");
                     rootNode = this.getTreepanelRight().getStore().getRootNode();
-                    rootNode.set('text', avto2Obj['no_avto']);
-                    rootNode.set('iconCls', 'truck');
-                    rootNode.set('hid', avto2Obj['hid']);   // // avto hid
-                    rootNode.set('direction', avto2Obj['direction']);
-                    rootNode.set('no_avto', avto2Obj['no_avto']);
-                    if (konts && !Ext.Object.isEmpty(konts))
-                            this.initContsNodes(konts, 0, rootNode);
-                    if (gruzs && !Ext.Object.isEmpty(gruzs))
-                        this.initGryzyNodes(gruzs, rootNode);
-                    /// END fill tree
+                    if (avto2ArrObj && avto2ArrObj.length > 0) {
+                        this.initAvtosNodes(avto2ArrObj, rootNode);
+                    }
 
                     this.getCenter().remove(this.getCenter().getComponent(0), true);
                     this.getCenter().add(bindcontainer);
@@ -173,6 +190,52 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
                 this.getCenter().setLoading(false);
             }
         });
+    },
+
+    initRootNode: function (rootNode, dataObj) {
+        var konts = dataObj['konts'],
+            gruzs = dataObj['gruzs'];
+        rootNode.set('iconCls', 'truck');
+        rootNode.set('hid', dataObj['hid']); // avto hid
+        rootNode.set('direction', dataObj['direction']);
+        rootNode.set('no_avto', dataObj['no_avto']);
+        rootNode.set('text', dataObj['no_avto']);
+        rootNode.set('who', 'avto');
+        if (konts && !Ext.Object.isEmpty(konts))
+                this.initContsNodes(konts, rootNode);
+        if (gruzs && !Ext.Object.isEmpty(gruzs))
+            this.initGryzyNodes(gruzs, rootNode, true);
+    },
+
+    initAvtosNodes: function (avtosArr, rootNode) {
+        for (var i = 0; i < avtosArr.length; i++) {
+            var avto = avtosArr[i],
+                konts = avto['konts'];
+                gruzs = avto['gruzs'];
+                // vags = avto['vagons'],
+                avtoModel = Ext.create('TK.model.ky2.AvtoBindTreeNode', {
+                    text: avto['no_avto'],
+                    who: 'avto',
+                    leaf: false,
+                    iconCls: 'truck',
+                    allowDrag: false,
+                    allowDrop: true,
+                    expanded: false
+                });
+
+            Ext.Object.each(avto, function (prop, value) {
+                avtoModel.set(prop, value);
+            }, this);
+
+            rootNode.appendChild(avtoModel);
+            if (konts && !Ext.Object.isEmpty(konts))
+                this.initContsNodes(konts,  avtoModel);
+            if (gruzs && !Ext.Object.isEmpty(gruzs))
+                this.initGryzyNodes(gruzs, avtoModel, true);
+            // if (vags && vags.length > 0) {
+            //     this.initVagsNodes(vags, poezdModel, false);
+            // }
+        }
     },
 
     // initVagsNodes: function (vags, rootNode) {
@@ -207,7 +270,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
     //     }
     // },
 
-    initContsNodes: function (conts, vagIndx, vagModel) {
+    initContsNodes: function (conts, vagModel) {
         for (var contIndx in conts) {
             var cont = conts[contIndx],
                 gryzy = cont['gruzs'],
@@ -215,8 +278,10 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
                     text: cont['nkon'],
                     who: 'cont',
                     iconCls: 'cont3',
-                    leaf: gryzy && gryzy['0'] ? false : true,
-                    expanded: vagIndx == 0 && gryzy && gryzy['0'] && contIndx == 0
+                    leaf: true,
+                    allowDrop: true,
+                    allowDrag: true,
+                    expanded: false
                 });
 
             Ext.Object.each(cont, function (prop, value) {
@@ -225,12 +290,12 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
             vagModel.appendChild(contModel);
 
             if (gryzy && !Ext.Object.isEmpty(gryzy)) {
-                this.initGryzyNodes(gryzy, contModel);
+                this.initGryzyNodes(gryzy, contModel, false);
             }
         }
     },
 
-    initGryzyNodes: function (gryzy, parentModel) {
+    initGryzyNodes: function (gryzy, parentModel, drag) {
         for (var gryzIndx in gryzy) {
             var gryz = gryzy[gryzIndx],
                 gryzModel = Ext.create('TK.model.ky2.AvtoBindTreeNode', {
@@ -238,6 +303,8 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
                     who: 'gryz',
                     iconCls: 'gryz',
                     leaf: true,
+                    allowDrop: true,
+                    allowDrag: drag,
                     expanded: false
                 });
 
@@ -265,51 +332,51 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
         });
     },
 
-    onDropToVag: function (node, dragData, targetVagModel, dropPosition) {
-        // var sourceModel = dragData.records[0];
+    // onDropToVag: function (node, dragData, targetVagModel, dropPosition) {
+    //     // var sourceModel = dragData.records[0];
+    //
+    //     // if (sourceModel.get('who') === 'cont') {
+    //     //     targetVagModel.set('otpravka', 'CONT');
+    //     // } else if (sourceModel.get('who') === 'gryz') {
+    //     //     targetVagModel.set('otpravka', 'GRUZ');
+    //     // }
+    //
+    //     this.sortChildNodes(targetVagModel);
+    //
+    //     if (this.sourceVagModel.hasChildNodes()) {
+    //     //     this.sourceVagModel.set('otpravka', undefined);
+    //     // } else {
+    //         this.sortChildNodes(this.sourceVagModel);
+    //      }
+    //
+    //
+    // },
 
-        // if (sourceModel.get('who') === 'cont') {
-        //     targetVagModel.set('otpravka', 'CONT');
-        // } else if (sourceModel.get('who') === 'gryz') {
-        //     targetVagModel.set('otpravka', 'GRUZ');
-        // }
+    // onBeforedropToVag: function (targetModel, position, dragData) {
+    //     var sourceModel = dragData.records[0],
+    //         sourceParentModel = sourceModel.parentNode,
+    //         isDrop;
+    //
+    //     // check source
+    //     // isDrop = sourceModel.get('who') !== 'vag'; // vag can't be moved
+    //     // if (isDrop) { // can be moved cont in avto, gruz in avto
+    //     isDrop = sourceParentModel.get('who') !== 'cont';
+    //     // }
+    //
+    //     // check target
+    //     if (isDrop) { // can be dropped only in avto
+    //         isDrop = targetModel.get('who') !== 'cont';
+    //     }
+    //     // if (isDrop) { // vag otpravka should be null or the same as in source parent model
+    //     //     isDrop = !targetModel.get('otpravka') || sourceParentModel.get('otpravka') === targetModel.get('otpravka');
+    //     // }
+    //
+    //     this.sourceVagModel = isDrop ? sourceParentModel : undefined; // save sourceParentModel to later use it in drop event
+    //
+    //     return isDrop;
+    // },
 
-        this.sortChildNodes(targetVagModel);
-
-        if (this.sourceVagModel.hasChildNodes()) {
-        //     this.sourceVagModel.set('otpravka', undefined);
-        // } else {
-            this.sortChildNodes(this.sourceVagModel);
-         }
-
-
-    },
-
-    onBeforedropToVag: function (targetModel, position, dragData) {
-        var sourceModel = dragData.records[0],
-            sourceParentModel = sourceModel.parentNode,
-            isDrop;
-
-        // check source
-        // isDrop = sourceModel.get('who') !== 'vag'; // vag can't be moved
-        // if (isDrop) { // can be moved cont in avto, gruz in avto
-        isDrop = sourceParentModel.get('who') !== 'cont';
-        // }
-
-        // check target
-        if (isDrop) { // can be dropped only in avto
-            isDrop = targetModel.get('who') !== 'cont';
-        }
-        // if (isDrop) { // vag otpravka should be null or the same as in source parent model
-        //     isDrop = !targetModel.get('otpravka') || sourceParentModel.get('otpravka') === targetModel.get('otpravka');
-        // }
-
-        this.sourceVagModel = isDrop ? sourceParentModel : undefined; // save sourceParentModel to later use it in drop event
-
-        return isDrop;
-    },
-
-    bindAvtoToAvto: function (btn) {
+    bindAvtoToAvto2: function (btn) {
         var dataObjLeft = {
             hid: this.getTreepanelLeft().getRootNode().get('hid'),
             direction: this.getTreepanelLeft().getRootNode().get('direction'),
@@ -347,9 +414,68 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
         });
     },
 
-    bind: function (dataObj, treepanel) {
+    bindAvtoToAvtoAndExit: function () {
+        this.bindAvtoToAvto(1);
+    },
 
-        var nodeModel = treepanel.getRootNode();
+    bindAvtoToAvto: function (close) {
+        var dataObjLeft = this.bindAvto(this.getTreepanelLeft().getRootNode());
+        var dataObjRight = this.bindAvtos(this.getTreepanelRight().getRootNode());
+
+        var url = 'ky2/secure/BindAvtoAndAvto.do';
+        this.getCenter().setLoading(true);
+        Ext.Ajax.request({
+            url: url,
+            params: {avtoObj: Ext.encode(dataObjLeft), avtosObj: Ext.encode(dataObjRight), action: 'bind_avto_to_avto'},
+            scope: this,
+            success: function (response) {
+                this.getCenter().setLoading(false);
+                if (Ext.isNumber(close)) {
+                    var closeBtn = this.getAvtoform().down('button[action="close"]');
+                    closeBtn.fireEvent('click',closeBtn);
+                }
+                else {
+                    var respObj = Ext.decode(response.responseText);
+                }
+            },
+            failure: function (response) {
+                this.getCenter().setLoading(false);
+                TK.Utils.makeErrMsg(response, 'Error...');
+            }
+        });
+    },
+
+
+    bindAvtos: function (rootNodeModel) {
+        var dataObj = [];
+
+        if (rootNodeModel.hasChildNodes()) {
+            var avtoIndex = 0;
+            rootNodeModel.eachChild(function (avtoNodeModel) {
+                dataObj.push(this.bindAvto(avtoNodeModel));
+                avtoIndex++;
+            }, this);
+        }
+
+        return dataObj;
+    },
+
+    bindAvto: function (rootNodeModel) {
+        var dataObj = {
+            hid: rootNodeModel.get('hid'),
+            direction: rootNodeModel.get('direction'),
+            no_avto: rootNodeModel.get('no_avto')
+        };
+
+        if (rootNodeModel.hasChildNodes()) {
+            dataObj = this.bind(dataObj, rootNodeModel);
+        }
+        return dataObj;
+    },
+
+    bind: function (dataObj, nodeModel) {
+
+        // var nodeModel = treepanel.getRootNode();
         this.bindConts(nodeModel, dataObj);
         this.bindGryzy(nodeModel, dataObj);
 
@@ -422,5 +548,94 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
                 gryzIndex++;
             }
         }, this);
+    },
+
+    checkBeforeMoveToAvto: function (records, targetModel) {
+        var isDrop = false;
+        for (var i = 0; i < records.length; i++) {
+            var sourceModel = records[i],
+                sourceParentModel = sourceModel.parentNode;
+
+            isDrop = false;
+            // check source
+            isDrop =  sourceModel.get('who') !== 'avto'; // avto can't be moved
+            if (isDrop) { // can be moved cont in vag, gruz in vag
+                isDrop = sourceParentModel.get('who') === 'avto';  // sourceParentModel can be only vag
+            }
+
+            // check target
+            if (isDrop) { // can be dropped only in avto
+                isDrop = targetModel.get('who') === 'avto';
+            }
+            // if (isDrop) { // vag otpravka should be null or the same as in source parent model
+            //     isDrop = !targetModel.get('otpravka') || sourceParentModel.get('otpravka') === targetModel.get('otpravka');
+            // }
+            if (isDrop) {
+                isDrop = sourceParentModel.get('hid') !== targetModel.get('hid'); // prevent dropping in same node
+            }
+
+            this.cacheDistinctSourceModels(isDrop, sourceParentModel, this.sourceAvtoModels);
+            if (!isDrop) {
+                break;
+            }
+        }
+        return isDrop;
+    },
+
+    cacheDistinctSourceModels: function (isDrop, sourceParentModel, sourceAvtoModels) {
+        if (isDrop) {    // save distinct sourceVagModels
+            var found = false;
+            for (var y = 0; y < sourceAvtoModels.length; y++) {
+                if (sourceAvtoModels[y].get('hid') === sourceParentModel.get('hid')) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                sourceAvtoModels.push(sourceParentModel); // save sourceParentModel to later use it in drop event
+            }
+        } else {
+            while (sourceAvtoModels.length) {
+                sourceAvtoModels.pop(); // clear array
+            }
+        }
+    },
+
+    beforeDropToAvto: function (targetModel, position, dragData) {
+        return this.checkBeforeMoveToAvto(dragData.records, targetModel);
+    },
+
+    afterDropToAvto: function (records, targetAvtoModel) {
+        var sourceModel = records[0];   // all models go in one place
+
+        // if (sourceModel.get('who') === 'cont') {
+        //     targetAvtoModel.set('otpravka', 'CONT');
+        // } else if (sourceModel.get('who') === 'gryz') {
+        //     targetAvtoModel.set('otpravka', 'GRUZ');
+        // }
+
+        this.sortChildNodes(targetAvtoModel);
+        for (var i = 0; i < this.sourceAvtoModels.length; i++) {
+            if (this.sourceAvtoModels[i].childNodes != null && this.sourceAvtoModels[i].hasChildNodes()) {
+            //     this.sourceAvtoModels[i].set('otpravka', undefined);
+            // } else {
+                this.sortChildNodes(this.sourceAvtoModels[i]);
+            }
+        }
+        //
+        // for (var i = 0; i < records.length; i++) {
+        //     records[i].set('poezdHid', targetAvtoModel.get('poezdHid'));
+        //     records[i].set('vagHid', targetAvtoModel.get('hid'))
+        // }
+
+        this.getTreepanelLeft().getSelectionModel().deselectAll(true);
+        this.getTreepanelRight().getSelectionModel().deselectAll(true);
+        this.selectedNodesLeft = [];
+        this.selectedNodesRight = [];
+        this.sourceVagModels = [];
+    },
+
+    dropToAvto: function (node, dragData, targetAvtoModel, dropPosition) {
+        this.afterDropToAvto(dragData.records, targetAvtoModel);
     }
 });

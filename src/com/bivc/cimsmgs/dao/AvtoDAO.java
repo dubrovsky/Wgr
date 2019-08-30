@@ -25,4 +25,8 @@ public interface AvtoDAO extends GenericDAO<Avto, Long> {
 
     Long countAvtosDir(List<Filter> filters, Usr usr, Long routeId, Byte direction);
 
+    List<Avto> findAllPresentAvtos(Usr usr, long routeId, Byte direction);
+
+    List<Avto> findByIds(List<Long> ids);
+
 }

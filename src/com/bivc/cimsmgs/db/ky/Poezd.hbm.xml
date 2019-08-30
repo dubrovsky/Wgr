@@ -47,11 +47,23 @@
             <column length="7" name="DOTP"/>
         </property>
 
-        <property name="punkt_otpr" type="string">
-            <column length="96" name="PUNKT_OTPR"/>
+        <property name="ksto_f" type="string">
+            <column length="96" name="KSTO_F"/>
         </property>
-        <property name="punkt_nazn" type="string">
-            <column length="96" name="PUNKT_NAZN"/>
+        <property name="nsto_f" type="string">
+            <column length="96" name="NSTO_F"/>
+        </property>
+        <property name="admon_f" type="string">
+            <column length="96" name="ADMON_F"/>
+        </property>
+        <property name="kstn" type="string">
+            <column length="96" name="KSTN"/>
+        </property>
+        <property name="nstn" type="string">
+            <column length="96" name="NSTN"/>
+        </property>
+        <property name="admnn" type="string">
+            <column length="96" name="ADMNN"/>
         </property>
         <property name="gruzotpr" type="string">
             <column length="128" name="GRUZOTPR"/>

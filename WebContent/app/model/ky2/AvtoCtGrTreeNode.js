@@ -58,6 +58,11 @@ Ext.define('TK.model.ky2.AvtoCtGrTreeNode', {
         {name: 'places', type: 'int', useNull: true},
         {name: 'massa', type: 'int', useNull: true},
 
+        // plomb
+        'znak',
+        'station',
+        {name: 'kpl', type: 'int', useNull: true},
+
         // tree node fields
         'who',
         'iconCls',

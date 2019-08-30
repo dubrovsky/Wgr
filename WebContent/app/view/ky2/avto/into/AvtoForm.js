@@ -14,33 +14,36 @@ Ext.define('TK.view.ky2.avto.into.AvtoForm', {
         buildItems: function(config) {
             TK.view.ky2.avto.BaseAvtoForm.prototype.buildItems.apply(this, arguments);     // callParent doesn't work in inline override
             //this.callParent(arguments);
-            // config.items[0].items.splice(0, 0, {
-            //     xtype:'fieldset',
-            //     title: 'Прибытие',
-            //     layout: 'anchor',
-            //     defaults: {
-            //         anchor: '100%'
-            //     },
-            //     width:250,
-            //     items: [{
-            //         fieldLabel:'Дата',
-            //         name : 'dprbDate',
-            //         xtype: 'datefield',
-            //         altFormats:'d.m.y'
-            //     },{
-            //         fieldLabel:'Время',
-            //         name : 'dprbTime',
-            //         xtype: 'timefield',
-            //         //snapToIncrement: true,
-            //         altFormats:'H:i'
-            //     }]
-            // });
-            config.items[0].items.splice(0, 0, {
-                fieldLabel:'Прибытие',
-                name : 'dprbDate',
-                xtype: 'datefield',
-                altFormats:'d.m.y'
+            config.items.splice(0, 0, {
+                xtype:'fieldset',
+                title: 'Прибытие',
+                layout: 'anchor',
+                defaults: {
+                    anchor: '100%'
+                },
+                width:450,
+                items: [{
+                    labelWidth: '145px',
+                    fieldLabel:'Дата',
+                    name : 'dprbDate',
+                    xtype: 'datefield',
+                    altFormats:'d.m.y'
+                },{
+                    labelWidth: '145px',
+                    fieldLabel:'Время',
+                    name : 'dprbTime',
+                    xtype: 'timefield',
+                    //snapToIncrement: true,
+                    // altFormats:'H:i',
+                    format:'H:i'
+                }]
             });
+            // config.items[0].items.splice(0, 0, {
+            //     fieldLabel:'Прибытие',
+            //     name : 'dprbDate',
+            //     xtype: 'datefield',
+            //     altFormats:'d.m.y'
+            // });
         },
         /*buildItems: function(config) {
             config.items = [{
@@ -135,7 +138,7 @@ Ext.define('TK.view.ky2.avto.into.AvtoForm', {
                 now = new Date();
             //form.findField('dprb').setValue(now);
                 form.findField('dprbDate').setValue(now);
-                // form.findField('dprbTime').setValue(now);
+                form.findField('dprbTime').setValue(now);
         },
         buildTopToolbar: function(config){
             TK.view.ky2.avto.BaseAvtoForm.prototype.buildTopToolbar.apply(this, arguments);

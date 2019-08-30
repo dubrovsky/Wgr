@@ -1,9 +1,11 @@
 package com.bivc.cimsmgs.actions.ky2;
 
 import com.bivc.cimsmgs.actions.CimSmgsSupport_A;
+import com.bivc.cimsmgs.commons.Constants;
 import com.bivc.cimsmgs.commons.Filter;
 import com.bivc.cimsmgs.commons.HibernateUtil;
 import com.bivc.cimsmgs.commons.Response;
+import com.bivc.cimsmgs.dao.KontGruzHistoryDAO;
 import com.bivc.cimsmgs.dao.PoezdDAO;
 import com.bivc.cimsmgs.dao.VagonDAO;
 import com.bivc.cimsmgs.db.PackDoc;
@@ -13,6 +15,7 @@ import com.bivc.cimsmgs.doc2doc.Mapper;
 import com.bivc.cimsmgs.dto.ky.PoezdBaseDTO;
 import com.bivc.cimsmgs.dto.ky.PoezdDTO;
 import com.bivc.cimsmgs.dto.ky2.PoezdImportDTO;
+import com.bivc.cimsmgs.exchange.KYPoezdLoader;
 import com.bivc.cimsmgs.formats.json.Deserializer;
 import com.bivc.cimsmgs.formats.json.Serializer;
 import com.bivc.cimsmgs.services.ky.IPoezdService;
@@ -28,8 +31,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.File;
 import java.util.*;
-
+import static com.bivc.cimsmgs.actions.CimSmgsSupport_A.KontGruzHistoryType.POEZD;
 /**
  * Created by peter on 21.02.14.
  */
@@ -59,6 +63,8 @@ public class Poezd_A extends CimSmgsSupport_A {
                     return importPoezdList();
                 case IMPORT_POESD:
                     return importPoezd();
+                case UPLOAD:
+                    return uploadPoezd();
                 default:
                     throw new RuntimeException("Unknown action");
             }
@@ -109,7 +115,8 @@ public class Poezd_A extends CimSmgsSupport_A {
         List<PoezdImportDTO> poezdImportDTOS = new ArrayList<>(st.getRowCount());
         for (int i = 0; i < st.getRowCount(); i++) {
             poezdImportDTOS.add(
-                    new PoezdImportDTO(st.getTxt(i, "DATTR"), st.getTxt(i, "N_POEZD"), st.getTxt(i, "N_PACKET"), st.getTxt(i, "VED_NOMER"), st.getTxt(i, "COUNT_NVAG"))
+                    new PoezdImportDTO(st.getTxt(i, "DATTR"), st.getTxt(i, "N_POEZD"), st.getTxt(i, "N_PACKET"),
+                            st.getTxt(i, "VED_NOMER"), st.getTxt(i, "COUNT_NVAG"), st.getTxt(i, "STO_F"), st.getTxt(i, "STN"))
             );
 //            System.out.println(
 //                    "DATTR: " + st.getTxt(i, "DATTR") + ", " +
@@ -432,6 +439,17 @@ public class Poezd_A extends CimSmgsSupport_A {
         return SUCCESS;
     }
 
+    public String uploadPoezd() throws Exception {
+        log.info("uploadPoezd");
+        Poezd poezd = poezdDAO.findById(getHid(), false);
+        Map<String, List<?>> hist = new KYPoezdLoader().load(fileData, poezd);
+//        HibernateUtil.getSession().save(pd);
+        saveContGruzHistory(hist, kontGruzHistoryDAO, POEZD);
+        setJSONData(Constants.convert2JSON_True());
+        return SUCCESS;
+    }
+
+    private File fileData;
     private String action;
     private Byte direction;
     private Byte koleya;
@@ -439,6 +457,14 @@ public class Poezd_A extends CimSmgsSupport_A {
     private String n_packet;
     private String n_poezd;
     private String ved_nomer;
+
+    public void setUpload(File file) {
+        this.fileData = file;
+    }
+
+    public File getUpload() {
+        return this.fileData;
+    }
 
     public void setN_packet(String n_packet) {
         this.n_packet = n_packet;
@@ -452,12 +478,14 @@ public class Poezd_A extends CimSmgsSupport_A {
         this.ved_nomer = ved_nomer;
     }
 
-    enum Action {LIST, EDIT, SAVE, DELETE, POEZDS_DIR_FOR_POEZD_BIND, CREATE_POEZDOUT_FROM_POEZDINTO, IMPORT_POEZD_LIST, IMPORT_POESD}
+    enum Action {LIST, EDIT, SAVE, DELETE, POEZDS_DIR_FOR_POEZD_BIND, CREATE_POEZDOUT_FROM_POEZDINTO, IMPORT_POEZD_LIST, IMPORT_POESD, UPLOAD}
 
     private List<Filter> filters;
     private String filter;
     private String jsonRequest;
 
+    @Autowired
+    private KontGruzHistoryDAO kontGruzHistoryDAO;
     @Autowired
     private PoezdDAO poezdDAO;
     @Autowired

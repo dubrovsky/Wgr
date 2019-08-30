@@ -4,8 +4,6 @@ import com.bivc.cimsmgs.actions.CimSmgsSupport_A;
 import com.bivc.cimsmgs.commons.Response;
 import com.bivc.cimsmgs.dao.KontGruzHistoryDAO;
 import com.bivc.cimsmgs.dao.PoezdDAO;
-import com.bivc.cimsmgs.db.ky.Kont;
-import com.bivc.cimsmgs.db.ky.KontGruzHistory;
 import com.bivc.cimsmgs.db.ky.Poezd;
 import com.bivc.cimsmgs.doc2doc.orika.Mapper;
 import com.bivc.cimsmgs.dto.ky2.PoezdDTO;
@@ -16,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -68,9 +65,8 @@ public class PoezdVgCtGr_A extends CimSmgsSupport_A {
         Poezd poezd = poezdDAO.findById(dto.getHid(), false);
         final Map<String, List<?>> contGruz4History = poezd.updateVags(dto.getVagons(), mapper);
         poezd = poezdDAO.makePersistent(poezd);
-        poezdDAO.flush(); // to get ids
-
         saveContGruzHistory(contGruz4History, kontGruzHistoryDAO, POEZD);
+        poezdDAO.flush(); // to get ids
 
         setJSONData(
                 defaultSerializer

@@ -82,6 +82,7 @@ Ext.application({
         'ky2.AvtoController',
         'ky2.AvtoCtGrController',
         'ky2.BindAvtoAndAvtoController',
+        'ky2.ReportController',
 
         'ky2.YardController'
     ],

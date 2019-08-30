@@ -9,6 +9,7 @@ Ext.define('TK.model.ky2.AvtoBindTreeNode', {
         // avto
         {name:'direction', type:'int'},
         {name:'no_avto', type:'string'},
+        {name:'hid_avto', type:'int'},
 
         // vag
         {name: 'nvag', type: 'string'},

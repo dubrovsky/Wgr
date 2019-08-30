@@ -34,6 +34,9 @@
         <property name="no_trail" type="string">
             <column length="250" name="NO_TRAIL"/>
         </property>
+        <property name="driver_fio" type="string">
+            <column length="250" name="DRIVER_FIO"/>
+        </property>
         <property name="otp_cargo" type="string">
             <column length="500" name="OTP_CARGO"/>
         </property>

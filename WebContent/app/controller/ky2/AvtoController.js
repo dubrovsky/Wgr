@@ -67,12 +67,12 @@ Ext.define('TK.controller.ky2.AvtoController', {
             'ky2avtooutlist button[action="delete"]': {
                 click: this.deleteAvto
             },
-            'ky2avtointolist button[action="showAvtosOutDir4AvtoIntoBind"]': {
-                click: this.showAvtosOutDir4AvtoIntoBind
-            },
-            'ky2avtooutlist button[action="showAvtosIntoDir4AvtoOutBind"]': {
-                click: this.showAvtosIntoDir4AvtoOutBind
-            },
+            // 'ky2avtointolist button[action="showAvtosOutDir4AvtoIntoBind"]': {
+            //     click: this.showAvtosOutDir4AvtoIntoBind
+            // },
+            // 'ky2avtooutlist button[action="showAvtosIntoDir4AvtoOutBind"]': {
+            //     click: this.showAvtosIntoDir4AvtoOutBind
+            // },
             'ky2avtointoform button[action="saveExit"]': {
                 click: this.saveExit
             },

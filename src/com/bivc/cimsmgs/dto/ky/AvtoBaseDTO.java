@@ -24,6 +24,7 @@ public class AvtoBaseDTO {
     private String type_avto;
     private String no_avto;
     private String no_trail;
+    private String driver_fio;
     private String otp_cargo;
     private String pol_cargo;
     private String departure;
@@ -105,6 +106,14 @@ public class AvtoBaseDTO {
             }
         }
         return this.dprb;
+    }
+
+    public String getDriver_fio() {
+        return driver_fio;
+    }
+
+    public void setDriver_fio(String driver_fio) {
+        this.driver_fio = driver_fio;
     }
 
     public void setDprb(Date dprb) {

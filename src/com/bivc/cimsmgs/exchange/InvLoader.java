@@ -2,11 +2,11 @@ package com.bivc.cimsmgs.exchange;
 
 import com.bivc.cimsmgs.db.*;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.ss.util.CellReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,13 +19,15 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.TreeMap;
 
+import static com.bivc.cimsmgs.exchange.Utils.*;
+
 public class InvLoader {
 
   final static private Logger log = LoggerFactory.getLogger(InvLoader.class);
-  public static final SimpleDateFormat dateTimeFormater = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-  public static final SimpleDateFormat dateFormater = new SimpleDateFormat("dd.MM.yyyy");
-  public static final SimpleDateFormat dateTimeFormater_slash = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-  public static final SimpleDateFormat dateFormater_slash = new SimpleDateFormat("dd/MM/yyyy");
+  public static final FastDateFormat dateTimeFormater = FastDateFormat.getInstance("dd.MM.yyyy HH:mm:ss");
+  public static final FastDateFormat dateFormater = FastDateFormat.getInstance("dd.MM.yyyy");
+  public static final FastDateFormat dateTimeFormater_slash = FastDateFormat.getInstance("dd/MM/yyyy HH:mm:ss");
+  public static final FastDateFormat dateFormater_slash = FastDateFormat.getInstance("dd/MM/yyyy");
   public static final DecimalFormat invFormat = new DecimalFormat("0000000");
 
   private TreeMap<String, ArrayList<CimSmgsInvoice>> invMap = null;
@@ -309,55 +311,6 @@ public class InvLoader {
     }
 
     log.debug("Create " + res.size() + " documents");
-    return res;
-  }
-
-  private Cell getCell(Sheet sheet, int row, String col) {
-    int colNum = CellReference.convertColStringToIndex(col);
-    org.apache.poi.ss.usermodel.Row r = sheet.getRow(row - 1);
-    if (r != null)
-      return r.getCell(colNum, org.apache.poi.ss.usermodel.Row.CREATE_NULL_AS_BLANK);
-    else
-      return null;
-  }
-
-  private String getStrVal(Sheet sheet, int row, String col) {
-    String res = "";
-    Cell c = getCell(sheet, row, col);
-    if (c != null) {
-      switch (c.getCellType()) {
-        case Cell.CELL_TYPE_STRING:
-        case Cell.CELL_TYPE_BLANK:
-          res = c.getStringCellValue();
-          break;
-        case Cell.CELL_TYPE_NUMERIC:
-          res = new BigDecimal(c.getNumericCellValue()).toString();
-          break;
-      }
-    }
-    return res.trim();
-  }
-
-  private BigDecimal getNumVal(Sheet sheet, int row, String col) {
-    BigDecimal res = null;
-    Cell c = getCell(sheet, row, col);
-    if (c != null) {
-      switch (c.getCellType()) {
-        case Cell.CELL_TYPE_STRING:
-          try {
-            res = new BigDecimal(c.getStringCellValue().trim().replaceAll(",", "."));
-          }
-          catch (NumberFormatException efe) {
-            log.warn("Error convert " + col + row + " (" + c.getStringCellValue() + ") to number");
-          }
-          break
-                  ;
-        case Cell.CELL_TYPE_NUMERIC:
-        case Cell.CELL_TYPE_FORMULA:
-          res = new BigDecimal(c.getNumericCellValue());
-          break;
-      }
-    }
     return res;
   }
 

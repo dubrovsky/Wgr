@@ -31,10 +31,14 @@ public class PoezdBaseDTO {
     private Byte koleya;
     private Byte direction;
     private String gruzotpr;
-    private String punkt_otpr;
-    private String punkt_nazn;
     private Integer vagCount;
     private Integer kontCount;
+    private String ksto_f;
+    private String nsto_f;
+    private String admon_f;
+    private String kstn;
+    private String nstn;
+    private String admnn;
 
     @JsonSerialize(using = DateTimeSerializer.class)
     private Date dattr;
@@ -67,6 +71,54 @@ public class PoezdBaseDTO {
     private Date dotpTime;
 
     public PoezdBaseDTO() {}
+
+    public String getKsto_f() {
+        return ksto_f;
+    }
+
+    public void setKsto_f(String ksto_f) {
+        this.ksto_f = ksto_f;
+    }
+
+    public String getNsto_f() {
+        return nsto_f;
+    }
+
+    public void setNsto_f(String nsto_f) {
+        this.nsto_f = nsto_f;
+    }
+
+    public String getAdmon_f() {
+        return admon_f;
+    }
+
+    public void setAdmon_f(String admon_f) {
+        this.admon_f = admon_f;
+    }
+
+    public String getKstn() {
+        return kstn;
+    }
+
+    public void setKstn(String kstn) {
+        this.kstn = kstn;
+    }
+
+    public String getNstn() {
+        return nstn;
+    }
+
+    public void setNstn(String nstn) {
+        this.nstn = nstn;
+    }
+
+    public String getAdmnn() {
+        return admnn;
+    }
+
+    public void setAdmnn(String admnn) {
+        this.admnn = admnn;
+    }
 
     public PoezdBaseDTO(Long hid) {
         this.hid = hid;
@@ -241,19 +293,4 @@ public class PoezdBaseDTO {
         this.gruzotpr = gruzotpr;
     }
 
-    public String getPunkt_otpr() {
-        return punkt_otpr;
-    }
-
-    public void setPunkt_otpr(String punkt_otpr) {
-        this.punkt_otpr = punkt_otpr;
-    }
-
-    public String getPunkt_nazn() {
-        return punkt_nazn;
-    }
-
-    public void setPunkt_nazn(String punkt_nazn) {
-        this.punkt_nazn = punkt_nazn;
-    }
 }

@@ -101,6 +101,10 @@ Ext.define('TK.controller.ky2.PoezdController', {
             'ky2poezdoutform button[action="saveExit"]': {
                 click: this.saveExit
             },
+            'ky2poezdintoform button[action=upload]': {
+                click: this.uploadPoezd
+            },
+
             // 'ky2basepoezdform radiogroup#koleya': {
             //     change: this.onKoleyaChange
             // }
@@ -119,10 +123,68 @@ Ext.define('TK.controller.ky2.PoezdController', {
             'ky2bindtreeform button[action=editPoezd]': {
                 click: this.editPoezdFromOutside
             }
-
-
         });
     },
+
+    uploadPoezd: function(btn, url){
+        var record = this.getPoezdform().getRecord(),
+            poezdHid = record.get('hid');
+        if (poezdHid == null) {
+            Ext.Msg.alert(this.warningMsg, this.warningText);
+            return false;
+        }
+
+        var menuItem    = this.getMenutree().lastSelectedLeaf,
+            routeId     = menuItem.id.split('_')[2];
+            // avisoType   = menuItem.id.split('_')[3],
+            // doc = tkUser.docs.get(avisoType),
+            // grid        = btn.up('grid');
+        var win = Ext.create('Ext.window.Window', {
+            title: this.titleUpload,
+            width: 600, y:1, modal:true,
+            layout: 'fit',
+            items: {
+                xtype:'form',
+                autoHeight:true,
+                bodyStyle: 'padding: 10px 10px 0 10px;',
+                labelWidth: 40,
+                items: [
+                    {xtype: 'filefield', emptyText: this.labelSelectFile, fieldLabel: this.labelFile, name: 'upload', buttonText: this.btnSearch, anchor: '100%'},
+                    {xtype: 'hidden', name:'hid', value: poezdHid}
+                    // {xtype: 'hidden', name:'search.docId', value: doc['hid']},
+                    // {xtype: 'hidden', name:'search.type', value: doc['type']},
+                    // {xtype: 'hidden', name:'status', value: 2}
+                ],
+                buttons: [{
+                    text: this.btnSave,
+                    handler: function(btn) {
+                        var form = btn.up('form').getForm();
+                        if(form.isValid()){
+                            form.submit({
+                                url: 'ky2/secure/Poezd.do',
+                                params: {action: 'upload'},
+                                waitMsg: this.waitMsg,
+                                scope: this,
+                                success: function(form, action) {
+                                    form.reset();
+                                    Ext.Msg.alert(this.warningMsg, this.uploadText);
+                                    btn.up('window').close();
+                                }
+                                ,failure: function(form, action) {
+                                    TK.Utils.makeErrMsg(action.response, this.errorMsg);
+                                }
+                            });
+                        }
+                    },
+                    scope:this
+                }, {
+                    text: this.btnClose,
+                    handler: function(btn){btn.up('window').close();}
+                }]
+            }
+        }).show();
+    },
+
 
     toVgCtGrFromOutside: function (btn) {
         var rootNode = btn.up('panel').down('treepanel').getRootNode();
@@ -275,9 +337,8 @@ Ext.define('TK.controller.ky2.PoezdController', {
                     if (success) {
                         if (Ext.isNumber(close)) {
                             var closeBtn = form.down('button[action="close"]');
-                            closeBtn.fireEvent('click',closeBtn);
-                        }
-                        else {
+                            closeBtn.fireEvent('click', closeBtn);
+                        } else {
                             form.loadRecord(poezd);
                             if (newPoezd) {       // packdoc will be available after save
                                 poezd.setPackDoc(Ext.create('TK.model.PackDoc', {hid: poezd.get('packDoc.hid')}));
@@ -311,7 +372,11 @@ Ext.define('TK.controller.ky2.PoezdController', {
             store = win.down('grid').getStore(),
             poezdModel = poezdlist.getSelectionModel().getLastSelected();
 
-        store.getProxy().extraParams = {action: 'poezds_dir_for_poezd_bind', direction: direction, routeId: poezdModel.get('route.hid')};
+        store.getProxy().extraParams = {
+            action: 'poezds_dir_for_poezd_bind',
+            direction: direction,
+            routeId: poezdModel.get('route.hid')
+        };
         store.load();
     },
 
@@ -326,14 +391,14 @@ Ext.define('TK.controller.ky2.PoezdController', {
             poezdModel = poezdlist.getSelectionModel().getLastSelected();
 
         store.load({
-             params: {
-                 action: 'import_poezd_list'/*,
+            params: {
+                action: 'import_poezd_list'/*,
                  routeId: poezdModel.get('route.hid')*/
-             }
+            }
         });
     },
 
-    importPoesd: function() {
+    importPoesd: function () {
         var poezdlist = this.getPoezdlist(),
             poezdModel = poezdlist.getSelectionModel().getLastSelected(),
             poezdsDir = this.getPoezdsImportDir().getSelectionModel().getSelection(),
@@ -386,21 +451,21 @@ Ext.define('TK.controller.ky2.PoezdController', {
                 return "";
         }
     },
-    createPoezdOutFromPoezdInto: function(btn){
+    createPoezdOutFromPoezdInto: function (btn) {
         var poezdlist = this.getPoezdlist();
-        if(!TK.Utils.isRowSelected(poezdlist)){
+        if (!TK.Utils.isRowSelected(poezdlist)) {
             return false;
         }
 
         var poezd = poezdlist.getSelectionModel().getLastSelected();
         Ext.Msg.show({
-            title:'Подтверждение',
+            title: 'Подтверждение',
             msg: 'Создать поезд по отправлению?',
             buttons: Ext.Msg.YESNO,
             icon: Ext.Msg.QUESTION,
             scope: this,
-            fn: function(buttonId) {
-                if(buttonId === 'yes'){
+            fn: function (buttonId) {
+                if (buttonId === 'yes') {
                     this.getCenter().setLoading(true);
                     Ext.Ajax.request({
                         url: poezd.getProxy().url,
@@ -409,7 +474,7 @@ Ext.define('TK.controller.ky2.PoezdController', {
                             hid: poezd.get('hid')
                         },
                         scope: this,
-                        success: function(response, options) {
+                        success: function (response, options) {
                             this.getCenter().setLoading(false);
                             Ext.Msg.show({
                                 title: '',
@@ -419,7 +484,7 @@ Ext.define('TK.controller.ky2.PoezdController', {
                             });
                             // var text = Ext.decode(response.responseText);
                         },
-                        failure: function(response){
+                        failure: function (response) {
                             this.getCenter().setLoading(false);
                             TK.Utils.makeErrMsg(response, 'Error...');
                         }

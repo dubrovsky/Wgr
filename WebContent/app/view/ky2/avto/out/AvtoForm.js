@@ -14,33 +14,35 @@ Ext.define('TK.view.ky2.avto.out.AvtoForm', {
         buildItems: function (config) {
             TK.view.ky2.avto.BaseAvtoForm.prototype.buildItems.apply(this, arguments);     // callParent doesn't work in inline override
             //this.callParent(arguments);
-            // config.items[0].items.splice(0, 0, {
-            //     xtype: 'fieldset',
-            //     title: 'Отправление',
-            //     layout: 'anchor',
-            //     defaults: {
-            //         anchor: '100%'
-            //     },
-            //     width: 250,
-            //     items: [{
-            //         fieldLabel: 'Дата',
-            //         name: 'dotpDate',
-            //         xtype: 'datefield',
-            //         altFormats: 'd.m.y'
-            //     }, {
-            //         fieldLabel: 'Время',
-            //         name: 'dotpTime',
-            //         xtype: 'timefield',
-            //         //snapToIncrement: true,
-            //         altFormats: 'H:i'
-            //     }]
-            // });
-            config.items[0].items.splice(0, 0, {
-                fieldLabel:'Отправление',
-                name : 'dotpDate',
-                xtype: 'datefield',
-                altFormats:'d.m.y'
+            config.items.splice(0, 0, {
+                xtype:'fieldset',
+                title: 'Отправление',
+                layout: 'anchor',
+                defaults: {
+                    anchor: '100%'
+                },
+                width:450,
+                items: [{
+                    labelWidth: '145px',
+                    fieldLabel:'Дата',
+                    name : 'dotpDate',
+                    xtype: 'datefield',
+                    altFormats:'d.m.y'
+                },{
+                    labelWidth: '145px',
+                    fieldLabel:'Время',
+                    name : 'dotpTime',
+                    xtype: 'timefield',
+                    // altFormats:'H:i'
+                    format:'H:i'
+                }]
             });
+            // config.items[0].items.splice(0, 0, {
+            //     fieldLabel:'Отправление',
+            //     name : 'dotpDate',
+            //     xtype: 'datefield',
+            //     altFormats:'d.m.y'
+            // });
         },
 
         /*buildItems: function(config) {
@@ -136,7 +138,7 @@ Ext.define('TK.view.ky2.avto.out.AvtoForm', {
                 now = new Date();
             //form.findField('dotp').setValue(now);
             form.findField('dotpDate').setValue(now);
-            // form.findField('dotpTime').setValue(now);
+            form.findField('dotpTime').setValue(now);
         },
         buildTopToolbar: function (config) {
             TK.view.ky2.poezd.BasePoezdForm.prototype.buildTopToolbar.apply(this, arguments);

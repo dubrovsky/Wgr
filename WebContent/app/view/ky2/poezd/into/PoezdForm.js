@@ -81,6 +81,11 @@ Ext.define('TK.view.ky2.poezd.into.PoezdForm', {
         },
         buildTopToolbar: function(config){
             TK.view.ky2.poezd.BasePoezdForm.prototype.buildTopToolbar.apply(this, arguments);
+            config.tbar.push(
+                {text: 'Загрузить', iconCls:'upload', action:'upload'}
+            );
+
+
         }
     }]
 });

@@ -38,17 +38,29 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
         ref: 'addGryzBtn',
         selector: 'ky2avtoctgrtreeform button[action=addGryz]'
     }, {
+        ref: 'addPlombBtn',
+        selector: 'ky2avtoctgrtreeform button[action=addPlomb]'
+    }, {
         ref: 'delBtn',
         selector: 'ky2avtoctgrtreeform button[action=del]'
     }, {
         ref: 'saveBtn',
         selector: 'ky2avtoctgrtreeform button[action=save]'
     }, {
+        ref: 'closeBtn',
+        selector: 'ky2avtoctgrtreeform button[action=close]'
+    }, {
+        ref: 'saveExitBtn',
+        selector: 'ky2avtoctgrtreeform button[action=saveExit]'
+    }, {
         ref: 'vagpanel',
         selector: 'ky2avtoctgrtreeform > tabpanel > #vag'
     }, {
         ref: 'contpanel',
         selector: 'ky2avtoctgrtreeform > tabpanel > #cont'
+    }, {
+        ref: 'plombpanel',
+        selector: 'ky2avtoctgrtreeform > tabpanel > #plomb'
     }, {
         ref: 'gryzpanel',
         selector: 'ky2avtoctgrtreeform > tabpanel > #gryz'
@@ -76,11 +88,17 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
             'ky2avtoctgrtreeform button[action=addCont]': {
                 click: this.onAddContClick
             },
+            'ky2avtoctgrtreeform button[action=addPlomb]': {
+                click: this.onAddPlombClick
+            },
             'ky2avtoctgrtreeform button[action=del]': {
                 click: this.onDelClick
             },
             'ky2avtoctgrtreeform button[action=save]': {
                 click: this.onSaveClick
+            },
+            'ky2avtoctgrtreeform button[action=saveExit]': {
+                click: this.onSaveExit
             },
             'ky2avtoctgrtreeform > tabpanel > form field': {
                 blur: this.onVgCtGrFormUpdateData
@@ -118,6 +136,8 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
                 var rootNode = this.getTreepanel().getStore().getRootNode();
                 // rootNode.removeAll();
                 rootNode.set('hid', avtoObj['hid']);
+                rootNode.set('dprb', avtoObj['dprb']);
+                rootNode.set('direction', avtoObj['direction']);
                 // vagoncontainer.setPoezdId(poezdObj['hid']);
 
                 var konts = avtoObj['konts'];
@@ -147,49 +167,50 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
         });
     },
 
-    initVagsNodes: function (vags, rootNode) {
-        for (var vagIndx in vags) {
-            var vag = vags[vagIndx],
-                conts = vag['konts'],
-                gruzy = vag['gruzs'],
-                vagModel = Ext.create('TK.model.ky2.PoezdVgCtGrTreeNode', {
-                    text: vag['nvag'],
-                    who: 'vag',
-                    leaf: false,
-                    iconCls: 'vag',
-                    expanded: ((conts && conts['0']) || (gruzy && gruzy['0'])) && vagIndx == 0
-                });
+    // initVagsNodes: function (vags, rootNode) {
+    //     for (var vagIndx in vags) {
+    //         var vag = vags[vagIndx],
+    //             conts = vag['konts'],
+    //             gruzy = vag['gruzs'],
+    //             vagModel = Ext.create('TK.model.ky2.PoezdVgCtGrTreeNode', {
+    //                 text: vag['nvag'],
+    //                 who: 'vag',
+    //                 leaf: false,
+    //                 iconCls: 'vag',
+    //                 expanded: ((conts && conts['0']) || (gruzy && gruzy['0'])) && vagIndx == 0
+    //             });
+    //
+    //         this.getVagpanel().items.each(function (vagItem, index, length) {
+    //             if (vagItem.isXType('field')) {
+    //                 vagModel.set(vagItem.getName(), vag[vagItem.getName()]);
+    //             } else if (vagItem.isXType('fieldcontainer')) {
+    //                 vagItem.items.each(function (item, index, length) {
+    //                     if (item.isXType('field')) {
+    //                         vagModel.set(item.getName(), vag[item.getName()]);
+    //                     }
+    //                 });
+    //             }
+    //         });
+    //
+    //         rootNode.appendChild(vagModel);
+    //
+    //         if (vag['otpravka'] === 'CONT') {
+    //             if (conts && !Ext.Object.isEmpty(conts)) {
+    //                 this.initContsNodes(conts, vagIndx, vagModel);
+    //             }
+    //         } else if (vag['otpravka'] === 'GRUZ') {
+    //             if (gruzy && !Ext.Object.isEmpty(gruzy)) {
+    //                 this.initGryzyNodes(gruzy, vagModel, vagIndx);
+    //             }
+    //         }
+    //     }
+    // },
 
-            this.getVagpanel().items.each(function (vagItem, index, length) {
-                if (vagItem.isXType('field')) {
-                    vagModel.set(vagItem.getName(), vag[vagItem.getName()]);
-                } else if (vagItem.isXType('fieldcontainer')) {
-                    vagItem.items.each(function (item, index, length) {
-                        if (item.isXType('field')) {
-                            vagModel.set(item.getName(), vag[item.getName()]);
-                        }
-                    });
-                }
-            });
-
-            rootNode.appendChild(vagModel);
-
-            if (vag['otpravka'] === 'CONT') {
-                if (conts && !Ext.Object.isEmpty(conts)) {
-                    this.initContsNodes(conts, vagIndx, vagModel);
-                }
-            } else if (vag['otpravka'] === 'GRUZ') {
-                if (gruzy && !Ext.Object.isEmpty(gruzy)) {
-                    this.initGryzyNodes(gruzy, vagModel, vagIndx);
-                }
-            }
-        }
-    },
-
-    initContsNodes: function (conts, vagIndx, vagModel) {
+    initContsNodes: function (conts, vagIndx, avtoModel) {
         for (var contIndx in conts) {
             var cont = conts[contIndx],
                 gryzy = cont['gruzs'],
+                plombs = cont['plombs'],
                 contModel = Ext.create('TK.model.ky2.PoezdVgCtGrTreeNode', {
                     text: cont['nkon'],
                     who: 'cont',
@@ -209,10 +230,13 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
                     });
                 }
             });
-            vagModel.appendChild(contModel);
+            avtoModel.appendChild(contModel);
 
             if (gryzy && !Ext.Object.isEmpty(gryzy)) {
                 this.initGryzyNodes(gryzy, contModel, contIndx);
+            }
+            if (plombs && !Ext.Object.isEmpty(plombs)) {
+                this.initPlombsNodes(plombs, contModel, contIndx);
             }
         }
     },
@@ -243,6 +267,33 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
         }
     },
 
+    initPlombsNodes: function (plombs, parentModel, parentIndx) {
+        for (var plombIndx in plombs) {
+            var plomb = plombs[plombIndx],
+                plombModel = Ext.create('TK.model.ky2.PoezdVgCtGrTreeNode', {
+                    text: plomb['znak'],
+                    who: 'plomb',
+                    iconCls: 'doc_new',
+                    leaf: true,
+                    expanded: false
+                });
+
+            this.getPlombpanel().items.each(function (plombItem, index, length) {
+                if (plombItem.isXType('field')) {
+                    plombModel.set(plombItem.getName(), plomb[plombItem.getName()]);
+                } else if (plombItem.isXType('fieldcontainer')) {
+                    plombItem.items.each(function (item, index, length) {
+                        if (item.isXType('field')) {
+                            plombModel.set(item.getName(), plomb[item.getName()]);
+                        }
+                    });
+                }
+            });
+            parentModel.appendChild(plombModel);
+        }
+    },
+
+
     onTreeNodeClick: function (treepanel, record, item, index) {
         var tabBar = this.getTabpanel().getTabBar();
         if (tabBar.isHidden()) {
@@ -270,27 +321,28 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
         // change buttons visibillity
         if (this.getSaveBtn().isHidden()) {
             this.getSaveBtn().show();
+            this.getSaveExitBtn().show();
         }
         if (this.getDelBtn().isHidden()) {
             this.getDelBtn().show();
         }
 
         switch (newTabItemId) {
+            case 'plomb':
+                if (this.getAddPlombBtn().isVisible()) {
+                    this.getAddPlombBtn().hide();
+                }
+
+                break;
             case 'gryz':
-                if (record.parentNode.get('who') === 'vag') {
-                    if (this.getAddGryzBtn().isHidden()) {
-                        this.getAddGryzBtn().show();
-                    }
-                    if (this.getAddContBtn().isVisible()) {
-                        this.getAddContBtn().hide();
-                    }
-                } else {    // cont
-                    if (this.getAddGryzBtn().isHidden()) {
-                        this.getAddGryzBtn().show();
-                    }
-                    if (this.getAddContBtn().isHidden()) {
-                        this.getAddContBtn().show();
-                    }
+                if (this.getAddGryzBtn().isHidden()) {
+                    this.getAddGryzBtn().show();
+                }
+                if (this.getAddContBtn().isHidden()) {
+                    this.getAddContBtn().show();
+                }
+                if (this.getAddPlombBtn().isVisible()) {
+                    this.getAddPlombBtn().hide();
                 }
 
                 break;
@@ -301,33 +353,9 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
                 if (this.getAddGryzBtn().isHidden()) {
                     this.getAddGryzBtn().show();
                 }
-
-                break;
-            case 'vag':
-                if (record.get('otpravka') === 'CONT') {
-                    if (this.getAddGryzBtn().isVisible()) {
-                        this.getAddGryzBtn().hide();
-                    }
-                    if (this.getAddContBtn().isHidden()) {
-                        this.getAddContBtn().show();
-                    }
-
-                } else if (record.get('otpravka') === 'GRUZ') {
-                    if (this.getAddGryzBtn().isHidden()) {
-                        this.getAddGryzBtn().show();
-                    }
-                    if (this.getAddContBtn().isVisible()) {
-                        this.getAddContBtn().hide();
-                    }
-                } else {
-                    if (this.getAddGryzBtn().isHidden()) {
-                        this.getAddGryzBtn().show();
-                    }
-                    if (this.getAddContBtn().isHidden()) {
-                        this.getAddContBtn().show();
-                    }
+                if (this.getAddPlombBtn().isHidden()) {
+                    this.getAddPlombBtn().show();
                 }
-
                 break;
         }
     },
@@ -343,7 +371,8 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
                 leaf: true,
                 who: who,
                 iconCls: iconCls ? iconCls : who,
-                sort: sort
+                sort: sort,
+                dprb: parentModelNode.get('dprb')
             })
         );
 
@@ -377,9 +406,16 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
 
     onAddGryzClick: function (btn) {
         var selectedModelNode = this.getTreepanel().getSelectionModel().getLastSelected(),
-            parentModelNode;
-        if (selectedModelNode === undefined)
-            this.addCtGr(this.getTreepanel().getRootNode(), 'gryz');
+            parentModelNode,
+            contFound = false;
+        if (selectedModelNode === undefined) {
+            this.getTreepanel().getRootNode().eachChild(function (childNodeModel) {
+                if (childNodeModel.get('who') === 'cont')
+                    contFound = true;
+            });
+            if (!contFound)
+                this.addCtGr(this.getTreepanel().getRootNode(), 'gryz');
+        }
         else {
             switch (selectedModelNode.get('who')) {
                 // case 'vag':
@@ -397,18 +433,24 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
         }
     },
 
+    onAddPlombClick: function (btn) {
+        var selectedModelNode = this.getTreepanel().getSelectionModel().getLastSelected();
+        this.addCtGr(selectedModelNode, 'plomb', 'doc_new');
+    },
+
     onDelClick: function (btn) {
         var selectedModelNode = this.getTreepanel().getSelectionModel().getLastSelected();
         var parentModelNode = selectedModelNode.parentNode;
 
         selectedModelNode.remove(true, true);
         this.getDelBtn().hide();
-        this.getAddContBtn().hide();
+        // this.getAddContBtn().hide();
         this.getAddGryzBtn().hide();
+        this.getAddPlombBtn().hide();
 
-        if (parentModelNode && parentModelNode.get('who') === 'vag' && !parentModelNode.hasChildNodes()) {
-            parentModelNode.set('otpravka', undefined);
-        }
+        // if (parentModelNode && parentModelNode.get('who') === 'vag' && !parentModelNode.hasChildNodes()) {
+        //     parentModelNode.set('otpravka', undefined);
+        // }
 
         var index = 0;
         parentModelNode.eachChild(function (childNodeModel) { // resort
@@ -432,10 +474,15 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
             rec.set(field.getName(), newVal);
             if (field.getName() === 'kgvn' ||
                 field.getName() === 'nkon' ||
+                field.getName() === 'znak' ||
                 field.getName() === 'nvag') {
                 rec.set('text', newVal);
             }
         }
+    },
+
+    onSaveExit: function () {
+        this.onSaveClick(1);
     },
 
     onSaveClick: function (btn) {
@@ -454,18 +501,23 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
             params: {dataObj: Ext.encode(dataObj), action: 'save'},
             scope: this,
             success: function (response) {
+                if (Ext.isNumber(btn)) {
+                    this.getCloseBtn().fireEvent('click', this.getCloseBtn());
+                }
+                else {
+                    var respObj = Ext.decode(response.responseText);
+                    var avtoObj = respObj['rows'][0];
+                    var rootNode = this.getTreepanel().getStore().getRootNode();
+                    var konts = avtoObj['konts'];
+                    if (konts && !Ext.Object.isEmpty(konts)) {
+                        this.initHids(konts, rootNode);
+                    }
+                    var gruzs = avtoObj['gruzs'];
+                    if (gruzs && !Ext.Object.isEmpty(gruzs)) {
+                        this.initHids(gruzs, rootNode);
+                    }
+                }
                 this.getCenter().setLoading(false);
-                var respObj = Ext.decode(response.responseText);
-                var avtoObj = respObj['rows'][0];
-                var rootNode = this.getTreepanel().getStore().getRootNode();
-                var konts = avtoObj['konts'];
-                if (konts && !Ext.Object.isEmpty(konts)) {
-                    this.initHids(konts, rootNode);
-                }
-                var gruzs = avtoObj['gruzs'];
-                if (gruzs && !Ext.Object.isEmpty(gruzs)) {
-                    this.initHids(gruzs, rootNode);
-                }
             },
             failure: function (response) {
                 this.getCenter().setLoading(false);
@@ -569,7 +621,9 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
 
                 if (nodeModel.hasChildNodes()) {
                     this.saveGryzy(nodeModel, contDataObj);
+                    this.savePlombs(nodeModel, contDataObj);
                 }
+
                 // contIndex++;
                 // }, this);
             }
@@ -696,25 +750,48 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
 
         dataObj['gruzs'] = [];
         nodeModel.eachChild(function (gryzNodeModel) {
-            var gruzDataObj = {};
+            if (gryzNodeModel.get('who') === 'gryz') {
+                var gruzDataObj = {};
+                this.getGryzpanel().items.each(function (gryzItem, index, length) {
+                    if (gryzItem.isXType('field')) {
+                        gruzDataObj[gryzItem.getName()] = gryzNodeModel.get(gryzItem.getName());
+                    } else if (gryzItem.isXType('fieldcontainer')) {
+                        gryzItem.items.each(function (item) {
+                            if (item.isXType('field')) {
+                                gruzDataObj[item.getName()] = gryzNodeModel.get(item.getName());
+                            }
+                        }, this);
+                    }
+                }, this);
+                // gruzDataObj['sort'] = gryzIndex;
+                dataObj['gruzs'].push(gruzDataObj);
 
-            this.getGryzpanel().items.each(function (gryzItem, index, length) {
-                if (gryzItem.isXType('field')) {
-                    gruzDataObj[gryzItem.getName()] = gryzNodeModel.get(gryzItem.getName());
-                } else if (gryzItem.isXType('fieldcontainer')) {
-                    gryzItem.items.each(function (item) {
-                        if (item.isXType('field')) {
-                            gruzDataObj[item.getName()] = gryzNodeModel.get(item.getName());
-                        }
-                    }, this);
-                }
-            }, this);
-            // gruzDataObj['sort'] = gryzIndex;
-            dataObj['gruzs'].push(gruzDataObj);
+                gryzIndex++;
+            }
+        }, this);
+    },
 
-            gryzIndex++;
+    savePlombs: function (nodeModel, dataObj) {
+        dataObj['plombs'] = [];
+        nodeModel.eachChild(function (nodeModel) {
+            if (nodeModel.get('who') === 'plomb') {
+                var plombDataObj = {};
+                this.getPlombpanel().items.each(function (plombItem) {
+                    if (plombItem.isXType('field')) {
+                        plombDataObj[plombItem.getName()] = nodeModel.get(plombItem.getName());
+                    } else if (plombItem.isXType('fieldcontainer')) {
+                        plombItem.items.each(function (item) {
+                            if (item.isXType('field')) {
+                                plombDataObj[item.getName()] = nodeModel.get(item.getName());
+                            }
+                        }, this);
+                    }
+                }, this);
+                dataObj['plombs'].push(plombDataObj);
+            }
         }, this);
     }
+
 
 
 });

@@ -420,16 +420,16 @@ Ext.define('TK.view.ky2.PoezdVgCtGrTreeForm', {
             items: [
                 {
                     xtype:'textfield',
-                    fieldLabel: 'Станция наложения',
-                    name: 'station',
-                    width: 400,
-                    maxLength: 100
-                },{
-                    xtype:'textfield',
                     fieldLabel: 'Пломба',
                     name: 'znak',
                     width: 400,
                     maxLength: 10
+                },{
+                    xtype:'textfield',
+                    fieldLabel: 'Станция наложения',
+                    name: 'station',
+                    width: 400,
+                    maxLength: 100
                 },{
                     xtype:'numberfield',
                     fieldLabel: 'Количество',

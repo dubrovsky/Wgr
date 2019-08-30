@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -56,12 +57,12 @@ public class Vagon implements Serializable, Comparable<Vagon> {
     private Date bortDate;
     private String prim;
     private Long probeg;
-    private Float podSila;
+    private BigDecimal podSila;
 
     private Date plan_rem;
     private Date reviz;
     private Long type_no;
-    private Float dlina;
+    private BigDecimal dlina;
     private String model;
     private String line;
     private String foot;
@@ -118,11 +119,11 @@ public class Vagon implements Serializable, Comparable<Vagon> {
         this.model = model;
     }
 
-    public Float getDlina() {
+    public BigDecimal getDlina() {
         return dlina;
     }
 
-    public void setDlina(Float dlina) {
+    public void setDlina(BigDecimal dlina) {
         this.dlina = dlina;
     }
 
@@ -825,11 +826,11 @@ public class Vagon implements Serializable, Comparable<Vagon> {
         }
     }
 
-    public Float getPodSila() {
+    public BigDecimal getPodSila() {
         return podSila;
     }
 
-    public void setPodSila(Float podSila) {
+    public void setPodSila(BigDecimal podSila) {
         this.podSila = podSila;
     }
 

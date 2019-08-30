@@ -386,6 +386,10 @@ textarea.x-form-focus {
     color: red;
 }
 
+.train2 {
+    background: url(./../images/train.png)  no-repeat !important;
+}
+
 .select {
     background: url(./../images/select.png)  no-repeat !important;
 }

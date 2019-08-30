@@ -5,7 +5,11 @@ Ext.define('TK.view.ky2.avto.BaseAvtoList', {
     buildColumns:function (config) {
         config.columns = {
             items:[
-                {text:'ID', dataIndex:'hid', flex:1, maxWidth:100, minWidth:70},
+                {text:this.headerAvtoNum, dataIndex:'no_avto', flex:1},
+                {text:this.headerAvtoTrail, dataIndex:'no_trail', flex:1},
+                {text:this.headerDriverFam, dataIndex:'driver_fio', flex:1},
+                {text:this.headerDep, dataIndex:'departure', width:200},
+                {text:this.headerDest, dataIndex:'destination', width:200},
                 {
                     text:this.headerCreation,
                     columns: [{
@@ -20,10 +24,7 @@ Ext.define('TK.view.ky2.avto.BaseAvtoList', {
                         width: 100
                     }]
                 },
-                {text:this.headerAvtoNum, dataIndex:'no_avto', flex:1},
-                {text:this.headerAvtoTrail, dataIndex:'no_trail', width:100},
-                {text:this.headerDep, dataIndex:'departure', width:200},
-                {text:this.headerDest, dataIndex:'destination', width:200}
+                {text:'ID', dataIndex:'hid', flex:1, maxWidth:100, minWidth:70}
             ]
         };
 
@@ -37,7 +38,7 @@ Ext.define('TK.view.ky2.avto.BaseAvtoList', {
     },
     buildTopToolbar: function (config) {
         this.callParent(arguments);
-        config.tbar.splice(6, 0,
+        config.tbar.splice(3, 0,
             {text: '+Контейнер/Груз', iconCls:'edit', action:'editCtGr'},'-'/*,
             {text: '+Разместить на поезд', iconCls:'bind', action:'editVgCtGr'},'-'*/
         );

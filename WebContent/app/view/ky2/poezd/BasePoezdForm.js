@@ -67,17 +67,49 @@ Ext.define('TK.view.ky2.poezd.BasePoezdForm', {
             xtype:'textfield',
             width:400,
             labelWidth: 150,
-            fieldLabel: this.labelDep,
-            name: 'punkt_otpr',
-            maxLength: 96
+            fieldLabel: this.labelKstf,
+            name: 'ksto_f',
+            maxLength: 6
             // anchor: '99%'
         },{
             xtype:'textfield',
             width:400,
             labelWidth: 150,
-            fieldLabel: this.labelDest,
-            name: 'punkt_nazn',
-            maxLength: 96
+            fieldLabel: this.labelNstf,
+            name: 'nsto_f',
+            maxLength: 100
+            // anchor: '99%'
+        },{
+            xtype:'textfield',
+            width:400,
+            labelWidth: 150,
+            fieldLabel: this.labelAdmf,
+            name: 'admon_f',
+            maxLength: 3
+            // anchor: '99%'
+        },{
+            xtype:'textfield',
+            width:400,
+            labelWidth: 150,
+            fieldLabel: this.labelKstn,
+            name: 'kstn',
+            maxLength: 6
+            // anchor: '99%'
+        }, {
+            xtype:'textfield',
+            width:400,
+            labelWidth: 150,
+            fieldLabel: this.labelNstn,
+            name: 'nstn',
+            maxLength: 100
+            // anchor: '99%'
+        }, {
+            xtype:'textfield',
+            width:400,
+            labelWidth: 150,
+            fieldLabel: this.labelAdmn,
+            name: 'admnn',
+            maxLength: 3
             // anchor: '99%'
         }, {
             xtype: 'textfield',

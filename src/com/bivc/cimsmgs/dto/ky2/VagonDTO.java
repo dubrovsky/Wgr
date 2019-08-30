@@ -7,6 +7,7 @@ import com.bivc.cimsmgs.formats.json.serializers.DateTimeSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.TreeSet;
 
@@ -32,7 +33,7 @@ public class VagonDTO implements Comparable<VagonDTO> {
     private String line;
     private String nvag;
     private String kpv;
-    private Float podSila;
+    private BigDecimal podSila;
     private Integer kolOs;
     private Long masTar;
     private String foot;
@@ -105,11 +106,11 @@ public class VagonDTO implements Comparable<VagonDTO> {
         this.kpv = kpv;
     }
 
-    public Float getPodSila() {
+    public BigDecimal getPodSila() {
         return podSila;
     }
 
-    public void setPodSila(Float podSila) {
+    public void setPodSila(BigDecimal podSila) {
         this.podSila = podSila;
     }
 

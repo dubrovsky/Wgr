@@ -31,7 +31,7 @@ Ext.define('TK.view.ky2.avto.AvtoBindTreeForm', {
             xtype: 'treepanel',
             id: 'treepanelRight',
             store: this.buildTreeRightPanelStore(),
-            rootVisible: true,
+            rootVisible: false,
             flex: 1,
             viewConfig: this.buildTreeRightPanelViewConfig()
         }];
@@ -50,15 +50,37 @@ Ext.define('TK.view.ky2.avto.AvtoBindTreeForm', {
     },
 
     buildBottomToolbarItems: function() {
-        return ['->', {
-            text: 'Сохранить',
-            iconCls: 'save',
-            action: 'save'
-        }];
+        return [];
     },
 
     buildTopToolbarItems: function() {
-        return [];
+        return [{
+            xtype: 'tbfill',  // ->
+            hidden: false
+        // }, {
+        //     text: this.btnEditPoezd,
+        //     iconCls: 'edit',
+        //     action: 'editAvto'
+        // }, {
+        //     text: this.btnVgCtGr,
+        //     iconCls: 'edit',
+        //     action: 'editCtGr'
+        }, {
+            xtype: 'tbfill',  // ->
+            hidden: false
+        }, {
+            text: this.btnSave,
+            iconCls: 'save',
+            action: 'save'
+        }, {
+            text: this.btnSaveExit,
+            iconCls: 'save_close',
+            action: 'saveExit'
+        }, {
+            text: this.btnClose,
+            iconCls: 'close1',
+            action: 'close'
+        }];
     },
 
     buildTreeLeftPanelStore: function(){},
@@ -86,25 +108,25 @@ Ext.define('TK.view.ky2.avto.AvtoBindTreeForm', {
 
     buildTreeLeftPanelTools: function() {
         var me = this;
-        return [{
-            tooltip: 'Перенести все',
-            type: 'd-arrow-r',
-            itemId: 'moveAll',
-            margin: '0 10 0 0',
-            handler: function () {
-                me.fireEvent('onMoveAll', me);
-            }
-        }, {
-            tooltip: 'Перенести',
-            type: 's-arrow-r',
-            action: 'moveOne',
-            margin: '0 10 0 0',
-            handler: function () {
-                me.fireEvent('onMove', me);
-            }
-        }, {
-            xtype: 'component',
-            flex: 4
-        }]
+        // return [{
+        //     tooltip: 'Перенести все',
+        //     type: 'd-arrow-r',
+        //     itemId: 'moveAll',
+        //     margin: '0 10 0 0',
+        //     handler: function () {
+        //         me.fireEvent('onMoveAll', me);
+        //     }
+        // }, {
+        //     tooltip: 'Перенести',
+        //     type: 's-arrow-r',
+        //     action: 'moveOne',
+        //     margin: '0 10 0 0',
+        //     handler: function () {
+        //         me.fireEvent('onMove', me);
+        //     }
+        // }, {
+        //     xtype: 'component',
+        //     flex: 4
+        // }]
     }
 });

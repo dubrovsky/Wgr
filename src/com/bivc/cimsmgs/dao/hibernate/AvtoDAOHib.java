@@ -14,6 +14,7 @@ import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -75,6 +76,32 @@ public class AvtoDAOHib extends GenericHibernateDAO<Avto, Long> implements AvtoD
             crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 20 : limit);
         }
         crit.add(Restrictions.eq("direction", direction));
+
+        return listAndCast(crit);
+    }
+
+    @Override
+    public List<Avto> findByIds(List<Long> ids) {
+        Criteria crit = getSession().createCriteria(getPersistentClass());
+        crit.add(Restrictions.in("hid", ids));
+        return listAndCast(crit);
+    }
+
+    @Override
+    public List<Avto> findAllPresentAvtos(Usr usr, long routeId, Byte direction) {
+        Criteria crit = getSession().createCriteria(getPersistentClass());
+        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans()));
+        crit.createAlias("route", "route").add(Restrictions.eq("route.hid", routeId));
+        crit.add(Restrictions.eq("direction", direction));
+        if (direction == 2) { // out
+            crit.add(Restrictions.or(Restrictions.isNull("dotp"), Restrictions.gt("dotp", new Date())));
+        } else { // into
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(new Date());
+            cal.add(Calendar.DATE, -5);    // minus 5 days
+            Date dateBefore = cal.getTime();
+            crit.add(Restrictions.or(Restrictions.isNull("dprb"), Restrictions.between("dprb", dateBefore, new Date())));
+        }
 
         return listAndCast(crit);
     }

@@ -89,13 +89,13 @@
         <property name="massa_tar" type="java.lang.Long">
             <column precision="20" scale="0" name="MASSA_TAR"/>
         </property>
-        <property name="massa_brutto" type="java.lang.Long">
+        <property name="massa_brutto" type="java.math.BigDecimal">
             <column precision="20" scale="0" name="MASSA_BRUTTO"/>
         </property>
-        <property name="massa_brutto_all" type="java.lang.Long">
+        <property name="massa_brutto_all" type="java.math.BigDecimal">
             <column precision="20" scale="0" name="MASSA_BRUTTO_ALL"/>
         </property>
-        <property name="pod_sila" type="java.lang.Float">
+        <property name="pod_sila" type="java.math.BigDecimal">
             <column precision="20" scale="2" name="POD_SILA"/>
         </property>
         <property name="type" type="string">

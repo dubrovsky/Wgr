@@ -538,8 +538,8 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
                 for (var y = 0; y < this.sourceYardModels.length; y++) { // // this.sourceYardModels here yardsectors
                     // if (records[i].get('yardSectorHid') === this.sourceYardModels[y].get('hid')) {
                     if (records[i].get('yardHid') === this.sourceYardModels[y].get('hid')) {
-                        this.sourceYardModels[y].set('contsInYardSector', (this.sourceYardModels[y].get('contsInYardSector') - 1));
-                        this.updateYardSectorModelText(this.sourceYardModels[y]);
+                        this.sourceYardModels[y].parentNode.set('contsInYardSector', (this.sourceYardModels[y].parentNode.get('contsInYardSector') - 1));
+                        this.updateYardSectorModelText(this.sourceYardModels[y].parentNode);
                         break;
                     }
                 }

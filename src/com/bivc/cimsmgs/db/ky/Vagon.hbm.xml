@@ -57,7 +57,7 @@
         <property name="prim" type="string">
             <column length="512" name="PRIM"/>
         </property>
-        <property name="podSila" type="java.lang.Float">
+        <property name="podSila" type="java.math.BigDecimal">
             <column name="POD_SILA" precision="20" scale="2"/>
         </property>
 
@@ -86,7 +86,7 @@
         <property name="type_no" type="java.lang.Long">
             <column name="TYPE_NO" precision="4" scale="0"/>
         </property>
-        <property name="dlina" type="java.lang.Float">
+        <property name="dlina" type="java.math.BigDecimal">
             <column name="DLINA" precision="12" scale="2"/>
         </property>
         <property name="model" type="string">

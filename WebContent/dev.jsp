@@ -19,6 +19,20 @@
 <body >
     <div id="loading"><span class="title"></span><span class="logo"></span></div>
     <span id='langProp' style="color: #ffffff;"><s:property value="#session['WW_TRANS_I18N_LOCALE']"/></span>
+
+    <script type="application/javascript">
+        function ping() {
+            Ext.Ajax.request({
+                url: 'Ping.do',
+                success: function (response, options) {
+                },
+                failure: function (response) {
+                }
+            });
+        }
+
+        setInterval(ping, 900000);
+    </script>
 <%--<div id="header-content"><strong>Портал ОАО «ТрансКонтейнер»</strong></div>--%>
 </body>
 </html>

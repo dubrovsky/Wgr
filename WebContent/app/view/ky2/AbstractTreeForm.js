@@ -59,18 +59,18 @@ Ext.define('TK.view.ky2.AbstractTreeForm', {
                 iconCls:'edit',
                 action:'editPoezd'
             },{
-                text: '+ На поезд по отпр.',
-                iconCls:'bind',
+                text: '',
+                iconCls:'train2',
                 itemId: 'showPoezdsOutDir4PoezdIntoBind',
                 action:'showPoezdsOutDir4PoezdIntoBind'
             },{
-                text: '+ На поезд по приб.',
-                iconCls:'bind',
+                text: '',
+                iconCls:'train2',
                 itemId: 'showPoezdsIntoDir4PoezdOutBind',
                 action:'showPoezdsIntoDir4PoezdOutBind'
             },{
-                text: '+ На конт. площадку',
-                iconCls:'bind',
+                text: '',
+                iconCls:'cont',
                 hidden: false,
                 action:'getPoesdAndYardForBind'
             },{

@@ -1,6 +1,5 @@
 package com.bivc.cimsmgs.exchange;
 
-import Ti.DataProcessing.ImportXLSMapPogruz;
 import Ti.db.MapPogruzDBOperations;
 import Ti.model.MapPogruz;
 import com.bivc.cimsmgs.commons.ArrayMap;
@@ -12,11 +11,11 @@ import com.bivc.cimsmgs.db.CimSmgsDocs;
 import com.bivc.cimsmgs.db.CimSmgsKonList;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.ss.util.CellReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +30,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.bivc.cimsmgs.exchange.Utils.normNvagNkonStr;
+import static com.bivc.cimsmgs.exchange.Utils.*;
 
 public class PrilDocLoader {
 
@@ -40,10 +39,10 @@ public class PrilDocLoader {
 
   private static final Logger log = LoggerFactory.getLogger(PrilDocLoader.class);
 
-  public static final SimpleDateFormat dateTimeFormater = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-  public static final SimpleDateFormat dateFormater = new SimpleDateFormat("dd.MM.yyyy");
-  public static final SimpleDateFormat dateTimeFormater_slash = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-  public static final SimpleDateFormat dateFormater_slash = new SimpleDateFormat("dd/MM/yyyy");
+  public static final FastDateFormat dateTimeFormater = FastDateFormat.getInstance("dd.MM.yyyy HH:mm:ss");
+  public static final FastDateFormat dateFormater = FastDateFormat.getInstance("dd.MM.yyyy");
+  public static final FastDateFormat dateTimeFormater_slash = FastDateFormat.getInstance("dd/MM/yyyy HH:mm:ss");
+  public static final FastDateFormat dateFormater_slash = FastDateFormat.getInstance("dd/MM/yyyy");
 
   private ArrayMap<String, Doc> docMap = new ArrayMap<>();
   private ArrayList<String> notFoundList = new ArrayList<>();
@@ -226,95 +225,6 @@ public class PrilDocLoader {
         doc.setDat(item.ddoc);
         doc.setNcopy(1);
         res.add(doc);
-      }
-    }
-    return res;
-  }
-
-  private Cell getCell(Sheet sheet, int row, String col) {
-    int colNum = CellReference.convertColStringToIndex(col);
-    org.apache.poi.ss.usermodel.Row r = sheet.getRow(row - 1);
-    if (r != null)
-      return r.getCell(colNum, org.apache.poi.ss.usermodel.Row.CREATE_NULL_AS_BLANK);
-    else
-      return null;
-  }
-
-  private String getStrVal(Sheet sheet, int row, String col) {
-    String res = "";
-    Cell c = getCell(sheet, row, col);
-    if (c != null) {
-      switch (c.getCellType()) {
-        case Cell.CELL_TYPE_STRING:
-        case Cell.CELL_TYPE_BLANK:
-          res = c.getStringCellValue();
-          break;
-        case Cell.CELL_TYPE_NUMERIC:
-          res = new BigDecimal(c.getNumericCellValue()).toString();
-          break;
-      }
-    }
-    return res.trim();
-  }
-
-  private BigDecimal getNumVal(Sheet sheet, int row, String col) {
-    BigDecimal res = null;
-    Cell c = getCell(sheet, row, col);
-    if (c != null) {
-      switch (c.getCellType()) {
-        case Cell.CELL_TYPE_STRING:
-          try {
-            res = new BigDecimal(c.getStringCellValue().trim().replaceAll(",", "."));
-          }
-          catch (NumberFormatException efe) {
-            log.warn("Error convert " + col + row + " (" + c.getStringCellValue() + ") to number");
-          }
-          break
-                  ;
-        case Cell.CELL_TYPE_NUMERIC:
-        case Cell.CELL_TYPE_FORMULA:
-          res = new BigDecimal(c.getNumericCellValue());
-          break;
-      }
-    }
-    return res;
-  }
-
-  private Date getDateVal(Sheet sheet, int row, String col) {
-    Date res = null;
-    Cell c = getCell(sheet, row, col);
-    if (c!= null) {
-      String str = c.getStringCellValue();
-      try {
-        if (c.getCellType() == Cell.CELL_TYPE_STRING) {
-          try {
-            res = dateFormater_slash.parse(str);
-          }
-          catch (Exception e1) {
-            try {
-              res = dateFormater.parse(str);
-            }
-            catch (Exception e2) {
-              try {
-                res = dateTimeFormater_slash.parse(str);
-              }
-              catch (Exception e3) {
-                try {
-                  res = dateTimeFormater.parse(str);
-                }
-                catch (Exception e4) {
-                  log.warn("Error convert " + col + row + " (" + str + ") to date");
-                }
-              }
-            }
-          }
-        }
-        else {
-          res = c.getDateCellValue();
-        }
-      }
-      catch (Exception ex) {
-        log.warn(ex.getMessage());
       }
     }
     return res;

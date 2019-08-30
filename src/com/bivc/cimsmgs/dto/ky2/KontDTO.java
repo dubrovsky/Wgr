@@ -6,6 +6,7 @@ import com.bivc.cimsmgs.formats.json.serializers.DateTimeSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.TreeSet;
 
@@ -31,9 +32,9 @@ public class KontDTO implements Comparable<KontDTO>{
     private Date dprb;
     private Boolean poruz;
     private Long massa_tar;
-    private Long massa_brutto;
-    private Long massa_brutto_all;
-    private Float pod_sila;
+    private BigDecimal massa_brutto;
+    private BigDecimal massa_brutto_all;
+    private BigDecimal pod_sila;
     private String type;
     private String vid;
     private String prizn_sob;
@@ -83,19 +84,19 @@ public class KontDTO implements Comparable<KontDTO>{
         this.dprbTime = dprbTime;
     }*/
 
-    public Long getMassa_brutto() {
+    public BigDecimal getMassa_brutto() {
         return massa_brutto;
     }
 
-    public void setMassa_brutto(Long massa_brutto) {
+    public void setMassa_brutto(BigDecimal massa_brutto) {
         this.massa_brutto = massa_brutto;
     }
 
-    public Long getMassa_brutto_all() {
+    public BigDecimal getMassa_brutto_all() {
         return massa_brutto_all;
     }
 
-    public void setMassa_brutto_all(Long massa_brutto_all) {
+    public void setMassa_brutto_all(BigDecimal massa_brutto_all) {
         this.massa_brutto_all = massa_brutto_all;
     }
 
@@ -115,11 +116,11 @@ public class KontDTO implements Comparable<KontDTO>{
         this.massa_tar = massa_tar;
     }
 
-    public Float getPod_sila() {
+    public BigDecimal getPod_sila() {
         return pod_sila;
     }
 
-    public void setPod_sila(Float pod_sila) {
+    public void setPod_sila(BigDecimal pod_sila) {
         this.pod_sila = pod_sila;
     }
 

@@ -16,9 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author p.dzeviarylin
@@ -36,6 +34,8 @@ public class BindAvtoAndAvto_A extends CimSmgsSupport_A {
             switch (BindAvtoAndAvto_A.Action.valueOf(action.toUpperCase())) {
                 case GET_AVTO_AND_AVTO_FOR_BIND:
                     return getAvtoAndAvtoForBind();
+                case GET_AVTO_AND_ALL_AVTOS_FOR_BIND:
+                    return getAvtoAndAllAvtosForBind();
                 case BIND_AVTO_TO_AVTO:
                     return bindAvtoToAvto();
                 default:
@@ -48,23 +48,56 @@ public class BindAvtoAndAvto_A extends CimSmgsSupport_A {
     }
 
     private String bindAvtoToAvto() throws Exception {
-        List<AvtoBindDTO> avtoBindDTOS = defaultDeserializer.read(new ArrayList<AvtoBindDTO>() {}.getClass().getGenericSuperclass(), dataObj);
-        AvtoBindDTO avto1BindDTO = avtoBindDTOS.get(0);
-        AvtoBindDTO avto2BindDTO = avtoBindDTOS.get(1);
-        Avto avto1 = avtoDAO.findById(avto1BindDTO.getHid(), false);
-        Avto avto2 = avtoDAO.findById(avto2BindDTO.getHid(), false);
-        avto1.bindKonts(avto1BindDTO.getKonts(), mapper, avto2);
-        avto1.bindGruzs(avto1BindDTO.getGruzs(), mapper, avto2);
-        avto2.bindKonts(avto2BindDTO.getKonts(), mapper, avto1);
-        avto2.bindGruzs(avto2BindDTO.getGruzs(), mapper, avto1);
-        //        avto1.bindAvtoToAvto(poezd1BindDTO.getVagons(), avto2.getVagons(), mapper);
-//        avto2.bindAvtoToAvto(poezd2BindDTO.getVagons(), avto1.getVagons(), mapper);
-        avtoDAO.makePersistent(avto1);
-        avtoDAO.makePersistent(avto2);
+        /*List<PoezdBindDTO> poezdBindDTOS = defaultDeserializer.read(new ArrayList<PoezdBindDTO>() {}.getClass().getGenericSuperclass(), dataObj);
+        PoezdBindDTO poezd1BindDTO = poezdBindDTOS.get(0);
+        PoezdBindDTO poezd2BindDTO = poezdBindDTOS.get(1);*/
+
+        final AvtoBindDTO avtoBindDTO = defaultDeserializer.read(AvtoBindDTO.class, avtoObj);
+        final List<AvtoBindDTO> avtosBindDTO = defaultDeserializer.read(new ArrayList<AvtoBindDTO>() {}.getClass().getGenericSuperclass(), avtosObj);
+
+        Avto avto = avtoDAO.findById(avtoBindDTO.getHid(), false);
+        List<Long> ids = new ArrayList<>(avtosBindDTO.size());
+        for (AvtoBindDTO avtoBindDTO1 : avtosBindDTO) {
+            ids.add(avtoBindDTO1.getHid());
+        }
+        List<Avto> avtos = avtoDAO.findByIds(ids);
+
+        Map<String, List<?>> contGruz4History = avto.bindAvtoToAvtos(avtoBindDTO.getKonts(), avtoBindDTO.getGruzs(), avtos, mapper);
+        avtoDAO.makePersistent(avto);
+
+        for (AvtoBindDTO avtoBindDTO1 : avtosBindDTO) {
+            for (Avto avto1 : avtos) {
+                if (Objects.equals(avto1.getHid(), avtoBindDTO1.getHid())) {  // found poezd
+                    contGruz4History = avto1.bindAvtosToAvto(avtoBindDTO1.getKonts(), avtoBindDTO1.getGruzs(), avto, mapper, avtos);
+                    avtoDAO.makePersistent(avto1);
+                    break;
+                }
+            }
+        }
 
         setJSONData(defaultSerializer.write(new Response<>()));
         return SUCCESS;
     }
+
+//    private String bindAvtoToAvto(int s) throws Exception {
+//
+////        List<AvtoBindDTO> avtoBindDTOS = defaultDeserializer.read(new ArrayList<AvtoBindDTO>() {}.getClass().getGenericSuperclass(), dataObj);
+//        AvtoBindDTO avto1BindDTO = avtoBindDTOS.get(0);
+//        AvtoBindDTO avto2BindDTO = avtoBindDTOS.get(1);
+//        Avto avto1 = avtoDAO.findById(avto1BindDTO.getHid(), false);
+//        Avto avto2 = avtoDAO.findById(avto2BindDTO.getHid(), false);
+//        avto1.bindKonts(avto1BindDTO.getKonts(), mapper, avto2);
+//        avto1.bindGruzs(avto1BindDTO.getGruzs(), mapper, avto2);
+//        avto2.bindKonts(avto2BindDTO.getKonts(), mapper, avto1);
+//        avto2.bindGruzs(avto2BindDTO.getGruzs(), mapper, avto1);
+//        //        avto1.bindAvtoToAvto(poezd1BindDTO.getVagons(), avto2.getVagons(), mapper);
+////        avto2.bindAvtoToAvto(poezd2BindDTO.getVagons(), avto1.getVagons(), mapper);
+//        avtoDAO.makePersistent(avto1);
+//        avtoDAO.makePersistent(avto2);
+//
+//        setJSONData(defaultSerializer.write(new Response<>()));
+//        return SUCCESS;
+//    }
 
     private String getAvtoAndAvtoForBind() throws Exception {
         Avto avto1 = avtoDAO.findById(avto1Hid, false);
@@ -77,6 +110,25 @@ public class BindAvtoAndAvto_A extends CimSmgsSupport_A {
                                         Arrays.asList(
                                                 mapper.map(avto1, AvtoBindDTO.class),
                                                 mapper.map(avto2, AvtoBindDTO.class)
+                                        ),
+                                        2L
+                                )
+                        )
+        );
+        return SUCCESS;
+    }
+
+    private String getAvtoAndAllAvtosForBind() throws Exception {
+        Avto avto = avtoDAO.findById(avto1Hid, false);
+        final List<Avto> avtos = avtoDAO.findAllPresentAvtos(getUser().getUsr(), getRouteId(), getDirection());
+        setJSONData(
+                defaultSerializer
+                        .setLocale(getLocale())
+                        .write(
+                                new Response<>(
+                                        Arrays.asList(
+                                                mapper.map(avto, AvtoBindDTO.class),
+                                                mapper.mapAsList(avtos, AvtoBindDTO.class)
                                         ),
                                         2L
                                 )
@@ -98,8 +150,44 @@ public class BindAvtoAndAvto_A extends CimSmgsSupport_A {
 
     private String action;
     private String dataObj;
+    private String avtoObj;
+    private String avtosObj;
     private Long avto1Hid;
     private Long avto2Hid;
+    private Byte direction;
+    private long routeId;
+
+    public String getAvtoObj() {
+        return avtoObj;
+    }
+
+    public void setAvtoObj(String avtoObj) {
+        this.avtoObj = avtoObj;
+    }
+
+    public String getAvtosObj() {
+        return avtosObj;
+    }
+
+    public void setAvtosObj(String avtosObj) {
+        this.avtosObj = avtosObj;
+    }
+
+    public Byte getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Byte direction) {
+        this.direction = direction;
+    }
+
+    public long getRouteId() {
+        return routeId;
+    }
+
+    public void setRouteId(long routeId) {
+        this.routeId = routeId;
+    }
 
     public void setAction(String action) {
         this.action = action;
@@ -117,5 +205,9 @@ public class BindAvtoAndAvto_A extends CimSmgsSupport_A {
         this.avto2Hid = avto2Hid;
     }
 
-    enum Action {GET_AVTO_AND_AVTO_FOR_BIND, BIND_AVTO_TO_AVTO}
+    public Long getAvto1Hid() {
+        return avto1Hid;
+    }
+
+    enum Action {GET_AVTO_AND_AVTO_FOR_BIND, GET_AVTO_AND_ALL_AVTOS_FOR_BIND, BIND_AVTO_TO_AVTO}
 }

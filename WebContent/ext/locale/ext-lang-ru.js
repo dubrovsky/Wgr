@@ -2583,7 +2583,14 @@ Ext.define("TK.locale.ru.controller.ky2.PoezdController", {
     maskMsg :'Запрос данных...',
     errorMsg:'Внимание! Ошибка...',
     warningMsg:'Внимание!',
-    warningText:'Поезд не сохранен....'
+    warningText:'Поезд не сохранен....',
+    uploadText:'Данные загружены',
+    titleUpload: 'Загрузка XLS',
+    labelSelectFile:'Выбор файла для загрузки...',
+    labelFile:'Файл',
+    btnSearch:'Обзор...',
+    btnSave  :'Сохранить',
+    btnClose :'Закрыть'
 });
 
 Ext.define("TK.locale.ru.controller.ky.Vagon", {
@@ -2717,8 +2724,12 @@ Ext.define("TK.locale.ru.view.ky2.poezd.BasePoezdForm", {
     labelKoleyaWide   :'Широкая',
     labelKoleyaNarow  :'Узкая',
     labelClient       :'Клиент',
-    labelDep          :'Станция формирования поезда',
-    labelDest         :'Станция назначения поезда'
+    labelKstf         :'Код станции формирования',
+    labelNstf         :'Наименование станции формирования',
+    labelAdmf         :'Администрация формирования',
+    labelKstn         :'Код станции назначения',
+    labelNstn         :'Наименование станции назначения',
+    labelAdmn         :'Администрация назначения'
 
 
 });
@@ -2732,6 +2743,7 @@ Ext.define("TK.locale.ru.view.ky2.avto.BaseAvtoList", {
 
     headerAvtoNum      :'Номер авто',
     headerAvtoTrail    :'Номер прицепа',
+    headerDriverFam    :'ФИО водителя',
     headerDep          :'Пункт отправления',
     headerDest         :'Пункт назначения',
 
@@ -2755,6 +2767,9 @@ Ext.define("TK.locale.ru.view.ky2.avto.into.AvtoList", {
     override:"TK.view.ky2.avto.into.AvtoList",
 
     headerDateIn       :'Прибытие',
+    btnToAvto          : "На авто по отпр.",
+    btnToPoezd         : "На поезд по отпр.",
+    btnToYard          : "На конт. площадку",
     title              :'Список автомобилей по прибытию'
 
 });
@@ -2763,6 +2778,9 @@ Ext.define("TK.locale.ru.view.ky2.avto.out.AvtoList", {
     override:"TK.view.ky2.avto.out.AvtoList",
 
     headerDateOut      :'Отправление',
+    btnToAvto          : "На авто по приб.",
+    btnToPoezd         : "На поезд по приб.",
+    btnToYard          : "На конт. площадку",
     title              :'Список автомобилей по отправлению'
 });
 
@@ -2798,5 +2816,15 @@ Ext.define("TK.locale.ru.ky2.AbstractBindTreeForm", {
     btnSaveExit   : 'Сохранить и Выйти',
     btnClose      : 'Закрыть',
     btnEditPoezd  : 'Редактировать поезд',
+    btnVgCtGr     : '+Вагон/Контейнер/Груз'
+});
+
+Ext.define("TK.locale.ru.ky2.avto.AvtoBindTreeForm", {
+    override:"TK.view.ky2.avto.AvtoBindTreeForm",
+
+    btnSave       : 'Сохранить',
+    btnSaveExit   : 'Сохранить и Выйти',
+    btnClose      : 'Закрыть',
+    btnEditPoezd  : 'Редактировать автомобиль',
     btnVgCtGr     : '+Вагон/Контейнер/Груз'
 });

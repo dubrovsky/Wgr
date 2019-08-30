@@ -247,6 +247,9 @@ Ext.define('TK.controller.Docs', {
             },
             'ky2bindtreeform button[action=close]': {
                 click: this.onExit
+            },
+            'ky2avtobindtreeform button[action=close]': {
+                click: this.onExit
             }
 
 

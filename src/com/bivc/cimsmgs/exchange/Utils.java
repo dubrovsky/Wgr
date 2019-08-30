@@ -1,6 +1,7 @@
 package com.bivc.cimsmgs.exchange;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -10,6 +11,11 @@ import java.util.ArrayList;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -247,4 +253,77 @@ public class Utils {
     }
     return res;
   }
+
+  static public Cell getCell(Sheet sheet, int row, String col) {
+    int colNum = CellReference.convertColStringToIndex(col);
+    org.apache.poi.ss.usermodel.Row r = sheet.getRow(row - 1);
+    if (r != null)
+      return r.getCell(colNum, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+    else
+      return null;
+  }
+
+  static public String getStrVal(Sheet sheet, int row, String col) {
+    Cell c = getCell(sheet, row, col);
+    return getStrVal(c);
+  }
+
+  static public String getStrVal(Cell c) {
+    String res = "";
+    if (c != null) {
+      switch (c.getCellType()) {
+        case Cell.CELL_TYPE_STRING :
+        case Cell.CELL_TYPE_BLANK :
+          res = c.getStringCellValue();
+          break;
+        case Cell.CELL_TYPE_NUMERIC :
+          if (HSSFDateUtil.isCellDateFormatted(c)) {
+            Date d = c.getDateCellValue();
+            if (d != null) {
+              res = sdf14.format(d);
+            }
+          }
+          else {
+            res = new BigDecimal(c.getNumericCellValue()).toString();
+          }
+          break;
+      }
+    }
+    return res.trim();
+  }
+
+  static public BigDecimal getNumVal(Sheet sheet, int row, String col) {
+    BigDecimal res = null;
+    Cell c = getCell(sheet, row, col);
+    if (c != null) {
+      switch (c.getCellType()) {
+        case Cell.CELL_TYPE_STRING:
+          try {
+            res = new BigDecimal(c.getStringCellValue().trim().replaceAll(",", "."));
+          }
+          catch (NumberFormatException efe) {
+            log.warn("Error convert " + col + row + " (" + c.getStringCellValue() + ") to number");
+          }
+          break;
+        case Cell.CELL_TYPE_NUMERIC:
+        case Cell.CELL_TYPE_FORMULA:
+          res = new BigDecimal(c.getNumericCellValue());
+          break;
+      }
+    }
+    return res;
+  }
+
+  static public BigDecimal getNumVal(Sheet sheet, int row, String col, int scale) {
+    return getNumVal(sheet, row, col, scale, RoundingMode.HALF_UP);
+  }
+
+  static public BigDecimal getNumVal(Sheet sheet, int row, String col, int scale, RoundingMode roundingMode) {
+    BigDecimal res = getNumVal(sheet, row, col);
+    if (res != null) {
+      res = res.setScale(scale, roundingMode);
+    }
+    return res;
+  }
+
 }

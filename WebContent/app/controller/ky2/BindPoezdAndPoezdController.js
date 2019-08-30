@@ -120,11 +120,11 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
     },
 
     getPoesdIntoAndPoezdOutForBind: function (btn) {
-        this.getPoesdAndPoezdForBind(/*this.getPoezdoutdir(),*/ 'ky2poezd2poezdbindtreeforminto', '+ На поезд по отправлению', 2);
+        this.getPoesdAndPoezdForBind(/*this.getPoezdoutdir(),*/ 'ky2poezd2poezdbindtreeforminto', 'На поезд по отправлению', 2);
     },
 
     getPoesdOutAndPoezdIntoForBind: function (btn) {
-        this.getPoesdAndPoezdForBind(/*this.getPoezdintodir(),*/ 'ky2poezd2poezdbindtreeformout', '+ На поезд по прибытию', 1);
+        this.getPoesdAndPoezdForBind(/*this.getPoezdintodir(),*/ 'ky2poezd2poezdbindtreeformout', 'На поезд по прибытию', 1);
     },
 
     getPoesdAndPoezdForBind: function (/*poezdDir*/ widget, title, direction) {
