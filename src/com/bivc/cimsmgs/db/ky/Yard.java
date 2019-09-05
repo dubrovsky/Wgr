@@ -128,6 +128,82 @@ public class Yard implements Serializable {
         return kontsForHistory;
     }
 
+    public List<Kont> bindKonts(TreeSet<KontBindDTO> dtos, Mapper mapper, Avto toAvto, List<YardSector> yardSectors) {
+        // update kont that not moved
+        Set<KontBindDTO> dtoToRemove = new HashSet<>();
+        for (KontBindDTO kontDTO : dtos) {
+            for (Kont kont : getKonts()) {
+                if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
+                    mapper.map(kontDTO, kont);  // update kont, sort can change
+//                    log.info("Update kont in yard - {}", kont.getNkon());
+                    dtoToRemove.add(kontDTO);
+                    break;
+                }
+            }
+        }
+        dtos.removeAll(dtoToRemove);
+
+        List<Kont> kontsForHistory = new ArrayList<>(dtos.size());
+        // insert from poezd
+        dtoToRemove.clear();
+        boolean found = false;
+        for (KontBindDTO kontDTO : dtos) {
+//            for (Vagon toVagon : toVags) {// add kont from another poezd
+                for (Kont toKont : toAvto.getKonts()) {
+                    if (Objects.equals(toKont.getHid(), kontDTO.getHid())) {
+                        mapper.map(kontDTO, toKont);  // update kont, sort can change
+                        bindKont(toKont);
+                        kontsForHistory.add(toKont);
+                        log.info("Add kont to yard from another poezd, kont - {}", toKont.getNkon());
+                        dtoToRemove.add(kontDTO);
+                        found = true;
+                        break;
+                    }
+                }
+//                if (found) {
+//                    break;
+//                }
+//            }
+        }
+        dtos.removeAll(dtoToRemove);
+
+        if (!dtos.isEmpty()) { // still have conts - may be when remove conts between yards or yardsectores
+            dtoToRemove.clear();
+            found = false;
+            for (KontBindDTO kontDTO : dtos) {
+                for (YardSector yardSector : yardSectors) {
+                    for (Yard yard : yardSector.getYards()) {
+                        for (Kont kont : yard.getKonts()) {
+                            if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
+                                mapper.map(kontDTO, kont);
+                                bindKont(kont);
+                                kontsForHistory.add(kont);
+                                log.info("Move kont in same yard, kont - {}", kont.getNkon());
+                                dtoToRemove.add(kontDTO);
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (found) {
+                            break;
+                        }
+                    }
+                    if (found) {
+                        break;
+                    }
+                }
+            }
+            dtos.removeAll(dtoToRemove);
+        }
+
+        if (!dtos.isEmpty()) {
+            for (KontBindDTO kontDTO : dtos) {
+                log.warn("Kont {} was not bound, something wrong!!!", kontDTO.getNkon());
+            }
+        }
+        return kontsForHistory;
+    }
+
     private Kont bindKont(Kont kont) {
         kont.setYard(this);
         kont.setVagon(null);

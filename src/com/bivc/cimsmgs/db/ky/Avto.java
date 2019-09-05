@@ -50,6 +50,8 @@ public class Avto {
     private Date altered;
     private Set<Kont> konts = new TreeSet<>();
     private Set<Gruz> gruzs = new TreeSet<>();
+    private Integer kontCount;
+
 
 
     public Map<String, List<?>> bindAvtosToAvto(Set<KontBindDTO> kDtos, Set<GruzBindDTO> gDtos, Avto avto, Mapper mapper, List<Avto> avtos) {
@@ -74,6 +76,24 @@ public class Avto {
 //        }
         return contGruz4History;
     }
+
+    public Map<String, List<?>> bindAvtoToYard(Set<KontBindDTO> kDtos, List<YardSector> yardSectors, Mapper mapper) {
+        Map<String, List<?>> contGruz4History = new HashMap<>(1);
+        contGruz4History.put("konts", new ArrayList<Kont>());
+
+//        for (VagonBindDTO vagonIntoDTO : dtos) {
+//            for (Vagon vagon : getVagons()) {
+//                if (Objects.equals(vagon.getHid(), vagonIntoDTO.getHid())) {
+//                    mapper.map(vagonIntoDTO, vagon); // update otpravka
+                    List<Kont> konts = this.bindKontsToYardKonts(kDtos, mapper, yardSectors);
+                    ((List<Kont>) contGruz4History.get("konts")).addAll(konts);
+//                    break;
+//                }
+//            }
+//        }
+        return contGruz4History;
+    }
+
 
     public Map<String, List<?>> bindAvtoToAvtos(Set<KontBindDTO> kDtos, Set<GruzBindDTO> gDtos, List<Avto> avtosOut, Mapper mapper) {
         Map<String, List<?>> contGruz4History = new HashMap<>(2);
@@ -327,6 +347,84 @@ public class Avto {
         return gruzsForHistory;
     }
 
+    public List<Kont> bindKontsToYardKonts(Set<KontBindDTO> dtos, Mapper mapper, List<YardSector> yardSectors) {
+        // update kont that not moved
+        Set<KontBindDTO> dtoToRemove = new HashSet<>();
+        for (KontBindDTO kontDTO : dtos) {
+            for (Kont kont : getKonts()) {
+                if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
+                    mapper.map(kontDTO, kont);  // update kont, sort can change
+                    dtoToRemove.add(kontDTO);
+                    break;
+                }
+            }
+        }
+        dtos.removeAll(dtoToRemove);
+
+
+        List<Kont> kontsForHistory = new ArrayList<>(dtos.size());
+        // insert from yard
+        dtoToRemove.clear();
+        boolean found;
+        for (KontBindDTO kontDTO : dtos) {
+            found = false;
+            for (YardSector yardSector : yardSectors) {
+                for (Yard yard : yardSector.getYards()) {
+                    for (Kont yardKont : yard.getKonts()) {
+                        if (Objects.equals(yardKont.getHid(), kontDTO.getHid())) {
+                            mapper.map(kontDTO, yardKont);
+                            bindKont(yardKont);
+                            kontsForHistory.add(yardKont);
+                            log.info("Add kont from another yard, kont - {}", yardKont.getNkon());
+                            dtoToRemove.add(kontDTO);
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found) {
+                        break;
+                    }
+                }
+                if (found) {
+                    break;
+                }
+            }
+        }
+        dtos.removeAll(dtoToRemove);
+
+//        if (!dtos.isEmpty()) { // still have conts - may be when remove cont in same poesd between vagons
+//            dtoToRemove.clear();
+//            for (KontBindDTO kontDTO : dtos) {
+//                found = false;
+//                for (Vagon vagon : getPoezd().getVagons()) {
+//                    for (Kont kont : vagon.getKonts()) {
+//                        if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
+//                            mapper.map(kontDTO, kont);
+//                            bindKont(kont);
+//                            kontsForHistory.add(kont);
+//                            log.info("Move kont in same poezd, kont - {}", kont.getNkon());
+//                            dtoToRemove.add(kontDTO);
+//                            found = true;
+//                            break;
+//                        }
+//                    }
+//                    if (found) {
+//                        break;
+//                    }
+//                }
+//            }
+//            dtos.removeAll(dtoToRemove);
+//        }
+
+        if (!dtos.isEmpty()) {
+            for (KontBindDTO kontDTO : dtos) {
+                log.warn("Kont {} was not bound, something wrong!!!", kontDTO.getNkon());
+            }
+        }
+        return kontsForHistory;
+    }
+
+
     public List<Kont> bindKontsToAvtosKonts(Set<KontBindDTO> dtos, Mapper mapper, List<Avto> avtosOut) {
         // update kont that not moved
         Set<KontBindDTO> dtoToRemove = new HashSet<>();
@@ -519,7 +617,7 @@ public class Avto {
     }
 
 
-    public void updateKonts(Set<KontDTO> dtos, Mapper mapper) {
+    public List<Kont> updateKonts(Set<KontDTO> dtos, Mapper mapper) {
         // delete
         Set<Kont> kontsToRemove = new HashSet<>();
         for(Kont kont: getKonts()){
@@ -561,16 +659,19 @@ public class Avto {
         }
         dtos.removeAll(kontDtoToRemove);
 
+        List<Kont> kontsForHistory = new ArrayList<>(dtos.size());
         // insert
         for(KontDTO kontIntoDTO : dtos){
             Kont kont = mapper.map(kontIntoDTO, Kont.class);
             addKont(kont);
+            kontsForHistory.add(kont);
 //            if(vagonIntoDTO.getOtpravka() == Otpravka.CONT){
 //                vagon.updateKonts(vagonIntoDTO.getKonts(), mapper);
 //            } else if(vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
                 kont.updateGruzs(kontIntoDTO.getGruzs(), mapper);
 //            }
         }
+        return kontsForHistory;
     }
 
     public Kont addKont(Kont kont) {
@@ -584,7 +685,7 @@ public class Avto {
         kont.setAvto(null);
     }
 
-    public void updateGruzs(TreeSet<GruzDTO> dtos, Mapper mapper) {
+    public List<Gruz> updateGruzs(TreeSet<GruzDTO> dtos, Mapper mapper) {
         // delete
         Set<Gruz> gruzyToRemove = new HashSet<>();
         for (Gruz gruz : getGruzs()) {
@@ -615,11 +716,15 @@ public class Avto {
         }
         dtos.removeAll(dtoToRemove);
 
+        List<Gruz> gruzForHistory = new ArrayList<>(dtos.size());
         // insert
         for (GruzDTO gruzDto : dtos) {
             Gruz gruz = mapper.map(gruzDto, Gruz.class);
             addGruz(gruz);
+            gruzForHistory.add(gruz);
+
         }
+        return gruzForHistory;
     }
 
     private void removeGruz(Gruz gruz) {
@@ -846,5 +951,13 @@ public class Avto {
 
     public void setGruzs(Set<Gruz> gruzs) {
         this.gruzs = gruzs;
+    }
+
+    public Integer getKontCount() {
+        return this.getKonts().size();
+    }
+
+    public void setKontCount(Integer kontCount) {
+        this.kontCount = kontCount;
     }
 }

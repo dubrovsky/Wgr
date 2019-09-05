@@ -10,7 +10,9 @@ import com.bivc.cimsmgs.db.ky.Poezd;
 import com.bivc.cimsmgs.db.ky.YardSector;
 import com.bivc.cimsmgs.doc2doc.orika.Mapper;
 import com.bivc.cimsmgs.dto.ky2.PoezdBindDTO;
+import com.bivc.cimsmgs.dto.ky2.PoezdBindViewDTO;
 import com.bivc.cimsmgs.dto.ky2.YardSectorBindDTO;
+import com.bivc.cimsmgs.dto.ky2.YardSectorBindViewDTO;
 import com.bivc.cimsmgs.formats.json.Deserializer;
 import com.bivc.cimsmgs.formats.json.Serializer;
 import org.apache.commons.lang3.StringUtils;
@@ -84,8 +86,8 @@ public class BindPoezdAndYard_A extends CimSmgsSupport_A {
                         .write(
                                 new Response<>(
                                         Arrays.asList(
-                                                mapper.map(poezd, PoezdBindDTO.class),
-                                                mapper.mapAsList(yardSectors, YardSectorBindDTO.class)
+                                                mapper.map(poezd, PoezdBindViewDTO.class),
+                                                mapper.mapAsList(yardSectors, YardSectorBindViewDTO.class)
                                         ),
                                         2L
                                 )

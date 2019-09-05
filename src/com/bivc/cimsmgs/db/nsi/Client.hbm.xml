@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.nsi.Client" table="CLIENT" where="SYSDATE() &gt;= `CL_BGN` and SYSDATE() &lt; `CL_END`">
+        <id name="hid" type="java.lang.Long">
+            <column name="`HID`" precision="10" scale="0" />
+            <generator class="sequence">
+                <param name="sequence">CLIENT_HID</param>
+            </generator>
+<!--            <generator class="native"/>-->
+        </id>
+
+        <property name="cl_no" type="string">
+            <column length="10" name="CL_NO" />
+        </property>
+        <property name="cl_name" type="string">
+            <column length="255" name="CL_NAME" />
+        </property>
+        <property name="clientBgn" type="date">
+            <column length="7" name="`CL_BGN`" />
+        </property>
+        <property name="clientEnd" type="date">
+            <column length="7" name="`CL_END`" />
+        </property>
+
+    </class>
+</hibernate-mapping>

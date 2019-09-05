@@ -164,7 +164,7 @@ public class Avto_A extends CimSmgsSupport_A {
         if (StringUtils.isEmpty(jsonRequest)) {
             throw new RuntimeException("Empty JSON request string");
         }
-        PoezdBaseDTO dto = defaultDeserializer.setLocale(getLocale()).read(PoezdBaseDTO.class, jsonRequest);
+        AvtoBaseDTO dto = defaultDeserializer.setLocale(getLocale()).read(AvtoBaseDTO.class, jsonRequest);
         log.debug("Deleting a Poezd entry with id: {}", dto.getHid());
 
         Avto deleted = avtoDAO.getById(dto.getHid(), false);

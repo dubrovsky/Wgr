@@ -19,6 +19,11 @@ Ext.define('TK.model.ky2.YardBindTreeNode', {
 
         // kont
         {name: 'nkon', type: 'string'},
+        {name: 'massa_tar', type: 'string'},
+        {name: 'massa_brutto', type: 'string'},
+        {name: 'massa_brutto_all', type: 'string'},
+        {name: 'pod_sila', type: 'string'},
+        {name: 'vid', type: 'string'},
 
         // gruz
         'kgvn',

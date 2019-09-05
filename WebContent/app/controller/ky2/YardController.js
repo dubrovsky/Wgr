@@ -5,7 +5,8 @@ Ext.define('TK.controller.ky2.YardController', {
     views: [
         'ky2.yard.YardList',
         'ky2.yard.YardForm',
-        'ky2.yard.Filter'
+        'ky2.yard.Filter',
+        'ky2.yard.YardSectorList'
     ],
     stores: [
         'ky2.Yards',
@@ -31,6 +32,9 @@ Ext.define('TK.controller.ky2.YardController', {
             'ky2yardlist button[action="edit"]': {
                 click: this.editYard
             },
+            'ky2yardlist button[action="editKont"]': {
+                click: this.editKont
+            },
             'ky2yardlist': {
                 itemdblclick: this.editYard/*,
                 select: this.selectYardInList*/
@@ -46,6 +50,14 @@ Ext.define('TK.controller.ky2.YardController', {
             },
             'ky2yardform button[action="save"]': {
                 click: this.saveYard
+            },
+            'ky2yardlist button[action="getYardSectors"]': {
+                click: this.getYardSectors
+            },
+            'ky2yardsectorlist > grid': {
+                // itemdblclick: this.selectYardSector,
+                deleteYardSector: this.deleteYardSector,
+                saveYardSector: this.saveYardSector
             }
         });
     },
@@ -80,6 +92,39 @@ Ext.define('TK.controller.ky2.YardController', {
             }
         });
     },
+
+    editKont: function (btn) {
+        var yardlist = this.getYardlist();
+        if (!TK.Utils.isRowSelected(yardlist)) {
+            return false;
+        }
+        if (yardlist.selModel.getLastSelected().get('konts').length === 0) {
+            Ext.Msg.alert('Внимание', 'Контейнер отсутствует');
+            return false;
+        }
+
+
+
+        // var yardcontainer = Ext.widget('ky2yardform', {title: this.titleEdit});
+        // yardcontainer.setLoading(true);
+        //
+        // var yard = Ext.ModelManager.getModel('TK.model.ky2.YardBase'),
+        //     hid = yardlist.selModel.getLastSelected().get('hid');
+        //
+        // yard.load(hid, {
+        //     scope: this,
+        //     params: {action: 'edit'},
+        //     callback: function (yard, operation, success) {
+        //         if (success) {
+        //             var form = yardcontainer.down('form');
+        //             this.checkForKontyardSector(yard.getSector(), form.getForm());
+        //             form.loadRecord(yard);
+        //         }
+        //         yardcontainer.setLoading(false);
+        //     }
+        // });
+    },
+
     checkForKontyardSector: function (sector, form) {
         if (sector) {
             var store = form.findField('sector.hid').getStore();
@@ -141,14 +186,57 @@ Ext.define('TK.controller.ky2.YardController', {
             Ext.Msg.alert('Warning', 'Form is not valid');
         }
     },
-    filterKontYard: function(btn){
+    filterKontYard: function (btn) {
         var win = Ext.widget('ky2yardfilter');
         this.initFilter(win.down('form').getForm(), btn.up('grid').getStore());
     },
-    applyFilterKontYard:function(btn){
+    applyFilterKontYard: function (btn) {
         var form = btn.up('form').getForm();
         if (form.isValid()) {
             this.applyFilter(form, this.getYardlist().getStore());
+        }
+    },
+    getYardSectors: function (btn) {
+        var win = Ext.widget('ky2yardsectorlist');
+    },
+    saveYardSector: function (yardsectorlist, yardsector) {
+        var errors = yardsector.validate(),
+            owner = yardsectorlist.up('nsieditlist'),
+            rowEditing = yardsectorlist.plugins[0];
+        rowEditing.completeEdit();
+        if (errors.isValid()) {
+            var newYardsector = (yardsector.getId() == null);
+            Ext.Ajax.request({
+                url: owner.buildUrlPrefix() + '_save.do',
+                params: owner.prepareData(yardsector),
+                scope: this,
+                success: function (response, options) {
+                    yardsectorlist.getStore().reload();
+                },
+                failure: function (response, options) {
+                    TK.Utils.makeErrMsg(response, 'Error!..');
+                }
+            });
+        } else {
+            TK.Utils.failureDataMsg();
+        }
+    },
+    deleteYardSector: function (yardsectorlist, yardsector) {
+        var owner = yardsectorlist.up('nsieditlist');
+        if (!yardsector.phantom) {
+            Ext.Ajax.request({
+                url: owner.buildUrlPrefix() + '_delete.do',
+                params: owner.prepareData(yardsector),
+                scope: this,
+                success: function (response, options) {
+                    yardsectorlist.getStore().reload();
+                },
+                failure: function (response, options) {
+                    TK.Utils.makeErrMsg(response, 'Error!..');
+                }
+            });
+        } else {
+            yardsectorlist.getStore().remove(yardsector);
         }
     }
 });

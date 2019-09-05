@@ -139,6 +139,7 @@
         <mapping resource="com/bivc/cimsmgs/db/nsi/Cargo.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/nsi/NsiNhm.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/nsi/Carrier.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/nsi/Client.hbm.xml"/>
 
         <mapping resource="com/bivc/cimsmgs/db/UsrChangePw.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/UsrPwLog.hbm.xml"/>

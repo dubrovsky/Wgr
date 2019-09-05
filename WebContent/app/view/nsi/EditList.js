@@ -47,7 +47,7 @@ Ext.define('TK.view.nsi.EditList', {
                 },
                 {
                     xtype: 'searchfield',
-                    itemId:'add1',
+                    itemId: 'add1',
                     store: config.items.store,
                     value: this.search
                 }

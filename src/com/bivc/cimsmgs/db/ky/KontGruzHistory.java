@@ -47,6 +47,22 @@ public class KontGruzHistory {
         this.un = un;
     }
 
+    public KontGruzHistory(Avto avto, Kont kont, Byte direction, Date dateOperation, String un) {
+        this.avto = avto;
+        this.kont = kont;
+        this.direction = direction;
+        this.dateOperation = dateOperation;
+        this.un = un;
+    }
+
+    public KontGruzHistory(Avto avto, Gruz gruz, Byte direction, Date dateOperation, String un) {
+        this.avto = avto;
+        this.gruz = gruz;
+        this.direction = direction;
+        this.dateOperation = dateOperation;
+        this.un = un;
+    }
+
     public KontGruzHistory() {
 
     }

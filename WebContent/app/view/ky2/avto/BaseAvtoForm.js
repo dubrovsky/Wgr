@@ -33,14 +33,14 @@ Ext.define('TK.view.ky2.avto.BaseAvtoForm', {
                     itemId: 'no_avto',
                     maxLength: 25,
                     allowBlank: false
-                }, {
-                    xtype: 'button',
-                    iconCls: 'check1',
-                    action: 'getAvto'
-                }, {
-                    xtype: 'button',
-                    text: '...',
-                    action: 'nsiAvto'
+                // }, {
+                //     xtype: 'button',
+                //     iconCls: 'check1',
+                //     action: 'getAvto'
+                // }, {
+                //     xtype: 'button',
+                //     text: '...',
+                //     action: 'nsiAvto'
                 }]
             }, {
                 xtype: 'textfield',
@@ -65,10 +65,10 @@ Ext.define('TK.view.ky2.avto.BaseAvtoForm', {
                 },
                 fieldLabel: 'Собственник',
                 items: [{
-                    xtype: 'textarea',
+                    xtype: 'textfield',
                     name: 'naim_sob',
                     maxLength: 128,
-                    rows: 3,
+                    // rows: 3,
                     flex: 1
                     //allowBlank: false,
                     //readOnly: true
@@ -88,10 +88,10 @@ Ext.define('TK.view.ky2.avto.BaseAvtoForm', {
                 },
                 fieldLabel: 'Клиент',
                 items: [{
-                    xtype: 'textarea',
+                    xtype: 'textfield',
                     name: 'client',
                     maxLength: 128,
-                    rows: 3,
+                    // rows: 3,
                     flex: 1
                 }, {
                     xtype: 'button',
@@ -107,10 +107,10 @@ Ext.define('TK.view.ky2.avto.BaseAvtoForm', {
                 },
                 fieldLabel: 'Грузоотправитель',
                 items: [{
-                    xtype: 'textarea',
+                    xtype: 'textfield',
                     name: 'otp_cargo',
                     maxLength: 500,
-                    rows: 3,
+                    // rows: 3,
                     flex: 1
                 }, {
                     xtype: 'button',
@@ -118,11 +118,11 @@ Ext.define('TK.view.ky2.avto.BaseAvtoForm', {
                     action: 'nsiGruzOtpr'
                 }]
             }, {
-                xtype: 'textarea',
+                xtype: 'textfield',
                 fieldLabel: 'Пункт отправления',
                 name: 'departure',
                 maxLength: 500,
-                rows: 3
+                // rows: 3
             }, {
                 xtype: 'fieldcontainer',
                 layout: {
@@ -131,10 +131,10 @@ Ext.define('TK.view.ky2.avto.BaseAvtoForm', {
                 },
                 fieldLabel: 'Грузополучатель',
                 items: [{
-                    xtype: 'textarea',
+                    xtype: 'textfield',
                     name: 'pol_cargo',
                     maxLength: 500,
-                    rows: 3,
+                    // rows: 3,
                     flex: 1
                 }, {
                     xtype: 'button',
@@ -148,17 +148,17 @@ Ext.define('TK.view.ky2.avto.BaseAvtoForm', {
                             maxLength: 500,
                             rows: 3
                         },*/{
-                xtype: 'textarea',
+                xtype: 'textfield',
                 fieldLabel: 'Пункт назначения',
                 name: 'destination',
                 maxLength: 500,
-                rows: 3
+                // rows: 3
             }, {
-                xtype: 'textarea',
+                xtype: 'textfield',
                 fieldLabel: 'Примечание',
                 name: 'prim_avto',
                 maxLength: 500,
-                rows: 3
+                // rows: 3
             }]
         }]
         // , {

@@ -3,8 +3,11 @@ package com.bivc.cimsmgs.actions.ky2;
 import com.bivc.cimsmgs.actions.CimSmgsSupport_A;
 import com.bivc.cimsmgs.commons.Response;
 import com.bivc.cimsmgs.dao.AvtoDAO;
+import com.bivc.cimsmgs.dao.KontGruzHistoryDAO;
 import com.bivc.cimsmgs.dao.PoezdDAO;
 import com.bivc.cimsmgs.db.ky.Avto;
+import com.bivc.cimsmgs.db.ky.Gruz;
+import com.bivc.cimsmgs.db.ky.Kont;
 import com.bivc.cimsmgs.db.ky.Poezd;
 import com.bivc.cimsmgs.doc2doc.orika.Mapper;
 import com.bivc.cimsmgs.dto.ky2.AvtoDTO;
@@ -15,6 +18,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static com.bivc.cimsmgs.actions.CimSmgsSupport_A.KontGruzHistoryType.AVTO;
 
 /**
  * @author p.dzeviarylin
@@ -60,9 +70,17 @@ public class AvtoCtGr_A extends CimSmgsSupport_A {
 	private String save() throws Exception {
 		final AvtoDTO dto = defaultDeserializer.setLocale(getLocale()).read(AvtoDTO.class, dataObj);
 		Avto avto = avtoDAO.findById(dto.getHid(), false);
-		avto.updateKonts(dto.getKonts(), mapper);
-		avto.updateGruzs(dto.getGruzs(), mapper);
+		Map<String, List<?>> contGruz4History = new HashMap<>(2);
+		contGruz4History.put("konts", new ArrayList<Kont>());
+		contGruz4History.put("gruzs", new ArrayList<Gruz>());
+
+		List<Kont> konts = avto.updateKonts(dto.getKonts(), mapper);
+		List<Gruz> gruzs = avto.updateGruzs(dto.getGruzs(), mapper);
+		((List<Kont>) contGruz4History.get("konts")).addAll(konts);
+		((List<Gruz>) contGruz4History.get("gruzs")).addAll(gruzs);
 		avto = avtoDAO.makePersistent(avto);
+		saveContGruzHistory(contGruz4History, kontGruzHistoryDAO, AVTO);
+
 		avtoDAO.flush(); // to get ids
 		setJSONData(
 				defaultSerializer
@@ -84,6 +102,9 @@ public class AvtoCtGr_A extends CimSmgsSupport_A {
 	private Mapper mapper;
 	@Autowired
 	private AvtoDAO avtoDAO;
+	@Autowired
+	private KontGruzHistoryDAO kontGruzHistoryDAO;
+
 
 	private String action;
 	private String dataObj;

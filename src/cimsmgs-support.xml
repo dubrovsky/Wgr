@@ -267,6 +267,10 @@ name="Doc2Doc_uploadXLSvags" method="uploadXLSvags" class="doc2doc_A">
             <result name="success" type="json"/>
         </action>
 
+        <action name="Client_*" method="{1}" class="com.bivc.cimsmgs.actions.nsi.Client_A">
+            <result name="success" type="json"/>
+        </action>
+
         <action name="Nsi_*_view" method="{1}" class="com.bivc.cimsmgs.actions.nsi.Nsi_A">
             <result name="success" type="json"/>
             <!--<result name="btns">/jsp/NsiBtns.jsp</result>-->
@@ -306,6 +310,9 @@ name="Doc2Doc_uploadXLSvags" method="uploadXLSvags" class="doc2doc_A">
             <result name="success" type="json"/>
         </action>
         <action name="secure/BindPoezdAndYard" class="bindPoezdAndYard_A">
+            <result name="success" type="json"/>
+        </action>
+        <action name="secure/BindAvtoAndYard" class="bindAvtoAndYard_A">
             <result name="success" type="json"/>
         </action>
         <action name="secure/Yard" class="yard2_A">

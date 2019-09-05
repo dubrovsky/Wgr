@@ -121,7 +121,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
             'ky2poezd2yardbindtreeformout button[action=showVags]': {
                 click: this.showVagsLeft
             },
-            'ky2vgctgrtreeform button[action=getPoesdAndYardForBind]': {
+            'ky2vgctgrtreeform button[action=showPoezd4YardOutBind]': {
                 click: this.getPoesdIntoAndYardForBindFromVgCntGr
             }
         });
@@ -176,18 +176,18 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
 
                     //// fill trees
                     var vags = poezdObj['vagons'];
-                    this.getTreepanelLeft().setTitle(poezdObj['nppr']);
+                    this.getTreepanelLeft().setTitle(this.getController('ky2.BindPoezdAndPoezdController').titleForPoezd("Поезд № " + poezdObj['npprm'] + '<br/>'));
                     var rootNode = this.getTreepanelLeft().getRootNode();
                     if (vags && !Ext.Object.isEmpty(vags)) {
                         /*rootNode.set('hid', poezdObj['hid']); // poezd hid
                         rootNode.set('direction', poezdObj['direction']);
                         rootNode.set('nppr', poezdObj['nppr']);
-                        this.getController('ky2.BindPoezdAndPoezdController').initVagsNodes(vags, rootNode, true);*/
+                        c;*/
                         this.initRootNode(rootNode, poezdObj, vags);
                         // rootNode.expand();
                     }
 
-                    this.getTreepanelRight().setTitle('Контейнерная площадка');
+                    this.getTreepanelRight().setTitle(this.titleForYard("Контейнерная площадка " + '<br/>' + '<br/>'));
                     rootNode = this.getTreepanelRight().getRootNode();
                     if (yardSectorArr && yardSectorArr.length > 0) {
                         this.initYardSectorNodes(yardSectorArr, rootNode);
@@ -203,6 +203,11 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
                 this.getCenter().setLoading(false);
             }
         });
+    },
+
+    titleForYard: function(title) {
+        return title +
+            "Номер контейнера/Масса тары/Масса брутто/Типоразмер/Грузоподъемность";
     },
 
     initRootNode: function (rootNode, dataObj, vags) {
@@ -286,7 +291,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
             var cont = conts[contIndx],
                 gryzy = cont['gruzs'],
                 contModel = Ext.create('TK.model.ky2.PoezdBindTreeNode', {
-                    text: cont['nkon'],
+                    text: this.getController('ky2.BindPoezdAndPoezdController').contNodeText(cont),
                     who: 'cont',
                     yardHid: yardModel.get('hid'),
                     // x: yardModel.get('x'),
@@ -725,7 +730,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
 
     hideVagsLeft: function (btn) {
         this.getTreepanelLeft().getRootNode().eachChild(function (vagNodeModel) {
-            if (vagNodeModel.get('who') === 'vag') {
+            if (vagNodeModel.get('who') === 'vag' || vagNodeModel.get('who') === 'avto') {
                 vagNodeModel.set('cls', 'hideTreeNode');
             }
         }, this);
@@ -733,7 +738,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
 
     showVagsLeft: function (btn) {
         this.getTreepanelLeft().getRootNode().eachChild(function (vagNodeModel) {
-            if (vagNodeModel.get('who') === 'vag') {
+            if (vagNodeModel.get('who') === 'vag' || vagNodeModel.get('who') === 'avto') {
                 vagNodeModel.set('cls', 'showTreeNode');
             }
         }, this);

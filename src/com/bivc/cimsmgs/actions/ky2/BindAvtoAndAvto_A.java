@@ -3,12 +3,11 @@ package com.bivc.cimsmgs.actions.ky2;
 import com.bivc.cimsmgs.actions.CimSmgsSupport_A;
 import com.bivc.cimsmgs.commons.Response;
 import com.bivc.cimsmgs.dao.AvtoDAO;
-import com.bivc.cimsmgs.dao.PoezdDAO;
+import com.bivc.cimsmgs.dao.KontGruzHistoryDAO;
 import com.bivc.cimsmgs.db.ky.Avto;
-import com.bivc.cimsmgs.db.ky.Poezd;
 import com.bivc.cimsmgs.doc2doc.orika.Mapper;
 import com.bivc.cimsmgs.dto.ky2.AvtoBindDTO;
-import com.bivc.cimsmgs.dto.ky2.PoezdBindDTO;
+import com.bivc.cimsmgs.dto.ky2.AvtoBindViewDTO;
 import com.bivc.cimsmgs.formats.json.Deserializer;
 import com.bivc.cimsmgs.formats.json.Serializer;
 import org.apache.commons.lang3.StringUtils;
@@ -18,9 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
-/**
- * @author p.dzeviarylin
- */
+import static com.bivc.cimsmgs.actions.CimSmgsSupport_A.KontGruzHistoryType.AVTO;
+
 public class BindAvtoAndAvto_A extends CimSmgsSupport_A {
 
     private static final Logger log = LoggerFactory.getLogger(BindAvtoAndAvto_A.class);
@@ -64,12 +62,14 @@ public class BindAvtoAndAvto_A extends CimSmgsSupport_A {
 
         Map<String, List<?>> contGruz4History = avto.bindAvtoToAvtos(avtoBindDTO.getKonts(), avtoBindDTO.getGruzs(), avtos, mapper);
         avtoDAO.makePersistent(avto);
+        saveContGruzHistory(contGruz4History, kontGruzHistoryDAO, AVTO);
 
         for (AvtoBindDTO avtoBindDTO1 : avtosBindDTO) {
             for (Avto avto1 : avtos) {
                 if (Objects.equals(avto1.getHid(), avtoBindDTO1.getHid())) {  // found poezd
                     contGruz4History = avto1.bindAvtosToAvto(avtoBindDTO1.getKonts(), avtoBindDTO1.getGruzs(), avto, mapper, avtos);
                     avtoDAO.makePersistent(avto1);
+                    saveContGruzHistory(contGruz4History, kontGruzHistoryDAO, AVTO);
                     break;
                 }
             }
@@ -108,8 +108,8 @@ public class BindAvtoAndAvto_A extends CimSmgsSupport_A {
                         .write(
                                 new Response<>(
                                         Arrays.asList(
-                                                mapper.map(avto1, AvtoBindDTO.class),
-                                                mapper.map(avto2, AvtoBindDTO.class)
+                                                mapper.map(avto1, AvtoBindViewDTO.class),
+                                                mapper.map(avto2, AvtoBindViewDTO.class)
                                         ),
                                         2L
                                 )
@@ -127,8 +127,8 @@ public class BindAvtoAndAvto_A extends CimSmgsSupport_A {
                         .write(
                                 new Response<>(
                                         Arrays.asList(
-                                                mapper.map(avto, AvtoBindDTO.class),
-                                                mapper.mapAsList(avtos, AvtoBindDTO.class)
+                                                mapper.map(avto, AvtoBindViewDTO.class),
+                                                mapper.mapAsList(avtos, AvtoBindViewDTO.class)
                                         ),
                                         2L
                                 )
@@ -147,6 +147,9 @@ public class BindAvtoAndAvto_A extends CimSmgsSupport_A {
     private AvtoDAO avtoDAO;
     @Autowired
     private com.bivc.cimsmgs.doc2doc.Mapper kyavtoMapper;
+    @Autowired
+    private KontGruzHistoryDAO kontGruzHistoryDAO;
+
 
     private String action;
     private String dataObj;

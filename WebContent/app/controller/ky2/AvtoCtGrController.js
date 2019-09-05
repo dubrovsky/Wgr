@@ -20,6 +20,9 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
         ref: 'avtolist',
         selector: 'viewport > tabpanel grid'
     }, {
+        ref: 'avtoform',
+        selector: 'viewport > tabpanel ky2abstractform#ky2avtoform'
+    }, {
         ref: 'ky2treeform',
         selector: 'viewport > tabpanel ky2treeform'
     }, {
@@ -76,6 +79,9 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
             'ky2avtooutlist button[action="editCtGr"]': {
                 click: this.editCtGrOut
             },
+            'ky2avtointoform button[action="editCtGr"]': {
+                click: this.toCtGrFromOutside
+            },
             'ky2avtoctgrtreeform > treepanel': {
                 itemclick: this.onTreeNodeClick
             },
@@ -106,33 +112,48 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
         });
     },
 
+    toCtGrFromOutside: function (btn) {
+        var record = this.getAvtoform().getRecord();
+        if (record.get('hid') == null) {
+            Ext.Msg.alert(this.warningMsg, this.warningText);
+            return false;
+        }
+        this.editCtGr('ky2ctgrtreeformavtointo', 'TK.model.ky2.AvtoCtGrTreeNode', record.get('hid'));
+    },
+
     editCtGrInto: function (btn) {
-        this.editCtGr('ky2ctgrtreeformavtointo', 'TK.model.ky2.AvtoCtGrTreeNode');
+        this.editCtGrCheck('ky2ctgrtreeformavtointo', 'TK.model.ky2.AvtoCtGrTreeNode');
     },
 
     editCtGrOut: function (btn) {
-        this.editCtGr('ky2ctgrtreeformavtoout', 'TK.model.ky2.AvtoCtGrTreeNode');
+        this.editCtGrCheck('ky2ctgrtreeformavtoout', 'TK.model.ky2.AvtoCtGrTreeNode');
     },
 
-    editCtGr: function (xtype, modelClsName) {
+    editCtGrCheck: function (xtype, modelClsName) {
         var avtolist = this.getAvtolist();
         if (!TK.Utils.isRowSelected(avtolist)) {
             return false;
         }
+        this.editCtGr(xtype, modelClsName, avtolist.getSelectionModel().getLastSelected().get('hid'));
+    },
+
+    editCtGr: function (xtype, modelClsName, avtoHid) {
 
         var url = 'ky2/secure/AvtoCtGr.do';
 
         Ext.Ajax.request({
             url: url,
-            params: {hid: avtolist.getSelectionModel().getLastSelected().get('hid'), action: 'edit'},
+            params: {hid: avtoHid, action: 'edit'},
             scope: this,
             success: function (response) {
                 var respObj = Ext.decode(response.responseText);
                 var avtoObj = respObj['rows'][0];
 
                 var vagoncontainer = Ext.widget(xtype, {title: 'Контейнер/Груз'});
+                this.initAvtoToButtons(vagoncontainer, avtoObj['direction']);
 
                 //// fill tree
+                this.getTreepanel().setTitle(this.getController('ky2.BindAvtoAndAvtoController').titleForAvto(""));
                 var rootNode = this.getTreepanel().getStore().getRootNode();
                 // rootNode.removeAll();
                 rootNode.set('hid', avtoObj['hid']);
@@ -212,7 +233,7 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
                 gryzy = cont['gruzs'],
                 plombs = cont['plombs'],
                 contModel = Ext.create('TK.model.ky2.PoezdVgCtGrTreeNode', {
-                    text: cont['nkon'],
+                    text: this.getController('ky2.BindPoezdAndPoezdController').contNodeText(cont),
                     who: 'cont',
                     iconCls: 'cont3',
                     leaf: gryzy && gryzy['0'] ? false : true,
@@ -361,7 +382,7 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
     },
 
     onAddContClick: function (btn) {
-        this.addCtGr(this.getTreepanel().getRootNode(), 'cont');
+        this.addCtGr(this.getTreepanel().getRootNode(), 'cont', 'cont3');
     },
 
     addCtGr: function (parentModelNode, who, iconCls) { // add sort prop
@@ -436,6 +457,15 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
     onAddPlombClick: function (btn) {
         var selectedModelNode = this.getTreepanel().getSelectionModel().getLastSelected();
         this.addCtGr(selectedModelNode, 'plomb', 'doc_new');
+    },
+
+    initAvtoToButtons: function(vagoncontainer, direction) {
+        // if (direction === 1)
+        //     vagoncontainer.down('#showAvtosOutDir4AvtoIntoBind').show();
+        // else if (direction === 2)
+        //     vagoncontainer.down('#showAvtosIntoDir4AvtoOutBind').show();
+        vagoncontainer.down('#showAvto4YardOutBind').show();
+        vagoncontainer.down('#editPoezd').hide();
     },
 
     onDelClick: function (btn) {

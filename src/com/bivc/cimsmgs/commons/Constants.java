@@ -292,6 +292,30 @@ public class Constants {
         return buffer.toString();
     }
 
+    public static String convert2JSON_NsiClients(List<Client> data, Long total) {
+        StringBuffer buffer = new StringBuffer();
+        if (data != null && data.size() > 0) {
+            buffer.append("{total:" + total + ", rows: [");
+
+            for (Client client : data) {
+                buffer.append("{");
+                buffer.append("hid:'");
+                buffer.append(client.getHid());
+                buffer.append("',cl_no:'");
+                buffer.append(client.getCl_no());
+                buffer.append("',cl_name:'");
+                buffer.append(javascriptString(client.getCl_name()));
+                buffer.append("'},");
+            }
+
+            buffer.replace(buffer.lastIndexOf(","), buffer.length(), "]}");
+        } else {
+            buffer.append("{total:0, rows:[]}");
+        }
+
+        return buffer.toString();
+    }
+
     public static String convert2JSON_SmgsList(List<CimSmgs> data, Long total, myUser usr) throws IllegalAccessException,
             InvocationTargetException, NoSuchMethodException {
         StringBuffer buffer = new StringBuffer();

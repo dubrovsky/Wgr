@@ -18,20 +18,34 @@ public class dbPaketTool {
         st.setObject(r, aColumn, r);
       }
     } else {
-      for(int i = 0; i < st.getRowCount(); ++i) {
+      for(int i = 0; i < st.getRowCount(); i++) {
         modelDbForm f = st.getForm(i);
         TreeMap<String, modelDbPack> p = f.getPacks();
         Iterator it = p.keySet().iterator();
 
         while(it.hasNext()) {
           stPack pk = (stPack) p.get(it.next());
-          if (pk.getInfo().packName.equals(packName)) {
-            for (int r = 0; r < pk.getRowCount(); r++) {
-              pk.setObject(r, aColumn, r);
-            }
-          } else {
-            fillRownum(packName, aColumn, pk);
-          }
+          fillRownum(packName, aColumn, pk);
+        }
+      }
+    }
+    return;
+  }
+
+  public void fill_Rownum(String packName, String aColumn, stPack st, int rr) throws Exception {
+    if (st.getInfo().packName.equals(packName)) {
+      for (int r = 0; r < st.getRowCount(); r++) {
+        st.setObject(r, aColumn, rr);
+      }
+    } else {
+      for(int i = 0; i < st.getRowCount(); i++) {
+        modelDbForm f = st.getForm(i);
+        TreeMap<String, modelDbPack> p = f.getPacks();
+        Iterator it = p.keySet().iterator();
+
+        while(it.hasNext()) {
+          stPack pk = (stPack) p.get(it.next());
+          fill_Rownum(packName, aColumn, pk, i);
         }
       }
     }
@@ -51,7 +65,7 @@ public class dbPaketTool {
       ret[1] += ret2[1];
       ret[2] += ret2[2];
     } else {
-      for(int i = 0; i < st.getRowCount(); ++i) {
+      for(int i = 0; i < st.getRowCount(); i++) {
         modelDbForm f = st.getForm(i);
         TreeMap<String, modelDbPack> p = f.getPacks();
         Iterator it = p.keySet().iterator();

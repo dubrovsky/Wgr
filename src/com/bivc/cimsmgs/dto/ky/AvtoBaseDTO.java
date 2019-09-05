@@ -37,6 +37,8 @@ public class AvtoBaseDTO {
     private NsiKyOwnersDTO owner;
     private String naim_sob;
     private String client;
+    private Integer kontCount;
+
 
     @JsonSerialize(using = DateTimeSerializer.class)
     private Date dattr;
@@ -76,6 +78,14 @@ public class AvtoBaseDTO {
             }
         }
         return this.dotp;
+    }
+
+    public Integer getKontCount() {
+        return kontCount;
+    }
+
+    public void setKontCount(Integer kontCount) {
+        this.kontCount = kontCount;
     }
 
     public void setDotp(Date dotp) {

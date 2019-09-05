@@ -17,6 +17,7 @@ Ext.define('TK.controller.Nsi', {
         'Ext.window.Window',
         'TK.Utils',
         'TK.model.NsiCarrier',
+        'TK.model.ky2.NsiClient',
         'TK.model.NsiSta',
         'TK.model.SmgsOtpr',
         'TK.model.SmgsPlat',
@@ -1291,6 +1292,77 @@ Ext.define('TK.controller.Nsi', {
         rec.set('name', data.name);
         view.up('window').close();
     },
+    nsiPoezdClient: function (query) {
+        var me = this,
+            modelName = 'TK.model.ky2.NsiClient',
+            win = Ext.widget('nsieditlist', {
+                width: 500,
+                prefix: 'client',
+                editPrivileg: 'CIM_DIR',
+                search: query,
+                buildTitle: function (config) {
+                    config.title = this.titleClient;
+                },
+                buildStoreModel: function () {
+                    return modelName;
+                },
+                buildUrlPrefix: function () {
+                    return 'Client';
+                },
+                buildColModel: function (config) {
+                    config.items.columns = [
+                        {
+                            xtype: 'actioncolumn', width: 55,
+                            items: [
+                                {
+                                    icon: './resources/images/save.gif',
+                                    tooltip: this.ttipSave,
+                                    action: 'save',
+                                    handler: me.onSaveRecord,
+                                    getClass: this.onGetClass,
+                                    scope: this
+                                },
+                                {
+                                    icon: './resources/images/delete.png',
+                                    tooltip: this.ttipDel,
+                                    action: 'del',
+                                    handler: me.onDelRecord,
+                                    getClass: this.onGetClass,
+                                    scope: this
+                                }
+                            ]
+                        },
+                        {text: this.headerCode, dataIndex: 'cl_no', flex: 1, editor: {xtype: 'textfield', maxLength: 10}},
+                        {text: this.headerName, dataIndex: 'cl_name', flex: 4, editor: {xtype: 'textfield', maxLength: 255}}
+                    ];
+                },
+                newRecord: function () {
+                    return Ext.create(modelName, {});
+                },
+                onBeforeEdit: function (editor, props) {
+                    if (!tkUser.hasPriv(this.editPrivileg)) { // switch off editing
+                        return false;
+                    }
+                },
+                onGetClass: function (value, meta, record) {
+                    if (!tkUser.hasPriv(this.editPrivileg)) {
+                        return 'hide_el';
+                    }
+                    /*if (record.get('ro') == '0') {
+                     return 'show_el';
+                     }*/
+                },
+                prepareData: function (rec) {
+                    var data = {};
+                    data[this.prefix + '.hid'] = rec.data['hid'];
+                    data[this.prefix + '.cl_no'] = rec.data['cl_no'];
+                    data[this.prefix + '.cl_name'] = rec.data['cl_name'];
+                    return data;
+                }
+            });
+        return win;
+    },
+
     nsiCarrier: function (query) {
         var me = this,
             win = Ext.widget('nsieditlist', {

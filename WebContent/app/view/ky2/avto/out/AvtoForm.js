@@ -141,7 +141,7 @@ Ext.define('TK.view.ky2.avto.out.AvtoForm', {
             form.findField('dotpTime').setValue(now);
         },
         buildTopToolbar: function (config) {
-            TK.view.ky2.poezd.BasePoezdForm.prototype.buildTopToolbar.apply(this, arguments);
+            TK.view.ky2.avto.BaseAvtoForm.prototype.buildTopToolbar.apply(this, arguments);
         }
     }
         // {

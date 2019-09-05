@@ -14,13 +14,23 @@ Ext.define('TK.model.ky2.PoezdBindTreeNode', {
         // poezd
         {name:'direction', type:'int', useNull: true},
         {name:'nppr', type:'string'},
+        {name:'npprm', type:'string'},
 
         // vag
         {name: 'nvag', type: 'string'},
+        {name: 'podSila', type: 'string'},
+        {name: 'masTar', type: 'string'},
+        {name: 'kolOs', type: 'string'},
+        {name: 'sobstv', type: 'string'},
         {name: 'otpravka', type: 'string', useNull: true, defaultValue: null},
 
         // kont
         {name: 'nkon', type: 'string'},
+        {name: 'massa_tar', type: 'string'},
+        {name: 'massa_brutto', type: 'string'},
+        {name: 'massa_brutto_all', type: 'string'},
+        {name: 'pod_sila', type: 'string'},
+        {name: 'vid', type: 'string'},
 
         // gruz
         'kgvn',

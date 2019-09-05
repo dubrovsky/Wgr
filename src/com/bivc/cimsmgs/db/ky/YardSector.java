@@ -170,4 +170,23 @@ public class YardSector implements Serializable {
         }*/
         return contGruz4History;
     }
+
+    public Map<String, List<?>> bindYardToAvto(YardSectorBindDTO yardSectorBindDTO, Avto avto, Mapper mapper, List<YardSector> yardSectors) {
+        Map<String, List<?>> contGruz4History = new HashMap<>(1);
+        contGruz4History.put("konts", new ArrayList<Kont>());
+
+        for (YardBindDTO yardBindDTO : yardSectorBindDTO.getYards()) {
+            for (Yard yard : getYards()) {
+                if (Objects.equals(yard.getHid(), yardBindDTO.getHid())) {
+//                    mapper.map(yardBindDTO, yard); // update
+                    List<Kont> konts = yard.bindKonts(yardBindDTO.getKonts(), mapper, avto, yardSectors);
+                    ((List<Kont>) contGruz4History.get("konts")).addAll(konts);
+                    break;
+                }
+            }
+        }
+
+        return contGruz4History;
+    }
+
 }

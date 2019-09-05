@@ -365,6 +365,12 @@ public class CimSmgsSupport_A extends ActionSupport implements JSONAware, UserAw
                             );
                             break;
                         }
+                        case AVTO: {
+                            kontGruzHistory = new KontGruzHistory(
+                                    kont.getAvto(), kont, kont.getAvto().getDirection(), new Date(), getUser().getUsr().getUn()
+                            );
+                            break;
+                        }
                         default:
                             throw new RuntimeException("Invalid KontGruzHistoryType");
                     }
@@ -384,6 +390,11 @@ public class CimSmgsSupport_A extends ActionSupport implements JSONAware, UserAw
                         case POEZD:
                             kontGruzHistory = new KontGruzHistory(
                                     gruz.getVagon().getPoezd(), gruz.getVagon(), gruz, gruz.getVagon().getPoezd().getKoleya(), gruz.getVagon().getPoezd().getDirection(), new Date(), getUser().getUsr().getUn()
+                            );
+                            break;
+                        case AVTO:
+                            kontGruzHistory = new KontGruzHistory(
+                                    gruz.getAvto(), gruz, gruz.getAvto().getDirection(), new Date(), getUser().getUsr().getUn()
                             );
                             break;
                         default:

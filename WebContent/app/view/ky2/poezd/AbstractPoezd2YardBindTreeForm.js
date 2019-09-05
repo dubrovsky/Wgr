@@ -4,7 +4,7 @@ Ext.define('TK.view.ky2.poezd.AbstractPoezd2YardBindTreeForm', {
 
     buildTreeLeftPanelTopToolbarItems: function () {
         var items = this.callParent(arguments);
-        items.unshift( // в начало
+        /*items.unshift( // в начало
             {
                 text: 'Спрятать вагоны',
                 action: 'hideVags'
@@ -13,7 +13,7 @@ Ext.define('TK.view.ky2.poezd.AbstractPoezd2YardBindTreeForm', {
                 text: 'Показать вагоны',
                 action: 'showVags'
             }, '-'
-        );
+        );*/
         items.push('-', // в конец
             {
                 text: 'Переместить все >>',

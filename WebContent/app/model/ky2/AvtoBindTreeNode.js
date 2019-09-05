@@ -3,6 +3,11 @@ Ext.define('TK.model.ky2.AvtoBindTreeNode', {
 
     fields: [
         {name: 'hid', type: 'int', useNull: true},
+        {name: 'poezdHid', type: 'int', useNull: true},
+        {name: 'vagHid', type: 'int', useNull: true},
+        {name: 'contHid', type: 'int', useNull: true},
+        {name: 'yardHid', type: 'int', useNull: true},
+        {name: 'yardSectorHid', type: 'int', useNull: true},
 
         {name: 'sort', type: 'int'},
 
@@ -18,10 +23,25 @@ Ext.define('TK.model.ky2.AvtoBindTreeNode', {
 
         // kont
         {name: 'nkon', type: 'string'},
+        {name: 'massa_tar', type: 'string'},
+        {name: 'massa_brutto', type: 'string'},
+        {name: 'massa_brutto_all', type: 'string'},
+        {name: 'pod_sila', type: 'string'},
+        {name: 'vid', type: 'string'},
 
         // gruz
         'kgvn',
         // 'nzgr',
+
+        // sector
+        {name:'name', type:'string'},
+
+        // yard
+        {name:'x', type:'int', useNull: true},
+        {name:'y', type:'int', useNull: true},
+        {name:'z', type:'int', useNull: true},
+        {name:'contsInYardSector', type:'int'},
+        {name:'placesInYardSector', type:'int'},
 
         // tree node fields
         'who',

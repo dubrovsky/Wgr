@@ -276,6 +276,7 @@ public class ReportService {
             cell.setCellStyle(style3);
             cellIndex++;
 
+            rowIndex++;
         }
 
         ///END  TABLE DATA

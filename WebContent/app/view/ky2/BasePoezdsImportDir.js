@@ -10,8 +10,8 @@ Ext.define('TK.view.ky2.BasePoezdsImportDir', {
                 {text: 'Поезд', dataIndex: 'n_poezd', flex: 1},
                 {text: 'Дата', dataIndex: 'dattr', flex: 1, renderer: TK.Utils.renderLongStr},
                 {text: 'Ведомость', dataIndex: 'ved_nomer', flex: 1},
-                {text: 'Станция', dataIndex: 'sto_f', flex: 2, renderer: TK.Utils.renderLongStr},
-                {text: 'Кол. ваг.', dataIndex: 'count_nvag', flex: 1}
+                {text: 'Кол. ваг.', dataIndex: 'count_nvag', flex: 1},
+                {text: 'Кол. конт.', dataIndex: 'count_nkon', flex: 1}
             ]
         };
     },

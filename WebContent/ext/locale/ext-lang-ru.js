@@ -1654,6 +1654,7 @@ Ext.define("TK.locale.ru.view.nsi.List", {
     titleTnved       :'Справочник ТНВЭД',
     titleDeliv       :'Справочник условий поставки',
     titleUpak        :'Справочник видов упаковки',
+    titleClient      :'Справочник клиентов',
 
     headerName       :'Наименование',
     headerProject       :'Проект',
@@ -2053,7 +2054,8 @@ Ext.define("TK.locale.ru.view.ky2.yard.YardList", {
     headerStorageType        :'Хранение',
     headerXYZ        :'Координаты',
 
-    title:'Контейнерная площадка'
+    title:'Контейнерная площадка',
+    btnEditKont     : 'Редактировать контейнер'
 
 });
 
@@ -2593,6 +2595,24 @@ Ext.define("TK.locale.ru.controller.ky2.PoezdController", {
     btnClose :'Закрыть'
 });
 
+Ext.define("TK.locale.ru.controller.ky2.AvtoCtGrController", {
+    override:"TK.controller.ky2.AvtoCtGrController",
+
+    delTitle :'Удаление...',
+    delMsg   :'Вы действительно хотите удалить..?',
+    maskMsg :'Запрос данных...',
+    errorMsg:'Внимание! Ошибка...',
+    warningMsg:'Внимание!',
+    warningText:'Автомобиль не сохранен....',
+    uploadText:'Данные загружены',
+    titleUpload: 'Загрузка XLS',
+    labelSelectFile:'Выбор файла для загрузки...',
+    labelFile:'Файл',
+    btnSearch:'Обзор...',
+    btnSave  :'Сохранить',
+    btnClose :'Закрыть'
+});
+
 Ext.define("TK.locale.ru.controller.ky.Vagon", {
     override:"TK.controller.ky.Vagon",
 
@@ -2770,7 +2790,9 @@ Ext.define("TK.locale.ru.view.ky2.avto.into.AvtoList", {
     btnToAvto          : "На авто по отпр.",
     btnToPoezd         : "На поезд по отпр.",
     btnToYard          : "На конт. площадку",
-    title              :'Список автомобилей по прибытию'
+    title              :'Список автомобилей по прибытию',
+    headerKontCount    :'Количество контейнеров не выгружено'
+
 
 });
 
@@ -2781,7 +2803,9 @@ Ext.define("TK.locale.ru.view.ky2.avto.out.AvtoList", {
     btnToAvto          : "На авто по приб.",
     btnToPoezd         : "На поезд по приб.",
     btnToYard          : "На конт. площадку",
-    title              :'Список автомобилей по отправлению'
+    title              :'Список автомобилей по отправлению',
+    headerKontCount    :'Количество контейнеров погружено',
+
 });
 
 Ext.define("TK.locale.ru.controller.ky2.AvtoController", {

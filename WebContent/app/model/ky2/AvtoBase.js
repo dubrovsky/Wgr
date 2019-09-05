@@ -18,6 +18,7 @@ Ext.define('TK.model.ky2.AvtoBase', {
         {name:'departure', type: 'string'},
         {name:'destination', type: 'string'},
         {name:'driver_nm', type: 'string'},
+        {name:'kontCount', type:'int'},
         {name:'prim_avto', type: 'string'},
         {name:'direction', type:'int'},
         {name:'naim_sob', type: 'string'},

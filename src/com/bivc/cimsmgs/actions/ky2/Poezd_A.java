@@ -116,7 +116,7 @@ public class Poezd_A extends CimSmgsSupport_A {
         for (int i = 0; i < st.getRowCount(); i++) {
             poezdImportDTOS.add(
                     new PoezdImportDTO(st.getTxt(i, "DATTR"), st.getTxt(i, "N_POEZD"), st.getTxt(i, "N_PACKET"),
-                            st.getTxt(i, "VED_NOMER"), st.getTxt(i, "COUNT_NVAG"), st.getTxt(i, "STO_F"), st.getTxt(i, "STN"))
+                            st.getTxt(i, "VED_NOMER"), st.getTxt(i, "COUNT_NVAG"), st.getTxt(i, "COUNT_NKON"))
             );
 //            System.out.println(
 //                    "DATTR: " + st.getTxt(i, "DATTR") + ", " +
@@ -142,7 +142,7 @@ public class Poezd_A extends CimSmgsSupport_A {
     }
 
     public String importPoezd() throws Exception {
-        System.out.println("routeId - " + routeId + ", n_poezd - " + n_poezd + ", ved_nomer - " + ved_nomer + ", n_packet - " + n_packet + ", koleya - " + koleya + ", direction - " + direction);
+        System.out.println("poezd hid - " + getHid() + ", routeId - " + routeId + ", n_poezd - " + n_poezd + ", ved_nomer - " + ved_nomer + ", n_packet - " + n_packet + ", koleya - " + koleya + ", direction - " + direction);
 
         SessionFactoryImplementor sessionFactoryImplementation = (SessionFactoryImplementor) HibernateUtil.getSessionFactory();
         ConnectionProvider connectionProvider = sessionFactoryImplementation.getConnectionProvider();
@@ -156,17 +156,18 @@ public class Poezd_A extends CimSmgsSupport_A {
         stw.setObject(0, "N_POEZD", n_poezd);
         stw.setObject(0, "N_PACKET", n_packet);
         stw.setObject(0, "VED_NOMER", ved_nomer);
+        stw.setObject(0, "HID", getHid());
         dbt.read(stw, "VAG_PER_VED", "WHERE 1=0", null);
 
         stPack st2 = new stPack("POEZD");
         st2.getInfo().keyName = keyNm;
 
-        dbt.read(st2, Select.getSqlFile("ky/bringing/poezd"), stw, 0, "N_POEZD,N_PACKET,VED_NOMER");
+        dbt.read(st2, Select.getSqlFile("ky/bringing/ky_poezd"), stw, 0, "HID");
         stw.setPack(0, st2);
 
-        dbt.readChildData(st2, "VAGON_HID", Select.getSqlFile("ky/bringing/vagon_hid"), -1, "NPPR,N_PACKET,VED_NOMER");
+        dbt.readChildData(st2, "VAGON_HID", Select.getSqlFile("ky/bringing/vagon_hid"), -1, "N_POEZD,N_PACKET,VED_NOMER");
         dbt.readChildData(st2, "VAGON_HID", "VAGON", Select.getSqlFile("ky/bringing/vagon"), null, "HID_VAG");
-        dbt.readChildData(st2, "VAGON", "KONT_HID", Select.getSqlFile("ky/bringing/kont_hid"), null, "NPPR,N_PACKET,VED_NOMER,NVAG");
+        dbt.readChildData(st2, "VAGON", "KONT_HID", Select.getSqlFile("ky/bringing/kont_hid"), null, "N_POEZD,N_PACKET,VED_NOMER,NVAG");
         dbt.readChildData(st2, "KONT_HID", "KONT", Select.getSqlFile("ky/bringing/kont"), null, "HID_KONT");
         dbt.readChildData(st2, "KONT", "GRUZ_KONT", Select.getSqlFile("ky/bringing/gruz_kont"), null, "HID_KONT");
         dbt.readChildData(st2, "VAGON", "GRUZ_VAG", Select.getSqlFile("ky/bringing/gruz_vag"), null, "HID_VAG");
@@ -175,6 +176,7 @@ public class Poezd_A extends CimSmgsSupport_A {
 
         dbPaketTool dbpt = new dbPaketTool(dbt);
 
+/*
         stPack st_seq = new stPack();
 
         Date d = new Date();
@@ -187,7 +189,9 @@ public class Poezd_A extends CimSmgsSupport_A {
         st_packDoc.setObject(0,"TRANS", getUser().getUsr().getGroup().getName());
         st_packDoc.setObject(0,"DATTR", d);
         dbt.save("PACK_DOC", st_packDoc, 0, null);
+*/
 
+/*
         st_seq = new stPack();
         dbt.read(st_seq, "select NextVal('KY_POEZD_HID') AS NV", null);
         st2.setObject(0, "HID", st_seq.getObject(0,"NV"));
@@ -200,6 +204,7 @@ public class Poezd_A extends CimSmgsSupport_A {
         st2.setObject(0, "ALTERED", d);
         st2.setObject(0,"DATTR", d);
         dbt.save("KY_POEZD", st2, -1, null);
+*/
 
         sequenceFields sq = new sequenceFields().addSequence("HID", "KY_VAGON_HID");
         String[][] fillParentKey = new String[][]{
@@ -209,7 +214,7 @@ public class Poezd_A extends CimSmgsSupport_A {
           {"DATTR", "DATTR"},
           {"TRANS", "TRANS"}
         };
-        dbpt.fillRownum("VAGON", "SORT", st2);
+        dbpt.fill_Rownum("VAGON", "SORT", st2, 0);
         dbpt.save("VAGON", "KY_VAGON", keyNm, fillParentKey, st2, sq);
 
         sq = new sequenceFields().addSequence("HID", "KY_KONT_HID");
@@ -220,7 +225,7 @@ public class Poezd_A extends CimSmgsSupport_A {
           {"DATTR", "DATTR"},
           {"TRANS", "TRANS"}
         };
-        dbpt.fillRownum("KONT", "SORT", st2);
+        dbpt.fill_Rownum("KONT", "SORT", st2, 0);
         dbpt.save("KONT", "KY_KONT", keyNm, fillParentKey, st2, sq);
 
         sq = new sequenceFields().addSequence("HID", "KY_GRUZ_HID");
@@ -294,12 +299,25 @@ public class Poezd_A extends CimSmgsSupport_A {
 
         log.debug(st2.toString());
 
+        Poezd poezd = poezdDAO.findById(getHid(), false);
+        setJSONData(
+          defaultSerializer
+            .setLocale(getLocale())
+            .write(
+              new Response<>(
+                kypoezdMapper.copy(poezd, PoezdBaseDTO.class)
+              )
+            )
+        );
+
+/*
         setJSONData(
                 defaultSerializer
                         .write(
                                 new Response<>()
                         )
         );
+*/
         return SUCCESS;
     }
 

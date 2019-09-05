@@ -261,6 +261,10 @@ public class DaoInitInterceptor implements Interceptor {
             ((NsiCargoDanDeDAOAware) action).setNsiCargoDanDeDAO(new NsiCargoDanDeDAOHib());
         }
 
+        if (action instanceof NsiClientDAOAware) {
+            ((NsiClientDAOAware) action).setNsiClientDAO(new NsiClientDAOHib());
+        }
+
         return actionInvocation.invoke();
     }
 }

@@ -124,6 +124,18 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
             },
             'ky2poezd2poezdbindtreeformout button[action=moveLeft]': {
                 click: this.moveNodesLeft
+            },
+            'ky2poezd2poezdbindtreeforminto button[action=hideVags]': {
+                click: this.getController('ky2.BindPoezdAndYardController').hideVagsLeft
+            },
+            'ky2poezd2poezdbindtreeforminto button[action=showVags]': {
+                click: this.getController('ky2.BindPoezdAndYardController').showVagsLeft
+            },
+            'ky2poezd2poezdbindtreeformout button[action=hideVags]': {
+                click: this.getController('ky2.BindPoezdAndYardController').hideVagsLeft
+            },
+            'ky2poezd2poezdbindtreeformout button[action=showVags]': {
+                click: this.getController('ky2.BindPoezdAndYardController').showVagsLeft
             }
         });
     },
@@ -199,13 +211,13 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
 
                     //// fill trees
                     var vags = poezd1Obj['vagons'];
-                    this.getTreepanelLeft().setTitle("Поезд № " + poezd1Obj['nppr']);
+                    this.getTreepanelLeft().setTitle(this.titleForPoezd("Поезд № " + poezd1Obj['npprm'] + '<br/>'));
                     var rootNode = this.getTreepanelLeft().getRootNode();
                     if (vags && !Ext.Object.isEmpty(vags)) {
                         this.initRootNode(rootNode, poezd1Obj, vags);
                     }
 
-                    this.getTreepanelRight().setTitle("Поезда");
+                    this.getTreepanelRight().setTitle(this.titleForPoezd('<br/>'));
                     rootNode = this.getTreepanelRight().getRootNode();
                     if (poezd2ArrObj && poezd2ArrObj.length > 0) {
                         this.initPoezdsNodes(poezd2ArrObj, rootNode);
@@ -254,6 +266,12 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         }
     },
 
+    titleForPoezd: function(title) {
+        return title +
+            "№ вагона/Грузоподъемность/Тара/Оси/Собственник" + '<br/>' +
+            "Номер контейнера/Масса тары/Масса брутто/Типоразмер/Грузоподъемность";
+    },
+
     initRootNode: function (rootNode, dataObj, vags) {
         rootNode.set('hid', dataObj['hid']);
         rootNode.set('poezdHid', dataObj['hid']); // poezd hid
@@ -263,13 +281,21 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         this.initVagsNodes(vags, rootNode, false);
     },
 
+    vagNodeText: function(vag) {
+        return (vag['nvag'] ? vag['nvag'] : '...')
+            + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/ ' + (vag['podSila'] ? vag['podSila'] : '...')
+            + ' / ' + (vag['masTar'] ? vag['masTar'] : '...')
+            + ' / ' + (vag['kolOs'] ? vag['kolOs'] : '...')
+            + ' / ' + (vag['sobstv'] ? vag['sobstv'] : '...');
+    },
+
     initVagsNodes: function (vags, rootNode, isYard) {    //isYard - poezd for yard
         for (var vagIndx in vags) {
             var vag = vags[vagIndx],
                 conts = vag['konts'],
                 gruzy = vag['gruzs'],
                 vagModel = Ext.create('TK.model.ky2.PoezdBindTreeNode', {
-                    text: vag['nvag'],
+                    text: this.vagNodeText(vag),
                     who: 'vag',
                     poezdHid: rootNode.get('hid'),
                     leaf: false,
@@ -299,12 +325,20 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         }
     },
 
+    contNodeText: function(cont) {
+       return (cont['nkon'] ? cont['nkon'] : '...')
+           + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/ ' + (cont['massa_tar'] ? cont['massa_tar'] : '...')
+           + ' / ' + (cont['massa_brutto_all'] ? cont['massa_brutto_all'] : '...')
+           + ' / ' + (cont['vid'] ? cont['vid'] : '...')
+           + ' / ' + (cont['pod_sila'] ? cont['pod_sila'] : '...');
+    },
+
     initContsNodes: function (conts, vagIndx, vagModel, isYard) {
         for (var contIndx in conts) {
             var cont = conts[contIndx],
                 gryzy = cont['gruzs'],
                 contModel = Ext.create('TK.model.ky2.PoezdBindTreeNode', {
-                    text: cont['nkon'],
+                    text: this.contNodeText(cont),
                     who: 'cont',
                     poezdHid: vagModel.get('poezdHid'),
                     vagHid: vagModel.get('hid'),

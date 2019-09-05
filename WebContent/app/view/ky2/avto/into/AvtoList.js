@@ -21,9 +21,9 @@ Ext.define('TK.view.ky2.avto.into.AvtoList', {
     buildTopToolbar: function (config) {
         this.callParent(arguments);
         config.tbar.splice(8, 0,
-            {tooltip: this.btnToAvto, iconCls:'truck', action:'showAvtosOutDir4AvtoIntoBind'},'-'
-            // {text: this.btnToPoezd, iconCls:'bind', action:'showPoezdsOutDir4PoezdIntoBind'},'-',
-            // {text: this.btnToYard, iconCls:'bind', action:'getPoesdAndYardForBind'},'-'
+            {tooltip: this.btnToAvto, iconCls:'truck', action:'showAvtosOutDir4AvtoIntoBind'},'-',
+            // {tooltip: this.btnToPoezd, iconCls:'cont', action:'showPoezdsOutDir4PoezdIntoBind'},'-'
+            {tooltip: this.btnToYard, iconCls:'cont', action:'getAvtoAndYardForBind'},'-'
         );
     }
 });

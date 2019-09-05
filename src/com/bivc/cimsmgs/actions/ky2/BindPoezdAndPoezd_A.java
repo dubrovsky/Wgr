@@ -7,6 +7,7 @@ import com.bivc.cimsmgs.dao.PoezdDAO;
 import com.bivc.cimsmgs.db.ky.Poezd;
 import com.bivc.cimsmgs.doc2doc.orika.Mapper;
 import com.bivc.cimsmgs.dto.ky2.PoezdBindDTO;
+import com.bivc.cimsmgs.dto.ky2.PoezdBindViewDTO;
 import com.bivc.cimsmgs.formats.json.Deserializer;
 import com.bivc.cimsmgs.formats.json.Serializer;
 import org.apache.commons.lang3.StringUtils;
@@ -97,8 +98,8 @@ public class BindPoezdAndPoezd_A extends CimSmgsSupport_A {
                         .write(
                                 new Response<>(
                                         Arrays.asList(
-                                                mapper.map(poezd1, PoezdBindDTO.class),
-                                                mapper.map(poezd2, PoezdBindDTO.class)
+                                                mapper.map(poezd1, PoezdBindViewDTO.class),
+                                                mapper.map(poezd2, PoezdBindViewDTO.class)
                                         ),
                                         2L
                                 )
@@ -116,8 +117,8 @@ public class BindPoezdAndPoezd_A extends CimSmgsSupport_A {
                         .write(
                                 new Response<>(
                                         Arrays.asList(
-                                                mapper.map(poezd, PoezdBindDTO.class),
-                                                mapper.mapAsList(poezds, PoezdBindDTO.class)
+                                                mapper.map(poezd, PoezdBindViewDTO.class),
+                                                mapper.mapAsList(poezds, PoezdBindViewDTO.class)
                                         ),
                                         2L
                                 )

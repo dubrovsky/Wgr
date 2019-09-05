@@ -142,6 +142,14 @@ Ext.define('TK.view.ky2.avto.into.AvtoForm', {
         },
         buildTopToolbar: function(config){
             TK.view.ky2.avto.BaseAvtoForm.prototype.buildTopToolbar.apply(this, arguments);
+            config.tbar.push(
+                {
+                    text: '+Контейнер/Груз',
+                    iconCls: 'edit',
+                    action: 'editCtGr'
+                }
+            );
+
         }
 
     }

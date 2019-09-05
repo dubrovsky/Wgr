@@ -24,7 +24,17 @@ Ext.define('TK.view.ky2.AbstractTreeForm', {
             store: this.buildTreePanelStore(),
             rootVisible: false,
             flex: 1,
-            viewConfig: this.buildTreePanelViewConfig()
+            viewConfig: this.buildTreePanelViewConfig(),
+            dockedItems: [{
+                xtype: 'toolbar',
+                dock: 'top',
+                items: this.buildTreePanelTopToolbarItems()
+            }, {
+                xtype: 'toolbar',
+                dock: 'bottom',
+                ui: 'footer',
+                items: this.buildTreePanelBottomToolbarItems()
+            }]
         }].concat(this.buildMainPanel());
 
         this.dockedItems = [{
@@ -57,6 +67,7 @@ Ext.define('TK.view.ky2.AbstractTreeForm', {
                 text: this.btnEditPoezd,
                 hidden: false,
                 iconCls:'edit',
+                itemId: 'editPoezd',
                 action:'editPoezd'
             },{
                 tooltip: 'На поезд по отпр.',
@@ -69,10 +80,25 @@ Ext.define('TK.view.ky2.AbstractTreeForm', {
                 itemId: 'showPoezdsIntoDir4PoezdOutBind',
                 action:'showPoezdsIntoDir4PoezdOutBind'
             },{
+                tooltip: 'На авто по отпр.',
+                iconCls:'truck',
+                itemId: 'showAvtosOutDir4AvtoIntoBind',
+                action:'showAvtosOutDir4AvtoIntoBind'
+            },{
+                tooltip: 'На авто по приб.',
+                iconCls:'truck',
+                itemId: 'showAvtosIntoDir4AvtoOutBind',
+                action:'showAvtosIntoDir4AvtoOutBind'
+            },{
                 tooltip: 'На конт. площадку',
                 iconCls:'cont',
-                hidden: false,
-                action:'getPoesdAndYardForBind'
+                itemId: 'showPoezd4YardOutBind',
+                action:'showPoezd4YardOutBind'
+            },{
+                tooltip: 'На конт. площадку',
+                iconCls:'cont',
+                itemId: 'showAvto4YardOutBind',
+                action:'showAvto4YardOutBind'
             },{
                 xtype: 'tbfill',  // ->
                 hidden: false
@@ -123,6 +149,23 @@ Ext.define('TK.view.ky2.AbstractTreeForm', {
     },
 
     buildTreeToolbarItems: function() {
+        return [];
+    },
+
+    buildTreePanelTopToolbarItems: function () {
+        return [
+            {
+                text: 'Спрятать вагоны',
+                action: 'hideVags'
+            }, '-',
+            {
+                text: 'Показать вагоны',
+                action: 'showVags'
+            }, '-'
+        ];
+    },
+
+    buildTreePanelBottomToolbarItems: function () {
         return [];
     }
 });

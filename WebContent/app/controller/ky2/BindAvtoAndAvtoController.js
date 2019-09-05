@@ -26,6 +26,9 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
         ref: 'center',
         selector: 'viewport > tabpanel'
     }, {
+        ref: 'menutree',
+        selector: 'viewport > menutree'
+    }, {
         ref: 'avtolist',
         selector: 'viewport > tabpanel grid'
     }, {
@@ -39,10 +42,10 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
         selector: 'ky2avtosinto4avtooutdir > ky2baseavtosdir'
     }, {
         ref: 'treepanelLeft',
-        selector: 'ky2avto2avtobindtreeforminto > treepanel#treepanelLeft'
+        selector: 'ky2avtobindtreeform > treepanel#treepanelLeft'
     }, {
         ref: 'treepanelRight',
-        selector: 'ky2avto2avtobindtreeforminto > treepanel#treepanelRight'
+        selector: 'ky2avtobindtreeform > treepanel#treepanelRight'
     }],
 
     init: function () {
@@ -58,6 +61,13 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
             'ky2avtooutlist button[action="showAvtosIntoDir4AvtoOutBind"]': {
                 click: this.getAvtoOutAndAvtoIntoForBind
             },
+            'ky2avtoctgrtreeform button[action="showAvtosOutDir4AvtoIntoBind"]': {
+                click: this.getAvtoIntoAndAvtoOutForBindFromVgCntGr
+            },
+            'ky2avtoctgrtreeform button[action="showAvtosIntoDir4AvtoOutBind"]': {
+                click: this.getAvtoIntoAndAvtoOutForBindFromVgCntGr
+            },
+
             // 'ky2avtosout4avtointodir button[action="getAvtoAndAvtoForBind"]': {
             //     click: this.getAvtoIntoAndAvtoOutForBind
             // },
@@ -123,15 +133,32 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
     },
 
     getAvtoIntoAndAvtoOutForBind: function (btn) {
-        this.getAvtoAndAvtoForBind( 'ky2avto2avtobindtreeforminto', 'На авто по отправлению', 2);
+        this.getAvtoOutAndAvtoIntoForBindCheck( 'ky2avto2avtobindtreeforminto', 'На авто по отправлению', 2);
     },
 
     getAvtoOutAndAvtoIntoForBind: function (btn) {
-        this.getAvtoAndAvtoForBind('ky2avto2avtobindtreeforminto', 'На авто по прибытию', 1);
+        this.getAvtoOutAndAvtoIntoForBindCheck('ky2avto2avtobindtreeforminto', 'На авто по прибытию', 1);
     },
 
+    getAvtoOutAndAvtoIntoForBindCheck: function (widget, title, direction) {
+        var avtolist = this.getAvtolist();
+        if (!TK.Utils.isRowSelected(avtolist)) {
+            return false;
+        }
+        var avtoModel = avtolist.getSelectionModel().getLastSelected();
+        this.getAvtoAndAvtoForBind(widget, title, direction, avtoModel.get('hid'));
 
-    getAvtoAndAvtoForBind: function (widget, title, direction) {
+    },
+
+    getAvtoIntoAndAvtoOutForBindFromVgCntGr: function (btn) {
+        var rootNode = btn.up('panel').down('treepanel').getRootNode();
+        if (rootNode.get('direction') === 1)
+            this.getAvtoAndAvtoForBind('ky2poezd2poezdbindtreeforminto', 'На поезд по отправлению', 2, rootNode.get('hid'));
+        else
+            this.getAvtoAndAvtoForBind('ky2poezd2poezdbindtreeformout', 'На поезд по прибытию', 1, rootNode.get('hid'));
+    },
+
+    getAvtoAndAvtoForBind: function (widget, title, direction, avtoHid) {
         // var avtolist = this.getAvtolist(),
         //     avtoModel = avtolist.getSelectionModel().getLastSelected(),
         //     avtosDir = avtoDir.getSelectionModel().getSelection(),
@@ -146,20 +173,22 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
         //     });
         //     return false;
         // }
-        var avtolist = this.getAvtolist();
-        if (!TK.Utils.isRowSelected(avtolist)) {
-            return false;
-        }
+        // var avtolist = this.getAvtolist();
+        // if (!TK.Utils.isRowSelected(avtolist)) {
+        //     return false;
+        // }
 
         this.getCenter().setLoading(true);
-        var avtoModel = avtolist.getSelectionModel().getLastSelected();
+        // var avtoModel = avtolist.getSelectionModel().getLastSelected();
+        var menuItem    = this.getMenutree().lastSelectedLeaf,
+            routeId     = menuItem.id.split('_')[2];
 
         Ext.Ajax.request({
             url: 'ky2/secure/BindAvtoAndAvto.do',
             params: {
-                avto1Hid: avtoModel.get('hid'),
+                avto1Hid: avtoHid,
                 action: 'get_avto_and_all_avtos_for_bind',
-                routeId: avtoModel.get('route.hid'),
+                routeId: routeId,
                 direction: direction
             },
             scope: this,
@@ -172,11 +201,11 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
                     var avto2ArrObj = respObj['rows'][1];
 
                     var bindcontainer = Ext.widget(widget, {title: title});
-                    this.getTreepanelLeft().setTitle(avto1Obj['no_avto']);
+                    this.getTreepanelLeft().setTitle(this.titleForAvto(avto1Obj['no_avto'] + '<br/>'));
                     var rootNode = this.getTreepanelLeft().getStore().getRootNode();
                     this.initRootNode(rootNode, avto1Obj);
 
-                    this.getTreepanelRight().setTitle("Автомобили");
+                    this.getTreepanelRight().setTitle(this.titleForAvto('<br/>'));
                     rootNode = this.getTreepanelRight().getStore().getRootNode();
                     if (avto2ArrObj && avto2ArrObj.length > 0) {
                         this.initAvtosNodes(avto2ArrObj, rootNode);
@@ -190,6 +219,11 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
                 this.getCenter().setLoading(false);
             }
         });
+    },
+
+    titleForAvto: function(title) {
+        return title +
+            "Номер контейнера/Масса тары/Масса брутто/Типоразмер/Грузоподъемность";
     },
 
     initRootNode: function (rootNode, dataObj) {
@@ -275,7 +309,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
             var cont = conts[contIndx],
                 gryzy = cont['gruzs'],
                 contModel = Ext.create('TK.model.ky2.AvtoBindTreeNode', {
-                    text: cont['nkon'],
+                    text: this.getController('ky2.BindPoezdAndPoezdController').contNodeText(cont),
                     who: 'cont',
                     iconCls: 'cont3',
                     leaf: true,

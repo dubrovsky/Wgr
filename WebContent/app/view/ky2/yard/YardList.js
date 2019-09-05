@@ -44,12 +44,15 @@ Ext.define('TK.view.ky2.yard.YardList', {
     buildTopToolbar: function (config) {
         config.tbar = [
             {text: this.btnCreate, iconCls: 'doc_new', action: 'create'}, '-',
-            {text: this.btnEdit, iconCls: 'edit', action: 'edit'}, '-'
+            {text: this.btnEdit, iconCls: 'edit', action: 'edit'}, '-',
+            {text: this.btnEditKont, iconCls: 'edit', action: 'editKont'}, '-'
         ];
 
         if (tkUser.hasPriv('CIM_DELETE')) {
             config.tbar.push({text: this.btnDelete, iconCls: 'del', action: 'delete'}, '-');
         }
+        config.tbar.push({text: 'Фильтр', iconCls: 'filter', action: 'filterKontYard'}, '-');
+        // config.tbar.push({text: 'Сектора', iconCls: 'edit', action: 'getYardSectors'}, '-');
     },
 
     renderNkon: function (value, meta) {
@@ -58,12 +61,5 @@ Ext.define('TK.view.ky2.yard.YardList', {
             nkon += kont.nkon + ' ';
         });
         return nkon;
-    },
-
-    buildTopToolbar: function (config) {
-        this.callParent(arguments);
-        config.tbar.splice(6, 0,
-            {text: 'Фильтр', iconCls: 'filter', action: 'filterKontYard'}, '-'
-        );
     }
 });

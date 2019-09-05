@@ -111,13 +111,27 @@ Ext.define('TK.view.ky2.poezd.BasePoezdForm', {
             name: 'admnn',
             maxLength: 3
             // anchor: '99%'
-        }, {
-            xtype: 'textfield',
+        },{
+            xtype: 'fieldcontainer',
+            layout: {
+                type: 'hbox'
+            },
             fieldLabel: this.labelClient,
-            name: 'gruzotpr',
-            maxLength: 128,
             labelWidth: 150,
-            width:400
+            width:400,
+            items: [{
+                xtype:'textfield',
+                name: 'gruzotpr',
+                itemId: 'gruzotpr',
+                maxLength: 128,
+                flex:1
+            },{
+                xtype: 'button',
+                margins: {top: 0, right: 0, bottom: 0, left: 3},
+                text: '...',
+                itemId: 'gruzotprDir',
+                action: 'nsiOtpr'
+            }]
         }]
     },
     buildTopToolbar: function(config) {

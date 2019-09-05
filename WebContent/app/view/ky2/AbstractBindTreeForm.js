@@ -115,20 +115,20 @@ Ext.define('TK.view.ky2.AbstractBindTreeForm', {
 
     buildTreeLeftPanelTopToolbarItems: function () {
         return [
+            {
+                text: 'Спрятать вагоны',
+                action: 'hideVags'
+            }, '-',
+            {
+                text: 'Показать вагоны',
+                action: 'showVags'
+            }, '-',
             '->', '-',
             {
                 text: 'Переместить >',
                 action: 'moveRight'
             }
-            /*{
-            xtype: 'radiogroup',
-            fieldLabel: 'Вид',
-            labelWidth: 40,
-            items: [
-                {boxLabel: 'Все', name: 'leftBindView', inputValue: 'all', checked: true},
-                {boxLabel: 'Без вагонов', name: 'leftBindView', inputValue: 'noVags'}
-            ]
-        }*/];
+        ];
     },
 
     buildTreeLeftPanelBottomToolbarItems: function () {

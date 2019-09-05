@@ -82,7 +82,12 @@ Ext.define('TK.view.ky2.poezd.into.PoezdForm', {
         buildTopToolbar: function(config){
             TK.view.ky2.poezd.BasePoezdForm.prototype.buildTopToolbar.apply(this, arguments);
             config.tbar.push(
-                {text: 'Загрузить', iconCls:'upload', action:'upload'}
+                {xtype:'splitbutton', text: 'Импорт', iconCls:'upload', action: 'import',
+                    menu: [
+                        {text: 'XLS (карта погрузки)', iconCls:'excel', action:'upload'},'-',
+                        {text: 'ППВ', iconCls:'train', action:'showPoezdsImportDir'}
+                    ]
+                }
             );
 
 

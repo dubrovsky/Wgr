@@ -106,8 +106,13 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
             },
             'ky2vgctgrtreeform > tabpanel > #cont > numberfield': {
                 blur: this.onGrBruttoUpdateData
+            },
+            'ky2vgctgrtreeform button[action=hideVags]': {
+                click: this.hideVagsLeft
+            },
+            'ky2vgctgrtreeform button[action=showVags]': {
+                click: this.showVagsLeft
             }
-
         });
     },
 
@@ -146,6 +151,7 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
                 var vagoncontainer = Ext.widget(xtype, {title: this.titleTree + poezdObj['nppr']});
                 this.initPoezdToButtons(vagoncontainer, poezdObj['direction']);
                 //// fill tree
+                this.getTreepanel().setTitle(this.getController('ky2.BindPoezdAndPoezdController').titleForPoezd(""));
                 var vags = poezdObj['vagons'];
                 var rootNode = this.getTreepanel().getStore().getRootNode();
                 // rootNode.removeAll();
@@ -174,6 +180,7 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
             vagoncontainer.down('#showPoezdsOutDir4PoezdIntoBind').show();
         else if (direction === 2)
             vagoncontainer.down('#showPoezdsIntoDir4PoezdOutBind').show();
+        vagoncontainer.down('#showPoezd4YardOutBind').show();
     },
 
     initVagsNodes: function (vags, rootNode) {
@@ -182,7 +189,7 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
                 conts = vag['konts'],
                 gruzy = vag['gruzs'],
                 vagModel = Ext.create('TK.model.ky2.PoezdVgCtGrTreeNode', {
-                    text: vag['nvag'],
+                    text: this.getController('ky2.BindPoezdAndPoezdController').vagNodeText(vag),
                     who: 'vag',
                     leaf: false,
                     iconCls: 'vag',
@@ -221,7 +228,7 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
                 gryzy = cont['gruzs'],
                 plombs = cont['plombs'],
                 contModel = Ext.create('TK.model.ky2.PoezdVgCtGrTreeNode', {
-                    text: cont['nkon'],
+                    text: this.getController('ky2.BindPoezdAndPoezdController').contNodeText(cont),
                     who: 'cont',
                     iconCls: 'cont3',
                     leaf: gryzy && gryzy['0'] ? false : true/*,
@@ -750,6 +757,22 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
                     }
                 }, this);
                 dataObj['plombs'].push(plombDataObj);
+            }
+        }, this);
+    },
+
+    hideVagsLeft: function (btn) {
+        this.getTreepanel().getRootNode().eachChild(function (vagNodeModel) {
+            if (vagNodeModel.get('who') === 'vag') {
+                vagNodeModel.set('cls', 'hideTreeNode');
+            }
+        }, this);
+    },
+
+    showVagsLeft: function (btn) {
+        this.getTreepanel().getRootNode().eachChild(function (vagNodeModel) {
+            if (vagNodeModel.get('who') === 'vag') {
+                vagNodeModel.set('cls', 'showTreeNode');
             }
         }, this);
     }

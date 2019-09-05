@@ -5,9 +5,10 @@ Ext.define('TK.view.ky2.avto.BaseAvtoList', {
     buildColumns:function (config) {
         config.columns = {
             items:[
-                {text:this.headerAvtoNum, dataIndex:'no_avto', flex:1},
-                {text:this.headerAvtoTrail, dataIndex:'no_trail', flex:1},
-                {text:this.headerDriverFam, dataIndex:'driver_fio', flex:1},
+                {text:this.headerAvtoNum, dataIndex:'no_avto', flex:1, maxWidth:200},
+                {text:this.headerAvtoTrail, dataIndex:'no_trail', flex:1, maxWidth:100},
+                {text:this.headerDriverFam, dataIndex:'driver_fio', flex:1, maxWidth:200},
+                {text:this.headerKontCount, dataIndex:'kontCount', flex:1, maxWidth:100},
                 {text:this.headerDep, dataIndex:'departure', width:200},
                 {text:this.headerDest, dataIndex:'destination', width:200},
                 {
@@ -24,7 +25,7 @@ Ext.define('TK.view.ky2.avto.BaseAvtoList', {
                         width: 100
                     }]
                 },
-                {text:'ID', dataIndex:'hid', flex:1, maxWidth:100, minWidth:70}
+                {text:'ID', dataIndex:'hid', flex:1, maxWidth:100, minWidth:70, maxWidth:100}
             ]
         };
 
