@@ -24,7 +24,7 @@ Ext.define('TK.view.user.ListGroups', {
     },
     buildSelModel:function(config) {
         this.selType = 'checkboxmodel';
-        this.selModel = {mode: (this.ownerBtn && this.ownerBtn.action == 'groups') ? 'MULTI' : 'SINGLE'};
+        this.selModel = {mode: (this.ownerBtn && (this.ownerBtn.action === 'groups' || this.ownerBtn.action === 'getUserGroups')) ? 'MULTI' : 'SINGLE'};
     },
     buildDockedItems: function(config) {
     	config.dockedItems = [{

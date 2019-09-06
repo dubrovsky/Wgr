@@ -55,7 +55,11 @@ Ext.define('TK.controller.ky2.YardController', {
             },
             'ky2yardlist button[action="getYardSectors"]': {
                 click: this.getYardSectors
-            }/*,
+            },
+            'ky2yardsectorform button[action=getUserGroups]': {
+                click: this.getUserGroups
+            }
+            /*,
             'ky2yardsectorlist > grid': {
                 // itemdblclick: this.selectYardSector,
                 deleteYardSector: this.deleteYardSector,
@@ -226,5 +230,15 @@ Ext.define('TK.controller.ky2.YardController', {
         } else {
             yardsectorlist.getStore().remove(yardsector);
         }
+    },
+    getUserGroups: function (btn) {
+        Ext.create('Ext.window.Window', {
+//            title: 'Список групп',
+            width: 500, height: 500, y: 1,
+            modal: true,
+            layout: 'fit',
+            autoShow: true,
+            items: {xtype: 'userlistgroups', ownerBtn: btn}
+        });
     }
 });

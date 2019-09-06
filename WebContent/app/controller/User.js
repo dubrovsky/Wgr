@@ -316,7 +316,7 @@ Ext.define('TK.controller.User', {
                 value,
                 grid = this.getUserListGroups();
 
-            if (grid.ownerBtn.action == 'groups') {
+            if (grid.ownerBtn.action === 'groups' || grid.ownerBtn.action === 'getUserGroups') {
                 var val = form.findField('usr.group.name').getValue();
                 if (val) {
                     store.filterBy(function (record, id) {
@@ -356,8 +356,11 @@ Ext.define('TK.controller.User', {
         }
     },
     onCheckGroups: function(btn) {
-        var form = this.getUserForm().getForm(), grid = this.getUserListGroups();
-        var field = form.findField(grid.ownerBtn.action == 'groups' ? 'usr.groupsIds' : 'usr.group.name');
+        var grid = this.getUserListGroups(),
+            form =
+                this.getUserForm() ? this.getUserForm().getForm() : grid.ownerBtn.up('form').getForm()
+            ;
+        var field = form.findField((grid.ownerBtn.action === 'groups' || grid.ownerBtn.action === 'getUserGroups') ? 'usr.groupsIds' : 'usr.group.name');
         var datas = '';
         Ext.each(grid.selModel.getSelection(), function (record, index) {
             datas += record.data["usrGr.name"] + '\n';

@@ -28,8 +28,8 @@ Ext.define('TK.view.ky2.yard.YardSectorForm', {
                         itemId: 'group',
                         afterLabelTextTpl: this.required,
                         items: [
-                            {xtype: 'textarea', name: "groups", flex: 1, readOnly: true, allowBlank: false},
-                            {xtype: 'button', text: '...', action: 'group', margins: '0 0 0 5'}
+                            {xtype: 'textarea', name: "usr.groupsIds", flex: 1, readOnly: true, allowBlank: false},
+                            {xtype: 'button', text: '...', action: 'getUserGroups', margins: '0 0 0 5'}
                         ]
                     }
                 ]
