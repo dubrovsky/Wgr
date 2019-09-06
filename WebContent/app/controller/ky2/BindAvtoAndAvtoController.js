@@ -109,7 +109,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
         });
     },
 
-    onMoveRightAll: function(btn) {
+    onMoveRightAll: function (btn) {
         var rootNodeLeft = this.getTreepanelLeft().getStore().getRootNode(),
             rootNodeRight = this.getTreepanelRight().getStore().getRootNode();
         rootNodeLeft.eachChild(function (contNodeModel) {
@@ -118,7 +118,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
         rootNodeLeft.removeAll();
 
     },
-    onMoveRight: function(btn) {
+    onMoveRight: function (btn) {
         var avtolist = this.getTreepanelLeft(),
             rootNodeRight = this.getTreepanelRight().getStore().getRootNode();
         if (!TK.Utils.isRowSelected(avtolist)) {
@@ -133,7 +133,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
     },
 
     getAvtoIntoAndAvtoOutForBind: function (btn) {
-        this.getAvtoOutAndAvtoIntoForBindCheck( 'ky2avto2avtobindtreeforminto', 'На авто по отправлению', 2);
+        this.getAvtoOutAndAvtoIntoForBindCheck('ky2avto2avtobindtreeforminto', 'На авто по отправлению', 2);
     },
 
     getAvtoOutAndAvtoIntoForBind: function (btn) {
@@ -180,8 +180,8 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
 
         this.getCenter().setLoading(true);
         // var avtoModel = avtolist.getSelectionModel().getLastSelected();
-        var menuItem    = this.getMenutree().lastSelectedLeaf,
-            routeId     = menuItem.id.split('_')[2];
+        var menuItem = this.getMenutree().lastSelectedLeaf,
+            routeId = menuItem.id.split('_')[2];
 
         Ext.Ajax.request({
             url: 'ky2/secure/BindAvtoAndAvto.do',
@@ -221,7 +221,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
         });
     },
 
-    titleForAvto: function(title) {
+    titleForAvto: function (title) {
         return title +
             "Номер контейнера/Масса тары/Масса брутто/Типоразмер/Грузоподъемность";
     },
@@ -236,7 +236,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
         rootNode.set('text', dataObj['no_avto']);
         rootNode.set('who', 'avto');
         if (konts && !Ext.Object.isEmpty(konts))
-                this.initContsNodes(konts, rootNode);
+            this.initContsNodes(konts, rootNode);
         if (gruzs && !Ext.Object.isEmpty(gruzs))
             this.initGryzyNodes(gruzs, rootNode, true);
     },
@@ -245,17 +245,17 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
         for (var i = 0; i < avtosArr.length; i++) {
             var avto = avtosArr[i],
                 konts = avto['konts'];
-                gruzs = avto['gruzs'];
-                // vags = avto['vagons'],
-                avtoModel = Ext.create('TK.model.ky2.AvtoBindTreeNode', {
-                    text: avto['no_avto'],
-                    who: 'avto',
-                    leaf: false,
-                    iconCls: 'truck',
-                    allowDrag: false,
-                    allowDrop: true,
-                    expanded: false
-                });
+            gruzs = avto['gruzs'];
+            // vags = avto['vagons'],
+            avtoModel = Ext.create('TK.model.ky2.AvtoBindTreeNode', {
+                text: avto['no_avto'],
+                who: 'avto',
+                leaf: false,
+                iconCls: 'truck',
+                allowDrag: false,
+                allowDrop: true,
+                expanded: false
+            });
 
             Ext.Object.each(avto, function (prop, value) {
                 avtoModel.set(prop, value);
@@ -263,7 +263,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
 
             rootNode.appendChild(avtoModel);
             if (konts && !Ext.Object.isEmpty(konts))
-                this.initContsNodes(konts,  avtoModel);
+                this.initContsNodes(konts, avtoModel);
             if (gruzs && !Ext.Object.isEmpty(gruzs))
                 this.initGryzyNodes(gruzs, avtoModel, true);
             // if (vags && vags.length > 0) {
@@ -466,9 +466,8 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
                 this.getCenter().setLoading(false);
                 if (Ext.isNumber(close)) {
                     var closeBtn = this.getAvtoform().down('button[action="close"]');
-                    closeBtn.fireEvent('click',closeBtn);
-                }
-                else {
+                    closeBtn.fireEvent('click', closeBtn);
+                } else {
                     var respObj = Ext.decode(response.responseText);
                 }
             },
@@ -592,7 +591,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
 
             isDrop = false;
             // check source
-            isDrop =  sourceModel.get('who') !== 'avto'; // avto can't be moved
+            isDrop = sourceModel.get('who') !== 'avto'; // avto can't be moved
             if (isDrop) { // can be moved cont in vag, gruz in vag
                 isDrop = sourceParentModel.get('who') === 'avto';  // sourceParentModel can be only vag
             }
@@ -651,8 +650,8 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
         this.sortChildNodes(targetAvtoModel);
         for (var i = 0; i < this.sourceAvtoModels.length; i++) {
             if (this.sourceAvtoModels[i].childNodes != null && this.sourceAvtoModels[i].hasChildNodes()) {
-            //     this.sourceAvtoModels[i].set('otpravka', undefined);
-            // } else {
+                //     this.sourceAvtoModels[i].set('otpravka', undefined);
+                // } else {
                 this.sortChildNodes(this.sourceAvtoModels[i]);
             }
         }
@@ -661,6 +660,10 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
         //     records[i].set('poezdHid', targetAvtoModel.get('poezdHid'));
         //     records[i].set('vagHid', targetAvtoModel.get('hid'))
         // }
+
+        for (var i = 0; i < records.length; i++) {
+            records[i].set('cls', 'selectTreeNode');
+        }
 
         this.getTreepanelLeft().getSelectionModel().deselectAll(true);
         this.getTreepanelRight().getSelectionModel().deselectAll(true);

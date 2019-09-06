@@ -474,6 +474,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
             // records[i].set('z', null);
             records[i].set('poezdHid', records[i].parentNode.parentNode.get('poezdHid'));
             records[i].set('vagHid', records[i].parentNode.get('hid'));
+            records[i].set('cls', 'selectTreeNode');
 
             // records[i].set('poezdHid', targetVagModel.get('poezdHid'));
             // records[i].set('vagHid', targetVagModel.get('hid'));
@@ -552,7 +553,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
 
             records[i].set('yardSectorHid', records[i].parentNode.parentNode.get('hid'));
             records[i].set('yardHid', records[i].parentNode.get('hid'));
-
+            records[i].set('cls', 'selectTreeNode');
             /*if(targetModel.get('who') === 'yard') { // !!!!!!!
                 records[i].set('yardSectorHid', targetModel.get('yardSectorHid'));
                 records[i].set('yardHid', targetModel.get('hid'));
@@ -575,6 +576,8 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
         this.selectedNodesPoezd = [];
         this.sourceVagModels = [];
         this.sourceYardModels = [];
+
+        Ext.Msg.alert('Внимание', 'Свободных мест осталось - ' +  (targetModel.get('placesInYardSector') - targetModel.get('contsInYardSector')));
     },
 
     moveNodesRight: function (btn) {

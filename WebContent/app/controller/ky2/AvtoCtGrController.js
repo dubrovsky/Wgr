@@ -559,13 +559,17 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
     initHids: function (cntGr, rootNode) {
         for (var cntGrIndx in cntGr) {
             var cg = cntGr[cntGrIndx],
-                gruzy = cg['gruzs'];
+                gruzy = cg['gruzs'],
+                plombs = cg['plombs'];
 
             var node = rootNode.findChild('sort', cg['sort']);
             if (node) {
                 node.set('hid', cg['hid']);
                 if (gruzy && !Ext.Object.isEmpty(gruzy)) {
                     this.initGryzyHids(gruzy, node);
+                }
+                if (plombs && !Ext.Object.isEmpty(plombs)) {
+                    this.initPlombsHids(plombs, node);
                 }
             }
         }
@@ -615,6 +619,16 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
             var gruzNode = parentNode.findChild('sort', gruzIndx);
             if (gruzNode) {
                 gruzNode.set('hid', gruz['hid']);
+            }
+        }
+    },
+
+    initPlombsHids: function (plombs, parentNode) {
+        for (var plombIndx in plombs) {
+            var plomb = plombs[plombIndx];
+            var plombNode = parentNode.findChild('sort', plombIndx);
+            if (plombNode) {
+                plombNode.set('hid', plomb['hid']);
             }
         }
     },

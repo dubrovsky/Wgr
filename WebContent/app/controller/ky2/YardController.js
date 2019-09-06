@@ -6,7 +6,9 @@ Ext.define('TK.controller.ky2.YardController', {
         'ky2.yard.YardList',
         'ky2.yard.YardForm',
         'ky2.yard.Filter',
-        'ky2.yard.YardSectorList'
+        'ky2.yard.YardSectorList',
+        'ky2.yard.YardSectorForm',
+        'ky2.AbstractList'
     ],
     stores: [
         'ky2.Yards',
@@ -29,11 +31,11 @@ Ext.define('TK.controller.ky2.YardController', {
             'ky2yardlist button[action="create"]': {
                 click: this.createYard
             },
+            'ky2yardsectorlist button[action="create"]': {
+                click: this.createYardSector
+            },
             'ky2yardlist button[action="edit"]': {
                 click: this.editYard
-            },
-            'ky2yardlist button[action="editKont"]': {
-                click: this.editKont
             },
             'ky2yardlist': {
                 itemdblclick: this.editYard/*,
@@ -53,18 +55,23 @@ Ext.define('TK.controller.ky2.YardController', {
             },
             'ky2yardlist button[action="getYardSectors"]': {
                 click: this.getYardSectors
-            },
+            }/*,
             'ky2yardsectorlist > grid': {
                 // itemdblclick: this.selectYardSector,
                 deleteYardSector: this.deleteYardSector,
                 saveYardSector: this.saveYardSector
-            }
+            }*/
         });
     },
 
     createYard: function (btn) {
         var yardcontainer = Ext.widget('ky2yardform', {title: this.titleCreate});
         yardcontainer.down('form').loadRecord(Ext.create('TK.model.ky2.YardBase'));
+    },
+
+    createYardSector: function (btn) {
+        var yardcontainer = Ext.widget('ky2yardsectorform', {title: 'Создать сектор'});
+        yardcontainer.down('form').loadRecord(Ext.create('TK.model.ky2.YardSector'));
     },
 
     editYard: function (btn) {
@@ -93,37 +100,6 @@ Ext.define('TK.controller.ky2.YardController', {
         });
     },
 
-    editKont: function (btn) {
-        var yardlist = this.getYardlist();
-        if (!TK.Utils.isRowSelected(yardlist)) {
-            return false;
-        }
-        if (yardlist.selModel.getLastSelected().get('konts').length === 0) {
-            Ext.Msg.alert('Внимание', 'Контейнер отсутствует');
-            return false;
-        }
-
-
-
-        // var yardcontainer = Ext.widget('ky2yardform', {title: this.titleEdit});
-        // yardcontainer.setLoading(true);
-        //
-        // var yard = Ext.ModelManager.getModel('TK.model.ky2.YardBase'),
-        //     hid = yardlist.selModel.getLastSelected().get('hid');
-        //
-        // yard.load(hid, {
-        //     scope: this,
-        //     params: {action: 'edit'},
-        //     callback: function (yard, operation, success) {
-        //         if (success) {
-        //             var form = yardcontainer.down('form');
-        //             this.checkForKontyardSector(yard.getSector(), form.getForm());
-        //             form.loadRecord(yard);
-        //         }
-        //         yardcontainer.setLoading(false);
-        //     }
-        // });
-    },
 
     checkForKontyardSector: function (sector, form) {
         if (sector) {
@@ -197,7 +173,19 @@ Ext.define('TK.controller.ky2.YardController', {
         }
     },
     getYardSectors: function (btn) {
-        var win = Ext.widget('ky2yardsectorlist');
+        var win = Ext.widget('ky2yardsectorlist'),
+            store = win.down('grid').getStore();
+
+        store.load({});
+        /*
+        var win = Ext.widget('ky2poezdsimportdir'),
+            store = win.down('grid').getStore();
+            // poezdModel = poezdlist.getSelectionModel().getLastSelected();
+
+        store.load({
+            params: {
+                action: 'import_poezd_list'/*,
+                 routeId: poezdModel.get('route.hid')*/
     },
     saveYardSector: function (yardsectorlist, yardsector) {
         var errors = yardsector.validate(),

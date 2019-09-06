@@ -625,7 +625,8 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
     initContsHids: function (conts, vagNode) {
         for (var contIndx in conts) {
             var cont = conts[contIndx],
-                gruzy = cont['gruzs'];
+                gruzy = cg['gruzs'],
+                plombs = cg['plombs'];
 
             var contNode = vagNode.findChild('sort', contIndx);
             if (contNode) {
@@ -633,6 +634,10 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
                 if (gruzy && !Ext.Object.isEmpty(gruzy)) {
                     this.initGryzyHids(gruzy, contNode);
                 }
+                if (plombs && !Ext.Object.isEmpty(plombs)) {
+                    this.initPlombsHids(plombs, node);
+                }
+
             }
         }
     },
@@ -646,6 +651,17 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
             }
         }
     },
+
+    initPlombsHids: function (plombs, parentNode) {
+        for (var plombIndx in plombs) {
+            var plomb = plombs[plombIndx];
+            var plombNode = parentNode.findChild('sort', plombIndx);
+            if (plombNode) {
+                plombNode.set('hid', plomb['hid']);
+            }
+        }
+    },
+
 
     saveVags: function (dataObj) {
         var vagIndex = 0;

@@ -396,7 +396,7 @@ Ext.define('TK.controller.ky2.PoezdController', {
         // }
 
         var win = Ext.widget('ky2poezdsimportdir'),
-            store = win.down('grid').getStore()
+            store = win.down('grid').getStore();
             // poezdModel = poezdlist.getSelectionModel().getLastSelected();
 
         store.load({

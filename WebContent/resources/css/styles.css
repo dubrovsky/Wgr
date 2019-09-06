@@ -7,7 +7,7 @@
 /*.x-boundlist-item {
     min-height: 20px;
 }*/
-.rotate90{
+.rotate90 {
     -webkit-transform: rotate(270deg);
     -moz-transform: rotate(270deg);
     -o-transform: rotate(270deg);
@@ -16,31 +16,41 @@
 }
 
 .hideTreeNode {
-    display :none;
+    display: none;
 }
+
 .showTreeNode {
-    display :block;
+    display: block;
 }
-.grid-13px-height .x-grid-cell-inner{
+
+.selectTreeNode {
+    background-color: lightskyblue;
+}
+
+.grid-13px-height .x-grid-cell-inner {
     padding-top: 2px;
     padding-bottom: 2px;
     height: 16px;
 }
+
 .wrap .x-grid-cell-inner {
     white-space: normal;
 }
+
 .overflowY .x-window-body > .x-box-inner {
     overflow-y: auto;
 }
+
 .overflowX .x-window-body > .x-box-inner {
     overflow-x: auto;
 }
+
 .cont1 {
-    background: url(./../images/cont1.png)  no-repeat !important;
+    background: url(./../images/cont1.png) no-repeat !important;
 }
 
 .train {
-    background: url(./../images/train.gif)  no-repeat !important;
+    background: url(./../images/train.gif) no-repeat !important;
 }
 
 .filter_check {
@@ -48,19 +58,19 @@
 }
 
 .cont {
-    background: url(./../images/kont.png)  no-repeat !important;
+    background: url(./../images/kont.png) no-repeat !important;
 }
 
-.red{
+.red {
     color: red;
 }
 
-.header-main{
+.header-main {
     font-size: 16px;
     padding-top: 2px;
 }
 
-.header-items-main{
+.header-items-main {
     padding-top: 20px;
 }
 
@@ -82,6 +92,7 @@
     background: #D1DDEF;
     border: 1px dotted #B5B8C8;
 }
+
 .top {
     background: none repeat scroll 0 0 #F1F1F1;
     border-bottom: 1px solid #E2E0E0;
@@ -136,7 +147,7 @@
     margin-top: 20px;
 }
 
-.browser-header{
+.browser-header {
     text-align: right;
     color: red;
 }
@@ -354,7 +365,7 @@ textarea.x-form-focus {
 
 
 .g20-td1, .g20-td2, .g20-td3, .g20-td4, .g20-td5 {
-  width: 20%;
+    width: 20%;
 }
 
 .td {
@@ -387,31 +398,31 @@ textarea.x-form-focus {
 }
 
 .train2 {
-    background: url(./../images/train.png)  no-repeat !important;
+    background: url(./../images/train.png) no-repeat !important;
 }
 
 .select {
-    background: url(./../images/select.png)  no-repeat !important;
+    background: url(./../images/select.png) no-repeat !important;
 }
 
 .plus {
-    background: url(./../images/plus.png)  no-repeat !important;
+    background: url(./../images/plus.png) no-repeat !important;
 }
 
 .minus {
-    background: url(./../images/minus.png)  no-repeat !important;
+    background: url(./../images/minus.png) no-repeat !important;
 }
 
 .rewrite {
-    background: url(./../images/rewrite.png)  no-repeat !important;
+    background: url(./../images/rewrite.png) no-repeat !important;
 }
 
 .restore {
-    background: url(./../images/restore.png)  no-repeat !important;
+    background: url(./../images/restore.png) no-repeat !important;
 }
 
 .update {
-    background: url(./../images/update2.png)  no-repeat !important;
+    background: url(./../images/update2.png) no-repeat !important;
 }
 
 .dop-list {
@@ -423,19 +434,19 @@ textarea.x-form-focus {
 }
 
 .cont2 {
-    background: url(./../images/cont2.png)  no-repeat !important;
+    background: url(./../images/cont2.png) no-repeat !important;
 }
 
 .cont3 {
-    background: url(./../images/cont4.png)  no-repeat !important;
+    background: url(./../images/cont4.png) no-repeat !important;
 }
 
 .gryz {
-    background: url(./../images/cargo.png)  no-repeat !important;
+    background: url(./../images/cargo.png) no-repeat !important;
 }
 
 .danGryz {
-    background: url(./../images/dan_gruz.png)  no-repeat !important;
+    background: url(./../images/dan_gruz.png) no-repeat !important;
 }
 
 .comments {
@@ -545,6 +556,7 @@ textarea.x-form-focus {
 .user_edit {
     background-image: url(./../images/user_edit.gif) !important;
 }
+
 .user_edit2 {
     background-image: url(./../images/user_edit2.gif) !important;
 }
@@ -801,13 +813,14 @@ textarea.x-form-focus {
     background-image: url(./../images/d_arrow_r.png) !important;
 }
 
-.x-tool-img.x-tool-s-arrow-r{
+.x-tool-img.x-tool-s-arrow-r {
     background: url('./../images/s_arrow_r.png') no-repeat 0 0;
 }
 
-.x-tool-img.x-tool-d-arrow-r{
+.x-tool-img.x-tool-d-arrow-r {
     background: url('./../images/d_arrow_r.png') no-repeat 0 0;
 }
+
 .smgsInputArea {
     position: absolute;
     z-index: 10;
@@ -905,201 +918,264 @@ background-image:url() !important;
 }
 
 .x-column-header.green {
-	background-color: #b3e3b3;
+    background-color: #b3e3b3;
     background-image: none;
 }
+
 /*.x-column-header.green .x-column-header-over{*/
-	/*background-color: #b3e3b3;*/
-    /*background-image: none;*/
+/*background-color: #b3e3b3;*/
+/*background-image: none;*/
 /*}*/
 
 .x-tool-img-myheader {
     background-image: url(./../images/s_arrow_r.png) !important;
 }
+
 /*----------------------vag ico-------------------*/
 .vag {
-    background: url(./../images/vag.png)  no-repeat !important;
+    background: url(./../images/vag.png) no-repeat !important;
 }
+
 .vag1 {
-    background: url(./../images/vag/vag1.png)  no-repeat !important;
+    background: url(./../images/vag/vag1.png) no-repeat !important;
 }
+
 .vag2 {
-    background: url(./../images/vag/vag2.png)  no-repeat !important;
+    background: url(./../images/vag/vag2.png) no-repeat !important;
 }
+
 .vag3 {
-    background: url(./../images/vag/vag3.png)  no-repeat !important;
+    background: url(./../images/vag/vag3.png) no-repeat !important;
 }
+
 .vag4 {
-    background: url(./../images/vag/vag4.png)  no-repeat !important;
+    background: url(./../images/vag/vag4.png) no-repeat !important;
 }
+
 .vag5 {
-    background: url(./../images/vag/vag5.png)  no-repeat !important;
+    background: url(./../images/vag/vag5.png) no-repeat !important;
 }
+
 .vag6 {
-    background: url(./../images/vag/vag6.png)  no-repeat !important;
+    background: url(./../images/vag/vag6.png) no-repeat !important;
 }
+
 .vag7 {
-    background: url(./../images/vag/vag7.png)  no-repeat !important;
+    background: url(./../images/vag/vag7.png) no-repeat !important;
 }
+
 .vag8 {
-    background: url(./../images/vag/vag8.png)  no-repeat !important;
+    background: url(./../images/vag/vag8.png) no-repeat !important;
 }
+
 .vag9 {
-    background: url(./../images/vag/vag9.png)  no-repeat !important;
+    background: url(./../images/vag/vag9.png) no-repeat !important;
 }
+
 .vag10 {
-    background: url(./../images/vag/vag10.png)  no-repeat !important;
+    background: url(./../images/vag/vag10.png) no-repeat !important;
 }
+
 .vag11 {
-    background: url(./../images/vag/vag11.png)  no-repeat !important;
+    background: url(./../images/vag/vag11.png) no-repeat !important;
 }
+
 .vag12 {
-    background: url(./../images/vag/vag12.png)  no-repeat !important;
+    background: url(./../images/vag/vag12.png) no-repeat !important;
 }
+
 .vag13 {
-    background: url(./../images/vag/vag13.png)  no-repeat !important;
+    background: url(./../images/vag/vag13.png) no-repeat !important;
 }
+
 .vag14 {
-    background: url(./../images/vag/vag14.png)  no-repeat !important;
+    background: url(./../images/vag/vag14.png) no-repeat !important;
 }
+
 .vag15 {
-    background: url(./../images/vag/vag15.png)  no-repeat !important;
+    background: url(./../images/vag/vag15.png) no-repeat !important;
 }
+
 .vag16 {
-    background: url(./../images/vag/vag16.png)  no-repeat !important;
+    background: url(./../images/vag/vag16.png) no-repeat !important;
 }
+
 .vag17 {
-    background: url(./../images/vag/vag17.png)  no-repeat !important;
+    background: url(./../images/vag/vag17.png) no-repeat !important;
 }
+
 .vag18 {
-    background: url(./../images/vag/vag18.png)  no-repeat !important;
+    background: url(./../images/vag/vag18.png) no-repeat !important;
 }
+
 .vag19 {
-    background: url(./../images/vag/vag19.png)  no-repeat !important;
+    background: url(./../images/vag/vag19.png) no-repeat !important;
 }
+
 .vag20 {
-    background: url(./../images/vag/vag20.png)  no-repeat !important;
+    background: url(./../images/vag/vag20.png) no-repeat !important;
 }
+
 .vag21 {
-    background: url(./../images/vag/vag21.png)  no-repeat !important;
+    background: url(./../images/vag/vag21.png) no-repeat !important;
 }
+
 .vag22 {
-    background: url(./../images/vag/vag22.png)  no-repeat !important;
+    background: url(./../images/vag/vag22.png) no-repeat !important;
 }
+
 .vag23 {
-    background: url(./../images/vag/vag23.png)  no-repeat !important;
+    background: url(./../images/vag/vag23.png) no-repeat !important;
 }
+
 .vag24 {
-    background: url(./../images/vag/vag24.png)  no-repeat !important;
+    background: url(./../images/vag/vag24.png) no-repeat !important;
 }
+
 .vag25 {
-    background: url(./../images/vag/vag25.png)  no-repeat !important;
+    background: url(./../images/vag/vag25.png) no-repeat !important;
 }
+
 .vag26 {
-    background: url(./../images/vag/vag26.png)  no-repeat !important;
+    background: url(./../images/vag/vag26.png) no-repeat !important;
 }
+
 .vag27 {
-    background: url(./../images/vag/vag27.png)  no-repeat !important;
+    background: url(./../images/vag/vag27.png) no-repeat !important;
 }
+
 .vag28 {
-    background: url(./../images/vag/vag28.png)  no-repeat !important;
+    background: url(./../images/vag/vag28.png) no-repeat !important;
 }
+
 .vag29 {
-    background: url(./../images/vag/vag29.png)  no-repeat !important;
+    background: url(./../images/vag/vag29.png) no-repeat !important;
 }
+
 .vag30 {
-    background: url(./../images/vag/vag30.png)  no-repeat !important;
+    background: url(./../images/vag/vag30.png) no-repeat !important;
 }
+
 .vag31 {
-    background: url(./../images/vag/vag31.png)  no-repeat !important;
+    background: url(./../images/vag/vag31.png) no-repeat !important;
 }
+
 .vag32 {
-    background: url(./../images/vag/vag32.png)  no-repeat !important;
+    background: url(./../images/vag/vag32.png) no-repeat !important;
 }
+
 .vag33 {
-    background: url(./../images/vag/vag33.png)  no-repeat !important;
+    background: url(./../images/vag/vag33.png) no-repeat !important;
 }
+
 .vag34 {
-    background: url(./../images/vag/vag34.png)  no-repeat !important;
+    background: url(./../images/vag/vag34.png) no-repeat !important;
 }
+
 .vag35 {
-    background: url(./../images/vag/vag35.png)  no-repeat !important;
+    background: url(./../images/vag/vag35.png) no-repeat !important;
 }
+
 .vag36 {
-    background: url(./../images/vag/vag36.png)  no-repeat !important;
+    background: url(./../images/vag/vag36.png) no-repeat !important;
 }
+
 .vag37 {
-    background: url(./../images/vag/vag37.png)  no-repeat !important;
+    background: url(./../images/vag/vag37.png) no-repeat !important;
 }
+
 .vag38 {
-    background: url(./../images/vag/vag38.png)  no-repeat !important;
+    background: url(./../images/vag/vag38.png) no-repeat !important;
 }
+
 .vag39 {
-    background: url(./../images/vag/vag39.png)  no-repeat !important;
+    background: url(./../images/vag/vag39.png) no-repeat !important;
 }
+
 .vag40 {
-    background: url(./../images/vag/vag40.png)  no-repeat !important;
+    background: url(./../images/vag/vag40.png) no-repeat !important;
 }
+
 .vag41 {
-    background: url(./../images/vag/vag41.png)  no-repeat !important;
+    background: url(./../images/vag/vag41.png) no-repeat !important;
 }
+
 .vag42 {
-    background: url(./../images/vag/vag42.png)  no-repeat !important;
+    background: url(./../images/vag/vag42.png) no-repeat !important;
 }
+
 .vag43 {
-    background: url(./../images/vag/vag43.png)  no-repeat !important;
+    background: url(./../images/vag/vag43.png) no-repeat !important;
 }
+
 .vag44 {
-    background: url(./../images/vag/vag44.png)  no-repeat !important;
+    background: url(./../images/vag/vag44.png) no-repeat !important;
 }
+
 .vag45 {
-    background: url(./../images/vag/vag45.png)  no-repeat !important;
+    background: url(./../images/vag/vag45.png) no-repeat !important;
 }
+
 .vag46 {
-    background: url(./../images/vag/vag46.png)  no-repeat !important;
+    background: url(./../images/vag/vag46.png) no-repeat !important;
 }
+
 .vag47 {
-    background: url(./../images/vag/vag47.png)  no-repeat !important;
+    background: url(./../images/vag/vag47.png) no-repeat !important;
 }
+
 .vag48 {
-    background: url(./../images/vag/vag48.png)  no-repeat !important;
+    background: url(./../images/vag/vag48.png) no-repeat !important;
 }
+
 .vag49 {
-    background: url(./../images/vag/vag49.png)  no-repeat !important;
+    background: url(./../images/vag/vag49.png) no-repeat !important;
 }
+
 .vag50 {
-    background: url(./../images/vag/vag50.png)  no-repeat !important;
+    background: url(./../images/vag/vag50.png) no-repeat !important;
 }
+
 .vag51 {
-    background: url(./../images/vag/vag51.png)  no-repeat !important;
+    background: url(./../images/vag/vag51.png) no-repeat !important;
 }
+
 .vag52 {
-    background: url(./../images/vag/vag52.png)  no-repeat !important;
+    background: url(./../images/vag/vag52.png) no-repeat !important;
 }
+
 .vag53 {
-    background: url(./../images/vag/vag53.png)  no-repeat !important;
+    background: url(./../images/vag/vag53.png) no-repeat !important;
 }
+
 .vag54 {
-    background: url(./../images/vag/vag54.png)  no-repeat !important;
+    background: url(./../images/vag/vag54.png) no-repeat !important;
 }
+
 .vag55 {
-    background: url(./../images/vag/vag55.png)  no-repeat !important;
+    background: url(./../images/vag/vag55.png) no-repeat !important;
 }
+
 .vag56 {
-    background: url(./../images/vag/vag56.png)  no-repeat !important;
+    background: url(./../images/vag/vag56.png) no-repeat !important;
 }
+
 .vag57 {
-    background: url(./../images/vag/vag57.png)  no-repeat !important;
+    background: url(./../images/vag/vag57.png) no-repeat !important;
 }
+
 .vag58 {
-    background: url(./../images/vag/vag58.png)  no-repeat !important;
+    background: url(./../images/vag/vag58.png) no-repeat !important;
 }
+
 .vag59 {
-    background: url(./../images/vag/vag59.png)  no-repeat !important;
+    background: url(./../images/vag/vag59.png) no-repeat !important;
 }
+
 .vag60 {
-    background: url(./../images/vag/vag60.png)  no-repeat !important;
+    background: url(./../images/vag/vag60.png) no-repeat !important;
 }
+
 .excel {
     background-image: url(./../images/excel-icon.png) !important;
 }

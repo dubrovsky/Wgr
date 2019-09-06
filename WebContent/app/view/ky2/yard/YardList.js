@@ -52,7 +52,7 @@ Ext.define('TK.view.ky2.yard.YardList', {
             config.tbar.push({text: this.btnDelete, iconCls: 'del', action: 'delete'}, '-');
         }
         config.tbar.push({text: 'Фильтр', iconCls: 'filter', action: 'filterKontYard'}, '-');
-        // config.tbar.push({text: 'Сектора', iconCls: 'edit', action: 'getYardSectors'}, '-');
+        config.tbar.push({text: 'Сектора', iconCls: 'edit', action: 'getYardSectors'}, '-');
     },
 
     renderNkon: function (value, meta) {

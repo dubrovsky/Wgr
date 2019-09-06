@@ -282,7 +282,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
     },
 
     vagNodeText: function(vag) {
-        return (vag['nvag'] ? vag['nvag'] : '...')
+        return '<b>' + (vag['nvag'] ? vag['nvag'] : '...') + '</b>'
             + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/ ' + (vag['podSila'] ? vag['podSila'] : '...')
             + ' / ' + (vag['masTar'] ? vag['masTar'] : '...')
             + ' / ' + (vag['kolOs'] ? vag['kolOs'] : '...')
@@ -326,7 +326,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
     },
 
     contNodeText: function(cont) {
-       return (cont['nkon'] ? cont['nkon'] : '...')
+       return '<b>' + (cont['nkon'] ? cont['nkon'] : '...') + '</b>'
            + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/ ' + (cont['massa_tar'] ? cont['massa_tar'] : '...')
            + ' / ' + (cont['massa_brutto_all'] ? cont['massa_brutto_all'] : '...')
            + ' / ' + (cont['vid'] ? cont['vid'] : '...')
@@ -718,7 +718,8 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
 
         for (var i = 0; i < records.length; i++) {
             records[i].set('poezdHid', targetVagModel.get('poezdHid'));
-            records[i].set('vagHid', targetVagModel.get('hid'))
+            records[i].set('vagHid', targetVagModel.get('hid'));
+            records[i].set('cls', 'selectTreeNode');
         }
 
         this.getTreepanelLeft().getSelectionModel().deselectAll(true);

@@ -550,6 +550,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
 
             records[i].set('yardSectorHid', records[i].parentNode.parentNode.get('hid'));
             records[i].set('yardHid', records[i].parentNode.get('hid'));
+            records[i].set('cls', 'selectTreeNode');
 
             /*if(targetModel.get('who') === 'yard') { // !!!!!!!
                 records[i].set('yardSectorHid', targetModel.get('yardSectorHid'));
@@ -573,6 +574,8 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
         this.selectedNodesPoezd = [];
         this.sourceVagModels = [];
         this.sourceYardModels = [];
+
+        Ext.Msg.alert('Внимание', 'Свободных мест осталось - ' +  (targetModel.get('placesInYardSector') - targetModel.get('contsInYardSector')));
     },
 
     moveNodesRight: function (btn) {
