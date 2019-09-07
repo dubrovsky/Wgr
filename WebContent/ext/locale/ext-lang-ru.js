@@ -2262,7 +2262,9 @@ Ext.define("TK.locale.ru.view.ky2.AbstractList", {
 Ext.define("TK.locale.ru.view.ky2.AbstractList", {
     override:"TK.view.ky2.AbstractList",
 
-    btnCreate   :'Создать'
+    btnCreate   :'Создать',
+    warnTitle:'Предупреждение',
+    warnMsg  :'Следует выбрать строку из таблицы с данными'
 });
 
 Ext.define("TK.locale.ru.view.ky.AbstractWindow", {

@@ -14,6 +14,7 @@ Ext.define('TK.view.ky2.yard.YardSectorForm', {
                         xtype: 'textfield',
                         name: 'name',
                         fieldLabel: 'Наименование',
+                        allowBlank: false,
                         afterLabelTextTpl: this.required
                     },
                     {

@@ -13,7 +13,7 @@ Ext.define('TK.view.ky2.yard.YardSectorList', {
                     items: [
                         {text: 'Наименование', dataIndex: 'name', flex: 1, renderer: TK.Utils.renderLongStr},
                         {text: 'Описание', dataIndex: 'descr', flex: 1, renderer: TK.Utils.renderLongStr},
-                        {text: 'Группы', dataIndex: '', flex: 1, renderer: TK.Utils.renderLongStr}
+                        {text: 'Группы', dataIndex: 'groups', flex: 1, renderer: TK.Utils.renderLongStr}
                     ]
                 };
             },

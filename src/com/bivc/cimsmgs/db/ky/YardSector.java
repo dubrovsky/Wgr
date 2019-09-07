@@ -2,7 +2,9 @@ package com.bivc.cimsmgs.db.ky;
 
 // Generated 19.02.2014 14:19:48 by Hibernate Tools 3.4.0.CR1
 
+import com.bivc.cimsmgs.db.UsrGroupsDir;
 import com.bivc.cimsmgs.doc2doc.orika.Mapper;
+import com.bivc.cimsmgs.dto.ky2.YardSectorDTO;
 import com.bivc.cimsmgs.dto.ky2.YardBindDTO;
 import com.bivc.cimsmgs.dto.ky2.YardSectorBindDTO;
 import com.fasterxml.jackson.annotation.JsonFilter;
@@ -189,4 +191,19 @@ public class YardSector implements Serializable {
         return contGruz4History;
     }
 
+    public Set<YardSectorGroups> buildGroups(YardSectorDTO dto) {
+        Set<YardSectorGroups> yardSectorGroups = new HashSet<>();
+        if(dto.getGroups() != null){
+            getYardSectorGroups().clear();
+            UsrGroupsDir group;
+            YardSectorGroups yardSectorGroup;
+            StringTokenizer st = new StringTokenizer(dto.getGroups());
+            while (st.hasMoreTokens()) {
+                group = new UsrGroupsDir(st.nextToken());
+                yardSectorGroup = new YardSectorGroups(new YardSectorGroupsId(getHid(), group.getName()), this, group);
+                yardSectorGroups.add(yardSectorGroup);
+            }
+        }
+        return yardSectorGroups;
+    }
 }

@@ -65,5 +65,11 @@ public class Mapper extends ConfigurableMapper {
                 .fieldAToB("konts", "konts")
                 .byDefault()
                 .register();
+
+        factory.classMap(YardSector.class, YardSectorDTO.class)
+                .fieldAToB("yardSectorGroups", "yardSectorGroups")
+                .byDefault()
+                .register();
+
     }
 }

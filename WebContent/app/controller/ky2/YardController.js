@@ -24,6 +24,12 @@ Ext.define('TK.controller.ky2.YardController', {
     }, {
         ref: 'yardform',
         selector: 'ky2yardform > form'
+    }, {
+        ref: 'yardsectorform',
+        selector: 'ky2yardsectorform > form'
+    }, {
+        ref: 'yardsectorlist',
+        selector: 'ky2yardsectorlist > grid'
     }],
 
     init: function () {
@@ -37,12 +43,18 @@ Ext.define('TK.controller.ky2.YardController', {
             'ky2yardlist button[action="edit"]': {
                 click: this.editYard
             },
+            'ky2yardsectorlist button[action="edit"]': {
+                click: this.editYardSector
+            },
             'ky2yardlist': {
                 itemdblclick: this.editYard/*,
                 select: this.selectYardInList*/
             },
             'ky2yardlist button[action="delete"]': {
                 click: this.deleteYard
+            },
+            'ky2yardsectorlist button[action="delete"]': {
+                click: this.deleteYardSector
             },
             'ky2yardlist button[action="filterKontYard"]': {
                 click: this.filterKontYard
@@ -52,6 +64,9 @@ Ext.define('TK.controller.ky2.YardController', {
             },
             'ky2yardform button[action="save"]': {
                 click: this.saveYard
+            },
+            'ky2yardsectorform button[action="save"]': {
+                click: this.saveYardSector
             },
             'ky2yardlist button[action="getYardSectors"]': {
                 click: this.getYardSectors
@@ -103,7 +118,34 @@ Ext.define('TK.controller.ky2.YardController', {
             }
         });
     },
+    editYardSector: function (btn) {
+        var yardsectorlist = this.getYardsectorlist();
+        if (!TK.Utils.isRowSelected(yardsectorlist)) {
+            return false;
+        }
 
+        var yardsectorcontainer = Ext.widget('ky2yardsectorform', {title: 'Редактировать'});
+        yardsectorcontainer.setLoading(true);
+
+        var yardsector = Ext.ModelManager.getModel('TK.model.ky2.YardSector'),
+            hid = yardsectorlist.selModel.getLastSelected().get('hid');
+
+        yardsector.load(hid, {
+            scope: this,
+            params: {action: 'edit'},
+            callback: function (yardsector, operation, success) {
+                if (success) {
+                    var form = yardsectorcontainer.down('form');
+                    // this.checkForKontyardSector(yard.getSector(), form.getForm());
+                    form.loadRecord(yardsector);
+                    if(yardsector.get('groups')){
+                        form.getForm().setValues({"usr.groupsIds" : yardsector.get('groups').replace(/,/g, '\n').replace(/ /g, '')});
+                    }
+                }
+                yardsectorcontainer.setLoading(false);
+            }
+        });
+    },
 
     checkForKontyardSector: function (sector, form) {
         if (sector) {
@@ -140,6 +182,33 @@ Ext.define('TK.controller.ky2.YardController', {
             }
         });
     },
+    deleteYardSector: function (btn) {
+        var yardsectorlist = this.getYardsectorlist();
+        if (!TK.Utils.isRowSelected(yardsectorlist)) {
+            return false;
+        }
+
+        Ext.Msg.show({
+            title: this.delTitle, msg: this.delMsg, buttons: Ext.Msg.YESNO,
+            closable: false, icon: Ext.Msg.QUESTION, scope: this,
+            fn: function (buttonId) {
+                if (buttonId === 'yes') {
+                    yardsectorlist.setLoading(true);
+                    var yardsector = yardsectorlist.getSelectionModel().getLastSelected();
+                    yardsector.destroy({
+                        params: {action: 'delete'/*, hid: kontyard.get('hid')*/},
+                        callback: function (yard, operation) {
+                            yardsectorlist.setLoading(false);
+                            if (operation['complete'] && !operation['exception']) {
+                                yardsectorlist.getStore().reload();
+                            }
+                        },
+                        scope: this
+                    });
+                }
+            }
+        });
+    },
     saveYard: function (btn) {
         var form = this.getYardform().getForm();
         if (form.isValid()) {
@@ -166,6 +235,32 @@ Ext.define('TK.controller.ky2.YardController', {
             Ext.Msg.alert('Warning', 'Form is not valid');
         }
     },
+    saveYardSector: function (btn) {
+        var form = this.getYardsectorform().getForm();
+        if (form.isValid()) {
+            var win = btn.up('window'),
+                yardsector = form.getRecord(),
+                values = form.getValues();
+
+            win.setLoading(true);
+
+            yardsector.set(values);
+            yardsector.set('groups', values['usr.groupsIds']);
+            yardsector.save({
+                params: {action: 'save'},
+                callback: function (yard, operation, success) {
+                    win.setLoading(false);
+                    if (success) {
+                        win.close();
+                        this.getYardsectorlist().getStore().reload();
+                    }
+                },
+                scope: this
+            });
+        } else {
+            Ext.Msg.alert('Warning', 'Form is not valid');
+        }
+    },
     filterKontYard: function (btn) {
         var win = Ext.widget('ky2yardfilter');
         this.initFilter(win.down('form').getForm(), btn.up('grid').getStore());
@@ -180,7 +275,7 @@ Ext.define('TK.controller.ky2.YardController', {
         var win = Ext.widget('ky2yardsectorlist'),
             store = win.down('grid').getStore();
 
-        store.load({});
+        store.load({params:{action: 'list'}});
         /*
         var win = Ext.widget('ky2poezdsimportdir'),
             store = win.down('grid').getStore();
@@ -191,29 +286,29 @@ Ext.define('TK.controller.ky2.YardController', {
                 action: 'import_poezd_list'/*,
                  routeId: poezdModel.get('route.hid')*/
     },
-    saveYardSector: function (yardsectorlist, yardsector) {
-        var errors = yardsector.validate(),
-            owner = yardsectorlist.up('nsieditlist'),
-            rowEditing = yardsectorlist.plugins[0];
-        rowEditing.completeEdit();
-        if (errors.isValid()) {
-            var newYardsector = (yardsector.getId() == null);
-            Ext.Ajax.request({
-                url: owner.buildUrlPrefix() + '_save.do',
-                params: owner.prepareData(yardsector),
-                scope: this,
-                success: function (response, options) {
-                    yardsectorlist.getStore().reload();
-                },
-                failure: function (response, options) {
-                    TK.Utils.makeErrMsg(response, 'Error!..');
-                }
-            });
-        } else {
-            TK.Utils.failureDataMsg();
-        }
-    },
-    deleteYardSector: function (yardsectorlist, yardsector) {
+        /* saveYardSector: function (yardsectorlist, yardsector) {
+           /*var errors = yardsector.validate(),
+                 owner = yardsectorlist.up('nsieditlist'),
+                 rowEditing = yardsectorlist.plugins[0];
+             rowEditing.completeEdit();
+             if (errors.isValid()) {
+                 var newYardsector = (yardsector.getId() == null);
+                 Ext.Ajax.request({
+                     url: owner.buildUrlPrefix() + '_save.do',
+                     params: owner.prepareData(yardsector),
+                     scope: this,
+                     success: function (response, options) {
+                         yardsectorlist.getStore().reload();
+                     },
+                     failure: function (response, options) {
+                         TK.Utils.makeErrMsg(response, 'Error!..');
+                     }
+                 });
+             } else {
+                 TK.Utils.failureDataMsg();
+             }
+    },*/
+    /*deleteYardSector: function (yardsectorlist, yardsector) {
         var owner = yardsectorlist.up('nsieditlist');
         if (!yardsector.phantom) {
             Ext.Ajax.request({
@@ -230,7 +325,7 @@ Ext.define('TK.controller.ky2.YardController', {
         } else {
             yardsectorlist.getStore().remove(yardsector);
         }
-    },
+    },*/
     getUserGroups: function (btn) {
         Ext.create('Ext.window.Window', {
 //            title: 'Список групп',

@@ -171,6 +171,7 @@ public class CimSmgsSupport_A extends ActionSupport implements JSONAware, UserAw
     private String query1;
     private Long hid_cs;
     private Long hid;
+    private Long id;
     private String name;
 
     /**
@@ -410,6 +411,14 @@ public class CimSmgsSupport_A extends ActionSupport implements JSONAware, UserAw
                 }
             }
         }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public enum KontGruzHistoryType {

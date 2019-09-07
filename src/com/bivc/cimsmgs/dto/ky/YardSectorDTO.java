@@ -1,7 +1,10 @@
 package com.bivc.cimsmgs.dto.ky;
 
+import com.bivc.cimsmgs.dto.ky2.YardSectorGroupsDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by peter on 27.08.2014.
@@ -11,11 +14,8 @@ public class YardSectorDTO {
     private Integer hid;
     private String name;
     private String descr;
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
+    private String groups;
+    private Set<YardSectorGroupsDTO> yardSectorGroups;
 
     public Integer getHid() {
         return hid;
@@ -39,5 +39,24 @@ public class YardSectorDTO {
 
     public void setDescr(String descr) {
         this.descr = descr;
+    }
+
+    public String getGroups() {
+        if(yardSectorGroups != null) {
+            return yardSectorGroups.stream().map(yardSectorGroupsDTO -> yardSectorGroupsDTO.getGroup().getName()).collect(Collectors.joining(", "));
+        }
+        return "";
+    }
+
+    public void setGroups(String groups) {
+        this.groups = groups;
+    }
+
+    public Set<YardSectorGroupsDTO> getYardSectorGroups() {
+        return yardSectorGroups;
+    }
+
+    public void setYardSectorGroups(Set<YardSectorGroupsDTO> yardSectorGroups) {
+        this.yardSectorGroups = yardSectorGroups;
     }
 }

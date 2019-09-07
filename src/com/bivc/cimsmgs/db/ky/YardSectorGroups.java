@@ -11,6 +11,15 @@ public class YardSectorGroups {
     private YardSector yardSector;
     private UsrGroupsDir group;
 
+    public YardSectorGroups(YardSectorGroupsId hid, YardSector yardSector, UsrGroupsDir group) {
+        this.hid = hid;
+        this.yardSector = yardSector;
+        this.group = group;
+    }
+
+    public YardSectorGroups() {
+    }
+
     public UsrGroupsDir getGroup() {
         return group;
     }

@@ -243,6 +243,7 @@ p:excelTpls-ref="excelTples"
     <bean id="gruzDAO" class="com.bivc.cimsmgs.dao.hibernate.GruzDAOHib"/>
     <bean id="plombDAO" class="com.bivc.cimsmgs.dao.hibernate.PlombDAOHib"/>
     <bean id="yardDAO" class="com.bivc.cimsmgs.dao.hibernate.YardDAOHib"/>
+    <bean id="yardSectorGroupsDAO" class="com.bivc.cimsmgs.dao.hibernate.YardSectorGroupsDAOHib"/>
     <bean id="kontDAO" class="com.bivc.cimsmgs.dao.hibernate.KontDAOHib"/>
     <bean id="yardSectorDAO" class="com.bivc.cimsmgs.dao.hibernate.YardSectorDAOHib"/>
     <bean id="poezdDAO" class="com.bivc.cimsmgs.dao.hibernate.PoezdDAOHib"/>
