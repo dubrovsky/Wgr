@@ -2,7 +2,7 @@ Ext.define('TK.store.ky2.Yards', {
     extend: 'Ext.data.Store',
     model: 'TK.model.ky2.YardBase',
     remoteFilter: true,
-    pageSize: 20/*,
+    pageSize: 200/*,
     proxy: {
         type: 'ajax',
         url: 'Kontyard_list.do',

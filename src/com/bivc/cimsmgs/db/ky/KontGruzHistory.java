@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * @author p.dzeviarylin
  */
-public class KontGruzHistory {
+public class KontGruzHistory implements Comparable<KontGruzHistory>{
     private Long hid;
     private Poezd poezd;
     private Vagon vagon;
@@ -179,5 +179,26 @@ public class KontGruzHistory {
     @Override
     public int hashCode() {
         return 31;
+    }
+
+    @Override
+    public int compareTo(KontGruzHistory that) {
+        final int BEFORE = -1;
+        final int AFTER = 1;
+
+        if (that == null) {
+            return BEFORE;
+        }
+
+        Comparable thisHid = this.getHid();
+        Comparable thatHid = that.getHid();
+
+        if (thisHid == null) {
+            return AFTER;
+        } else if (thatHid == null) {
+            return BEFORE;
+        } else {
+            return thisHid.compareTo(thatHid);
+        }
     }
 }

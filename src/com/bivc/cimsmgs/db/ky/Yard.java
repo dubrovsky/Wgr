@@ -4,6 +4,8 @@ package com.bivc.cimsmgs.db.ky;
 
 import com.bivc.cimsmgs.doc2doc.orika.Mapper;
 import com.bivc.cimsmgs.dto.ky2.KontBindDTO;
+import com.bivc.cimsmgs.dto.ky2.KontDTO;
+import com.bivc.cimsmgs.dto.ky2.KontViewDTO;
 import com.bivc.cimsmgs.formats.json.serializers.DateTimeSerializer;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -51,6 +53,75 @@ public class Yard implements Serializable {
     public void setKonts(Set<Kont> konts) {
         this.konts = konts;
     }
+
+    public List<Kont> updateKonts(Set<KontViewDTO> dtos, Mapper mapper) {
+        // delete
+        Set<Kont> kontsToRemove = new HashSet<>();
+        for(Kont kont: getKonts()){
+            boolean found = false;
+            for(KontDTO kontDTO : dtos){
+                if(Objects.equals(kont.getHid(), kontDTO.getHid())){
+                    found = true;
+                    break;
+                }
+            }
+            if(!found){
+                kontsToRemove.add(kont);
+            }
+        }
+        for(Kont kont: kontsToRemove){
+            removeKont(kont);
+        }
+
+        // update
+        Set<KontDTO> kontDtoToRemove = new HashSet<>();
+        for(Kont kont: getKonts()){
+            for(KontDTO kontIntoDTO : dtos){
+                if(Objects.equals(kont.getHid(), kontIntoDTO.getHid())){
+                    mapper.map(kontIntoDTO, kont);
+//                    if(kontIntoDTO.getOtpravka() == Otpravka.CONT){
+//                        kont.updateKonts(kontIntoDTO.getKonts(), mapper);
+//                    } else if (kontIntoDTO.getOtpravka() == Otpravka.GRUZ){
+                    kont.updateGruzs(kontIntoDTO.getGruzs(), mapper);
+                    kont.updatePlombs(kontIntoDTO.getPlombs(), mapper);
+
+//                    } else {  // can be deleted and getOtpravka is null
+//                        kont.removeKonts();
+//                        kont.removeGruzy();
+//                    }
+
+                    kontDtoToRemove.add(kontIntoDTO);
+                }
+            }
+        }
+        dtos.removeAll(kontDtoToRemove);
+
+        List<Kont> kontsForHistory = new ArrayList<>(dtos.size());
+        // insert
+        for(KontDTO kontIntoDTO : dtos){
+            Kont kont = mapper.map(kontIntoDTO, Kont.class);
+            addKont(kont);
+            kontsForHistory.add(kont);
+//            if(vagonIntoDTO.getOtpravka() == Otpravka.CONT){
+//                vagon.updateKonts(vagonIntoDTO.getKonts(), mapper);
+//            } else if(vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
+                kont.updateGruzs(kontIntoDTO.getGruzs(), mapper);
+//            }
+        }
+        return kontsForHistory;
+    }
+
+    public Kont addKont(Kont kont) {
+        konts.add(kont);
+        kont.setYard(this);
+        return kont;
+    }
+
+    public void removeKont(Kont kont) {
+        konts.remove(kont);
+        kont.setYard(null);
+    }
+
 
     public List<Kont> bindKonts(TreeSet<KontBindDTO> dtos, Mapper mapper, Set<Vagon> toVags, List<YardSector> yardSectors) {
         // update kont that not moved
@@ -217,7 +288,12 @@ public class Yard implements Serializable {
         Y("y"),
         Z("z"),
         PLACE("place"),
-        NKON("nkon");
+        NKON("nkon"),
+        STARTDATE("startDate"),
+        ENDDATE("endDate"),
+        NPPRM("npprm"),
+        GRUZOTPR("gruzotpr")
+        ;
         private final String name;
 
         FilterFields(String name) {

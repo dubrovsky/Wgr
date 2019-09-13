@@ -2818,7 +2818,10 @@ Ext.define("TK.locale.ru.controller.ky2.AvtoController", {
     delTitle :'Удаление...',
     delMsg   :'Вы действительно хотите удалить..?',
     maskMsg :'Запрос данных...',
-    errorMsg:'Внимание! Ошибка...'
+    errorMsg:'Внимание! Ошибка...',
+    warningMsg:'Внимание!',
+    warningText:'Автомобиль не сохранен....',
+
 });
 
 Ext.define("TK.locale.ru.controller.ky2.PoezdVgCtGrController", {

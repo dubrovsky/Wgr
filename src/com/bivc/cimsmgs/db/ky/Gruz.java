@@ -7,6 +7,8 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Gruz implements Serializable, Comparable<Gruz> {
 
@@ -24,8 +26,17 @@ public class Gruz implements Serializable, Comparable<Gruz> {
     private String trans;
     private String un;
     private Date altered;
+	private Set<KontGruzHistory> history = new TreeSet<>();
 
-    @Override
+	public Set<KontGruzHistory> getHistory() {
+		return history;
+	}
+
+	public void setHistory(Set<KontGruzHistory> history) {
+		this.history = history;
+	}
+
+	@Override
     public String toString() {
         return ReflectionToStringBuilder.toStringExclude(this, "kont");
     }

@@ -142,6 +142,18 @@ Ext.define('TK.view.ky2.avto.out.AvtoForm', {
         },
         buildTopToolbar: function (config) {
             TK.view.ky2.avto.BaseAvtoForm.prototype.buildTopToolbar.apply(this, arguments);
+            config.tbar.push(
+                {xtype:'splitbutton', text: 'Печать', iconCls:'upload', action: 'print',
+                    menu: [
+                        {text: 'WZ', iconCls:'excel', action:'wz'},'-'
+                    ]
+                },{
+                    text: '+Контейнер/Груз',
+                    iconCls: 'edit',
+                    action: 'editCtGr'
+                }
+            );
+
         }
     }
         // {

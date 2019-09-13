@@ -67,7 +67,7 @@ public class Poezd_A extends CimSmgsSupport_A {
         List<Filter> filters = StringUtils.isNotBlank(filter) ?
                 (List<Filter>) defaultDeserializer.read(new ArrayList<Filter>(){}.getClass().getGenericSuperclass(), filter) :
                 Collections.EMPTY_LIST;
-        List<Poezd> list = poezdDAO.findAll(getLimit(), getStart(), getRouteId(), getDirection(), filters, getUser().getUsr(), getLocale(), null);
+        List<Poezd> list = poezdDAO.findPoezdsInInterval(getLimit(), getStart(), getRouteId(), getDirection(), filters, getUser().getUsr(), getLocale(), null);
         Long total = poezdDAO.countAll(getRouteId(), getDirection(), filters, getUser().getUsr(), getLocale(), null);
 
         log.debug("Found {} Poezd entries.", total);

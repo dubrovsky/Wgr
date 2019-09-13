@@ -155,9 +155,11 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
             scope: this,
             callback: function (options, success, response) {
                 if (success) {
-                    var respObj = Ext.decode(response.responseText);
-                    var avtoObj = respObj['rows'][0];
-                    var yardSectorArr = respObj['rows'][1];
+                    var respObj = Ext.decode(response.responseText),
+                        avtoObj = respObj['rows'][0],
+                        yardSectorArr = respObj['rows'][1],
+                        ret_nkon = avtoObj['ret_nkon'];
+
 
                     var bindcontainer = Ext.widget(widget, {title: '+ На конт. площадку'});
 
@@ -179,7 +181,11 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
                         this.initYardSectorNodes(yardSectorArr, rootNode);
                     }
                     /// END fill tree
-
+                    if (ret_nkon != null && ret_nkon !== '') {
+                        var retNkonNode = rootNode.findChild('nkon', ret_nkon, true);
+                        if (retNkonNode != null)
+                            retNkonNode.set('cls', 'yardReturnNkon');
+                    }
                     this.getCenter().remove(this.getCenter().getComponent(0), true);
                     this.getCenter().add(bindcontainer);
 
@@ -300,6 +306,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
                     allowDrop: false,
                     leaf: gryzy && gryzy['0'] ? false : true,
                     expanded: false
+                    // cls: (ret_nkon != null && ret_nkon === cont['nkon']) ? 'yardReturnNkon' : ''
                 });
 
             Ext.Object.each(cont, function (prop, value) {

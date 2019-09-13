@@ -37,6 +37,7 @@ public class AvtoBaseDTO {
     private NsiKyOwnersDTO owner;
     private String naim_sob;
     private String client;
+    private String ret_nkon;
     private Integer kontCount;
 
 
@@ -78,6 +79,14 @@ public class AvtoBaseDTO {
             }
         }
         return this.dotp;
+    }
+
+    public String getRet_nkon() {
+        return ret_nkon;
+    }
+
+    public void setRet_nkon(String ret_nkon) {
+        this.ret_nkon = ret_nkon;
     }
 
     public Integer getKontCount() {

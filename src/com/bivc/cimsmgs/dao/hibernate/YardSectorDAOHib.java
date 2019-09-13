@@ -18,7 +18,7 @@ public class YardSectorDAOHib extends GenericHibernateDAO<YardSector, Integer> i
     @Override
     public List<YardSector> findAll(Integer limit, Integer start, String query){
         Criteria crit = getSession().createCriteria(getPersistentClass());
-        crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 20 : limit);
+//        crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 20 : limit);
         crit.addOrder(Order.asc("name"));
         if (StringUtils.isNotBlank(query)) {
            /* crit.add(Restrictions.or(Restrictions.ilike("name", query.trim(), MatchMode.ANYWHERE),
@@ -71,7 +71,7 @@ public class YardSectorDAOHib extends GenericHibernateDAO<YardSector, Integer> i
                         add(Property.forName("ysg.id.yardSectorId").eqProperty("ys.hid"));
         crit.add(Subqueries.exists(yardSectorGroups));
 
-        crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 20 : limit);
+//        crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 20 : limit);
         crit.addOrder(Order.asc("name"));
         if (StringUtils.isNotBlank(query)) {
             crit.add(Restrictions.ilike("name", query.trim(), MatchMode.ANYWHERE));

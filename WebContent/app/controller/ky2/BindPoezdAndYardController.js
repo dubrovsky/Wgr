@@ -205,7 +205,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
         });
     },
 
-    titleForYard: function(title) {
+    titleForYard: function (title) {
         return title +
             "Номер контейнера/Масса тары/Масса брутто/Типоразмер/Грузоподъемность";
     },
@@ -428,6 +428,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
                 break;
             }
         }
+
         return isDrop;
     },
 
@@ -508,7 +509,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
         }
     },
 
-    moveContToFreeYard: function(contModel, targetYardSectorModel){
+    moveContToFreeYard: function (contModel, targetYardSectorModel) {
         if (contModel.get('who') === 'cont') {
             var freeYard;
             targetYardSectorModel.eachChild(function (yardModel) {
@@ -577,7 +578,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
         this.sourceVagModels = [];
         this.sourceYardModels = [];
 
-        Ext.Msg.alert('Внимание', 'Свободных мест осталось - ' +  (targetModel.get('placesInYardSector') - targetModel.get('contsInYardSector')));
+        Ext.Msg.alert('Внимание', 'Свободных мест осталось - ' + (targetModel.get('placesInYardSector') - targetModel.get('contsInYardSector')));
     },
 
     moveNodesRight: function (btn) {
@@ -625,6 +626,39 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
             return;
         }
 
+        if (targetNode.get('contsInYardSector') + contNodes.length > targetNode.get('placesInYardSector')) {
+            Ext.Msg.show({
+                title: "Предупреждение", msg: "Свобоных мест в секторе не хватит для перемещения всех контейнеров, продолжить?", buttons: Ext.Msg.YESNO,
+                closable: false, icon: Ext.Msg.QUESTION, scope: this,
+                fn: function (buttonId) {
+                    if (buttonId === 'yes') {
+                        this.movePartOfAllNodesRight(targetNode, contNodes);
+                    }
+                }
+            });
+        } else {
+            this.movePartOfAllNodesRight(targetNode, contNodes);
+        }
+
+
+        /*var insertedContsNodes = []; // not all nodes can be inserted
+        var contsInYardSector = targetNode.get('contsInYardSector');
+        for (var i = 0; i < contNodes.length; i++) {
+            if (contsInYardSector < targetNode.get('placesInYardSector')) { // check free places
+                // targetNode.insertChild(targetNode.childNodes.length, contNodes[i]); // appendChild don't work, no need to remove before insert
+                this.moveContToFreeYard(contNodes[i], targetNode);
+                contsInYardSector++;
+                insertedContsNodes.push(contNodes[i]);
+            } else {
+                break;
+            }
+        }
+        if (insertedContsNodes.length > 0) {
+            this.afterDropToYard(insertedContsNodes, targetNode);
+        }*/
+    },
+
+    movePartOfAllNodesRight: function(targetNode, contNodes) {
         var insertedContsNodes = []; // not all nodes can be inserted
         var contsInYardSector = targetNode.get('contsInYardSector');
         for (var i = 0; i < contNodes.length; i++) {
@@ -664,9 +698,8 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
                 this.getCenter().setLoading(false);
                 if (Ext.isNumber(close)) {
                     var closeBtn = this.getPoezdform().down('button[action="close"]');
-                    closeBtn.fireEvent('click',closeBtn);
-                }
-                else {
+                    closeBtn.fireEvent('click', closeBtn);
+                } else {
                     var respObj = Ext.decode(response.responseText);
                 }
             },

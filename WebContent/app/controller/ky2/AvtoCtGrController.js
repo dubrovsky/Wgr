@@ -82,6 +82,9 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
             'ky2avtointoform button[action="editCtGr"]': {
                 click: this.toCtGrFromOutside
             },
+            'ky2avtooutform button[action="editCtGr"]': {
+                click: this.toCtGrFromOutside
+            },
             'ky2avtoctgrtreeform > treepanel': {
                 itemclick: this.onTreeNodeClick
             },
@@ -108,7 +111,11 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
             },
             'ky2avtoctgrtreeform > tabpanel > form field': {
                 blur: this.onVgCtGrFormUpdateData
+            },
+            'ky2avtoctgrtreeform > tabpanel > #cont > numberfield': {
+                blur: this.onGrBruttoUpdateData
             }
+
         });
     },
 
@@ -160,6 +167,8 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
                 rootNode.set('dprb', avtoObj['dprb']);
                 rootNode.set('direction', avtoObj['direction']);
                 // vagoncontainer.setPoezdId(poezdObj['hid']);
+                this.getTreepanel().down('button[action=showVags]').hide();
+                this.getTreepanel().down('button[action=hideVags]').hide();
 
                 var konts = avtoObj['konts'];
                 if (konts && !Ext.Object.isEmpty(konts)) {
@@ -555,6 +564,21 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
             }
         });
     },
+
+    onGrBruttoUpdateData: function (field) {
+        var rec = field.up('form').getRecord(),
+            oldVal = rec.get(field.getName()),
+            newVal = field.getSubmitValue();
+        if (oldVal !== newVal) {
+            rec.set(field.getName(), newVal);
+            if (field.getName() === 'massa_tar' ||
+                field.getName() === 'massa_brutto') {
+                rec.set('massa_brutto_all', rec.get('massa_tar') + rec.get('massa_brutto'));
+                field.up('form').down('#massa_brutto_all').setValue(rec.get('massa_brutto_all'));
+            }
+        }
+    },
+
 
     initHids: function (cntGr, rootNode) {
         for (var cntGrIndx in cntGr) {

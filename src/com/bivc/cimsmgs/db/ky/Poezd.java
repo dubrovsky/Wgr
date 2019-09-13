@@ -120,6 +120,29 @@ public class Poezd implements Serializable {
         this.gruzotpr = gruzotpr;
     }
 
+    public Map<String, List<?>> bindPoezdToAvtos(TreeSet<VagonBindDTO> dtos, List<Avto> avtos, Mapper mapper) {
+        Map<String, List<?>> contGruz4History = new HashMap<>(2);
+        contGruz4History.put("konts", new ArrayList<Kont>());
+        contGruz4History.put("gruzs", new ArrayList<Gruz>());
+
+        for (VagonBindDTO vagonIntoDTO : dtos) {
+            for (Vagon vagon : getVagons()) {
+                if (Objects.equals(vagon.getHid(), vagonIntoDTO.getHid())) {
+                    mapper.map(vagonIntoDTO, vagon); // update otpravka
+                    if (vagonIntoDTO.getOtpravka() == Otpravka.CONT) {
+                        List<Kont> konts = vagon.bindKontsToAvtoKonts(vagonIntoDTO.getKonts(), mapper, avtos);
+                        ((List<Kont>) contGruz4History.get("konts")).addAll(konts);
+                    } else if (vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
+                        List<Gruz> gruzs = vagon.bindGruzsToAvtoGruzs(vagonIntoDTO.getGruzs(), mapper, avtos);
+                        ((List<Gruz>) contGruz4History.get("gruzs")).addAll(gruzs);
+                    }
+                    break;
+                }
+            }
+        }
+        return contGruz4History;
+    }
+
     public enum FilterFields {
         NPPR("nppr");
         private final String name;

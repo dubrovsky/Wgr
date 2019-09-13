@@ -17,7 +17,7 @@ public class YardDTO {
     private Long z;
     private String notes;
     private boolean empty;
-    private TreeSet<KontDTO> konts = new TreeSet<>();
+    private TreeSet<KontViewDTO> konts = new TreeSet<>();
 
     public Long getHid() {
         return hid;
@@ -75,11 +75,11 @@ public class YardDTO {
         this.empty = empty;
     }
 
-    public TreeSet<KontDTO> getKonts() {
+    public TreeSet<KontViewDTO> getKonts() {
         return konts;
     }
 
-    public void setKonts(TreeSet<KontDTO> konts) {
+    public void setKonts(TreeSet<KontViewDTO> konts) {
         this.konts = konts;
     }
 }

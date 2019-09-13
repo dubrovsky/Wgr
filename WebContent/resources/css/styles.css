@@ -24,7 +24,7 @@
 }
 
 .selectTreeNode {
-    background-color: lightskyblue;
+    background-color: aliceblue;
 }
 
 .grid-13px-height .x-grid-cell-inner {
@@ -63,6 +63,10 @@
 
 .red {
     color: red;
+}
+
+.green {
+    color: green;
 }
 
 .header-main {
@@ -920,6 +924,10 @@ background-image:url() !important;
 .x-column-header.green {
     background-color: #b3e3b3;
     background-image: none;
+}
+
+.yardReturnNkon {
+    background-color: #4ce37a;
 }
 
 /*.x-column-header.green .x-column-header-over{*/

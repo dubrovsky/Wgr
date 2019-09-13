@@ -78,6 +78,15 @@ public class Kont implements Serializable, Comparable<Kont> {
     private NsiKyOwners owner;
     private String punkt_otpr;
     private String punkt_nazn;
+    private Set<KontGruzHistory> history  = new TreeSet<>();
+
+    public Set<KontGruzHistory> getHistory() {
+        return history;
+    }
+
+    public void setHistory(Set<KontGruzHistory> history) {
+        this.history = history;
+    }
 
     public BigDecimal getMassa_brutto() {
         return massa_brutto;

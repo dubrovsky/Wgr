@@ -23,6 +23,7 @@ Ext.define('TK.view.ky2.poezd.into.PoezdList', {
         config.tbar.splice(8, 0,
             {tooltip: this.btnToPoezdOut, iconCls:'train2', action:'showPoezdsOutDir4PoezdIntoBind'},'-',
             {tooltip: this.btnToYard, iconCls:'cont', action:'getPoesdAndYardForBind'},'-',
+            {tooltip: "На авто", iconCls:'truck', action:'getPoesdAndAvtoForBind'},'-',
             {text: '+ Поезд по отправлению', iconCls:'train', action:'createPoezdOutFromInto'}
         );
     }

@@ -184,10 +184,12 @@ p:excelTpls-ref="excelTples"
 
     <bean id="poezdVgctgr_A" class="com.bivc.cimsmgs.actions.ky2.PoezdVgCtGr_A" scope="prototype"/>
     <bean id="avtoCtgr_A" class="com.bivc.cimsmgs.actions.ky2.AvtoCtGr_A" scope="prototype"/>
+    <bean id="yardCtgr_A" class="com.bivc.cimsmgs.actions.ky2.YardCtGr_A" scope="prototype"/>
     <bean id="bindAvtoAndAvto_A" class="com.bivc.cimsmgs.actions.ky2.BindAvtoAndAvto_A" scope="prototype"/>
     <bean id="bindPoezdAndPoezd_A" class="com.bivc.cimsmgs.actions.ky2.BindPoezdAndPoezd_A" scope="prototype"/>
     <bean id="bindAvtoAndYard_A" class="com.bivc.cimsmgs.actions.ky2.BindAvtoAndYard_A" scope="prototype"/>
     <bean id="bindPoezdAndYard_A" class="com.bivc.cimsmgs.actions.ky2.BindPoezdAndYard_A" scope="prototype"/>
+    <bean id="bindPoezdAndAvto_A" class="com.bivc.cimsmgs.actions.ky2.BindPoezdAndAvto_A" scope="prototype"/>
     <bean id="poezd2_A" class="com.bivc.cimsmgs.actions.ky2.Poezd_A" scope="prototype"/>
     <bean id="report2_A" class="com.bivc.cimsmgs.actions.ky2.Report_A" scope="prototype"/>
     <bean id="ping_A" class="com.bivc.cimsmgs.actions.Ping_A" scope="prototype"/>
@@ -195,6 +197,7 @@ p:excelTpls-ref="excelTples"
     <bean id="yard2_A" class="com.bivc.cimsmgs.actions.ky2.Yard_A" scope="prototype"/>
     <bean id="yardSector2_A" class="com.bivc.cimsmgs.actions.ky2.YardSector_A" scope="prototype"/>
     <bean id="reportServiceKy2" class="com.bivc.cimsmgs.services.ky2.ReportService"/>
+    <bean id="avtoWzPzService" class="com.bivc.cimsmgs.services.ky2.AvtoWzPzService"/>
 
     <bean id="poezd_A" class="com.bivc.cimsmgs.actions.ky.Poezd_A" scope="prototype"/>
     <bean id="vagon_A" class="com.bivc.cimsmgs.actions.ky.Vagon_A" scope="prototype"/>

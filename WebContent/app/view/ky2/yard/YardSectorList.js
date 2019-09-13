@@ -4,6 +4,8 @@ Ext.define('TK.view.ky2.yard.YardSectorList', {
 
     title: 'Сектора',
     width: 700,
+    maxHeight: 600,
+    autoScroll: true,
 
     buildItems: function(config) {
         config.items = [{

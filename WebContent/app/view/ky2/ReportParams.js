@@ -24,7 +24,28 @@ Ext.define('TK.view.ky2.ReportParams', {
                         altFormats: 'd.m.y',
                         allowBlank: false,
                         fieldLabel: 'Прибытие, по'
+                    },
+                    {xtype:'textfield', fieldLabel:'Международный номер поезда', name:"npprm", allowBlank: true},
+                    {xtype:'textfield', fieldLabel:'Клиент', name:"gruzotpr", allowBlank: true},
+                    {
+                        xtype: 'combo',
+                        queryMode: 'local',
+                        forceSelection: true,
+                        fieldLabel: 'Транспорт по прибытию',
+                        name:'tr_arrival',
+                        allowBlank: true,
+                        store: [['-', 'Все'], ['w', 'Вагон'], ['a', 'Авто']]
+                    },
+                    {
+                        xtype: 'combo',
+                        queryMode: 'local',
+                        forceSelection: true,
+                        fieldLabel: 'Транспорт по отправлению',
+                        name:'tr_departure',
+                        allowBlank: true,
+                        store: [['-', 'Все'], ['w', 'Вагон'], ['a', 'Авто']]
                     }
+
                 ],
                 buttons: [
                     {

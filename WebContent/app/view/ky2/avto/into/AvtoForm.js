@@ -38,6 +38,35 @@ Ext.define('TK.view.ky2.avto.into.AvtoForm', {
                     format:'H:i'
                 }]
             });
+            config.items.push(
+                {
+                    xtype: 'fieldcontainer',
+                    layout: {
+                        type: 'hbox',
+                        defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
+                    },
+                    width: 450,
+                    labelWidth: 150,
+                    fieldLabel: 'Заявка на контейнер',
+                    items: [{
+                        xtype: 'textfield',
+                        name: 'ret_nkon',
+                        maxLength: 15,
+                        // rows: 3,
+                        flex: 1
+                    }, {
+                        xtype: 'button',
+                        text: '...',
+                        action: 'retNkonFind'
+                    }]
+                }, {
+                        xtype: 'label',
+                        text: '',
+                        id: 'kontSectorLocation',
+                        margin: '0 0 0 160',
+                        cls: 'green'
+                    }
+            );
             // config.items[0].items.splice(0, 0, {
             //     fieldLabel:'Прибытие',
             //     name : 'dprbDate',
@@ -143,7 +172,14 @@ Ext.define('TK.view.ky2.avto.into.AvtoForm', {
         buildTopToolbar: function(config){
             TK.view.ky2.avto.BaseAvtoForm.prototype.buildTopToolbar.apply(this, arguments);
             config.tbar.push(
-                {
+            );
+
+            config.tbar.push(
+                {xtype:'splitbutton', text: 'Печать', iconCls:'upload', action: 'print',
+                    menu: [
+                        {text: 'PZ', iconCls:'excel', action:'pz'},'-'
+                    ]
+                },{
                     text: '+Контейнер/Груз',
                     iconCls: 'edit',
                     action: 'editCtGr'

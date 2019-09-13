@@ -99,11 +99,11 @@ Ext.define('TK.controller.Menu', {
                         ]
                     });
                 }
-                if (tkUser.hasPriv('CIM_KONT_YARD')) {
+               /* if (tkUser.hasPriv('CIM_KONT_YARD')) {
                     root.appendChild({text:menutree.btnKontYards, iconCls:'cont', id:'konts_yards',
                         children:[
                             {text:menutree.btnKontYard, leaf:true, id:'kont_yard2', iconCls:'cont1'}
-                            /*{text:menutree.btnKontReports, id:'kont_reports', iconCls:'logs',
+                            /!*{text:menutree.btnKontReports, id:'kont_reports', iconCls:'logs',
                                 children:[
                                     {text:menutree.kyreport1, leaf:true, id:'kyreport1', iconCls:'logs' },
                                     {text:menutree.kyreport2, leaf:true, id:'kyreport2', iconCls:'logs' },
@@ -112,10 +112,10 @@ Ext.define('TK.controller.Menu', {
                                     {text:menutree.kyreport5, leaf:true, id:'kyreport5', iconCls:'logs' },
                                     {text:menutree.kyreport6, leaf:true, id:'kyreport6', iconCls:'logs' }
                                 ]
-                            }*/
+                            }*!/
                         ]
                     });
-                }
+                }*/
                 root.appendChild({text:'Handbooks', iconCls:'nsimanager', leaf:true, id:'nsimanager'});
                 root.appendChild({text:'User guide', iconCls:'instr', id:'instr',
                     children:[
@@ -379,7 +379,7 @@ Ext.define('TK.controller.Menu', {
                 gridParams = {action:'list'};
                 break;*/
 
-            case 'kont_yard2':
+            case 'kontyard2':
                 grid = Ext.widget('ky2yardlist');
                 gridParams = {action:'list'};
                 break;
@@ -572,7 +572,7 @@ function translate (me,cur_lang) {
             files       :'Прочие документы',cmr         :'CMR', fileavisogu29k:'Графика Инструкция ГУ',  gu27v:'ГУ-27в',
             avisogu29k1 :'Инструкция ГУ для агентов', avisocimsmgs:'Инструкция ЦИМ/СМГС', ved :'Вагонная/передаточная ведомость',exit:'Выход',
             poezdin: 'Поезда, прибытие', poezdout: 'Поезда, отправление',
-            poezd2inwide: 'Поезд 1520мм(прибытие)',poezd2outwide: 'Поезд 1520мм(отправление)',
+            poezd2inwide: 'Поезд 1520мм(прибытие)',poezd2outwide: 'Поезд 1520мм(отправление)',kontyard2: 'Контейнерная площадка',
             poezd2innar: 'Поезд 1435мм(прибытие)',poezd2outnar: 'Поезд 1435мм(отправление)',
             avtoin: 'Авто, прибытие', avtoout: 'Авто, отправление', avto2in: 'Авто2, прибытие', avto2out: 'Авто2, отправление'
         },

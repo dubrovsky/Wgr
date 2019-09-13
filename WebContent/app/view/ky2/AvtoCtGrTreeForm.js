@@ -196,8 +196,8 @@ Ext.define('TK.view.ky2.AvtoCtGrTreeForm', {
                     name: 'notp',
                     itemId: 'notp',
                     maxLength: 11,
-                    enableKeyEvents: true,
-                    allowBlank: false
+                    enableKeyEvents: true
+                    // allowBlank: false
                 },{
                     name : 'dprb',
                     xtype: 'datefield',

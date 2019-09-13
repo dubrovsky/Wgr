@@ -14,6 +14,8 @@ import com.bivc.cimsmgs.db.ky.Vagon;
 import com.bivc.cimsmgs.doc2doc.Mapper;
 import com.bivc.cimsmgs.dto.ky.PoezdBaseDTO;
 import com.bivc.cimsmgs.dto.ky.PoezdDTO;
+import com.bivc.cimsmgs.dto.ky.ReportParamsDTO;
+import com.bivc.cimsmgs.dto.ky2.PoezdDirDTO;
 import com.bivc.cimsmgs.dto.ky2.PoezdImportDTO;
 import com.bivc.cimsmgs.exchange.KYPoezdLoader;
 import com.bivc.cimsmgs.formats.json.Deserializer;
@@ -33,7 +35,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.util.*;
+
 import static com.bivc.cimsmgs.actions.CimSmgsSupport_A.KontGruzHistoryType.POEZD;
+import static java.util.stream.Collectors.toMap;
+
 /**
  * Created by peter on 21.02.14.
  */
@@ -65,6 +70,10 @@ public class Poezd_A extends CimSmgsSupport_A {
                     return importPoezd();
                 case UPLOAD:
                     return uploadPoezd();
+                case GET_POEZDS_IN_INTERVAL:
+                    return getPoezdsInInterval();
+                case GET_GRUZOTPR_IN_INTERVAL:
+                    return getGruzotprInInterval();
                 default:
                     throw new RuntimeException("Unknown action");
             }
@@ -75,6 +84,57 @@ public class Poezd_A extends CimSmgsSupport_A {
 
     }
 
+    private String getPoezdsInInterval() throws Exception {
+        ReportParamsDTO dto = defaultDeserializer.setLocale(getLocale()).read(ReportParamsDTO.class, reportParams);
+        if (dto.getStartDate() == null || dto.getEndDate() == null) {
+            throw new Exception("No reporting period specified");
+        }
+
+        GregorianCalendar edt = new GregorianCalendar();  // ass 1 day
+        edt.setTime(dto.getEndDate());
+        edt.add(Calendar.DATE, 1);
+        dto.setEndDate(edt.getTime());
+
+        List<Poezd> poezds = poezdDAO.findPoezdsInInterval(dto);
+        setJSONData(
+                defaultSerializer
+                        .setLocale(getLocale())
+                        .write(
+                                new Response<>(
+                                        kypoezdMapper.copyList(poezds, PoezdDirDTO.class),
+                                        (long) poezds.size()
+                                )
+                        )
+        );
+        return SUCCESS;
+    }
+
+    private String getGruzotprInInterval() throws Exception {
+        ReportParamsDTO dto = defaultDeserializer.setLocale(getLocale()).read(ReportParamsDTO.class, reportParams);
+        if (dto.getStartDate() == null || dto.getEndDate() == null) {
+            throw new Exception("No reporting period specified");
+        }
+
+        GregorianCalendar edt = new GregorianCalendar();  // ass 1 day
+        edt.setTime(dto.getEndDate());
+        edt.add(Calendar.DATE, 1);
+        dto.setEndDate(edt.getTime());
+
+        List<Poezd> poezds = poezdDAO.findGruzotprInInterval(dto);
+        List<Poezd> filteredPoezds = new ArrayList<>(poezds.stream().collect(toMap(Poezd::getGruzotpr, p -> p, (p, q) -> p)).values());
+        setJSONData(
+                defaultSerializer
+                        .setLocale(getLocale())
+                        .write(
+                                new Response<>(
+                                        kypoezdMapper.copyList(filteredPoezds, PoezdDirDTO.class),
+                                        (long) poezds.size()
+                                )
+                        )
+        );
+        return SUCCESS;
+    }
+
     public String list() throws Exception {
         log.debug("Rendering Poezd list.");
 
@@ -82,7 +142,7 @@ public class Poezd_A extends CimSmgsSupport_A {
                 (List<Filter>) defaultDeserializer.read(new ArrayList<Filter>() {
                 }.getClass().getGenericSuperclass(), filter) :
                 Collections.EMPTY_LIST;
-        List<Poezd> list = poezdDAO.findAll(getLimit(), getStart(), getRouteId(), getDirection(), filters, getUser().getUsr(), getLocale(), getKoleya());
+        List<Poezd> list = poezdDAO.findPoezdsInInterval(getLimit(), getStart(), getRouteId(), getDirection(), filters, getUser().getUsr(), getLocale(), getKoleya());
         Long total = poezdDAO.countAll(getRouteId(), getDirection(), filters, getUser().getUsr(), getLocale(), getKoleya());
 
         log.debug("Found {} Poezd entries.", total);
@@ -208,89 +268,89 @@ public class Poezd_A extends CimSmgsSupport_A {
 
         sequenceFields sq = new sequenceFields().addSequence("HID", "KY_VAGON_HID");
         String[][] fillParentKey = new String[][]{
-          {"HID", "HID_POEZD"},
-          {"UN", "UN"},
-          {"ALTERED", "ALTERED"},
-          {"DATTR", "DATTR"},
-          {"TRANS", "TRANS"}
+                {"HID", "HID_POEZD"},
+                {"UN", "UN"},
+                {"ALTERED", "ALTERED"},
+                {"DATTR", "DATTR"},
+                {"TRANS", "TRANS"}
         };
         dbpt.fill_Rownum("VAGON", "SORT", st2, 0);
         dbpt.save("VAGON", "KY_VAGON", keyNm, fillParentKey, st2, sq);
 
         sq = new sequenceFields().addSequence("HID", "KY_KONT_HID");
-        fillParentKey = new String[][] {
-          {"HID", "HID_VAGON"},
-          {"UN", "UN"},
-          {"ALTERED", "ALTERED"},
-          {"DATTR", "DATTR"},
-          {"TRANS", "TRANS"}
+        fillParentKey = new String[][]{
+                {"HID", "HID_VAGON"},
+                {"UN", "UN"},
+                {"ALTERED", "ALTERED"},
+                {"DATTR", "DATTR"},
+                {"TRANS", "TRANS"}
         };
         dbpt.fill_Rownum("KONT", "SORT", st2, 0);
         dbpt.save("KONT", "KY_KONT", keyNm, fillParentKey, st2, sq);
 
         sq = new sequenceFields().addSequence("HID", "KY_GRUZ_HID");
-        fillParentKey = new String[][] {
-          {"HID", "HID_KONT"},
-          {"UN", "UN"},
-          {"ALTERED", "ALTERED"},
-          {"DATTR", "DATTR"},
-          {"TRANS", "TRANS"}
+        fillParentKey = new String[][]{
+                {"HID", "HID_KONT"},
+                {"UN", "UN"},
+                {"ALTERED", "ALTERED"},
+                {"DATTR", "DATTR"},
+                {"TRANS", "TRANS"}
         };
         dbpt.fillRownum("GRUZ_KONT", "SORT", st2);
         dbpt.save("GRUZ_KONT", "KY_GRUZ", keyNm, fillParentKey, st2, sq);
 
-        fillParentKey = new String[][] {
-          {"HID", "HID_VAGON"},
-          {"UN", "UN"},
-          {"ALTERED", "ALTERED"},
-          {"DATTR", "DATTR"},
-          {"TRANS", "TRANS"}
+        fillParentKey = new String[][]{
+                {"HID", "HID_VAGON"},
+                {"UN", "UN"},
+                {"ALTERED", "ALTERED"},
+                {"DATTR", "DATTR"},
+                {"TRANS", "TRANS"}
         };
         dbpt.fillRownum("GRUZ_VAG", "SORT", st2);
         dbpt.save("GRUZ_VAG", "KY_GRUZ", keyNm, fillParentKey, st2, sq);
 
         sq = new sequenceFields().addSequence("HID", "KY_PLOMB_HID");
-        fillParentKey = new String[][] {
-          {"HID", "HID_KONT"},
-          {"UN", "UN"},
-          {"ALTERED", "ALTERED"},
-          {"DATTR", "DATTR"},
-          {"TRANS", "TRANS"}
+        fillParentKey = new String[][]{
+                {"HID", "HID_KONT"},
+                {"UN", "UN"},
+                {"ALTERED", "ALTERED"},
+                {"DATTR", "DATTR"},
+                {"TRANS", "TRANS"}
         };
         dbpt.fillRownum("PLOMB_KONT", "SORT", st2);
         dbpt.save("PLOMB_KONT", "KY_PLOMB", keyNm, fillParentKey, st2, sq);
 
-        fillParentKey = new String[][] {
-          {"HID", "HID_VAGON"},
-          {"UN", "UN"},
-          {"ALTERED", "ALTERED"},
-          {"DATTR", "DATTR"},
-          {"TRANS", "TRANS"}
+        fillParentKey = new String[][]{
+                {"HID", "HID_VAGON"},
+                {"UN", "UN"},
+                {"ALTERED", "ALTERED"},
+                {"DATTR", "DATTR"},
+                {"TRANS", "TRANS"}
         };
         dbpt.fillRownum("PLOMB_VAG", "SORT", st2);
         dbpt.save("PLOMB_VAG", "KY_PLOMB", keyNm, fillParentKey, st2, sq);
 
         sq = new sequenceFields().addSequence("HID", "KY_KONT_GRUZ_HISTORY_HID");
-        fillParentKey = new String[][] {
-          {"HID", "HID_KONT"},
-          {"UN", "UN"},
-          {"DATTR", "DATE_OPERATION"},
-          {"HID_POEZD", "HID_POEZD"},
-          {"KOLEYA", "KOLEYA"},
-          {"DIRECTION", "DIRECTION"},
-          {"HID_VAGON","HID_VAGON"}
+        fillParentKey = new String[][]{
+                {"HID", "HID_KONT"},
+                {"UN", "UN"},
+                {"DATTR", "DATE_OPERATION"},
+                {"HID_POEZD", "HID_POEZD"},
+                {"KOLEYA", "KOLEYA"},
+                {"DIRECTION", "DIRECTION"},
+                {"HID_VAGON", "HID_VAGON"}
         };
         dbpt.fillNewPaket("KONT", "KONT_HISTORY", fillParentKey, st2);
         dbpt.save("KONT_HISTORY", "KY_KONT_GRUZ_HISTORY", keyNm, fillParentKey, st2, sq);
 
-        fillParentKey = new String[][] {
-          {"HID", "HID_GRUZ"},
-          {"UN", "UN"},
-          {"DATTR", "DATE_OPERATION"},
-          {"HID_POEZD", "HID_POEZD"},
-          {"KOLEYA", "KOLEYA"},
-          {"DIRECTION", "DIRECTION"},
-          {"HID_VAGON","HID_VAGON"}
+        fillParentKey = new String[][]{
+                {"HID", "HID_GRUZ"},
+                {"UN", "UN"},
+                {"DATTR", "DATE_OPERATION"},
+                {"HID_POEZD", "HID_POEZD"},
+                {"KOLEYA", "KOLEYA"},
+                {"DIRECTION", "DIRECTION"},
+                {"HID_VAGON", "HID_VAGON"}
         };
         dbpt.fillNewPaket("GRUZ_VAG", "GRUZ_HISTORY", fillParentKey, st2);
         dbpt.save("GRUZ_HISTORY", "KY_KONT_GRUZ_HISTORY", keyNm, fillParentKey, st2, sq);
@@ -301,13 +361,13 @@ public class Poezd_A extends CimSmgsSupport_A {
 
         Poezd poezd = poezdDAO.findById(getHid(), false);
         setJSONData(
-          defaultSerializer
-            .setLocale(getLocale())
-            .write(
-              new Response<>(
-                kypoezdMapper.copy(poezd, PoezdBaseDTO.class)
-              )
-            )
+                defaultSerializer
+                        .setLocale(getLocale())
+                        .write(
+                                new Response<>(
+                                        kypoezdMapper.copy(poezd, PoezdBaseDTO.class)
+                                )
+                        )
         );
 
 /*
@@ -475,6 +535,7 @@ public class Poezd_A extends CimSmgsSupport_A {
     private String n_packet;
     private String n_poezd;
     private String ved_nomer;
+    private String reportParams;
 
     public void setUpload(File file) {
         this.fileData = file;
@@ -496,7 +557,11 @@ public class Poezd_A extends CimSmgsSupport_A {
         this.ved_nomer = ved_nomer;
     }
 
-    enum Action {LIST, EDIT, SAVE, DELETE, POEZDS_DIR_FOR_POEZD_BIND, CREATE_POEZDOUT_FROM_POEZDINTO, IMPORT_POEZD_LIST, IMPORT_POESD, UPLOAD}
+    public void setReportParams(String reportParams) {
+        this.reportParams = reportParams;
+    }
+
+    enum Action {LIST, EDIT, SAVE, DELETE, POEZDS_DIR_FOR_POEZD_BIND, CREATE_POEZDOUT_FROM_POEZDINTO, IMPORT_POEZD_LIST, IMPORT_POESD, UPLOAD, GET_POEZDS_IN_INTERVAL, GET_GRUZOTPR_IN_INTERVAL}
 
     private List<Filter> filters;
     private String filter;

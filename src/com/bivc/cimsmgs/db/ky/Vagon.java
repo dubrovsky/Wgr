@@ -477,7 +477,6 @@ public class Vagon implements Serializable, Comparable<Vagon> {
         }
         dtos.removeAll(dtoToRemove);
 
-
         List<Kont> kontsForHistory = new ArrayList<>(dtos.size());
         // insert from yard
         dtoToRemove.clear();
@@ -810,6 +809,148 @@ public class Vagon implements Serializable, Comparable<Vagon> {
 
     public void setOtpravka(Otpravka otpravka) {
         this.otpravka = otpravka;
+    }
+
+    public List<Kont> bindKontsToAvtoKonts(TreeSet<KontBindDTO> dtos, Mapper mapper, List<Avto> avtos) {
+        // update kont that not moved
+        Set<KontBindDTO> dtoToRemove = new HashSet<>();
+        for (KontBindDTO kontDTO : dtos) {
+            for (Kont kont : getKonts()) {
+                if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
+                    mapper.map(kontDTO, kont);  // update kont, sort can change
+                    dtoToRemove.add(kontDTO);
+                    break;
+                }
+            }
+        }
+        dtos.removeAll(dtoToRemove);
+
+        List<Kont> kontsForHistory = new ArrayList<>(dtos.size());
+        // insert from avto
+        dtoToRemove.clear();
+        boolean found;
+        for (KontBindDTO kontDTO : dtos) {
+            found = false;
+            for (Avto avto : avtos) {
+                for (Kont avtoKont : avto.getKonts()) {
+                    if (Objects.equals(avtoKont.getHid(), kontDTO.getHid())) {
+                        mapper.map(kontDTO, avtoKont);
+                        bindKont(avtoKont);
+                        kontsForHistory.add(avtoKont);
+                        log.info("Add kont from another yard, kont - {}", avtoKont.getNkon());
+                        dtoToRemove.add(kontDTO);
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) {
+                    break;
+                }
+            }
+        }
+        dtos.removeAll(dtoToRemove);
+
+        if (!dtos.isEmpty()) { // still have conts - may be when remove cont in same poesd between vagons
+            dtoToRemove.clear();
+            for (KontBindDTO kontDTO : dtos) {
+                found = false;
+                for (Vagon vagon : getPoezd().getVagons()) {
+                    for (Kont kont : vagon.getKonts()) {
+                        if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
+                            mapper.map(kontDTO, kont);
+                            bindKont(kont);
+                            kontsForHistory.add(kont);
+                            log.info("Move kont in same poezd, kont - {}", kont.getNkon());
+                            dtoToRemove.add(kontDTO);
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found) {
+                        break;
+                    }
+                }
+            }
+            dtos.removeAll(dtoToRemove);
+        }
+
+        if (!dtos.isEmpty()) {
+            for (KontBindDTO kontDTO : dtos) {
+                log.warn("Kont {} was not bound, something wrong!!!", kontDTO.getNkon());
+            }
+        }
+        return kontsForHistory;
+    }
+
+    public List<Gruz> bindGruzsToAvtoGruzs(TreeSet<GruzBindDTO> dtos, Mapper mapper, List<Avto> avtos) {
+        // update kont that not moved
+        Set<GruzBindDTO> dtoToRemove = new HashSet<>();
+        for (GruzBindDTO gruzDTO : dtos) {
+            for (Gruz gruz : getGruzs()) {
+                if (Objects.equals(gruz.getHid(), gruzDTO.getHid())) {
+                    mapper.map(gruzDTO, gruz);  // update gruz, sort can change
+                    dtoToRemove.add(gruzDTO);
+                    break;
+                }
+            }
+        }
+        dtos.removeAll(dtoToRemove);
+
+        List<Gruz> gruzsForHistory = new ArrayList<>(dtos.size());
+        // insert from avto
+        dtoToRemove.clear();
+        boolean found;
+        for (GruzBindDTO gruzDTO : dtos) {
+            found = false;
+            for (Avto avto : avtos) {
+                for (Gruz avtoGruz : avto.getGruzs()) {
+                    if (Objects.equals(avtoGruz.getHid(), gruzDTO.getHid())) {
+                        mapper.map(gruzDTO, avtoGruz);
+                        bindGruz(avtoGruz);
+                        gruzsForHistory.add(avtoGruz);
+                        log.info("Add Gruz from another poezd, Gruz - {}", avtoGruz.getKgvn());
+                        dtoToRemove.add(gruzDTO);
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) {
+                    break;
+                }
+            }
+        }
+        dtos.removeAll(dtoToRemove);
+
+        if (!dtos.isEmpty()) { // still have gruzs - may be when remove gruzs in same poesd between vagons
+            dtoToRemove.clear();
+            for (GruzBindDTO gruzBindDTO : dtos) {
+                found = false;
+                for (Vagon vagon : getPoezd().getVagons()) {
+                    for (Gruz gruz : vagon.getGruzs()) {
+                        if (Objects.equals(gruz.getHid(), gruzBindDTO.getHid())) {
+                            mapper.map(gruzBindDTO, gruz);
+                            bindGruz(gruz);
+                            gruzsForHistory.add(gruz);
+                            log.info("Move gruz in same poezd, gruz - {}", gruz.getKgvn());
+                            dtoToRemove.add(gruzBindDTO);
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found) {
+                        break;
+                    }
+                }
+            }
+            dtos.removeAll(dtoToRemove);
+        }
+
+        if (!dtos.isEmpty()) {
+            for (GruzBindDTO gruzBindDTO : dtos) {
+                log.warn("Gruz {} was not bound, something wrong!!!", gruzBindDTO.getKgvn());
+            }
+        }
+        return gruzsForHistory;
     }
 
     public enum FilterFields {

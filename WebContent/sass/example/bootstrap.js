@@ -901,11 +901,15 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.controller.ky2.AvtoController": [],
   "TK.controller.ky2.AvtoCtGrController": [],
   "TK.controller.ky2.BindAvtoAndAvtoController": [],
+  "TK.controller.ky2.BindAvtoAndYardController": [],
+  "TK.controller.ky2.BindPoezdAndAvtoController": [],
   "TK.controller.ky2.BindPoezdAndPoezdController": [],
   "TK.controller.ky2.BindPoezdAndYardController": [],
   "TK.controller.ky2.PoezdController": [],
   "TK.controller.ky2.PoezdVgCtGrController": [],
+  "TK.controller.ky2.ReportController": [],
   "TK.controller.ky2.YardController": [],
+  "TK.controller.ky2.YardCtGrController": [],
   "TK.controller.print.Print": [],
   "TK.controller.print.PrintTemplates": [],
   "TK.model.Aviso": [],
@@ -1014,7 +1018,9 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.model.ky2.AvtoInto": [],
   "TK.model.ky2.AvtoOut": [],
   "TK.model.ky2.KontInYard": [],
+  "TK.model.ky2.NsiClient": [],
   "TK.model.ky2.PoezdBase": [],
+  "TK.model.ky2.PoezdBaseDir": [],
   "TK.model.ky2.PoezdBindTreeNode": [],
   "TK.model.ky2.PoezdDir": [],
   "TK.model.ky2.PoezdImportDir": [],
@@ -1123,10 +1129,12 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.store.ky2.AvtosDir": [],
   "TK.store.ky2.AvtosInto": [],
   "TK.store.ky2.AvtosOut": [],
+  "TK.store.ky2.GruzotprsDir": [],
   "TK.store.ky2.PoezdBindTreeLeftNodes": [],
   "TK.store.ky2.PoezdBindTreeRightNodes": [],
   "TK.store.ky2.PoezdVgCtGrTreeNodes": [],
   "TK.store.ky2.PoezdsBase": [],
+  "TK.store.ky2.PoezdsBaseDir": [],
   "TK.store.ky2.PoezdsDir": [],
   "TK.store.ky2.PoezdsImportDir": [],
   "TK.store.ky2.PoezdsInto": [],
@@ -1376,15 +1384,20 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.view.ky2.BasePoezdsDir": [],
   "TK.view.ky2.BasePoezdsImportDir": [],
   "TK.view.ky2.PoezdVgCtGrTreeForm": [],
+  "TK.view.ky2.ReportParams": [],
+  "TK.view.ky2.YardCtGrTreeForm": [],
+  "TK.view.ky2.avto.AbstractAvto2YardBindTreeForm": [],
   "TK.view.ky2.avto.AvtoBindTreeForm": [],
   "TK.view.ky2.avto.BaseAvtoForm": [],
   "TK.view.ky2.avto.BaseAvtoList": [],
   "TK.view.ky2.avto.into.Avto2AvtoBindTreeForm": [],
+  "TK.view.ky2.avto.into.Avto2YardBindTreeForm": [],
   "TK.view.ky2.avto.into.AvtoCtGrTreeForm": [],
   "TK.view.ky2.avto.into.AvtoForm": [],
   "TK.view.ky2.avto.into.AvtoList": [],
   "TK.view.ky2.avto.into.AvtosOutDir": [],
   "TK.view.ky2.avto.out.Avto2AvtoBindTreeForm": [],
+  "TK.view.ky2.avto.out.Avto2YardBindTreeForm": [],
   "TK.view.ky2.avto.out.AvtoCtGrTreeForm": [],
   "TK.view.ky2.avto.out.AvtoForm": [],
   "TK.view.ky2.avto.out.AvtoList": [],
@@ -1406,8 +1419,11 @@ Ext.ClassManager.addNameAlternateMappings({
   "TK.view.ky2.poezd.out.PoezdVgCtGrTreeForm": [],
   "TK.view.ky2.poezd.out.PoezdsIntoDir": [],
   "TK.view.ky2.yard.Filter": [],
+  "TK.view.ky2.yard.YardCtGrWin": [],
   "TK.view.ky2.yard.YardForm": [],
   "TK.view.ky2.yard.YardList": [],
+  "TK.view.ky2.yard.YardSectorForm": [],
+  "TK.view.ky2.yard.YardSectorList": [],
   "TK.view.logs.List": [],
   "TK.view.nsi.EditList": [],
   "TK.view.nsi.List": [],
@@ -2506,11 +2522,15 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.controller.ky2.AvtoController": [],
   "TK.controller.ky2.AvtoCtGrController": [],
   "TK.controller.ky2.BindAvtoAndAvtoController": [],
+  "TK.controller.ky2.BindAvtoAndYardController": [],
+  "TK.controller.ky2.BindPoezdAndAvtoController": [],
   "TK.controller.ky2.BindPoezdAndPoezdController": [],
   "TK.controller.ky2.BindPoezdAndYardController": [],
   "TK.controller.ky2.PoezdController": [],
   "TK.controller.ky2.PoezdVgCtGrController": [],
+  "TK.controller.ky2.ReportController": [],
   "TK.controller.ky2.YardController": [],
+  "TK.controller.ky2.YardCtGrController": [],
   "TK.controller.print.Print": [],
   "TK.controller.print.PrintTemplates": [],
   "TK.model.Aviso": [],
@@ -2619,7 +2639,9 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.model.ky2.AvtoInto": [],
   "TK.model.ky2.AvtoOut": [],
   "TK.model.ky2.KontInYard": [],
+  "TK.model.ky2.NsiClient": [],
   "TK.model.ky2.PoezdBase": [],
+  "TK.model.ky2.PoezdBaseDir": [],
   "TK.model.ky2.PoezdBindTreeNode": [],
   "TK.model.ky2.PoezdDir": [],
   "TK.model.ky2.PoezdImportDir": [],
@@ -2730,10 +2752,12 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.store.ky2.AvtosDir": [],
   "TK.store.ky2.AvtosInto": [],
   "TK.store.ky2.AvtosOut": [],
+  "TK.store.ky2.GruzotprsDir": [],
   "TK.store.ky2.PoezdBindTreeLeftNodes": [],
   "TK.store.ky2.PoezdBindTreeRightNodes": [],
   "TK.store.ky2.PoezdVgCtGrTreeNodes": [],
   "TK.store.ky2.PoezdsBase": [],
+  "TK.store.ky2.PoezdsBaseDir": [],
   "TK.store.ky2.PoezdsDir": [],
   "TK.store.ky2.PoezdsImportDir": [],
   "TK.store.ky2.PoezdsInto": [],
@@ -3455,6 +3479,15 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.view.ky2.PoezdVgCtGrTreeForm": [
     "widget.ky2vgctgrtreeform"
   ],
+  "TK.view.ky2.ReportParams": [
+    "widget.ky2reportparams"
+  ],
+  "TK.view.ky2.YardCtGrTreeForm": [
+    "widget.ky2yardctgrtreeform"
+  ],
+  "TK.view.ky2.avto.AbstractAvto2YardBindTreeForm": [
+    "widget.ky2abstractavto2yardbindtreeform"
+  ],
   "TK.view.ky2.avto.AvtoBindTreeForm": [
     "widget.ky2avtobindtreeform"
   ],
@@ -3466,6 +3499,9 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "TK.view.ky2.avto.into.Avto2AvtoBindTreeForm": [
     "widget.ky2avto2avtobindtreeforminto"
+  ],
+  "TK.view.ky2.avto.into.Avto2YardBindTreeForm": [
+    "widget.ky2avto2yardbindtreeforminto"
   ],
   "TK.view.ky2.avto.into.AvtoCtGrTreeForm": [
     "widget.ky2ctgrtreeformavtointo"
@@ -3481,6 +3517,9 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "TK.view.ky2.avto.out.Avto2AvtoBindTreeForm": [
     "widget.ky2avto2avtobindtreeformout"
+  ],
+  "TK.view.ky2.avto.out.Avto2YardBindTreeForm": [
+    "widget.ky2avto2yardbindtreeformout"
   ],
   "TK.view.ky2.avto.out.AvtoCtGrTreeForm": [
     "widget.ky2ctgrtreeformavtoout"
@@ -3545,11 +3584,20 @@ Ext.ClassManager.addNameAliasMappings({
   "TK.view.ky2.yard.Filter": [
     "widget.ky2yardfilter"
   ],
+  "TK.view.ky2.yard.YardCtGrWin": [
+    "widget.ky2yardctgrwin"
+  ],
   "TK.view.ky2.yard.YardForm": [
     "widget.ky2yardform"
   ],
   "TK.view.ky2.yard.YardList": [
     "widget.ky2yardlist"
+  ],
+  "TK.view.ky2.yard.YardSectorForm": [
+    "widget.ky2yardsectorform"
+  ],
+  "TK.view.ky2.yard.YardSectorList": [
+    "widget.ky2yardsectorlist"
   ],
   "TK.view.logs.List": [
     "widget.logslist"

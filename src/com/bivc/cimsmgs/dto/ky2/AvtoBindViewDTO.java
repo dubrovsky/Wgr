@@ -10,8 +10,17 @@ public class AvtoBindViewDTO {
     private Long hid;
     private Byte direction;
     private String no_avto;
+    private String ret_nkon;
     private TreeSet<KontBindViewDTO> konts = new TreeSet<>();
     private TreeSet<GruzBindViewDTO> gruzs = new TreeSet<>();
+
+    public String getRet_nkon() {
+        return ret_nkon;
+    }
+
+    public void setRet_nkon(String ret_nkon) {
+        this.ret_nkon = ret_nkon;
+    }
 
     public Long getHid() {
         return hid;

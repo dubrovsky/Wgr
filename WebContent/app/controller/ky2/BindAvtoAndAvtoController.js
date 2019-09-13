@@ -310,6 +310,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
                 gryzy = cont['gruzs'],
                 contModel = Ext.create('TK.model.ky2.AvtoBindTreeNode', {
                     text: this.getController('ky2.BindPoezdAndPoezdController').contNodeText(cont),
+                    avtoHid: vagModel.get('hid'),
                     who: 'cont',
                     iconCls: 'cont3',
                     leaf: true,
@@ -334,6 +335,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
             var gryz = gryzy[gryzIndx],
                 gryzModel = Ext.create('TK.model.ky2.AvtoBindTreeNode', {
                     text: gryz['kgvn'],
+                    avtoHid: parentModel.get('who') === 'cont' ? parentModel.parentNode.get('hid') : parentModel.get('hid'),
                     who: 'gryz',
                     iconCls: 'gryz',
                     leaf: true,

@@ -95,11 +95,28 @@ Ext.define('TK.controller.ky2.YardCtGrController', {
             'ky2yardctgrtreeform button[action=saveExit]': {
                 click: this.onSaveExit
             },
+            'ky2yardctgrtreeform > tabpanel > #cont > numberfield': {
+                blur: this.onGrBruttoUpdateData
+            }
 
 
 
 
         });
+    },
+
+    onGrBruttoUpdateData: function (field) {
+        var rec = field.up('form').getRecord(),
+            oldVal = rec.get(field.getName()),
+            newVal = field.getSubmitValue();
+        if (oldVal !== newVal) {
+            rec.set(field.getName(), newVal);
+            if (field.getName() === 'massa_tar' ||
+                field.getName() === 'massa_brutto') {
+                rec.set('massa_brutto_all', rec.get('massa_tar') + rec.get('massa_brutto'));
+                field.up('form').down('#massa_brutto_all').setValue(rec.get('massa_brutto_all'));
+            }
+        }
     },
 
     onSaveExit: function () {
@@ -108,14 +125,14 @@ Ext.define('TK.controller.ky2.YardCtGrController', {
 
     onSaveClick: function (btn) {
         // var dataObj = {hid: this.getKy2treeform().getPoezdId()};
-        var dataObj = {hid: this.getTreepanel().getRootNode().get('hid')};
+        var dataObj = {hid: this.getTreepanel().getRootNode().get('hid'), sector: this.getTreepanel().getRootNode().get('sector')};
 
         if (this.getTreepanel().getRootNode().hasChildNodes()) {
             dataObj = this.saveNods(dataObj);
         }
 
         // var url = Ext.ModelManager.getModel('TK.model.ky2.VgCtGrTreeNode').getProxy().url;
-        var url = 'ky2/secure/AvtoCtGr.do';
+        var url = 'ky2/secure/YardCtGr.do';
         this.getCenter().setLoading(true);
         Ext.Ajax.request({
             url: url,
@@ -127,18 +144,19 @@ Ext.define('TK.controller.ky2.YardCtGrController', {
                 }
                 else {
                     var respObj = Ext.decode(response.responseText);
-                    var avtoObj = respObj['rows'][0];
+                    var yardObj = respObj['rows'][0];
                     var rootNode = this.getTreepanel().getStore().getRootNode();
-                    var konts = avtoObj['konts'];
+                    var konts = yardObj['konts'];
                     if (konts && !Ext.Object.isEmpty(konts)) {
                         this.initHids(konts, rootNode);
                     }
-                    var gruzs = avtoObj['gruzs'];
-                    if (gruzs && !Ext.Object.isEmpty(gruzs)) {
-                        this.initHids(gruzs, rootNode);
-                    }
+                    // var gruzs = avtoObj['gruzs'];
+                    // if (gruzs && !Ext.Object.isEmpty(gruzs)) {
+                    //     this.initHids(gruzs, rootNode);
+                    // }
                 }
                 this.getCenter().setLoading(false);
+                this.getYardlist().getStore().reload();
             },
             failure: function (response) {
                 this.getCenter().setLoading(false);
@@ -314,39 +332,40 @@ Ext.define('TK.controller.ky2.YardCtGrController', {
             return false;
         }
 
-        var url = 'ky2/secure/AvtoCtGr.do';
+        var url = 'ky2/secure/YardCtGr.do';
 
         Ext.Ajax.request({
             url: url,
-            params: {hid: 23, action: 'edit'},
+            params: {hid: yardlist.selModel.getLastSelected().get('hid'), action: 'edit'},
             scope: this,
             success: function (response) {
                 var respObj = Ext.decode(response.responseText);
-                var avtoObj = respObj['rows'][0];
+                var yardObj = respObj['rows'][0];
 
                 var yardcontainer = Ext.widget('ky2yardctgrwin', {title: 'Редактирование контейнера'});
                 yardcontainer.down('#editPoezd').hide();
-
+                this.getTreepanel().down('button[action=showVags]').hide();
+                this.getTreepanel().down('button[action=hideVags]').hide();
                 // this.initAvtoToButtons(vagoncontainer, avtoObj['direction']);
 
                 //// fill tree
                 var rootNode = this.getTreepanel().getStore().getRootNode();
                 // rootNode.removeAll();
-                rootNode.set('hid', avtoObj['hid']);
-                rootNode.set('dprb', avtoObj['dprb']);
-                rootNode.set('direction', avtoObj['direction']);
+                rootNode.set('hid', yardObj['hid']);
+                rootNode.set('sector', yardObj['sector']);
+                // rootNode.set('direction', yardObj['direction']);
                 // vagoncontainer.setPoezdId(poezdObj['hid']);
 
-                var konts = avtoObj['konts'];
+                var konts = yardObj['konts'];
                 if (konts && !Ext.Object.isEmpty(konts)) {
                     this.initContsNodes(konts, 0, rootNode);
                     // rootNode.expand();
                 }
-                var gruzs = avtoObj['gruzs'];
-                if (gruzs && !Ext.Object.isEmpty(gruzs)) {
-                    this.initGryzyNodes(gruzs, rootNode);
-                    // rootNode.expand();
-                }
+                // var gruzs = avtoObj['gruzs'];
+                // if (gruzs && !Ext.Object.isEmpty(gruzs)) {
+                //     this.initGryzyNodes(gruzs, rootNode);
+                //     // rootNode.expand();
+                // }
                 rootNode.sort(function(n1, n2) {
                                     console.log('node.sort');
                                     var i1 = n1.get('sort'),
@@ -625,13 +644,6 @@ Ext.define('TK.controller.ky2.YardCtGrController', {
                 rec.set('text', newVal);
             }
         }
-    },
-
-
-
-
-
-
-
+    }
 
 });

@@ -16,14 +16,23 @@ import com.bivc.cimsmgs.dto.ky.PoezdDTO;
 import com.bivc.cimsmgs.formats.json.Deserializer;
 import com.bivc.cimsmgs.formats.json.Serializer;
 import com.bivc.cimsmgs.services.ky.IPoezdService;
+import com.bivc.cimsmgs.services.ky2.AvtoWzPzService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static com.bivc.cimsmgs.services.ky2.AvtoWzPzService.AvtoDocType.PZ;
+import static com.bivc.cimsmgs.services.ky2.AvtoWzPzService.AvtoDocType.WZ;
 
 /**
  * Created by peter on 21.02.14.
@@ -48,6 +57,13 @@ public class Avto_A extends CimSmgsSupport_A {
                     return list();
                 case AVTOS_DIR_FOR_AVTO_BIND:
                     return avtosDir4AvtoBind();
+                case GET_WZ:
+                    return getWzPz(WZ);
+                case GET_PZ:
+                    return getWzPz(PZ);
+                case CREATE_AVTOOUT_FROM_AVTOINTO:
+                    return createAvtoOutFromAvtoInto();
+
                 default:
                     throw new RuntimeException("Unknown action");
             }
@@ -175,6 +191,23 @@ public class Avto_A extends CimSmgsSupport_A {
         return SUCCESS;
     }
 
+    public String createAvtoOutFromAvtoInto() {
+        Avto avtoInto = avtoDAO.getById(getHid(), false);
+        log.debug("Found poezd to copy to poezdOut: {}", avtoInto);
+
+        // copy
+        Avto avtoCopy = copyAvtoMapper.map(avtoInto, Avto.class);
+        // set props
+        avtoCopy.setDirection((byte) 2);
+
+        // save new pack and poezd
+        PackDoc pack = new PackDoc(avtoCopy.getRoute(), getUser().getUsr().getGroup());
+        pack.addAvtoItem(avtoCopy);
+        getPackDocDAO().makePersistent(pack);
+
+        return SUCCESS;
+    }
+
     public String avtosDir4AvtoBind() throws Exception {
         final List<Avto> avtos = avtoDAO.findAvtosDir(getLimit(), getStart(), getFilters(), getUser().getUsr(), getRouteId(), getDirection());
         final Long total = avtoDAO.countAvtosDir(getFilters(), getUser().getUsr(), getRouteId(), getDirection());
@@ -193,15 +226,32 @@ public class Avto_A extends CimSmgsSupport_A {
         return SUCCESS;
     }
 
+    private String getWzPz(AvtoWzPzService.AvtoDocType avtoDocType) throws Exception {
+        Avto avto = avtoDAO.findById(getHid(), false);
+
+        XSSFWorkbook excel = avtoWzPzService.avtoDocsToExcel(avto, avtoDocType, getUser().getUsr());
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        excel.write(baos);
+        baos.flush();
+        baos.close();
+        inputStream = new ByteArrayInputStream(baos.toByteArray());
+        fileName = avtoDocType + "_" + avto.getNo_avto() + ".xlsx";
+        return "excel";
+
+    }
+
     private String action;
     private Byte direction;
     private long routeId;
 
-    enum Action {LIST, EDIT, SAVE, DELETE, AVTOS_DIR_FOR_AVTO_BIND}
+    enum Action {LIST, EDIT, SAVE, DELETE, AVTOS_DIR_FOR_AVTO_BIND, GET_WZ, GET_PZ, CREATE_AVTOOUT_FROM_AVTOINTO}
 
     private List<Filter> filters;
     private String filter;
     private String jsonRequest;
+    private String fileName;
+
 
     @Autowired
     private AvtoDAO avtoDAO;
@@ -212,9 +262,30 @@ public class Avto_A extends CimSmgsSupport_A {
     @Autowired
     private Deserializer defaultDeserializer;
     @Autowired
-    private IPoezdService poezdService;
-    @Autowired
     private com.bivc.cimsmgs.doc2doc.orika.Mapper mapper;
+    @Autowired
+    private AvtoWzPzService avtoWzPzService;
+    @Autowired
+    private com.bivc.cimsmgs.doc2doc.orika.CopyAvtoMapper copyAvtoMapper;
+
+    private InputStream inputStream;
+
+    public InputStream getInputStream() {
+        return inputStream;
+    }
+
+    public void setInputStream(InputStream inputStream) {
+        this.inputStream = inputStream;
+    }
+
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 
     public Byte getDirection() {
         return direction;

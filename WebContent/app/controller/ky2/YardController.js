@@ -12,11 +12,14 @@ Ext.define('TK.controller.ky2.YardController', {
     ],
     stores: [
         'ky2.Yards',
-        'ky2.YardSectors'
+        'ky2.YardSectors',
+        'ky2.PoezdsBaseDir',
+        'ky2.GruzotprsDir'
     ],
     models: [
         'ky2.YardBase',
-        'ky2.YardSector'
+        'ky2.YardSector',
+        'ky2.PoezdBaseDir'
     ],
     refs: [{
         ref: 'yardlist',
@@ -58,6 +61,12 @@ Ext.define('TK.controller.ky2.YardController', {
             },
             'ky2yardlist button[action="filterKontYard"]': {
                 click: this.filterKontYard
+            },
+            'ky2yardfilter datefield[name="startDate"]': {
+                select: this.selectFilterStartDate
+            },
+            'ky2yardfilter datefield[name="endDate"]': {
+                select: this.selectFilterEndDate
             },
             'ky2yardfilter button[action="applyFilterKontYard"]': {
                 click: this.applyFilterKontYard
@@ -138,8 +147,8 @@ Ext.define('TK.controller.ky2.YardController', {
                     var form = yardsectorcontainer.down('form');
                     // this.checkForKontyardSector(yard.getSector(), form.getForm());
                     form.loadRecord(yardsector);
-                    if(yardsector.get('groups')){
-                        form.getForm().setValues({"usr.groupsIds" : yardsector.get('groups').replace(/,/g, '\n').replace(/ /g, '')});
+                    if (yardsector.get('groups')) {
+                        form.getForm().setValues({"usr.groupsIds": yardsector.get('groups').replace(/,/g, '\n').replace(/ /g, '')});
                     }
                 }
                 yardsectorcontainer.setLoading(false);
@@ -275,7 +284,7 @@ Ext.define('TK.controller.ky2.YardController', {
         var win = Ext.widget('ky2yardsectorlist'),
             store = win.down('grid').getStore();
 
-        store.load({params:{action: 'list'}});
+        store.load({params: {action: 'list'}});
         /*
         var win = Ext.widget('ky2poezdsimportdir'),
             store = win.down('grid').getStore();
@@ -286,28 +295,28 @@ Ext.define('TK.controller.ky2.YardController', {
                 action: 'import_poezd_list'/*,
                  routeId: poezdModel.get('route.hid')*/
     },
-        /* saveYardSector: function (yardsectorlist, yardsector) {
-           /*var errors = yardsector.validate(),
-                 owner = yardsectorlist.up('nsieditlist'),
-                 rowEditing = yardsectorlist.plugins[0];
-             rowEditing.completeEdit();
-             if (errors.isValid()) {
-                 var newYardsector = (yardsector.getId() == null);
-                 Ext.Ajax.request({
-                     url: owner.buildUrlPrefix() + '_save.do',
-                     params: owner.prepareData(yardsector),
-                     scope: this,
-                     success: function (response, options) {
-                         yardsectorlist.getStore().reload();
-                     },
-                     failure: function (response, options) {
-                         TK.Utils.makeErrMsg(response, 'Error!..');
-                     }
-                 });
-             } else {
-                 TK.Utils.failureDataMsg();
-             }
-    },*/
+    /* saveYardSector: function (yardsectorlist, yardsector) {
+       /*var errors = yardsector.validate(),
+             owner = yardsectorlist.up('nsieditlist'),
+             rowEditing = yardsectorlist.plugins[0];
+         rowEditing.completeEdit();
+         if (errors.isValid()) {
+             var newYardsector = (yardsector.getId() == null);
+             Ext.Ajax.request({
+                 url: owner.buildUrlPrefix() + '_save.do',
+                 params: owner.prepareData(yardsector),
+                 scope: this,
+                 success: function (response, options) {
+                     yardsectorlist.getStore().reload();
+                 },
+                 failure: function (response, options) {
+                     TK.Utils.makeErrMsg(response, 'Error!..');
+                 }
+             });
+         } else {
+             TK.Utils.failureDataMsg();
+         }
+},*/
     /*deleteYardSector: function (yardsectorlist, yardsector) {
         var owner = yardsectorlist.up('nsieditlist');
         if (!yardsector.phantom) {
@@ -335,5 +344,44 @@ Ext.define('TK.controller.ky2.YardController', {
             autoShow: true,
             items: {xtype: 'userlistgroups', ownerBtn: btn}
         });
+    },
+    selectFilterStartDate: function (combo, records) {
+        this.selectFilterDate(combo);
+    },
+    selectFilterEndDate: function (combo, records) {
+        this.selectFilterDate(combo);
+    },
+    selectFilterDate: function (combo) {
+        var form = combo.up('form'),
+            values = form.getValues();
+
+        if (values['startDate'] && values['endDate']) {
+            var poezdCombo = form.down('combo#npprm');
+            var gruzotprCombo = form.down('combo#gruzotpr');
+            poezdCombo.clearValue();
+            gruzotprCombo.clearValue();
+            poezdCombo.getStore().load({
+                params: {
+                    action: 'get_poezds_in_interval',
+                    reportParams: Ext.encode({startDate: values['startDate'], endDate: values['endDate']})
+                },
+                success: function (response, options) {
+                },
+                failure: function (response, options) {
+                    TK.Utils.makeErrMsg(response, 'Error!..');
+                }
+            });
+            gruzotprCombo.getStore().load({
+                params: {
+                    action: 'get_gruzotpr_in_interval',
+                    reportParams: Ext.encode({startDate: values['startDate'], endDate: values['endDate']})
+                },
+                success: function (response, options) {
+                },
+                failure: function (response, options) {
+                    TK.Utils.makeErrMsg(response, 'Error!..');
+                }
+            });
+        }
     }
 });

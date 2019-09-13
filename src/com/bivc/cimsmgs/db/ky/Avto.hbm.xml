@@ -64,6 +64,9 @@
         <property name="prim_avto" type="string">
             <column length="500" name="PRIM_AVTO"/>
         </property>
+        <property name="ret_nkon" type="string">
+            <column length="15" name="RET_NKON"/>
+        </property>
         <property name="un" type="string" update="false">
             <column length="20" name="UN"/>
         </property>

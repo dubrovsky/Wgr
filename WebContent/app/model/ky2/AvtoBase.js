@@ -9,6 +9,7 @@ Ext.define('TK.model.ky2.AvtoBase', {
         {name:'hid', type:'int', useNull:true},
 
         {name:'type_avto', type: 'string'},
+        {name:'ret_nkon', type: 'string'},
         {name:'client', type: 'string'},
         {name:'no_avto', type: 'string'},
         {name:'no_trail', type: 'string'},

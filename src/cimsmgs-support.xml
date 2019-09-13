@@ -296,11 +296,18 @@ name="Doc2Doc_uploadXLSvags" method="uploadXLSvags" class="doc2doc_A">
         </action>
         <action name="secure/Avto" class="avto2_A">
             <result name="success" type="json"/>
+            <result name="excel" type="stream">
+                <param name="contentType">application/vnd.ms-excel</param>
+                <param name="contentDisposition">attachment;filename="${fileName}"</param>
+            </result>
         </action>
         <action name="secure/PoezdVgCtGr" class="poezdVgctgr_A">
             <result name="success" type="json"/>
         </action>
         <action name="secure/AvtoCtGr" class="avtoCtgr_A">
+            <result name="success" type="json"/>
+        </action>
+        <action name="secure/YardCtGr" class="yardCtgr_A">
             <result name="success" type="json"/>
         </action>
         <action name="secure/BindPoezdAndPoezd" class="bindPoezdAndPoezd_A">
@@ -310,6 +317,9 @@ name="Doc2Doc_uploadXLSvags" method="uploadXLSvags" class="doc2doc_A">
             <result name="success" type="json"/>
         </action>
         <action name="secure/BindPoezdAndYard" class="bindPoezdAndYard_A">
+            <result name="success" type="json"/>
+        </action>
+        <action name="secure/BindPoezdAndAvto" class="bindPoezdAndAvto_A">
             <result name="success" type="json"/>
         </action>
         <action name="secure/BindAvtoAndYard" class="bindAvtoAndYard_A">

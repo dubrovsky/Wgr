@@ -4,6 +4,7 @@ import com.bivc.cimsmgs.commons.Filter;
 import com.bivc.cimsmgs.dao.PoezdDAO;
 import com.bivc.cimsmgs.db.Usr;
 import com.bivc.cimsmgs.db.ky.Poezd;
+import com.bivc.cimsmgs.dto.ky.ReportParamsDTO;
 import com.bivc.cimsmgs.services.ky.PoezdService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +27,7 @@ public class PoezdDAOHib extends GenericHibernateDAO<Poezd, Long> implements Poe
     private static final Logger log = LoggerFactory.getLogger(PoezdDAOHib.class);
 
     @Override
-    public List<Poezd> findAll(Integer limit, Integer start, Long routeId, Byte direction, List<Filter> filters, Usr usr, Locale locale, Byte koleya) {
+    public List<Poezd> findPoezdsInInterval(Integer limit, Integer start, Long routeId, Byte direction, List<Filter> filters, Usr usr, Locale locale, Byte koleya) {
         log.debug("Finding all Poezd entries.");
 
         Criteria crit = getSession().createCriteria(getPersistentClass());
@@ -121,6 +122,22 @@ public class PoezdDAOHib extends GenericHibernateDAO<Poezd, Long> implements Poe
     public List<Poezd> findByIds(List<Long> ids) {
         Criteria crit = getSession().createCriteria(getPersistentClass());
         crit.add(Restrictions.in("hid", ids));
+        return listAndCast(crit);
+    }
+
+    @Override
+    public List<Poezd> findPoezdsInInterval(ReportParamsDTO dto) {
+        Criteria crit = getSession().createCriteria(getPersistentClass());
+        crit.add(Restrictions.between("dprb", dto.getStartDate(), dto.getEndDate()));
+        return listAndCast(crit);
+    }
+
+    @Override
+    public List<Poezd> findGruzotprInInterval(ReportParamsDTO dto) {
+        Criteria crit = getSession().createCriteria(getPersistentClass());
+        crit
+                .add(Restrictions.between("dprb", dto.getStartDate(), dto.getEndDate()))
+                .add(Restrictions.isNotNull("gruzotpr"));
         return listAndCast(crit);
     }
 
