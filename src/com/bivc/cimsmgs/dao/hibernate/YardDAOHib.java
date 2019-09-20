@@ -219,16 +219,18 @@ public class YardDAOHib extends GenericHibernateDAO<Yard, Long> implements YardD
             if (filters.stream().anyMatch(
                     filter -> StringUtils.isNotBlank(filter.getValue()) && StringUtils.isNotBlank(filter.getProperty()) && (
                             Yard.FilterFields.valueOf(filter.getProperty().toUpperCase()) == NPPRM
-                                    || Yard.FilterFields.valueOf(filter.getProperty().toUpperCase()) == GRUZOTPR
+                                    /*|| Yard.FilterFields.valueOf(filter.getProperty().toUpperCase()) == GRUZOTPR
                                     || Yard.FilterFields.valueOf(filter.getProperty().toUpperCase()) == STARTDATE
-                                    || Yard.FilterFields.valueOf(filter.getProperty().toUpperCase()) == ENDDATE
+                                    || Yard.FilterFields.valueOf(filter.getProperty().toUpperCase()) == ENDDATE*/
                     )
             )) {
                 historyCrit =
                         DetachedCriteria.forClass(KontGruzHistory.class, "history")
                                 .createAlias("poezd", "poezd")
                                 .setProjection(Property.forName("hid"))
-                                .add(Property.forName("history.kont.hid").eqProperty("kont1.hid"));
+                                .add(Property.forName("history.kont.hid").eqProperty("konts.hid"));
+
+                crit.add(Subqueries.exists(historyCrit));
             }
 
             for (Filter filter : filters) {
@@ -242,23 +244,22 @@ public class YardDAOHib extends GenericHibernateDAO<Yard, Long> implements YardD
                             }
                         case NKON:
 //                            assert kontsCrit != null;
-//                            kontsCrit.add(Restrictions.ilike(NKON.getName(), StringUtils.trim(filter.getValue()), MatchMode.ANYWHERE));
+                            crit.add(Restrictions.ilike("konts.nkon", StringUtils.trim(filter.getValue()), MatchMode.ANYWHERE));
                             break;
                         case NPPRM:
                             assert historyCrit != null;
-                            historyCrit.add(Restrictions.eq("poezd.hid", Long.valueOf(StringUtils.trim(filter.getValue()))));
+                            historyCrit.add(Restrictions.eq("poezd.npprm", StringUtils.trim(filter.getValue())));
                             break;
                         case GRUZOTPR:
-                            assert historyCrit != null;
-                            historyCrit.add(Restrictions.eq("poezd.gruzotpr", StringUtils.trim(filter.getValue())));
+                            crit.add(Restrictions.eq("konts.gruzotpr", StringUtils.trim(filter.getValue())));
                             break;
                         case STARTDATE:
                             date = DateTimeUtils.Parser.valueOf(locale.getLanguage()).parse(StringUtils.trim(filter.getValue()));
-                            historyCrit.add(Restrictions.gt("poezd.dprb", date));
+                            crit.add(Restrictions.gt("konts.dprb", date));
                             break;
                         case ENDDATE:
                             date = DateTimeUtils.Parser.valueOf(locale.getLanguage()).parse(StringUtils.trim(filter.getValue()));
-                            historyCrit.add(Restrictions.lt("poezd.dprb", date));
+                            crit.add(Restrictions.lt("konts.dprb", date));
                             break;
                             /* case NKON:
                             kontsCrit.add(Restrictions.ilike(Yard.FilterFields.NKON.getName(), StringUtils.trim(filter.getValue()), MatchMode.ANYWHERE));

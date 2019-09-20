@@ -30,7 +30,7 @@ Ext.define('TK.view.ky2.yard.Filter', {
                         // queryMode: 'local',
                         store: 'ky2.YardFilterPoezdsDir',
                         displayField: 'npprm',
-                        valueField: 'hid',
+                        valueField: 'npprm',
                         typeAhead: false,
                         forceSelection: true,
                         name: 'npprm',
