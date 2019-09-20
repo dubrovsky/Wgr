@@ -51,6 +51,15 @@ public class Poezd implements Serializable {
     private String gruzotpr;
     private Integer vagCount;
     private Integer kontCount;
+    private Set<KontGruzHistory> history = new TreeSet<>();
+
+    public Set<KontGruzHistory> getHistory() {
+        return history;
+    }
+
+    public void setHistory(Set<KontGruzHistory> history) {
+        this.history = history;
+    }
 
 
     public String getKsto_f() {
@@ -329,7 +338,7 @@ public class Poezd implements Serializable {
                     if (vagonIntoDTO.getOtpravka() == Otpravka.CONT) {
                         List<Kont> konts = vagon.bindKontsToPoezdKonts(vagonIntoDTO.getKonts(), mapper, vagonsOut, poezds);
                         ((List<Kont>) contGruz4History.get("konts")).addAll(konts);
-                    }  else if (vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
+                    } else if (vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
                         List<Gruz> gruzs = vagon.bindGruzsToPoezdGruzs(vagonIntoDTO.getGruzs(), mapper, vagonsOut, poezds);
                         ((List<Gruz>) contGruz4History.get("gruzs")).addAll(gruzs);
                     }
@@ -395,6 +404,30 @@ public class Poezd implements Serializable {
         }
         return contGruz4History;
     }
+
+    public Map<String, List<?>> bindPoezdsToAvto(Set<VagonBindDTO> dtos, Avto avto, Mapper mapper, List<Poezd> poezds) {
+        Map<String, List<?>> contGruz4History = new HashMap<>(2);
+        contGruz4History.put("konts", new ArrayList<Kont>());
+        contGruz4History.put("gruzs", new ArrayList<Gruz>());
+
+        for (VagonBindDTO vagonIntoDTO : dtos) {
+            for (Vagon vagon : getVagons()) {
+                if (Objects.equals(vagon.getHid(), vagonIntoDTO.getHid())) {
+                    mapper.map(vagonIntoDTO, vagon); // update otpravka
+                    if (vagonIntoDTO.getOtpravka() == Otpravka.CONT) {
+                        List<Kont> konts = vagon.bindKontsToPoezdKonts(vagonIntoDTO.getKonts(), mapper, avto, poezds);
+                        ((List<Kont>) contGruz4History.get("konts")).addAll(konts);
+                    } else if (vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
+                        List<Gruz> gruzs = vagon.bindGruzsToPoezdGruzs(vagonIntoDTO.getGruzs(), mapper, avto, poezds);
+                        ((List<Gruz>) contGruz4History.get("gruzs")).addAll(gruzs);
+                    }
+                    break;
+                }
+            }
+        }
+        return contGruz4History;
+    }
+
 
     public Map<String, List<?>> updateVags(Set<VagonDTO> dtos, Mapper mapper) {
         // delete

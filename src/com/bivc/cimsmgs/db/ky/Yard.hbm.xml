@@ -51,6 +51,13 @@
             <one-to-many class="com.bivc.cimsmgs.db.ky.Kont"/>
         </set>
 
+        <set fetch="select" inverse="true" lazy="true" name="history" sort="natural" table="KY_KONT_GRUZ_HISTORY" batch-size="50" cascade="delete">
+            <key>
+                <column name="HID_YARD" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.KontGruzHistory"/>
+        </set>
+
 <!--        <one-to-one name="kont" class="com.bivc.cimsmgs.db.ky.Kont" property-ref="yard"/>-->
         <!--<set fetch="select" inverse="true" lazy="true" name="konts" sort="unsorted" table="KY_KONT">
             <key>

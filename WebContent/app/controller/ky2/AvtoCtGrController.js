@@ -111,10 +111,10 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
             },
             'ky2avtoctgrtreeform > tabpanel > form field': {
                 blur: this.onVgCtGrFormUpdateData
-            },
-            'ky2avtoctgrtreeform > tabpanel > #cont > numberfield': {
-                blur: this.onGrBruttoUpdateData
             }
+            // 'ky2avtoctgrtreeform > tabpanel > #cont > numberfield': {
+            //     blur: this.onGrBruttoUpdateData
+            // }
 
         });
     },
@@ -166,6 +166,7 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
                 rootNode.set('hid', avtoObj['hid']);
                 rootNode.set('dprb', avtoObj['dprb']);
                 rootNode.set('direction', avtoObj['direction']);
+                rootNode.set('gruzotpr', avtoObj['client']);
                 // vagoncontainer.setPoezdId(poezdObj['hid']);
                 this.getTreepanel().down('button[action=showVags]').hide();
                 this.getTreepanel().down('button[action=hideVags]').hide();
@@ -401,15 +402,25 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
                 leaf: true,
                 who: who,
                 iconCls: iconCls ? iconCls : who,
-                sort: sort,
-                dprb: parentModelNode.get('dprb')
+                sort: sort
+                // dprb: parentModelNode.get('dprb')
             })
         );
+
+        if(who === 'cont'){
+            this.setContDefaultProps(childModelNode);
+        }
 
         parentModelNode.set('leaf', false);
         parentModelNode.expand();
         this.getTreepanel().getSelectionModel().select(childModelNode);
         this.getTreepanel().fireEvent('itemclick', this.getTreepanel(), childModelNode);
+    },
+
+    setContDefaultProps: function(contNodeModel) {
+        var rootNode = this.getTreepanel().getRootNode();
+        contNodeModel.set('dprb', rootNode.get('dprb'));
+        contNodeModel.set('gruzotpr', rootNode.get('gruzotpr'));
     },
 
     // onAddContClick: function (btn) {
@@ -478,10 +489,14 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
     },
 
     onDelClick: function (btn) {
-        var selectedModelNode = this.getTreepanel().getSelectionModel().getLastSelected();
-        var parentModelNode = selectedModelNode.parentNode;
+        var selectedModelNode = this.getTreepanel().getSelectionModel().getLastSelected(),
+            parentModelNode = selectedModelNode.parentNode,
+            whoSelected = selectedModelNode.get('who');
 
         selectedModelNode.remove(true, true);
+        if (whoSelected === 'gryz' && parentModelNode.get('who') === 'cont')
+            this.massaRecount(parentModelNode);
+
         this.getDelBtn().hide();
         // this.getAddContBtn().hide();
         this.getAddGryzBtn().hide();
@@ -507,7 +522,9 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
     onVgCtGrFormUpdateData: function (field) {
         var rec = field.up('form').getRecord(),
             oldVal = rec.get(field.getName()),
-            newVal = field.getSubmitValue();
+            newVal = field.getSubmitValue(),
+            selectedNode = this.getTreepanel().getSelectionModel().getLastSelected(),
+            parentOfSelected = selectedNode.parentNode;
 
         if (oldVal !== newVal) {
             rec.set(field.getName(), newVal);
@@ -517,8 +534,27 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
                 field.getName() === 'nvag') {
                 rec.set('text', newVal);
             }
+            else if (field.getName() === 'massa' && parentOfSelected.get('who') === 'cont') {
+                this.massaRecount(parentOfSelected);
+            }
+            else if (field.getName() === 'massa_tar' ||
+                field.getName() === 'massa_brutto') {
+                rec.set('massa_brutto_all', rec.get('massa_tar') + rec.get('massa_brutto'));
+                field.up('form').down('#massa_brutto_all').setValue(rec.get('massa_brutto_all'));
+            }
         }
     },
+
+    massaRecount: function(parentOfSelected) {
+        var total = 0;
+        parentOfSelected.eachChild(function (nodeModel) {
+            if (nodeModel.get('who') === 'gryz')
+                total += nodeModel.get('massa');
+        });
+        parentOfSelected.set('massa_brutto', total);
+        parentOfSelected.set('massa_brutto_all', total + parentOfSelected.get('massa_tar'))
+    },
+
 
     onSaveExit: function () {
         this.onSaveClick(1);
@@ -565,19 +601,19 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
         });
     },
 
-    onGrBruttoUpdateData: function (field) {
-        var rec = field.up('form').getRecord(),
-            oldVal = rec.get(field.getName()),
-            newVal = field.getSubmitValue();
-        if (oldVal !== newVal) {
-            rec.set(field.getName(), newVal);
-            if (field.getName() === 'massa_tar' ||
-                field.getName() === 'massa_brutto') {
-                rec.set('massa_brutto_all', rec.get('massa_tar') + rec.get('massa_brutto'));
-                field.up('form').down('#massa_brutto_all').setValue(rec.get('massa_brutto_all'));
-            }
-        }
-    },
+    // onGrBruttoUpdateData: function (field) {
+    //     var rec = field.up('form').getRecord(),
+    //         oldVal = rec.get(field.getName()),
+    //         newVal = field.getSubmitValue();
+    //     if (oldVal !== newVal) {
+    //         rec.set(field.getName(), newVal);
+    //         if (field.getName() === 'massa_tar' ||
+    //             field.getName() === 'massa_brutto') {
+    //             rec.set('massa_brutto_all', rec.get('massa_tar') + rec.get('massa_brutto'));
+    //             field.up('form').down('#massa_brutto_all').setValue(rec.get('massa_brutto_all'));
+    //         }
+    //     }
+    // },
 
 
     initHids: function (cntGr, rootNode) {

@@ -70,6 +70,15 @@ public class Vagon implements Serializable, Comparable<Vagon> {
     private Boolean defective;
     private NsiKyOwners owner;
     private Otpravka otpravka;
+    private Set<KontGruzHistory> history  = new TreeSet<>();
+
+    public Set<KontGruzHistory> getHistory() {
+        return history;
+    }
+
+    public void setHistory(Set<KontGruzHistory> history) {
+        this.history = history;
+    }
 
     public NsiKyOwners getOwner() {
         return owner;
@@ -234,6 +243,81 @@ public class Vagon implements Serializable, Comparable<Vagon> {
         return gruzsForHistory;
     }
 
+    public List<Gruz> bindGruzsToPoezdGruzs(Set<GruzBindDTO> dtos, Mapper mapper, Avto toAvto, List<Poezd> poezds) {
+        // update gruz that not moved
+        Set<GruzBindDTO> dtoToRemove = new HashSet<>();
+        for (GruzBindDTO gruzBindDTO : dtos) {
+            for (Gruz gruz : getGruzs()) {
+                if (Objects.equals(gruz.getHid(), gruzBindDTO.getHid())) {
+                    mapper.map(gruzBindDTO, gruz);  // update gruz, sort can change
+                    dtoToRemove.add(gruzBindDTO);
+                    break;
+                }
+            }
+        }
+        dtos.removeAll(dtoToRemove);
+
+        List<Gruz> gruzsForHistory = new ArrayList<>(dtos.size());
+        // insert from poezd
+        dtoToRemove.clear();
+        boolean found = false;
+        for (GruzBindDTO gruzBindDTO : dtos) {
+//            for (Vagon toVagon : toVags) {// add gruz from another avto
+                for (Gruz toGruz : toAvto.getGruzs()) {
+                    if (Objects.equals(toGruz.getHid(), gruzBindDTO.getHid())) {
+                        mapper.map(gruzBindDTO, toGruz);  // update Gruz, sort can change
+                        bindGruz(toGruz);
+                        gruzsForHistory.add(toGruz);
+                        log.info("Add gruz to poezd from another poezd, gruz - {}", toGruz.getKgvn());
+                        dtoToRemove.add(gruzBindDTO);
+                        found = true;
+                        break;
+                    }
+                }
+//                if (found) {
+//                    break;
+//                }
+//            }
+        }
+        dtos.removeAll(dtoToRemove);
+
+        if (!dtos.isEmpty()) { // still have Gruz - may be when remove Gruz between poezds
+            dtoToRemove.clear();
+            found = false;
+            for (GruzBindDTO gruzBindDTO : dtos) {
+                for (Poezd poezd : poezds) {
+                    for (Vagon vagon : poezd.getVagons()) {
+                        for (Gruz gruz : vagon.getGruzs()) {
+                            if (Objects.equals(gruz.getHid(), gruzBindDTO.getHid())) {
+                                mapper.map(gruzBindDTO, gruz);
+                                bindGruz(gruz);
+                                gruzsForHistory.add(gruz);
+                                log.info("Move gruz in same poezds, gruz - {}", gruz.getKgvn());
+                                dtoToRemove.add(gruzBindDTO);
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (found) {
+                            break;
+                        }
+                    }
+                    if (found) {
+                        break;
+                    }
+                }
+            }
+            dtos.removeAll(dtoToRemove);
+        }
+
+        if (!dtos.isEmpty()) {
+            for (GruzBindDTO gruzBindDTO : dtos) {
+                log.warn("Gruz {} was not bound, something wrong!!!", gruzBindDTO.getKgvn());
+            }
+        }
+        return gruzsForHistory;
+    }
+
     public List<Kont> bindKontsToPoezdKonts(Set<KontBindDTO> dtos, Mapper mapper, Set<Vagon> toVags, List<Poezd> poezds) {
         // update kont that not moved
         Set<KontBindDTO> dtoToRemove = new HashSet<>();
@@ -270,6 +354,82 @@ public class Vagon implements Serializable, Comparable<Vagon> {
                     break;
                 }
             }
+        }
+        dtos.removeAll(dtoToRemove);
+
+        if (!dtos.isEmpty()) { // still have conts - may be when remove conts between poezds
+            dtoToRemove.clear();
+            found = false;
+            for (KontBindDTO kontDTO : dtos) {
+                for (Poezd poezd : poezds) {
+                    for (Vagon vagon : poezd.getVagons()) {
+                        for (Kont kont : vagon.getKonts()) {
+                            if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
+                                mapper.map(kontDTO, kont);
+                                bindKont(kont);
+                                kontsForHistory.add(kont);
+                                log.info("Move kont in same poezds, kont - {}", kont.getNkon());
+                                dtoToRemove.add(kontDTO);
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (found) {
+                            break;
+                        }
+                    }
+                    if (found) {
+                        break;
+                    }
+                }
+            }
+            dtos.removeAll(dtoToRemove);
+        }
+
+        if (!dtos.isEmpty()) {
+            for (KontBindDTO kontDTO : dtos) {
+                log.warn("Kont {} was not bound, something wrong!!!", kontDTO.getNkon());
+            }
+        }
+        return kontsForHistory;
+    }
+
+    public List<Kont> bindKontsToPoezdKonts(Set<KontBindDTO> dtos, Mapper mapper, Avto toAvto, List<Poezd> poezds) {
+        // update kont that not moved
+        Set<KontBindDTO> dtoToRemove = new HashSet<>();
+        for (KontBindDTO kontDTO : dtos) {
+            for (Kont kont : getKonts()) {
+                if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
+                    mapper.map(kontDTO, kont);  // update kont, sort can change
+                    dtoToRemove.add(kontDTO);
+                    break;
+                }
+            }
+        }
+        dtos.removeAll(dtoToRemove);
+
+        List<Kont> kontsForHistory = new ArrayList<>(dtos.size());
+
+        // insert from poezd
+        dtoToRemove.clear();
+        boolean found = false;
+        for (KontBindDTO kontDTO : dtos) {
+//            for (Vagon toVagon : toVags) {// add kont from another avto
+                for (Kont toKont : toAvto.getKonts()) {
+                    if (Objects.equals(toKont.getHid(), kontDTO.getHid())) {
+                        mapper.map(kontDTO, toKont);  // update kont, sort can change
+                        bindKont(toKont);
+                        kontsForHistory.add(toKont);
+                        log.info("Add kont to poezd from another poezd, kont - {}", toKont.getNkon());
+                        dtoToRemove.add(kontDTO);
+                        found = true;
+                        break;
+                    }
+                }
+//                if (found) {
+//                    break;
+//                }
+//            }
         }
         dtos.removeAll(dtoToRemove);
 

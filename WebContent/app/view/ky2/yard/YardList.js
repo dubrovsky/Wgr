@@ -27,7 +27,9 @@ Ext.define('TK.view.ky2.yard.YardList', {
                 {text: 'Брутто', dataIndex: 'konts', width: 100, renderer: this.renderBrutto},
                 {text: 'Грузо подъемность', dataIndex: 'konts', width: 100, renderer: this.renderGruzPod},
                 {text: 'Типоразмер', dataIndex: 'konts', width: 100, renderer: this.renderTiporazm},
-                {text: '№ поезда по прибыт.', dataIndex: 'konts', width: 100, renderer: this.renderPoezdNum}
+                {text: '№ поезда по прибыт.', dataIndex: 'konts', width: 100, renderer: this.renderPoezdNum},
+                {text: 'Дата прибыт.', dataIndex: 'konts', width: 100, renderer: this.renderKontDprb},
+                {text: 'Клиент', dataIndex: 'konts', width: 200, renderer: this.renderGruzotpr}
                 // {text:'Размещение на площадке', dataIndex:'kont.dyard', width:110, renderer: TK.Utils.renderLongStr}
             ]
         };
@@ -67,6 +69,13 @@ Ext.define('TK.view.ky2.yard.YardList', {
         });
         return nkon;
     },
+    renderGruzotpr: function (value, meta) {
+        var gruzotpr = '';
+        Ext.Array.each(value, function (kont) {
+            gruzotpr += kont.gruzotpr ?  kont.gruzotpr + ' ' : '';
+        });
+        return gruzotpr;
+    },
     renderTara: function (value, meta) {
         var massa_tar = '';
         Ext.Array.each(value, function (kont) {
@@ -98,14 +107,36 @@ Ext.define('TK.view.ky2.yard.YardList', {
     renderPoezdNum: function (value, meta) {
         var nppr = '';
         Ext.Array.each(value, function (kont) {
-            if(kont['history']) {
+            if (kont['history']) {
                 Ext.Array.each(kont['history'], function (history) {
-                     if(history['poezd']) {
-                         nppr += history['poezd']['npprm'] ? history['poezd']['npprm'] + ' ' : '';
-                     }
+                    if (history['poezd']) {
+                        nppr += history['poezd']['npprm'] ? history['poezd']['npprm'] + ' ' : '';
+                        return false;
+                    }
                 });
             }
         });
         return nppr;
+    },
+    renderKontDprb: function (value, meta) {
+        var dprb = '';
+        Ext.Array.each(value, function (kont) {
+            dprb += kont.dprb ?  kont.dprb + ' ' : '';
+        });
+        return dprb;
+    },
+    renderPoezdDprb: function (value, meta) {
+        var dprb = '';
+        Ext.Array.each(value, function (kont) {
+            if (kont['history']) {
+                Ext.Array.each(kont['history'], function (history) {
+                    if (history['poezd']) {
+                        dprb += history['poezd']['dprb'] ? history['poezd']['dprb'] + ' ' : '';
+                        return false;
+                    }
+                });
+            }
+        });
+        return dprb;
     }
 });

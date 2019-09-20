@@ -104,9 +104,9 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
             'ky2vgctgrtreeform > tabpanel > form field': {
                 blur: this.onVgCtGrFormUpdateData
             },
-            'ky2vgctgrtreeform > tabpanel > #cont > numberfield': {
-                blur: this.onGrBruttoUpdateData
-            },
+            // 'ky2vgctgrtreeform > tabpanel > #cont > numberfield': {
+            //     blur: this.onGrBruttoUpdateData
+            // },
             'ky2vgctgrtreeform button[action=hideVags]': {
                 click: this.hideVagsLeft
             },
@@ -158,6 +158,7 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
                 rootNode.set('hid', poezdObj['hid']);
                 rootNode.set('dprb', poezdObj['dprb']);
                 rootNode.set('direction', poezdObj['direction']);
+                rootNode.set('gruzotpr', poezdObj['gruzotpr']);
                 // vagoncontainer.setPoezdId(poezdObj['hid']);
 
                 if (vags && !Ext.Object.isEmpty(vags)) {
@@ -433,13 +434,16 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
                 leaf: true,
                 who: who,
                 iconCls: iconCls ? iconCls : who,
-                sort: sort,
-                dprb: parentModelNode.get('dprb')
+                sort: sort
+                // dprb: parentModelNode.get('dprb')
             })
         );
 
         if(who === 'vag'){
             this.setVagDefaultProps(childModelNode);
+        }
+        else if(who === 'cont'){
+            this.setContDefaultProps(childModelNode);
         }
 
         parentModelNode.set('leaf', false);
@@ -450,6 +454,13 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
 
     setVagDefaultProps: function(vagNodeModel) {
         vagNodeModel.set('line', vagNodeModel.previousSibling ? vagNodeModel.previousSibling.get('line') : null);
+        vagNodeModel.set('dprb', this.getTreepanel().getRootNode().get('dprb'));
+    },
+
+    setContDefaultProps: function(contNodeModel) {
+        var rootNode = this.getTreepanel().getRootNode();
+        contNodeModel.set('dprb', rootNode.get('dprb'));
+        contNodeModel.set('gruzotpr', rootNode.get('gruzotpr'));
     },
 
     onAddContClick: function (btn) {
@@ -499,10 +510,14 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
     },
 
     onDelClick: function (btn) {
-        var selectedModelNode = this.getTreepanel().getSelectionModel().getLastSelected();
-        var parentModelNode = selectedModelNode.parentNode;
+        var selectedModelNode = this.getTreepanel().getSelectionModel().getLastSelected(),
+            parentModelNode = selectedModelNode.parentNode,
+            whoSelected = selectedModelNode.get('who');
 
         selectedModelNode.remove(true, true);
+
+        if (whoSelected === 'gryz' && parentModelNode.get('who') === 'cont')
+            this.massaRecount(parentModelNode);
         this.getDelBtn().hide();
         this.getAddContBtn().hide();
         this.getAddGryzBtn().hide();
@@ -532,7 +547,9 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
     onVgCtGrFormUpdateData: function (field) {
         var rec = field.up('form').getRecord(),
             oldVal = rec.get(field.getName()),
-            newVal = field.getSubmitValue();
+            newVal = field.getSubmitValue(),
+            selectedNode = this.getTreepanel().getSelectionModel().getLastSelected(),
+            parentOfSelected = selectedNode.parentNode;
 
         if (oldVal !== newVal) {
             rec.set(field.getName(), newVal);
@@ -542,22 +559,40 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
                 field.getName() === 'nvag') {
                 rec.set('text', newVal);
             }
-        }
-    },
-
-    onGrBruttoUpdateData: function (field) {
-        var rec = field.up('form').getRecord(),
-            oldVal = rec.get(field.getName()),
-            newVal = field.getSubmitValue();
-        if (oldVal !== newVal) {
-            rec.set(field.getName(), newVal);
-            if (field.getName() === 'massa_tar' ||
-                field.getName() === 'massa_brutto') {
+            else if (field.getName() === 'massa' && parentOfSelected.get('who') === 'cont') {
+                this.massaRecount(parentOfSelected);
+            }
+            else if (field.getName() === 'massa_tar' || field.getName() === 'massa_brutto') {
                 rec.set('massa_brutto_all', rec.get('massa_tar') + rec.get('massa_brutto'));
                 field.up('form').down('#massa_brutto_all').setValue(rec.get('massa_brutto_all'));
             }
         }
     },
+
+    massaRecount: function(parentOfSelected) {
+        var total = 0;
+        parentOfSelected.eachChild(function (nodeModel) {
+            if (nodeModel.get('who') === 'gryz')
+                total += nodeModel.get('massa');
+        });
+        parentOfSelected.set('massa_brutto', total);
+        parentOfSelected.set('massa_brutto_all', total + parentOfSelected.get('massa_tar'))
+    },
+
+
+    // onGrBruttoUpdateData: function (field) {
+    //     var rec = field.up('form').getRecord(),
+    //         oldVal = rec.get(field.getName()),
+    //         newVal = field.getSubmitValue();
+    //     if (oldVal !== newVal) {
+    //         rec.set(field.getName(), newVal);
+    //         if (field.getName() === 'massa_tar' ||
+    //             field.getName() === 'massa_brutto') {
+    //             rec.set('massa_brutto_all', rec.get('massa_tar') + rec.get('massa_brutto'));
+    //             field.up('form').down('#massa_brutto_all').setValue(rec.get('massa_brutto_all'));
+    //         }
+    //     }
+    // },
 
     onSaveExit: function () {
         this.onSaveClick(1);
@@ -625,8 +660,8 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
     initContsHids: function (conts, vagNode) {
         for (var contIndx in conts) {
             var cont = conts[contIndx],
-                gruzy = cg['gruzs'],
-                plombs = cg['plombs'];
+                gruzy = cont['gruzs'],
+                plombs = cont['plombs'];
 
             var contNode = vagNode.findChild('sort', contIndx);
             if (contNode) {

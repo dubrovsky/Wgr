@@ -91,6 +91,13 @@
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.ky.Gruz"/>
         </set>
+        <set fetch="select" inverse="true" lazy="true" name="history" sort="natural" table="KY_KONT_GRUZ_HISTORY" batch-size="50" cascade="delete">
+            <key>
+                <column name="HID_AVTO" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.KontGruzHistory"/>
+        </set>
+
 
         <!--        <set fetch="select" inverse="true" lazy="true" name="kontsInto" sort="natural" table="KY_KONT" batch-size="50" cascade="delete">-->
 <!--            <key>-->

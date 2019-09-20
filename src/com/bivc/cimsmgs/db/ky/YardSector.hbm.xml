@@ -16,7 +16,7 @@
         <property name="descr" type="string">
             <column name="DESCR" length="100"/>
         </property>
-        <set name="yards" table="KY_KONT_YARD" inverse="true" lazy="true" fetch="select" batch-size="50">
+        <set name="yards" table="KY_KONT_YARD" inverse="true" lazy="true" fetch="select" batch-size="50" cascade="all, delete-orphan">
             <key>
                 <column name="HID_SECTOR" precision="20" scale="0" not-null="true"/>
             </key>
@@ -27,6 +27,12 @@
                 <column name="YARD_SECTOR_ID" length="20" not-null="true"/>
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.ky.YardSectorGroups"/>
+        </set>
+        <set fetch="select" inverse="true" lazy="true" name="history" sort="natural" table="KY_KONT_GRUZ_HISTORY" batch-size="50" cascade="delete">
+            <key>
+                <column name="HID_SECTOR" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.KontGruzHistory"/>
         </set>
     </class>
 </hibernate-mapping>

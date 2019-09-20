@@ -63,7 +63,7 @@ Ext.define('TK.view.ky2.poezd.BasePoezdForm', {
                 itemId: 'gruzotprDir',
                 action: 'nsiOtpr'
             }]
-        }*/,{
+        },{
             xtype:'textfield',
             width:400,
             labelWidth: 150,
@@ -111,7 +111,7 @@ Ext.define('TK.view.ky2.poezd.BasePoezdForm', {
             name: 'admnn',
             maxLength: 3
             // anchor: '99%'
-        },{
+        }*/,{
             xtype: 'fieldcontainer',
             layout: {
                 type: 'hbox'

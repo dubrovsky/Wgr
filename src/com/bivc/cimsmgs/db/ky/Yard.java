@@ -45,6 +45,15 @@ public class Yard implements Serializable {
 
     /*@JsonInclude(JsonInclude.Include.ALWAYS)*/
     private Kont kont;
+    private Set<KontGruzHistory> history = new TreeSet<>();
+
+    public Set<KontGruzHistory> getHistory() {
+        return history;
+    }
+
+    public void setHistory(Set<KontGruzHistory> history) {
+        this.history = history;
+    }
 
     public Set<Kont> getKonts() {
         return konts;

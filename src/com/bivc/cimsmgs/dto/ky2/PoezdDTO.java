@@ -14,6 +14,7 @@ public class PoezdDTO {
     private Long hid;
     private Byte direction;
     private String nppr;
+    private String gruzotpr;
     @JsonSerialize(using = DateTimeSerializer.class)
     private Date dprb;
     private TreeSet<VagonDTO> vagons = new TreeSet<>();
@@ -56,5 +57,13 @@ public class PoezdDTO {
 
     public void setDirection(Byte direction) {
         this.direction = direction;
+    }
+
+    public String getGruzotpr() {
+        return gruzotpr;
+    }
+
+    public void setGruzotpr(String gruzotpr) {
+        this.gruzotpr = gruzotpr;
     }
 }

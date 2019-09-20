@@ -11,9 +11,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
 
-/*@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@JsonFilter("kontFilter")
-@JsonInclude(JsonInclude.Include.NON_NULL)*/
 public class Kont implements Serializable, Comparable<Kont> {
 
     private Long hid;

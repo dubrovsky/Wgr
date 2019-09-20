@@ -69,6 +69,7 @@ public class KYPoezdLoader {
                 if (tara != null && mbrt != null) {
                     kont.setMassa_brutto_all(tara.add(mbrt));
                 }
+                kont.setGruzotpr(poezd.getGruzotpr());
 
                 Plomb plomb = new Plomb();
                 plomb.setZnak(getStrVal(sheet, j, "H"));

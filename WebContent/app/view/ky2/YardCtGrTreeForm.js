@@ -270,7 +270,7 @@ Ext.define('TK.view.ky2.YardCtGrTreeForm', {
                     fieldLabel: 'Типоразмер контейнера',
                     name: 'vid',
                     maxLength: 28
-                },{
+                }/*,{
                     xtype:'textfield',
                     fieldLabel: 'Признак собственности',
                     name: 'prizn_sob',
@@ -282,7 +282,7 @@ Ext.define('TK.view.ky2.YardCtGrTreeForm', {
                     name: 'naim_sob',
                     width:400,
                     maxLength: 128
-                }/*,{
+                },{
                     xtype: 'fieldcontainer',
                     layout: {
                         type: 'hbox',
@@ -304,11 +304,26 @@ Ext.define('TK.view.ky2.YardCtGrTreeForm', {
                         name: 'owner.hid'
                     }]
                 }*/,{
-                    xtype:'textfield',
+                    xtype: 'fieldcontainer',
+                    layout: {
+                        type: 'hbox'
+                    },
                     fieldLabel: 'Клиент',
-                    name: 'gruzotpr',
+                    labelWidth: 150,
                     width:400,
-                    maxLength: 128
+                    items: [{
+                        xtype:'textfield',
+                        name: 'gruzotpr',
+                        itemId: 'gruzotpr',
+                        maxLength: 128,
+                        flex:1
+                    },{
+                        xtype: 'button',
+                        margins: {top: 0, right: 0, bottom: 0, left: 3},
+                        text: '...',
+                        itemId: 'gruzotprDir',
+                        action: 'nsiOtpr'
+                    }]
                 }/*,{
                     xtype: 'fieldcontainer',
                     layout: {
@@ -327,7 +342,7 @@ Ext.define('TK.view.ky2.YardCtGrTreeForm', {
                         itemId: 'gruzotprDir',
                         action: 'nsiOtpr'
                     }]
-                }*/,{
+                },{
                     xtype:'textfield',
                     fieldLabel: 'Пункт отправления',
                     name: 'punkt_otpr',
@@ -339,7 +354,7 @@ Ext.define('TK.view.ky2.YardCtGrTreeForm', {
                     name: 'punkt_nazn',
                     width:400,
                     maxLength: 96
-                },{
+                }*/,{
                     name : 'prim',
                     xtype: 'textarea',
                     fieldLabel: 'Примечание',
@@ -402,6 +417,7 @@ Ext.define('TK.view.ky2.YardCtGrTreeForm', {
                     xtype:'numberfield',
                     fieldLabel: 'Масса',
                     name: 'massa',
+                    itemId: 'massa',
                     minValue: 0,
                     decimalPrecision: 3,
                     maxLength: 14
@@ -421,7 +437,7 @@ Ext.define('TK.view.ky2.YardCtGrTreeForm', {
                     fieldLabel: 'Пломба',
                     name: 'znak',
                     width: 400,
-                    maxLength: 10
+                    maxLength: 128
                 },{
                     xtype:'textfield',
                     fieldLabel: 'Станция наложения',

@@ -8,6 +8,7 @@ import com.bivc.cimsmgs.dao.YardSectorDAO;
 import com.bivc.cimsmgs.db.ky.Yard;
 import com.bivc.cimsmgs.doc2doc.Mapper;
 import com.bivc.cimsmgs.dto.ky2.YardDTO;
+import com.bivc.cimsmgs.dto.ky2.YardFilerDirDTO;
 import com.bivc.cimsmgs.formats.json.Deserializer;
 import com.bivc.cimsmgs.formats.json.Serializer;
 import org.apache.commons.lang3.StringUtils;
@@ -168,6 +169,36 @@ public class Yard_A extends CimSmgsSupport_A {
         log.info("Deleted Yard entry with information: {}", deleted);
 
         setJSONData(defaultSerializer.setLocale(getLocale()).write(new Response()));
+        return SUCCESS;
+    }
+
+    public String getPoezdsForFilter() throws Exception {
+        final List<YardFilerDirDTO> gruzotprs = yardDAO.getPoezdsForFilter();
+        setJSONData(
+                defaultSerializer
+                        .setLocale(getLocale())
+                        .write(
+                                new Response<>(
+                                        gruzotprs,
+                                        (long) gruzotprs.size()
+                                )
+                        )
+        );
+        return SUCCESS;
+    }
+
+    public String getGruzotprsForFilter() throws Exception {
+        final List<YardFilerDirDTO> gruzotprs = yardDAO.getGruzotprsForFilter();
+        setJSONData(
+                defaultSerializer
+                        .setLocale(getLocale())
+                        .write(
+                                new Response<>(
+                                        gruzotprs,
+                                        (long) gruzotprs.size()
+                                )
+                        )
+        );
         return SUCCESS;
     }
 

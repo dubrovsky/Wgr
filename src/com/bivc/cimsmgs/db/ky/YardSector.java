@@ -28,6 +28,15 @@ public class YardSector implements Serializable {
     private String descr;
     private Set<Yard> yards = new HashSet<Yard>(0);
     private Set<YardSectorGroups> yardSectorGroups = new HashSet<>(0);
+    private Set<KontGruzHistory> history = new TreeSet<>();
+
+    public Set<KontGruzHistory> getHistory() {
+        return history;
+    }
+
+    public void setHistory(Set<KontGruzHistory> history) {
+        this.history = history;
+    }
 
     public Set<YardSectorGroups> getYardSectorGroups() {
         return yardSectorGroups;
@@ -193,7 +202,7 @@ public class YardSector implements Serializable {
 
     public Set<YardSectorGroups> buildGroups(YardSectorDTO dto) {
         Set<YardSectorGroups> yardSectorGroups = new HashSet<>();
-        if(dto.getGroups() != null){
+        if (dto.getGroups() != null) {
             getYardSectorGroups().clear();
             UsrGroupsDir group;
             YardSectorGroups yardSectorGroup;

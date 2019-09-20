@@ -22,7 +22,7 @@ Ext.define('TK.view.ky2.avto.out.AvtoList', {
         this.callParent(arguments);
         config.tbar.splice(8, 0,
             {tooltip: this.btnToAvto, iconCls:'truck', action:'showAvtosIntoDir4AvtoOutBind'},'-' ,
-            // {tooltip: this.btnToPoezd, iconCls:'cont', action:'showPoezdsIntoDir4PoezdOutBind'},'-'
+            {tooltip: this.btnToPoezd, iconCls:'train2', action:'getAvtoAndPoezdForBind'},'-',
             {tooltip: this.btnToYard, iconCls:'cont', action:'getAvtoAndYardForBind'},'-'
         );
     }

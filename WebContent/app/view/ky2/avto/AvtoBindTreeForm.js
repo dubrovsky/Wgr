@@ -26,14 +26,25 @@ Ext.define('TK.view.ky2.avto.AvtoBindTreeForm', {
             rootVisible: true,
             flex: 1,
             viewConfig: this.buildTreeLeftPanelViewConfig(),
-            tools: this.buildTreeLeftPanelTools()
+            tools: this.buildTreeLeftPanelTools(),
+            dockedItems: [{
+                xtype: 'toolbar',
+                dock: 'top',
+                items: this.buildTreeLeftPanelTopToolbarItems()
+            }]
         }, {
             xtype: 'treepanel',
             id: 'treepanelRight',
             store: this.buildTreeRightPanelStore(),
             rootVisible: false,
             flex: 1,
-            viewConfig: this.buildTreeRightPanelViewConfig()
+            viewConfig: this.buildTreeRightPanelViewConfig(),
+            dockedItems: [{
+                xtype: 'toolbar',
+                dock: 'top',
+                items: this.buildTreeRightPanelTopToolbarItems()
+            }]
+
         }];
 
         this.dockedItems = [{
@@ -47,6 +58,30 @@ Ext.define('TK.view.ky2.avto.AvtoBindTreeForm', {
             items: this.buildBottomToolbarItems()
         }];
         this.callParent(arguments);
+    },
+
+    buildTreeRightPanelTopToolbarItems: function () {
+        return [{
+                text: '< Переместить',
+                action: 'moveLeft'
+            },
+            '-',
+            {
+                xtype: 'vagkontsearch'
+            }];
+    },
+
+    buildTreeLeftPanelTopToolbarItems: function () {
+        return [
+            {
+                xtype: 'vagkontsearch'
+            },
+            '->', '-',
+            {
+                text: 'Переместить >',
+                action: 'moveRight'
+            }
+        ];
     },
 
     buildBottomToolbarItems: function() {

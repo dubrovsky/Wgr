@@ -123,6 +123,9 @@ Ext.define('TK.view.ky2.AbstractBindTreeForm', {
                 text: 'Показать вагоны',
                 action: 'showVags'
             }, '-',
+            {
+                xtype: 'vagkontsearch'
+            },
             '->', '-',
             {
                 text: 'Переместить >',
@@ -139,7 +142,11 @@ Ext.define('TK.view.ky2.AbstractBindTreeForm', {
         return [{
             text: '< Переместить',
             action: 'moveLeft'
-        }, '-'];
+        },
+        '-',
+        {
+            xtype: 'vagkontsearch'
+        }];
     },
 
     buildTreeRightPanelBottomToolbarItems: function () {

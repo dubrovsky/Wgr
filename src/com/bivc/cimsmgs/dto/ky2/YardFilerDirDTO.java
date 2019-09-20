@@ -3,7 +3,7 @@ package com.bivc.cimsmgs.dto.ky2;
 /**
  * @author p.dzeviarylin
  */
-public class PoezdDirDTO {
+public class YardFilerDirDTO {
     private Long hid;
     private String nppr;
     private String npprm;

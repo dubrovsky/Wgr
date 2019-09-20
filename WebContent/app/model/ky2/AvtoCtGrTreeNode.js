@@ -40,6 +40,8 @@ Ext.define('TK.model.ky2.AvtoCtGrTreeNode', {
         {name: 'dprb', type: 'string', useNull: true},
         {name: 'poruz', type: 'boolean'},
         {name: 'massa_tar', type: 'int', useNull: true},
+        {name: 'massa_brutto', type: 'int', useNull: true},
+        {name: 'massa_brutto_all', type: 'int', useNull: true},
         {name: 'pod_sila', type: 'float', useNull: true},
         {name: 'type', type: 'int', useNull: true},
         {name: 'vid', type: 'string'},

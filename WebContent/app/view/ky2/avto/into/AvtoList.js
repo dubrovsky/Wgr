@@ -23,7 +23,7 @@ Ext.define('TK.view.ky2.avto.into.AvtoList', {
         config.tbar.splice(8, 0,
             {text: '+ Авто по отправлению', iconCls:'truck', action:'createAvtoOutFromInto'},'-',
             {tooltip: this.btnToAvto, iconCls:'truck', action:'showAvtosOutDir4AvtoIntoBind'},'-',
-            // {tooltip: this.btnToPoezd, iconCls:'cont', action:'showPoezdsOutDir4PoezdIntoBind'},'-'
+            {tooltip: this.btnToPoezd, iconCls:'train2', action:'getAvtoAndPoezdForBind'},'-',
             {tooltip: this.btnToYard, iconCls:'cont', action:'getAvtoAndYardForBind'},'-'
         );
     }

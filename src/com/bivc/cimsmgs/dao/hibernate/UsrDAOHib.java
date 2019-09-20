@@ -66,7 +66,7 @@ public class UsrDAOHib extends GenericHibernateDAO<Usr, String> implements UsrDA
 	}
 
 	public Usr findPs(String id) {
-		String query = "SELECT new Usr(ps) FROM Usr WHERE un = :id";
+		String query = "SELECT new Usr(ps,datpw) FROM Usr WHERE un = :id";
 	    Query q = getSession().createQuery(query);
 	    q.setString("id", id);
 	    return (Usr)q.uniqueResult();

@@ -1,9 +1,9 @@
-Ext.define('TK.store.ky2.PoezdsBaseDir', {
+Ext.define('TK.store.ky2.YardFilterPoezdsDir', {
     extend: 'Ext.data.Store',
-    model: 'TK.model.ky2.PoezdBaseDir',
+    model: 'TK.model.ky2.YardFilterDir',
     proxy: {
         type: 'ajax',
-        url: 'ky2/secure/Poezd.do',
+        url: 'ky2/secure/Yard_getPoezdsForFilter.do',
         reader: {
             type: 'json',
             root: 'rows',

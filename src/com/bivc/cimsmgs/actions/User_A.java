@@ -31,8 +31,11 @@ public class User_A extends CimSmgsSupport_A implements UsrDAOAware, UsrGroupsDi
 
 	public String save() {
 		log.info("save");
-		if (usr.getPs() == null)
-			usr.setPs(getUsrDAO().findPs(usr.getUn()).getPs());
+		if (usr.getPs() == null) {
+      Usr u = getUsrDAO().findPs(usr.getUn());
+      usr.setPs(u.getPs());
+      usr.setDatpw(u.getDatpw());
+    }
 		usr.saving(getUser().getUsr());
 		getUsrDAO().merge(usr);
 //		if (usr.getHid() != null) { // обновить

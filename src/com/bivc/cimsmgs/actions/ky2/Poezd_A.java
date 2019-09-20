@@ -5,17 +5,12 @@ import com.bivc.cimsmgs.commons.Constants;
 import com.bivc.cimsmgs.commons.Filter;
 import com.bivc.cimsmgs.commons.HibernateUtil;
 import com.bivc.cimsmgs.commons.Response;
-import com.bivc.cimsmgs.dao.KontGruzHistoryDAO;
-import com.bivc.cimsmgs.dao.PoezdDAO;
-import com.bivc.cimsmgs.dao.VagonDAO;
+import com.bivc.cimsmgs.dao.*;
 import com.bivc.cimsmgs.db.PackDoc;
-import com.bivc.cimsmgs.db.ky.Poezd;
-import com.bivc.cimsmgs.db.ky.Vagon;
+import com.bivc.cimsmgs.db.ky.*;
 import com.bivc.cimsmgs.doc2doc.Mapper;
 import com.bivc.cimsmgs.dto.ky.PoezdBaseDTO;
 import com.bivc.cimsmgs.dto.ky.PoezdDTO;
-import com.bivc.cimsmgs.dto.ky.ReportParamsDTO;
-import com.bivc.cimsmgs.dto.ky2.PoezdDirDTO;
 import com.bivc.cimsmgs.dto.ky2.PoezdImportDTO;
 import com.bivc.cimsmgs.exchange.KYPoezdLoader;
 import com.bivc.cimsmgs.formats.json.Deserializer;
@@ -37,7 +32,6 @@ import java.io.File;
 import java.util.*;
 
 import static com.bivc.cimsmgs.actions.CimSmgsSupport_A.KontGruzHistoryType.POEZD;
-import static java.util.stream.Collectors.toMap;
 
 /**
  * Created by peter on 21.02.14.
@@ -70,10 +64,10 @@ public class Poezd_A extends CimSmgsSupport_A {
                     return importPoezd();
                 case UPLOAD:
                     return uploadPoezd();
-                case GET_POEZDS_IN_INTERVAL:
+                /*case GET_POEZDS_IN_INTERVAL:
                     return getPoezdsInInterval();
                 case GET_GRUZOTPR_IN_INTERVAL:
-                    return getGruzotprInInterval();
+                    return getGruzotprInInterval();*/
                 default:
                     throw new RuntimeException("Unknown action");
             }
@@ -84,7 +78,7 @@ public class Poezd_A extends CimSmgsSupport_A {
 
     }
 
-    private String getPoezdsInInterval() throws Exception {
+    /*private String getPoezdsInInterval() throws Exception {
         ReportParamsDTO dto = defaultDeserializer.setLocale(getLocale()).read(ReportParamsDTO.class, reportParams);
         if (dto.getStartDate() == null || dto.getEndDate() == null) {
             throw new Exception("No reporting period specified");
@@ -107,9 +101,9 @@ public class Poezd_A extends CimSmgsSupport_A {
                         )
         );
         return SUCCESS;
-    }
+    }*/
 
-    private String getGruzotprInInterval() throws Exception {
+    /*private String getGruzotprInInterval() throws Exception {
         ReportParamsDTO dto = defaultDeserializer.setLocale(getLocale()).read(ReportParamsDTO.class, reportParams);
         if (dto.getStartDate() == null || dto.getEndDate() == null) {
             throw new Exception("No reporting period specified");
@@ -133,7 +127,7 @@ public class Poezd_A extends CimSmgsSupport_A {
                         )
         );
         return SUCCESS;
-    }
+    }*/
 
     public String list() throws Exception {
         log.debug("Rendering Poezd list.");
@@ -283,7 +277,9 @@ public class Poezd_A extends CimSmgsSupport_A {
                 {"UN", "UN"},
                 {"ALTERED", "ALTERED"},
                 {"DATTR", "DATTR"},
-                {"TRANS", "TRANS"}
+                {"TRANS", "TRANS"},
+                {"GRUZOTPR", "GRUZOTPR"},
+                {"DPRB","DPRB"}
         };
         dbpt.fill_Rownum("KONT", "SORT", st2, 0);
         dbpt.save("KONT", "KY_KONT", keyNm, fillParentKey, st2, sq);
@@ -317,6 +313,7 @@ public class Poezd_A extends CimSmgsSupport_A {
                 {"DATTR", "DATTR"},
                 {"TRANS", "TRANS"}
         };
+        dbpt.splitPlomb("PLOMB_KONT", "KPL", "ZNAK", st2);
         dbpt.fillRownum("PLOMB_KONT", "SORT", st2);
         dbpt.save("PLOMB_KONT", "KY_PLOMB", keyNm, fillParentKey, st2, sq);
 
@@ -327,6 +324,7 @@ public class Poezd_A extends CimSmgsSupport_A {
                 {"DATTR", "DATTR"},
                 {"TRANS", "TRANS"}
         };
+        dbpt.splitPlomb("PLOMB_VAG", "KPL", "ZNAK", st2);
         dbpt.fillRownum("PLOMB_VAG", "SORT", st2);
         dbpt.save("PLOMB_VAG", "KY_PLOMB", keyNm, fillParentKey, st2, sq);
 
@@ -503,6 +501,10 @@ public class Poezd_A extends CimSmgsSupport_A {
         pack.addPoezdItem(poezdCopy);
         getPackDocDAO().makePersistent(pack);
 
+        Map<String, List<?>> contGruz4History = new HashMap<>(2);
+        contGruz4History.put("konts", new ArrayList<Kont>());
+        contGruz4History.put("gruzs", new ArrayList<>());
+
         for (Vagon vagonInto : poezdInto.getVagons()) {
             Vagon vagonCopy = copyPoezdMapper.map(vagonInto, Vagon.class);
 
@@ -512,8 +514,39 @@ public class Poezd_A extends CimSmgsSupport_A {
 
             // save
             vagonDAO.makePersistent(vagonCopy);
+
+            for(Kont kontInto: vagonInto.getKonts()) {
+                final Kont kontCopy = copyPoezdMapper.map(kontInto, Kont.class);
+                kontCopy.setVagon(vagonCopy);
+
+                kontDAO.makePersistent(kontCopy);
+                ((List<Kont>) contGruz4History.get("konts")).add(kontCopy);
+
+                for(Gruz gruzInto: kontInto.getGruzs()){
+                    final Gruz gruzCopy = copyPoezdMapper.map(gruzInto, Gruz.class);
+                    gruzCopy.setKont(kontCopy);
+
+                    gruzDAO.makePersistent(gruzCopy);
+                }
+
+                for(Plomb plombInto: kontInto.getPlombs()){
+                    final Plomb plombCopy = copyPoezdMapper.map(plombInto, Plomb.class);
+                    plombCopy.setKont(kontCopy);
+
+                    plombDAO.makePersistent(plombCopy);
+                }
+            }
+
+            for(Gruz gruzInto: vagonInto.getGruzs()) {
+                final Gruz gruzCopy = copyPoezdMapper.map(gruzInto, Gruz.class);
+                gruzCopy.setVagon(vagonCopy);
+
+                gruzDAO.makePersistent(gruzCopy);
+                ((List<Gruz>) contGruz4History.get("gruzs")).add(gruzCopy);
+            }
         }
 
+        saveContGruzHistory(contGruz4History, kontGruzHistoryDAO, POEZD);
         return SUCCESS;
     }
 
@@ -573,6 +606,12 @@ public class Poezd_A extends CimSmgsSupport_A {
     private PoezdDAO poezdDAO;
     @Autowired
     private VagonDAO vagonDAO;
+    @Autowired
+    private KontDAO kontDAO;
+    @Autowired
+    private GruzDAO gruzDAO;
+    @Autowired
+    private PlombDAO plombDAO;
     @Autowired
     private Mapper kypoezdMapper;
     @Autowired

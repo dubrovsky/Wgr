@@ -186,8 +186,9 @@ p:excelTpls-ref="excelTples"
     <bean id="avtoCtgr_A" class="com.bivc.cimsmgs.actions.ky2.AvtoCtGr_A" scope="prototype"/>
     <bean id="yardCtgr_A" class="com.bivc.cimsmgs.actions.ky2.YardCtGr_A" scope="prototype"/>
     <bean id="bindAvtoAndAvto_A" class="com.bivc.cimsmgs.actions.ky2.BindAvtoAndAvto_A" scope="prototype"/>
-    <bean id="bindPoezdAndPoezd_A" class="com.bivc.cimsmgs.actions.ky2.BindPoezdAndPoezd_A" scope="prototype"/>
     <bean id="bindAvtoAndYard_A" class="com.bivc.cimsmgs.actions.ky2.BindAvtoAndYard_A" scope="prototype"/>
+    <bean id="bindAvtoAndPoezd_A" class="com.bivc.cimsmgs.actions.ky2.BindAvtoAndPoezd_A" scope="prototype"/>
+    <bean id="bindPoezdAndPoezd_A" class="com.bivc.cimsmgs.actions.ky2.BindPoezdAndPoezd_A" scope="prototype"/>
     <bean id="bindPoezdAndYard_A" class="com.bivc.cimsmgs.actions.ky2.BindPoezdAndYard_A" scope="prototype"/>
     <bean id="bindPoezdAndAvto_A" class="com.bivc.cimsmgs.actions.ky2.BindPoezdAndAvto_A" scope="prototype"/>
     <bean id="poezd2_A" class="com.bivc.cimsmgs.actions.ky2.Poezd_A" scope="prototype"/>

@@ -1,4 +1,4 @@
-Ext.define('TK.model.ky2.PoezdBaseDir', {
+Ext.define('TK.model.ky2.YardFilterDir', {
     extend: 'Ext.data.Model',
 
     fields: [

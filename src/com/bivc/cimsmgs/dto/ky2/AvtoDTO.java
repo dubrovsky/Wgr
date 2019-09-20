@@ -10,6 +10,7 @@ public class AvtoDTO {
 
     private Long hid;
     private Byte direction;
+    private String client;
     private TreeSet<KontDTO> konts = new TreeSet<>();
     private TreeSet<GruzDTO> gruzs = new TreeSet<>();
     @JsonSerialize(using = DateTimeSerializer.class)
@@ -53,5 +54,13 @@ public class AvtoDTO {
 
     public void setDprb(Date dprb) {
         this.dprb = dprb;
+    }
+
+    public String getClient() {
+        return client;
+    }
+
+    public void setClient(String client) {
+        this.client = client;
     }
 }

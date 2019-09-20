@@ -3,6 +3,7 @@ package com.bivc.cimsmgs.dao;
 import com.bivc.cimsmgs.commons.Filter;
 import com.bivc.cimsmgs.db.Usr;
 import com.bivc.cimsmgs.db.ky.Yard;
+import com.bivc.cimsmgs.dto.ky2.YardFilerDirDTO;
 
 import java.util.List;
 import java.util.Locale;
@@ -28,6 +29,10 @@ public interface YardDAO extends GenericDAO<Yard, Long> {
     Yard getYardBy(Long kontId);
 
     List<Yard> findAll4Report2(List<Filter> filters, Usr usr, Locale locale);
+
+    List<YardFilerDirDTO> getPoezdsForFilter();
+
+    List<YardFilerDirDTO> getGruzotprsForFilter();
 
 
 //    public void delete(Long hid);

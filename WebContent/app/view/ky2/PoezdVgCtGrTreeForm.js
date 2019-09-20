@@ -272,7 +272,7 @@ Ext.define('TK.view.ky2.PoezdVgCtGrTreeForm', {
                     fieldLabel: 'Типоразмер контейнера',
                     name: 'vid',
                     maxLength: 28
-                },{
+                }/*,{
                     xtype:'textfield',
                     fieldLabel: 'Признак собственности',
                     name: 'prizn_sob',
@@ -284,7 +284,7 @@ Ext.define('TK.view.ky2.PoezdVgCtGrTreeForm', {
                     name: 'naim_sob',
                     width:400,
                     maxLength: 128
-                }/*,{
+                },{
                     xtype: 'fieldcontainer',
                     layout: {
                         type: 'hbox',
@@ -329,7 +329,7 @@ Ext.define('TK.view.ky2.PoezdVgCtGrTreeForm', {
                         itemId: 'gruzotprDir',
                         action: 'nsiOtpr'
                     }]
-                }*/,{
+                },{
                     xtype:'textfield',
                     fieldLabel: 'Пункт отправления',
                     name: 'punkt_otpr',
@@ -341,7 +341,7 @@ Ext.define('TK.view.ky2.PoezdVgCtGrTreeForm', {
                     name: 'punkt_nazn',
                     width:400,
                     maxLength: 96
-                },{
+                }*/,{
                     name : 'prim',
                     xtype: 'textarea',
                     fieldLabel: 'Примечание',
@@ -423,7 +423,7 @@ Ext.define('TK.view.ky2.PoezdVgCtGrTreeForm', {
                     fieldLabel: 'Пломба',
                     name: 'znak',
                     width: 400,
-                    maxLength: 10
+                    maxLength: 128
                 },{
                     xtype:'textfield',
                     fieldLabel: 'Станция наложения',

@@ -79,6 +79,12 @@ public class Usr implements Serializable {
 		this.ps = ps;
 	}
 
+	public Usr(String ps, Date datpw) {
+		this.ps = ps;
+		this.datpw = datpw;
+	}
+
+
 	public Usr(String un, UsrGroupsDir usrGroupsDir, boolean strans, String ps, boolean locked, boolean su, Date dattr, String un1) {
 		this.un = un;
 		this.group = usrGroupsDir;
@@ -205,7 +211,7 @@ public class Usr implements Serializable {
 	public void saving(Usr user) {
 	    setDattr(new Date());
 	    setUn1(user.getUn());
-		  setDatpw(null);
+//		  setDatpw(null);
 	    buildGroups();
 	    buildPrivilegs();
 	}

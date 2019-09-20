@@ -13,13 +13,13 @@ Ext.define('TK.controller.ky2.YardController', {
     stores: [
         'ky2.Yards',
         'ky2.YardSectors',
-        'ky2.PoezdsBaseDir',
-        'ky2.GruzotprsDir'
+        'ky2.YardFilterPoezdsDir',
+        'ky2.YardFilterGruzotprsDir'
     ],
     models: [
         'ky2.YardBase',
         'ky2.YardSector',
-        'ky2.PoezdBaseDir'
+        'ky2.YardFilterDir'
     ],
     refs: [{
         ref: 'yardlist',
@@ -62,12 +62,12 @@ Ext.define('TK.controller.ky2.YardController', {
             'ky2yardlist button[action="filterKontYard"]': {
                 click: this.filterKontYard
             },
-            'ky2yardfilter datefield[name="startDate"]': {
+            /*'ky2yardfilter datefield[name="startDate"]': {
                 select: this.selectFilterStartDate
             },
             'ky2yardfilter datefield[name="endDate"]': {
                 select: this.selectFilterEndDate
-            },
+            },*/
             'ky2yardfilter button[action="applyFilterKontYard"]': {
                 click: this.applyFilterKontYard
             },

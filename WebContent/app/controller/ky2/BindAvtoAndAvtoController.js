@@ -67,13 +67,18 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
             'ky2avtoctgrtreeform button[action="showAvtosIntoDir4AvtoOutBind"]': {
                 click: this.getAvtoIntoAndAvtoOutForBindFromVgCntGr
             },
-
-            // 'ky2avtosout4avtointodir button[action="getAvtoAndAvtoForBind"]': {
-            //     click: this.getAvtoIntoAndAvtoOutForBind
-            // },
-            // 'ky2avtosinto4avtooutdir button[action="getAvtoAndAvtoForBind"]': {
-            //     click: this.getAvtoOutAndAvtoIntoForBind
-            // },
+            'ky2avto2avtobindtreeforminto button[action=moveRight]': {
+                click: this.moveNodesRight
+            },
+            'ky2avto2avtobindtreeforminto button[action=moveLeft]': {
+                click: this.moveNodesLeft
+            },
+            'ky2avto2avtobindtreeformout button[action=moveRight]': {
+                click: this.moveNodesRight
+            },
+            'ky2avto2avtobindtreeformout button[action=moveLeft]': {
+                click: this.moveNodesLeft
+            },
             'ky2avto2avtobindtreeforminto treepanel#treepanelLeft > treeview': {
                 drop: this.dropToAvto,
                 nodedragover: this.beforeDropToAvto
@@ -90,10 +95,6 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
                 drop: this.dropToAvto,
                 nodedragover: this.beforeDropToAvto
             },
-            // 'ky2avtobindtreeform > treepanel > treeview': {
-            //     drop: this.dropToAvto,
-            //     nodedragover: this.beforeDropToAvto
-            // },
             'ky2avto2avtobindtreeforminto button[action=save]': {
                 click: this.bindAvtoToAvto
             },
@@ -159,25 +160,6 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
     },
 
     getAvtoAndAvtoForBind: function (widget, title, direction, avtoHid) {
-        // var avtolist = this.getAvtolist(),
-        //     avtoModel = avtolist.getSelectionModel().getLastSelected(),
-        //     avtosDir = avtoDir.getSelectionModel().getSelection(),
-        //     avtoDirModel = avtosDir.length > 0 ? avtosDir[0] : null;
-        //
-        // if (avtoDirModel == null) {
-        //     Ext.Msg.show({
-        //         title: 'Ошибка',
-        //         msg: 'Не выбрано значение',
-        //         buttons: Ext.Msg.OK,
-        //         icon: Ext.Msg.ERROR
-        //     });
-        //     return false;
-        // }
-        // var avtolist = this.getAvtolist();
-        // if (!TK.Utils.isRowSelected(avtolist)) {
-        //     return false;
-        // }
-
         this.getCenter().setLoading(true);
         // var avtoModel = avtolist.getSelectionModel().getLastSelected();
         var menuItem = this.getMenutree().lastSelectedLeaf,
@@ -201,11 +183,11 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
                     var avto2ArrObj = respObj['rows'][1];
 
                     var bindcontainer = Ext.widget(widget, {title: title});
-                    this.getTreepanelLeft().setTitle(this.titleForAvto(avto1Obj['no_avto'] + '<br/>'));
+                    this.getTreepanelLeft().setTitle(this.titleForAvto(''));
                     var rootNode = this.getTreepanelLeft().getStore().getRootNode();
                     this.initRootNode(rootNode, avto1Obj);
 
-                    this.getTreepanelRight().setTitle(this.titleForAvto('<br/>'));
+                    this.getTreepanelRight().setTitle(this.titleForAvto(''));
                     rootNode = this.getTreepanelRight().getStore().getRootNode();
                     if (avto2ArrObj && avto2ArrObj.length > 0) {
                         this.initAvtosNodes(avto2ArrObj, rootNode);
@@ -676,5 +658,36 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
 
     dropToAvto: function (node, dragData, targetAvtoModel, dropPosition) {
         this.afterDropToAvto(dragData.records, targetAvtoModel);
-    }
+    },
+
+    moveNodesRight: function (btn) {
+        this.moveNodes(this.getTreepanelLeft(), this.getTreepanelRight(), this.checkBeforeMoveToAvto, this.afterDropToAvto, this);
+    },
+
+    moveNodesLeft: function (btn) {
+        this.moveNodes(this.getTreepanelRight(), this.getTreepanelLeft(), this.checkBeforeMoveToAvto, this.afterDropToAvto, this);
+    },
+
+    moveNodes: function (sourcePanel, targetPanel, beforeMoveFn, afterMoveFn, fnScope) {
+        var sourceNodes = sourcePanel.getSelectionModel().getSelection();
+        if (sourceNodes.length === 0) {
+            return;
+        }
+
+        var targetNode = targetPanel.getSelectionModel().getLastSelected(); // move only in one place
+        if (!targetNode || targetPanel.getSelectionModel().getSelection().length > 1) {
+            return;
+        }
+
+        if (!beforeMoveFn.call(fnScope, sourceNodes, targetNode)) {
+            return;
+        }
+
+        for (var y = 0; y < sourceNodes.length; y++) {
+            targetNode.insertChild(targetNode.childNodes.length, sourceNodes[y]); // appendChild don't work, no need to remove before insert
+        }
+
+        afterMoveFn.call(fnScope, sourceNodes, targetNode);
+    },
+
 });

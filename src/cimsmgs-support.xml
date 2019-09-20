@@ -325,13 +325,20 @@ name="Doc2Doc_uploadXLSvags" method="uploadXLSvags" class="doc2doc_A">
         <action name="secure/BindAvtoAndYard" class="bindAvtoAndYard_A">
             <result name="success" type="json"/>
         </action>
+        <action name="secure/BindAvtoAndPoezd" class="bindAvtoAndPoezd_A">
+            <result name="success" type="json"/>
+        </action>
         <action name="secure/Yard" class="yard2_A">
+            <result name="success" type="json"/>
+        </action>
+        <action name="secure/Yard_*" method="{1}" class="yard2_A">
             <result name="success" type="json"/>
         </action>
         <action name="secure/YardSector_*" method="{1}" class="yardSector2_A">
             <result name="success" type="json"/>
         </action>
         <action name="secure/Report" class="report2_A">
+            <result name="success" type="json"/>
             <result name="excel" type="stream">
                 <param name="contentType">application/vnd.ms-excel</param>
                 <param name="contentDisposition">attachment;filename="Report.xls"</param>

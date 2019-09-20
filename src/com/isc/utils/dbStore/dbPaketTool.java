@@ -122,4 +122,36 @@ public class dbPaketTool {
     }
   }
 
+  public void splitPlomb(String packName, String nmKpl, String nmZnak, stPack st) throws Exception {
+    if (st.getInfo().packName.equals(packName)) {
+      if(st.getRowCount() == 1) {
+        String t1 = st.getTxt(0, nmKpl);
+        int kpl = 0;
+        if(t1.length() > 0) kpl = Integer.parseInt(t1);
+        if(kpl > 1) {
+          String[] znak = st.getTxt(0, nmZnak).split(",");
+          if(kpl == znak.length) {
+            for (int i = 0; i < kpl; i++) {
+              st.setObject(i, nmKpl, 1);
+              st.setObject(i, nmZnak, znak[i]);
+            }
+          }
+        }
+      }
+    } else {
+      for(int i = 0; i < st.getRowCount(); i++) {
+        modelDbForm f = st.getForm(i);
+        TreeMap<String, modelDbPack> p = f.getPacks();
+        Iterator it = p.keySet().iterator();
+
+        while(it.hasNext()) {
+          stPack pk = (stPack) p.get(it.next());
+          splitPlomb(packName, nmKpl, nmZnak, pk);
+        }
+      }
+    }
+    return;
+  }
+
+
 }

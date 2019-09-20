@@ -79,24 +79,24 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
                 drop: this.dropToYard,
                 nodedragover: this.beforeDropToYard
             },
-            'ky2poezd2yardbindtreeforminto button[action=moveRight]': {
+            'ky2avto2yardbindtreeforminto button[action=moveRight]': {
                 click: this.moveNodesRight
             },
-            'ky2poezd2yardbindtreeforminto button[action=moveLeft]': {
+            'ky2avto2yardbindtreeforminto button[action=moveLeft]': {
                 click: this.moveNodesLeft
             },
-            'ky2poezd2yardbindtreeforminto button[action=moveRightAll]': {
-                click: this.moveAllNodesRight
-            },
-            'ky2poezd2yardbindtreeformout button[action=moveRight]': {
+            // 'ky2poezd2yardbindtreeforminto button[action=moveRightAll]': {
+            //     click: this.moveAllNodesRight
+            // },
+            'ky2avto2yardbindtreeformout button[action=moveRight]': {
                 click: this.moveNodesRight
             },
-            'ky2poezd2yardbindtreeformout button[action=moveLeft]': {
+            'ky2avto2yardbindtreeformout button[action=moveLeft]': {
                 click: this.moveNodesLeft
             },
-            'ky2poezd2yardbindtreeformout button[action=moveRightAll]': {
-                click: this.moveAllNodesRight
-            },
+            // 'ky2poezd2yardbindtreeformout button[action=moveRightAll]': {
+            //     click: this.moveAllNodesRight
+            // },
             'ky2avto2yardbindtreeforminto button[action=save]': {
                 click: this.bindAvtoAndYard
             },
@@ -474,6 +474,8 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
             }
             records[i].set('yardSectorHid', null);
             records[i].set('yardHid', null);
+            records[i].set('cls', 'selectTreeNode');
+
             // records[i].set('x', null);
             // records[i].set('y', null);
             // records[i].set('z', null);
@@ -586,66 +588,66 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
     },
 
     moveNodesRight: function (btn) {
-        this.getController('ky2.BindPoezdAndPoezdController').moveNodes(this.getTreepanelLeft(), this.getTreepanelRight(), this.checkBeforeMoveToYard, this.afterDropToYard, this);
+        this.getController('ky2.BindAvtoAndAvtoController').moveNodes(this.getTreepanelLeft(), this.getTreepanelRight(), this.checkBeforeMoveToYard, this.afterDropToYard, this);
     },
 
     moveNodesLeft: function (btn) {
-        this.getController('ky2.BindPoezdAndPoezdController').moveNodes(this.getTreepanelRight(), this.getTreepanelLeft(), this.checkBeforeMoveToVag, this.afterDropToVag, this);
+        this.getController('ky2.BindAvtoAndAvtoController').moveNodes(this.getTreepanelRight(), this.getTreepanelLeft(), this.checkBeforeMoveToAvto, this.afterDropToAvto, this);
     },
 
-    moveAllNodesRight: function (btn) {
-        var contNodes = [];
-        this.getTreepanelLeft().getRootNode().eachChild(function (vagModel) {
-            /*if (model1.get('who') === 'cont') {
-                contNodes.push(model1);
-            } else {
-                model1.eachChild(function (model2) {
-                    if (model2.get('who') === 'cont') {
-                        contNodes.push(model2);
-                    }
-                });
-            }*/
-            vagModel.eachChild(function (model2) {
-                if (model2.get('who') === 'cont') { // can be gruz or cont
-                    contNodes.push(model2);
-                }
-            });
-        });
-        if (contNodes.length === 0) {
-            return;
-        }
-
-        var targetNode = this.getTreepanelRight().getSelectionModel().getLastSelected(); // move only in one place
-        if (!targetNode || this.getTreepanelRight().getSelectionModel().getSelection().length > 1) {
-            return;
-        }
-        if (targetNode.get('who') !== 'yardsector') {
-            return;
-        }
-        if (targetNode.get('contsInYardSector') >= targetNode.get('placesInYardSector')) {
-            return;
-        }
-
-        if (!this.checkBeforeMoveToYard(contNodes, targetNode, {checkFreePlaces: false})) {
-            return;
-        }
-
-        var insertedContsNodes = []; // not all nodes can be inserted
-        var contsInYardSector = targetNode.get('contsInYardSector');
-        for (var i = 0; i < contNodes.length; i++) {
-            if (contsInYardSector < targetNode.get('placesInYardSector')) { // check free places
-                // targetNode.insertChild(targetNode.childNodes.length, contNodes[i]); // appendChild don't work, no need to remove before insert
-                this.moveContToFreeYard(contNodes[i], targetNode);
-                contsInYardSector++;
-                insertedContsNodes.push(contNodes[i]);
-            } else {
-                break;
-            }
-        }
-        if (insertedContsNodes.length > 0) {
-            this.afterDropToYard(insertedContsNodes, targetNode);
-        }
-    },
+    // moveAllNodesRight: function (btn) {
+    //     var contNodes = [];
+    //     this.getTreepanelLeft().getRootNode().eachChild(function (vagModel) {
+    //         /*if (model1.get('who') === 'cont') {
+    //             contNodes.push(model1);
+    //         } else {
+    //             model1.eachChild(function (model2) {
+    //                 if (model2.get('who') === 'cont') {
+    //                     contNodes.push(model2);
+    //                 }
+    //             });
+    //         }*/
+    //         vagModel.eachChild(function (model2) {
+    //             if (model2.get('who') === 'cont') { // can be gruz or cont
+    //                 contNodes.push(model2);
+    //             }
+    //         });
+    //     });
+    //     if (contNodes.length === 0) {
+    //         return;
+    //     }
+    //
+    //     var targetNode = this.getTreepanelRight().getSelectionModel().getLastSelected(); // move only in one place
+    //     if (!targetNode || this.getTreepanelRight().getSelectionModel().getSelection().length > 1) {
+    //         return;
+    //     }
+    //     if (targetNode.get('who') !== 'yardsector') {
+    //         return;
+    //     }
+    //     if (targetNode.get('contsInYardSector') >= targetNode.get('placesInYardSector')) {
+    //         return;
+    //     }
+    //
+    //     if (!this.checkBeforeMoveToYard(contNodes, targetNode, {checkFreePlaces: false})) {
+    //         return;
+    //     }
+    //
+    //     var insertedContsNodes = []; // not all nodes can be inserted
+    //     var contsInYardSector = targetNode.get('contsInYardSector');
+    //     for (var i = 0; i < contNodes.length; i++) {
+    //         if (contsInYardSector < targetNode.get('placesInYardSector')) { // check free places
+    //             // targetNode.insertChild(targetNode.childNodes.length, contNodes[i]); // appendChild don't work, no need to remove before insert
+    //             this.moveContToFreeYard(contNodes[i], targetNode);
+    //             contsInYardSector++;
+    //             insertedContsNodes.push(contNodes[i]);
+    //         } else {
+    //             break;
+    //         }
+    //     }
+    //     if (insertedContsNodes.length > 0) {
+    //         this.afterDropToYard(insertedContsNodes, targetNode);
+    //     }
+    // },
 
     bindAvtoAndYardAndExit: function () {
         this.bindAvtoAndYard(1);

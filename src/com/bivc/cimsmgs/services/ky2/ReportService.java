@@ -17,7 +17,7 @@ public class ReportService {
     private DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
     private DateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
-    public HSSFWorkbook reportToExcel(stPack st) {
+    public HSSFWorkbook reportToExcel(stPack st) throws Exception {
         HSSFWorkbook wb = new HSSFWorkbook();
 
         Sheet sheet = wb.createSheet("DBO");
@@ -138,6 +138,11 @@ public class ReportService {
         cell.setCellStyle(style2);
         cellIndex++;
 
+        cell = row.createCell(cellIndex);
+        cell.setCellValue("LOŚĆ DNI\nPRZECHOWANIA");
+        cell.setCellStyle(style2);
+        cellIndex++;
+
         /// END TABLE HEADER
         /// TABLE DATA
         CellStyle style3 = wb.createCellStyle();
@@ -148,6 +153,15 @@ public class ReportService {
         style3.setBorderLeft(BorderStyle.THIN);
         style3.setBorderRight(BorderStyle.THIN);
         style3.setBorderTop(BorderStyle.THIN);
+
+        CellStyle style4 = wb.createCellStyle();
+        style4.setFont(font);
+        style4.setAlignment(HorizontalAlignment.RIGHT);
+        style4.setVerticalAlignment(VerticalAlignment.TOP);
+        style4.setBorderBottom(BorderStyle.THIN);
+        style4.setBorderLeft(BorderStyle.THIN);
+        style4.setBorderRight(BorderStyle.THIN);
+        style4.setBorderTop(BorderStyle.THIN);
 
         rowIndex++;
 
@@ -165,8 +179,9 @@ public class ReportService {
             cellIndex++;
 
             // B
+            Date dprb = (Date) st.getObject(i, "DPRB");
             cell = row.createCell(cellIndex);
-            String date = st.getObject(i, "DPRB") != null ? dateFormat.format(new Date(((Timestamp)st.getObject(i, "DPRB")).getTime())) : "";
+            String date = dprb != null ? dateFormat.format(dprb) : "";
             cell.setCellValue(date);
             cell.setCellStyle(style3);
             cellIndex++;
@@ -185,7 +200,7 @@ public class ReportService {
 
             // E
             cell = row.createCell(cellIndex);
-            date = st.getObject(i, "DPRB") != null ? timeFormat.format(new Date(((Timestamp)st.getObject(i, "DPRB")).getTime())) : "";
+            date = dprb != null ? timeFormat.format(dprb) : "";
             cell.setCellValue(date);
             cell.setCellStyle(style3);
             cellIndex++;
@@ -245,8 +260,9 @@ public class ReportService {
             cellIndex++;
 
             // O
+            Date dotp = (Date) st.getObject(i, "DOTP");
             cell = row.createCell(cellIndex);
-            date = st.getObject(i, "DOTP") != null ? dateFormat.format(new Date(((Timestamp)st.getObject(i, "DOTP")).getTime())) : "";
+            date = dotp != null ? dateFormat.format(dotp) : "";
             cell.setCellValue(date);
             cell.setCellStyle(style3);
             cellIndex++;
@@ -269,11 +285,17 @@ public class ReportService {
             cell.setCellStyle(style3);
             cellIndex++;
 
-            // R
+            // S
             cell = row.createCell(cellIndex);
-            date = st.getObject(i, "DOTP") != null ? timeFormat.format(new Date(((Timestamp)st.getObject(i, "DOTP")).getTime())) : "";
+            date = dotp != null ? timeFormat.format(dotp) : "";
             cell.setCellValue(date);
             cell.setCellStyle(style3);
+            cellIndex++;
+
+            // T
+            cell = row.createCell(cellIndex);
+            cell.setCellValue(dateInterval(dprb, dotp));
+            cell.setCellStyle(style4);
             cellIndex++;
 
             rowIndex++;
@@ -300,7 +322,27 @@ public class ReportService {
         sheet.autoSizeColumn((short) 16);
         sheet.autoSizeColumn((short) 17);
         sheet.autoSizeColumn((short) 18);
+        sheet.autoSizeColumn((short) 19);
 
         return wb;
     }
+
+    private String dateInterval(Date d1, Date d2) throws Exception {
+        if(d1 == null || d2 == null) return "";
+        long dt = (d2.getTime() - d1.getTime()) / 1000;
+        String t = "";
+        if(dt < 0) {
+            t = "- ";
+            dt = -dt;
+        }
+        StringBuffer ret = new StringBuffer();
+        long ss = dt % 60;
+        dt /= 60;
+        long mm = dt % 60;
+        dt /= 60;
+        long hh = dt % 24;
+        long dd = dt / 24;
+        return t + (dd > 0 ? dd + " " : "")  + (hh < 10 ? "0" : "") + hh + ":" + (mm < 10 ? "0" : "") + mm + ":" + (ss < 10 ? "0" : "") + ss + " ";
+    }
+
 }

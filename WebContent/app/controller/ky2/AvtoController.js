@@ -328,7 +328,6 @@ Ext.define('TK.controller.ky2.AvtoController', {
                     else {
                         labelText = 'Контейнер не найден';
                     }
-                    debugger
                     Ext.getCmp('kontSectorLocation').setText(labelText);
                 },
                 failure: function (response) {
