@@ -190,7 +190,7 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
                 conts = vag['konts'],
                 gruzy = vag['gruzs'],
                 vagModel = Ext.create('TK.model.ky2.PoezdVgCtGrTreeNode', {
-                    text: this.getController('ky2.BindPoezdAndPoezdController').vagNodeText(vag),
+                    // text: this.getController('ky2.BindPoezdAndPoezdController').vagNodeText(vag),
                     who: 'vag',
                     leaf: false,
                     iconCls: 'vag',
@@ -209,6 +209,7 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
                 }
             });
 
+            vagModel.set('text', this.getController('ky2.BindPoezdAndPoezdController').vagNodeText1(vagModel));
             rootNode.appendChild(vagModel);
 
             if (vag['otpravka'] === 'CONT') {
@@ -229,7 +230,7 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
                 gryzy = cont['gruzs'],
                 plombs = cont['plombs'],
                 contModel = Ext.create('TK.model.ky2.PoezdVgCtGrTreeNode', {
-                    text: this.getController('ky2.BindPoezdAndPoezdController').contNodeText(cont),
+                    // text: this.getController('ky2.BindPoezdAndPoezdController').contNodeText(cont),
                     who: 'cont',
                     iconCls: 'cont3',
                     leaf: gryzy && gryzy['0'] ? false : true/*,
@@ -247,6 +248,8 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
                     });
                 }
             });
+
+            contModel.set('text', this.getController('ky2.BindPoezdAndPoezdController').contNodeText1(contModel));
             vagModel.appendChild(contModel);
 
             if (gryzy && !Ext.Object.isEmpty(gryzy)) {
@@ -553,10 +556,12 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
 
         if (oldVal !== newVal) {
             rec.set(field.getName(), newVal);
-            if (field.getName() === 'kgvn' ||
-                field.getName() === 'nkon' ||
-                field.getName() === 'znak' ||
-                field.getName() === 'nvag') {
+            if (
+                field.getName() === 'kgvn'
+                // || field.getName() === 'nkon'
+                || field.getName() === 'znak'
+                // || field.getName() === 'nvag'
+            ) {
                 rec.set('text', newVal);
             }
             else if (field.getName() === 'massa' && parentOfSelected.get('who') === 'cont') {
@@ -566,6 +571,13 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
                 rec.set('massa_brutto_all', rec.get('massa_tar') + rec.get('massa_brutto'));
                 field.up('form').down('#massa_brutto_all').setValue(rec.get('massa_brutto_all'));
             }
+
+            if(rec.get('who') === 'vag') {
+                rec.set('text', this.getController('ky2.BindPoezdAndPoezdController').vagNodeText1(rec));
+            } else if (rec.get('who') === 'cont') {
+                rec.set('text', this.getController('ky2.BindPoezdAndPoezdController').contNodeText1(rec));
+            }
+
         }
     },
 

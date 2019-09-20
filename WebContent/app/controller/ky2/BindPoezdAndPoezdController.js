@@ -289,6 +289,14 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
             + ' / ' + (vag['sobstv'] ? vag['sobstv'] : '...');
     },
 
+    vagNodeText1: function(vag) {
+        return '<b>' + (vag.get('nvag') ? vag.get('nvag') : '...') + '</b>'
+            + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/ ' + (vag.get('podSila') ? vag.get('podSila') : '...')
+            + ' / ' + (vag.get('masTar') ? vag.get('masTar') : '...')
+            + ' / ' + (vag.get('kolOs') ? vag.get('kolOs') : '...')
+            + ' / ' + (vag.get('sobstv') ? vag.get('sobstv') : '...');
+    },
+
     initVagsNodes: function (vags, rootNode, isYard) {    //isYard - poezd for yard
         for (var vagIndx in vags) {
             var vag = vags[vagIndx],
@@ -331,6 +339,14 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
            + ' / ' + (cont['massa_brutto_all'] ? cont['massa_brutto_all'] : '...')
            + ' / ' + (cont['vid'] ? cont['vid'] : '...')
            + ' / ' + (cont['pod_sila'] ? cont['pod_sila'] : '...');
+    },
+
+    contNodeText1: function(cont) {
+        return '<b>' + (cont.get('nkon') ? cont.get('nkon') : '...') + '</b>'
+            + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/ ' + (cont.get('massa_tar') ? cont.get('massa_tar') : '...')
+            + ' / ' + (cont.get('massa_brutto_all') ? cont.get('massa_brutto_all') : '...')
+            + ' / ' + (cont.get('vid') ? cont.get('vid') : '...')
+            + ' / ' + (cont.get('pod_sila') ? cont.get('pod_sila') : '...');
     },
 
     initContsNodes: function (conts, vagIndx, vagModel, isYard) {
