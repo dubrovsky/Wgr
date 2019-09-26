@@ -3,7 +3,6 @@ package com.bivc.cimsmgs.dao;
 import com.bivc.cimsmgs.commons.Filter;
 import com.bivc.cimsmgs.db.Usr;
 import com.bivc.cimsmgs.db.ky.Poezd;
-import com.bivc.cimsmgs.dto.ky.ReportParamsDTO;
 import com.bivc.cimsmgs.services.ky.PoezdService;
 
 import java.util.List;
@@ -17,7 +16,7 @@ public interface PoezdDAO extends GenericDAO<Poezd, Long> {
 
     Long countAll(Long routeId, Byte direction, List<Filter> filters, Usr usr, Locale locale, Byte koleya);
 
-    List<Poezd> findByNppr(String nppr);
+//    List<Poezd> findByNppr(String nppr);
 
     Integer findMaxNppr(PoezdService.PoezdPrefix sp, String dateProp, int year);
 
@@ -29,7 +28,9 @@ public interface PoezdDAO extends GenericDAO<Poezd, Long> {
 
     List<Poezd> findByIds(List<Long> ids);
 
-    List<Poezd> findPoezdsInInterval(ReportParamsDTO dto);
+//    List<Poezd> findPoezdsInInterval(ReportParamsDTO dto);
 
-    List<Poezd> findGruzotprInInterval(ReportParamsDTO dto);
+//    List<Poezd> findGruzotprInInterval(ReportParamsDTO dto);
+
+    List<Poezd> getPoezdsIntoForPoezdOutDir(Usr usr, long routeId);
 }

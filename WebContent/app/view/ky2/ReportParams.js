@@ -9,27 +9,11 @@ Ext.define('TK.view.ky2.ReportParams', {
         this.items = [
             {
                 xtype: 'form',
-                // store: 'TK.store.ky2.ReportsBase',
-                store: Ext.create('TK.store.ky2.ReportsBase'),
+                // store: 'TK.store.ky2.ReportsForm',
+                store: Ext.create('TK.store.ky2.ReportsForm'),
                 // model: 'TK.model.ky2.ReportBase',
                 bodyPadding: 5,
                 items: [
-                    // {
-                    //     xtype: 'datefield',
-                    //     name: 'startDate',
-                    //     altFormats: 'd.m.y',
-                    //     allowBlank: false,
-                    //     fieldLabel: 'Прибытие, с'
-                    // },
-                    // {
-                    //     xtype: 'datefield',
-                    //     name: 'endDate',
-                    //     altFormats: 'd.m.y',
-                    //     allowBlank: false,
-                    //     fieldLabel: 'Прибытие, по'
-                    // },
-                    // {xtype:'textfield', fieldLabel:'Международный номер поезда', name:"npprm", allowBlank: true},
-                    // {xtype:'textfield', fieldLabel:'Клиент', name:"gruzotpr", allowBlank: true},
                     {
                         xtype: 'datefield',
                         name: 'startDate',
@@ -49,7 +33,7 @@ Ext.define('TK.view.ky2.ReportParams', {
                         itemId: 'npprm',
                         multiSelect: true,
                         queryMode: 'local',
-                        store: 'ky2.YardFilterPoezdsDir',
+                        store: 'ky2.ReportsPoezdsInInterval',
                         displayField: 'npprm',
                         valueField: 'hid',
                         typeAhead: false,
@@ -65,7 +49,7 @@ Ext.define('TK.view.ky2.ReportParams', {
                         fieldLabel: 'Клиент',
                         itemId: 'gruzotpr',
                         queryMode: 'local',
-                        store: 'ky2.YardFilterGruzotprsDir',
+                        store: 'ky2.ReportsGruzotprInterval',
                         displayField: 'gruzotpr',
                         valueField: 'gruzotpr',
                         typeAhead: false,

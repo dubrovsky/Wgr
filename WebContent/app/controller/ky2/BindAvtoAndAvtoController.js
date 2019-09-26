@@ -291,7 +291,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
             var cont = conts[contIndx],
                 gryzy = cont['gruzs'],
                 contModel = Ext.create('TK.model.ky2.AvtoBindTreeNode', {
-                    text: this.getController('ky2.BindPoezdAndPoezdController').contNodeText(cont),
+                    // text: this.getController('ky2.BindPoezdAndPoezdController').contNodeText(cont),
                     avtoHid: vagModel.get('hid'),
                     who: 'cont',
                     iconCls: 'cont3',
@@ -305,6 +305,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
                 contModel.set(prop, value);
             }, this);
             vagModel.appendChild(contModel);
+            contModel.set('text', this.getController('ky2.BindPoezdAndPoezdController').contNodeText(contModel));
 
             if (gryzy && !Ext.Object.isEmpty(gryzy)) {
                 this.initGryzyNodes(gryzy, contModel, false);
@@ -437,8 +438,9 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
     },
 
     bindAvtoToAvto: function (close) {
-        var dataObjLeft = this.bindAvto(this.getTreepanelLeft().getRootNode());
-        var dataObjRight = this.bindAvtos(this.getTreepanelRight().getRootNode());
+        var leftRootNode = this.getTreepanelLeft().getRootNode(),
+            dataObjLeft = this.bindAvto(leftRootNode),
+            dataObjRight = this.bindAvtos(this.getTreepanelRight().getRootNode());
 
         var url = 'ky2/secure/BindAvtoAndAvto.do';
         this.getCenter().setLoading(true);
@@ -448,6 +450,9 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
             scope: this,
             success: function (response) {
                 this.getCenter().setLoading(false);
+                if (!leftRootNode.hasChildNodes() && leftRootNode.get('direction') === 1) {
+                    this.getController('ky2.AvtoController').createAvtoOutFromAvtoInto(leftRootNode.get('hid'));
+                }
                 if (Ext.isNumber(close)) {
                     var closeBtn = this.getAvtoform().down('button[action="close"]');
                     closeBtn.fireEvent('click', closeBtn);

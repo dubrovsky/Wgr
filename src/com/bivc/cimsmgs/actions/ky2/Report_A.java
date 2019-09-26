@@ -3,19 +3,24 @@ package com.bivc.cimsmgs.actions.ky2;
 import com.bivc.cimsmgs.actions.CimSmgsSupport_A;
 import com.bivc.cimsmgs.commons.HibernateUtil;
 import com.bivc.cimsmgs.commons.Response;
+import com.bivc.cimsmgs.dao.KontDAO;
+import com.bivc.cimsmgs.db.ky.Avto;
+import com.bivc.cimsmgs.db.ky.Kont;
 import com.bivc.cimsmgs.dto.ky.ReportParamsDTO;
 import com.bivc.cimsmgs.formats.json.Deserializer;
 import com.bivc.cimsmgs.services.ky2.AvtoWzPzService;
 import com.bivc.cimsmgs.formats.json.Serializer;
 import com.bivc.cimsmgs.services.ky2.ReportService;
 import com.bivc.cimsmgs.sql.Select;
-import com.isc.utils.dbStore.dbTool;
-import com.isc.utils.dbStore.sortedStPack;
-import com.isc.utils.dbStore.stPack;
-import com.isc.utils.dbStore.typesAndValues;
+import com.bivc.cimsmgs.xls.Excel;
+import com.isc.utils.dbStore.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
 import org.hibernate.connection.ConnectionProvider;
@@ -31,6 +36,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.sql.Types;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
@@ -39,6 +45,7 @@ import java.util.GregorianCalendar;
 public class Report_A extends CimSmgsSupport_A implements ServletRequestAware, ServletResponseAware {
 
     private static final Logger log = LoggerFactory.getLogger(Report_A.class);
+
 
     public String execute() {
         if (StringUtils.isEmpty(action)) {
@@ -51,6 +58,12 @@ public class Report_A extends CimSmgsSupport_A implements ServletRequestAware, S
                     return getReport();
                 case PARAMS_FORM:
                     return paramsForm();
+                case POEZDS_IN_INTERVAL:
+                    return poezdsInInterval();
+                case GRUZOTPR_INTERVAL:
+                    return gruzotprInterval();
+                case SOSTOJANIE_KONT_AVTO:
+                    return sostojanieKontAvto();
                 default:
                     throw new RuntimeException("Unknown action");
             }
@@ -59,6 +72,117 @@ public class Report_A extends CimSmgsSupport_A implements ServletRequestAware, S
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String sostojanieKontAvto() throws Exception {
+        String chk = "✓";
+
+        String flNm = "OCENA STANU TECHNICZNEGO KONTENERA";
+
+        XSSFWorkbook excel = new XSSFWorkbook(new ByteArrayInputStream(Excel.getXlsxFile(flNm)));
+
+        XSSFCellStyle s1 = excel.createCellStyle();
+        s1.setAlignment(HorizontalAlignment.CENTER);
+        s1.setVerticalAlignment(VerticalAlignment.TOP);
+        XSSFFont f1 = excel.createFont();
+        s1.setFont(f1);
+        f1.setStrikeout(true);
+        s1.getFont().setStrikeout(true);
+
+        Sheet sheet = excel.getSheetAt(0);
+        Row row = null;
+        Cell cell = null;
+
+        Kont kont = kontDAO.getByIdWithAllParents(getHid());
+        Avto avto = kont.getAvto();
+        if(avto != null) {
+            log.debug(avto.getNo_avto());
+
+            row = sheet.getRow(3);
+            cell = row.getCell(6);
+            cell.setCellValue(kont.getNkon());
+
+            row = sheet.getRow(4);
+            if(avto.getDirection() != null) {
+                if(avto.getDirection() == 1) {
+                    cell = row.getCell(2);
+                    cell.setCellValue(chk);
+                }
+                else if(avto.getDirection() == 2) {
+                    cell = row.getCell(4);
+                    cell.setCellValue(chk);
+                }
+            }
+
+            if(kont.getType() != null) {
+                if(!kont.getType().equals("20")) {
+                    cell = row.getCell(10);
+                    cell.setCellStyle(s1);
+                }
+                if(!kont.getType().equals("40")) {
+                    cell = row.getCell(12);
+                    cell.setCellStyle(s1);
+                }
+            }
+        }
+
+        filename = flNm + " - " + kont.getNkon() + ".xlsx";
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        excel.write(baos);
+        baos.flush();
+        baos.close();
+        
+        inputStream = new ByteArrayInputStream(baos.toByteArray());
+        return "excel";
+    }
+
+    private String poezdsInInterval() throws Exception {
+        ReportParamsDTO dto = defaultDeserializer.setLocale(getLocale()).read(ReportParamsDTO.class, reportParams);
+        if(dto.getStartDate() == null || dto.getEndDate() == null) throw new Exception("No reporting period specified");
+
+        dbTool dbt = initDbTool();
+        stPack st = new stPack();
+
+        typesAndValues tv = new typesAndValues().add(Types.DATE, dto.getStartDate()).add(Types.DATE, getEndDate(dto));
+
+        StringBuffer query = new StringBuffer();
+        query.append(" AND p.TRANS IN (");
+        for(int i = 0; i < getUser().getUsr().getTrans().size(); i++) {
+            tv.add(Types.CHAR, getUser().getUsr().getTrans().get(i));
+            if(i > 0) query.append(",");
+            query.append("?");
+        }
+        query.append(")");
+
+        dbt.read(st, Select.getSqlFile("ky/report/poezds_in_interval") + query, tv);
+
+        setJSONData(new jsonStore(st).toString());
+        return SUCCESS;
+    }
+
+    private String gruzotprInterval() throws Exception {
+        ReportParamsDTO dto = defaultDeserializer.setLocale(getLocale()).read(ReportParamsDTO.class, reportParams);
+        if(dto.getStartDate() == null || dto.getEndDate() == null) throw new Exception("No reporting period specified");
+
+        dbTool dbt = initDbTool();
+        stPack st = new stPack();
+
+        typesAndValues tv = new typesAndValues().add(Types.DATE, dto.getStartDate()).add(Types.DATE, getEndDate(dto));
+
+        StringBuffer query = new StringBuffer();
+        query.append(" AND k.TRANS IN (");
+        for(int i = 0; i < getUser().getUsr().getTrans().size(); i++) {
+          tv.add(Types.CHAR, getUser().getUsr().getTrans().get(i));
+          if(i > 0) query.append(",");
+          query.append("?");
+        }
+        query.append(")");
+
+        dbt.read(st, Select.getSqlFile("ky/report/gruzotpr_interval") + query, tv);
+
+        setJSONData(new jsonStore(st).toString());
+        return SUCCESS;
     }
 
     private String getReport() throws Exception {
@@ -70,17 +194,10 @@ public class Report_A extends CimSmgsSupport_A implements ServletRequestAware, S
 
 //        WHERE p1.DPRB>=? AND p1.DPRB<?
         StringBuffer query = new StringBuffer();
-
-        SessionFactoryImplementor sessionFactoryImplementation = (SessionFactoryImplementor) HibernateUtil.getSessionFactory();
-        ConnectionProvider connectionProvider = sessionFactoryImplementation.getConnectionProvider();
-
-        dbTool dbt = new dbTool(connectionProvider.getConnection(), null);
+        dbTool dbt = initDbTool();
         stPack st = new stPack();
 
-        GregorianCalendar edt = new GregorianCalendar();
-        edt.setTime(dto.getEndDate());
-        edt.add(Calendar.DATE, 1);
-        typesAndValues tv = new typesAndValues().add(Types.DATE, dto.getStartDate()).add(Types.DATE, edt.getTime());
+        typesAndValues tv = new typesAndValues().add(Types.DATE, dto.getStartDate()).add(Types.DATE, getEndDate(dto));
         query.append(" k.DPRB>=? AND k.DPRB<? AND p1.TRANS IN (");
         for(int i = 0; i < getUser().getUsr().getTrans().size(); i++) {
             tv.add(Types.CHAR, getUser().getUsr().getTrans().get(i));
@@ -140,6 +257,19 @@ public class Report_A extends CimSmgsSupport_A implements ServletRequestAware, S
         return "excel";
     }
 
+    private Date getEndDate(ReportParamsDTO dto) throws Exception {
+      GregorianCalendar edt = new GregorianCalendar();
+      edt.setTime(dto.getEndDate());
+      edt.add(Calendar.DATE, 1);
+      return edt.getTime();
+    }
+
+    private dbTool initDbTool() throws Exception {
+      SessionFactoryImplementor sessionFactoryImplementation = (SessionFactoryImplementor) HibernateUtil.getSessionFactory();
+      ConnectionProvider connectionProvider = sessionFactoryImplementation.getConnectionProvider();
+      return new dbTool(connectionProvider.getConnection(), null);
+    }
+
     public String paramsForm() throws Exception {
         ReportParamsDTO dto = new ReportParamsDTO();
 
@@ -168,12 +298,24 @@ public class Report_A extends CimSmgsSupport_A implements ServletRequestAware, S
     private HttpServletRequest request;
     private InputStream inputStream;
 
+    private String filename = "Report.xls";
+    @Autowired
+    private KontDAO kontDAO;
+
     public InputStream getInputStream() {
         return inputStream;
     }
 
     public void setInputStream(InputStream inputStream) {
         this.inputStream = inputStream;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 
     @Override
@@ -186,7 +328,7 @@ public class Report_A extends CimSmgsSupport_A implements ServletRequestAware, S
         this.response = response;
     }
 
-    enum Action {GET_REPORT,PARAMS_FORM}
+    enum Action {GET_REPORT,PARAMS_FORM,POEZDS_IN_INTERVAL,GRUZOTPR_INTERVAL,SOSTOJANIE_KONT_AVTO}
 
     public void setAction(String action) {
         this.action = action;

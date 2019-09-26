@@ -6,7 +6,8 @@ Ext.define('TK.view.ky2.AbstractBindTreeForm', {
         'Ext.form.field.Text',
         'Ext.layout.container.HBox',
         'Ext.toolbar.Fill',
-        'Ext.tree.Panel'
+        'Ext.tree.Panel',
+        'TK.view.ky2.MyFixedTreeModel'
     ],
 
     layout: {
@@ -26,9 +27,7 @@ Ext.define('TK.view.ky2.AbstractBindTreeForm', {
             rootVisible: false,
             flex: 1,
             viewConfig: this.buildTreeLeftPanelViewConfig(),
-            selModel: {
-                mode: 'MULTI'
-            },
+            selModel: Ext.create('TK.view.ky2.MyFixedTreeModel'),
             dockedItems: [{
                 xtype: 'toolbar',
                 dock: 'top',
@@ -46,9 +45,7 @@ Ext.define('TK.view.ky2.AbstractBindTreeForm', {
             rootVisible: false,
             flex: 1,
             viewConfig: this.buildTreeRightPanelViewConfig(),
-            selModel: {
-                mode: 'MULTI'
-            },
+            selModel: Ext.create('TK.view.ky2.MyFixedTreeModel'),
             dockedItems: [{
                 xtype: 'toolbar',
                 dock: 'top',
@@ -124,6 +121,14 @@ Ext.define('TK.view.ky2.AbstractBindTreeForm', {
                 action: 'showVags'
             }, '-',
             {
+                text: 'Развернуть',
+                action: 'expandConts'
+            }, '-',
+            {
+                text: 'Свернуть',
+                action: 'collapseConts'
+            }, '-',
+            {
                 xtype: 'vagkontsearch'
             },
             '->', '-',
@@ -139,14 +144,22 @@ Ext.define('TK.view.ky2.AbstractBindTreeForm', {
     },
 
     buildTreeRightPanelTopToolbarItems: function () {
-        return [{
-            text: '< Переместить',
-            action: 'moveLeft'
-        },
-        '-',
-        {
-            xtype: 'vagkontsearch'
-        }];
+        return [
+            {
+                text: '< Переместить',
+                action: 'moveLeft'
+            }, '-',
+            {
+                text: 'Развернуть',
+                action: 'expandAll'
+            }, '-',
+            {
+                text: 'Свернуть',
+                action: 'collapseAll'
+            }, '-',
+            {
+                xtype: 'vagkontsearch'
+            }];
     },
 
     buildTreeRightPanelBottomToolbarItems: function () {

@@ -198,15 +198,15 @@ Ext.define('TK.view.ky2.AvtoCtGrTreeForm', {
                     maxLength: 11,
                     enableKeyEvents: true
                     // allowBlank: false
+                // },{
+                //     name : 'dprb',
+                //     xtype: 'datefield',
+                //     fieldLabel: 'Прибытие',
+                //     altFormats:'d.m.y H:i',
+                //     format:'d.m.y H:i',
+                //     readOnly: true
+                //
                 },{
-                    name : 'dprb',
-                    xtype: 'datefield',
-                    fieldLabel: 'Прибытие',
-                    altFormats:'d.m.y H:i',
-                    format:'d.m.y H:i',
-                    readOnly: true
-
-                }/*,{
                     xtype:'fieldset',
                     title: 'Прибытие',
                     layout: 'anchor',
@@ -224,9 +224,9 @@ Ext.define('TK.view.ky2.AvtoCtGrTreeForm', {
                         name : 'dprbTime',
                         xtype: 'timefield',
                         //snapToIncrement: true,
-                        altFormats:'H:i'
+                        format:'H:i'
                     }]
-                }*/,{
+                },{
                     xtype:'checkbox',
                     name: 'poruz',
                     fieldLabel: 'Порожний',
@@ -461,6 +461,10 @@ Ext.define('TK.view.ky2.AvtoCtGrTreeForm', {
             }, {
                 text: '+ Пломба',
                 action: 'addPlomb',
+                iconCls: 'doc_new'
+            }, {
+                text: 'Акт',
+                action: 'addAct',
                 iconCls: 'doc_new'
             }];
     }

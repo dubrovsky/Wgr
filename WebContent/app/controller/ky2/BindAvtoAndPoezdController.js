@@ -426,8 +426,9 @@ Ext.define('TK.controller.ky2.BindAvtoAndPoezdController', {
     },
 
     bindAvtoAndPoezd: function (close) {
-        var dataObjLeft = this.getController('ky2.BindAvtoAndAvtoController').bindAvto(this.getTreepanelLeft().getRootNode());
-        var dataObjRight = this.getController('ky2.BindPoezdAndPoezdController').bindPoezds(this.getTreepanelRight().getRootNode());
+        var leftRootNode = this.getTreepanelLeft().getRootNode(),
+            dataObjLeft = this.getController('ky2.BindAvtoAndAvtoController').bindAvto(leftRootNode),
+            dataObjRight = this.getController('ky2.BindPoezdAndPoezdController').bindPoezds(this.getTreepanelRight().getRootNode());
 
         var url = 'ky2/secure/BindAvtoAndPoezd.do';
         this.getCenter().setLoading(true);
@@ -437,6 +438,10 @@ Ext.define('TK.controller.ky2.BindAvtoAndPoezdController', {
             scope: this,
             success: function (response) {
                 this.getCenter().setLoading(false);
+                if (!leftRootNode.hasChildNodes() && leftRootNode.get('direction') === 1) {
+                    this.getController('ky2.AvtoController').createAvtoOutFromAvtoInto(leftRootNode.get('hid'));
+                }
+
                 if (Ext.isNumber(close)) {
                     var closeBtn = this.getAvtoform().down('button[action="close"]');
                     closeBtn.fireEvent('click',closeBtn);

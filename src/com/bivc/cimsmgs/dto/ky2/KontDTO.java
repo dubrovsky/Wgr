@@ -1,5 +1,7 @@
 package com.bivc.cimsmgs.dto.ky2;
 
+import com.bivc.cimsmgs.commons.DateTimeUtils;
+import com.bivc.cimsmgs.commons.TimeSerializer;
 import com.bivc.cimsmgs.formats.json.serializers.DateSerializer;
 import com.bivc.cimsmgs.formats.json.serializers.DateTimeDeserializer;
 import com.bivc.cimsmgs.formats.json.serializers.DateTimeSerializer;
@@ -19,16 +21,15 @@ public class KontDTO implements Comparable<KontDTO>{
     private String nkon;
     private String notp;
 
-    /*@JsonSerialize(using = DateSerializer.class)
+    @JsonSerialize(using = DateSerializer.class)
     @JsonDeserialize(using = DateTimeDeserializer.class)
     private Date dprbDate;
 
     @JsonSerialize(using = TimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeserializer.class)
-    private Date dprbTime;*/
+    private Date dprbTime;
 
     @JsonSerialize(using = DateTimeSerializer.class)
-    @JsonDeserialize(using = DateTimeDeserializer.class)
     private Date dprb;
     private Boolean poruz;
     private Long massa_tar;
@@ -68,7 +69,7 @@ public class KontDTO implements Comparable<KontDTO>{
         this.notp = notp;
     }
 
-/*public Date getDprbDate() {
+    public Date getDprbDate() {
         return dprbDate;
     }
 
@@ -82,7 +83,18 @@ public class KontDTO implements Comparable<KontDTO>{
 
     public void setDprbTime(Date dprbTime) {
         this.dprbTime = dprbTime;
-    }*/
+    }
+
+    public Date getDprb() {
+        if(this.dprbDate != null){
+            this.dprb = this.dprbDate;
+            if(this.dprbTime != null){
+                this.dprb = DateTimeUtils.addTimeToDate(this.dprbDate, this.dprbTime);
+            }
+        }
+        return this.dprb;
+    }
+
 
     public BigDecimal getMassa_brutto() {
         return massa_brutto;
@@ -239,10 +251,6 @@ public class KontDTO implements Comparable<KontDTO>{
 
     public void setGruzs(TreeSet<GruzDTO> gruzs) {
         this.gruzs = gruzs;
-    }
-
-    public Date getDprb() {
-        return dprb;
     }
 
     public void setDprb(Date dprb) {

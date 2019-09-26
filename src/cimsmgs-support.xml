@@ -294,12 +294,18 @@ name="Doc2Doc_uploadXLSvags" method="uploadXLSvags" class="doc2doc_A">
             <result name="success" type="json"/>
             <interceptor-ref name="fileUploadStack"/>
         </action>
+        <action name="secure/Poezd_*" method="{1}" class="poezd2_A">
+            <result name="success" type="json"/>
+        </action>
         <action name="secure/Avto" class="avto2_A">
             <result name="success" type="json"/>
             <result name="excel" type="stream">
                 <param name="contentType">application/vnd.ms-excel</param>
                 <param name="contentDisposition">attachment;filename="${fileName}"</param>
             </result>
+        </action>
+        <action name="secure/AvtoZayav" class="avto2zayav_A">
+            <result name="success" type="json"/>
         </action>
         <action name="secure/PoezdVgCtGr" class="poezdVgctgr_A">
             <result name="success" type="json"/>
@@ -341,7 +347,7 @@ name="Doc2Doc_uploadXLSvags" method="uploadXLSvags" class="doc2doc_A">
             <result name="success" type="json"/>
             <result name="excel" type="stream">
                 <param name="contentType">application/vnd.ms-excel</param>
-                <param name="contentDisposition">attachment;filename="Report.xls"</param>
+                <param name="contentDisposition">attachment;filename="${filename}"</param>
             </result>
         </action>
     </package>

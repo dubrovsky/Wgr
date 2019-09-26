@@ -170,6 +170,7 @@
         <mapping resource="com/bivc/cimsmgs/db/ky/NsiAvto.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/ky/NsiKont.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/ky/KontGruzHistory.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/ky/AvtoZayav.hbm.xml"/>
 
         <event type="merge">
             <listener class="org.springframework.orm.hibernate3.support.IdTransferringMergeEventListener"/>

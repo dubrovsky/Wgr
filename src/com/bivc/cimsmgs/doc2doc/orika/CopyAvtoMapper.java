@@ -24,12 +24,7 @@ public class CopyAvtoMapper extends ConfigurableMapper {
                 .field("no_avto", "no_avto")
                 .field("no_trail", "no_trail")
                 .field("driver_fio", "driver_fio")
-                .field("naim_sob", "naim_sob")
-                .field("otp_cargo", "otp_cargo")
-                .field("pol_cargo", "pol_cargo")
-                .field("destination", "departure")
                 .field("client", "client")
-                .field("prim_avto", "prim_avto")
                 .field("ret_nkon", "ret_nkon")
                 .register();
 

@@ -4,7 +4,6 @@ import com.bivc.cimsmgs.commons.Filter;
 import com.bivc.cimsmgs.dao.PoezdDAO;
 import com.bivc.cimsmgs.db.Usr;
 import com.bivc.cimsmgs.db.ky.Poezd;
-import com.bivc.cimsmgs.dto.ky.ReportParamsDTO;
 import com.bivc.cimsmgs.services.ky.PoezdService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -62,12 +61,12 @@ public class PoezdDAOHib extends GenericHibernateDAO<Poezd, Long> implements Poe
         return (Long) crit.uniqueResult();
     }
 
-    @Override
+    /*@Override
     public List<Poezd> findByNppr(String nppr) {
         Criteria crit = getSession().createCriteria(getPersistentClass());
         crit.add(Restrictions.eq("nppr", nppr));
         return listAndCast(crit);
-    }
+    }*/
 
     @Override
     public Integer findMaxNppr(PoezdService.PoezdPrefix poezdPrefix, String dateProp, int year) {
@@ -125,19 +124,35 @@ public class PoezdDAOHib extends GenericHibernateDAO<Poezd, Long> implements Poe
         return listAndCast(crit);
     }
 
-    @Override
+  /*  @Override
     public List<Poezd> findPoezdsInInterval(ReportParamsDTO dto) {
         Criteria crit = getSession().createCriteria(getPersistentClass());
         crit.add(Restrictions.between("dprb", dto.getStartDate(), dto.getEndDate()));
         return listAndCast(crit);
-    }
+    }*/
 
-    @Override
+ /*   @Override
     public List<Poezd> findGruzotprInInterval(ReportParamsDTO dto) {
         Criteria crit = getSession().createCriteria(getPersistentClass());
         crit
                 .add(Restrictions.between("dprb", dto.getStartDate(), dto.getEndDate()))
                 .add(Restrictions.isNotNull("gruzotpr"));
+        return listAndCast(crit);
+    }*/
+
+    @Override
+    public List<Poezd> getPoezdsIntoForPoezdOutDir(Usr usr, long routeId) {
+        Criteria crit = getSession().createCriteria(getPersistentClass());
+        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans()));
+        crit.createAlias("route", "route").add(Restrictions.eq("route.hid", routeId));
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.DATE, -5);    // minus 5 days
+        Date dateBefore = cal.getTime();
+        crit.add(Restrictions.or(Restrictions.isNull("dprb"), Restrictions.between("dprb", dateBefore, new Date())));
+        crit.add(Restrictions.eq("direction", (byte)1));
+        
         return listAndCast(crit);
     }
 

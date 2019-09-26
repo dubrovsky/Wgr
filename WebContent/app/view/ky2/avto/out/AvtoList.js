@@ -23,7 +23,13 @@ Ext.define('TK.view.ky2.avto.out.AvtoList', {
         config.tbar.splice(8, 0,
             {tooltip: this.btnToAvto, iconCls:'truck', action:'showAvtosIntoDir4AvtoOutBind'},'-' ,
             {tooltip: this.btnToPoezd, iconCls:'train2', action:'getAvtoAndPoezdForBind'},'-',
-            {tooltip: this.btnToYard, iconCls:'cont', action:'getAvtoAndYardForBind'},'-'
+            {tooltip: this.btnToYard, iconCls:'cont', action:'getAvtoAndYardForBind'},'-',
+            {
+                xtype: 'splitbutton', text: 'Печать', iconCls: 'upload', action: 'print',
+                menu: [
+                    {text: 'WZ', iconCls: 'excel', action: 'wz'}, '-'
+                ]
+            }
         );
     }
 });

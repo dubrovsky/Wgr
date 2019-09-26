@@ -6,13 +6,14 @@ Ext.define('TK.controller.ky2.ReportController', {
         'ky2.AbstractList'
     ],
     stores: [
-        'ky2.ReportsBase',
-        'ky2.YardFilterPoezdsDir',
-        'ky2.YardFilterGruzotprsDir'
+        'ky2.ReportsForm',
+        'ky2.ReportsPoezdsInInterval',
+        'ky2.ReportsGruzotprInterval'
     ],
     models: [
-        'ky2.ReportBase',
-        'ky2.YardFilterDir'
+        'ky2.ReportForm',
+        'ky2.ReportPoezdsInInterval',
+        'ky2.ReportGruzotprInterval'
     ],
 
     init: function () {
@@ -48,29 +49,13 @@ Ext.define('TK.controller.ky2.ReportController', {
                 this.selectFilterEndDate(xform.down('combo'));
             }
         });
+        // window.open('ky2/secure/Report.do?hid=2686&action=sostojanie_kont_avto', '_blank', '');
     },
 
     getReport: function (btn) {
         var form = btn.up('form');
         if(form.isValid()) {
             window.open('ky2/secure/Report.do?reportParams=' + encodeURIComponent(Ext.encode(form.getValues())) + '&action=get_report', '_self', '');
-            /*btn.up('ky2reportparams').setLoading(true);
-
-            Ext.Ajax.request({
-                url: "ky2/secure/Report.do",
-                params: {
-                    action: 'get_report',
-                    reportParams: Ext.encode(form.getValues())
-                },
-                scope: this,
-                success: function (response, options) {
-                    btn.up('ky2reportparams').setLoading(false);
-                },
-                failure: function (response) {
-                    btn.up('ky2reportparams').setLoading(false);
-                    TK.Utils.makeErrMsg(response, 'Error...');
-                }
-            });*/
         }
 
 
@@ -93,7 +78,7 @@ Ext.define('TK.controller.ky2.ReportController', {
             gruzotprCombo.clearValue();
             poezdCombo.getStore().load({
                 params: {
-                    action: 'get_poezds_in_interval',
+                    action: 'poezds_in_interval',
                     reportParams: Ext.encode({startDate: values['startDate'], endDate: values['endDate']})
                 },
                 success: function (response, options) {
@@ -104,7 +89,7 @@ Ext.define('TK.controller.ky2.ReportController', {
             });
             gruzotprCombo.getStore().load({
                 params: {
-                    action: 'get_gruzotpr_in_interval',
+                    action: 'gruzotpr_interval',
                     reportParams: Ext.encode({startDate: values['startDate'], endDate: values['endDate']})
                 },
                 success: function (response, options) {

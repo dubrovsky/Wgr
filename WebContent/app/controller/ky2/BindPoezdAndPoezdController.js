@@ -136,7 +136,32 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
             },
             'ky2poezd2poezdbindtreeformout button[action=showVags]': {
                 click: this.getController('ky2.BindPoezdAndYardController').showVagsLeft
+            },
+            'ky2poezd2poezdbindtreeforminto button[action=expandConts]': {
+                click: this.expandContsLeft
+            },
+            'ky2poezd2poezdbindtreeforminto button[action=collapseConts]': {
+                click: this.collapseContsLeft
+            },
+            'ky2poezd2poezdbindtreeformout button[action=expandConts]': {
+                click: this.expandContsLeft
+            },
+            'ky2poezd2poezdbindtreeformout button[action=collapseConts]': {
+                click: this.collapseContsLeft
+            },
+            'ky2poezd2poezdbindtreeforminto button[action=expandAll]': {
+                click: this.expandPoezdRight
+            },
+            'ky2poezd2poezdbindtreeforminto button[action=collapseAll]': {
+                click: this.collapsePoezdRight
+            },
+            'ky2poezd2poezdbindtreeformout button[action=expandAll]': {
+                click: this.expandPoezdRight
+            },
+            'ky2poezd2poezdbindtreeformout button[action=collapseAll]': {
+                click: this.collapsePoezdRight
             }
+
         });
     },
 
@@ -246,7 +271,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
             var poezd = poezdsArr[i],
                 vags = poezd['vagons'],
                 poezdModel = Ext.create('TK.model.ky2.PoezdBindTreeNode', {
-                    text: poezd['nppr'],
+                    text: poezd['npprm'],
                     who: 'poezd',
                     leaf: false,
                     iconCls: 'vag',
@@ -281,15 +306,15 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         this.initVagsNodes(vags, rootNode, false);
     },
 
-    vagNodeText: function(vag) {
+    /*vagNodeText: function(vag) {
         return '<b>' + (vag['nvag'] ? vag['nvag'] : '...') + '</b>'
             + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/ ' + (vag['podSila'] ? vag['podSila'] : '...')
             + ' / ' + (vag['masTar'] ? vag['masTar'] : '...')
             + ' / ' + (vag['kolOs'] ? vag['kolOs'] : '...')
             + ' / ' + (vag['sobstv'] ? vag['sobstv'] : '...');
-    },
+    },*/
 
-    vagNodeText1: function(vag) {
+    vagNodeText: function(vag) {
         return '<b>' + (vag.get('nvag') ? vag.get('nvag') : '...') + '</b>'
             + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/ ' + (vag.get('podSila') ? vag.get('podSila') : '...')
             + ' / ' + (vag.get('masTar') ? vag.get('masTar') : '...')
@@ -303,7 +328,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
                 conts = vag['konts'],
                 gruzy = vag['gruzs'],
                 vagModel = Ext.create('TK.model.ky2.PoezdBindTreeNode', {
-                    text: this.vagNodeText(vag),
+                    // text: this.vagNodeText(vag),
                     who: 'vag',
                     poezdHid: rootNode.get('hid'),
                     leaf: false,
@@ -321,6 +346,8 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
                 rootNode.appendChild(vagModel);
             }
 
+            vagModel.set('text', this.vagNodeText(vagModel));
+
             if (vag['otpravka'] === 'CONT') {
                 if (conts && !Ext.Object.isEmpty(conts)) {
                     this.initContsNodes(conts, vagIndx, vagModel, isYard);
@@ -333,15 +360,15 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         }
     },
 
-    contNodeText: function(cont) {
+    /*contNodeText: function(cont) {
        return '<b>' + (cont['nkon'] ? cont['nkon'] : '...') + '</b>'
            + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/ ' + (cont['massa_tar'] ? cont['massa_tar'] : '...')
            + ' / ' + (cont['massa_brutto_all'] ? cont['massa_brutto_all'] : '...')
            + ' / ' + (cont['vid'] ? cont['vid'] : '...')
            + ' / ' + (cont['pod_sila'] ? cont['pod_sila'] : '...');
-    },
+    },*/
 
-    contNodeText1: function(cont) {
+    contNodeText: function(cont) {
         return '<b>' + (cont.get('nkon') ? cont.get('nkon') : '...') + '</b>'
             + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/ ' + (cont.get('massa_tar') ? cont.get('massa_tar') : '...')
             + ' / ' + (cont.get('massa_brutto_all') ? cont.get('massa_brutto_all') : '...')
@@ -354,7 +381,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
             var cont = conts[contIndx],
                 gryzy = cont['gruzs'],
                 contModel = Ext.create('TK.model.ky2.PoezdBindTreeNode', {
-                    text: this.contNodeText(cont),
+                    // text: this.contNodeText(cont),
                     who: 'cont',
                     poezdHid: vagModel.get('poezdHid'),
                     vagHid: vagModel.get('hid'),
@@ -368,6 +395,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
                 contModel.set(prop, value);
             }, this);
             vagModel.appendChild(contModel);
+            contModel.set('text', this.contNodeText(contModel));
 
             if (gryzy && !Ext.Object.isEmpty(gryzy)) {
                 this.initGryzyNodes(gryzy, contModel, contIndx, isYard);
@@ -747,5 +775,45 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
 
     dropToVag: function (node, dragData, targetVagModel, dropPosition) {
         this.afterDropToVag(dragData.records, targetVagModel);
+    },
+
+    expandContsLeft: function (btn) {
+        this.getTreepanelLeft().getRootNode().cascadeBy(function (nodeModel) {
+            if (nodeModel.get('who') === 'cont' && !nodeModel.isExpanded() && nodeModel.isExpandable()) {
+                nodeModel.expand();
+            }
+        }, this);
+    },
+
+    collapseContsLeft: function (btn) {
+        this.getTreepanelLeft().getRootNode().cascadeBy(function (nodeModel) {
+            if (nodeModel.get('who') === 'cont' && nodeModel.isExpanded() ) {
+                nodeModel.collapse();
+            }
+        }, this);
+    },
+
+    expandPoezdRight: function (btn) {
+        var selected = this.getTreepanelRight().getSelectionModel().getLastSelected();
+        if (selected && this.getTreepanelRight().getSelectionModel().getSelection().length === 1 && selected.get('who') === 'poezd') {
+            selected.cascadeBy(function (nodeModel) {
+                if (!nodeModel.isExpanded() && nodeModel.isExpandable()) {
+                    nodeModel.expand();
+                }
+            }, this);
+        }
+    },
+
+    collapsePoezdRight: function (btn) {
+        var selected = this.getTreepanelRight().getSelectionModel().getLastSelected();
+        if (selected && this.getTreepanelRight().getSelectionModel().getSelection().length === 1 && selected.get('who') === 'poezd') {
+            selected.cascadeBy(function (nodeModel) {
+                if (nodeModel.isExpanded()) {
+                    nodeModel.collapse();
+                }
+            }, this);
+        }
     }
+
+
 });

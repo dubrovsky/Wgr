@@ -373,6 +373,14 @@ Ext.define('TK.controller.Menu', {
                 gridParams = {action:'list', direction:2, routeId:routeId};
                 grid = Ext.widget('ky2avtooutlist');
                 break;
+            case 'avto2imp':
+                gridParams = {action:'list', direction:1, routeId:routeId};
+                grid = Ext.widget('ky2avtozayavintolist');
+                break;
+            case 'avto2exp':
+                gridParams = {action:'list', direction:2, routeId:routeId};
+                grid = Ext.widget('ky2avtozayavoutlist');
+                break;
 
             /*case 'kont_yard':
                 grid = Ext.widget('kyyardlist');
@@ -574,7 +582,8 @@ function translate (me,cur_lang) {
             poezdin: 'Поезда, прибытие', poezdout: 'Поезда, отправление',
             poezd2inwide: 'Поезд 1520мм(прибытие)',poezd2outwide: 'Поезд 1520мм(отправление)',kontyard2: 'Контейнерная площадка',
             poezd2innar: 'Поезд 1435мм(прибытие)',poezd2outnar: 'Поезд 1435мм(отправление)',
-            avtoin: 'Авто, прибытие', avtoout: 'Авто, отправление', avto2in: 'Авто2, прибытие', avto2out: 'Авто2, отправление'
+            avtoin: 'Авто, прибытие', avtoout: 'Авто, отправление', avto2in: 'Авто2, прибытие', avto2out: 'Авто2, отправление',
+            avto2imp: 'Заявка на выгрузку(авто)', avto2exp: 'Заявка на погрузку(авто)'
         },
 
         de : {user   :'Die Benutzer',userGroups  :'Groups',project:'Die Projekte',log    :'Logs', stat     :"Statistik",
@@ -609,7 +618,7 @@ function translate (me,cur_lang) {
             filecimsmgs :'Graphics CIM/SMGS',  avisogu29k  :'Templates GU for CKP', cim :'CIM', avisocim    :'Templates CIM',
             files       :'Other documents', cmr :'CMR', fileavisogu29k:'Graphics Templates GU', gu27v  :'GU-27v',
             avisogu29k1 :'Templates GU for agents', avisocimsmgs:'Templates CIM/SMGS',  ved :'Wagon and transfer list', exit:'Exit',
-            poezdin: 'Trains, in', poezdout: 'Trains, out', avtoin: 'Avto, in', avtoout: 'Avto, out'},
+            poezdin: 'Trains, in', poezdout: 'Trains, out', avtoin: 'Avto, in', avtoout: 'Avto, out'}
     };
 
     // documents localisation

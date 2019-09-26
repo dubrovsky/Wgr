@@ -56,11 +56,21 @@ public class VagonDAOHib extends GenericHibernateDAO<Vagon, Long> implements Vag
         return (Long) crit.uniqueResult();
     }
 
+    @Override
+    public List<Vagon> getVagsForPoezdout(Long poezdHid) {
+        Criteria crit = getSession().createCriteria(getPersistentClass());
+
+        crit.add(
+                Restrictions.eq("poezd.hid", poezdHid)
+        );
+        return listAndCast(crit);
+    }
+
     private void applyFilter(List<Filter> filters, Criteria crit, Locale locale) {
-        if(filters != null && filters.size() > 0){
-            for(Filter filter: filters){
-                if(StringUtils.isNotBlank(filter.getProperty()) && StringUtils.isNotBlank(filter.getValue())){
-                    switch (Vagon.FilterFields.valueOf(filter.getProperty().toUpperCase())){
+        if (filters != null && filters.size() > 0) {
+            for (Filter filter : filters) {
+                if (StringUtils.isNotBlank(filter.getProperty()) && StringUtils.isNotBlank(filter.getValue())) {
+                    switch (Vagon.FilterFields.valueOf(filter.getProperty().toUpperCase())) {
                         case NVAG:
                             crit.add(Restrictions.ilike(Vagon.FilterFields.NVAG.getName(), StringUtils.trim(filter.getValue()), MatchMode.ANYWHERE));
                             break;

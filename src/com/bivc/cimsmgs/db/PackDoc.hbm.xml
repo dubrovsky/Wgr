@@ -112,6 +112,12 @@
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.ky.Avto" />
         </set>
+        <set name="avtoZayavs" table="KY_ZAYAV" inverse="true" lazy="true" fetch="select" batch-size="50" cascade="all, delete-orphan">
+            <key>
+                <column name="HID_PACK" precision="20" scale="0" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.AvtoZayav" />
+        </set>
     </class>
     <filter-def name="limitFieldCommentsByDocId">
         <filter-param name="docId" type="big_decimal"/>

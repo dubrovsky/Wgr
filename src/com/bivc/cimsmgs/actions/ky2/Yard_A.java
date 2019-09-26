@@ -173,7 +173,7 @@ public class Yard_A extends CimSmgsSupport_A {
     }
 
     public String getPoezdsForFilter() throws Exception {
-        final List<YardFilerDirDTO> gruzotprs = yardDAO.getPoezdsForFilter();
+        final List<YardFilerDirDTO> gruzotprs = yardDAO.getPoezdsForFilter(getUser().getUsr());
         setJSONData(
                 defaultSerializer
                         .setLocale(getLocale())
@@ -188,7 +188,7 @@ public class Yard_A extends CimSmgsSupport_A {
     }
 
     public String getGruzotprsForFilter() throws Exception {
-        final List<YardFilerDirDTO> gruzotprs = yardDAO.getGruzotprsForFilter();
+        final List<YardFilerDirDTO> gruzotprs = yardDAO.getGruzotprsForFilter(getUser().getUsr());
         setJSONData(
                 defaultSerializer
                         .setLocale(getLocale())

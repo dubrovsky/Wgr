@@ -13,9 +13,17 @@ public class Excel {
     private static TreeMap xlsFile = new TreeMap();
 
     synchronized public static byte[] getXlsFile(String nmXlsFile) throws Exception {
+        return getFile(nmXlsFile, ".xls");
+    }
+
+    synchronized public static byte[] getXlsxFile(String nmXlsFile) throws Exception {
+        return getFile(nmXlsFile, ".xlsx");
+    }
+
+    synchronized private static byte[] getFile(String nmXlsFile, String ext) throws Exception {
         byte[] ret = null;
         if ((ret = (byte[]) xlsFile.get(nmXlsFile)) == null) {
-            InputStream strm = Excel.class.getResourceAsStream("/com/bivc/cimsmgs/xls/" + nmXlsFile + ".xls");
+            InputStream strm = Excel.class.getResourceAsStream("/com/bivc/cimsmgs/xls/" + nmXlsFile + ext);
             ret = new byte[0];
             if (strm != null) {
                 int sk = (int) strm.available();

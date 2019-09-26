@@ -30,9 +30,9 @@ public interface YardDAO extends GenericDAO<Yard, Long> {
 
     List<Yard> findAll4Report2(List<Filter> filters, Usr usr, Locale locale);
 
-    List<YardFilerDirDTO> getPoezdsForFilter();
+    List<YardFilerDirDTO> getPoezdsForFilter(Usr usr);
 
-    List<YardFilerDirDTO> getGruzotprsForFilter();
+    List<YardFilerDirDTO> getGruzotprsForFilter(Usr usr);
 
 
 //    public void delete(Long hid);

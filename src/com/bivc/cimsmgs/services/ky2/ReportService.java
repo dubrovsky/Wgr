@@ -294,7 +294,7 @@ public class ReportService {
 
             // T
             cell = row.createCell(cellIndex);
-            cell.setCellValue(dateInterval(dprb, dotp));
+            cell.setCellValue(dayInterval(dprb, dotp));
             cell.setCellStyle(style4);
             cellIndex++;
 
@@ -327,6 +327,24 @@ public class ReportService {
         return wb;
     }
 
+    private String dayInterval(Date d1, Date d2) throws Exception {
+        if(d1 == null || d2 == null) return "";
+        long dt = (d2.getTime() - d1.getTime()) / 1000;
+//        String t = "";
+//        if(dt < 0) {
+//            t = "- ";
+//            dt = -dt;
+//        }
+//        long ss = dt % 60;
+        dt /= 60;
+//        long mm = dt % 60;
+        dt /= 60;
+//        long hh = dt % 24;
+        long dd = dt / 24;
+        return dd + " ";
+    }
+
+/*
     private String dateInterval(Date d1, Date d2) throws Exception {
         if(d1 == null || d2 == null) return "";
         long dt = (d2.getTime() - d1.getTime()) / 1000;
@@ -344,5 +362,6 @@ public class ReportService {
         long dd = dt / 24;
         return t + (dd > 0 ? dd + " " : "")  + (hh < 10 ? "0" : "") + hh + ":" + (mm < 10 ? "0" : "") + mm + ":" + (ss < 10 ? "0" : "") + ss + " ";
     }
+*/
 
 }

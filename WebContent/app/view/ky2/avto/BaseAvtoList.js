@@ -9,8 +9,8 @@ Ext.define('TK.view.ky2.avto.BaseAvtoList', {
                 {text:this.headerAvtoTrail, dataIndex:'no_trail', flex:1, maxWidth:100},
                 {text:this.headerDriverFam, dataIndex:'driver_fio', flex:1, maxWidth:200},
                 {text:this.headerKontCount, dataIndex:'kontCount', flex:1, maxWidth:100},
-                {text:this.headerDep, dataIndex:'departure', width:200},
-                {text:this.headerDest, dataIndex:'destination', width:200},
+                // {text:this.headerDep, dataIndex:'departure', width:200},
+                // {text:this.headerDest, dataIndex:'destination', width:200},
                 {
                     text:this.headerCreation,
                     columns: [{

@@ -94,11 +94,23 @@ Ext.define('TK.controller.ky2.AvtoController', {
             'ky2avtointoform button[action="print"] menuitem[action="pz"]': {
                 click: this.createPZ
             },
+            'ky2avtooutlist button[action="print"] menuitem[action="wz"]': {
+                click: this.createWZlist
+            },
+            'ky2avtointolist button[action="print"] menuitem[action="pz"]': {
+                click: this.createPZlst
+            },
             // 'ky2avtooutform button[action="print"] menuitem[action="pz"]': {
             //     click: this.createPZ
             // },
             'ky2avtointolist button[action="createAvtoOutFromInto"]': {
-                click: this.createAvtoOutFromAvtoInto
+                click: this.createAvtoOutFromAvtoIntolist
+            },
+            'ky2avtointolist button[action="copyAvtoIntoToInto"]': {
+                click: this.copyAvtoIntoToInto
+            },
+            'ky2avtointoform button[action="createAvtoOutFromInto"]': {
+                click: this.createAvtoOutFromAvtoIntoform
             },
             'ky2avtointoform button[action="nsiOtpr"]': {
                 click: this.showNsiOtpr
@@ -115,13 +127,69 @@ Ext.define('TK.controller.ky2.AvtoController', {
         });
     },
 
-    createAvtoOutFromAvtoInto: function (btn) {
+    copyAvtoIntoToInto: function (btn) {
         var avtolist = this.getAvtolist();
         if (!TK.Utils.isRowSelected(avtolist)) {
             return false;
         }
+        Ext.Msg.show({
+            title: 'Подтверждение',
+            msg: 'Копировать авто?',
+            buttons: Ext.Msg.YESNO,
+            icon: Ext.Msg.QUESTION,
+            scope: this,
+            fn: function (buttonId) {
+                if (buttonId === 'yes') {
+                    this.getCenter().setLoading(true);
+                    Ext.Ajax.request({
+                        url: 'ky2/secure/Avto.do',
+                        params: {
+                            action: 'copy_avtointo_to_avtointo',
+                            hid: avtolist.getSelectionModel().getLastSelected().get('hid')
+                        },
+                        scope: this,
+                        success: function (response, options) {
+                            this.getCenter().setLoading(false);
+                            Ext.Msg.show({
+                                title: '',
+                                msg: 'Ok',
+                                buttons: Ext.Msg.OK,
+                                icon: Ext.Msg.INFO
+                            });
+                            avtolist.getStore().reload();
+                            // var text = Ext.decode(response.responseText);
+                        },
+                        failure: function (response) {
+                            this.getCenter().setLoading(false);
+                            TK.Utils.makeErrMsg(response, 'Error...');
+                        }
+                    });
+                }
+            }
+        })
+    },
 
-        var avto = avtolist.getSelectionModel().getLastSelected();
+
+    createAvtoOutFromAvtoIntoform: function (btn) {
+        var record = this.getAvtoform().getRecord();
+        if (record.get('hid') == null) {
+            Ext.Msg.alert(this.warningMsg, this.warningText);
+            return false;
+        }
+
+        this.createAvtoOutFromAvtoInto(record.get('hid'));
+    },
+
+    createAvtoOutFromAvtoIntolist: function (btn) {
+        var avtolist = this.getAvtolist();
+        if (!TK.Utils.isRowSelected(avtolist)) {
+            return false;
+        }
+        this.createAvtoOutFromAvtoInto(avtolist.getSelectionModel().getLastSelected().get('hid'));
+    },
+
+    createAvtoOutFromAvtoInto: function (hid) {
+
         Ext.Msg.show({
             title: 'Подтверждение',
             msg: 'Создать авто по отправлению?',
@@ -132,17 +200,17 @@ Ext.define('TK.controller.ky2.AvtoController', {
                 if (buttonId === 'yes') {
                     this.getCenter().setLoading(true);
                     Ext.Ajax.request({
-                        url: avto.getProxy().url,
+                        url: 'ky2/secure/Avto.do',
                         params: {
                             action: 'create_avtoout_from_avtointo',
-                            hid: avto.get('hid')
+                            hid: hid
                         },
                         scope: this,
                         success: function (response, options) {
                             this.getCenter().setLoading(false);
                             Ext.Msg.show({
                                 title: '',
-                                msg: 'Ok',
+                                msg: 'Авто по отправлению создано',
                                 buttons: Ext.Msg.OK,
                                 icon: Ext.Msg.INFO
                             });
@@ -159,11 +227,25 @@ Ext.define('TK.controller.ky2.AvtoController', {
     },
 
 
+    createWZlist: function(btn) {
+        this.createWZPZlist('get_wz');
+    },
+    createPZlst: function(btn) {
+        this.createWZPZlist('get_pz');
+    },
     createWZ: function(btn) {
         this.createWZPZ('get_wz');
     },
     createPZ: function(btn) {
         this.createWZPZ('get_pz');
+    },
+    createWZPZlist: function(action) {
+        var avtolist = this.getAvtolist();
+        if (!TK.Utils.isRowSelected(avtolist)) {
+            return false;
+        }
+        var hid = avtolist.getSelectionModel().getLastSelected().get('hid');
+        this.openWZPZ(hid, action);
     },
     createWZPZ: function(action) {
         var record = this.getAvtoform().getRecord();
@@ -171,8 +253,12 @@ Ext.define('TK.controller.ky2.AvtoController', {
             Ext.Msg.alert(this.warningMsg, this.warningText);
             return false;
         }
-        window.open('ky2/secure/Avto.do?hid=' + record.get('hid') + '&action=' + action, '_self', '');
+        this.openWZPZ(record.get('hid'), action);
     },
+    openWZPZ: function(hid, action) {
+        window.open('ky2/secure/Avto.do?hid=' + hid + '&action=' + action, '_self', '');
+    },
+
     createAvtoInto: function (btn) {
         this.createAvto('ky2avtointoform', 'TK.model.ky2.AvtoInto');
     },

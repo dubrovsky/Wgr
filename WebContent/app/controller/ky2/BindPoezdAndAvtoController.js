@@ -113,7 +113,33 @@ Ext.define('TK.controller.ky2.BindPoezdAndAvtoController', {
             },
             'ky2poezd2avtobindtreeformout button[action=saveExit]': {
                 click: this.bindPoezdAndAvtoAndExit
+            },
+            'ky2poezd2avtobindtreeforminto button[action=expandConts]': {
+                click: this.getController('ky2.BindPoezdAndPoezdController').expandContsLeft
+            },
+            'ky2poezd2avtobindtreeforminto button[action=collapseConts]': {
+                click: this.getController('ky2.BindPoezdAndPoezdController').collapseContsLeft
+            },
+            'ky2poezd2avtobindtreeformout button[action=expandConts]': {
+                click: this.getController('ky2.BindPoezdAndPoezdController').expandContsLeft
+            },
+            'ky2poezd2avtobindtreeformout button[action=collapseConts]': {
+                click: this.getController('ky2.BindPoezdAndPoezdController').collapseContsLeft
+            },
+            'ky2poezd2avtobindtreeforminto button[action=expandAll]': {
+                click: this.expandAllRight
+            },
+            'ky2poezd2avtobindtreeforminto button[action=collapseAll]': {
+                click: this.collapseAllRight
+            },
+            'ky2poezd2avtobindtreeformout button[action=expandAll]': {
+                click: this.expandAllRight
+            },
+            'ky2poezd2avtobindtreeformout button[action=collapseAll]': {
+                click: this.collapseAllRight
             }
+
+
         });
     },
 
@@ -449,6 +475,23 @@ Ext.define('TK.controller.ky2.BindPoezdAndAvtoController', {
                 TK.Utils.makeErrMsg(response, 'Error...');
             }
         });
+    },
+
+    expandAllRight: function (btn) {
+        this.getTreepanelRight().getRootNode().cascadeBy(function (nodeModel) {
+            if (!nodeModel.isExpanded() && nodeModel.isExpandable()) {
+                nodeModel.expand();
+            }
+        }, this);
+    },
+
+    collapseAllRight: function (btn) {
+        this.getTreepanelRight().getRootNode().cascadeBy(function (nodeModel) {
+            if (!nodeModel.isRoot() && nodeModel.isExpanded() ) {
+                nodeModel.collapse();
+            }
+        }, this);
     }
+
 
 });

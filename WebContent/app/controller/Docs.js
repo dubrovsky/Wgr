@@ -242,15 +242,21 @@ Ext.define('TK.controller.Docs', {
             'ky2avtointoform button[action="close"]': {
                 click: this.onExit
             },
-            'ky2vgctgrtreeform button[action=close]': {
+            'ky2avtozayavoutform button[action="close"]': {
                 click: this.onExit
             },
-            'ky2bindtreeform button[action=close]': {
-                click: this.onExit
-            },
-            'ky2avtobindtreeform button[action=close]': {
+            'ky2avtozayavintoform button[action="close"]': {
                 click: this.onExit
             }
+            // 'ky2vgctgrtreeform button[action=close]': {
+            //     click: this.onExit
+            // },
+            // 'ky2bindtreeform button[action=close]': {
+            //     click: this.onExit
+            // },
+            // 'ky2avtobindtreeform button[action=close]': {
+            //     click: this.onExit
+            // }
 
 
         });

@@ -122,10 +122,17 @@ Ext.define('TK.controller.ky2.YardCtGrController', {
             else if (field.getName() === 'massa' && parentOfSelected.get('who') === 'cont') {
                 this.massaRecount(parentOfSelected);
             }
+            else if (field.getName() === 'massa_brutto' && selectedNode.get('who') === 'cont') {
+                this.massaGryzRecount(selectedNode, newVal);
+            }
             else if (field.getName() === 'massa_tar' || field.getName() === 'massa_brutto') {
                 rec.set('massa_brutto_all', rec.get('massa_tar') + rec.get('massa_brutto'));
                 field.up('form').down('#massa_brutto_all').setValue(rec.get('massa_brutto_all'));
             }
+            // if (rec.get('who') === 'cont') {
+            //     rec.set('text', this.getController('ky2.BindPoezdAndPoezdController').contNodeText(rec));
+            // }
+
         }
     },
 
@@ -139,19 +146,19 @@ Ext.define('TK.controller.ky2.YardCtGrController', {
         parentOfSelected.set('massa_brutto_all', total + parentOfSelected.get('massa_tar'))
     },
 
-    // onContBruttoUpdateData: function (field) {
-    //     var rec = field.up('form').getRecord(),
-    //         oldVal = rec.get(field.getName()),
-    //         newVal = field.getSubmitValue();
-    //     if (oldVal !== newVal) {
-    //         rec.set(field.getName(), newVal);
-    //         if (field.getName() === 'massa_tar' ||
-    //             field.getName() === 'massa_brutto') {
-    //             rec.set('massa_brutto_all', rec.get('massa_tar') + rec.get('massa_brutto'));
-    //             field.up('form').down('#massa_brutto_all').setValue(rec.get('massa_brutto_all'));
-    //         }
-    //     }
-    // },
+    massaGryzRecount: function(selectedNode, newVal) {
+        var totalGryzNodes = 0,
+            gryzNode;
+        selectedNode.eachChild(function (nodeModel) {
+            if (nodeModel.get('who') === 'gryz') {
+                totalGryzNodes++;
+                gryzNode = nodeModel;
+            }
+        });
+        if (totalGryzNodes === 1) {
+            gryzNode.set('massa', newVal);
+        }
+    },
 
     onSaveExit: function () {
         this.onSaveClick(1);
@@ -216,7 +223,7 @@ Ext.define('TK.controller.ky2.YardCtGrController', {
                 this.getContpanel().items.each(function (contItem, index, length) {
                     if (contItem.isXType('field')) {
                         contDataObj[contItem.getName()] = nodeModel.get(contItem.getName());
-                    } else if (contItem.isXType('fieldcontainer')) {
+                    } else if (contItem.isXType('fieldcontainer') || contItem.isXType('fieldset')) {
                         contItem.items.each(function (item) {
                             if (item.isXType('field')) {
                                 contDataObj[item.getName()] = nodeModel.get(item.getName());
@@ -457,7 +464,7 @@ Ext.define('TK.controller.ky2.YardCtGrController', {
             this.getContpanel().items.each(function (contItem, index, length) {
                 if (contItem.isXType('field')) {
                     contModel.set(contItem.getName(), cont[contItem.getName()]);
-                } else if (contItem.isXType('fieldcontainer')) {
+                } else if (contItem.isXType('fieldcontainer') || contItem.isXType('fieldset')) {
                     contItem.items.each(function (item, index, length) {
                         if (item.isXType('field')) {
                             contModel.set(item.getName(), cont[item.getName()]);
@@ -466,6 +473,7 @@ Ext.define('TK.controller.ky2.YardCtGrController', {
                 }
             });
             avtoModel.appendChild(contModel);
+            // contModel.set('text', this.getController('ky2.BindPoezdAndPoezdController').contNodeText(contModel));
 
             if (gryzy && !Ext.Object.isEmpty(gryzy)) {
                 this.initGryzyNodes(gryzy, contModel, contIndx);
@@ -600,7 +608,7 @@ Ext.define('TK.controller.ky2.YardCtGrController', {
     onDelClick: function (btn) {
         var selectedModelNode = this.getTreepanel().getSelectionModel().getLastSelected(),
             parentModelNode = selectedModelNode.parentNode,
-            whoSelected = selectedModelNode.get('who');
+        whoSelected = selectedModelNode.get('who');
 
         selectedModelNode.remove(true, true);
 

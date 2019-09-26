@@ -4,6 +4,7 @@ package com.bivc.cimsmgs.db;
 
 import com.bivc.cimsmgs.commons.Constants;
 import com.bivc.cimsmgs.db.ky.Avto;
+import com.bivc.cimsmgs.db.ky.AvtoZayav;
 import com.bivc.cimsmgs.db.ky.Poezd;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.commons.collections4.CollectionUtils;
@@ -42,6 +43,7 @@ public class PackDoc implements Serializable {
     private boolean deleted = false;
 	private Set<Poezd> poezds = new HashSet<Poezd>();
 	private Set<Avto> avtos = new HashSet<Avto>();
+	private Set<AvtoZayav> avtoZayavs = new HashSet<>();
 
 	public Set<Poezd> getPoezds() {
 		return poezds;
@@ -51,7 +53,15 @@ public class PackDoc implements Serializable {
 		this.poezds = poezds;
 	}
 
-	public Set<Avto> getAvtos() {
+    public Set<AvtoZayav> getAvtoZayavs() {
+        return avtoZayavs;
+    }
+
+    public void setAvtoZayavs(Set<AvtoZayav> avtoZayavs) {
+        this.avtoZayavs = avtoZayavs;
+    }
+
+    public Set<Avto> getAvtos() {
 		return avtos;
 	}
 
@@ -302,6 +312,12 @@ public class PackDoc implements Serializable {
 		if (avto != null) {
 			avto.setPackDoc(this);
 			getAvtos().add(avto);
+		}
+	}
+	public void addAvtoZayavItem(AvtoZayav avtoZayav) {
+		if (avtoZayav != null) {
+            avtoZayav.setPackDoc(this);
+			getAvtoZayavs().add(avtoZayav);
 		}
 	}
 	public void addPoezdItem(Poezd poezd) {

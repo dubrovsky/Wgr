@@ -22,8 +22,9 @@ Ext.define('TK.view.ky2.poezd.out.PoezdList', {
         this.callParent(arguments);
         config.tbar.splice(8, 0,
             {tooltip: this.btnFromPoezdInto, iconCls:'train2', action:'showPoezdsIntoDir4PoezdOutBind'},'-',
-            {tooltip: this.btnFromYard, iconCls:'cont', action:'getPoesdAndYardForBind'},'-'
-            ,{tooltip: "На авто", iconCls:'truck', action:'getPoesdAndAvtoForBind'},'-'
+            {tooltip: this.btnFromYard, iconCls:'cont', action:'getPoesdAndYardForBind'},'-',
+            {tooltip: "На авто", iconCls:'truck', action:'getPoesdAndAvtoForBind'},'-'
+            ,{text: '+ С поездов по приб.', iconCls:'train', action:'getPoezdsIntoForPoezdOut'},'-'
         );
     }
 });

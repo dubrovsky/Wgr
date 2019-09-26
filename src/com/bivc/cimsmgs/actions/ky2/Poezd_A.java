@@ -12,6 +12,8 @@ import com.bivc.cimsmgs.doc2doc.Mapper;
 import com.bivc.cimsmgs.dto.ky.PoezdBaseDTO;
 import com.bivc.cimsmgs.dto.ky.PoezdDTO;
 import com.bivc.cimsmgs.dto.ky2.PoezdImportDTO;
+import com.bivc.cimsmgs.dto.ky2.PoezdViewDTO;
+import com.bivc.cimsmgs.dto.ky2.VagonViewDTO;
 import com.bivc.cimsmgs.exchange.KYPoezdLoader;
 import com.bivc.cimsmgs.formats.json.Deserializer;
 import com.bivc.cimsmgs.formats.json.Serializer;
@@ -58,12 +60,16 @@ public class Poezd_A extends CimSmgsSupport_A {
                     return poezdsDir4PoezdBind();
                 case CREATE_POEZDOUT_FROM_POEZDINTO:
                     return createPoezdOutFromPoezdInto();
+                case CREATE_POEZDOUT_FROM_POEZDSINTO:
+                    return createPoezdOutFromPoezdsInto();
                 case IMPORT_POEZD_LIST:
                     return importPoezdList();
                 case IMPORT_POESD:
                     return importPoezd();
                 case UPLOAD:
                     return uploadPoezd();
+                case GET_POEZDINTO_FOR_POEZDOUT:
+                    return getPoezdintoForPoezdout();
                 /*case GET_POEZDS_IN_INTERVAL:
                     return getPoezdsInInterval();
                 case GET_GRUZOTPR_IN_INTERVAL:
@@ -77,57 +83,6 @@ public class Poezd_A extends CimSmgsSupport_A {
         }
 
     }
-
-    /*private String getPoezdsInInterval() throws Exception {
-        ReportParamsDTO dto = defaultDeserializer.setLocale(getLocale()).read(ReportParamsDTO.class, reportParams);
-        if (dto.getStartDate() == null || dto.getEndDate() == null) {
-            throw new Exception("No reporting period specified");
-        }
-
-        GregorianCalendar edt = new GregorianCalendar();  // ass 1 day
-        edt.setTime(dto.getEndDate());
-        edt.add(Calendar.DATE, 1);
-        dto.setEndDate(edt.getTime());
-
-        List<Poezd> poezds = poezdDAO.findPoezdsInInterval(dto);
-        setJSONData(
-                defaultSerializer
-                        .setLocale(getLocale())
-                        .write(
-                                new Response<>(
-                                        kypoezdMapper.copyList(poezds, PoezdDirDTO.class),
-                                        (long) poezds.size()
-                                )
-                        )
-        );
-        return SUCCESS;
-    }*/
-
-    /*private String getGruzotprInInterval() throws Exception {
-        ReportParamsDTO dto = defaultDeserializer.setLocale(getLocale()).read(ReportParamsDTO.class, reportParams);
-        if (dto.getStartDate() == null || dto.getEndDate() == null) {
-            throw new Exception("No reporting period specified");
-        }
-
-        GregorianCalendar edt = new GregorianCalendar();  // ass 1 day
-        edt.setTime(dto.getEndDate());
-        edt.add(Calendar.DATE, 1);
-        dto.setEndDate(edt.getTime());
-
-        List<Poezd> poezds = poezdDAO.findGruzotprInInterval(dto);
-        List<Poezd> filteredPoezds = new ArrayList<>(poezds.stream().collect(toMap(Poezd::getGruzotpr, p -> p, (p, q) -> p)).values());
-        setJSONData(
-                defaultSerializer
-                        .setLocale(getLocale())
-                        .write(
-                                new Response<>(
-                                        kypoezdMapper.copyList(filteredPoezds, PoezdDirDTO.class),
-                                        (long) poezds.size()
-                                )
-                        )
-        );
-        return SUCCESS;
-    }*/
 
     public String list() throws Exception {
         log.debug("Rendering Poezd list.");
@@ -152,13 +107,10 @@ public class Poezd_A extends CimSmgsSupport_A {
                         )
         );
 
-//        setJSONData(poezdIntoToListSerializer.setLocale(getLocale()).write(response));
         return SUCCESS;
     }
 
     public String importPoezdList() throws Exception {
-//      dbConnector dbc = new dbConnector();
-//      Class.forName("oracle.jdbc.OracleDriver");
         SessionFactoryImplementor sessionFactoryImplementation = (SessionFactoryImplementor) HibernateUtil.getSessionFactory();
         ConnectionProvider connectionProvider = sessionFactoryImplementation.getConnectionProvider();
 
@@ -192,6 +144,21 @@ public class Poezd_A extends CimSmgsSupport_A {
                         )
         );
 
+        return SUCCESS;
+    }
+
+    private String getPoezdintoForPoezdout() throws Exception {
+        List<Vagon> vagons = vagonDAO.getVagsForPoezdout(getHid());
+        setJSONData(
+                defaultSerializer
+                        .setLocale(getLocale())
+                        .write(
+                                new Response<>(
+                                        mapper.mapAsList(vagons, VagonViewDTO.class),
+                                        (long) vagons.size()
+                                )
+                        )
+        );
         return SUCCESS;
     }
 
@@ -487,6 +454,23 @@ public class Poezd_A extends CimSmgsSupport_A {
         return SUCCESS;
     }
 
+    public String getPoezdsIntoForPoezdOutDir() throws Exception {
+        final List<Poezd> poezds = poezdDAO.getPoezdsIntoForPoezdOutDir(getUser().getUsr(), getRouteId());
+
+        setJSONData(
+                defaultSerializer
+                        .setLocale(getLocale())
+                        .write(
+                                new Response<>(
+                                        mapper.mapAsList(poezds, PoezdViewDTO.class),
+                                        (long)poezds.size()
+                                )
+                        )
+        );
+
+        return SUCCESS;
+    }
+
     public String createPoezdOutFromPoezdInto() {
         Poezd poezdInto = poezdDAO.getById(getHid(), false);
         log.debug("Found poezd to copy to poezdOut: {}", poezdInto);
@@ -501,53 +485,71 @@ public class Poezd_A extends CimSmgsSupport_A {
         pack.addPoezdItem(poezdCopy);
         getPackDocDAO().makePersistent(pack);
 
+        createPoezdOutFromPoezdInto(poezdInto, poezdCopy);
+        return SUCCESS;
+    }
+
+    public String createPoezdOutFromPoezdsInto() {
+        Poezd poezdInto = poezdDAO.getById(getHidInto(), false);
+        Poezd poezdOut = poezdDAO.getById(getHidOut(), false);
+
+        createPoezdOutFromPoezdInto(poezdInto, poezdOut);
+        return SUCCESS;
+    }
+
+    private void createPoezdOutFromPoezdInto(Poezd poezdInto, Poezd poezdOut) {
         Map<String, List<?>> contGruz4History = new HashMap<>(2);
         contGruz4History.put("konts", new ArrayList<Kont>());
         contGruz4History.put("gruzs", new ArrayList<>());
 
+        short sort = 0;
         for (Vagon vagonInto : poezdInto.getVagons()) {
-            Vagon vagonCopy = copyPoezdMapper.map(vagonInto, Vagon.class);
+            if(hids.contains(vagonInto.getHid())) {
+                Vagon vagonCopy = copyPoezdMapper.map(vagonInto, Vagon.class);
 
-            // set props
-            vagonCopy.setPoezd(poezdCopy);
-            vagonCopy.setDirection((byte) 2);
+                // set props
+                vagonCopy.setPoezd(poezdOut);
+                vagonCopy.setDirection((byte) 2);
+                vagonCopy.setSort(sort);
 
-            // save
-            vagonDAO.makePersistent(vagonCopy);
+                // save
+                vagonDAO.makePersistent(vagonCopy);
 
-            for(Kont kontInto: vagonInto.getKonts()) {
-                final Kont kontCopy = copyPoezdMapper.map(kontInto, Kont.class);
-                kontCopy.setVagon(vagonCopy);
+                for(Kont kontInto: vagonInto.getKonts()) {
+//                    final Kont kontCopy = copyPoezdMapper.map(kontInto, Kont.class);
+                    kontInto.setVagon(vagonCopy);
 
-                kontDAO.makePersistent(kontCopy);
-                ((List<Kont>) contGruz4History.get("konts")).add(kontCopy);
+                    kontDAO.makePersistent(kontInto);
+                    ((List<Kont>) contGruz4History.get("konts")).add(kontInto);
 
-                for(Gruz gruzInto: kontInto.getGruzs()){
-                    final Gruz gruzCopy = copyPoezdMapper.map(gruzInto, Gruz.class);
-                    gruzCopy.setKont(kontCopy);
+                    /*for(Gruz gruzInto: kontInto.getGruzs()){
+                        final Gruz gruzCopy = copyPoezdMapper.map(gruzInto, Gruz.class);
+                        gruzCopy.setKont(kontCopy);
 
-                    gruzDAO.makePersistent(gruzCopy);
+                        gruzDAO.makePersistent(gruzCopy);
+                    }
+
+                    for(Plomb plombInto: kontInto.getPlombs()){
+                        final Plomb plombCopy = copyPoezdMapper.map(plombInto, Plomb.class);
+                        plombCopy.setKont(kontCopy);
+
+                        plombDAO.makePersistent(plombCopy);
+                    }*/
                 }
 
-                for(Plomb plombInto: kontInto.getPlombs()){
-                    final Plomb plombCopy = copyPoezdMapper.map(plombInto, Plomb.class);
-                    plombCopy.setKont(kontCopy);
+                for(Gruz gruzInto: vagonInto.getGruzs()) {
+//                    final Gruz gruzCopy = copyPoezdMapper.map(gruzInto, Gruz.class);
+                    gruzInto.setVagon(vagonCopy);
 
-                    plombDAO.makePersistent(plombCopy);
+                    gruzDAO.makePersistent(gruzInto);
+                    ((List<Gruz>) contGruz4History.get("gruzs")).add(gruzInto);
                 }
-            }
 
-            for(Gruz gruzInto: vagonInto.getGruzs()) {
-                final Gruz gruzCopy = copyPoezdMapper.map(gruzInto, Gruz.class);
-                gruzCopy.setVagon(vagonCopy);
-
-                gruzDAO.makePersistent(gruzCopy);
-                ((List<Gruz>) contGruz4History.get("gruzs")).add(gruzCopy);
+                sort++;
             }
         }
 
         saveContGruzHistory(contGruz4History, kontGruzHistoryDAO, POEZD);
-        return SUCCESS;
     }
 
     public String uploadPoezd() throws Exception {
@@ -594,11 +596,34 @@ public class Poezd_A extends CimSmgsSupport_A {
         this.reportParams = reportParams;
     }
 
-    enum Action {LIST, EDIT, SAVE, DELETE, POEZDS_DIR_FOR_POEZD_BIND, CREATE_POEZDOUT_FROM_POEZDINTO, IMPORT_POEZD_LIST, IMPORT_POESD, UPLOAD, GET_POEZDS_IN_INTERVAL, GET_GRUZOTPR_IN_INTERVAL}
+    public void setHids(List<Long> hids) {
+        this.hids = hids;
+    }
+
+    public Long getHidInto() {
+        return hidInto;
+    }
+
+    public void setHidInto(Long hidInto) {
+        this.hidInto = hidInto;
+    }
+
+    public Long getHidOut() {
+        return hidOut;
+    }
+
+    public void setHidOut(Long hidOut) {
+        this.hidOut = hidOut;
+    }
+
+    enum Action {LIST, EDIT, SAVE, DELETE, POEZDS_DIR_FOR_POEZD_BIND, CREATE_POEZDOUT_FROM_POEZDINTO, CREATE_POEZDOUT_FROM_POEZDSINTO, IMPORT_POEZD_LIST, IMPORT_POESD, UPLOAD, GET_POEZDS_IN_INTERVAL, GET_GRUZOTPR_IN_INTERVAL, GET_POEZDINTO_FOR_POEZDOUT}
 
     private List<Filter> filters;
     private String filter;
     private String jsonRequest;
+    private List<Long> hids;
+    private Long hidInto;
+    private Long hidOut;
 
     @Autowired
     private KontGruzHistoryDAO kontGruzHistoryDAO;

@@ -195,6 +195,7 @@ p:excelTpls-ref="excelTples"
     <bean id="report2_A" class="com.bivc.cimsmgs.actions.ky2.Report_A" scope="prototype"/>
     <bean id="ping_A" class="com.bivc.cimsmgs.actions.Ping_A" scope="prototype"/>
     <bean id="avto2_A" class="com.bivc.cimsmgs.actions.ky2.Avto_A" scope="prototype"/>
+    <bean id="avto2zayav_A" class="com.bivc.cimsmgs.actions.ky2.AvtoZayav_A" scope="prototype"/>
     <bean id="yard2_A" class="com.bivc.cimsmgs.actions.ky2.Yard_A" scope="prototype"/>
     <bean id="yardSector2_A" class="com.bivc.cimsmgs.actions.ky2.YardSector_A" scope="prototype"/>
     <bean id="reportServiceKy2" class="com.bivc.cimsmgs.services.ky2.ReportService"/>
@@ -253,6 +254,7 @@ p:excelTpls-ref="excelTples"
     <bean id="poezdDAO" class="com.bivc.cimsmgs.dao.hibernate.PoezdDAOHib"/>
     <bean id="kontGruzHistoryDAO" class="com.bivc.cimsmgs.dao.hibernate.KontGruzHistoryDAOHib"/>
     <bean id="avtoDAO" class="com.bivc.cimsmgs.dao.hibernate.AvtoDAOHib"/>
+    <bean id="avtoZayavDAO" class="com.bivc.cimsmgs.dao.hibernate.AvtoZayavDAOHib"/>
     <bean id="vagonDAO" class="com.bivc.cimsmgs.dao.hibernate.VagonDAOHib"/>
     <bean id="statusHistoryDAO" class="com.bivc.cimsmgs.dao.hibernate.KontStatusHistoryDAOHib"/>
     <bean id="nsiAvtoDAO" class="com.bivc.cimsmgs.dao.hibernate.NsiAvtoDAOHib"/>

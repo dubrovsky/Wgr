@@ -199,14 +199,14 @@ Ext.define('TK.view.ky2.YardCtGrTreeForm', {
                     enableKeyEvents: true,
                     allowBlank: false
                 },{
-                    name : 'dprb',
-                    xtype: 'datefield',
-                    fieldLabel: 'Прибытие',
-                    altFormats:'d.m.y H:i',
-                    format:'d.m.y H:i',
-                    readOnly: true
+                    // name : 'dprb',
+                    // xtype: 'datefield',
+                    // fieldLabel: 'Прибытие',
+                    // altFormats:'d.m.y H:i',
+                    // format:'d.m.y H:i',
+                    // readOnly: true
 
-                }/*,{
+                // }/*,{
                     xtype:'fieldset',
                     title: 'Прибытие',
                     layout: 'anchor',
@@ -218,15 +218,15 @@ Ext.define('TK.view.ky2.YardCtGrTreeForm', {
                         fieldLabel:'Дата',
                         name : 'dprbDate',
                         xtype: 'datefield',
-                        altFormats:'d.m.y'
+                        format:'d.m.y'
                     },{
                         fieldLabel:'Время',
                         name : 'dprbTime',
                         xtype: 'timefield',
                         //snapToIncrement: true,
-                        altFormats:'H:i'
+                        format:'H:i'
                     }]
-                }*/,{
+                },{
                     xtype:'checkbox',
                     name: 'poruz',
                     fieldLabel: 'Порожний',

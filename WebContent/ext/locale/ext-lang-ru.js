@@ -2785,6 +2785,7 @@ Ext.define("TK.locale.ru.view.ky2.BaseAvtosDir", {
     title:'Список автомобилей по прибытию'
 
 });
+
 Ext.define("TK.locale.ru.view.ky2.avto.into.AvtoList", {
     override:"TK.view.ky2.avto.into.AvtoList",
 
@@ -2794,8 +2795,26 @@ Ext.define("TK.locale.ru.view.ky2.avto.into.AvtoList", {
     btnToYard          : "На конт. площадку",
     title              :'Список автомобилей по прибытию',
     headerKontCount    :'Количество контейнеров не выгружено'
+});
 
+Ext.define("TK.locale.ru.view.ky2.avto.BaseAvtoZayavList", {
+    override:"TK.view.ky2.avto.BaseAvtoZayavList",
 
+    headerCreation    :'Создание',
+    headerDateTime    :'Дата и время',
+    headerUser        :'Пользователь'
+});
+
+Ext.define("TK.locale.ru.view.ky2.into.AvtoZayavList", {
+    override:"TK.view.ky2.avto.into.AvtoZayavList",
+
+    title:'Список заявок на ввоз'
+});
+
+Ext.define("TK.locale.ru.view.ky2.avto.out.AvtoZayavList", {
+    override:"TK.view.ky2.avto.out.AvtoZayavList",
+
+    title:'Список заявок на вывоз'
 });
 
 Ext.define("TK.locale.ru.view.ky2.avto.out.AvtoList", {
@@ -2806,7 +2825,7 @@ Ext.define("TK.locale.ru.view.ky2.avto.out.AvtoList", {
     btnToPoezd         : "На поезд по приб.",
     btnToYard          : "На конт. площадку",
     title              :'Список автомобилей по отправлению',
-    headerKontCount    :'Количество контейнеров погружено',
+    headerKontCount    :'Количество контейнеров погружено'
 
 });
 

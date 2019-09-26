@@ -29,6 +29,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import static com.bivc.cimsmgs.services.ky2.AvtoWzPzService.AvtoDocType.PZ;
@@ -63,6 +64,8 @@ public class Avto_A extends CimSmgsSupport_A {
                     return getWzPz(PZ);
                 case CREATE_AVTOOUT_FROM_AVTOINTO:
                     return createAvtoOutFromAvtoInto();
+                case COPY_AVTOINTO_TO_AVTOINTO:
+                    return copyAvtoIntoToAvtoInto();
 
                 default:
                     throw new RuntimeException("Unknown action");
@@ -191,9 +194,28 @@ public class Avto_A extends CimSmgsSupport_A {
         return SUCCESS;
     }
 
+    public String copyAvtoIntoToAvtoInto() {
+        Avto avtoInto = avtoDAO.getById(getHid(), false);
+        log.debug("Found avto to copy to avtoOut: {}", avtoInto);
+
+        // copy
+        Avto avtoCopy = copyAvtoMapper.map(avtoInto, Avto.class);
+        // set props
+        avtoCopy.setDirection((byte) 1);
+        avtoCopy.setRet_nkon(null);
+        avtoCopy.setDprb(new Date());
+
+        // save new pack and poezd
+        PackDoc pack = new PackDoc(avtoCopy.getRoute(), getUser().getUsr().getGroup());
+        pack.addAvtoItem(avtoCopy);
+        getPackDocDAO().makePersistent(pack);
+
+        return SUCCESS;
+    }
+
     public String createAvtoOutFromAvtoInto() {
         Avto avtoInto = avtoDAO.getById(getHid(), false);
-        log.debug("Found poezd to copy to poezdOut: {}", avtoInto);
+        log.debug("Found avto to copy to avtoOut: {}", avtoInto);
 
         // copy
         Avto avtoCopy = copyAvtoMapper.map(avtoInto, Avto.class);
@@ -245,7 +267,7 @@ public class Avto_A extends CimSmgsSupport_A {
     private Byte direction;
     private long routeId;
 
-    enum Action {LIST, EDIT, SAVE, DELETE, AVTOS_DIR_FOR_AVTO_BIND, GET_WZ, GET_PZ, CREATE_AVTOOUT_FROM_AVTOINTO}
+    enum Action {LIST, EDIT, SAVE, DELETE, AVTOS_DIR_FOR_AVTO_BIND, GET_WZ, GET_PZ, CREATE_AVTOOUT_FROM_AVTOINTO, COPY_AVTOINTO_TO_AVTOINTO}
 
     private List<Filter> filters;
     private String filter;

@@ -158,7 +158,7 @@ public class YardDAOHib extends GenericHibernateDAO<Yard, Long> implements YardD
     }
 
     @Override
-    public List<YardFilerDirDTO> getPoezdsForFilter() {
+    public List<YardFilerDirDTO> getPoezdsForFilter(Usr usr) {
         Criteria crit = getSession().createCriteria(Poezd.class, "poezd1");
         crit.add(Restrictions.conjunction()
                 .add(Restrictions.isNotNull("npprm"))
@@ -172,24 +172,43 @@ public class YardDAOHib extends GenericHibernateDAO<Yard, Long> implements YardD
         );
 
         DetachedCriteria historyCrit = DetachedCriteria.forClass(KontGruzHistory.class, "history")
-                .createAlias("kont", "kont")
+                .createAlias("history.kont", "kont")
+                .createAlias("kont.yard", "yard")
+                .createAlias("yard.sector", "sector")
                 .setProjection(Property.forName("hid"))
-                .add(Property.forName("history.poezd.hid").eqProperty("poezd1.hid")).add(Restrictions.isNotNull("kont.yard"));
-
+                .add(Property.forName("history.poezd.hid").eqProperty("poezd1.hid"))
+                .add(Subqueries.exists(
+                        DetachedCriteria.forClass(YardSectorGroups.class, "ysg")
+                                .setProjection(Property.forName("hid"))
+                                .createCriteria("group")
+                                .add(Restrictions.in("name", usr.getTrans()))
+                                .add(Property.forName("ysg.id.yardSectorId").eqProperty("sector.hid")))
+                );
         crit.add(Subqueries.exists(historyCrit));
+
         crit.setResultTransformer(Transformers.aliasToBean(YardFilerDirDTO.class));
         return listAndCast(crit);
     }
 
     @Override
-    public List<YardFilerDirDTO> getGruzotprsForFilter() {
+    public List<YardFilerDirDTO> getGruzotprsForFilter(Usr usr) {
         Criteria crit = getSession().createCriteria(Kont.class);
+        final Criteria sectorCrit = crit.createAlias("yard", "yard").createAlias("yard.sector", "sector");
         crit.add(Restrictions.conjunction()
-                .add(Restrictions.isNotNull("yard"))
-                .add(Restrictions.isNotNull("gruzotpr"))
-                .add(Restrictions.ne("gruzotpr", ""))
+//                .add(Restrictions.isNotNull("yard"))
+                        .add(Restrictions.isNotNull("gruzotpr"))
+                        .add(Restrictions.ne("gruzotpr", ""))
 
         );
+
+        DetachedCriteria yardSectorGroups =
+                DetachedCriteria.forClass(YardSectorGroups.class, "ysg").
+                        setProjection(Property.forName("hid")).
+                        createCriteria("group").
+                        add(Restrictions.in("name", usr.getTrans())).
+                        add(Property.forName("ysg.id.yardSectorId").eqProperty("sector.hid"));
+        sectorCrit.add(Subqueries.exists(yardSectorGroups));
+
         crit.setProjection(
                 Projections.distinct(
                         Projections.projectionList().add(Projections.property("gruzotpr"), "gruzotpr")

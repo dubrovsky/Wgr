@@ -123,7 +123,33 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
             },
             'ky2vgctgrtreeform button[action=showPoezd4YardOutBind]': {
                 click: this.getPoesdIntoAndYardForBindFromVgCntGr
+            },
+            'ky2poezd2yardbindtreeforminto button[action=expandConts]': {
+                click: this.getController('ky2.BindPoezdAndPoezdController').expandContsLeft
+            },
+            'ky2poezd2yardbindtreeforminto button[action=collapseConts]': {
+                click: this.getController('ky2.BindPoezdAndPoezdController').collapseContsLeft
+            },
+            'ky2poezd2yardbindtreeformout button[action=expandConts]': {
+                click: this.getController('ky2.BindPoezdAndPoezdController').expandContsLeft
+            },
+            'ky2poezd2yardbindtreeformout button[action=collapseConts]': {
+                click: this.getController('ky2.BindPoezdAndPoezdController').collapseContsLeft
+            },
+            'ky2poezd2yardbindtreeforminto button[action=expandAll]': {
+                click: this.expandContsRight
+            },
+            'ky2poezd2yardbindtreeforminto button[action=collapseAll]': {
+                click: this.collapseContsRight
+            },
+            'ky2poezd2yardbindtreeformout button[action=expandAll]': {
+                click: this.expandContsRight
+            },
+            'ky2poezd2yardbindtreeformout button[action=collapseAll]': {
+                click: this.collapseContsRight
             }
+
+
         });
     },
 
@@ -291,7 +317,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
             var cont = conts[contIndx],
                 gryzy = cont['gruzs'],
                 contModel = Ext.create('TK.model.ky2.PoezdBindTreeNode', {
-                    text: this.getController('ky2.BindPoezdAndPoezdController').contNodeText(cont),
+                    // text: this.getController('ky2.BindPoezdAndPoezdController').contNodeText(cont),
                     who: 'cont',
                     yardHid: yardModel.get('hid'),
                     // x: yardModel.get('x'),
@@ -308,6 +334,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
                 contModel.set(prop, value);
             }, this);
             yardModel.appendChild(contModel);
+            contModel.set('text', this.getController('ky2.BindPoezdAndPoezdController').contNodeText(contModel));
             // yardSectorModel.appendChild(contModel);
 
             if (gryzy && !Ext.Object.isEmpty(gryzy)) {
@@ -778,5 +805,28 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
                 vagNodeModel.set('cls', 'showTreeNode');
             }
         }, this);
+    },
+
+    expandContsRight: function (btn) {
+        var selected = this.getTreepanelRight().getSelectionModel().getLastSelected();
+        if (selected && this.getTreepanelRight().getSelectionModel().getSelection().length === 1 && selected.get('who') === 'yardsector') {
+            selected.cascadeBy(function (nodeModel) {
+                if ((nodeModel.get('who') === 'cont' || nodeModel.get('who') === 'yardsector') && !nodeModel.isExpanded() && nodeModel.isExpandable()) {
+                    nodeModel.expand();
+                }
+            }, this);
+        }
+    },
+
+    collapseContsRight: function (btn) {
+        var selected = this.getTreepanelRight().getSelectionModel().getLastSelected();
+        if (selected && this.getTreepanelRight().getSelectionModel().getSelection().length === 1 && selected.get('who') === 'yardsector') {
+            selected.cascadeBy(function (nodeModel) {
+                if (nodeModel.get('who') === 'cont' && nodeModel.isExpanded()) {
+                    nodeModel.collapse();
+                }
+            }, this);
+        }
     }
+
 });

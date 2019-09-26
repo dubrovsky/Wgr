@@ -171,19 +171,20 @@ Ext.define('TK.view.ky2.avto.into.AvtoForm', {
         },
         buildTopToolbar: function(config){
             TK.view.ky2.avto.BaseAvtoForm.prototype.buildTopToolbar.apply(this, arguments);
-            config.tbar.push(
-            );
+            // config.tbar.push(
+            // );
 
             config.tbar.push(
                 {xtype:'splitbutton', text: 'Печать', iconCls:'upload', action: 'print',
                     menu: [
                         {text: 'PZ', iconCls:'excel', action:'pz'},'-'
                     ]
-                },{
+                },'-',{
                     text: '+Контейнер/Груз',
                     iconCls: 'edit',
                     action: 'editCtGr'
-                }
+                },'-',
+                {text: '+ Авто по отправлению', iconCls:'truck', action:'createAvtoOutFromInto'},'-'
             );
 
         }

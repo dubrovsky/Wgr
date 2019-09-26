@@ -295,7 +295,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
             var cont = conts[contIndx],
                 gryzy = cont['gruzs'],
                 contModel = Ext.create('TK.model.ky2.PoezdBindTreeNode', {
-                    text: this.getController('ky2.BindPoezdAndPoezdController').contNodeText(cont),
+                    // text: this.getController('ky2.BindPoezdAndPoezdController').contNodeText(cont),
                     who: 'cont',
                     yardHid: yardModel.get('hid'),
                     // x: yardModel.get('x'),
@@ -313,6 +313,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
                 contModel.set(prop, value);
             }, this);
             yardModel.appendChild(contModel);
+            contModel.set('text', this.getController('ky2.BindPoezdAndPoezdController').contNodeText(contModel));
             // yardSectorModel.appendChild(contModel);
 
             if (gryzy && !Ext.Object.isEmpty(gryzy)) {
@@ -654,8 +655,9 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
     },
 
     bindAvtoAndYard: function (close) {
-        var dataObjLeft = this.getController('ky2.BindAvtoAndAvtoController').bindAvto(this.getTreepanelLeft().getRootNode());
-        var dataObjRight = this.bindYardSectors(this.getTreepanelRight().getRootNode());
+        var leftRootNode = this.getTreepanelLeft().getRootNode(),
+            dataObjLeft = this.getController('ky2.BindAvtoAndAvtoController').bindAvto(this.getTreepanelLeft().getRootNode()),
+            dataObjRight = this.bindYardSectors(this.getTreepanelRight().getRootNode());
 
         var url = 'ky2/secure/BindAvtoAndYard.do';
         this.getCenter().setLoading(true);
@@ -669,6 +671,9 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
             scope: this,
             success: function (response) {
                 this.getCenter().setLoading(false);
+                if (!leftRootNode.hasChildNodes() && leftRootNode.get('direction') === 1) {
+                    this.getController('ky2.AvtoController').createAvtoOutFromAvtoInto(leftRootNode.get('hid'));
+                }
                 if (Ext.isNumber(close)) {
                     var closeBtn = this.getAvtoform().down('button[action="close"]');
                     closeBtn.fireEvent('click',closeBtn);

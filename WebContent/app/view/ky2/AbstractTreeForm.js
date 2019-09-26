@@ -162,9 +162,12 @@ Ext.define('TK.view.ky2.AbstractTreeForm', {
                 text: 'Показать вагоны',
                 action: 'showVags'
             }, '-'
-        ];
+        ].concat(this.buildTreePanelTopToolbarItemsExpandCollapse());
     },
 
+    buildTreePanelTopToolbarItemsExpandCollapse: function () {
+        return [];
+    },
     buildTreePanelBottomToolbarItems: function () {
         return [];
     }
