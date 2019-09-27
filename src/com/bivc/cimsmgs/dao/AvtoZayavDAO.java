@@ -14,6 +14,8 @@ import java.util.Locale;
 public interface AvtoZayavDAO extends GenericDAO<AvtoZayav, Long> {
     List<AvtoZayav> findAll(Integer limit, Integer start, Long routeId, Byte direction, List<Filter> filters, Usr usr, Locale locale);
 
+    List<AvtoZayav> findAllActual(Long routeId, Byte direction, List<Filter> filters, Usr usr, Locale locale);
+
     Long countAll(Long routeId, Byte direction, List<Filter> filters, Usr usr, Locale locale);
 
 //    List<Avto> findByNo_avto(String no_avto);

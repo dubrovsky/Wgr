@@ -38,6 +38,10 @@
         <many-to-one class="com.bivc.cimsmgs.db.ky.Avto" fetch="select" name="avtoInto">
             <column name="HID_AVTO_INTO" precision="20" scale="0"/>
         </many-to-one>-->
+        <many-to-one class="com.bivc.cimsmgs.db.ky.AvtoZayav" fetch="select" name="avtoZayav">
+            <column name="HID_ZAYAV" precision="20" scale="0"/>
+        </many-to-one>
+
         <many-to-one class="com.bivc.cimsmgs.db.ky.Avto" fetch="select" name="avto">
             <column name="HID_AVTO" precision="20" scale="0"/>
         </many-to-one>
@@ -171,6 +175,9 @@
         </property>
         <property name="punkt_nazn" type="string">
             <column length="96" name="PUNKT_NAZN"/>
+        </property>
+        <property name="isZayav" type="byte">
+            <column length="1" name="IS_ZAJAV"/>
         </property>
 
         <set fetch="select" inverse="true" lazy="true" name="gruzs" sort="natural" table="KY_GRUZ" batch-size="50" cascade="all, delete-orphan">

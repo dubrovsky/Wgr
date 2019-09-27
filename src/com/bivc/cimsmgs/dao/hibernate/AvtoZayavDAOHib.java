@@ -1,23 +1,16 @@
 package com.bivc.cimsmgs.dao.hibernate;
 
 import com.bivc.cimsmgs.commons.Filter;
-import com.bivc.cimsmgs.dao.AvtoDAO;
 import com.bivc.cimsmgs.dao.AvtoZayavDAO;
 import com.bivc.cimsmgs.db.Usr;
-import com.bivc.cimsmgs.db.ky.Avto;
 import com.bivc.cimsmgs.db.ky.AvtoZayav;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -29,7 +22,7 @@ public class AvtoZayavDAOHib extends GenericHibernateDAO<AvtoZayav, Long> implem
 
     @Override
     public List<AvtoZayav> findAll(Integer limit, Integer start, Long routeId, Byte direction, List<Filter> filters, Usr usr, Locale locale) {
-        log.debug("Finding all Avto entries.");
+        log.debug("Finding all Zayav entries.");
 
         Criteria crit = getSession().createCriteria(getPersistentClass());
         crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans()));
@@ -48,6 +41,24 @@ public class AvtoZayavDAOHib extends GenericHibernateDAO<AvtoZayav, Long> implem
     }
 
 
+    @Override
+    public List<AvtoZayav> findAllActual(Long routeId, Byte direction, List<Filter> filters, Usr usr, Locale locale) {
+        log.debug("Finding all actual Zayav entries.");
+
+        Criteria crit = getSession().createCriteria(getPersistentClass());
+        crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans()));
+        crit.createAlias("route", "route").add(Restrictions.eq("route.hid", routeId));
+
+        crit.add(Restrictions.eq("direction", direction));
+        crit.add(Restrictions.eq("transport", "A"));
+        crit.addOrder(Order.desc("dattr"));
+
+//        applyFilter(filters, crit, locale);
+
+        return listAndCast(crit);
+    }
+
+
 
     @Override
     public Long countAll(Long routeId, Byte direction, List<Filter> filters, Usr usr, Locale locale) {
@@ -55,7 +66,7 @@ public class AvtoZayavDAOHib extends GenericHibernateDAO<AvtoZayav, Long> implem
         crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans()));
         crit.createAlias("route", "route").add(Restrictions.eq("route.hid", routeId));
         crit.add(Restrictions.eq("direction", direction));
-        crit.add(Restrictions.eq("direction", direction));
+        crit.add(Restrictions.eq("transport", "A"));
 
         crit.setProjection(Projections.countDistinct("hid"));
 

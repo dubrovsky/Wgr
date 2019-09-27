@@ -1,6 +1,6 @@
-Ext.define('TK.view.ky2.AvtoCtGrTreeForm', {
+Ext.define('TK.view.ky2.AvtoZayavCtGrTreeForm', {
     extend: 'TK.view.ky2.AbstractTreeForm',
-    alias: 'widget.ky2avtoctgrtreeform',
+    alias: 'widget.ky2avtozayavctgrtreeform',
 
     requires: [
         'Ext.form.Panel',
@@ -31,147 +31,6 @@ Ext.define('TK.view.ky2.AvtoCtGrTreeForm', {
 
     buildTabPanelItems: function(){
         return [{
-            title: 'Вагон',
-            itemId: 'vag',
-            items: [
-                {xtype:'textfield', fieldLabel:'№ вагона', name:"nvag", maxLength:13, allowBlank: false},
-                {
-                    name : 'dprb',
-                    xtype: 'datefield',
-                    fieldLabel: 'Прибытие',
-                    altFormats:'d.m.y'
-                },
-                /*{
-                    xtype: 'fieldcontainer',
-                    layout: {
-                        type: 'hbox',
-                        defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
-                    },
-                    fieldLabel: 'Прибытие',
-                    items: [{
-                        name : 'dprbDate',
-                        xtype: 'datefield',
-                        altFormats:'d.m.y',
-                        width: 80
-                    },{
-                        xtype: 'displayfield',
-                        value: 'Дата'
-                    },{
-                        name : 'dprbTime',
-                        xtype: 'timefield',
-                        altFormats:'H:i',
-                        width: 80
-                    },{
-                        xtype: 'displayfield',
-                        value: 'Время'
-                    }]
-                },*/
-                {
-                    xtype: 'combo',
-                    queryMode: 'local',
-                    forceSelection: true,
-                    fieldLabel: 'Номер пути',
-                    name:'line',
-                    allowBlank: false,
-                    store: [['1', '1'], ['2', '2']]
-                },{
-                    xtype:'textfield',
-                    fieldLabel: 'Код принадлежности',
-                    name: 'kpv',
-                    maxLength: 28
-                },{
-                    xtype:'numberfield',
-                    fieldLabel: 'Подъемная сила',
-                    decimalPrecision: 2,
-                    minValue:0,
-                    name: 'podSila',
-                    maxLength: 20
-                },{
-                    xtype:'numberfield',
-                    fieldLabel: 'Количество осей',
-                    decimalPrecision: 0,
-                    name: 'kolOs',
-                    maxLength: 2
-                },{
-                    xtype:'numberfield',
-                    fieldLabel: 'Масса тары',
-                    decimalPrecision: 0,
-                    name: 'masTar',
-                    maxLength: 20
-                },{
-                    xtype: 'combo',
-                    queryMode: 'local',
-                    fieldLabel: 'Футовость',
-                    name: 'foot',
-                    store: ['20','40','60','80','2x20']
-                },{
-                    xtype:'textarea',
-                    fieldLabel: 'Собственник',
-                    name: 'sobstv',
-                    maxLength: 128
-                },{
-                    xtype:'checkbox',
-                    name: 'poruz',
-                    fieldLabel: 'Порожний?',
-                    inputValue: true,
-                    uncheckedValue: false
-                },{
-                    xtype:'checkbox',
-                    name: 'defective',
-                    fieldLabel: 'Не исправен?',
-                    inputValue: true,
-                    uncheckedValue: false
-                },{
-                    name : 'bortDate',
-                    xtype: 'datefield',
-                    fieldLabel: 'Дата с борта',
-                    altFormats:'d.m.y'
-                },{
-                    xtype:'numberfield',
-                    fieldLabel: 'Оставшийся пробег',
-                    decimalPrecision: 0,
-                    name: 'probeg',
-                    maxLength: 20
-                },{
-                    name : 'plan_rem',
-                    xtype: 'datefield',
-                    fieldLabel: 'След. план. ремонт',
-                    altFormats:'d.m.y'
-                },{
-                    name : 'reviz',
-                    xtype: 'datefield',
-                    fieldLabel: 'Ревизия',
-                    altFormats:'d.m.y'
-                },{
-                    xtype:'numberfield',
-                    fieldLabel: 'Числовой тип',
-                    decimalPrecision: 0,
-                    minValue: 0,
-                    name: 'type_no',
-                    maxLength: 4
-                },{
-                    xtype:'numberfield',
-                    fieldLabel: 'Длина',
-                    decimalPrecision: 2,
-                    minValue: 0,
-                    name: 'dlina',
-                    maxLength: 12
-                },{
-                    xtype:'textfield',
-                    fieldLabel: 'Модель',
-                    name: 'model',
-                    maxLength: 32
-                },{
-                    xtype:'textarea',
-                    fieldLabel: 'Примечание',
-                    name: 'prim',
-                    maxLength: 512
-                },
-                {xtype:'hidden', name:"sort"},
-                {xtype:'hidden', name:"otpravka"},
-                {xtype:'hidden', name:"hid"}
-            ]
-        },{
             title: 'Контейнер',
             itemId: 'cont',
             defaults: {
@@ -463,5 +322,9 @@ Ext.define('TK.view.ky2.AvtoCtGrTreeForm', {
                 action: 'addAct',
                 iconCls: 'doc_new'
             }];
+    },
+
+    buildTreePanelTopToolbarItems: function () {
+            return [];
     }
 });

@@ -75,6 +75,7 @@ Ext.application({
         'ky.NsiOwner',
 
         'ky2.PoezdController',
+        'ky2.PoezdZayavController',
         'ky2.PoezdVgCtGrController',
         'ky2.BindPoezdAndPoezdController',
         'ky2.BindPoezdAndYardController',
@@ -84,6 +85,7 @@ Ext.application({
         'ky2.AvtoController',
         'ky2.AvtoZayavController',
         'ky2.AvtoCtGrController',
+        'ky2.AvtoZayavCtGrController',
         'ky2.YardCtGrController',
         'ky2.BindAvtoAndAvtoController',
         'ky2.BindPoezdAndAvtoController',

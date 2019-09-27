@@ -42,6 +42,7 @@ public class Kont implements Serializable, Comparable<Kont> {
     private Long ky_z;
     private String ky_sector;
     private Avto avto;
+    private AvtoZayav avtoZayav;
 //    private Avto avtoInto;*/
 
     private Date dattr;
@@ -76,6 +77,15 @@ public class Kont implements Serializable, Comparable<Kont> {
     private String punkt_otpr;
     private String punkt_nazn;
     private Set<KontGruzHistory> history  = new TreeSet<>();
+    private Byte isZayav;
+
+    public Byte getIsZayav() {
+        return isZayav;
+    }
+
+    public void setIsZayav(Byte isZayav) {
+        this.isZayav = isZayav;
+    }
 
     public Set<KontGruzHistory> getHistory() {
         return history;
@@ -163,6 +173,14 @@ public class Kont implements Serializable, Comparable<Kont> {
 
     public void setAvto(Avto avto) {
         this.avto = avto;
+    }
+
+    public AvtoZayav getAvtoZayav() {
+        return avtoZayav;
+    }
+
+    public void setAvtoZayav(AvtoZayav avtoZayav) {
+        this.avtoZayav = avtoZayav;
     }
 
     /*public Date getDateAvtoOut() {

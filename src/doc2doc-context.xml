@@ -184,6 +184,7 @@ p:excelTpls-ref="excelTples"
 
     <bean id="poezdVgctgr_A" class="com.bivc.cimsmgs.actions.ky2.PoezdVgCtGr_A" scope="prototype"/>
     <bean id="avtoCtgr_A" class="com.bivc.cimsmgs.actions.ky2.AvtoCtGr_A" scope="prototype"/>
+    <bean id="avtoZayavCtgr_A" class="com.bivc.cimsmgs.actions.ky2.AvtoZayavCtGr_A" scope="prototype"/>
     <bean id="yardCtgr_A" class="com.bivc.cimsmgs.actions.ky2.YardCtGr_A" scope="prototype"/>
     <bean id="bindAvtoAndAvto_A" class="com.bivc.cimsmgs.actions.ky2.BindAvtoAndAvto_A" scope="prototype"/>
     <bean id="bindAvtoAndYard_A" class="com.bivc.cimsmgs.actions.ky2.BindAvtoAndYard_A" scope="prototype"/>
@@ -192,6 +193,7 @@ p:excelTpls-ref="excelTples"
     <bean id="bindPoezdAndYard_A" class="com.bivc.cimsmgs.actions.ky2.BindPoezdAndYard_A" scope="prototype"/>
     <bean id="bindPoezdAndAvto_A" class="com.bivc.cimsmgs.actions.ky2.BindPoezdAndAvto_A" scope="prototype"/>
     <bean id="poezd2_A" class="com.bivc.cimsmgs.actions.ky2.Poezd_A" scope="prototype"/>
+    <bean id="poezdZayav2_A" class="com.bivc.cimsmgs.actions.ky2.PoezdZayav_A" scope="prototype"/>
     <bean id="report2_A" class="com.bivc.cimsmgs.actions.ky2.Report_A" scope="prototype"/>
     <bean id="ping_A" class="com.bivc.cimsmgs.actions.Ping_A" scope="prototype"/>
     <bean id="avto2_A" class="com.bivc.cimsmgs.actions.ky2.Avto_A" scope="prototype"/>
@@ -255,6 +257,7 @@ p:excelTpls-ref="excelTples"
     <bean id="kontGruzHistoryDAO" class="com.bivc.cimsmgs.dao.hibernate.KontGruzHistoryDAOHib"/>
     <bean id="avtoDAO" class="com.bivc.cimsmgs.dao.hibernate.AvtoDAOHib"/>
     <bean id="avtoZayavDAO" class="com.bivc.cimsmgs.dao.hibernate.AvtoZayavDAOHib"/>
+    <bean id="poezdZayavDAO" class="com.bivc.cimsmgs.dao.hibernate.PoezdZayavDAOHib"/>
     <bean id="vagonDAO" class="com.bivc.cimsmgs.dao.hibernate.VagonDAOHib"/>
     <bean id="statusHistoryDAO" class="com.bivc.cimsmgs.dao.hibernate.KontStatusHistoryDAOHib"/>
     <bean id="nsiAvtoDAO" class="com.bivc.cimsmgs.dao.hibernate.NsiAvtoDAOHib"/>

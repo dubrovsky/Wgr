@@ -381,6 +381,14 @@ Ext.define('TK.controller.Menu', {
                 gridParams = {action:'list', direction:2, routeId:routeId};
                 grid = Ext.widget('ky2avtozayavoutlist');
                 break;
+            case 'poezdZayav2in':
+                gridParams = {action:'list', direction:1, routeId:routeId};
+                grid = Ext.widget('ky2poezdzayavintolist');
+                break;
+            case 'poezdZayav2out':
+                gridParams = {action:'list', direction:2, routeId:routeId};
+                grid = Ext.widget('ky2poezdzayavoutlist');
+                break;
 
             /*case 'kont_yard':
                 grid = Ext.widget('kyyardlist');

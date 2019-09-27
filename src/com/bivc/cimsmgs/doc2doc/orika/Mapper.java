@@ -1,6 +1,10 @@
 package com.bivc.cimsmgs.doc2doc.orika;
 
+import com.bivc.cimsmgs.db.PackDoc;
+import com.bivc.cimsmgs.db.Route;
 import com.bivc.cimsmgs.db.ky.*;
+import com.bivc.cimsmgs.dto.PackDocDTO;
+import com.bivc.cimsmgs.dto.RouteDTO;
 import com.bivc.cimsmgs.dto.ky2.*;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.ConfigurableMapper;
@@ -69,6 +73,14 @@ public class Mapper extends ConfigurableMapper {
         factory.classMap(YardSector.class, YardSectorDTO.class)
                 .fieldAToB("yardSectorGroups", "yardSectorGroups")
                 .byDefault()
+                .register();
+
+        factory.classMap(Route.class, RouteDTO.class)
+                .field("hid", "hid")
+                .register();
+
+        factory.classMap(PackDoc.class, PackDocDTO.class)
+                .field("hid", "hid")
                 .register();
 
     }

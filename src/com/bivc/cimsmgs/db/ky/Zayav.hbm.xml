@@ -3,11 +3,11 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 19.02.2014 14:19:48 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
-    <class name="com.bivc.cimsmgs.db.ky.AvtoZayav" table="KY_ZAYAV" batch-size="50">
+    <class name="com.bivc.cimsmgs.db.ky.Zayav" table="KY_ZAYAV" batch-size="50">
         <id name="hid" type="java.lang.Long">
             <column name="HID" precision="20" scale="0"/>
             <generator class="sequence">
-                <param name="sequence">KY_AVTO_HID</param>
+                <param name="sequence">HID_ZAYAV_HID</param>
             </generator>
         </id>
         <many-to-one class="com.bivc.cimsmgs.db.Route" fetch="select" name="route">
@@ -16,15 +16,12 @@
         <many-to-one class="com.bivc.cimsmgs.db.PackDoc" fetch="select" name="packDoc">
             <column name="HID_PACK" precision="20" scale="0"/>
         </many-to-one>
-        <property name="no_zayav" type="string">
+        <property name="noZayav" type="string">
             <column length="250" name="NO_ZAYAV"/>
         </property>
         <property name="transport" type="string">
             <column length="1" name="TRANSPORT"/>
         </property>
-        <!--        <property name="dprb" type="timestamp">-->
-        <!--            <column length="7" name="DPRB"/>-->
-        <!--        </property>-->
         <property name="direction" type="java.lang.Byte">
             <column name="DIRECTION" precision="1" scale="0" not-null="true"/>
         </property>
@@ -40,27 +37,12 @@
         <property name="altered" type="timestamp" update="false">
             <column length="7" name="ALTERED"/>
         </property>
-        <set fetch="select" inverse="true" lazy="true" name="konts" sort="natural" table="KY_KONT" batch-size="50"
-             cascade="all, delete-orphan">
+
+        <set fetch="select" inverse="true" lazy="true" name="vagons" sort="natural" table="KY_VAGON" batch-size="50" cascade="all, delete-orphan">
             <key>
                 <column name="HID_ZAYAV" precision="20" scale="0"/>
             </key>
-            <one-to-many class="com.bivc.cimsmgs.db.ky.Kont"/>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.Vagon"/>
         </set>
-        <set fetch="select" inverse="true" lazy="true" name="gruzs" sort="natural" table="KY_GRUZ" batch-size="50"
-             cascade="all, delete-orphan">
-            <key>
-                <column name="HID_ZAYAV" precision="20" scale="0"/>
-            </key>
-            <one-to-many class="com.bivc.cimsmgs.db.ky.Gruz"/>
-        </set>
-        <!--        <set fetch="select" inverse="true" lazy="true" name="history" sort="natural" table="KY_KONT_GRUZ_HISTORY" batch-size="50" cascade="delete">-->
-        <!--            <key>-->
-        <!--                <column name="HID_AVTO" precision="20" scale="0"/>-->
-        <!--            </key>-->
-        <!--            <one-to-many class="com.bivc.cimsmgs.db.ky.KontGruzHistory"/>-->
-        <!--        </set>-->
-
-
     </class>
 </hibernate-mapping>

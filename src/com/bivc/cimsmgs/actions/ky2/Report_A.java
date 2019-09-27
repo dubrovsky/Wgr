@@ -6,6 +6,7 @@ import com.bivc.cimsmgs.commons.Response;
 import com.bivc.cimsmgs.dao.KontDAO;
 import com.bivc.cimsmgs.db.ky.Avto;
 import com.bivc.cimsmgs.db.ky.Kont;
+import com.bivc.cimsmgs.db.ky.Plomb;
 import com.bivc.cimsmgs.dto.ky.ReportParamsDTO;
 import com.bivc.cimsmgs.formats.json.Deserializer;
 import com.bivc.cimsmgs.services.ky2.AvtoWzPzService;
@@ -38,6 +39,7 @@ import java.sql.Types;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Set;
 
 /**
  * @author p.dzeviarylin
@@ -81,13 +83,8 @@ public class Report_A extends CimSmgsSupport_A implements ServletRequestAware, S
 
         XSSFWorkbook excel = new XSSFWorkbook(new ByteArrayInputStream(Excel.getXlsxFile(flNm)));
 
-        XSSFCellStyle s1 = excel.createCellStyle();
-        s1.setAlignment(HorizontalAlignment.CENTER);
-        s1.setVerticalAlignment(VerticalAlignment.TOP);
         XSSFFont f1 = excel.createFont();
-        s1.setFont(f1);
         f1.setStrikeout(true);
-        s1.getFont().setStrikeout(true);
 
         Sheet sheet = excel.getSheetAt(0);
         Row row = null;
@@ -95,7 +92,7 @@ public class Report_A extends CimSmgsSupport_A implements ServletRequestAware, S
 
         Kont kont = kontDAO.getByIdWithAllParents(getHid());
         Avto avto = kont.getAvto();
-        if(avto != null) {
+        if(kont != null && avto != null) {
             log.debug(avto.getNo_avto());
 
             row = sheet.getRow(3);
@@ -114,19 +111,50 @@ public class Report_A extends CimSmgsSupport_A implements ServletRequestAware, S
                 }
             }
 
-            if(kont.getType() != null) {
-                if(!kont.getType().equals("20")) {
-                    cell = row.getCell(10);
-                    cell.setCellStyle(s1);
-                }
-                if(!kont.getType().equals("40")) {
-                    cell = row.getCell(12);
-                    cell.setCellStyle(s1);
-                }
+            if(kont.getType() == null || !kont.getType().equals("20")) {
+                cell = row.getCell(10);
+                cell.getCellStyle().setFont(f1);
             }
+            if(kont.getType() == null || !kont.getType().equals("40")) {
+                cell = row.getCell(12);
+                cell.getCellStyle().setFont(f1);
+            }
+
+
+            row = sheet.getRow(7);
+
+            cell = row.getCell(1);
+            cell.setCellValue(avto.getNo_avto());
+
+            cell = row.getCell(6);
+            cell.setCellValue(avto.getNo_trail());
+
+            cell = row.getCell(12);
+            Set<Plomb> pl = kont.getPlombs();
+            if(pl != null) {
+                StringBuffer sb = new StringBuffer();
+                int i = 0;
+                for (Plomb p: pl) {
+                    if(i > 0) {
+                        sb.append(", ");
+                    }
+                    sb.append(p.getZnak());
+                    i++;
+                }
+                cell.setCellValue(sb.toString());
+            }
+
+            row = sheet.getRow(32);
+
+            cell = row.getCell(4);
+            cell.setCellValue(getUser().getUsr().getNamKlient());
+
+            cell = row.getCell(11);
+            cell.setCellValue(avto.getDriver_fio());
+
+            filename = flNm + " - " + kont.getNkon() + ".xlsx";
         }
 
-        filename = flNm + " - " + kont.getNkon() + ".xlsx";
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         excel.write(baos);

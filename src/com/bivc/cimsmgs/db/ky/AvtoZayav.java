@@ -39,6 +39,129 @@ public class AvtoZayav {
     private Set<Gruz> gruzs = new TreeSet<>();
     private Integer kontCount;
 
+    public List<Kont> updateKonts(Set<KontDTO> dtos, Mapper mapper) {
+        // delete
+        Set<Kont> kontsToRemove = new HashSet<>();
+        for (Kont kont : getKonts()) {
+            boolean found = false;
+            for (KontDTO kontDTO : dtos) {
+                if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                kontsToRemove.add(kont);
+            }
+        }
+        for (Kont kont : kontsToRemove) {
+            removeKont(kont);
+        }
+
+        // update
+        Set<KontDTO> kontDtoToRemove = new HashSet<>();
+        for (Kont kont : getKonts()) {
+            for (KontDTO kontIntoDTO : dtos) {
+                if (Objects.equals(kont.getHid(), kontIntoDTO.getHid())) {
+                    mapper.map(kontIntoDTO, kont);
+//                    if(kontIntoDTO.getOtpravka() == Otpravka.CONT){
+//                        kont.updateKonts(kontIntoDTO.getKonts(), mapper);
+//                    } else if (kontIntoDTO.getOtpravka() == Otpravka.GRUZ){
+                    kont.updateGruzs(kontIntoDTO.getGruzs(), mapper);
+                    kont.updatePlombs(kontIntoDTO.getPlombs(), mapper);
+
+//                    } else {  // can be deleted and getOtpravka is null
+//                        kont.removeKonts();
+//                        kont.removeGruzy();
+//                    }
+
+                    kontDtoToRemove.add(kontIntoDTO);
+                }
+            }
+        }
+        dtos.removeAll(kontDtoToRemove);
+
+        List<Kont> kontsForHistory = new ArrayList<>(dtos.size());
+        // insert
+        for (KontDTO kontIntoDTO : dtos) {
+            Kont kont = mapper.map(kontIntoDTO, Kont.class);
+            addKont(kont);
+            kontsForHistory.add(kont);
+//            if(vagonIntoDTO.getOtpravka() == Otpravka.CONT){
+//                vagon.updateKonts(vagonIntoDTO.getKonts(), mapper);
+//            } else if(vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
+            kont.updateGruzs(kontIntoDTO.getGruzs(), mapper);
+//            }
+        }
+        return kontsForHistory;
+    }
+
+    public Kont addKont(Kont kont) {
+        konts.add(kont);
+        kont.setAvtoZayav(this);
+        kont.setIsZayav(Byte.valueOf("1"));
+        return kont;
+    }
+
+    public void removeKont(Kont kont) {
+        konts.remove(kont);
+        kont.setAvto(null);
+    }
+
+    public List<Gruz> updateGruzs(TreeSet<GruzDTO> dtos, Mapper mapper) {
+        // delete
+        Set<Gruz> gruzyToRemove = new HashSet<>();
+        for (Gruz gruz : getGruzs()) {
+            boolean found = false;
+            for (GruzDTO gruzDto : dtos) {
+                if (Objects.equals(gruz.getHid(), gruzDto.getHid())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                gruzyToRemove.add(gruz);
+            }
+        }
+        for (Gruz gruz : gruzyToRemove) {
+            removeGruz(gruz);
+        }
+
+        // update
+        Set<GruzDTO> dtoToRemove = new HashSet<>();
+        for (Gruz gruz : getGruzs()) {
+            for (GruzDTO gruzDto : dtos) {
+                if (Objects.equals(gruz.getHid(), gruzDto.getHid())) {
+                    mapper.map(gruzDto, gruz);
+                    dtoToRemove.add(gruzDto);
+                }
+            }
+        }
+        dtos.removeAll(dtoToRemove);
+
+        List<Gruz> gruzForHistory = new ArrayList<>(dtos.size());
+        // insert
+        for (GruzDTO gruzDto : dtos) {
+            Gruz gruz = mapper.map(gruzDto, Gruz.class);
+            addGruz(gruz);
+            gruzForHistory.add(gruz);
+
+        }
+        return gruzForHistory;
+    }
+
+    private void removeGruz(Gruz gruz) {
+        gruzs.remove(gruz);
+        gruz.setAvto(null);
+    }
+
+    private Gruz addGruz(Gruz gruz) {
+        gruzs.add(gruz);
+        gruz.setAvtoZayav(this);
+        return gruz;
+    }
+
+
     public String getTransport() {
         return transport;
     }

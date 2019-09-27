@@ -304,6 +304,10 @@ name="Doc2Doc_uploadXLSvags" method="uploadXLSvags" class="doc2doc_A">
                 <param name="contentDisposition">attachment;filename="${fileName}"</param>
             </result>
         </action>
+        <action name="secure/PoezdZayav" class="poezdZayav2_A">
+            <result name="success" type="json"/>
+            <interceptor-ref name="fileUploadStack"/>
+        </action>
         <action name="secure/AvtoZayav" class="avto2zayav_A">
             <result name="success" type="json"/>
         </action>
@@ -311,6 +315,9 @@ name="Doc2Doc_uploadXLSvags" method="uploadXLSvags" class="doc2doc_A">
             <result name="success" type="json"/>
         </action>
         <action name="secure/AvtoCtGr" class="avtoCtgr_A">
+            <result name="success" type="json"/>
+        </action>
+        <action name="secure/AvtoZayavCtGr" class="avtoZayavCtgr_A">
             <result name="success" type="json"/>
         </action>
         <action name="secure/YardCtGr" class="yardCtgr_A">
