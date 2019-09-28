@@ -20,13 +20,7 @@ Ext.define('TK.view.ky2.poezd.out.PoezdZayavForm', {
 
         buildTopToolbar: function (config) {
             TK.view.ky2.poezd.BasePoezdZayavForm.prototype.buildTopToolbar.apply(this, arguments);
-            config.tbar.push(
-                {
-                    text: '+Контейнер/Груз',
-                    iconCls: 'edit',
-                    action: 'editCtGr'
-                }
-            );
+
 
         }
     }]

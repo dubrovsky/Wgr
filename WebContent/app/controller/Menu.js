@@ -591,7 +591,7 @@ function translate (me,cur_lang) {
             poezd2inwide: 'Поезд 1520мм(прибытие)',poezd2outwide: 'Поезд 1520мм(отправление)',kontyard2: 'Контейнерная площадка',
             poezd2innar: 'Поезд 1435мм(прибытие)',poezd2outnar: 'Поезд 1435мм(отправление)',
             avtoin: 'Авто, прибытие', avtoout: 'Авто, отправление', avto2in: 'Авто2, прибытие', avto2out: 'Авто2, отправление',
-            avto2imp: 'Заявка на выгрузку(авто)', avto2exp: 'Заявка на погрузку(авто)'
+            avto2imp: 'Заявка на выгрузку(авто)', avto2exp: 'Заявка на погрузку(авто)', poezdZayav2in: 'Поезд, заявка на выгрузку', poezdZayav2out: 'Поезд, заявка на погрузку'
         },
 
         de : {user   :'Die Benutzer',userGroups  :'Groups',project:'Die Projekte',log    :'Logs', stat     :"Statistik",

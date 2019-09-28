@@ -13,6 +13,9 @@
         <many-to-one class="com.bivc.cimsmgs.db.ky.Poezd" fetch="select" name="poezd">
             <column name="HID_POEZD" precision="20" scale="0" />
         </many-to-one>
+        <many-to-one class="com.bivc.cimsmgs.db.ky.Zayav" fetch="select" name="zayav">
+            <column name="HID_ZAYAV" precision="20" scale="0"/>
+        </many-to-one>
         <many-to-one class="com.bivc.cimsmgs.db.ky.NsiKyOwners" fetch="select" name="owner">
             <column name="HID_OWNER" precision="20" scale="0"/>
         </many-to-one>

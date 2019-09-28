@@ -35,7 +35,7 @@ Ext.define('TK.model.ky2.PoezdZayavBase', {
 
     proxy: {
         type: 'ajax',
-        url: 'ky2/secure/AvtoZayav.do',
+        url: 'ky2/secure/PoezdZayav.do',
         idParam:'hid',
         reader: {
             type: 'json',

@@ -71,6 +71,15 @@ public class Vagon implements Serializable, Comparable<Vagon> {
     private NsiKyOwners owner;
     private Otpravka otpravka;
     private Set<KontGruzHistory> history  = new TreeSet<>();
+    private Zayav zayav;
+
+    public Zayav getZayav() {
+        return zayav;
+    }
+
+    public void setZayav(Zayav zayav) {
+        this.zayav = zayav;
+    }
 
     public Set<KontGruzHistory> getHistory() {
         return history;

@@ -16,13 +16,7 @@ Ext.define('TK.view.ky2.poezd.into.PoezdZayavForm', {
         },
         buildTopToolbar: function (config) {
             TK.view.ky2.poezd.BasePoezdZayavForm.prototype.buildTopToolbar.apply(this, arguments);
-            config.tbar.push(
-                {
-                    text: '+Вагон/Контейнер/Груз',
-                    iconCls: 'edit',
-                    action: 'editVgCtGr'
-                }
-            );
+
         }
     }]
 });

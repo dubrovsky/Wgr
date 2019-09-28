@@ -1,7 +1,9 @@
-Ext.define('TK.view.ky2.avto.out.PoezdZayavList', {
-    extend:'TK.view.ky2.avto.BasePoezdZayavList',
+Ext.define('TK.view.ky2.poezd.out.PoezdZayavList', {
+    extend:'TK.view.ky2.poezd.BasePoezdZayavList',
     alias:'widget.ky2poezdzayavoutlist',
     itemId:'ky2poezdzayavoutlist',
+
+    title: 'Список заявок поездов по отправлению',
 
     buildColumns:function (config) {
         this.callParent(arguments);

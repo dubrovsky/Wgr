@@ -7,14 +7,14 @@ Ext.define('TK.view.ky2.poezd.BasePoezdZayavList', {
             items:[
                 {text:'Номер заявки', dataIndex:'noZayav', flex:1, maxWidth:200},
                 {
-                    text:this.headerCreation,
+                    text:'Создание',
                     columns: [{
-                        text: this.headerDateTime,
+                        text: 'Дата и время',
                         dataIndex: 'altered',
                         renderer: TK.Utils.renderLongStr,
                         width: 100
                     }, {
-                        text: this.headerUser,
+                        text: 'Пользователь',
                         dataIndex: 'un',
                         renderer: this.rendererUn,
                         width: 100
@@ -34,7 +34,7 @@ Ext.define('TK.view.ky2.poezd.BasePoezdZayavList', {
     },
     buildTopToolbar: function (config) {
         this.callParent(arguments);
-        config.tbar.splice(3, 0,
+        config.tbar.splice(4, 0,
             {text: '+Вагон/Контейнер/Груз', iconCls:'edit', action:'editVgCtGr'},'-'
         );
     }

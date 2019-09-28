@@ -1,8 +1,8 @@
 Ext.define('TK.view.ky2.poezd.BasePoezdZayavForm', {
     extend: 'TK.view.ky2.AbstractForm',
-    alias:'widget.ky2basepoezdzayavform',
+    alias: 'widget.ky2basepoezdzayavform',
 
-    buildItems: function(config) {
+    buildItems: function (config) {
         config.items = [{
             xtype: 'container',
             flex: 1,
@@ -32,18 +32,24 @@ Ext.define('TK.view.ky2.poezd.BasePoezdZayavForm', {
     buildTopToolbar: function (config) {
         config.tbar = this.buildButtons();
         config.tbar.splice(1, 0,
+            '-',
             {
                 text: this.btnSaveExit,
                 formBind: true,
                 disabled: true,
                 iconCls: 'save_close',
                 action: 'saveExit'
-            }, '-'
+            }, '-', {
+                text: '+Вагон/Контейнер/Груз',
+                iconCls: 'edit',
+                action: 'editVgCtGr'
+            },
+            '-'
             , {
-                text:this.btnClose,
-                iconCls:'close1',
-                action:'close'
-            } ,'-'
+                text: this.btnClose,
+                iconCls: 'close1',
+                action: 'close'
+            }, '-'
         );
 
 
