@@ -499,7 +499,7 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
 
     onAddActClick: function (btn) {
         var selectedModelNode = this.getTreepanel().getSelectionModel().getLastSelected();
-        window.open('ky2/secure/Report.do?hid=' + selectedModelNode.get('hid') + '&action=sostojanie_kont_avto', '_blank', '');
+        window.open('ky2/secure/Report.do?hid=' + selectedModelNode.get('hid') + '&action=SostojanieKontAvto', '_blank', '');
     },
 
     initAvtoToButtons: function(vagoncontainer, direction) {
@@ -721,20 +721,30 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
     initGryzyHids: function (gruzy, parentNode) {
         for (var gruzIndx in gruzy) {
             var gruz = gruzy[gruzIndx];
-            var gruzNode = parentNode.findChild('sort', gruzIndx);
-            if (gruzNode) {
-                gruzNode.set('hid', gruz['hid']);
-            }
+            parentNode.cascadeBy(function (nodeModel) {
+                if (nodeModel.get('who') === 'gryz' && nodeModel.get('sort') === gruzIndx) {
+                    nodeModel.set('hid', gruz['hid']);
+                }
+            }, this);
+            // var gruzNode = parentNode.findChild('sort', gruzIndx);
+            // if (gruzNode) {
+            //     gruzNode.set('hid', gruz['hid']);
+            // }
         }
     },
 
     initPlombsHids: function (plombs, parentNode) {
         for (var plombIndx in plombs) {
             var plomb = plombs[plombIndx];
-            var plombNode = parentNode.findChild('sort', plombIndx);
-            if (plombNode) {
-                plombNode.set('hid', plomb['hid']);
-            }
+            parentNode.cascadeBy(function (nodeModel) {
+                if (nodeModel.get('who') === 'plomb' && nodeModel.get('sort') === plombIndx) {
+                    nodeModel.set('hid', plomb['hid']);
+                }
+            }, this);
+            // var plombNode = parentNode.findChild('sort', plombIndx);
+            // if (plombNode) {
+            //     plombNode.set('hid', plomb['hid']);
+            // }
         }
     },
 

@@ -1,6 +1,7 @@
 package com.bivc.cimsmgs.db.ky;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * @author p.dzeviarylin
@@ -164,24 +165,6 @@ public class KontGruzHistory implements Comparable<KontGruzHistory>{
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-
-        if (!(o instanceof KontGruzHistory))
-            return false;
-
-        KontGruzHistory other = (KontGruzHistory) o;
-
-        return hid != null &&
-                hid.equals(other.getHid());
-    }
-
-    @Override
-    public int hashCode() {
-        return 31;
-    }
-
-    @Override
     public int compareTo(KontGruzHistory that) {
         final int BEFORE = -1;
         final int AFTER = 1;
@@ -200,5 +183,22 @@ public class KontGruzHistory implements Comparable<KontGruzHistory>{
         } else {
             return thisHid.compareTo(thatHid);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        KontGruzHistory that = (KontGruzHistory) o;
+        return hid.equals(that.hid) &&
+                koleya.equals(that.koleya) &&
+                direction.equals(that.direction) &&
+                dateOperation.equals(that.dateOperation) &&
+                un.equals(that.un);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(hid, koleya, direction, dateOperation, un);
     }
 }

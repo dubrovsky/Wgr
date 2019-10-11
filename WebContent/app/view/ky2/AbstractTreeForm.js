@@ -18,7 +18,7 @@ Ext.define('TK.view.ky2.AbstractTreeForm', {
         autoScroll: true
     },
 
-    initComponent:function () {
+    initComponent: function () {
         this.items = [{
             xtype: 'treepanel',
             store: this.buildTreePanelStore(),
@@ -53,72 +53,76 @@ Ext.define('TK.view.ky2.AbstractTreeForm', {
         this.callParent(arguments);
     },
 
-    buildToolbarItems: function() {
-        return this.
-            buildTreeToolbarItems().
-            concat({
-                text: 'Удалить',
-                action: 'del',
-                iconCls: 'del'
-            },{
-                xtype: 'tbfill',  // ->
-                hidden: false
-            },{
-                text: this.btnEditPoezd,
-                hidden: false,
-                iconCls:'edit',
-                itemId: 'editPoezd',
-                action:'editPoezd'
-            },{
-                tooltip: 'На поезд по отпр.',
-                iconCls:'train2',
-                itemId: 'showPoezdsOutDir4PoezdIntoBind',
-                action:'showPoezdsOutDir4PoezdIntoBind'
-            },{
-                tooltip: 'На поезд по приб.',
-                iconCls:'train2',
-                itemId: 'showPoezdsIntoDir4PoezdOutBind',
-                action:'showPoezdsIntoDir4PoezdOutBind'
-            },{
-                tooltip: 'На авто по отпр.',
-                iconCls:'truck',
-                itemId: 'showAvtosOutDir4AvtoIntoBind',
-                action:'showAvtosOutDir4AvtoIntoBind'
-            },{
-                tooltip: 'На авто по приб.',
-                iconCls:'truck',
-                itemId: 'showAvtosIntoDir4AvtoOutBind',
-                action:'showAvtosIntoDir4AvtoOutBind'
-            },{
-                tooltip: 'На конт. площадку',
-                iconCls:'cont',
-                itemId: 'showPoezd4YardOutBind',
-                action:'showPoezd4YardOutBind'
-            },{
-                tooltip: 'На конт. площадку',
-                iconCls:'cont',
-                itemId: 'showAvto4YardOutBind',
-                action:'showAvto4YardOutBind'
-            },{
-                xtype: 'tbfill',  // ->
-                hidden: false
-            },{
-                text: this.btnSave,
-                iconCls: 'save',
-                action: 'save'
-            },{
-                text: this.btnSaveExit,
-                iconCls: 'save_close',
-                action: 'saveExit'
-            }, {
-                text: this.btnClose,
-                iconCls: 'close1',
-                hidden: false,
-                action: 'close'
-            });
+    buildToolbarItems: function () {
+        return this.buildTreeToolbarItems().concat({
+            text: 'Удалить',
+            action: 'del',
+            iconCls: 'del'
+        }, {
+            xtype: 'tbfill',  // ->
+            hidden: false
+        }, {
+            text: this.btnEditPoezd,
+            // hidden: false,
+            iconCls: 'edit',
+            itemId: 'editPoezd',
+            action: 'editPoezd'
+        }, {
+            text: 'Редактировать заявку',
+            // hidden: false,
+            iconCls: 'edit',
+            itemId: 'editZajav',
+            action: 'editZajav'
+        }, {
+            tooltip: 'На поезд по отпр.',
+            iconCls: 'train2',
+            itemId: 'showPoezdsOutDir4PoezdIntoBind',
+            action: 'showPoezdsOutDir4PoezdIntoBind'
+        }, {
+            tooltip: 'На поезд по приб.',
+            iconCls: 'train2',
+            itemId: 'showPoezdsIntoDir4PoezdOutBind',
+            action: 'showPoezdsIntoDir4PoezdOutBind'
+        }, {
+            tooltip: 'На авто по отпр.',
+            iconCls: 'truck',
+            itemId: 'showAvtosOutDir4AvtoIntoBind',
+            action: 'showAvtosOutDir4AvtoIntoBind'
+        }, {
+            tooltip: 'На авто по приб.',
+            iconCls: 'truck',
+            itemId: 'showAvtosIntoDir4AvtoOutBind',
+            action: 'showAvtosIntoDir4AvtoOutBind'
+        }, {
+            tooltip: 'На конт. площадку',
+            iconCls: 'cont',
+            itemId: 'showPoezd4YardOutBind',
+            action: 'showPoezd4YardOutBind'
+        }, {
+            tooltip: 'На конт. площадку',
+            iconCls: 'cont',
+            itemId: 'showAvto4YardOutBind',
+            action: 'showAvto4YardOutBind'
+        }, {
+            xtype: 'tbfill',  // ->
+            hidden: false
+        }, {
+            text: this.btnSave,
+            iconCls: 'save',
+            action: 'save'
+        }, {
+            text: this.btnSaveExit,
+            iconCls: 'save_close',
+            action: 'saveExit'
+        }, {
+            text: this.btnClose,
+            iconCls: 'close1',
+            hidden: false,
+            action: 'close'
+        });
     },
 
-    buildTopToolbarItems: function() {
+    buildTopToolbarItems: function () {
         return [/*{
             xtype: 'textfield',
             itemId: 'searchField',
@@ -138,17 +142,18 @@ Ext.define('TK.view.ky2.AbstractTreeForm', {
         }, '-'*/];
     },
 
-    buildMainPanel: function(){
+    buildMainPanel: function () {
         return [];
     },
-    
-    buildTreePanelStore: function(){},
 
-    buildTreePanelViewConfig: function(){
+    buildTreePanelStore: function () {
+    },
+
+    buildTreePanelViewConfig: function () {
         return {};
     },
 
-    buildTreeToolbarItems: function() {
+    buildTreeToolbarItems: function () {
         return [];
     },
 

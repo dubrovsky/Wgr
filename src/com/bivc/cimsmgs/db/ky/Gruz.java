@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -199,5 +200,28 @@ public class Gruz implements Serializable, Comparable<Gruz> {
 
 	public void setAvtoZayav(AvtoZayav avtoZayav) {
 		this.avtoZayav = avtoZayav;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Gruz gruz = (Gruz) o;
+		return hid.equals(gruz.hid) &&
+				upak.equals(gruz.upak) &&
+				kgvn.equals(gruz.kgvn) &&
+				nzgr.equals(gruz.nzgr) &&
+				places.equals(gruz.places) &&
+				dattr.equals(gruz.dattr) &&
+				sort.equals(gruz.sort) &&
+				massa.equals(gruz.massa) &&
+				trans.equals(gruz.trans) &&
+				un.equals(gruz.un) &&
+				altered.equals(gruz.altered);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(hid, upak, kgvn, nzgr, places, dattr, sort, massa, trans, un, altered);
 	}
 }

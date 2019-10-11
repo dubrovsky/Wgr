@@ -314,6 +314,9 @@ name="Doc2Doc_uploadXLSvags" method="uploadXLSvags" class="doc2doc_A">
         <action name="secure/PoezdVgCtGr" class="poezdVgctgr_A">
             <result name="success" type="json"/>
         </action>
+        <action name="secure/PoezdZayavVgCtGr" class="poezdZayavVgctgr_A">
+            <result name="success" type="json"/>
+        </action>
         <action name="secure/AvtoCtGr" class="avtoCtgr_A">
             <result name="success" type="json"/>
         </action>

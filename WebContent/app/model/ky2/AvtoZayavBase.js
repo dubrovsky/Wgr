@@ -9,8 +9,18 @@ Ext.define('TK.model.ky2.AvtoZayavBase', {
         {name:'hid', type:'int', useNull:true},
 
         {name:'no_zayav', type: 'string'},
-        {name:'transport', type: 'string'},
+        {name: 'kontCount', type: 'int'},
+        {name: 'kontCountDone', type: 'int'},
+
+        // {name:'transport', type: 'string'},
         {name:'direction', type:'int'},
+        {name:'client', type: 'string'},
+        {name:'no_avto', type: 'string'},
+        {name:'no_trail', type: 'string'},
+        {name:'driver_fio', type: 'string'},
+        {name:'dateZayav', type: 'string', persist: false},
+        {name:'zayavDate', type: 'string', useNull:true},
+        {name:'zayavTime', type: 'string', useNull:true, defaultValue: null},
 
         {name:'route.hid', type:'int', useNull:true},
         {name:'packDoc.hid', type:'int', useNull:true}

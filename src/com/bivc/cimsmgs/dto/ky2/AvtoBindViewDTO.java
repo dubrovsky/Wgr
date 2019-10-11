@@ -1,5 +1,7 @@
 package com.bivc.cimsmgs.dto.ky2;
 
+import com.bivc.cimsmgs.dto.RouteDTO;
+
 import java.util.TreeSet;
 
 /**
@@ -11,6 +13,8 @@ public class AvtoBindViewDTO {
     private Byte direction;
     private String no_avto;
     private String ret_nkon;
+    private RouteDTO route;
+
     private TreeSet<KontBindViewDTO> konts = new TreeSet<>();
     private TreeSet<GruzBindViewDTO> gruzs = new TreeSet<>();
 
@@ -60,5 +64,13 @@ public class AvtoBindViewDTO {
 
     public void setNo_avto(String no_avto) {
         this.no_avto = no_avto;
+    }
+
+    public RouteDTO getRoute() {
+        return route;
+    }
+
+    public void setRoute(RouteDTO route) {
+        this.route = route;
     }
 }

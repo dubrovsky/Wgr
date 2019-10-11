@@ -2,12 +2,13 @@ package com.bivc.cimsmgs.db.ky;
 
 // Generated 19.02.2014 14:19:48 by Hibernate Tools 3.4.0.CR1
 
+import com.bivc.cimsmgs.dao.NsiClientDAO;
 import com.bivc.cimsmgs.db.PackDoc;
 import com.bivc.cimsmgs.db.Route;
+import com.bivc.cimsmgs.db.nsi.Client;
 import com.bivc.cimsmgs.doc2doc.orika.Mapper;
 import com.bivc.cimsmgs.dto.ky2.VagonBindDTO;
 import com.bivc.cimsmgs.dto.ky2.VagonDTO;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +25,7 @@ public class Poezd implements Serializable {
     private Long hid;
     private Route route;
     private PackDoc packDoc;
+    private Client client;
     private String trans;
 
     private Date dattr;
@@ -52,6 +54,14 @@ public class Poezd implements Serializable {
     private Integer vagCount;
     private Integer kontCount;
     private Set<KontGruzHistory> history = new TreeSet<>();
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
 
     public Set<KontGruzHistory> getHistory() {
         return history;
@@ -429,7 +439,7 @@ public class Poezd implements Serializable {
     }
 
 
-    public Map<String, List<?>> updateVags(Set<VagonDTO> dtos, Mapper mapper) {
+    public Map<String, List<?>> updateVags(Set<VagonDTO> dtos, Mapper mapper, NsiClientDAO clientDAO) {
         // delete
         Set<Vagon> vagsToRemove = new HashSet<>();
         for (Vagon vagon : getVagons()) {
@@ -459,7 +469,7 @@ public class Poezd implements Serializable {
                 if (Objects.equals(vagon.getHid(), vagonIntoDTO.getHid())) {
                     mapper.map(vagonIntoDTO, vagon);
                     if (vagonIntoDTO.getOtpravka() == Otpravka.CONT) {
-                        List<Kont> konts = vagon.updateKonts(vagonIntoDTO.getKonts(), mapper);
+                        List<Kont> konts = vagon.updateKonts(vagonIntoDTO.getKonts(), mapper, clientDAO);
                         ((List<Kont>) contGruz4History.get("konts")).addAll(konts);
                     } else if (vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
                         List<Gruz> gruzs = vagon.updateGruzs(vagonIntoDTO.getGruzs(), mapper);
@@ -480,7 +490,7 @@ public class Poezd implements Serializable {
             Vagon vagon = mapper.map(vagonIntoDTO, Vagon.class);
             addVagon(vagon);
             if (vagonIntoDTO.getOtpravka() == Otpravka.CONT) {
-                List<Kont> konts = vagon.updateKonts(vagonIntoDTO.getKonts(), mapper);
+                List<Kont> konts = vagon.updateKonts(vagonIntoDTO.getKonts(), mapper, clientDAO);
                 ((List<Kont>) contGruz4History.get("konts")).addAll(konts);
             } else if (vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
                 List<Gruz> gruzs = vagon.updateGruzs(vagonIntoDTO.getGruzs(), mapper);
@@ -509,9 +519,34 @@ public class Poezd implements Serializable {
         }
     }
 
+
     @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toStringExclude(this, "route", "packDoc", "kontsOut", "kontsInto", "vagons");
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Poezd poezd = (Poezd) o;
+        return hid.equals(poezd.hid) &&
+                trans.equals(poezd.trans) &&
+                dattr.equals(poezd.dattr) &&
+                un.equals(poezd.un) &&
+                altered.equals(poezd.altered) &&
+                nppr.equals(poezd.nppr) &&
+                dprb.equals(poezd.dprb) &&
+                dotp.equals(poezd.dotp) &&
+                koleya.equals(poezd.koleya) &&
+                direction.equals(poezd.direction) &&
+                npprm.equals(poezd.npprm) &&
+                ksto_f.equals(poezd.ksto_f) &&
+                nsto_f.equals(poezd.nsto_f) &&
+                admon_f.equals(poezd.admon_f) &&
+                kstn.equals(poezd.kstn) &&
+                nstn.equals(poezd.nstn) &&
+                admnn.equals(poezd.admnn) &&
+                gruzotpr.equals(poezd.gruzotpr);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(hid, trans, dattr, un, altered, nppr, dprb, dotp, koleya, direction, npprm, ksto_f, nsto_f, admon_f, kstn, nstn, admnn, gruzotpr);
+    }
 }

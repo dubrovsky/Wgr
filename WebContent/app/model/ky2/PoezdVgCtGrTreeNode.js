@@ -7,14 +7,13 @@ Ext.define('TK.model.ky2.PoezdVgCtGrTreeNode', {
         {name: 'sort', type: 'int'},
 
         // poezd
-        {name:'direction', type:'int'},
+        {name: 'direction', type: 'int'},
 
         // vag
         {name: 'nvag', type: 'string'},
         {name: 'otpravka', type: 'string', useNull: true, defaultValue: null},
         {name: 'dprb', type: 'string', useNull: true},
-        {name: 'dprbDate', type: 'string', useNull: true},
-        {name: 'dprbTime', type: 'string', useNull: true, defaultValue: null},
+        {name: 'dotp', type: 'string', useNull: true},
         {name: 'line', type: 'string'},
         {name: 'kpv', type: 'string'},
         {name: 'podSila', type: 'float', useNull: true},
@@ -38,6 +37,8 @@ Ext.define('TK.model.ky2.PoezdVgCtGrTreeNode', {
         {name: 'notp', type: 'string'},
         {name: 'dprbDate', type: 'string', useNull: true},
         {name: 'dprbTime', type: 'string', useNull: true, defaultValue: null},
+        {name: 'dotpDate', type: 'string', useNull: true},
+        {name: 'dotpTime', type: 'string', useNull: true, defaultValue: null},
         {name: 'dprb', type: 'string', useNull: true},
         {name: 'poruz', type: 'boolean'},
         {name: 'massa_tar', type: 'int', useNull: true},
@@ -53,6 +54,8 @@ Ext.define('TK.model.ky2.PoezdVgCtGrTreeNode', {
         {name: 'punkt_nazn', type: 'string'},
         {name: 'teh_obsl', type: 'string'},
         {name: 'prim', type: 'string'},
+        {name: 'isZayav', type: 'int', defaultValue: 1},
+        {name: 'clientHid', type: 'int'},
 
         // gruz
         'kgvn',

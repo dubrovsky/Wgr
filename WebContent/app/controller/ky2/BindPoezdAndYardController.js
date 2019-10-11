@@ -11,7 +11,10 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
         'ky2.poezd.out.Poezd2PoezdBindTreeForm',
         'ky2.poezd.into.Poezd2YardBindTreeForm',
         'ky2.poezd.out.Poezd2YardBindTreeForm',
-        'ky2.poezd.AbstractPoezd2YardBindTreeForm'
+        'ky2.poezd.AbstractPoezd2YardBindTreeForm',
+        'ky2.KontByZayavFilter'
+
+
     ],
     models: [
         'ky2.YardBindTreeNode',
@@ -20,7 +23,8 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
     stores: [
         'ky2.PoezdBindTreeLeftNodes',
         'ky2.PoezdBindTreeRightNodes',
-        'ky2.YardBindTreeNodes'
+        'ky2.YardBindTreeNodes',
+        'ky2.PoezdZayavsFilter'
     ],
 
     refs: [{
@@ -147,18 +151,20 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
             },
             'ky2poezd2yardbindtreeformout button[action=collapseAll]': {
                 click: this.collapseContsRight
+            },
+            'ky2poezd2yardbindtreeformout combo[name=zayav]': {
+                select: this.selectZayav4Filter,
+                clearFilter: this.clearCombo
             }
-
-
         });
     },
 
     getPoesdIntoAndYardForBindFromVgCntGr: function (btn) {
         var rootNode = btn.up('panel').down('treepanel').getRootNode();
         if (rootNode.get('direction') === 1)
-            this.getPoesdAndYardForBind('ky2poezd2yardbindtreeforminto', rootNode.get('hid'));
+            this.getPoesdAndYardForBind('ky2poezd2yardbindtreeforminto', rootNode.get('hid'), null);
         else
-            this.getPoesdAndYardForBind('ky2poezd2yardbindtreeformout', rootNode.get('hid'));
+            this.getPoesdAndYardForBind('ky2poezd2yardbindtreeformout', rootNode.get('hid'), null);
     },
 
     getPoesdIntoAndYardForBind: function (btn) {
@@ -174,21 +180,16 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
         if (!TK.Utils.isRowSelected(poezdlist)) {
             return false;
         }
-        this.getPoesdAndYardForBind(widget, poezdlist.getSelectionModel().getLastSelected().get('hid'));
+        this.getPoesdAndYardForBind(widget, poezdlist.getSelectionModel().getLastSelected().get('hid'), null);
     },
 
-    getPoesdAndYardForBind: function (widget, poezdHId) {
-        // var poezdlist = this.getPoezdlist();
-        // if (!TK.Utils.isRowSelected(poezdlist)) {
-        //     return false;
-        // }
-        //
+    getPoesdAndYardForBind: function (widget, poezdHid, zayavHid) {
         this.getCenter().setLoading(true);
         Ext.Ajax.request({
             url: 'ky2/secure/BindPoezdAndYard.do',
             params: {
                 action: 'get_poezd_and_yard_for_bind',
-                'poezdHid': poezdHId
+                'poezdHid': poezdHid
                 // 'poezdHid': poezdlist.getSelectionModel().getLastSelected().get('hid')
             },
             scope: this,
@@ -220,6 +221,8 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
                     }
                     /// END fill tree
 
+                    this.initZayav(bindcontainer, poezdObj['route']['hid'], zayavHid);
+
                     this.getCenter().remove(this.getCenter().getComponent(0), true);
                     this.getCenter().add(bindcontainer);
 
@@ -234,6 +237,28 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
     titleForYard: function (title) {
         return title +
             "Номер контейнера/Масса тары/Масса брутто/Типоразмер/Грузоподъемность";
+    },
+
+    initZayav: function (bindcontainer, routeId, zayavHids) {
+        var combo = bindcontainer.down('kontbyzayavfilter');
+        if (combo)
+            combo.getStore().load({
+                params: {
+                    action: 'get_zayavout_for_poezdout',
+                    direction: 2,
+                    routeId: routeId
+                },
+                callback: function (options, success, response) {
+                    if (success && zayavHids) {
+                        combo.select(zayavHids);
+                        combo.fireEvent('select', combo, [combo.getStore().findRecord('hid', zayavHids)]);
+                    }
+                },
+                failure: function (response, options) {
+                    TK.Utils.makeErrMsg(response, 'Error!..');
+                }
+            });
+
     },
 
     initRootNode: function (rootNode, dataObj, vags) {
@@ -827,6 +852,63 @@ Ext.define('TK.controller.ky2.BindPoezdAndYardController', {
                 }
             }, this);
         }
+    },
+
+    selectZayav4Filter: function (zayavCombo, record) {
+        Ext.Ajax.request({
+            url: 'ky2/secure/PoezdZayavVgCtGr.do',
+            params: {
+                action: 'edit',
+                hid: record[0].get('hid')
+            },
+            scope: this,
+            callback: function (options, success, response) {
+                if (success) {
+                    var respObj = Ext.decode(response.responseText),
+                        zayavObj = respObj['rows'][0],
+                        vags = zayavObj['vagons'],
+                        rootNode = this.getTreepanelRight().getRootNode(),
+                        nkons = [];
+                    if (vags && !Ext.Object.isEmpty(vags)) {
+                        for (var vagIndx in vags) {
+                            var vag = vags[vagIndx],
+                                conts = vag['konts'];
+                            Ext.Object.each(conts, function (prop, value) {
+                                nkons.push(value['nkon']);
+                            }, this);
+                        }
+                        if (nkons.length !== 0) {
+                            this.getTreepanelRight().suspendLayouts();
+                            rootNode.cascadeBy(function (nodeModel) {
+                                if (nodeModel.get('who') === 'cont')
+                                    if (nkons.indexOf(nodeModel.get('nkon')) === -1)
+                                        nodeModel.set('cls', 'hideTreeNode');
+                                    else
+                                        nodeModel.set('cls', '')
+                            }, this);
+                            this.getTreepanelRight().resumeLayouts(true);
+                        }
+                    }
+                } else {
+                    TK.Utils.makeErrMsg(response, 'Error!..');
+                }
+                this.getCenter().setLoading(false);
+            }
+        });
+
+    },
+
+    clearCombo: function (zayavCombo) {
+        this.getTreepanelRight().suspendLayouts();
+        this.getTreepanelRight().getRootNode().cascadeBy(function (nodeModel) {
+            if (nodeModel.get('who') === 'cont')
+                nodeModel.set('cls', '')
+        }, this);
+        this.getTreepanelRight().resumeLayouts(true);
+
+        zayavCombo.clearValue();
     }
+
+
 
 });

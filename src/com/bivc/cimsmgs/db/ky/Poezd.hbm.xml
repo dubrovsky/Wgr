@@ -16,6 +16,9 @@
         <many-to-one class="com.bivc.cimsmgs.db.PackDoc" fetch="select" name="packDoc">
             <column name="HID_PACK" precision="20" scale="0"/>
         </many-to-one>
+        <many-to-one class="com.bivc.cimsmgs.db.nsi.Client" fetch="select" name="client">
+            <column name="HID_CLIENT" precision="20" scale="0"/>
+        </many-to-one>
         <property name="trans" type="string" update="false">
             <column length="20" name="TRANS" />
         </property>

@@ -159,8 +159,13 @@ Ext.define('TK.view.ky2.AbstractBindTreeForm', {
             }, '-',
             {
                 xtype: 'vagkontsearch'
-            }];
+            }].concat(this.buildTreeRightPanelTopToolbarZayavFilter());
     },
+
+    buildTreeRightPanelTopToolbarZayavFilter: function() {
+        return [];
+    },
+
 
     buildTreeRightPanelBottomToolbarItems: function () {
         return [];

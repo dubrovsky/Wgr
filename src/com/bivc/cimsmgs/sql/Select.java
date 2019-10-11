@@ -1,5 +1,6 @@
 package com.bivc.cimsmgs.sql;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
@@ -9,7 +10,7 @@ import java.util.TreeMap;
  * Created by vva on 06.08.14.
  */
 public class Select {
-  final static private org.slf4j.Logger log = LoggerFactory.getLogger(Select.class);
+  private static final Logger log = LoggerFactory.getLogger(Select.class);
   private static TreeMap SqlFile = new TreeMap();
   synchronized public static String getSqlFile(String nmSqlFile) throws Exception
   {

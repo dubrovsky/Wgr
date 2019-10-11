@@ -22,7 +22,8 @@ Ext.define('TK.controller.Nsi', {
         'TK.model.SmgsOtpr',
         'TK.model.SmgsPlat',
         'TK.view.edit.OtpavitelEdit',
-        'TK.view.edit.StationCatalogEdit'
+        'TK.view.edit.StationCatalogEdit',
+        'TK.view.edit.ClientEdit'
     ],
 
     views: ['nsi.ListDir'],
@@ -67,6 +68,15 @@ Ext.define('TK.controller.Nsi', {
             },
             'otpaviteledit button[action="close"]': {
                 click: this.onClose
+            },
+            'clientedit button[action="close"]': {
+                click: this.onCloseSta
+            },
+            'clientedit button[action="save"]': {
+                click: this.onSaveClient
+            },
+            'clientedit button[action=getUserGroups]': {
+                click: this.getUserGroups
             },
             'otpaviteledit button[action="save"]': {
                 click: this.onSave
@@ -932,10 +942,10 @@ Ext.define('TK.controller.Nsi', {
     onCloseSta:function(button)
     {
 
-        if(button.up().up().getItemId()==='stationeditid') {
-            button.up().up().close();
-            return;
-        }
+        // if(button.up().up().getItemId()==='stationeditid') {
+            button.up().up().destroy();
+            // return;
+        // }
     },
     // закрываем окно добавление/редактивраония перевозчика
     onClose: function (button) {
@@ -971,6 +981,42 @@ Ext.define('TK.controller.Nsi', {
             });
         }
         else {
+            Ext.Msg.alert(this.titleErrorWarning, this.warningFillErrors);
+        }
+    },
+
+    getUserGroups: function (btn) {
+        Ext.create('Ext.window.Window', {
+//            title: 'Список групп',
+            width: 500, height: 500, y: 1,
+            modal: true,
+            layout: 'fit',
+            autoShow: true,
+            items: {xtype: 'userlistgroups', ownerBtn: btn}
+        });
+    },
+
+    // сохраняем запись о клиенте
+    onSaveClient: function (button) {
+        var form = button.up('window').down('form'),
+            rec = form.getValues(),
+            owner = Ext.ComponentQuery.query('#clientGrid')[0],
+            grid = owner.down('gridpanel'),
+            data = owner.prepareData(rec);
+
+        if (form.isValid()) {
+            Ext.Ajax.request({
+                url: 'Client.do',
+                params: {jsonRequest: Ext.encode(data), action: 'save'},
+                success: function (response, options) {
+                    grid.store.reload();
+                    form.up().destroy();
+                },
+                failure: function (response, options) {
+                    TK.Utils.makeErrMsg(response, 'Error!..');
+                }
+            });
+        } else {
             Ext.Msg.alert(this.titleErrorWarning, this.warningFillErrors);
         }
     },
@@ -1292,16 +1338,21 @@ Ext.define('TK.controller.Nsi', {
         rec.set('name', data.name);
         view.up('window').close();
     },
-    nsiPoezdClient: function (query) {
+    nsiKyClient: function (query, routeId) {
         var me = this,
             modelName = 'TK.model.ky2.NsiClient',
             win = Ext.widget('nsieditlist', {
-                width: 500,
+                width: 600,
                 prefix: 'client',
                 editPrivileg: 'CIM_DIR',
                 search: query,
+                routeId: routeId,
+                itemId: 'clientGrid',
                 buildTitle: function (config) {
                     config.title = this.titleClient;
+                },
+                buildExtraParams: function () {
+                    return {routeId: routeId};
                 },
                 buildStoreModel: function () {
                     return modelName;
@@ -1315,10 +1366,10 @@ Ext.define('TK.controller.Nsi', {
                             xtype: 'actioncolumn', width: 55,
                             items: [
                                 {
-                                    icon: './resources/images/save.gif',
-                                    tooltip: this.ttipSave,
+                                    icon:'./resources/images/edit.png',
+                                    tooltip: this.tooltipEdit,
                                     action: 'save',
-                                    handler: me.onSaveRecord,
+                                    handler: me.onEditRecordClient,
                                     getClass: this.onGetClass,
                                     scope: this
                                 },
@@ -1332,17 +1383,21 @@ Ext.define('TK.controller.Nsi', {
                                 }
                             ]
                         },
-                        {text: this.headerCode, dataIndex: 'cl_no', flex: 1, editor: {xtype: 'textfield', maxLength: 10}},
-                        {text: this.headerName, dataIndex: 'cl_name', flex: 4, editor: {xtype: 'textfield', maxLength: 255}}
+                        {text: this.headerCode, dataIndex: 'clNo', flex: 1, editor: {xtype: 'textfield', maxLength: 10}},
+                        {text: this.headerName, dataIndex: 'sname', flex: 4, editor: {xtype: 'textfield', maxLength: 255}},
+                        {text: 'Номер договора', dataIndex: 'noDog', flex: 2, editor: {xtype: 'textfield', maxLength: 50}},
+                        {text: 'Дата договора', dataIndex: 'dateDog', flex: 2, editor: {xtype: 'textfield', maxLength: 255}},
+                        {text: 'Группы', dataIndex: 'usr.groupsIds', flex: 2, renderer: TK.Utils.renderLongStr}
+
                     ];
                 },
                 newRecord: function () {
                     return Ext.create(modelName, {});
                 },
                 onBeforeEdit: function (editor, props) {
-                    if (!tkUser.hasPriv(this.editPrivileg)) { // switch off editing
+                    // if (!tkUser.hasPriv(this.editPrivileg)) { // switch off editing
                         return false;
-                    }
+                    // }
                 },
                 onGetClass: function (value, meta, record) {
                     if (!tkUser.hasPriv(this.editPrivileg)) {
@@ -1353,11 +1408,9 @@ Ext.define('TK.controller.Nsi', {
                      }*/
                 },
                 prepareData: function (rec) {
-                    var data = {};
-                    data[this.prefix + '.hid'] = rec.data['hid'];
-                    data[this.prefix + '.cl_no'] = rec.data['cl_no'];
-                    data[this.prefix + '.cl_name'] = rec.data['cl_name'];
-                    return data;
+                    rec['groups'] = rec['usr.groupsIds'];
+                    delete rec['usr.groupsIds'];
+                    return rec;
                 }
             });
         return win;
@@ -1465,8 +1518,11 @@ Ext.define('TK.controller.Nsi', {
 
             return win;
         }
-        if (btn.up('nsieditlist').itemId === 'staGrid') {
+        else if (btn.up('nsieditlist').itemId === 'staGrid') {
             return Ext.create('TK.view.edit.StationCatalogEdit').show();
+        }
+        else if (btn.up('nsieditlist').itemId === 'clientGrid') {
+            return Ext.create('TK.view.edit.ClientEdit').show();
         }
 
         {
@@ -1548,6 +1604,14 @@ Ext.define('TK.controller.Nsi', {
         win.show();
         return win;
     },
+
+    onEditRecordClient: function (grid, rowIndex, colIndex) {
+        var client = grid.store.getAt(rowIndex),
+            win = Ext.create('TK.view.edit.ClientEdit').show();
+            win.getComponent('clientForm').getForm().loadRecord(client);
+        return win;
+    },
+
     // редактирование записи об перевозчике
     onEditRecord: function (grid, rowIndex, colIndex) {
         var stran = grid.store.getAt(rowIndex);

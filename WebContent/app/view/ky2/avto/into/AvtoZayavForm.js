@@ -27,19 +27,19 @@ Ext.define('TK.view.ky2.avto.into.AvtoZayavForm', {
             // config.tbar.push(
             // );
             //
-            config.tbar.push(
+            // config.tbar.push(
                 // {xtype:'splitbutton', text: 'Печать', iconCls:'upload', action: 'print',
                 //     menu: [
                 //         {text: 'PZ', iconCls:'excel', action:'pz'},'-'
                 //     ]
                 // },'-',
-                {
-                    text: '+Контейнер/Груз',
-                    iconCls: 'edit',
-                    action: 'editCtGr'
-                }
+                // {
+                //     text: '+Контейнер/Груз',
+                //     iconCls: 'edit',
+                //     action: 'editCtGr'
+                // }
                 // {text: '+ Авто по отправлению', iconCls:'truck', action:'createAvtoOutFromInto'},'-'
-            );
+            // );
 
         }
 

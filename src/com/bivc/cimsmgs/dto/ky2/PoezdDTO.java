@@ -16,6 +16,7 @@ import java.util.TreeSet;
 public class PoezdDTO {
 
     private Long hid;
+    private Long clientHid;
     private Byte direction;
     private String nppr;
     private String gruzotpr;
@@ -29,7 +30,18 @@ public class PoezdDTO {
     @JsonDeserialize(using = DateTimeDeserializer.class)
     private Date dprbTime;
 
+    @JsonSerialize(using = DateTimeSerializer.class)
+    private Date dotp;
+    @JsonSerialize(using = DateSerializer.class)
+    @JsonDeserialize(using = DateTimeDeserializer.class)
+    private Date dotpDate;
+
+    @JsonSerialize(using = TimeSerializer.class)
+    @JsonDeserialize(using = DateTimeDeserializer.class)
+    private Date dotpTime;
+
     private TreeSet<VagonDTO> vagons = new TreeSet<>();
+
     public Date getDprbDate() {
         return this.dprbDate != null ? this.dprbDate : this.dprb;
     }
@@ -92,5 +104,37 @@ public class PoezdDTO {
 
     public void setGruzotpr(String gruzotpr) {
         this.gruzotpr = gruzotpr;
+    }
+
+    public Long getClientHid() {
+        return clientHid;
+    }
+
+    public void setClientHid(Long clientHid) {
+        this.clientHid = clientHid;
+    }
+
+    public Date getDotp() {
+        return dotp;
+    }
+
+    public void setDotp(Date dotp) {
+        this.dotp = dotp;
+    }
+
+    public Date getDotpDate() {
+        return this.dotpDate != null ? this.dotpDate : this.dotp;
+    }
+
+    public void setDotpDate(Date dotpDate) {
+        this.dotpDate = dotpDate;
+    }
+
+    public Date getDotpTime() {
+        return this.dotpTime != null ? this.dotpTime : this.dotp;
+    }
+
+    public void setDotpTime(Date dotpTime) {
+        this.dotpTime = dotpTime;
     }
 }

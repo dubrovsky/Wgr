@@ -70,6 +70,10 @@ public class Poezd_A extends CimSmgsSupport_A {
                     return uploadPoezd();
                 case GET_POEZDINTO_FOR_POEZDOUT:
                     return getPoezdintoForPoezdout();
+                case ADD_TO_POEZDINTO_FROM_ZAYAVINTO:
+                    return addToPoezdintoFromZayavinto();
+                case ADD_TO_POEZDOUT_FROM_ZAYAVOUT:
+                    return addToPoezdoutFromZayavout();
                 /*case GET_POEZDS_IN_INTERVAL:
                     return getPoezdsInInterval();
                 case GET_GRUZOTPR_IN_INTERVAL:
@@ -245,8 +249,9 @@ public class Poezd_A extends CimSmgsSupport_A {
                 {"ALTERED", "ALTERED"},
                 {"DATTR", "DATTR"},
                 {"TRANS", "TRANS"},
+                {"HID_CLIENT", "HID_CLIENT"},
                 {"GRUZOTPR", "GRUZOTPR"},
-                {"DPRB","DPRB"}
+                {"DPRB", "DPRB"}
         };
         dbpt.fill_Rownum("KONT", "SORT", st2, 0);
         dbpt.save("KONT", "KY_KONT", keyNm, fillParentKey, st2, sq);
@@ -374,23 +379,41 @@ public class Poezd_A extends CimSmgsSupport_A {
         PoezdBaseDTO dto = defaultDeserializer.setLocale(getLocale()).read(PoezdBaseDTO.class, jsonRequest);
         log.debug("Saving a Poezd entry with information: {}", dto);
 
-        Poezd saved;
-        if (StringUtils.isBlank(dto.getNppr())) {
+        Poezd poezd;
+        /*if (StringUtils.isBlank(dto.getNppr())) {
             dto.setNppr(poezdService.produceNppr(dto));
-        }
+        }*/
 
         if (dto.getHid() == null) {
-            saved = add(dto);
+            poezd = add(dto);
         } else {
-            saved = update(dto);
+            poezd = update(dto);
         }
+
+        if (dto.getClient() != null && dto.getClient().getHid() != null) {
+            poezd.setClient(clientDAO.getById(dto.getClient().getHid(), false));
+        } else {
+            poezd.setClient(null);
+        }
+
+        for (Vagon vagon : poezd.getVagons()) {
+            for (Kont kont : vagon.getKonts()) {
+                if(poezd.getDprb() != null) {
+                    kont.setDprb(poezd.getDprb());
+                }
+                if(poezd.getDotp() != null) {
+                    kont.setDotp(poezd.getDotp());
+                }
+            }
+        }
+
 
         setJSONData(
                 defaultSerializer
                         .setLocale(getLocale())
                         .write(
                                 new Response<>(
-                                        kypoezdMapper.copy(saved, PoezdBaseDTO.class)
+                                        kypoezdMapper.copy(poezd, PoezdBaseDTO.class)
                                 )
                         )
         );
@@ -416,6 +439,7 @@ public class Poezd_A extends CimSmgsSupport_A {
     private Poezd update(PoezdBaseDTO dto) {
         Poezd updated = poezdDAO.getById(dto.getHid(), false);
         kypoezdMapper.copy(dto, updated);
+//        updated.setClient(clientDAO.getById(dto.getClient().getHid(), false));
         log.debug("Updated the information of a Poezd entry to: {}", updated);
 
         return updated;
@@ -463,7 +487,7 @@ public class Poezd_A extends CimSmgsSupport_A {
                         .write(
                                 new Response<>(
                                         mapper.mapAsList(poezds, PoezdViewDTO.class),
-                                        (long)poezds.size()
+                                        (long) poezds.size()
                                 )
                         )
         );
@@ -485,7 +509,29 @@ public class Poezd_A extends CimSmgsSupport_A {
         pack.addPoezdItem(poezdCopy);
         getPackDocDAO().makePersistent(pack);
 
-        createPoezdOutFromPoezdInto(poezdInto, poezdCopy);
+//        createPoezdOutFromPoezdInto(poezdInto, poezdCopy);
+//        Map<String, List<?>> contGruz4History = new HashMap<>(2);
+//        contGruz4History.put("konts", new ArrayList<Kont>());
+//        contGruz4History.put("gruzs", new ArrayList<>());
+
+        short sort = 0;
+        for (Vagon vagonInto : poezdInto.getVagons()) {
+            if (hids.contains(vagonInto.getHid())) {
+                Vagon vagonCopy = copyPoezdMapper.map(vagonInto, Vagon.class);
+
+                // set props
+                vagonCopy.setPoezd(poezdCopy);
+                vagonCopy.setDirection((byte) 2);
+                vagonCopy.setSort(sort);
+
+                // save
+                vagonDAO.makePersistent(vagonCopy);
+
+                sort++;
+            }
+        }
+
+//        saveContGruzHistory(contGruz4History, kontGruzHistoryDAO, POEZD);
         return SUCCESS;
     }
 
@@ -493,18 +539,14 @@ public class Poezd_A extends CimSmgsSupport_A {
         Poezd poezdInto = poezdDAO.getById(getHidInto(), false);
         Poezd poezdOut = poezdDAO.getById(getHidOut(), false);
 
-        createPoezdOutFromPoezdInto(poezdInto, poezdOut);
-        return SUCCESS;
-    }
-
-    private void createPoezdOutFromPoezdInto(Poezd poezdInto, Poezd poezdOut) {
+//        createPoezdOutFromPoezdInto(poezdInto, poezdOut);
         Map<String, List<?>> contGruz4History = new HashMap<>(2);
         contGruz4History.put("konts", new ArrayList<Kont>());
         contGruz4History.put("gruzs", new ArrayList<>());
 
         short sort = 0;
         for (Vagon vagonInto : poezdInto.getVagons()) {
-            if(hids.contains(vagonInto.getHid())) {
+            if (hids.contains(vagonInto.getHid())) {
                 Vagon vagonCopy = copyPoezdMapper.map(vagonInto, Vagon.class);
 
                 // set props
@@ -515,14 +557,54 @@ public class Poezd_A extends CimSmgsSupport_A {
                 // save
                 vagonDAO.makePersistent(vagonCopy);
 
-                for(Kont kontInto: vagonInto.getKonts()) {
+                for (Kont kontInto : vagonInto.getKonts()) {
+                    kontInto.setVagon(vagonCopy);
+
+                    kontDAO.makePersistent(kontInto);
+                    ((List<Kont>) contGruz4History.get("konts")).add(kontInto);
+                }
+
+                for (Gruz gruzInto : vagonInto.getGruzs()) {
+                    gruzInto.setVagon(vagonCopy);
+
+                    gruzDAO.makePersistent(gruzInto);
+                    ((List<Gruz>) contGruz4History.get("gruzs")).add(gruzInto);
+                }
+
+                sort++;
+            }
+        }
+
+        saveContGruzHistory(contGruz4History, kontGruzHistoryDAO, POEZD);
+        return SUCCESS;
+    }
+
+    /*private void createPoezdOutFromPoezdInto(Poezd poezdInto, Poezd poezdOut) {
+        Map<String, List<?>> contGruz4History = new HashMap<>(2);
+        contGruz4History.put("konts", new ArrayList<Kont>());
+        contGruz4History.put("gruzs", new ArrayList<>());
+
+        short sort = 0;
+        for (Vagon vagonInto : poezdInto.getVagons()) {
+            if (hids.contains(vagonInto.getHid())) {
+                Vagon vagonCopy = copyPoezdMapper.map(vagonInto, Vagon.class);
+
+                // set props
+                vagonCopy.setPoezd(poezdOut);
+                vagonCopy.setDirection((byte) 2);
+                vagonCopy.setSort(sort);
+
+                // save
+                vagonDAO.makePersistent(vagonCopy);
+
+                for (Kont kontInto : vagonInto.getKonts()) {
 //                    final Kont kontCopy = copyPoezdMapper.map(kontInto, Kont.class);
                     kontInto.setVagon(vagonCopy);
 
                     kontDAO.makePersistent(kontInto);
                     ((List<Kont>) contGruz4History.get("konts")).add(kontInto);
 
-                    /*for(Gruz gruzInto: kontInto.getGruzs()){
+                    *//*for(Gruz gruzInto: kontInto.getGruzs()){
                         final Gruz gruzCopy = copyPoezdMapper.map(gruzInto, Gruz.class);
                         gruzCopy.setKont(kontCopy);
 
@@ -534,10 +616,10 @@ public class Poezd_A extends CimSmgsSupport_A {
                         plombCopy.setKont(kontCopy);
 
                         plombDAO.makePersistent(plombCopy);
-                    }*/
+                    }*//*
                 }
 
-                for(Gruz gruzInto: vagonInto.getGruzs()) {
+                for (Gruz gruzInto : vagonInto.getGruzs()) {
 //                    final Gruz gruzCopy = copyPoezdMapper.map(gruzInto, Gruz.class);
                     gruzInto.setVagon(vagonCopy);
 
@@ -550,6 +632,96 @@ public class Poezd_A extends CimSmgsSupport_A {
         }
 
         saveContGruzHistory(contGruz4History, kontGruzHistoryDAO, POEZD);
+    }*/
+
+    private String addToPoezdoutFromZayavout() {
+        Poezd poezdInto = poezdDAO.getById(getHid(), false);
+        final PoezdZayav zayav = poezdZayavDAO.getById(zayavHid, false);
+        copyZajavDataToPoezd(poezdInto, zayav);
+
+        short sort = 0;
+        for (Vagon vagonInto : zayav.getVagons()) {
+            if (
+                    StringUtils.isNotBlank(vagonInto.getNvag()) &&
+                            poezdInto.getVagons().stream().noneMatch(vagon -> vagon.getNvag().equals(vagonInto.getNvag()))
+            ) {
+                Vagon vagonCopy = copyPoezdMapper.map(vagonInto, Vagon.class);
+
+                vagonCopy.setPoezd(poezdInto);
+                vagonCopy.setDirection((byte) 1);
+                vagonCopy.setSort(sort);
+                vagonDAO.makePersistent(vagonCopy);
+                sort++;
+            }
+        }
+
+        return SUCCESS;
+    }
+
+    private String addToPoezdintoFromZayavinto() {
+        Poezd poezdInto = poezdDAO.getById(getHid(), false);
+        PoezdZayav zayav = poezdZayavDAO.getById(zayavHid, false);
+        copyZajavDataToPoezd(poezdInto, zayav);
+
+        Map<String, List<?>> contGruz4History = new HashMap<>(2);
+        contGruz4History.put("konts", new ArrayList<Kont>());
+        contGruz4History.put("gruzs", new ArrayList<>());
+        short sort = 0;
+        for (Vagon vagonInto : zayav.getVagons()) {
+            Vagon vagonCopy = copyPoezdMapper.map(vagonInto, Vagon.class);
+
+            vagonCopy.setPoezd(poezdInto);
+            vagonCopy.setDirection((byte) 1);
+            vagonCopy.setSort(sort);
+            vagonDAO.makePersistent(vagonCopy);
+
+            for (Kont kontInto : vagonInto.getKonts()) {
+                final Kont kontCopy = copyPoezdMapper.map(kontInto, Kont.class);
+                kontCopy.setVagon(vagonCopy);
+                kontDAO.makePersistent(kontCopy);
+                ((List<Kont>) contGruz4History.get("konts")).add(kontCopy);
+
+                for (Gruz gruzInto : kontInto.getGruzs()) {
+                    final Gruz gruzCopy = copyPoezdMapper.map(gruzInto, Gruz.class);
+                    gruzCopy.setKont(kontCopy);
+                    gruzDAO.makePersistent(gruzCopy);
+                }
+
+                for (Plomb plombInto : kontInto.getPlombs()) {
+                    final Plomb plombCopy = copyPoezdMapper.map(plombInto, Plomb.class);
+                    plombCopy.setKont(kontCopy);
+                    plombDAO.makePersistent(plombCopy);
+                }
+            }
+
+            for (Gruz gruzInto : vagonInto.getGruzs()) {
+                final Gruz gruzCopy = copyPoezdMapper.map(gruzInto, Gruz.class);
+                gruzCopy.setVagon(vagonCopy);
+                gruzDAO.makePersistent(gruzCopy);
+                ((List<Gruz>) contGruz4History.get("gruzs")).add(gruzCopy);
+            }
+
+            sort++;
+        }
+
+        saveContGruzHistory(contGruz4History, kontGruzHistoryDAO, POEZD);
+
+        return SUCCESS;
+    }
+
+    private void copyZajavDataToPoezd(Poezd poezdInto, PoezdZayav zayav) {
+        if (StringUtils.isNotBlank(zayav.getGruzotpr())) {
+            poezdInto.setGruzotpr(zayav.getGruzotpr());
+        }
+        if(zayav.getClient() != null) {
+            poezdInto.setClient(zayav.getClient());
+        }
+        if (StringUtils.isNotBlank(zayav.getNppr())) {
+            poezdInto.setNppr(zayav.getNppr());
+        }
+        if (StringUtils.isNotBlank(zayav.getNpprm())) {
+            poezdInto.setNpprm(zayav.getNpprm());
+        }
     }
 
     public String uploadPoezd() throws Exception {
@@ -616,7 +788,13 @@ public class Poezd_A extends CimSmgsSupport_A {
         this.hidOut = hidOut;
     }
 
-    enum Action {LIST, EDIT, SAVE, DELETE, POEZDS_DIR_FOR_POEZD_BIND, CREATE_POEZDOUT_FROM_POEZDINTO, CREATE_POEZDOUT_FROM_POEZDSINTO, IMPORT_POEZD_LIST, IMPORT_POESD, UPLOAD, GET_POEZDS_IN_INTERVAL, GET_GRUZOTPR_IN_INTERVAL, GET_POEZDINTO_FOR_POEZDOUT}
+    public void setZayavHid(Long zayavHid) {
+        this.zayavHid = zayavHid;
+    }
+
+    enum Action {
+        LIST, EDIT, SAVE, DELETE, POEZDS_DIR_FOR_POEZD_BIND, CREATE_POEZDOUT_FROM_POEZDINTO, CREATE_POEZDOUT_FROM_POEZDSINTO, IMPORT_POEZD_LIST, IMPORT_POESD, UPLOAD, GET_POEZDS_IN_INTERVAL, GET_GRUZOTPR_IN_INTERVAL, GET_POEZDINTO_FOR_POEZDOUT, ADD_TO_POEZDINTO_FROM_ZAYAVINTO, ADD_TO_POEZDOUT_FROM_ZAYAVOUT
+    }
 
     private List<Filter> filters;
     private String filter;
@@ -624,6 +802,7 @@ public class Poezd_A extends CimSmgsSupport_A {
     private List<Long> hids;
     private Long hidInto;
     private Long hidOut;
+    private Long zayavHid;
 
     @Autowired
     private KontGruzHistoryDAO kontGruzHistoryDAO;
@@ -637,6 +816,10 @@ public class Poezd_A extends CimSmgsSupport_A {
     private GruzDAO gruzDAO;
     @Autowired
     private PlombDAO plombDAO;
+    @Autowired
+    private PoezdZayavDAO poezdZayavDAO;
+    @Autowired
+    private NsiClientDAO clientDAO;
     @Autowired
     private Mapper kypoezdMapper;
     @Autowired

@@ -36,6 +36,12 @@
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.ky.YardSectorGroups"/>
         </set>
+        <set name="clientGroups" table="NSI_CLIENT_GROUPS" inverse="true" lazy="true"  fetch="select">
+            <key>
+                <column name="CLIENT_ID" length="20" not-null="true"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.nsi.ClientGroups"/>
+        </set>
         <set name="usrs" table="USR" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="GROUP_ID" length="64" not-null="true" />

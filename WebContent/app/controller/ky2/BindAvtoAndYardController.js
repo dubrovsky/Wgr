@@ -11,7 +11,8 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
         'ky2.avto.out.Avto2AvtoBindTreeForm',
         'ky2.avto.into.Avto2YardBindTreeForm',
         'ky2.avto.out.Avto2YardBindTreeForm',
-        'ky2.avto.AbstractAvto2YardBindTreeForm'
+        'ky2.avto.AbstractAvto2YardBindTreeForm',
+        'ky2.KontByZayavFilter'
     ],
     models: [
         'ky2.YardBindTreeNode',
@@ -20,7 +21,8 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
     stores: [
         'ky2.AvtoBindTreeLeftNodes',
         'ky2.AvtoBindTreeRightNodes',
-        'ky2.YardBindTreeNodes'
+        'ky2.YardBindTreeNodes',
+        'ky2.AvtoZayavsFilter'
     ],
 
     refs: [{
@@ -94,6 +96,11 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
             'ky2avto2yardbindtreeformout button[action=moveLeft]': {
                 click: this.moveNodesLeft
             },
+            'ky2avto2yardbindtreeformout combo[name=zayav]': {
+                render: this.renderZayavFilter,
+                select: this.selectZayav4Filter,
+                clearFilter: this.clearCombo
+            },
             // 'ky2poezd2yardbindtreeformout button[action=moveRightAll]': {
             //     click: this.moveAllNodesRight
             // },
@@ -111,6 +118,70 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
             },
             'ky2avtoctgrtreeform button[action=showAvto4YardOutBind]': {
                 click: this.getAvtoAndYardForBindFromVgCntGr
+            }
+        });
+    },
+
+    clearCombo: function (zayavCombo) {
+        this.getTreepanelRight().suspendLayouts();
+        this.getTreepanelRight().getRootNode().cascadeBy(function (nodeModel) {
+            if (nodeModel.get('who') === 'cont')
+                nodeModel.set('cls', '')
+        }, this);
+        this.getTreepanelRight().resumeLayouts(true);
+
+        zayavCombo.clearValue();
+    },
+
+    selectZayav4Filter: function (zayavCombo, record) {
+        Ext.Ajax.request({
+            url: 'ky2/secure/AvtoZayav.do',
+            params: {
+                action: 'get_for_filter',
+                hid: record[0].get('hid')
+            },
+            scope: this,
+            callback: function (options, success, response) {
+                if (success) {
+                    var respObj = Ext.decode(response.responseText),
+                        zayavObj = respObj['rows'][0],
+                        konts = zayavObj['konts'],
+                        rootNode = this.getTreepanelRight().getRootNode(),
+                        nkons = [];
+                    if (konts && !Ext.Object.isEmpty(konts)) {
+                        Ext.Object.each(konts, function (prop, value) {
+                            nkons.push(value['nkon']);
+                        }, this);
+                        this.getTreepanelRight().suspendLayouts();
+                        rootNode.cascadeBy(function (nodeModel) {
+                            if (nodeModel.get('who') === 'cont')
+                                if (nkons.indexOf(nodeModel.get('nkon')) === -1 )
+                                    nodeModel.set('cls', 'hideTreeNode');
+                                else
+                                    nodeModel.set('cls', '')
+                        }, this);
+                        this.getTreepanelRight().resumeLayouts(true);
+                    }
+                } else {
+                    TK.Utils.makeErrMsg(response, 'Error!..');
+                }
+                this.getCenter().setLoading(false);
+            }
+        });
+
+    },
+
+    renderZayavFilter: function (zayavCombo) {
+        zayavCombo.getStore().load({
+            params: {
+                action: 'zayav_into_list_for_filter',
+                direction: 2,
+                routeId: this.getTreepanelLeft().getRootNode().get('routeId')
+            },
+            success: function (response, options) {
+            },
+            failure: function (response, options) {
+                TK.Utils.makeErrMsg(response, 'Error!..');
             }
         });
     },
@@ -206,6 +277,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
         rootNode.set('no_avto', dataObj['no_avto']);
         rootNode.set('text', dataObj['no_avto']);
         rootNode.set('who', 'avto');
+        rootNode.set('routeId', dataObj['route']['hid']);
         if (konts && !Ext.Object.isEmpty(konts))
             this.getController('ky2.BindAvtoAndAvtoController').initContsNodes(konts, rootNode);
                 // this.initContsNodes(konts, rootNode);

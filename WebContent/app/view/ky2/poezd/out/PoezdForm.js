@@ -49,6 +49,10 @@ Ext.define('TK.view.ky2.poezd.out.PoezdForm', {
         },
         buildTopToolbar: function(config){
             TK.view.ky2.poezd.BasePoezdForm.prototype.buildTopToolbar.apply(this, arguments);
+            config.tbar.push(
+                 '-',
+                {text: '+ Импорт из заявки', iconCls: 'train', action: 'getZajavOutForPoezdOut'}, '-'
+            );
         }
     }]
 });

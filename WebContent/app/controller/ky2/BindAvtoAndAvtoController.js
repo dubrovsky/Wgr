@@ -6,18 +6,18 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
     selectedNodesRight: [], // last selection
     sourceVagModel: undefined,
     views: [
-        'ky2.avto.into.AvtosOutDir',
-        'ky2.avto.out.AvtosIntoDir',
-        'ky2.BasePoezdsDir',
+        // 'ky2.avto.into.AvtosOutDir',
+        // 'ky2.avto.out.AvtosIntoDir',
+        // 'ky2.BasePoezdsDir',
         'ky2.avto.into.Avto2AvtoBindTreeForm',
         'ky2.avto.out.Avto2AvtoBindTreeForm'
     ],
     models: [
-        'ky2.AvtoDir',
+        // 'ky2.AvtoDir',
         'ky2.AvtoBindTreeNode'
     ],
     stores: [
-        'ky2.AvtosDir',
+        // 'ky2.AvtosDir',
         'ky2.AvtoBindTreeLeftNodes',
         'ky2.AvtoBindTreeRightNodes'
     ],

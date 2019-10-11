@@ -2,8 +2,12 @@ package com.bivc.cimsmgs.doc2doc.orika.config.ky;
 
 import com.bivc.cimsmgs.db.PackDoc;
 import com.bivc.cimsmgs.db.Route;
+import com.bivc.cimsmgs.db.ky.Poezd;
+import com.bivc.cimsmgs.db.nsi.Client;
 import com.bivc.cimsmgs.dto.PackDocDTO;
 import com.bivc.cimsmgs.dto.RouteDTO;
+import com.bivc.cimsmgs.dto.ky2.ClientDTO;
+import com.bivc.cimsmgs.dto.ky2.PoezdDTO;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.ConfigurableMapper;
 
@@ -16,11 +20,13 @@ public class KyPoezdConfig extends ConfigurableMapper {
     protected void configure(MapperFactory mapperFactory) {
         mapRoute(mapperFactory);
         mapPackDoc(mapperFactory);
+        mapClient(mapperFactory);
+        mapPoezd(mapperFactory);
 //        mapKontInto(mapperFactory);
 //        mapVagon(mapperFactory);
     }
 
-   private void mapRoute(MapperFactory mapperFactory) {
+    private void mapRoute(MapperFactory mapperFactory) {
         mapperFactory.classMap(Route.class, RouteDTO.class)
                 .field("hid", "hid")
                 .register();
@@ -29,6 +35,20 @@ public class KyPoezdConfig extends ConfigurableMapper {
     private void mapPackDoc(MapperFactory mapperFactory) {
         mapperFactory.classMap(PackDoc.class, PackDocDTO.class)
                 .field("hid", "hid")
+                .register();
+    }
+
+    private void mapClient(MapperFactory mapperFactory) {
+        mapperFactory.classMap(Client.class, ClientDTO.class)
+                .fieldAToB("hid", "hid")
+                .fieldAToB("sname", "sname")
+                .register();
+    }
+
+    private void mapPoezd(MapperFactory mapperFactory) {
+        mapperFactory.classMap(Poezd.class, PoezdDTO.class)
+                .fieldAToB("client.sname", "gruzotpr")
+                .byDefault()
                 .register();
     }
 

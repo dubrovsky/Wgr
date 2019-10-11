@@ -150,7 +150,7 @@ Ext.define('TK.view.printtmpl.Form', {
                                         }
                                     }
                                 },
-                                {text:this.titleColumnFontSize, dataIndex:'fontSize', width:65, editor:{xtype:'numberfield', maxLength:2, minValue:6, maxValue:20, decimalPrecision:0}},
+                                {text:this.titleColumnFontSize, dataIndex:'fontSize', width:65, editor:{xtype:'numberfield', maxLength:2, minValue:5, maxValue:20, decimalPrecision:0}},
                                 {text:this.titleColumnFontBold, xtype: 'checkcolumn', dataIndex:'bold', width:70},
                                 {text:this.titleColumnFontUpper, xtype: 'checkcolumn', dataIndex:'uppercase', width:80},
                                 {text:this.titleColumnFontSpace, dataIndex: 'leading', width:87, editor:{xtype:'numberfield', maxLength:2, minValue:1, maxValue:20, decimalPrecision:0}}

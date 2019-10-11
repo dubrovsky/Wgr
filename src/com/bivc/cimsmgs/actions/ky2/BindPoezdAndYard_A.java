@@ -16,6 +16,7 @@ import com.bivc.cimsmgs.dto.ky2.YardSectorBindViewDTO;
 import com.bivc.cimsmgs.formats.json.Deserializer;
 import com.bivc.cimsmgs.formats.json.Serializer;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,11 @@ public class BindPoezdAndYard_A extends CimSmgsSupport_A {
         final List<YardSector> yardSectors = yardSectorDAO.findAll(getUser().getUsr());
 
         Map<String, List<?>> contGruz4History = poezd.bindPoezdToYard(poezdBindDTO.getVagons(), yardSectors, mapper);
+        poezd.getVagons().forEach(vagon -> {
+           if(!vagon.getGruzs().isEmpty()) {
+               Hibernate.initialize(vagon.getGruzs());   // in yard gruz not used, need to init to avoid  error - AssertionFailure: collection [com.bivc.cimsmgs.db.ky.Gruz.history] was not processed by flush()
+           }
+        });
         poezdDAO.makePersistent(poezd);
         saveContGruzHistory(contGruz4History, kontGruzHistoryDAO, POEZD);
 

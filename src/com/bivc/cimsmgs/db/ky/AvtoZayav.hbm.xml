@@ -3,11 +3,11 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 19.02.2014 14:19:48 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
-    <class name="com.bivc.cimsmgs.db.ky.AvtoZayav" table="KY_ZAYAV" batch-size="50">
+    <class name="com.bivc.cimsmgs.db.ky.AvtoZayav" table="KY_ZAYAV_AVTO" batch-size="50">
         <id name="hid" type="java.lang.Long">
             <column name="HID" precision="20" scale="0"/>
             <generator class="sequence">
-                <param name="sequence">KY_AVTO_HID</param>
+                <param name="sequence">HID_ZAYAV_HID</param>
             </generator>
         </id>
         <many-to-one class="com.bivc.cimsmgs.db.Route" fetch="select" name="route">
@@ -19,9 +19,21 @@
         <property name="no_zayav" type="string">
             <column length="250" name="NO_ZAYAV"/>
         </property>
-        <property name="transport" type="string">
-            <column length="1" name="TRANSPORT"/>
+        <property name="no_avto" type="string">
+            <column length="250" name="NO_AVTO"/>
         </property>
+        <property name="client" type="string">
+            <column length="128" name="CLIENT"/>
+        </property>
+        <property name="no_trail" type="string">
+            <column length="250" name="NO_TRAIL"/>
+        </property>
+        <property name="driver_fio" type="string">
+            <column length="250" name="DRIVER_FIO"/>
+        </property>
+<!--        <property name="transport" type="string">-->
+<!--            <column length="1" name="TRANSPORT"/>-->
+<!--        </property>-->
         <!--        <property name="dprb" type="timestamp">-->
         <!--            <column length="7" name="DPRB"/>-->
         <!--        </property>-->
@@ -33,6 +45,9 @@
         </property>
         <property name="dattr" type="timestamp">
             <column length="7" name="DATTR"/>
+        </property>
+        <property name="dateZayav" type="timestamp">
+            <column length="7" name="DATE_ZAYAV"/>
         </property>
         <property name="trans" type="string" update="false">
             <column length="20" name="TRANS"/>

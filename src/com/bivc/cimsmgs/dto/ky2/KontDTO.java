@@ -18,6 +18,7 @@ import java.util.TreeSet;
 public class KontDTO implements Comparable<KontDTO>{
 
     private Long hid;
+    private Long clientHid;
     private String nkon;
     private String notp;
 
@@ -31,6 +32,18 @@ public class KontDTO implements Comparable<KontDTO>{
 
     @JsonSerialize(using = DateTimeSerializer.class)
     private Date dprb;
+
+    @JsonSerialize(using = DateSerializer.class)
+    @JsonDeserialize(using = DateTimeDeserializer.class)
+    private Date dotpDate;
+
+    @JsonSerialize(using = TimeSerializer.class)
+    @JsonDeserialize(using = DateTimeDeserializer.class)
+    private Date dotpTime;
+
+    @JsonSerialize(using = DateTimeSerializer.class)
+    private Date dotp;
+
     private Boolean poruz;
     private Long massa_tar;
     private BigDecimal massa_brutto;
@@ -49,6 +62,25 @@ public class KontDTO implements Comparable<KontDTO>{
     private Date teh_obsl;
     private String prim;
     private Byte sort;
+    private Byte isZayav = 0;
+    private Byte isUnloading = 0;
+    private Byte isLoading = 0;
+
+    public Byte getIsUnloading() {
+        return isUnloading;
+    }
+
+    public void setIsUnloading(Byte isUnloading) {
+        this.isUnloading = isUnloading;
+    }
+
+    public Byte getIsLoading() {
+        return isLoading;
+    }
+
+    public void setIsLoading(Byte isLoading) {
+        this.isLoading = isLoading;
+    }
 
     private TreeSet<GruzDTO> gruzs = new TreeSet<>();
     private TreeSet<PlombDTO> plombs = new TreeSet<>();
@@ -95,6 +127,35 @@ public class KontDTO implements Comparable<KontDTO>{
         return this.dprb;
     }
 
+    public Date getDotpDate() {
+        return dotpDate;
+    }
+
+    public void setDotpDate(Date dotpDate) {
+        this.dotpDate = dotpDate;
+    }
+
+    public Date getDotpTime() {
+        return dotpTime;
+    }
+
+    public void setDotpTime(Date dotpTime) {
+        this.dotpTime = dotpTime;
+    }
+
+    public Date getDotp() {
+        if(this.dotpDate != null){
+            this.dotp = this.dotpDate;
+            if(this.dotpTime != null){
+                this.dotp = DateTimeUtils.addTimeToDate(this.dotpDate, this.dotpTime);
+            }
+        }
+        return this.dotp;
+    }
+
+    public void setDotp(Date dotp) {
+        this.dotp = dotp;
+    }
 
     public BigDecimal getMassa_brutto() {
         return massa_brutto;
@@ -263,5 +324,21 @@ public class KontDTO implements Comparable<KontDTO>{
 
     public void setPlombs(TreeSet<PlombDTO> plombs) {
         this.plombs = plombs;
+    }
+
+    public Byte getIsZayav() {
+        return isZayav;
+    }
+
+    public void setIsZayav(Byte isZayav) {
+        this.isZayav = isZayav;
+    }
+
+    public Long getClientHid() {
+        return clientHid;
+    }
+
+    public void setClientHid(Long clientHid) {
+        this.clientHid = clientHid;
     }
 }

@@ -2,10 +2,12 @@ package com.bivc.cimsmgs.db.ky;
 
 // Generated 19.02.2014 14:19:48 by Hibernate Tools 3.4.0.CR1
 
+import com.bivc.cimsmgs.dao.NsiClientDAO;
+import com.bivc.cimsmgs.db.nsi.Client;
 import com.bivc.cimsmgs.doc2doc.orika.Mapper;
 import com.bivc.cimsmgs.dto.ky2.GruzDTO;
+import com.bivc.cimsmgs.dto.ky2.KontDTO;
 import com.bivc.cimsmgs.dto.ky2.PlombDTO;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -18,13 +20,14 @@ public class Kont implements Serializable, Comparable<Kont> {
     private KontStatus prevStatus;
     private Vagon vagon;
     private Yard yard;
-   /* private Poezd poezdOut;
-    private Vagon vagonInto;
-    private Yard yard;
-    private Vagon vagonOut;
-    private Poezd poezdInto;*/
+    private Client client;
+    /* private Poezd poezdOut;
+     private Vagon vagonInto;
+     private Yard yard;
+     private Vagon vagonOut;
+     private Poezd poezdInto;*/
     private String trans;
-//    private Set<KontStatusHistory> kontStatusHistory;
+    //    private Set<KontStatusHistory> kontStatusHistory;
     private Long massa_tar;
     private BigDecimal massa_brutto;
     private BigDecimal massa_brutto_all;
@@ -76,8 +79,34 @@ public class Kont implements Serializable, Comparable<Kont> {
     private NsiKyOwners owner;
     private String punkt_otpr;
     private String punkt_nazn;
-    private Set<KontGruzHistory> history  = new TreeSet<>();
+    private Set<KontGruzHistory> history = new TreeSet<>();
     private Byte isZayav;
+    private Byte isUnloading = 0;
+    private Byte isLoading = 0;
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public Byte getIsUnloading() {
+        return isUnloading;
+    }
+
+    public void setIsUnloading(Byte isUnloading) {
+        this.isUnloading = isUnloading;
+    }
+
+    public Byte getIsLoading() {
+        return isLoading;
+    }
+
+    public void setIsLoading(Byte isLoading) {
+        this.isLoading = isLoading;
+    }
 
     public Byte getIsZayav() {
         return isZayav;
@@ -438,6 +467,14 @@ public class Kont implements Serializable, Comparable<Kont> {
         this.yard = yard;
     }
 
+    public void updateClient(KontDTO dto, NsiClientDAO clientDAO) {
+        if (dto.getClientHid() != null) {
+            setClient(clientDAO.getById(dto.getClientHid(), false));
+        } else {
+            setClient(null);
+        }
+    }
+
     public enum FilterFields {
         NKON("nkon"),
         NPPR("nppr"),
@@ -527,11 +564,6 @@ public class Kont implements Serializable, Comparable<Kont> {
     public void setKontStatusHistory(Set<KontStatusHistory> kontStatusHistory) {
         this.kontStatusHistory = kontStatusHistory;
     }*/
-
-    @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toStringExclude(this, "gruzs", "plombs", "poezd", "status");
-    }
 
 
     public Kont() {
@@ -666,7 +698,7 @@ public class Kont implements Serializable, Comparable<Kont> {
         this.dprb = dprb;
     }
 
-        public void setDotp(Date dotp) {
+    public void setDotp(Date dotp) {
         this.dotp = dotp;
     }
 
@@ -767,5 +799,54 @@ public class Kont implements Serializable, Comparable<Kont> {
             iterator.remove();
             gruz.setKont(null);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Kont kont = (Kont) o;
+        return hid.equals(kont.hid) &&
+                trans.equals(kont.trans) &&
+                massa_tar.equals(kont.massa_tar) &&
+                massa_brutto.equals(kont.massa_brutto) &&
+                massa_brutto_all.equals(kont.massa_brutto_all) &&
+                pod_sila.equals(kont.pod_sila) &&
+                type.equals(kont.type) &&
+                vid.equals(kont.vid) &&
+                prizn_sob.equals(kont.prizn_sob) &&
+                naim_sob.equals(kont.naim_sob) &&
+                gruzotpr.equals(kont.gruzotpr) &&
+                teh_obsl.equals(kont.teh_obsl) &&
+                ky_x.equals(kont.ky_x) &&
+                ky_y.equals(kont.ky_y) &&
+                ky_z.equals(kont.ky_z) &&
+                ky_sector.equals(kont.ky_sector) &&
+                dattr.equals(kont.dattr) &&
+                un.equals(kont.un) &&
+                altered.equals(kont.altered) &&
+                nkon.equals(kont.nkon) &&
+                notp.equals(kont.notp) &&
+                dprb.equals(kont.dprb) &&
+                dprbDate.equals(kont.dprbDate) &&
+                dprbTime.equals(kont.dprbTime) &&
+                dotp.equals(kont.dotp) &&
+                dotpDate.equals(kont.dotpDate) &&
+                dotpTime.equals(kont.dotpTime) &&
+                storeKy.equals(kont.storeKy) &&
+                poruz.equals(kont.poruz) &&
+                sort.equals(kont.sort) &&
+                prim.equals(kont.prim) &&
+                dyard.equals(kont.dyard) &&
+                punkt_otpr.equals(kont.punkt_otpr) &&
+                punkt_nazn.equals(kont.punkt_nazn) &&
+                isZayav.equals(kont.isZayav) &&
+                isUnloading.equals(kont.isUnloading) &&
+                Objects.equals(isLoading, kont.isLoading);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(hid, trans, massa_tar, massa_brutto, massa_brutto_all, pod_sila, type, vid, prizn_sob, naim_sob, gruzotpr, teh_obsl, ky_x, ky_y, ky_z, ky_sector, dattr, un, altered, nkon, notp, dprb, dprbDate, dprbTime, dotp, dotpDate, dotpTime, storeKy, poruz, sort, prim, dyard, punkt_otpr, punkt_nazn, isZayav, isUnloading, isLoading);
     }
 }

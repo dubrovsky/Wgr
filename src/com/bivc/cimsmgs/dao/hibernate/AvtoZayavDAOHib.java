@@ -31,8 +31,8 @@ public class AvtoZayavDAOHib extends GenericHibernateDAO<AvtoZayav, Long> implem
         if (start >= 0) {
             crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 20 : limit);
         }
-        crit.add(Restrictions.eq("direction", direction));
-        crit.add(Restrictions.eq("transport", "A"));
+//        crit.add(Restrictions.eq("direction", direction));
+//        crit.add(Restrictions.eq("transport", "A"));
         crit.addOrder(Order.desc("dattr"));
 
 //        applyFilter(filters, crit, locale);
@@ -50,7 +50,7 @@ public class AvtoZayavDAOHib extends GenericHibernateDAO<AvtoZayav, Long> implem
         crit.createAlias("route", "route").add(Restrictions.eq("route.hid", routeId));
 
         crit.add(Restrictions.eq("direction", direction));
-        crit.add(Restrictions.eq("transport", "A"));
+//        crit.add(Restrictions.eq("transport", "A"));
         crit.addOrder(Order.desc("dattr"));
 
 //        applyFilter(filters, crit, locale);
@@ -66,7 +66,7 @@ public class AvtoZayavDAOHib extends GenericHibernateDAO<AvtoZayav, Long> implem
         crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans()));
         crit.createAlias("route", "route").add(Restrictions.eq("route.hid", routeId));
         crit.add(Restrictions.eq("direction", direction));
-        crit.add(Restrictions.eq("transport", "A"));
+//        crit.add(Restrictions.eq("transport", "A"));
 
         crit.setProjection(Projections.countDistinct("hid"));
 

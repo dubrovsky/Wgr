@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="com.bivc.cimsmgs.db.nsi.Client" table="CLIENT" where="SYSDATE() &gt;= `CL_BGN` and SYSDATE() &lt; `CL_END`">
+    <class name="com.bivc.cimsmgs.db.nsi.Client" table="NSI_CLIENT" where="SYSDATE() &gt;= `CL_BGN` and SYSDATE() &lt; `CL_END`">
         <id name="hid" type="java.lang.Long">
             <column name="`HID`" precision="10" scale="0" />
             <generator class="sequence">
@@ -11,11 +11,29 @@
 <!--            <generator class="native"/>-->
         </id>
 
-        <property name="cl_no" type="string">
+        <property name="hidRoute" type="java.lang.Long">
+            <column length="10" name="HID_ROUTE" />
+        </property>
+        <property name="clNo" type="string">
             <column length="10" name="CL_NO" />
         </property>
-        <property name="cl_name" type="string">
-            <column length="255" name="CL_NAME" />
+        <property name="fname" type="string">
+            <column length="255" name="FNAME" />
+        </property>
+        <property name="sname" type="string">
+            <column length="255" name="SNAME" />
+        </property>
+        <property name="noDog" type="string">
+            <column length="255" name="NO_DOG" />
+        </property>
+        <property name="freeDays" type="integer">
+            <column length="255" name="FREEDAYS" />
+        </property>
+        <property name="trans" type="string">
+            <column length="20" name="TRANS" />
+        </property>
+        <property name="dateDog" type="date">
+            <column length="7" name="`DATE_DOG`" />
         </property>
         <property name="clientBgn" type="date">
             <column length="7" name="`CL_BGN`" />
@@ -23,6 +41,32 @@
         <property name="clientEnd" type="date">
             <column length="7" name="`CL_END`" />
         </property>
+
+        <set fetch="select" inverse="true" lazy="true" name="poezds" table="KY_POEZD" batch-size="50" cascade="refresh, delete">
+            <key>
+                <column name="HID_CLIENT" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.Poezd"/>
+        </set>
+        <set fetch="select" inverse="true" lazy="true" name="poezdZayavs" table="KY_ZAYAV" batch-size="50" cascade="refresh, delete">
+            <key>
+                <column name="HID_CLIENT" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.PoezdZayav"/>
+        </set>
+        <set fetch="select" inverse="true" lazy="true" name="konts" table="KY_KONT" batch-size="50" cascade="refresh, delete">
+            <key>
+                <column name="HID_CLIENT" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.Kont"/>
+        </set>
+        <set name="clientGroups" table="NSI_CLIENT_GROUPS" inverse="true" lazy="true"  batch-size="50" cascade="all, delete-orphan">
+            <key>
+                <column name="HID_CLIENT" length="20" not-null="true"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.nsi.ClientGroups"/>
+        </set>
+
 
     </class>
 </hibernate-mapping>

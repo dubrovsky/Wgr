@@ -301,10 +301,18 @@ public class Constants {
                 buffer.append("{");
                 buffer.append("hid:'");
                 buffer.append(client.getHid());
-                buffer.append("',cl_no:'");
-                buffer.append(client.getCl_no());
-                buffer.append("',cl_name:'");
-                buffer.append(javascriptString(client.getCl_name()));
+                buffer.append("',clNo:'");
+                buffer.append(javascriptString(client.getClNo()));
+                buffer.append("',freeDays:");
+                buffer.append(client.getFreeDays() == null ? 0 : client.getFreeDays());
+                buffer.append(",dateDog:'");
+                buffer.append(client.getDateDog() == null ? "" : new SimpleDateFormat("dd.MM.yy").format(client.getDateDog()));
+                buffer.append("',noDog:'");
+                buffer.append(javascriptString(client.getNoDog()));
+                buffer.append("',fname:'");
+                buffer.append(javascriptString(client.getFname()));
+                buffer.append("',sname:'");
+                buffer.append(javascriptString(client.getSname()));
                 buffer.append("'},");
             }
 

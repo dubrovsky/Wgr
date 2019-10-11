@@ -373,13 +373,9 @@ Ext.define('TK.controller.Menu', {
                 gridParams = {action:'list', direction:2, routeId:routeId};
                 grid = Ext.widget('ky2avtooutlist');
                 break;
-            case 'avto2imp':
-                gridParams = {action:'list', direction:1, routeId:routeId};
-                grid = Ext.widget('ky2avtozayavintolist');
-                break;
-            case 'avto2exp':
-                gridParams = {action:'list', direction:2, routeId:routeId};
-                grid = Ext.widget('ky2avtozayavoutlist');
+            case 'avtoZayav2':
+                gridParams = {action:'list', routeId:routeId};
+                grid = Ext.widget('ky2basezayavavtolist');
                 break;
             case 'poezdZayav2in':
                 gridParams = {action:'list', direction:1, routeId:routeId};
@@ -388,6 +384,11 @@ Ext.define('TK.controller.Menu', {
             case 'poezdZayav2out':
                 gridParams = {action:'list', direction:2, routeId:routeId};
                 grid = Ext.widget('ky2poezdzayavoutlist');
+                break;
+
+            case 'poezdZayav2':
+                gridParams = {action:'list', routeId:routeId};
+                grid = Ext.widget('ky2poezdzayavlist');
                 break;
 
             /*case 'kont_yard':
@@ -591,7 +592,7 @@ function translate (me,cur_lang) {
             poezd2inwide: 'Поезд 1520мм(прибытие)',poezd2outwide: 'Поезд 1520мм(отправление)',kontyard2: 'Контейнерная площадка',
             poezd2innar: 'Поезд 1435мм(прибытие)',poezd2outnar: 'Поезд 1435мм(отправление)',
             avtoin: 'Авто, прибытие', avtoout: 'Авто, отправление', avto2in: 'Авто2, прибытие', avto2out: 'Авто2, отправление',
-            avto2imp: 'Заявка на выгрузку(авто)', avto2exp: 'Заявка на погрузку(авто)', poezdZayav2in: 'Поезд, заявка на выгрузку', poezdZayav2out: 'Поезд, заявка на погрузку'
+            avtoZayav2: 'Заявка на авто', poezdZayav2in: 'Поезд, заявка на выгрузку', poezdZayav2out: 'Поезд, заявка на погрузку', poezdZayav2: 'Поезд, заявка'
         },
 
         de : {user   :'Die Benutzer',userGroups  :'Groups',project:'Die Projekte',log    :'Logs', stat     :"Statistik",

@@ -1,9 +1,12 @@
 package com.bivc.cimsmgs.commons;
 
+import com.isc.utils.dbStore.dbTool;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.connection.ConnectionProvider;
+import org.hibernate.engine.SessionFactoryImplementor;
 import org.hibernate.impl.SessionFactoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +67,11 @@ public class HibernateUtil {
 
     public static SessionFactory getSessionFactory() {
         return sessionFactory;
+    }
+
+    public static dbTool initDbTool() throws Exception {
+        ConnectionProvider connectionProvider = sessionFactory.getConnectionProvider();
+        return new dbTool(connectionProvider.getConnection(), null);
     }
 
 }

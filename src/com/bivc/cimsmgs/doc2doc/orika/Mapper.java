@@ -3,6 +3,7 @@ package com.bivc.cimsmgs.doc2doc.orika;
 import com.bivc.cimsmgs.db.PackDoc;
 import com.bivc.cimsmgs.db.Route;
 import com.bivc.cimsmgs.db.ky.*;
+import com.bivc.cimsmgs.db.nsi.Client;
 import com.bivc.cimsmgs.dto.PackDocDTO;
 import com.bivc.cimsmgs.dto.RouteDTO;
 import com.bivc.cimsmgs.dto.ky2.*;
@@ -20,6 +21,15 @@ public class Mapper extends ConfigurableMapper {
     protected void configure(MapperFactory factory) {
         factory.classMap(Poezd.class, PoezdDTO.class)
                 .fieldAToB("vagons", "vagons")
+                .fieldAToB("client.hid", "clientHid")
+                .fieldAToB("client.sname", "gruzotpr")
+                .byDefault()
+                .register();
+
+        factory.classMap(PoezdZayav.class, PoezdZayavDTO.class)
+                .fieldAToB("vagons", "vagons")
+                .fieldAToB("client.hid", "clientHid")
+                .fieldAToB("client.sname", "gruzotpr")
                 .byDefault()
                 .register();
 
@@ -32,6 +42,8 @@ public class Mapper extends ConfigurableMapper {
         factory.classMap(Kont.class, KontDTO.class)
                 .fieldAToB("gruzs", "gruzs")
                 .fieldAToB("plombs", "plombs")
+                .fieldAToB("client.hid", "clientHid")
+                .fieldAToB("client.sname", "gruzotpr")
                 .byDefault()
                 .register();
 
@@ -80,6 +92,10 @@ public class Mapper extends ConfigurableMapper {
                 .register();
 
         factory.classMap(PackDoc.class, PackDocDTO.class)
+                .field("hid", "hid")
+                .register();
+
+        factory.classMap(Client.class, ClientDTO.class)
                 .field("hid", "hid")
                 .register();
 

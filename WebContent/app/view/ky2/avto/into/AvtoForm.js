@@ -184,7 +184,8 @@ Ext.define('TK.view.ky2.avto.into.AvtoForm', {
                     iconCls: 'edit',
                     action: 'editCtGr'
                 },'-',
-                {text: '+ Авто по отправлению', iconCls:'truck', action:'createAvtoOutFromInto'},'-'
+                {text: '+ Авто по отправлению', iconCls:'truck', action:'createAvtoOutFromInto'},'-',
+                {text: '+ Импорт из заявки', iconCls:'truck', action:'importFromZayav'},'-'
             );
 
         }

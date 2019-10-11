@@ -3,22 +3,17 @@ package com.bivc.cimsmgs.actions.ky2;
 import com.bivc.cimsmgs.actions.CimSmgsSupport_A;
 import com.bivc.cimsmgs.commons.Filter;
 import com.bivc.cimsmgs.commons.Response;
-import com.bivc.cimsmgs.dao.AvtoDAO;
-import com.bivc.cimsmgs.dao.PoezdDAO;
+import com.bivc.cimsmgs.dao.*;
 import com.bivc.cimsmgs.db.PackDoc;
-import com.bivc.cimsmgs.db.ky.Avto;
-import com.bivc.cimsmgs.db.ky.Poezd;
+import com.bivc.cimsmgs.db.ky.*;
 import com.bivc.cimsmgs.doc2doc.Mapper;
+import com.bivc.cimsmgs.doc2doc.orika.CopyGruzMapper;
 import com.bivc.cimsmgs.dto.ky.AvtoBaseDTO;
 import com.bivc.cimsmgs.dto.ky.AvtoDTO;
-import com.bivc.cimsmgs.dto.ky.PoezdBaseDTO;
-import com.bivc.cimsmgs.dto.ky.PoezdDTO;
 import com.bivc.cimsmgs.formats.json.Deserializer;
 import com.bivc.cimsmgs.formats.json.Serializer;
-import com.bivc.cimsmgs.services.ky.IPoezdService;
 import com.bivc.cimsmgs.services.ky2.AvtoWzPzService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +61,8 @@ public class Avto_A extends CimSmgsSupport_A {
                     return createAvtoOutFromAvtoInto();
                 case COPY_AVTOINTO_TO_AVTOINTO:
                     return copyAvtoIntoToAvtoInto();
+                case IMPORT_FROM_ZAYAV:
+                    return importFromZayav();
 
                 default:
                     throw new RuntimeException("Unknown action");
@@ -194,6 +191,40 @@ public class Avto_A extends CimSmgsSupport_A {
         return SUCCESS;
     }
 
+
+    public String importFromZayav() {
+        Avto avto = avtoDAO.findById(getHid(), false);
+        AvtoZayav avtoZayav = avtoZayavDAO.findById(getZayavHid(), false);
+        for (Kont kont : avtoZayav.getKonts()) {
+            Kont kontCopy = copyKontMapper.map(kont, Kont.class);
+            kontCopy.setAvto(avto);
+            avto.getKonts().add(kontCopy);
+//            kontDAO.makePersistent(kontCopy);
+            for (Gruz gruz : kont.getGruzs()) {
+                Gruz gruzCopy = copyKontMapper.map(gruz, Gruz.class);
+                gruzCopy.setKont(kontCopy);
+                kontCopy.getGruzs().add(gruzCopy);
+//                gruzDAO.makePersistent(gruzCopy);
+            }
+            for (Plomb plomb : kont.getPlombs()) {
+                Plomb plombCopy = copyKontMapper.map(plomb, Plomb.class);
+                plombCopy.setKont(kontCopy);
+                kontCopy.getPlombs().add(plombCopy);
+//                plombDAO.makePersistent(plombCopy);
+            }
+        }
+        for (Gruz gruz : avtoZayav.getGruzs()) {
+            Gruz gruzCopy = copyGruzMapper.map(gruz, Gruz.class);
+            gruzCopy.setAvto(avto);
+            avto.getGruzs().add(gruzCopy);
+//            gruzDAO.makePersistent(gruzCopy);
+        }
+        avtoDAO.makePersistent(avto);
+
+
+        return SUCCESS;
+    }
+
     public String copyAvtoIntoToAvtoInto() {
         Avto avtoInto = avtoDAO.getById(getHid(), false);
         log.debug("Found avto to copy to avtoOut: {}", avtoInto);
@@ -266,8 +297,9 @@ public class Avto_A extends CimSmgsSupport_A {
     private String action;
     private Byte direction;
     private long routeId;
+    private long zayavHid;
 
-    enum Action {LIST, EDIT, SAVE, DELETE, AVTOS_DIR_FOR_AVTO_BIND, GET_WZ, GET_PZ, CREATE_AVTOOUT_FROM_AVTOINTO, COPY_AVTOINTO_TO_AVTOINTO}
+    enum Action {LIST, EDIT, SAVE, DELETE, AVTOS_DIR_FOR_AVTO_BIND, GET_WZ, GET_PZ, CREATE_AVTOOUT_FROM_AVTOINTO, COPY_AVTOINTO_TO_AVTOINTO, IMPORT_FROM_ZAYAV}
 
     private List<Filter> filters;
     private String filter;
@@ -277,6 +309,14 @@ public class Avto_A extends CimSmgsSupport_A {
 
     @Autowired
     private AvtoDAO avtoDAO;
+    @Autowired
+    private KontDAO kontDAO;
+    @Autowired
+    private GruzDAO gruzDAO;
+    @Autowired
+    private PlombDAO plombDAO;
+    @Autowired
+    private AvtoZayavDAO avtoZayavDAO;
     @Autowired
     private Mapper kyavtoMapper;
     @Autowired
@@ -289,8 +329,21 @@ public class Avto_A extends CimSmgsSupport_A {
     private AvtoWzPzService avtoWzPzService;
     @Autowired
     private com.bivc.cimsmgs.doc2doc.orika.CopyAvtoMapper copyAvtoMapper;
+    @Autowired
+    private com.bivc.cimsmgs.doc2doc.orika.CopyKontMapper copyKontMapper;
+    @Autowired
+    private com.bivc.cimsmgs.doc2doc.orika.CopyGruzMapper copyGruzMapper;
+
 
     private InputStream inputStream;
+
+    public long getZayavHid() {
+        return zayavHid;
+    }
+
+    public void setZayavHid(long zayavHid) {
+        this.zayavHid = zayavHid;
+    }
 
     public InputStream getInputStream() {
         return inputStream;

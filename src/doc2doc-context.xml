@@ -183,6 +183,7 @@ p:excelTpls-ref="excelTples"
     />
 
     <bean id="poezdVgctgr_A" class="com.bivc.cimsmgs.actions.ky2.PoezdVgCtGr_A" scope="prototype"/>
+    <bean id="poezdZayavVgctgr_A" class="com.bivc.cimsmgs.actions.ky2.PoezdZayavVgCtGr_A" scope="prototype"/>
     <bean id="avtoCtgr_A" class="com.bivc.cimsmgs.actions.ky2.AvtoCtGr_A" scope="prototype"/>
     <bean id="avtoZayavCtgr_A" class="com.bivc.cimsmgs.actions.ky2.AvtoZayavCtGr_A" scope="prototype"/>
     <bean id="yardCtgr_A" class="com.bivc.cimsmgs.actions.ky2.YardCtGr_A" scope="prototype"/>
@@ -202,6 +203,7 @@ p:excelTpls-ref="excelTples"
     <bean id="yardSector2_A" class="com.bivc.cimsmgs.actions.ky2.YardSector_A" scope="prototype"/>
     <bean id="reportServiceKy2" class="com.bivc.cimsmgs.services.ky2.ReportService"/>
     <bean id="avtoWzPzService" class="com.bivc.cimsmgs.services.ky2.AvtoWzPzService"/>
+    <bean id="client_A" class="com.bivc.cimsmgs.actions.nsi.Client_A"/>
 
     <bean id="poezd_A" class="com.bivc.cimsmgs.actions.ky.Poezd_A" scope="prototype"/>
     <bean id="vagon_A" class="com.bivc.cimsmgs.actions.ky.Vagon_A" scope="prototype"/>
@@ -251,9 +253,11 @@ p:excelTpls-ref="excelTples"
     <bean id="plombDAO" class="com.bivc.cimsmgs.dao.hibernate.PlombDAOHib"/>
     <bean id="yardDAO" class="com.bivc.cimsmgs.dao.hibernate.YardDAOHib"/>
     <bean id="yardSectorGroupsDAO" class="com.bivc.cimsmgs.dao.hibernate.YardSectorGroupsDAOHib"/>
+    <bean id="clientGroupsDAO" class="com.bivc.cimsmgs.dao.hibernate.ClientGroupsDAOHib"/>
     <bean id="kontDAO" class="com.bivc.cimsmgs.dao.hibernate.KontDAOHib"/>
     <bean id="yardSectorDAO" class="com.bivc.cimsmgs.dao.hibernate.YardSectorDAOHib"/>
     <bean id="poezdDAO" class="com.bivc.cimsmgs.dao.hibernate.PoezdDAOHib"/>
+    <bean id="clientDAO" class="com.bivc.cimsmgs.dao.hibernate.NsiClientDAOHib"/>
     <bean id="kontGruzHistoryDAO" class="com.bivc.cimsmgs.dao.hibernate.KontGruzHistoryDAOHib"/>
     <bean id="avtoDAO" class="com.bivc.cimsmgs.dao.hibernate.AvtoDAOHib"/>
     <bean id="avtoZayavDAO" class="com.bivc.cimsmgs.dao.hibernate.AvtoZayavDAOHib"/>

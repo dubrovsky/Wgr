@@ -1,12 +1,12 @@
 Ext.define('TK.view.ky2.poezd.out.PoezdList', {
-    extend:'TK.view.ky2.poezd.BasePoezdList',
-    alias:'widget.ky2poezdoutlist',
-    itemId:'ky2poezdlist',
+    extend: 'TK.view.ky2.poezd.BasePoezdList',
+    alias: 'widget.ky2poezdoutlist',
+    itemId: 'ky2poezdlist',
 
-    buildColumns:function (config) {
+    buildColumns: function (config) {
         this.callParent(arguments);
         config.columns.items.splice(2, 0,
-            {text:this.headerDateOut, dataIndex:'dotp', width:100, renderer: TK.Utils.renderLongStr}
+            {text: this.headerDateOut, dataIndex: 'dotp', width: 100, renderer: TK.Utils.renderLongStr}
         );
     },
 
@@ -21,10 +21,11 @@ Ext.define('TK.view.ky2.poezd.out.PoezdList', {
     buildTopToolbar: function (config) {
         this.callParent(arguments);
         config.tbar.splice(8, 0,
-            {tooltip: this.btnFromPoezdInto, iconCls:'train2', action:'showPoezdsIntoDir4PoezdOutBind'},'-',
-            {tooltip: this.btnFromYard, iconCls:'cont', action:'getPoesdAndYardForBind'},'-',
-            {tooltip: "На авто", iconCls:'truck', action:'getPoesdAndAvtoForBind'},'-'
-            ,{text: '+ С поездов по приб.', iconCls:'train', action:'getPoezdsIntoForPoezdOut'},'-'
+            {tooltip: this.btnFromPoezdInto, iconCls: 'train2', action: 'showPoezdsIntoDir4PoezdOutBind'}, '-',
+            {tooltip: this.btnFromYard, iconCls: 'cont', action: 'getPoesdAndYardForBind'}, '-',
+            {tooltip: "На авто", iconCls: 'truck', action: 'getPoesdAndAvtoForBind'}, '-',
+            {text: '+ С поездов по приб.', iconCls: 'train', action: 'getPoezdsIntoForPoezdOut'}, '-'/*,
+            {text: '+ Импорт из заявки', iconCls: 'train', action: 'getZajavOutForPoezdOut'}, '-'*/
         );
     }
 });

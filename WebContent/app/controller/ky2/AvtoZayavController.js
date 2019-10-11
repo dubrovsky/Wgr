@@ -41,31 +41,31 @@ Ext.define('TK.controller.ky2.AvtoZayavController', {
 
     init: function () {
         this.control({
-            'ky2avtozayavintolist button[action="create"]': {
+            'ky2basezayavavtolist button[action="create"]': {
                 click: this.createZayavInto
             },
-            'ky2avtozayavoutlist button[action="create"]': {
-                click: this.createZayavOut
-            },
-            'ky2avtozayavintolist button[action="edit"]': {
+            // 'ky2avtozayavoutlist button[action="create"]': {
+            //     click: this.createZayavOut
+            // },
+            'ky2basezayavavtolist button[action="edit"]': {
                 click: this.editZayavInto
             },
-            'ky2avtozayavoutlist button[action="edit"]': {
-                click: this.editZayavOut
-            },
+            // 'ky2avtozayavoutlist button[action="edit"]': {
+            //     click: this.editZayavOut
+            // },
 
-            'ky2avtozayavintolist': {
+            'ky2basezayavavtolist': {
                 itemdblclick: this.editZayavInto
             },
-            'ky2avtozayavoutlist': {
-                itemdblclick: this.editZayavOut
-            },
-            'ky2avtozayavintolist button[action="delete"]': {
+            // 'ky2avtozayavoutlist': {
+            //     itemdblclick: this.editZayavOut
+            // },
+            'ky2basezayavavtolist button[action="delete"]': {
                 click: this.deleteZayav
             },
-            'ky2avtozayavoutlist button[action="delete"]': {
-                click: this.deleteZayav
-            },
+            // 'ky2avtozayavoutlist button[action="delete"]': {
+            //     click: this.deleteZayav
+            // },
             // 'ky2avtointolist button[action="showAvtosOutDir4AvtoIntoBind"]': {
             //     click: this.showAvtosOutDir4AvtoIntoBind
             // },
@@ -83,7 +83,7 @@ Ext.define('TK.controller.ky2.AvtoZayavController', {
             },
             'ky2avtozayavoutform button[action="save"]': {
                 click: this.saveZayav
-            }
+            },
             // 'ky2avtointoform button[action="print"] menuitem[action="wz"]': {
             //     click: this.createWZ
             // },
@@ -111,9 +111,9 @@ Ext.define('TK.controller.ky2.AvtoZayavController', {
             // 'ky2avtointoform button[action="createAvtoOutFromInto"]': {
             //     click: this.createAvtoOutFromAvtoIntoform
             // },
-            // 'ky2avtointoform button[action="nsiOtpr"]': {
-            //     click: this.showNsiOtpr
-            // },
+            'ky2avtozayavintoform button[action="nsiOtpr"]': {
+                click: this.showNsiOtpr
+            }
             // 'ky2avtooutform button[action="nsiOtpr"]': {
             //     click: this.showNsiOtpr
             // },
@@ -138,7 +138,7 @@ Ext.define('TK.controller.ky2.AvtoZayavController', {
             extraParams = zayavlist.getStore().getProxy().extraParams,
             zayav = Ext.create(modelClsName, {
                 'route.hid': extraParams['routeId'],
-                direction: extraParams['direction'],
+                // direction: extraParams['direction'],
                 transport: 'A'
             }),
             zayavcontainer = Ext.widget(xtype, {title: this.getFormTitle(extraParams['direction'])});
@@ -152,11 +152,11 @@ Ext.define('TK.controller.ky2.AvtoZayavController', {
 
     getFormTitle: function(direction) {
         if (direction === 1)
-            return 'Создание заявки на ввоз';
+            return 'Создание заявки на выгрузку';
         else if (direction === 2)
-            return 'Создание заявки на вывоз';
+            return 'Создание заявки на погрузку';
         else
-            return '';
+            return 'Создание заявки';
     },
 
     editZayavInto: function (btn) {
@@ -265,7 +265,7 @@ Ext.define('TK.controller.ky2.AvtoZayavController', {
         } else {
             Ext.Msg.alert('Warning', 'Form is not valid');
         }
-    }
+    },
 
 
 
@@ -402,11 +402,11 @@ Ext.define('TK.controller.ky2.AvtoZayavController', {
     //     window.open('ky2/secure/Avto.do?hid=' + hid + '&action=' + action, '_self', '');
     // },
     //
-    // showNsiOtpr: function(btn){
-    //     var form = this.getAvtoform().getForm(),
-    //         nsiGrid = this.getController('Nsi').nsiPoezdClient(form.findField('client').getValue()).getComponent(0);
-    //     nsiGrid.on('itemdblclick', this.selectClient, form);
-    // },
+    showNsiOtpr: function(btn){
+        var form = this.getZayavform().getForm(),
+            nsiGrid = this.getController('Nsi').nsiKyClient(form.findField('client').getValue(), form.getRecord().get('route.hid')).getComponent(0);
+        nsiGrid.on('itemdblclick', this.getController('ky2.AvtoController').selectClient, form);
+    }
     //
     // selectClient: function(view, record) {
     //     var data = record.data;

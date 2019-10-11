@@ -6,7 +6,7 @@ import com.bivc.cimsmgs.commons.Constants;
 import com.bivc.cimsmgs.db.ky.Avto;
 import com.bivc.cimsmgs.db.ky.AvtoZayav;
 import com.bivc.cimsmgs.db.ky.Poezd;
-import com.bivc.cimsmgs.db.ky.Zayav;
+import com.bivc.cimsmgs.db.ky.PoezdZayav;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -45,7 +45,7 @@ public class PackDoc implements Serializable {
 	private Set<Poezd> poezds = new HashSet<Poezd>();
 	private Set<Avto> avtos = new HashSet<Avto>();
 	private Set<AvtoZayav> avtoZayavs = new HashSet<>();
-	private Set<Zayav> zayavs = new HashSet<>();
+	private Set<PoezdZayav> zayavs = new HashSet<>();
 
 	public Set<Poezd> getPoezds() {
 		return poezds;
@@ -322,7 +322,7 @@ public class PackDoc implements Serializable {
 			getAvtoZayavs().add(avtoZayav);
 		}
 	}
-    public void addZayavItem(Zayav zayav) {
+    public void addZayavItem(PoezdZayav zayav) {
         if (zayav != null) {
             zayav.setPackDoc(this);
             getZayavs().add(zayav);
@@ -359,11 +359,11 @@ public class PackDoc implements Serializable {
         return Objects.hash(hid, route != null ? route.getHid() : "", usrGroupsDir != null ? usrGroupsDir.getName() : "", tbc_nomer, un, g692, g162, g1r, g19r, g4r, g49r);
     }
 
-    public Set<Zayav> getZayavs() {
+    public Set<PoezdZayav> getZayavs() {
         return zayavs;
     }
 
-    public void setZayavs(Set<Zayav> poezdZayavs) {
+    public void setZayavs(Set<PoezdZayav> poezdZayavs) {
         this.zayavs = poezdZayavs;
     }
 }

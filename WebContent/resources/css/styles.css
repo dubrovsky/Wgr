@@ -927,7 +927,11 @@ background-image:url() !important;
 }
 
 .yardReturnNkon {
-    background-color: #4ce37a;
+    background-color: #4ce37a !important;
+}
+
+.executed .x-grid-cell {
+        background-color: #b3e3b3 !important;
 }
 
 /*.x-column-header.green .x-column-header-over{*/

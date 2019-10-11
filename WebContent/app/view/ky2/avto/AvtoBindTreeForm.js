@@ -68,8 +68,13 @@ Ext.define('TK.view.ky2.avto.AvtoBindTreeForm', {
             '-',
             {
                 xtype: 'vagkontsearch'
-            }];
+            }].concat(this.buildTreeRightPanelTopToolbarZayavFilter());
     },
+
+    buildTreeRightPanelTopToolbarZayavFilter: function() {
+        return [];
+    },
+
 
     buildTreeLeftPanelTopToolbarItems: function () {
         return [

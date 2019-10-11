@@ -2,6 +2,7 @@ package com.bivc.cimsmgs.doc2doc.orika;
 
 import com.bivc.cimsmgs.db.Route;
 import com.bivc.cimsmgs.db.ky.*;
+import com.bivc.cimsmgs.db.nsi.Client;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.ConfigurableMapper;
 import org.springframework.stereotype.Component;
@@ -49,6 +50,7 @@ public class CopyPoezdMapper extends ConfigurableMapper {
                 .field("sort", "sort")
                 .field("punkt_otpr", "punkt_otpr")
                 .field("punkt_nazn", "punkt_nazn")
+                .field("client", "client")
                 .register();
 
         factory.classMap(Vagon.class, Vagon.class)
@@ -65,6 +67,7 @@ public class CopyPoezdMapper extends ConfigurableMapper {
 
         factory.classMap(Poezd.class, Poezd.class)
                 .field("route", "route")
+                .field("client", "client")
                 .field("nppr", "nppr")
                 .field("npprm", "npprm")
                 .field("ksto_f", "kstn")
@@ -78,6 +81,10 @@ public class CopyPoezdMapper extends ConfigurableMapper {
                 .register();
 
         factory.classMap(Route.class, Route.class)
+                .field("hid", "hid")
+                .register();
+
+        factory.classMap(Client.class, Client.class)
                 .field("hid", "hid")
                 .register();
     }

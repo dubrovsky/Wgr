@@ -190,4 +190,6 @@ public class KontStatusHistory implements Serializable, Comparable<KontStatusHis
             return thisHid.compareTo(thatHid);
         }
     }
+
+
 }

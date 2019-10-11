@@ -2,21 +2,18 @@ package com.bivc.cimsmgs.dto.ky;
 
 import com.bivc.cimsmgs.commons.DateTimeUtils;
 import com.bivc.cimsmgs.commons.TimeSerializer;
-import com.bivc.cimsmgs.db.ky.Vagon;
 import com.bivc.cimsmgs.dto.PackDocDTO;
 import com.bivc.cimsmgs.dto.RouteDTO;
+import com.bivc.cimsmgs.dto.ky2.ClientDTO;
 import com.bivc.cimsmgs.formats.json.serializers.DateSerializer;
 import com.bivc.cimsmgs.formats.json.serializers.DateTimeDeserializer;
 import com.bivc.cimsmgs.formats.json.serializers.DateTimeSerializer;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import java.util.Date;
-import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * @author p.dzeviarylin
@@ -26,6 +23,7 @@ public class PoezdBaseDTO {
     private Long hid;
     private RouteDTO route;
     private PackDocDTO packDoc;
+    private ClientDTO client;
     private String nppr;
     private String npprm;
     private Byte koleya;
@@ -293,4 +291,11 @@ public class PoezdBaseDTO {
         this.gruzotpr = gruzotpr;
     }
 
+    public ClientDTO getClient() {
+        return client;
+    }
+
+    public void setClient(ClientDTO client) {
+        this.client = client;
+    }
 }

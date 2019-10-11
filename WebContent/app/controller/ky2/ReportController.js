@@ -8,12 +8,12 @@ Ext.define('TK.controller.ky2.ReportController', {
     stores: [
         'ky2.ReportsForm',
         'ky2.ReportsPoezdsInInterval',
-        'ky2.ReportsGruzotprInterval'
+        'ky2.ReportsClientInterval'
     ],
     models: [
         'ky2.ReportForm',
         'ky2.ReportPoezdsInInterval',
-        'ky2.ReportGruzotprInterval'
+        'ky2.ReportClientInterval'
     ],
 
     init: function () {
@@ -41,7 +41,7 @@ Ext.define('TK.controller.ky2.ReportController', {
 
         xform.store.load({
             params: {
-                action: 'params_form'
+                action: 'ParamsForm'
             },
             scope: this,
             callback : function(records, options, success) {
@@ -55,7 +55,7 @@ Ext.define('TK.controller.ky2.ReportController', {
     getReport: function (btn) {
         var form = btn.up('form');
         if(form.isValid()) {
-            window.open('ky2/secure/Report.do?reportParams=' + encodeURIComponent(Ext.encode(form.getValues())) + '&action=get_report', '_self', '');
+            window.open('ky2/secure/Report.do?reportParams=' + encodeURIComponent(Ext.encode(form.getValues())) + '&action=KontReport', '_self', '');
         }
 
 
@@ -73,12 +73,12 @@ Ext.define('TK.controller.ky2.ReportController', {
 
         if (values['startDate'] && values['endDate']) {
             var poezdCombo = form.down('combo#npprm');
-            var gruzotprCombo = form.down('combo#gruzotpr');
+            var hid_clientCombo = form.down('combo#hid_client');
             poezdCombo.clearValue();
-            gruzotprCombo.clearValue();
+            hid_clientCombo.clearValue();
             poezdCombo.getStore().load({
                 params: {
-                    action: 'poezds_in_interval',
+                    action: 'PoezdsInInterval',
                     reportParams: Ext.encode({startDate: values['startDate'], endDate: values['endDate']})
                 },
                 success: function (response, options) {
@@ -87,9 +87,9 @@ Ext.define('TK.controller.ky2.ReportController', {
                     TK.Utils.makeErrMsg(response, 'Error!..');
                 }
             });
-            gruzotprCombo.getStore().load({
+            hid_clientCombo.getStore().load({
                 params: {
-                    action: 'gruzotpr_interval',
+                    action: 'ClientInterval',
                     reportParams: Ext.encode({startDate: values['startDate'], endDate: values['endDate']})
                 },
                 success: function (response, options) {

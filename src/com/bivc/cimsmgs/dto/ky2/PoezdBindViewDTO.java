@@ -1,5 +1,7 @@
 package com.bivc.cimsmgs.dto.ky2;
 
+import com.bivc.cimsmgs.dto.RouteDTO;
+
 import java.util.TreeSet;
 
 /**
@@ -11,7 +13,17 @@ public class PoezdBindViewDTO {
     private Byte direction;
     private String nppr;
     private String npprm;
+    private RouteDTO route;
+
     private TreeSet<VagonBindViewDTO> vagons = new TreeSet<>();
+
+    public RouteDTO getRoute() {
+        return route;
+    }
+
+    public void setRoute(RouteDTO route) {
+        this.route = route;
+    }
 
     public Long getHid() {
         return hid;

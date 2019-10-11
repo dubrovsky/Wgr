@@ -67,12 +67,12 @@ Ext.define('TK.controller.ky2.AvtoZayavCtGrController', {
             'ky2avtozayavctgrtreeform': {
                 beforedestroy: this.clearCtGrForm
             },
-            'ky2avtozayavintolist button[action="editCtGr"]': {
+            'ky2basezayavavtolist button[action="editCtGr"]': {
                 click: this.editCtGrInto
             },
-            'ky2avtozayavoutlist button[action="editCtGr"]': {
-                click: this.editCtGrOut
-            },
+            // 'ky2avtozayavoutlist button[action="editCtGr"]': {
+            //     click: this.editCtGrOut
+            // },
             'ky2avtozayavintoform button[action="editCtGr"]': {
                 click: this.toCtGrFromOutside
             },
@@ -481,7 +481,7 @@ Ext.define('TK.controller.ky2.AvtoZayavCtGrController', {
 
     onAddActClick: function (btn) {
         var selectedModelNode = this.getTreepanel().getSelectionModel().getLastSelected();
-        window.open('ky2/secure/Report.do?hid=' + selectedModelNode.get('hid') + '&action=sostojanie_kont_avto', '_blank', '');
+        window.open('ky2/secure/Report.do?hid=' + selectedModelNode.get('hid') + '&action=SostojanieKontAvto', '_blank', '');
     },
 
     initAvtoToButtons: function(vagoncontainer, direction) {

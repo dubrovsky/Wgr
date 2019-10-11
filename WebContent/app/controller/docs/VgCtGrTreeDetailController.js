@@ -1348,7 +1348,7 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
                 gryzResult += (gryz['massa'] ? '\nМасса- ' + gryz['massa'].toFixed(3) + 'кг\n\n' : '');
 
                 if (!g11PrimResult && gryz['ohr']) {
-                    g11PrimResult = 'Груз подлежит охране';
+                    g11PrimResult = '';
 
                     var g11PrimDisplField = controller.getDocForm().getComponent('smgs.g11_prim');
                     if (!g11PrimDisplField.getValue()) {     // empty

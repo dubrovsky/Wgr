@@ -26,9 +26,14 @@ public class AvtoZayav {
     private PackDoc packDoc;
     private Long hid;
     private String no_zayav;
-    private String transport;
+    private String no_avto;
+    private String no_trail;
+    private String driver_fio;
+    private String client;
+//    private String transport;
 //    @JsonSerialize(using = DateTimeSerializer.class)
-//    private Date dprb;
+@JsonSerialize(using = DateTimeSerializer.class)
+    private Date dateZayav;
     private String un;
     @JsonSerialize(using = DateTimeSerializer.class)
     private Date dattr;
@@ -38,6 +43,7 @@ public class AvtoZayav {
     private Set<Kont> konts = new TreeSet<>();
     private Set<Gruz> gruzs = new TreeSet<>();
     private Integer kontCount;
+    private Integer kontCountDone;
 
     public List<Kont> updateKonts(Set<KontDTO> dtos, Mapper mapper) {
         // delete
@@ -162,12 +168,44 @@ public class AvtoZayav {
     }
 
 
-    public String getTransport() {
-        return transport;
+    public String getNo_avto() {
+        return no_avto;
     }
 
-    public void setTransport(String transport) {
-        this.transport = transport;
+    public void setNo_avto(String no_avto) {
+        this.no_avto = no_avto;
+    }
+
+    public String getNo_trail() {
+        return no_trail;
+    }
+
+    public void setNo_trail(String no_trail) {
+        this.no_trail = no_trail;
+    }
+
+    public String getDriver_fio() {
+        return driver_fio;
+    }
+
+    public void setDriver_fio(String driver_fio) {
+        this.driver_fio = driver_fio;
+    }
+
+    public String getClient() {
+        return client;
+    }
+
+    public void setClient(String client) {
+        this.client = client;
+    }
+
+    public Date getDateZayav() {
+        return dateZayav;
+    }
+
+    public void setDateZayav(Date dateZayav) {
+        this.dateZayav = dateZayav;
     }
 
     public PackDoc getPackDoc() {
@@ -260,10 +298,42 @@ public class AvtoZayav {
     }
 
     public Integer getKontCount() {
-        return this.getKonts().size();
+        return kontCount;
     }
 
     public void setKontCount(Integer kontCount) {
         this.kontCount = kontCount;
+    }
+
+    public Integer getKontCountDone() {
+        return kontCountDone;
+    }
+
+    public void setKontCountDone(Integer kontCountDone) {
+        this.kontCountDone = kontCountDone;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AvtoZayav avtoZayav = (AvtoZayav) o;
+        return direction.equals(avtoZayav.direction) &&
+                hid.equals(avtoZayav.hid) &&
+                no_zayav.equals(avtoZayav.no_zayav) &&
+                no_avto.equals(avtoZayav.no_avto) &&
+                no_trail.equals(avtoZayav.no_trail) &&
+                driver_fio.equals(avtoZayav.driver_fio) &&
+                client.equals(avtoZayav.client) &&
+                dateZayav.equals(avtoZayav.dateZayav) &&
+                un.equals(avtoZayav.un) &&
+                dattr.equals(avtoZayav.dattr) &&
+                trans.equals(avtoZayav.trans) &&
+                altered.equals(avtoZayav.altered);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(direction, hid, no_zayav, no_avto, no_trail, driver_fio, client, dateZayav, un, dattr, trans, altered);
     }
 }

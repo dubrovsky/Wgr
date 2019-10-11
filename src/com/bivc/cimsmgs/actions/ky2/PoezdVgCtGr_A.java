@@ -3,6 +3,7 @@ package com.bivc.cimsmgs.actions.ky2;
 import com.bivc.cimsmgs.actions.CimSmgsSupport_A;
 import com.bivc.cimsmgs.commons.Response;
 import com.bivc.cimsmgs.dao.KontGruzHistoryDAO;
+import com.bivc.cimsmgs.dao.NsiClientDAO;
 import com.bivc.cimsmgs.dao.PoezdDAO;
 import com.bivc.cimsmgs.db.ky.Poezd;
 import com.bivc.cimsmgs.doc2doc.orika.Mapper;
@@ -43,7 +44,6 @@ public class PoezdVgCtGr_A extends CimSmgsSupport_A {
         } catch (IllegalArgumentException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     private String edit() throws Exception {
@@ -63,7 +63,7 @@ public class PoezdVgCtGr_A extends CimSmgsSupport_A {
     private String save() throws Exception {
         final PoezdDTO dto = defaultDeserializer.setLocale(getLocale()).read(PoezdDTO.class, dataObj);
         Poezd poezd = poezdDAO.findById(dto.getHid(), false);
-        final Map<String, List<?>> contGruz4History = poezd.updateVags(dto.getVagons(), mapper);
+        final Map<String, List<?>> contGruz4History = poezd.updateVags(dto.getVagons(), mapper, clientDAO);
         poezd = poezdDAO.makePersistent(poezd);
         saveContGruzHistory(contGruz4History, kontGruzHistoryDAO, POEZD);
         poezdDAO.flush(); // to get ids
@@ -90,6 +90,8 @@ public class PoezdVgCtGr_A extends CimSmgsSupport_A {
     private PoezdDAO poezdDAO;
     @Autowired
     private KontGruzHistoryDAO kontGruzHistoryDAO;
+    @Autowired
+    private NsiClientDAO clientDAO;
 
     private String action;
     private String dataObj;

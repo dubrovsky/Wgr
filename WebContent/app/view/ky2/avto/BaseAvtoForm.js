@@ -92,7 +92,8 @@ Ext.define('TK.view.ky2.avto.BaseAvtoForm', {
                     name: 'client',
                     maxLength: 128,
                     // rows: 3,
-                    flex: 1
+                    flex: 1,
+                    readOnly: true
                 }, {
                     xtype: 'button',
                     text: '...',

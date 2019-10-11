@@ -6,6 +6,6 @@ import com.bivc.cimsmgs.db.nsi.Client;
 import java.util.List;
 
 public interface NsiClientDAO extends GenericDAO<Client, Long> {
-    List<Client> findAll(Integer limit, Integer start, String query, Usr usr);
-    Long countAll(String query, Usr usr);
+    List<Client> findAll(Integer limit, Integer start, String query, Usr usr, Long routeId);
+    Long countAll(String query, Usr usr, Long routeId);
 }

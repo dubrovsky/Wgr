@@ -1303,4 +1303,38 @@ public class Avto {
     public void setKontCount(Integer kontCount) {
         this.kontCount = kontCount;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Avto avto = (Avto) o;
+        return direction.equals(avto.direction) &&
+                naim_sob.equals(avto.naim_sob) &&
+                client.equals(avto.client) &&
+                hid.equals(avto.hid) &&
+                type_avto.equals(avto.type_avto) &&
+                no_avto.equals(avto.no_avto) &&
+                no_trail.equals(avto.no_trail) &&
+                driver_fio.equals(avto.driver_fio) &&
+                otp_cargo.equals(avto.otp_cargo) &&
+                pol_cargo.equals(avto.pol_cargo) &&
+                departure.equals(avto.departure) &&
+                destination.equals(avto.destination) &&
+                driver_nm.equals(avto.driver_nm) &&
+                dprb.equals(avto.dprb) &&
+                dotp.equals(avto.dotp) &&
+                prim_avto.equals(avto.prim_avto) &&
+                un.equals(avto.un) &&
+                dattr.equals(avto.dattr) &&
+                trans.equals(avto.trans) &&
+                altered.equals(avto.altered) &&
+                kontCount.equals(avto.kontCount) &&
+                ret_nkon.equals(avto.ret_nkon);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(direction, naim_sob, client, hid, type_avto, no_avto, no_trail, driver_fio, otp_cargo, pol_cargo, departure, destination, driver_nm, dprb, dotp, prim_avto, un, dattr, trans, altered, kontCount, ret_nkon);
+    }
 }

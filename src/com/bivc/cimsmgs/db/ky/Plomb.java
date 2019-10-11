@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 public class Plomb implements Serializable, Comparable<Plomb> {
 
@@ -143,5 +144,26 @@ public class Plomb implements Serializable, Comparable<Plomb> {
 		} else {
 			return thisHid.compareTo(thatHid);
 		}
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Plomb plomb = (Plomb) o;
+		return hid.equals(plomb.hid) &&
+				kpl.equals(plomb.kpl) &&
+				znak.equals(plomb.znak) &&
+				station.equals(plomb.station) &&
+				dattr.equals(plomb.dattr) &&
+				sort.equals(plomb.sort) &&
+				trans.equals(plomb.trans) &&
+				un.equals(plomb.un) &&
+				Objects.equals(altered, plomb.altered);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(hid, kpl, znak, station, dattr, sort, trans, un, altered);
 	}
 }

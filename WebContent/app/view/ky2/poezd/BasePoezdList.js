@@ -42,7 +42,7 @@ Ext.define('TK.view.ky2.poezd.BasePoezdList', {
         config.tbar.splice(6, 0,
             {text: 'Отчет', iconCls:'export2Xls', action:'showReportParams'},'-'
         );
-        config.tbar.splice(3, 0,
+        config.tbar.splice(4, 0,
             {text: '+Вагон/Контейнер/Груз', iconCls:'edit', action:'editVgCtGr'},'-'
         );
         // config.tbar.unshift({text: 'Фильтр', iconCls:'filter', action:'filterPoezd'},'-');

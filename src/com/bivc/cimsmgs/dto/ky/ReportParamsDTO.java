@@ -27,9 +27,10 @@ public class ReportParamsDTO {
     private Date endDate;
     @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
     private String[] npprm;
-    private String gruzotpr;
+//    private String gruzotpr;
     private String tr_arrival = "-";
     private String tr_departure = "-";
+    private Long hid_client;
 
     public ReportParamsDTO() {
         GregorianCalendar gc = new GregorianCalendar();
@@ -70,6 +71,7 @@ public class ReportParamsDTO {
         this.npprm = npprm;
     }
 
+/*
     public String getGruzotpr() {
         return gruzotpr;
     }
@@ -77,6 +79,7 @@ public class ReportParamsDTO {
     public void setGruzotpr(String gruzotpr) {
         this.gruzotpr = gruzotpr;
     }
+*/
 
     public String getTr_arrival() {
         return tr_arrival;
@@ -92,5 +95,13 @@ public class ReportParamsDTO {
 
     public void setTr_departure(String tr_departure) {
         this.tr_departure = tr_departure;
+    }
+
+    public Long getHid_client() {
+        return hid_client;
+    }
+
+    public void setHid_client(Long hid_client) {
+        this.hid_client = hid_client;
     }
 }

@@ -24,18 +24,18 @@ Ext.define('TK.view.ky2.avto.out.AvtoZayavForm', {
         },
         buildTopToolbar: function (config) {
             TK.view.ky2.avto.BaseAvtoZayavForm.prototype.buildTopToolbar.apply(this, arguments);
-            config.tbar.push(
+            // config.tbar.push(
                 // {xtype:'splitbutton', text: 'Печать', iconCls:'upload', action: 'print',
                 //     menu: [
                 //         {text: 'WZ', iconCls:'excel', action:'wz'},'-'
                 //     ]
                 // },
-                {
-                    text: '+Контейнер/Груз',
-                    iconCls: 'edit',
-                    action: 'editCtGr'
-                }
-            );
+            //     {
+            //         text: '+Контейнер/Груз',
+            //         iconCls: 'edit',
+            //         action: 'editCtGr'
+            //     }
+            // );
 
         }
     }

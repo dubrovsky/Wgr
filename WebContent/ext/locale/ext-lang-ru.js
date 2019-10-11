@@ -1989,6 +1989,14 @@ Ext.define("TK.locale.ru.view.edit.StationCatalogEdit", {
     lblCtryNam    :'Страна'
 });
 
+Ext.define("TK.locale.ru.view.edit.ClientEdit", {
+    override: "TK.view.edit.ClientEdit",
+
+    title           :'Клиент',
+    btnSave         :'Сохранить',
+    btnCancel       :'Отмена'
+});
+
 Ext.define("Ext.locale.ru.grid.plugin.RowEditing", {
     override: "Ext.grid.plugin.RowEditing",
 
@@ -2597,6 +2605,26 @@ Ext.define("TK.locale.ru.controller.ky2.PoezdController", {
     btnClose :'Закрыть'
 });
 
+Ext.define("TK.locale.ru.controller.ky2.PoezdZayavController", {
+    override:"TK.controller.ky2.PoezdZayavController",
+
+    titleCreate: 'Создание заявки',
+    titleEdit: 'Редактирование заявки',
+    delTitle :'Удаление...',
+    delMsg   :'Вы действительно хотите удалить..?',
+    maskMsg :'Запрос данных...',
+    errorMsg:'Внимание! Ошибка...',
+    warningMsg:'Внимание!',
+    warningText:'Заявка не сохранена....',
+    uploadText:'Данные загружены',
+    titleUpload: 'Загрузка XLS',
+    labelSelectFile:'Выбор файла для загрузки...',
+    labelFile:'Файл',
+    btnSearch:'Обзор...',
+    btnSave  :'Сохранить',
+    btnClose :'Закрыть'
+});
+
 Ext.define("TK.locale.ru.controller.ky2.AvtoCtGrController", {
     override:"TK.controller.ky2.AvtoCtGrController",
 
@@ -2773,16 +2801,14 @@ Ext.define("TK.locale.ru.view.ky2.avto.BaseAvtoList", {
 
 });
 
-Ext.define("TK.locale.ru.view.ky2.BaseAvtosDir", {
-    override:"TK.view.ky2.BaseAvtosDir",
+Ext.define("TK.locale.ru.view.ky2.BaseAvtoZayavsDir", {
+    override:"TK.view.ky2.BaseAvtoZayavsDir",
 
+    headerZayavNum     :'Номер заявки',
     headerAvtoNum      :'Номер авто',
     headerAvtoTrail    :'Номер прицепа',
-    headerDep          :'Отправление',
-    headerDest         :'Назначение',
-    btnSelect          :'Выбрать',
+    btnSelect          :'Выбрать'
 
-    title:'Список автомобилей по прибытию'
 
 });
 
@@ -2846,7 +2872,7 @@ Ext.define("TK.locale.ru.controller.ky2.AvtoController", {
 Ext.define("TK.locale.ru.controller.ky2.PoezdVgCtGrController", {
     override:"TK.controller.ky2.PoezdVgCtGrController",
 
-    titleTree       : 'Вагон/Контейнер/Груз по поезду №'
+    titleTree       : 'Вагон/Контейнер/Груз'
 });
 
 Ext.define("TK.locale.ru.view.ky2.AbstractTreeForm", {

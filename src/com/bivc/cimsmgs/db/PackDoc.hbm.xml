@@ -122,7 +122,7 @@
             <key>
                 <column name="HID_PACK" precision="20" scale="0" />
             </key>
-            <one-to-many class="com.bivc.cimsmgs.db.ky.Zayav" />
+            <one-to-many class="com.bivc.cimsmgs.db.ky.PoezdZayav" />
         </set>
     </class>
     <filter-def name="limitFieldCommentsByDocId">

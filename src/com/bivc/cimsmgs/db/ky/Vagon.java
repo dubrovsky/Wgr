@@ -2,6 +2,7 @@ package com.bivc.cimsmgs.db.ky;
 
 // Generated 19.02.2014 14:19:48 by Hibernate Tools 3.4.0.CR1
 
+import com.bivc.cimsmgs.dao.NsiClientDAO;
 import com.bivc.cimsmgs.doc2doc.orika.Mapper;
 import com.bivc.cimsmgs.dto.ky2.GruzBindDTO;
 import com.bivc.cimsmgs.dto.ky2.GruzDTO;
@@ -10,6 +11,7 @@ import com.bivc.cimsmgs.dto.ky2.KontDTO;
 import com.bivc.cimsmgs.formats.json.serializers.DateSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +29,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
 
     private Long hid;
     private Poezd poezd;
+    private PoezdZayav zayav;
     private String trans;
 
     private Date dattr;
@@ -71,15 +74,6 @@ public class Vagon implements Serializable, Comparable<Vagon> {
     private NsiKyOwners owner;
     private Otpravka otpravka;
     private Set<KontGruzHistory> history  = new TreeSet<>();
-    private Zayav zayav;
-
-    public Zayav getZayav() {
-        return zayav;
-    }
-
-    public void setZayav(Zayav zayav) {
-        this.zayav = zayav;
-    }
 
     public Set<KontGruzHistory> getHistory() {
         return history;
@@ -639,6 +633,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
             for (Kont kont : getKonts()) {
                 if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
                     mapper.map(kontDTO, kont);  // update kont, sort can change
+                    Hibernate.initialize(kont.getClient());
                     dtoToRemove.add(kontDTO);
                     break;
                 }
@@ -864,7 +859,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
     }
 
 
-    public List<Kont> updateKonts(TreeSet<KontDTO> dtos, Mapper mapper) {
+    public List<Kont> updateKonts(TreeSet<KontDTO> dtos, Mapper mapper, NsiClientDAO clientDAO) {
         // delete
         Set<Kont> kontsToRemove = new HashSet<>();
         for (Kont kont : getKonts()) {
@@ -889,6 +884,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
             for (KontDTO kontDTO : dtos) {
                 if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
                     mapper.map(kontDTO, kont);
+                    kont.updateClient(kontDTO, clientDAO);
                     kont.updateGruzs(kontDTO.getGruzs(), mapper);
                     kont.updatePlombs(kontDTO.getPlombs(), mapper);
                     dtoToRemove.add(kontDTO);
@@ -902,6 +898,7 @@ public class Vagon implements Serializable, Comparable<Vagon> {
         // insert
         for (KontDTO kontDTO : dtos) {
             Kont kont = mapper.map(kontDTO, Kont.class);
+            kont.updateClient(kontDTO, clientDAO);
             addKont(kont);
             kontsForHistory.add(kont);
             kont.updateGruzs(kontDTO.getGruzs(), mapper);
@@ -1246,6 +1243,14 @@ public class Vagon implements Serializable, Comparable<Vagon> {
         this.poezd = poezd;
     }
 
+    public PoezdZayav getZayav() {
+        return zayav;
+    }
+
+    public void setZayav(PoezdZayav zayav) {
+        this.zayav = zayav;
+    }
+
     public String getTrans() {
         return this.trans;
     }
@@ -1420,5 +1425,46 @@ public class Vagon implements Serializable, Comparable<Vagon> {
 //            iterator.remove();
             unbindGruz(gruz);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vagon vagon = (Vagon) o;
+        return hid.equals(vagon.hid) &&
+                trans.equals(vagon.trans) &&
+                dattr.equals(vagon.dattr) &&
+                un.equals(vagon.un) &&
+                altered.equals(vagon.altered) &&
+                nvag.equals(vagon.nvag) &&
+                koleya.equals(vagon.koleya) &&
+                dprb.equals(vagon.dprb) &&
+                dotp.equals(vagon.dotp) &&
+                direction.equals(vagon.direction) &&
+                sort.equals(vagon.sort) &&
+                kpv.equals(vagon.kpv) &&
+                kolOs.equals(vagon.kolOs) &&
+                masTar.equals(vagon.masTar) &&
+                sobstv.equals(vagon.sobstv) &&
+                bortDate.equals(vagon.bortDate) &&
+                prim.equals(vagon.prim) &&
+                probeg.equals(vagon.probeg) &&
+                podSila.equals(vagon.podSila) &&
+                plan_rem.equals(vagon.plan_rem) &&
+                reviz.equals(vagon.reviz) &&
+                type_no.equals(vagon.type_no) &&
+                dlina.equals(vagon.dlina) &&
+                model.equals(vagon.model) &&
+                line.equals(vagon.line) &&
+                foot.equals(vagon.foot) &&
+                poruz.equals(vagon.poruz) &&
+                defective.equals(vagon.defective) &&
+                otpravka == vagon.otpravka;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(hid, trans, dattr, un, altered, nvag, koleya, dprb, dotp, direction, sort, kpv, kolOs, masTar, sobstv, bortDate, prim, probeg, podSila, plan_rem, reviz, type_no, dlina, model, line, foot, poruz, defective, otpravka);
     }
 }

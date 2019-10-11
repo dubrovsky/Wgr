@@ -482,4 +482,25 @@ public class Yard implements Serializable {
 		this.konts = konts;
 	}*/
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Yard yard = (Yard) o;
+        return empty == yard.empty &&
+                hid.equals(yard.hid) &&
+                x.equals(yard.x) &&
+                y.equals(yard.y) &&
+                z.equals(yard.z) &&
+                notes.equals(yard.notes) &&
+                altered.equals(yard.altered) &&
+                dattr.equals(yard.dattr) &&
+                trans.equals(yard.trans) &&
+                un.equals(yard.un);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(hid, x, y, z, notes, altered, dattr, trans, un, empty);
+    }
 }

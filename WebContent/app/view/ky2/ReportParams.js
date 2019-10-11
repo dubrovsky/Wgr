@@ -47,14 +47,14 @@ Ext.define('TK.view.ky2.ReportParams', {
                     {
                         xtype: 'combo',
                         fieldLabel: 'Клиент',
-                        itemId: 'gruzotpr',
+                        itemId: 'hid_client',
                         queryMode: 'local',
-                        store: 'ky2.ReportsGruzotprInterval',
-                        displayField: 'gruzotpr',
-                        valueField: 'gruzotpr',
+                        store: 'ky2.ReportsClientInterval',
+                        displayField: 'name',
+                        valueField: 'hid_client',
                         typeAhead: false,
                         forceSelection: true,
-                        name: 'gruzotpr',
+                        name: 'hid_client',
                         listConfig: {
                             loadingText: "Поиск",
                             emptyText: "Не найдено"

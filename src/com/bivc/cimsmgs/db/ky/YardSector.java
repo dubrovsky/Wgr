@@ -215,4 +215,19 @@ public class YardSector implements Serializable {
         }
         return yardSectorGroups;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        YardSector that = (YardSector) o;
+        return hid.equals(that.hid) &&
+                name.equals(that.name) &&
+                descr.equals(that.descr);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(hid, name, descr);
+    }
 }
