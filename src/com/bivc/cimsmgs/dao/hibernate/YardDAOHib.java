@@ -42,9 +42,10 @@ public class YardDAOHib extends GenericHibernateDAO<Yard, Long> implements YardD
     }
 
     @Override
-    public List<Yard> findAll(Integer limit, Integer start, List<Filter> filters, Locale locale, Usr usr) {
+    public List<Yard> findAll(Integer limit, Integer start, List<Filter> filters, Locale locale, Usr usr, Long routeId) {
         final Criteria crit = getSession().createCriteria(getPersistentClass(), "yard1");
         final Criteria sectorCrit = crit.createAlias("sector", "sector");
+        crit.createAlias("sector.route", "route").add(Restrictions.eq("route.hid", routeId));
 
         DetachedCriteria yardSectorGroups =
                 DetachedCriteria.forClass(YardSectorGroups.class, "ysg").
@@ -65,7 +66,7 @@ public class YardDAOHib extends GenericHibernateDAO<Yard, Long> implements YardD
         if (start >= 0) {
             crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 200 : limit);
         }
-        crit.addOrder(Order.desc("dattr"));
+        crit.addOrder(Order.asc("sector.name"));
 
         applyFilter(filters, crit, sectorCrit, locale);
 
@@ -73,9 +74,10 @@ public class YardDAOHib extends GenericHibernateDAO<Yard, Long> implements YardD
     }
 
     @Override
-    public Long countAll(List<Filter> filters, Locale locale, Usr usr) {
+    public Long countAll(List<Filter> filters, Locale locale, Usr usr, Long routeId) {
         final Criteria crit = getSession().createCriteria(getPersistentClass(), "yard1");
         final Criteria sectorCrit = crit.createAlias("sector", "sector");
+        crit.createAlias("sector.route", "route").add(Restrictions.eq("route.hid", routeId));
         crit.setProjection(Projections.countDistinct("hid"));
 
         DetachedCriteria yardSectorGroups =

@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import java.util.Date;
+import java.util.TreeSet;
 
 /**
  * Created by lan on 25.09.2019.
@@ -32,7 +33,9 @@ public class AvtoZayavBaseDTO {
     private String no_avto;
     private String no_trail;
     private String driver_fio;
-    private String client;
+    private ClientDTO client;
+    private TreeSet<KontDTO> konts = new TreeSet<>();
+
 
     @JsonSerialize(using = DateTimeSerializer.class)
     private Date dateZayav;
@@ -63,6 +66,14 @@ public class AvtoZayavBaseDTO {
             }
         }
         return this.dateZayav;
+    }
+
+    public TreeSet<KontDTO> getKonts() {
+        return konts;
+    }
+
+    public void setKonts(TreeSet<KontDTO> konts) {
+        this.konts = konts;
     }
 
     public void setDateZayav(Date dateZayav) {
@@ -109,11 +120,11 @@ public class AvtoZayavBaseDTO {
         this.driver_fio = driver_fio;
     }
 
-    public String getClient() {
+    public ClientDTO getClient() {
         return client;
     }
 
-    public void setClient(String client) {
+    public void setClient(ClientDTO client) {
         this.client = client;
     }
 

@@ -36,7 +36,7 @@ Ext.define('TK.view.ky2.poezd.BasePoezdZayavList', {
             singleSelect:true,
             emptyText: 'Нет данных',
             getRowClass: function(record) {
-                if (record.get('kontCount') === record.get('kontCountDone')) {
+                if (record.get('kontCount') !== 0 && record.get('kontCount') === record.get('kontCountDone')) {
                     return "executed";
                 }
             }

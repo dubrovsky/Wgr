@@ -6,6 +6,7 @@ import com.bivc.cimsmgs.commons.HibernateUtil;
 import com.bivc.cimsmgs.commons.Response;
 import com.bivc.cimsmgs.dao.AvtoDAO;
 import com.bivc.cimsmgs.dao.AvtoZayavDAO;
+import com.bivc.cimsmgs.dao.NsiClientDAO;
 import com.bivc.cimsmgs.db.PackDoc;
 import com.bivc.cimsmgs.db.ky.Avto;
 import com.bivc.cimsmgs.db.ky.AvtoZayav;
@@ -64,6 +65,9 @@ public class AvtoZayav_A extends CimSmgsSupport_A {
                     return listOfActual();
                 case GET_FOR_FILTER:
                     return zayav4Filter();
+                case CHECKKONT:
+   					return check();
+
 
                 default:
                     throw new RuntimeException("Unknown action");
@@ -99,7 +103,6 @@ public class AvtoZayav_A extends CimSmgsSupport_A {
                         )
         );
 
-//        setJSONData(poezdIntoToListSerializer.setLocale(getLocale()).write(response));
         return SUCCESS;
     }
 
@@ -119,6 +122,21 @@ public class AvtoZayav_A extends CimSmgsSupport_A {
         }
         query.append(")");
 
+        if (!nkons.isEmpty()) {
+            query.append(" AND kz.NKON IN (");
+            for (int i=0; i<nkons.size(); i++) {
+                query.append("?");
+                query.append((i == nkons.size()-1) ? ") " : "," );
+                tv.add(Types.CHAR, nkons.get(i));
+            }
+        }
+
+//        query.append(" AND kz.NKON=?");
+//        tv.add(Types.CHAR, nkon);
+
+//        query.append(" AND kz.NKON IN (?,?,?)");
+//        tv.add(Types.CHAR, nkon1).add(Types.CHAR, nkon2).add(Types.CHAR, nkon3);
+
         if(getDirection() == 1) {
             dbt.read(st, Select.getSqlFile("ky/zajav/avto_not_unloading_zajav") + query, tv);
         }
@@ -128,7 +146,9 @@ public class AvtoZayav_A extends CimSmgsSupport_A {
 
         List<Long> ids = new ArrayList<>();
         for(int i = 0; i < st.getRowCount(); ++i) {
-            ids.add(((Number) st.getObject(i, "HID_ZAYAV")).longValue());
+            Long id = ((Number) st.getObject(i, "HID_ZAYAV")).longValue();
+            if (!excludeAvtoHid.contains(id))
+                ids.add(id);
         }
 
         List<AvtoZayav> list = new ArrayList<>();
@@ -257,6 +277,12 @@ public class AvtoZayav_A extends CimSmgsSupport_A {
             saved = update(dto);
         }
 
+        if(dto.getClient() != null && dto.getClient().getHid() != null) {
+            saved.setClient(clientDAO.getById(dto.getClient().getHid(), false));
+        } else {
+            saved.setClient(null);
+        }
+
         setJSONData(
                 defaultSerializer
                         .setLocale(getLocale())
@@ -328,17 +354,44 @@ public class AvtoZayav_A extends CimSmgsSupport_A {
         }
     }
 
+    private String check() throws Exception {
+   		AvtoZayav avtoZayav = avtoZayavDAO.findById(getHid(), false);
+        setDirection(avtoZayav.getDirection());
+        setRouteId(avtoZayav.getRoute().getHid());
+        excludeAvtoHid.add(avtoZayav.getHid());
+        listOfActual();
+//        List<AvtoZayav> list = avtoZayavDAO.findByNkons(getRouteId(), getUser().getUsr(), nkons);
+//        list.remove(avtoZayav);
+//        setJSONData(
+//                defaultSerializer
+//                        .setLocale(getLocale())
+//                        .write(
+//                                new Response<>(
+//                                        kyavtoMapper.copyList(list, AvtoZayavBaseDTO.class),
+//                                        Integer.valueOf(list.size()).longValue()
+//                                )
+//                        )
+//        );
+
+   		return SUCCESS;
+   	}
+
+
+
 
     private String action;
     private Byte direction;
     private long routeId;
 
-    enum Action {LIST, EDIT, SAVE, DELETE, AVTOS_DIR_FOR_AVTO_BIND, IMPORT_ZAYAV_INTO_LIST, ZAYAV_INTO_LIST_FOR_FILTER, GET_FOR_FILTER}
+    enum Action {LIST, EDIT, SAVE, DELETE, AVTOS_DIR_FOR_AVTO_BIND, IMPORT_ZAYAV_INTO_LIST, ZAYAV_INTO_LIST_FOR_FILTER, GET_FOR_FILTER, CHECKKONT}
 
     private List<Filter> filters;
     private String filter;
     private String jsonRequest;
     private String fileName;
+    private List<String> nkons = new ArrayList<>();
+    private List<Long> excludeAvtoHid = new ArrayList<>();
+
 
 
     @Autowired
@@ -346,17 +399,23 @@ public class AvtoZayav_A extends CimSmgsSupport_A {
     @Autowired
     private Mapper kyavtoMapper;
     @Autowired
+    private NsiClientDAO clientDAO;
+    @Autowired
     private Serializer defaultSerializer;
     @Autowired
     private Deserializer defaultDeserializer;
     @Autowired
     private com.bivc.cimsmgs.doc2doc.orika.Mapper mapper;
-//    @Autowired
-//    private AvtoWzPzService avtoWzPzService;
-//    @Autowired
-//    private com.bivc.cimsmgs.doc2doc.orika.CopyAvtoMapper copyAvtoMapper;
 
     private InputStream inputStream;
+
+    public List<String> getNkons() {
+        return nkons;
+    }
+
+    public void setNkons(List<String> nkons) {
+        this.nkons = nkons;
+    }
 
     public InputStream getInputStream() {
         return inputStream;

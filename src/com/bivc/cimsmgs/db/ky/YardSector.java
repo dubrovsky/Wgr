@@ -2,6 +2,7 @@ package com.bivc.cimsmgs.db.ky;
 
 // Generated 19.02.2014 14:19:48 by Hibernate Tools 3.4.0.CR1
 
+import com.bivc.cimsmgs.db.Route;
 import com.bivc.cimsmgs.db.UsrGroupsDir;
 import com.bivc.cimsmgs.doc2doc.orika.Mapper;
 import com.bivc.cimsmgs.dto.ky2.YardSectorDTO;
@@ -24,11 +25,20 @@ public class YardSector implements Serializable {
     private static final Logger log = LoggerFactory.getLogger(YardSector.class);
 
     private Integer hid;
+    private Route route;
     private String name;
     private String descr;
     private Set<Yard> yards = new HashSet<Yard>(0);
     private Set<YardSectorGroups> yardSectorGroups = new HashSet<>(0);
     private Set<KontGruzHistory> history = new TreeSet<>();
+
+    public Route getRoute() {
+        return route;
+    }
+
+    public void setRoute(Route route) {
+        this.route = route;
+    }
 
     public Set<KontGruzHistory> getHistory() {
         return history;

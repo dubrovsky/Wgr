@@ -2793,6 +2793,7 @@ Ext.define("TK.locale.ru.view.ky2.avto.BaseAvtoList", {
 
     headerAvtoNum      :'Номер авто',
     headerAvtoTrail    :'Номер прицепа',
+    headerNKont        :'Номер контейнера',
     headerDriverFam    :'ФИО водителя',
     headerDep          :'Пункт отправления',
     headerDest         :'Пункт назначения',

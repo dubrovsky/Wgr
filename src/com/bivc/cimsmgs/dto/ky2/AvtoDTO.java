@@ -15,6 +15,7 @@ public class AvtoDTO {
 
     private Long hid;
     private Byte direction;
+    private Long clientHid;
     private String client;
     private TreeSet<KontDTO> konts = new TreeSet<>();
     private TreeSet<GruzDTO> gruzs = new TreeSet<>();
@@ -27,6 +28,24 @@ public class AvtoDTO {
     @JsonSerialize(using = TimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeserializer.class)
     private Date dprbTime;
+
+    @JsonSerialize(using = DateTimeSerializer.class)
+    private Date dotp;
+    @JsonSerialize(using = DateSerializer.class)
+    @JsonDeserialize(using = DateTimeDeserializer.class)
+    private Date dotpDate;
+
+    @JsonSerialize(using = TimeSerializer.class)
+    @JsonDeserialize(using = DateTimeDeserializer.class)
+    private Date dotpTime;
+
+    public Long getClientHid() {
+        return clientHid;
+    }
+
+    public void setClientHid(Long clientHid) {
+        this.clientHid = clientHid;
+    }
 
     public Date getDprbDate() {
         return this.dprbDate != null ? this.dprbDate : this.dprb;
@@ -91,4 +110,29 @@ public class AvtoDTO {
     public void setClient(String client) {
         this.client = client;
     }
+    
+    public Date getDotp() {
+        return dotp;
+    }
+
+    public void setDotp(Date dotp) {
+        this.dotp = dotp;
+    }
+
+    public Date getDotpDate() {
+        return this.dotpDate != null ? this.dotpDate : this.dotp;
+    }
+
+    public void setDotpDate(Date dotpDate) {
+        this.dotpDate = dotpDate;
+    }
+
+    public Date getDotpTime() {
+        return this.dotpTime != null ? this.dotpTime : this.dotp;
+    }
+
+    public void setDotpTime(Date dotpTime) {
+        this.dotpTime = dotpTime;
+    }
+
 }

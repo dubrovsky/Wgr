@@ -10,6 +10,9 @@
                 <param name="sequence">KY_YARD_SECTOR_HID</param>
             </generator>
         </id>
+        <many-to-one class="com.bivc.cimsmgs.db.Route" fetch="select" name="route">
+            <column name="HID_ROUTE" precision="20" scale="0"/>
+        </many-to-one>
         <property name="name" type="string">
             <column name="NAME" length="20" not-null="true"/>
         </property>

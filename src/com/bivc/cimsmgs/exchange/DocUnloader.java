@@ -20,6 +20,8 @@ import sun.misc.BASE64Encoder;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -31,13 +33,13 @@ import java.util.regex.Pattern;
 
 public class DocUnloader extends Convertor {
 
-  private static final String Encoding = "utf-8";
+  private static final Charset Encoding = StandardCharsets.UTF_8;
   private static final SimpleDateFormat dateTimeFormater = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-  private static final SimpleDateFormat CustomDateFormater = new SimpleDateFormat("yyyy-MM-dd");
+//  private static final SimpleDateFormat CustomDateFormater = new SimpleDateFormat("yyyy-MM-dd");
   private static Logger log = (Logger)LoggerFactory.getLogger(DocUnloader.class);
-  private static Pattern tpPattern = Pattern.compile("[0-9]{8}");
-  private static Pattern prin_p = Pattern.compile("^[a-zA-Z]{4}");
-  private static Pattern nkon_p = Pattern.compile("[0-9]{7,9}$");
+//  private static Pattern tpPattern = Pattern.compile("[0-9]{8}");
+//  private static Pattern prin_p = Pattern.compile("^[a-zA-Z]{4}");
+//  private static Pattern nkon_p = Pattern.compile("[0-9]{7,9}$");
 
   public DocUnloader(String script) {
     try {
@@ -90,7 +92,25 @@ public class DocUnloader extends Convertor {
       HibernateUtil.rollbackTransaction();
       throw ex;
     }
-    return res.toArray(new Long[res.size()]);
+    return res.toArray(new Long[0]);
+  }
+
+  public void sendXML(Long csHid) throws Exception {
+    HibernateUtil.beginTransaction();
+
+    try {
+      String text = getText(csHid);
+
+      sTr.put("wgr2gr" + csHid + ".xml", text);
+
+      sTr.flush();
+
+      HibernateUtil.commitTransaction();
+    }
+    catch (Exception ex) {
+      HibernateUtil.rollbackTransaction();
+      throw ex;
+    }
   }
 
   public String getTextEncoded(Long csHid) throws Exception {
@@ -100,42 +120,45 @@ public class DocUnloader extends Convertor {
   }
 
   public String getText(Long csHid) throws Exception {
-    String res = null;
+    String res;
     String hidStr = String.valueOf(csHid);
 
-    Table tab1 = processRequest("SELECT * FROM cim_smgs WHERE hid=" + hidStr);
+    Table tab1 = processRequest("SELECT * FROM CIM_SMGS WHERE hid=" + hidStr);
     if (tab1.rowCount() > 0) {
       String hidPack = tab1.getElementAt(0, "hid_pack");
       Document doc = DocumentHelper.createDocument();
-      doc.setXMLEncoding(Encoding);
+      doc.setXMLEncoding(Encoding.name());
       Element docRoot = doc.addElement("doc");
       tab1.removeColumn(new String[] {"IFTMIN_ID", "IFTMIN_OUT", "IFTMIN_IN"});
       addTable2Document(docRoot, tab1, "cim_smgs");
 
-      Table tab2 = processRequest("SELECT * FROM cim_smgs_docs WHERE hid_cs=" + hidStr);
+      Table tab2 = processRequest("SELECT * FROM CIM_SMGS_DOCS WHERE hid_cs=" + hidStr);
       addTable2Document(docRoot, tab2, "cim_smgs_docs");
 
-      Table tab8 = processRequest("SELECT * FROM cim_smgs_platel WHERE hid_cs=" + hidStr);
+      Table tab8 = processRequest("SELECT * FROM CIM_SMGS_PLATEL WHERE hid_cs=" + hidStr);
       addTable2Document(docRoot, tab8, "cim_smgs_platel");
 
-      Table tab3 = processRequest("SELECT * FROM cim_smgs_car_list WHERE hid_cs=" + hidStr);
+      Table tab11 = processRequest("SELECT * FROM CIM_SMGS_PEREVOZ WHERE hid_cs=" + hidStr);
+      addTable2Document(docRoot, tab11, "cim_smgs_perevoz");
+
+      Table tab3 = processRequest("SELECT * FROM CIM_SMGS_CAR_LIST WHERE hid_cs=" + hidStr);
       addTable2Document(docRoot, tab3, "cim_smgs_car_list");
 
-      Table tab4 = processRequest("SELECT * FROM cim_smgs_kon_list WHERE " + makeHidStr(tab3, "hid_car"));
+      Table tab4 = processRequest("SELECT * FROM CIM_SMGS_KON_LIST WHERE " + makeHidStr(tab3, "hid_car"));
       addTable2Document(docRoot, tab4, "cim_smgs_kon_list");
 
-      Table tab5 = processRequest("SELECT * FROM cim_smgs_gruz WHERE " + makeHidStr(tab3, "hid_car") + " OR " + makeHidStr(tab4, "hid_kon"));
+      Table tab5 = processRequest("SELECT * FROM CIM_SMGS_GRUZ WHERE " + makeHidStr(tab3, "hid_car") + " OR " + makeHidStr(tab4, "hid_kon"));
       addTable2Document(docRoot, tab5, "cim_smgs_gruz");
 
-      Table tab6 = processRequest("SELECT * FROM cim_smgs_plomb WHERE hid_cs=" + hidStr + " OR " + makeHidStr(tab3, "hid_car") + " OR " + makeHidStr(tab4, "hid_kon"));
+      Table tab6 = processRequest("SELECT * FROM CIM_SMGS_PLOMB WHERE hid_cs=" + hidStr + " OR " + makeHidStr(tab3, "hid_car") + " OR " + makeHidStr(tab4, "hid_kon"));
       addTable2Document(docRoot, tab6, "cim_smgs_plomb");
 
-      Table tab9 = processRequest("SELECT * FROM cim_smgs_invoice WHERE hid_pack=" + hidPack);
+      Table tab9 = processRequest("SELECT * FROM CIM_SMGS_INVOICE WHERE hid_pack=" + hidPack);
       tab6.removeColumn(new String[] {"INVOIC_ID", "INVOIC_OUT", "INVOIC_IN"});
       addTable2Document(docRoot, tab9, "cs_invoice");
 
       if (tab9.rowCount() > 0) {
-        Table tab10 = processRequest("SELECT * FROM cim_smgs_invoice_gruz WHERE " + makeHidStr(tab9, "hid_csinv"));
+        Table tab10 = processRequest("SELECT * FROM CIM_SMGS_INVOICE_GRUZ WHERE " + makeHidStr(tab9, "hid_csinv"));
         addTable2Document(docRoot, tab10, "cs_invoice_gruz");
       }
 
@@ -154,7 +177,7 @@ public class DocUnloader extends Convertor {
     String[] fields = null;
     String[] fieldTypes = null;
     String[] row;
-    ArrayList<Row> rows = new ArrayList<Row>();
+    ArrayList<Row> rows = new ArrayList<>();
 
     try {
       session = HibernateUtil.getSession();
@@ -191,7 +214,7 @@ public class DocUnloader extends Convertor {
                 fieldTypes[i].endsWith("INT") || fieldTypes[i].endsWith("INT UNSIGNED") ||
                 fieldTypes[i].endsWith("DECIMAL UNSIGNED") || fieldTypes[i].endsWith("DOUBLE")) {
 // Исправить рассчет длины дробной части
-          fieldTypes[i] = "N(" + (sizeType > 20 ? 20 : sizeType) + (scaleType > 0 ? "," + (scaleType > 5 ? 5 : scaleType) : "") + ")";
+          fieldTypes[i] = "N(" + (Math.min(sizeType, 20)) + (scaleType > 0 ? "," + (Math.min(scaleType, 5)) : "") + ")";
         }
         else if(fieldTypes[i].startsWith("VARCHAR") || fieldTypes[i].equals("CHAR")) {
           if(sizeType > 250) {
@@ -258,11 +281,11 @@ public class DocUnloader extends Convertor {
       log.error(e.getMessage(), e);
     }
 
-    return new Table(fields, fieldTypes, rows.toArray(new Row[rows.size()]));
+    return new Table(fields, fieldTypes, rows.toArray(new Row[0]));
   }
 
   private Element addTable2Document(Element docRoot, Table tab, String tableName) {
-    String colNamesg[] = tab.getColumnNames();
+    String[] colNamesg = tab.getColumnNames();
     for (int i = 0; i < tab.rowCount(); i++) {
       Element tabElement = docRoot.addElement(tableName);
       for (int j = 0; j < tab.columnCount(); j++) {
@@ -274,7 +297,7 @@ public class DocUnloader extends Convertor {
 
   private String makeHidStr(Table tab, String name) {
     String res = "0=1";
-    StringBuilder buf = new StringBuilder("");
+    StringBuilder buf = new StringBuilder();
     for (int i = 0; i < tab.rowCount(); i++) {
       String hidStr = tab.getElementAt(i, "HID");
       if (StringUtils.isNotBlank(hidStr)) {

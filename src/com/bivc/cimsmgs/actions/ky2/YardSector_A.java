@@ -2,6 +2,7 @@ package com.bivc.cimsmgs.actions.ky2;
 
 import com.bivc.cimsmgs.actions.CimSmgsSupport_A;
 import com.bivc.cimsmgs.commons.Response;
+import com.bivc.cimsmgs.dao.RouteDAO;
 import com.bivc.cimsmgs.dao.YardDAO;
 import com.bivc.cimsmgs.dao.YardSectorDAO;
 import com.bivc.cimsmgs.dao.YardSectorGroupsDAO;
@@ -172,6 +173,7 @@ public class YardSector_A extends CimSmgsSupport_A {
 
     private YardSector add(YardSectorDTO dto) {
         YardSector added = mapper.map(dto, YardSector.class);
+        added.setRoute(routeDAO.getById(dto.getRouteHid(), false));
 
 //        added.setSector(yardSectorDAO.getById(dto.getSector().getHid(), false));
 
@@ -239,6 +241,8 @@ public class YardSector_A extends CimSmgsSupport_A {
 
     @Autowired
     private YardSectorDAO yardSectorDAO;
+    @Autowired
+    private RouteDAO routeDAO;
     @Autowired
     private YardDAO yardDAO;
     @Autowired

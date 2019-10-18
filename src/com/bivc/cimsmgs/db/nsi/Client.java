@@ -1,9 +1,7 @@
 package com.bivc.cimsmgs.db.nsi;
 
 import com.bivc.cimsmgs.db.UsrGroupsDir;
-import com.bivc.cimsmgs.db.ky.Kont;
-import com.bivc.cimsmgs.db.ky.Poezd;
-import com.bivc.cimsmgs.db.ky.PoezdZayav;
+import com.bivc.cimsmgs.db.ky.*;
 import com.bivc.cimsmgs.dto.ky2.ClientDTO;
 import com.bivc.cimsmgs.formats.json.serializers.DateTimeSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -30,6 +28,8 @@ public class Client implements Serializable {
     private Date clientEnd;
     private Set<Poezd> poezds = new HashSet<>();
     private Set<PoezdZayav> poezdZayavs = new HashSet<>();
+    private Set<Avto> avtos = new HashSet<>();
+    private Set<AvtoZayav> avtoZayavs = new HashSet<>();
     private Set<Kont> konts = new HashSet<>();
     private Set<ClientGroups> clientGroups = new HashSet<>(0);
 
@@ -95,6 +95,22 @@ public class Client implements Serializable {
 
     public void setPoezds(Set<Poezd> poezds) {
         this.poezds = poezds;
+    }
+
+    public Set<Avto> getAvtos() {
+        return avtos;
+    }
+
+    public void setAvtos(Set<Avto> avtos) {
+        this.avtos = avtos;
+    }
+
+    public Set<AvtoZayav> getAvtoZayavs() {
+        return avtoZayavs;
+    }
+
+    public void setAvtoZayavs(Set<AvtoZayav> avtoZayavs) {
+        this.avtoZayavs = avtoZayavs;
     }
 
     public String getTrans() {

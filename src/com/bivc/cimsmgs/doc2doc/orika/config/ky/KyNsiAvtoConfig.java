@@ -25,21 +25,21 @@ public class KyNsiAvtoConfig extends ConfigurableMapper {
                 .field("typeAvto", "type_avto")
                 .field("noAvto", "no_avto")
                 .field("noTrail", "no_trail")
-                .field("ownCargo", "otp_cargo")
-                .fieldAToB("owner", "owner")
-                .customize(
-                        new CustomMapper<NsiAvto, AvtoBaseDTO>() {
-                            @Override
-                            public void mapBtoA(AvtoBaseDTO dto, NsiAvto nsiAvto, MappingContext context) {
-                                if (dto.getOwner() == null || dto.getOwner().getHid() == null) {
-                                    nsiAvto.setOwner(null);
-                                } else {
-                                    nsiAvto.setOwner(new NsiKyOwners());
-                                    mapperFacade.map(dto.getOwner(), nsiAvto.getOwner());
-                                }
-                            }
-                        }
-                )
+//                .field("ownCargo", "otp_cargo")
+//                .fieldAToB("owner", "owner")
+//                .customize(
+//                        new CustomMapper<NsiAvto, AvtoBaseDTO>() {
+//                            @Override
+//                            public void mapBtoA(AvtoBaseDTO dto, NsiAvto nsiAvto, MappingContext context) {
+//                                if (dto.getOwner() == null || dto.getOwner().getHid() == null) {
+//                                    nsiAvto.setOwner(null);
+//                                } else {
+//                                    nsiAvto.setOwner(new NsiKyOwners());
+//                                    mapperFacade.map(dto.getOwner(), nsiAvto.getOwner());
+//                                }
+//                            }
+//                        }
+//                )
                 .register();
     }
 

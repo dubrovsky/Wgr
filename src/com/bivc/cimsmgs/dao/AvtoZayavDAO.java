@@ -32,4 +32,6 @@ public interface AvtoZayavDAO extends GenericDAO<AvtoZayav, Long> {
 
     List<AvtoZayav> findByIds(List<Long> ids);
 
+    List<AvtoZayav> findByNkons(Long routeId, Usr usr, List<String> nkons);
+
 }

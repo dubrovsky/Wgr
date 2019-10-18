@@ -4,6 +4,7 @@ import com.bivc.cimsmgs.actions.CimSmgsSupport_A;
 import com.bivc.cimsmgs.commons.Response;
 import com.bivc.cimsmgs.dao.AvtoDAO;
 import com.bivc.cimsmgs.dao.KontGruzHistoryDAO;
+import com.bivc.cimsmgs.dao.NsiClientDAO;
 import com.bivc.cimsmgs.dao.PoezdDAO;
 import com.bivc.cimsmgs.db.ky.Avto;
 import com.bivc.cimsmgs.db.ky.Gruz;
@@ -74,7 +75,7 @@ public class AvtoCtGr_A extends CimSmgsSupport_A {
 		contGruz4History.put("konts", new ArrayList<Kont>());
 		contGruz4History.put("gruzs", new ArrayList<Gruz>());
 
-		List<Kont> konts = avto.updateKonts(dto.getKonts(), mapper);
+		List<Kont> konts = avto.updateKonts(dto.getKonts(), mapper, clientDAO);
 		List<Gruz> gruzs = avto.updateGruzs(dto.getGruzs(), mapper);
 		((List<Kont>) contGruz4History.get("konts")).addAll(konts);
 		((List<Gruz>) contGruz4History.get("gruzs")).addAll(gruzs);
@@ -104,6 +105,9 @@ public class AvtoCtGr_A extends CimSmgsSupport_A {
 	private AvtoDAO avtoDAO;
 	@Autowired
 	private KontGruzHistoryDAO kontGruzHistoryDAO;
+	@Autowired
+	private NsiClientDAO clientDAO;
+
 
 
 	private String action;

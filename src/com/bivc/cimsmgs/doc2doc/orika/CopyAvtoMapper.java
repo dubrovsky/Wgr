@@ -2,6 +2,7 @@ package com.bivc.cimsmgs.doc2doc.orika;
 
 import com.bivc.cimsmgs.db.Route;
 import com.bivc.cimsmgs.db.ky.Avto;
+import com.bivc.cimsmgs.db.ky.AvtoZayav;
 import com.bivc.cimsmgs.db.ky.Poezd;
 import com.bivc.cimsmgs.db.ky.Vagon;
 import ma.glasnost.orika.MapperFactory;
@@ -24,12 +25,20 @@ public class CopyAvtoMapper extends ConfigurableMapper {
                 .field("no_avto", "no_avto")
                 .field("no_trail", "no_trail")
                 .field("driver_fio", "driver_fio")
-                .field("client", "client")
                 .field("ret_nkon", "ret_nkon")
                 .register();
 
         factory.classMap(Route.class, Route.class)
                 .field("hid", "hid")
                 .register();
+
+        factory.classMap(AvtoZayav.class, Avto.class)
+                .field("route", "route")
+                .field("no_avto", "no_avto")
+                .field("no_trail", "no_trail")
+                .field("driver_fio", "driver_fio")
+                .field("direction", "direction")
+                .register();
+
     }
 }

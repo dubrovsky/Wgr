@@ -3,6 +3,8 @@ Ext.define('TK.model.ky2.PoezdVgCtGrTreeNode', {
 
     fields: [
         {name: 'hid', type: 'int', useNull: true},
+        {name: 'clientHid', type: 'int', useNull: true},
+        {name: 'routeHid', type: 'int', useNull: true},
 
         {name: 'sort', type: 'int'},
 
@@ -55,7 +57,6 @@ Ext.define('TK.model.ky2.PoezdVgCtGrTreeNode', {
         {name: 'teh_obsl', type: 'string'},
         {name: 'prim', type: 'string'},
         {name: 'isZayav', type: 'int', defaultValue: 1},
-        {name: 'clientHid', type: 'int'},
 
         // gruz
         'kgvn',

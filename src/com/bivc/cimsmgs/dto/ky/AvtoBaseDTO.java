@@ -4,6 +4,8 @@ import com.bivc.cimsmgs.commons.DateTimeUtils;
 import com.bivc.cimsmgs.commons.TimeSerializer;
 import com.bivc.cimsmgs.dto.PackDocDTO;
 import com.bivc.cimsmgs.dto.RouteDTO;
+import com.bivc.cimsmgs.dto.ky2.ClientDTO;
+import com.bivc.cimsmgs.dto.ky2.KontDTO;
 import com.bivc.cimsmgs.formats.json.serializers.DateSerializer;
 import com.bivc.cimsmgs.formats.json.serializers.DateTimeDeserializer;
 import com.bivc.cimsmgs.formats.json.serializers.DateTimeSerializer;
@@ -13,6 +15,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import java.util.Date;
+import java.util.TreeSet;
 
 /**
  * Created by peter on 18.08.2014.
@@ -34,11 +37,11 @@ public class AvtoBaseDTO {
     private Byte direction;
     private RouteDTO route;
     private PackDocDTO packDoc;
-    private NsiKyOwnersDTO owner;
     private String naim_sob;
-    private String client;
     private String ret_nkon;
     private Integer kontCount;
+    private ClientDTO client;
+    private TreeSet<KontDTO> konts = new TreeSet<>();
 
 
     @JsonSerialize(using = DateTimeSerializer.class)
@@ -79,6 +82,22 @@ public class AvtoBaseDTO {
             }
         }
         return this.dotp;
+    }
+
+    public TreeSet<KontDTO> getKonts() {
+        return konts;
+    }
+
+    public void setKonts(TreeSet<KontDTO> konts) {
+        this.konts = konts;
+    }
+
+    public ClientDTO getClient() {
+        return client;
+    }
+
+    public void setClient(ClientDTO client) {
+        this.client = client;
     }
 
     public String getRet_nkon() {
@@ -288,14 +307,6 @@ public class AvtoBaseDTO {
         this.un = un;
     }
 
-    public NsiKyOwnersDTO getOwner() {
-        return owner;
-    }
-
-    public void setOwner(NsiKyOwnersDTO owner) {
-        this.owner = owner;
-    }
-
     public String getNaim_sob() {
         return naim_sob;
     }
@@ -304,11 +315,5 @@ public class AvtoBaseDTO {
         this.naim_sob = naim_sob;
     }
 
-    public String getClient() {
-        return client;
-    }
 
-    public void setClient(String client) {
-        this.client = client;
-    }
 }

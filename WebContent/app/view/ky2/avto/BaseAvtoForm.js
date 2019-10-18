@@ -32,7 +32,7 @@ Ext.define('TK.view.ky2.avto.BaseAvtoForm', {
                     name: 'no_avto',
                     itemId: 'no_avto',
                     maxLength: 25,
-                    allowBlank: false
+                    allowBlank: true
                 // }, {
                 //     xtype: 'button',
                 //     iconCls: 'check1',
@@ -89,11 +89,12 @@ Ext.define('TK.view.ky2.avto.BaseAvtoForm', {
                 fieldLabel: 'Клиент',
                 items: [{
                     xtype: 'textfield',
-                    name: 'client',
+                    name: 'client.sname',
                     maxLength: 128,
                     // rows: 3,
                     flex: 1,
-                    readOnly: true
+                    readOnly: true,
+                    allowBlank: false
                 }, {
                     xtype: 'button',
                     text: '...',

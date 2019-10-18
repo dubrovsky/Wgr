@@ -10,6 +10,7 @@ public class PoezdZayavDTO {
     private Long hid;
     private Byte direction;
     private Long clientHid;
+    private Long routeHid;
     private String gruzotpr;
     private TreeSet<VagonDTO> vagons = new TreeSet<>();
 
@@ -51,5 +52,13 @@ public class PoezdZayavDTO {
 
     public void setGruzotpr(String gruzotpr) {
         this.gruzotpr = gruzotpr;
+    }
+
+    public Long getRouteHid() {
+        return routeHid;
+    }
+
+    public void setRouteHid(Long routeHid) {
+        this.routeHid = routeHid;
     }
 }

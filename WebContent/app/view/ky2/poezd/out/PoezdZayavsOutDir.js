@@ -7,6 +7,9 @@ Ext.define('TK.view.ky2.poezd.out.PoezdZayavsOutDir', {
     maxHeight: 700,
     autoScroll: true,
     title: 'Список заявок по отправлению',
+    config: {
+        caller: undefined
+    },
 
     buildItems: function (config) {
         config.items = [{

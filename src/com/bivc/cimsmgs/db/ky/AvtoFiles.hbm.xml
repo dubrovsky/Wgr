@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 01.11.2011 8:57:21 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.ky.AvtoFiles" table="KY_AVTO_FILES">
+        <id name="hid" type="long">
+            <column name="HID" precision="22" scale="0" />
+            <generator class="sequence">
+              <param name="sequence">KY_AVTO_FILES_HID</param>
+            </generator>
+        </id>
+        <many-to-one class="com.bivc.cimsmgs.db.ky.Avto" fetch="select" name="avto">
+            <column name="HID_AVTO" precision="20" scale="0"/>
+        </many-to-one>
+        <many-to-one class="com.bivc.cimsmgs.db.ky.AvtoZayav" fetch="select" name="avtoZayav">
+            <column name="HID_ZAYAV" precision="20" scale="0"/>
+        </many-to-one>
+
+        <property name="files" type="blob">
+            <column name="FILES" />
+        </property>
+        <property name="fileName" type="string">
+            <column name="FILE_NAME" length="1500" />
+        </property>
+        <property name="contentType" type="string">
+            <column name="CONTENT_TYPE" length="200" />
+        </property>
+        <property name="docType" type="string">
+            <column name="DOC_TYPE" length="2" />
+        </property>
+        <property name="npp" type="long">
+            <column name="NPP" length="200" />
+        </property>
+        <property name="length" type="big_decimal">
+            <column name="LENGTH" precision="22" scale="0" />
+        </property>
+        <property name="uploaded" type="timestamp">
+            <column length="7" name="UPLOADED"/>
+        </property>
+
+    </class>
+</hibernate-mapping>

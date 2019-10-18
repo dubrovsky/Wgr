@@ -10,7 +10,6 @@ Ext.define('TK.model.ky2.AvtoBase', {
 
         {name:'type_avto', type: 'string'},
         {name:'ret_nkon', type: 'string'},
-        {name:'client', type: 'string'},
         {name:'no_avto', type: 'string'},
         {name:'no_trail', type: 'string'},
         {name:'driver_fio', type: 'string'},
@@ -25,7 +24,10 @@ Ext.define('TK.model.ky2.AvtoBase', {
         {name:'naim_sob', type: 'string'},
         {name:'route.hid', type:'int', useNull:true},
         {name:'packDoc.hid', type:'int', useNull:true},
-        {name:'owner.hid', type:'int', useNull:true}
+        {name: 'client.hid', type: 'int', useNull: true},
+        {name: 'client.sname', type: 'string', useNull: true},
+        {name: 'konts'}
+
     ],
     belongsTo:[{
         model:'TK.model.Route',
@@ -41,13 +43,13 @@ Ext.define('TK.model.ky2.AvtoBase', {
         associationKey:'packDoc',
         primaryKey:'hid',
         foreignKey:'packDoc.hid'
-    },{
-        model:'TK.model.ky.NsiOwner',
-        getterName:'getOwner',
-        setterName:'setOwner',
-        associationKey:'owner',
-        primaryKey:'hid',
-        foreignKey:'owner.hid'
+    }, {
+        model: 'TK.model.ky2.Client',
+        getterName: 'getClient',
+        setterName: 'setClient',
+        associationKey: 'client',
+        primaryKey: 'hid',
+        foreignKey: 'client.hid'
     }],
 
     idProperty:'hid',

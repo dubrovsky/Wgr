@@ -16,8 +16,8 @@
         <many-to-one class="com.bivc.cimsmgs.db.PackDoc" fetch="select" name="packDoc">
             <column name="HID_PACK" precision="20" scale="0"/>
         </many-to-one>
-        <many-to-one class="com.bivc.cimsmgs.db.ky.NsiKyOwners" fetch="select" name="owner">
-            <column name="HID_OWNER" precision="20" scale="0"/>
+        <many-to-one class="com.bivc.cimsmgs.db.nsi.Client" fetch="select" name="client">
+            <column name="HID_CLIENT" precision="20" scale="0"/>
         </many-to-one>
         <property name="naim_sob" type="string">
             <column length="128" name="NAIM_SOB"/>
@@ -27,9 +27,6 @@
         </property>
         <property name="no_avto" type="string">
             <column length="250" name="NO_AVTO"/>
-        </property>
-        <property name="client" type="string">
-            <column length="128" name="CLIENT"/>
         </property>
         <property name="no_trail" type="string">
             <column length="250" name="NO_TRAIL"/>
@@ -84,6 +81,12 @@
                 <column name="HID_AVTO" precision="20" scale="0"/>
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.ky.Kont"/>
+        </set>
+        <set fetch="select" inverse="true" lazy="true" name="avtoFiles" sort="natural" table="KY_AVTO_FILES" batch-size="50" cascade="all, delete-orphan">
+            <key>
+                <column name="HID_AVTO" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.AvtoFiles"/>
         </set>
         <set fetch="select" inverse="true" lazy="true" name="gruzs" sort="natural" table="KY_GRUZ" batch-size="50" cascade="all, delete-orphan">
             <key>

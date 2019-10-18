@@ -7,6 +7,9 @@ Ext.define('TK.view.ky2.poezd.into.PoezdZayavsIntoDir', {
     maxHeight: 700,
     autoScroll: true,
     title: 'Список заявок по прибытию',
+    config: {
+        caller: undefined
+    },
 
     buildItems: function (config) {
         config.items = [{

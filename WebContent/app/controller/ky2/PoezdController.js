@@ -163,12 +163,15 @@ Ext.define('TK.controller.ky2.PoezdController', {
                 click: this.editPoezdFromOutside
             },
             'ky2poezdintoform button[action="nsiOtpr"]': {
-                click: this.showNsiOtpr
+                click: this.onShowNsiOtpr
             },
             'ky2poezdoutform button[action="nsiOtpr"]': {
-                click: this.showNsiOtpr
+                click: this.onShowNsiOtpr
             },
             'ky2poezdintoform button[action="getZajavIntoForPoezdInto"]': {
+                click: this.getZajavIntoForPoezdInto
+            },
+            'ky2poezdintolist button[action="getZajavIntoForPoezdInto"]': {
                 click: this.getZajavIntoForPoezdInto
             },
             'ky2poezdoutform button[action="getZajavOutForPoezdOut"]': {
@@ -562,26 +565,28 @@ Ext.define('TK.controller.ky2.PoezdController', {
     },
 
     addToPoezdOutFromZayavOut: function (btn) {
-        this.addToPoezdFromZayav(this.getPoezdZayavsOutList(), 'add_to_poezdout_from_zayavout');
+        this.addToPoezdFromZayav(this.getPoezdZayavsOutList(), 'add_to_poezdout_from_zayavout', btn.up('window').getCaller());
     },
 
     addToPoezdIntoFromZayavInto: function (btn) {
-        this.addToPoezdFromZayav(this.getPoezdZayavsIntoList(), 'add_to_poezdinto_from_zayavinto');
+        var caller = btn.up('window').getCaller();
+        this.addToPoezdFromZayav(this.getPoezdZayavsIntoList(), caller.isXType('form') ? 'add_to_poezdinto_from_zayavinto' : 'create_poezdinto_from_zayavinto', caller);
     },
 
-    addToPoezdFromZayav: function (zayavlist, action) {
+    addToPoezdFromZayav: function (zayavlist, action, caller) {
         var win = zayavlist.up('window');
         var zayavModel = zayavlist.getSelectionModel().getLastSelected();
         if (zayavModel) {
             // var poezdModel = this.getPoezdlist().getSelectionModel().getLastSelected();
-            var poezdModel = this.getPoezdform().getRecord();
+            var poezdModel = this.getPoezdform() ? this.getPoezdform().getRecord() : null;
             win.setLoading(true);
             Ext.Ajax.request({
-                url: poezdModel.getProxy().url,
+                url: 'ky2/secure/Poezd.do',
                 params: {
                     action: action,
                     zayavHid: zayavModel.get('hid'),
-                    hid: poezdModel.get('hid')
+                    hid: poezdModel ? poezdModel.get('hid') : null,
+                    koleya: caller.isXType('grid') ? caller.getStore().getProxy().extraParams['koleya'] : null
                 },
                 scope: this,
                 success: function (response, options) {
@@ -599,9 +604,14 @@ Ext.define('TK.controller.ky2.PoezdController', {
 
                     if (action.indexOf('zayavout') !== -1) {
                         this.getController('ky2.BindPoezdAndYardController').getPoesdAndYardForBind('ky2poezd2yardbindtreeformout', poezdModel.get('hid'), zayavModel.get('hid')); // go to yard
+                    } else {
+                        if (caller.isXType('form')) {
+                            var respObj = Ext.decode(response.responseText);
+                            this.getPoezdform().getForm().setValues(respObj.rows[0]);
+                        } else {
+                            this.getPoezdlist().getStore().reload();
+                        }
                     }
-
-                    // var text = Ext.decode(response.responseText);
                 },
                 failure: function (response) {
                     this.getCenter().setLoading(false);
@@ -695,9 +705,12 @@ Ext.define('TK.controller.ky2.PoezdController', {
         gridStore.removeAll(true); // clear store
     },
 
-    showNsiOtpr: function (btn) {
-        var form = this.getPoezdform().getForm(),
-            nsiGrid = this.getController('Nsi').nsiKyClient(form.findField('gruzotpr').getValue(), form.getRecord().get('route.hid')).getComponent(0);
+    onShowNsiOtpr: function (btn) {
+        this.showNsiOtpr(this.getPoezdform().getForm());
+    },
+
+    showNsiOtpr: function (form) {
+        var nsiGrid = this.getController('Nsi').nsiKyClient(form.findField('gruzotpr').getValue(), form.getRecord().get('route.hid')).getComponent(0);
         nsiGrid.on('itemdblclick', this.selectClient, form);
     },
 
@@ -710,28 +723,49 @@ Ext.define('TK.controller.ky2.PoezdController', {
     },
 
     getZajavOutForPoezdOut: function (btn) {
-        this.getZajavForPoezd('ky2poezdzayavsoutdir', 'get_zayavout_for_poezdout');
+        var form = btn.up('form');
+        this.getZajavForPoezd('ky2poezdzayavsoutdir', 'get_zayavout_for_poezdout', form.getRecord(), form);
     },
 
     getZajavIntoForPoezdInto: function (btn) {
-        this.getZajavForPoezd('ky2poezdzayavsintodir', 'get_zayavinto_for_poezdinto');
+        var poezdModel;
+        var list = btn.up('grid');
+        if (list) {
+            // if (!TK.Utils.isRowSelected(list)) {
+            //     return false;
+            // }
+            // poezdModel = list.getStore().first();
+            var extraParams = list.getStore().getProxy().extraParams;
+            poezdModel = Ext.create('TK.model.ky2.PoezdInto', {
+                'route.hid': extraParams['routeId'],
+                direction: extraParams['direction'],
+                koleya: extraParams['koleya']
+            });
+
+        } else {
+            var form = btn.up('form');
+            poezdModel = form.getRecord();
+        }
+
+        this.getZajavForPoezd('ky2poezdzayavsintodir', 'get_zayavinto_for_poezdinto', poezdModel, list ? list : form);
     },
 
-    getZajavForPoezd: function (xtype, action) {
+    getZajavForPoezd: function (xtype, action, poezdModel, caller) {
         /*var poezdlist = this.getPoezdlist();
         if (!TK.Utils.isRowSelected(poezdlist)) {
             return false;
         }*/
-        var poezdModel = this.getPoezdform().getRecord();
-        if (poezdModel.get('hid') == null) {
+        // var poezdModel = this.getPoezdform().getRecord();
+        if (caller.isXType('form') && poezdModel.get('hid') == null) {
             Ext.Msg.alert('Предупреждение', 'Поезд не сохранен');
             return false;
         }
 
         var win = Ext.widget(xtype),
             store = win.down('grid').getStore();
-            // poezdModel = poezdlist.getSelectionModel().getLastSelected();
+        // poezdModel = poezdlist.getSelectionModel().getLastSelected();
 
+        win.setCaller(caller);
         store.load({
             params: {
                 action: action,

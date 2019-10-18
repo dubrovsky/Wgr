@@ -117,7 +117,11 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
             },
             'ky2avtoctgrtreeform > tabpanel > form field': {
                 blur: this.onVgCtGrFormUpdateData
+            },
+            'ky2avtoctgrtreeform button[action="nsiOtpr"]': {
+                click: this.onShowNsiOtpr
             }
+
             // 'ky2avtoctgrtreeform > tabpanel > #cont > numberfield': {
             //     blur: this.onGrBruttoUpdateData
             // }
@@ -172,8 +176,11 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
                 rootNode.set('hid', avtoObj['hid']);
                 rootNode.set('dprbDate', avtoObj['dprbDate']);
                 rootNode.set('dprbTime', avtoObj['dprbTime']);
+                rootNode.set('dotpDate', avtoObj['dotpDate']);
+                rootNode.set('dotpTime', avtoObj['dotpTime']);
                 rootNode.set('direction', avtoObj['direction']);
                 rootNode.set('gruzotpr', avtoObj['client']);
+                rootNode.set('clientHid', avtoObj['clientHid']);
                 // vagoncontainer.setPoezdId(poezdObj['hid']);
                 this.getTreepanel().down('button[action=showVags]').hide();
                 this.getTreepanel().down('button[action=hideVags]').hide();
@@ -256,11 +263,10 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
                     leaf: gryzy && gryzy['0'] ? false : true,
                     expanded: vagIndx == 0 && gryzy && gryzy['0'] && contIndx == 0
                 });
-
             this.getContpanel().items.each(function (contItem, index, length) {
                 if (contItem.isXType('field')) {
                     contModel.set(contItem.getName(), cont[contItem.getName()]);
-                } else if (contItem.isXType('fieldset')) {
+                } else if (contItem.isXType('fieldset') || contItem.isXType('fieldcontainer')) {
                     contItem.items.each(function (item, index, length) {
                         if (item.isXType('field')) {
                             contModel.set(item.getName(), cont[item.getName()]);
@@ -435,10 +441,14 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
     },
 
     setContDefaultProps: function(contNodeModel) {
+
         var rootNode = this.getTreepanel().getRootNode();
         contNodeModel.set('dprbDate', rootNode.get('dprbDate'));
         contNodeModel.set('dprbTime', rootNode.get('dprbTime'));
+        contNodeModel.set('dotpDate', rootNode.get('dotpDate'));
+        contNodeModel.set('dotpTime', rootNode.get('dotpTime'));
         contNodeModel.set('gruzotpr', rootNode.get('gruzotpr'));
+        contNodeModel.set('clientHid', rootNode.get('clientHid'));
     },
 
     // onAddContClick: function (btn) {
@@ -949,7 +959,30 @@ Ext.define('TK.controller.ky2.AvtoCtGrController', {
                 dataObj['plombs'].push(plombDataObj);
             }
         }, this);
+    },
+
+    onShowNsiOtpr: function(btn) {
+        this.showNsiOtpr(this.getContpanel().getForm());
+    },
+
+    showNsiOtpr: function (form) {
+        var gruzotpr = form.findField('gruzotpr');
+        var nsiGrid = this.getController('Nsi').nsiKyClient(gruzotpr ? gruzotpr.getValue() : null).getComponent(0);
+        nsiGrid.on('itemdblclick', this.selectClient, form);
+    },
+
+    selectClient: function (view, record) {
+        var data = record.data;
+        this.findField('gruzotpr').setValue(data['sname']);
+        this.findField('clientHid').setValue(data['hid']);
+        var model = this.getRecord();
+        model.set('gruzotpr', data['sname']);
+        model.set('clientHid', data['hid']);
+        view.up('window').close();
     }
+
+
+
 
 
 

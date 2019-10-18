@@ -125,6 +125,12 @@
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.ky.Poezd" />
         </set>
+        <set name="sectors" table="KY_YARD_SECTOR" inverse="true" lazy="true" fetch="select" cascade="all">
+            <key>
+                <column name="HID_ROUTE" precision="20" scale="0" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.YardSector" />
+        </set>
 
         <set name="avtos" table="KY_AVTO" inverse="true" lazy="true" fetch="select" cascade="all">
             <key>

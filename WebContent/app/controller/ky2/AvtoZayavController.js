@@ -113,16 +113,13 @@ Ext.define('TK.controller.ky2.AvtoZayavController', {
             // },
             'ky2avtozayavintoform button[action="nsiOtpr"]': {
                 click: this.showNsiOtpr
+            },
+            'ky2basezayavavtolist button[action="attach"]': {
+                click: this.showAttached
+            },
+            'filesform button[action="saveFile"]': {
+                click: this.onSaveFile
             }
-            // 'ky2avtooutform button[action="nsiOtpr"]': {
-            //     click: this.showNsiOtpr
-            // },
-            // 'ky2avtointoform button[action="retNkonFind"]': {
-            //     click: this.retNkonFind
-            // }
-
-
-
         });
     },
 
@@ -240,6 +237,8 @@ Ext.define('TK.controller.ky2.AvtoZayavController', {
 
             this.getCenter().setLoading(true);
             zayav.set(values);
+            delete zayav.data.konts;
+
             if (newZayav) {
                 zayav.setRoute(Ext.create('TK.model.Route', {hid: zayav.get('route.hid')}));
             }
@@ -404,9 +403,43 @@ Ext.define('TK.controller.ky2.AvtoZayavController', {
     //
     showNsiOtpr: function(btn){
         var form = this.getZayavform().getForm(),
-            nsiGrid = this.getController('Nsi').nsiKyClient(form.findField('client').getValue(), form.getRecord().get('route.hid')).getComponent(0);
+            nsiGrid = this.getController('Nsi').nsiKyClient('', form.getRecord().get('route.hid')).getComponent(0);
         nsiGrid.on('itemdblclick', this.getController('ky2.AvtoController').selectClient, form);
-    }
+    },
+
+    showAttached: function () {
+        var zayavlist = this.getZayavlist();
+        if (!TK.Utils.isRowSelected(zayavlist)) {
+            return false;
+        }
+        var hid = zayavlist.getSelectionModel().getLastSelected().get('hid'),
+            win = Ext.widget('filesform'),
+            initData = {};
+        initData['store'] = 'TK.store.ky2.AvtoFiles';
+        initData['hid'] = hid;
+        initData['action'] = 'zayavlist';
+        win.initServiceFields(initData);
+    },
+
+    onSaveFile: function(btn){
+            var panel = btn.up('form');  // files
+            if(panel.getForm().isValid()){
+    	    	panel.getForm().submit({
+    			    waitMsg:this.waitMsg1,
+    	            url: 'ky2/secure/AvtoFiles.do',
+                    params: {action: 'save'},
+    	            scope:this,
+    			    success: function(form, action) {
+                        panel.ownerCt.getComponent('filesList').store.load();
+    			    },
+    			    failure: panel.failureAlert
+    			});
+    		} else {
+        		TK.Utils.failureDataMsg();
+        	}
+        }
+
+
     //
     // selectClient: function(view, record) {
     //     var data = record.data;

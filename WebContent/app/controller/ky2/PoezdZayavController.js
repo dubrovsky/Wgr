@@ -110,7 +110,7 @@ Ext.define('TK.controller.ky2.PoezdZayavController', {
                 click: this.uploadZayav
             },
             'ky2poezdzayavform button[action="nsiOtpr"]': {
-                click: this.showNsiOtpr
+                click: this.onShowNsiOtpr
             }
         });
     },
@@ -345,19 +345,9 @@ Ext.define('TK.controller.ky2.PoezdZayavController', {
             }
         }).show();
     },
-    
-    showNsiOtpr: function (btn) {
-        var form = this.getZayavform().getForm(),
-            nsiGrid = this.getController('Nsi').nsiKyClient(form.findField('gruzotpr').getValue(), form.getRecord().get('route.hid')).getComponent(0);
-        nsiGrid.on('itemdblclick', this.selectClient, form);
-    },
 
-    selectClient: function (view, record) {
-        var data = record.data;
-        this.findField('gruzotpr').setValue(data['sname']);
-        var poezdModel = this.getRecord();
-        poezdModel.set('client.hid', data['hid']);
-        view.up('window').close();
+    onShowNsiOtpr: function(btn) {
+        this.getController('ky2.PoezdController').showNsiOtpr(this.getZayavform().getForm());
     }
 
 });

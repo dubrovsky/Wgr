@@ -87,5 +87,14 @@ public class CopyPoezdMapper extends ConfigurableMapper {
         factory.classMap(Client.class, Client.class)
                 .field("hid", "hid")
                 .register();
+
+        factory.classMap(PoezdZayav.class, Poezd.class)
+                .field("route", "route")
+                .field("client", "client")
+                .field("nppr", "nppr")
+                .field("npprm", "npprm")
+                .field("gruzotpr", "gruzotpr")
+                .field("direction", "direction")
+                .register();
     }
 }

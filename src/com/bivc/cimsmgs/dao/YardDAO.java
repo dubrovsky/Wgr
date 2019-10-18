@@ -18,9 +18,9 @@ public interface YardDAO extends GenericDAO<Yard, Long> {
 
     List<Yard> findAll(Integer limit, Integer start, List<Filter> filters, Locale locale);
 
-    Long countAll(List<Filter> filters, Locale locale, Usr usr);
+    Long countAll(List<Filter> filters, Locale locale, Usr usr, Long routeId);
 
-    List<Yard> findAll(Integer limit, Integer start, List<Filter> filters, Locale locale, Usr usr);
+    List<Yard> findAll(Integer limit, Integer start, List<Filter> filters, Locale locale, Usr usr, Long routeId);
 
     List<Yard> findPlaces4Kont(Integer limit, Integer start, List<Filter> filters, Usr usr, Locale locale);
 

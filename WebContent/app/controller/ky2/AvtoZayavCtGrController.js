@@ -38,7 +38,7 @@ Ext.define('TK.controller.ky2.AvtoZayavCtGrController', {
         ref: 'addGryzBtn',
         selector: 'ky2avtozayavctgrtreeform button[action=addGryz]'
     }, {
-       ref: 'addPlombBtn',
+        ref: 'addPlombBtn',
         selector: 'ky2avtozayavctgrtreeform button[action=addPlomb]'
     }, {
         ref: 'delBtn',
@@ -52,7 +52,7 @@ Ext.define('TK.controller.ky2.AvtoZayavCtGrController', {
     }, {
         ref: 'saveExitBtn',
         selector: 'ky2avtozayavctgrtreeform button[action=saveExit]'
-   }, {
+    }, {
         ref: 'contpanel',
         selector: 'ky2avtozayavctgrtreeform > tabpanel > #cont'
     }, {
@@ -108,7 +108,11 @@ Ext.define('TK.controller.ky2.AvtoZayavCtGrController', {
             },
             'ky2avtozayavctgrtreeform > tabpanel > form field': {
                 blur: this.onVgCtGrFormUpdateData
+            },
+            'ky2avtozayavctgrtreeform button[action="nsiOtpr"]': {
+                click: this.onShowNsiOtpr
             }
+
             // 'ky2avtoctgrtreeform > tabpanel > #cont > numberfield': {
             //     blur: this.onGrBruttoUpdateData
             // }
@@ -164,7 +168,8 @@ Ext.define('TK.controller.ky2.AvtoZayavCtGrController', {
                 // rootNode.set('dprbDate', zayavObj['dprbDate']);
                 // rootNode.set('dprbTime', zayavObj['dprbTime']);
                 rootNode.set('direction', zayavObj['direction']);
-                // rootNode.set('gruzotpr', zayavObj['client']);
+                rootNode.set('gruzotpr', zayavObj['client']);
+                rootNode.set('clientHid', zayavObj['clientHid']);
                 // vagoncontainer.setPoezdId(poezdObj['hid']);
                 // this.getTreepanel().down('button[action=showVags]').hide();
                 // this.getTreepanel().down('button[action=hideVags]').hide();
@@ -179,12 +184,12 @@ Ext.define('TK.controller.ky2.AvtoZayavCtGrController', {
                     this.initGryzyNodes(gruzs, rootNode);
                     // rootNode.expand();
                 }
-                rootNode.sort(function(n1, n2) {
-                                    console.log('node.sort');
-                                    var i1 = n1.get('sort'),
-                                        i2 = n2.get('sort');
-                                    return (i2 > i1) ? -1 : (i2 < i1) ? 1 : 0;
-                                });
+                rootNode.sort(function (n1, n2) {
+                    console.log('node.sort');
+                    var i1 = n1.get('sort'),
+                        i2 = n2.get('sort');
+                    return (i2 > i1) ? -1 : (i2 < i1) ? 1 : 0;
+                });
                 /// END fill tree
                 this.getCenter().remove(this.getCenter().getComponent(0), true);
                 this.getCenter().add(vagoncontainer);
@@ -251,7 +256,7 @@ Ext.define('TK.controller.ky2.AvtoZayavCtGrController', {
             this.getContpanel().items.each(function (contItem, index, length) {
                 if (contItem.isXType('field')) {
                     contModel.set(contItem.getName(), cont[contItem.getName()]);
-                } else if (contItem.isXType('fieldset')) {
+                } else if (contItem.isXType('fieldset') || contItem.isXType('fieldcontainer')) {
                     contItem.items.each(function (item, index, length) {
                         if (item.isXType('field')) {
                             contModel.set(item.getName(), cont[item.getName()]);
@@ -406,7 +411,7 @@ Ext.define('TK.controller.ky2.AvtoZayavCtGrController', {
             })
         );
 
-        if(who === 'cont'){
+        if (who === 'cont') {
             this.setContDefaultProps(childModelNode);
         }
 
@@ -416,11 +421,12 @@ Ext.define('TK.controller.ky2.AvtoZayavCtGrController', {
         this.getTreepanel().fireEvent('itemclick', this.getTreepanel(), childModelNode);
     },
 
-    setContDefaultProps: function(contNodeModel) {
+    setContDefaultProps: function (contNodeModel) {
         var rootNode = this.getTreepanel().getRootNode();
         contNodeModel.set('dprbDate', rootNode.get('dprbDate'));
         contNodeModel.set('dprbTime', rootNode.get('dprbTime'));
         contNodeModel.set('gruzotpr', rootNode.get('gruzotpr'));
+        contNodeModel.set('clientHid', rootNode.get('clientHid'));
     },
 
     // onAddContClick: function (btn) {
@@ -456,8 +462,7 @@ Ext.define('TK.controller.ky2.AvtoZayavCtGrController', {
             });
             if (!contFound)
                 this.addCtGr(this.getTreepanel().getRootNode(), 'gryz');
-        }
-        else {
+        } else {
             switch (selectedModelNode.get('who')) {
                 // case 'vag':
                 //     parentModelNode = selectedModelNode;
@@ -484,7 +489,7 @@ Ext.define('TK.controller.ky2.AvtoZayavCtGrController', {
         window.open('ky2/secure/Report.do?hid=' + selectedModelNode.get('hid') + '&action=SostojanieKontAvto', '_blank', '');
     },
 
-    initAvtoToButtons: function(vagoncontainer, direction) {
+    initAvtoToButtons: function (vagoncontainer, direction) {
         // if (direction === 1)
         //     vagoncontainer.down('#showAvtosOutDir4AvtoIntoBind').show();
         // else if (direction === 2)
@@ -538,14 +543,11 @@ Ext.define('TK.controller.ky2.AvtoZayavCtGrController', {
                 field.getName() === 'znak' ||
                 field.getName() === 'nvag') {
                 rec.set('text', newVal);
-            }
-            else if (field.getName() === 'massa' && parentOfSelected.get('who') === 'cont') {
+            } else if (field.getName() === 'massa' && parentOfSelected.get('who') === 'cont') {
                 this.massaRecount(parentOfSelected);
-            }
-            else if (field.getName() === 'massa_brutto' && selectedNode.get('who') === 'cont') {
+            } else if (field.getName() === 'massa_brutto' && selectedNode.get('who') === 'cont') {
                 this.massaGryzRecount(selectedNode, newVal);
-            }
-            else if (field.getName() === 'massa_tar' ||
+            } else if (field.getName() === 'massa_tar' ||
                 field.getName() === 'massa_brutto') {
                 rec.set('massa_brutto_all', rec.get('massa_tar') + rec.get('massa_brutto'));
                 field.up('form').down('#massa_brutto_all').setValue(rec.get('massa_brutto_all'));
@@ -557,7 +559,7 @@ Ext.define('TK.controller.ky2.AvtoZayavCtGrController', {
         }
     },
 
-    massaRecount: function(parentOfSelected) {
+    massaRecount: function (parentOfSelected) {
         var total = 0;
         parentOfSelected.eachChild(function (nodeModel) {
             if (nodeModel.get('who') === 'gryz')
@@ -567,7 +569,7 @@ Ext.define('TK.controller.ky2.AvtoZayavCtGrController', {
         parentOfSelected.set('massa_brutto_all', total + parentOfSelected.get('massa_tar'))
     },
 
-    massaGryzRecount: function(selectedNode, newVal) {
+    massaGryzRecount: function (selectedNode, newVal) {
         var totalGryzNodes = 0,
             gryzNode;
         selectedNode.eachChild(function (nodeModel) {
@@ -586,15 +588,89 @@ Ext.define('TK.controller.ky2.AvtoZayavCtGrController', {
         this.onSaveClick(1);
     },
 
+    makeMessage: function(nkons, zayavs) {
+        var msg = '';
+        for (var nkonIndx in nkons) {
+            var nkon = nkons[nkonIndx],
+                found = false;
+            for (var zIndx in zayavs) {
+                var zayav = zayavs[zIndx],
+                    konts = zayav['konts'];
+                for (var kIndx in konts) {
+                    var kont = konts[kIndx];
+                    if (nkon === kont['nkon']) {
+                        msg += 'Контейнер ' + nkon + ' найден в заявке № ' + zayav['no_zayav'] + ' от ' + zayav['dateZayav'] + '\n';
+                        found = true;
+                    }
+                    if (found)
+                        break;
+                }
+                if (found)
+                    break;
+            }
+        }
+        return msg;
+    },
+
     onSaveClick: function (btn) {
+        // var dataObj = {hid: this.getKy2treeform().getPoezdId()};
+        var dataObj = {hid: this.getTreepanel().getRootNode().get('hid')};
+
+        if (this.getTreepanel().getRootNode().hasChildNodes()) {
+            dataObj['nkons'] = this.getNkons();
+        }
+
+        if (dataObj['nkons'].length === 0) {
+            this.save(btn);
+        } else {
+            var url = 'ky2/secure/AvtoZayav.do';
+            this.getCenter().setLoading(true);
+            Ext.Ajax.request({
+                url: url,
+                params: {hid: this.getTreepanel().getRootNode().get('hid'), nkons: dataObj['nkons'], action: 'checkkont'},
+                scope: this,
+                success: function (response) {
+                    var respObj = Ext.decode(response.responseText);
+                    if (respObj['total'] !== 0) {
+
+                        Ext.Msg.show({
+                            title: this.printTitle,
+                            msg: this.makeMessage(dataObj['nkons'], respObj['rows']),
+                            buttons: Ext.Msg.YESNO,
+                            closable: false,
+                            icon: Ext.Msg.QUESTION,
+                            scope: this,
+                            buttonText: {
+                                yes: 'Продолжить',
+                                no: 'Отменить'
+                            },
+                            fn: function (buttonId) {
+                                //print confirmation
+                                if (buttonId === 'yes') {
+                                    this.save(btn);
+                                }
+                            }
+                        });
+                    }
+                    else
+                        this.save(btn);
+                    this.getCenter().setLoading(false);
+                },
+                failure: function (response) {
+                    this.getCenter().setLoading(false);
+                    TK.Utils.makeErrMsg(response, 'Error...');
+                }
+            });
+        }
+    },
+
+    save: function (btn) {
         // var dataObj = {hid: this.getKy2treeform().getPoezdId()};
         var dataObj = {hid: this.getTreepanel().getRootNode().get('hid')};
 
         if (this.getTreepanel().getRootNode().hasChildNodes()) {
             dataObj = this.saveNods(dataObj);
         }
-
-        // var url = Ext.ModelManager.getModel('TK.model.ky2.VgCtGrTreeNode').getProxy().url;
         var url = 'ky2/secure/AvtoZayavCtGr.do';
         this.getCenter().setLoading(true);
         Ext.Ajax.request({
@@ -604,8 +680,7 @@ Ext.define('TK.controller.ky2.AvtoZayavCtGrController', {
             success: function (response) {
                 if (Ext.isNumber(btn)) {
                     this.getCloseBtn().fireEvent('click', this.getCloseBtn());
-                }
-                else {
+                } else {
                     var respObj = Ext.decode(response.responseText);
                     var zayavObj = respObj['rows'][0];
                     var rootNode = this.getTreepanel().getStore().getRootNode();
@@ -719,12 +794,21 @@ Ext.define('TK.controller.ky2.AvtoZayavCtGrController', {
         }
     },
 
+    getNkons: function() {
+        var nkons = [];
+        this.getTreepanel().getRootNode().eachChild(function (nodeModel) { // write node
+            if (nodeModel.get('who') === 'cont') {
+                nkons.push(nodeModel.get('nkon'))
+            }
+        }, this);
+        return nkons;
+    },
+
     saveNods: function (dataObj) {
         var vagIndex = 0;
 
         dataObj['konts'] = [];
         dataObj['gruzs'] = [];
-
 
         this.getTreepanel().getRootNode().eachChild(function (nodeModel) { // write node
             var vagDataObj = {};
@@ -756,8 +840,7 @@ Ext.define('TK.controller.ky2.AvtoZayavCtGrController', {
 
                 // contIndex++;
                 // }, this);
-            }
-            else {
+            } else {
                 var gruzDataObj = {};
                 this.getGryzpanel().items.each(function (gryzItem, index, length) {
                     if (gryzItem.isXType('field')) {
@@ -801,7 +884,7 @@ Ext.define('TK.controller.ky2.AvtoZayavCtGrController', {
             // vagIndex++;
         }, this);
 
-        if (!dataObj['gruzs'].length )
+        if (!dataObj['gruzs'].length)
             delete dataObj['gruzs'];
         if (!dataObj['konts'].length)
             delete dataObj['konts'];
@@ -920,6 +1003,10 @@ Ext.define('TK.controller.ky2.AvtoZayavCtGrController', {
                 dataObj['plombs'].push(plombDataObj);
             }
         }, this);
+    },
+
+    onShowNsiOtpr: function (btn) {
+        this.getController("ky2.AvtoCtGrController").showNsiOtpr(this.getContpanel().getForm());
     }
 
 

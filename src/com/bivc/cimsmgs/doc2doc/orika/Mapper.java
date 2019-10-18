@@ -23,6 +23,7 @@ public class Mapper extends ConfigurableMapper {
                 .fieldAToB("vagons", "vagons")
                 .fieldAToB("client.hid", "clientHid")
                 .fieldAToB("client.sname", "gruzotpr")
+                .fieldAToB("route.hid", "routeHid")
                 .byDefault()
                 .register();
 
@@ -30,6 +31,19 @@ public class Mapper extends ConfigurableMapper {
                 .fieldAToB("vagons", "vagons")
                 .fieldAToB("client.hid", "clientHid")
                 .fieldAToB("client.sname", "gruzotpr")
+                .fieldAToB("route.hid", "routeHid")
+                .byDefault()
+                .register();
+
+        factory.classMap(Avto.class, AvtoDTO.class)
+                .fieldAToB("client.hid", "clientHid")
+                .fieldAToB("client.sname", "client")
+                .byDefault()
+                .register();
+
+        factory.classMap(AvtoZayav.class, AvtoZayavDTO.class)
+                .fieldAToB("client.hid", "clientHid")
+                .fieldAToB("client.sname", "client")
                 .byDefault()
                 .register();
 
@@ -44,6 +58,8 @@ public class Mapper extends ConfigurableMapper {
                 .fieldAToB("plombs", "plombs")
                 .fieldAToB("client.hid", "clientHid")
                 .fieldAToB("client.sname", "gruzotpr")
+                .fieldAToB("routeHid", "routeHid")
+//                .fieldAToB("vagon.poezd.route.hid", "routeHid")
                 .byDefault()
                 .register();
 
@@ -84,6 +100,7 @@ public class Mapper extends ConfigurableMapper {
 
         factory.classMap(YardSector.class, YardSectorDTO.class)
                 .fieldAToB("yardSectorGroups", "yardSectorGroups")
+                .fieldAToB("route.hid", "routeHid")
                 .byDefault()
                 .register();
 

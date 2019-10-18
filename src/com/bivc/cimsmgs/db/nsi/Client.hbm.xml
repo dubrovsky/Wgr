@@ -54,6 +54,18 @@
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.ky.PoezdZayav"/>
         </set>
+        <set fetch="select" inverse="true" lazy="true" name="avtos" table="KY_AVTO" batch-size="50" cascade="refresh, delete">
+            <key>
+                <column name="HID_CLIENT" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.Avto"/>
+        </set>
+        <set fetch="select" inverse="true" lazy="true" name="avtoZayavs" table="KY_ZAYAV_AVTO" batch-size="50" cascade="refresh, delete">
+            <key>
+                <column name="HID_CLIENT" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.AvtoZayav"/>
+        </set>
         <set fetch="select" inverse="true" lazy="true" name="konts" table="KY_KONT" batch-size="50" cascade="refresh, delete">
             <key>
                 <column name="HID_CLIENT" precision="20" scale="0"/>

@@ -9,9 +9,7 @@ Ext.define('TK.view.ky2.ReportParams', {
         this.items = [
             {
                 xtype: 'form',
-                // store: 'TK.store.ky2.ReportsForm',
                 store: Ext.create('TK.store.ky2.ReportsForm'),
-                // model: 'TK.model.ky2.ReportBase',
                 bodyPadding: 5,
                 items: [
                     {

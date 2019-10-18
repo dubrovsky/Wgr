@@ -15,6 +15,9 @@ Ext.define('TK.model.ky2.AvtoCtGrTreeNode', {
         {name: 'dprb', type: 'string', useNull: true},
         {name: 'dprbDate', type: 'string', useNull: true},
         {name: 'dprbTime', type: 'string', useNull: true, defaultValue: null},
+        {name: 'dotp', type: 'string', useNull: true},
+        {name: 'dotpDate', type: 'string', useNull: true},
+        {name: 'dotpTime', type: 'string', useNull: true, defaultValue: null},
         {name: 'line', type: 'string'},
         {name: 'kpv', type: 'string'},
         {name: 'podSila', type: 'float', useNull: true},
@@ -52,6 +55,8 @@ Ext.define('TK.model.ky2.AvtoCtGrTreeNode', {
         {name: 'punkt_nazn', type: 'string'},
         {name: 'teh_obsl', type: 'string'},
         {name: 'prim', type: 'string'},
+        {name: 'clientHid', type: 'int'},
+
 
         // gruz
         'kgvn',

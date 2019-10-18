@@ -1,7 +1,9 @@
 package com.bivc.cimsmgs.db.ky;
 
+import com.bivc.cimsmgs.dao.NsiClientDAO;
 import com.bivc.cimsmgs.db.PackDoc;
 import com.bivc.cimsmgs.db.Route;
+import com.bivc.cimsmgs.db.nsi.Client;
 import com.bivc.cimsmgs.doc2doc.orika.Mapper;
 import com.bivc.cimsmgs.dto.ky2.*;
 import com.bivc.cimsmgs.formats.json.serializers.DateTimeSerializer;
@@ -24,9 +26,8 @@ public class Avto {
     private Byte direction;
     private Route route;
     private PackDoc packDoc;
-    private NsiKyOwners owner;
     private String naim_sob;
-    private String client;
+    private Client client;
     private Long hid;
     private String type_avto;
     private String no_avto;
@@ -50,10 +51,13 @@ public class Avto {
     private Date altered;
     private Set<Kont> konts = new TreeSet<>();
     private Set<Gruz> gruzs = new TreeSet<>();
+    private Set<AvtoFiles> avtoFiles = new TreeSet<>();
     private Integer kontCount;
     private String ret_nkon;
     private Set<KontGruzHistory> history  = new TreeSet<>();
 
+    public Avto() {
+    }
 
     public Map<String, List<?>> bindAvtosToAvto(Set<KontBindDTO> kDtos, Set<GruzBindDTO> gDtos, Avto avto, Mapper mapper, List<Avto> avtos) {
         Map<String, List<?>> contGruz4History = new HashMap<>(2);
@@ -621,7 +625,7 @@ public class Avto {
     }
 
 
-    public List<Kont> updateKonts(Set<KontDTO> dtos, Mapper mapper) {
+    public List<Kont> updateKonts(Set<KontDTO> dtos, Mapper mapper, NsiClientDAO clientDAO) {
         // delete
         Set<Kont> kontsToRemove = new HashSet<>();
         for (Kont kont : getKonts()) {
@@ -646,16 +650,9 @@ public class Avto {
             for (KontDTO kontIntoDTO : dtos) {
                 if (Objects.equals(kont.getHid(), kontIntoDTO.getHid())) {
                     mapper.map(kontIntoDTO, kont);
-//                    if(kontIntoDTO.getOtpravka() == Otpravka.CONT){
-//                        kont.updateKonts(kontIntoDTO.getKonts(), mapper);
-//                    } else if (kontIntoDTO.getOtpravka() == Otpravka.GRUZ){
+                    kont.updateClient(kontIntoDTO, clientDAO);
                     kont.updateGruzs(kontIntoDTO.getGruzs(), mapper);
                     kont.updatePlombs(kontIntoDTO.getPlombs(), mapper);
-
-//                    } else {  // can be deleted and getOtpravka is null
-//                        kont.removeKonts();
-//                        kont.removeGruzy();
-//                    }
 
                     kontDtoToRemove.add(kontIntoDTO);
                 }
@@ -667,12 +664,11 @@ public class Avto {
         // insert
         for (KontDTO kontIntoDTO : dtos) {
             Kont kont = mapper.map(kontIntoDTO, Kont.class);
+            kont.updateClient(kontIntoDTO, clientDAO);
             addKont(kont);
             kontsForHistory.add(kont);
-//            if(vagonIntoDTO.getOtpravka() == Otpravka.CONT){
-//                vagon.updateKonts(vagonIntoDTO.getKonts(), mapper);
-//            } else if(vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
             kont.updateGruzs(kontIntoDTO.getGruzs(), mapper);
+            kont.updatePlombs(kontIntoDTO.getPlombs(), mapper);
 //            }
         }
         return kontsForHistory;
@@ -1087,6 +1083,14 @@ public class Avto {
         }
     }
 
+    public Set<AvtoFiles> getAvtoFiles() {
+        return avtoFiles;
+    }
+
+    public void setAvtoFiles(Set<AvtoFiles> avtoFiles) {
+        this.avtoFiles = avtoFiles;
+    }
+
     public String getRet_nkon() {
         return ret_nkon;
     }
@@ -1103,11 +1107,11 @@ public class Avto {
         this.driver_fio = driver_fio;
     }
 
-    public String getClient() {
+    public Client getClient() {
         return client;
     }
 
-    public void setClient(String client) {
+    public void setClient(Client client) {
         this.client = client;
     }
 
@@ -1117,14 +1121,6 @@ public class Avto {
 
     public void setNaim_sob(String naim_sob) {
         this.naim_sob = naim_sob;
-    }
-
-    public NsiKyOwners getOwner() {
-        return owner;
-    }
-
-    public void setOwner(NsiKyOwners owner) {
-        this.owner = owner;
     }
 
     public PackDoc getPackDoc() {
@@ -1311,7 +1307,7 @@ public class Avto {
         Avto avto = (Avto) o;
         return direction.equals(avto.direction) &&
                 naim_sob.equals(avto.naim_sob) &&
-                client.equals(avto.client) &&
+//                client.equals(avto.client) &&
                 hid.equals(avto.hid) &&
                 type_avto.equals(avto.type_avto) &&
                 no_avto.equals(avto.no_avto) &&
@@ -1329,12 +1325,12 @@ public class Avto {
                 dattr.equals(avto.dattr) &&
                 trans.equals(avto.trans) &&
                 altered.equals(avto.altered) &&
-                kontCount.equals(avto.kontCount) &&
+//                kontCount.equals(avto.kontCount) &&
                 ret_nkon.equals(avto.ret_nkon);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(direction, naim_sob, client, hid, type_avto, no_avto, no_trail, driver_fio, otp_cargo, pol_cargo, departure, destination, driver_nm, dprb, dotp, prim_avto, un, dattr, trans, altered, kontCount, ret_nkon);
+        return Objects.hash(direction, naim_sob, hid, type_avto, no_avto, no_trail, driver_fio, otp_cargo, pol_cargo, departure, destination, driver_nm, dprb, dotp, prim_avto, un, dattr, trans, altered, ret_nkon);
     }
 }

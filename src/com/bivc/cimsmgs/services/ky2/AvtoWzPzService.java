@@ -41,7 +41,9 @@ public class AvtoWzPzService {
         Sheet sheet = workbook.getSheetAt(0);
         sheet.getRow(0).getCell(4).setCellValue("");
         sheet.getRow(2).getCell(6).setCellValue(avto.getDotp() != null ? dateFormat.format(avto.getDotp()) : "");
-        sheet.getRow(4).getCell(4).setCellValue(StringUtils.defaultString(avto.getClient()));
+        sheet.getRow(4).getCell(4).setCellValue(StringUtils.defaultString(avto.getClient() != null ? avto.getClient().getSname() : ""));
+        if (usr.getNamKlient().toLowerCase().contains("adampol"))
+            sheet.getRow(4).getCell(0).setCellValue("TERMINAL ADAMPOL");
         int rowInd = 12;
         for (Kont kont : avto.getKonts()) {
             sheet.getRow(rowInd).getCell(0).setCellValue(StringUtils.defaultString(kont.getNkon()));
@@ -62,7 +64,9 @@ public class AvtoWzPzService {
         Sheet sheet = workbook.getSheetAt(0);
         sheet.getRow(0).getCell(4).setCellValue("");
         sheet.getRow(2).getCell(6).setCellValue(avto.getDprb() != null ? dateFormat.format(avto.getDprb()) : "");
-        sheet.getRow(4).getCell(4).setCellValue(StringUtils.defaultString(avto.getClient()));
+        sheet.getRow(4).getCell(4).setCellValue(StringUtils.defaultString(avto.getClient() != null ? avto.getClient().getSname() : ""));
+        if (usr.getNamKlient().toLowerCase().contains("adampol"))
+            sheet.getRow(4).getCell(0).setCellValue("TERMINAL ADAMPOL");
         int rowInd = 12;
         for (Kont kont : avto.getKonts()) {
             sheet.getRow(rowInd).getCell(0).setCellValue(StringUtils.defaultString(kont.getNkon()));

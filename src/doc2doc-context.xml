@@ -194,6 +194,7 @@ p:excelTpls-ref="excelTples"
     <bean id="bindPoezdAndYard_A" class="com.bivc.cimsmgs.actions.ky2.BindPoezdAndYard_A" scope="prototype"/>
     <bean id="bindPoezdAndAvto_A" class="com.bivc.cimsmgs.actions.ky2.BindPoezdAndAvto_A" scope="prototype"/>
     <bean id="poezd2_A" class="com.bivc.cimsmgs.actions.ky2.Poezd_A" scope="prototype"/>
+    <bean id="client2_A" class="com.bivc.cimsmgs.actions.ky2.Client_A" scope="prototype"/>
     <bean id="poezdZayav2_A" class="com.bivc.cimsmgs.actions.ky2.PoezdZayav_A" scope="prototype"/>
     <bean id="report2_A" class="com.bivc.cimsmgs.actions.ky2.Report_A" scope="prototype"/>
     <bean id="ping_A" class="com.bivc.cimsmgs.actions.Ping_A" scope="prototype"/>
@@ -201,6 +202,7 @@ p:excelTpls-ref="excelTples"
     <bean id="avto2zayav_A" class="com.bivc.cimsmgs.actions.ky2.AvtoZayav_A" scope="prototype"/>
     <bean id="yard2_A" class="com.bivc.cimsmgs.actions.ky2.Yard_A" scope="prototype"/>
     <bean id="yardSector2_A" class="com.bivc.cimsmgs.actions.ky2.YardSector_A" scope="prototype"/>
+    <bean id="avtoFiles_A" class="com.bivc.cimsmgs.actions.ky2.AvtoFiles_A" scope="prototype"/>
     <bean id="reportServiceKy2" class="com.bivc.cimsmgs.services.ky2.ReportService"/>
     <bean id="avtoWzPzService" class="com.bivc.cimsmgs.services.ky2.AvtoWzPzService"/>
     <bean id="client_A" class="com.bivc.cimsmgs.actions.nsi.Client_A"/>
@@ -256,6 +258,7 @@ p:excelTpls-ref="excelTples"
     <bean id="clientGroupsDAO" class="com.bivc.cimsmgs.dao.hibernate.ClientGroupsDAOHib"/>
     <bean id="kontDAO" class="com.bivc.cimsmgs.dao.hibernate.KontDAOHib"/>
     <bean id="yardSectorDAO" class="com.bivc.cimsmgs.dao.hibernate.YardSectorDAOHib"/>
+    <bean id="routeDAO" class="com.bivc.cimsmgs.dao.hibernate.RouteDAOHib"/>
     <bean id="poezdDAO" class="com.bivc.cimsmgs.dao.hibernate.PoezdDAOHib"/>
     <bean id="clientDAO" class="com.bivc.cimsmgs.dao.hibernate.NsiClientDAOHib"/>
     <bean id="kontGruzHistoryDAO" class="com.bivc.cimsmgs.dao.hibernate.KontGruzHistoryDAOHib"/>
@@ -269,6 +272,7 @@ p:excelTpls-ref="excelTples"
     <bean id="nsiOwnerDAO" class="com.bivc.cimsmgs.dao.hibernate.NsiOwnerDAOHib"/>
     <bean id="nsiVagShirDAO" class="com.bivc.cimsmgs.dao.hibernate.NsiVagShirDAOHib"/>
     <bean id="nsiVagUzkyDAO" class="com.bivc.cimsmgs.dao.hibernate.NsiVagUzkyDAOHib"/>
+    <bean id="avtoFilesDAO" class="com.bivc.cimsmgs.dao.hibernate.AvtoFilesDAOHib"/>
 
     <bean id="kygruzMapper" class="com.bivc.cimsmgs.doc2doc.orika.MapperImpl" p:mapper-ref="kyGruzConfig"/>
     <bean id="kyplombMapper" class="com.bivc.cimsmgs.doc2doc.orika.MapperImpl" p:mapper-ref="kyPlombConfig"/>

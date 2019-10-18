@@ -26,30 +26,29 @@ public class MapPogruzDBOperations {
         try {
             HibernateUtil.beginTransaction();
 
+            CimSmgs cs = (CimSmgs) HibernateUtil.getSession().get(CimSmgs.class, hid);
+            // читаем карту вагонов
+            Map<Byte, CimSmgsCarList> carListMap = cs.getCimSmgsCarLists();
 
-                CimSmgs cs = (CimSmgs) HibernateUtil.getSession().get(CimSmgs.class, hid);
-                // читаем карту вагонов
-                Map<Byte, CimSmgsCarList> carListMap = cs.getCimSmgsCarLists();
+            Iterator<Byte> i = carListMap.keySet().iterator();
+            while (i.hasNext()) {
+                boolean stop_flag = false;
 
-                Iterator<Byte> i = carListMap.keySet().iterator();
-                while (i.hasNext()) {
-                    boolean stop_flag = false;
+                Byte aByte = i.next();
+                // считываем 1 вагон
+                CimSmgsCarList cimSmgsCarList = carListMap.get(aByte);
+                // считываем карту контейнеров на вагоне
+                Map<Byte, CimSmgsKonList> konListMap = carListMap.get(aByte).getCimSmgsKonLists();
 
-                    Byte aByte = i.next();
-                    // считываем 1 вагон
-                    CimSmgsCarList cimSmgsCarList = carListMap.get(aByte);
-                    // считываем карту контейнеров на вагоне
-                    Map<Byte, CimSmgsKonList> konListMap = carListMap.get(aByte).getCimSmgsKonLists();
-
-                    Iterator<Byte> it = konListMap.keySet().iterator();
-                    while (it.hasNext()) {
-                        Byte aByte1 = it.next();
-                        // считываем 1 контейнер
-                        CimSmgsKonList cimSmgsKonList = konListMap.get(aByte1);
-                        // считываем номер контейнера
-                        String utin = cimSmgsKonList.getUtiN().toLowerCase().replaceAll(" ","").replaceAll("-","");
-                        for (MapPogruz mapPeregruz : mapPeregruzs)
-                            // проверяем наш ли это контейнер
+                Iterator<Byte> it = konListMap.keySet().iterator();
+                while (it.hasNext()) {
+                    Byte aByte1 = it.next();
+                    // считываем 1 контейнер
+                    CimSmgsKonList cimSmgsKonList = konListMap.get(aByte1);
+                    // считываем номер контейнера
+                    String utin = cimSmgsKonList.getUtiN().toLowerCase().replaceAll(" ","").replaceAll("-","");
+                    for (MapPogruz mapPeregruz : mapPeregruzs)
+                        // проверяем наш ли это контейнер
                         if (mapPeregruz.getUtiN().toLowerCase().replaceAll(" ","").replaceAll("-","").equals(utin)) {
 
                             //удаляем все имеющиеся пломбы
@@ -90,9 +89,8 @@ public class MapPogruzDBOperations {
 
                             HibernateUtil.getSession().update(cimSmgsKonList);
 
-
                             // проверяем не находимся ли мы уже на нужном вагоне
-                            if (mapPeregruz.getNvag().toLowerCase().equals(cimSmgsCarList.getNvag().toLowerCase())) {
+                            if (cimSmgsCarList.getNvag()!=null&&mapPeregruz.getNvag().toLowerCase().equals(cimSmgsCarList.getNvag().toLowerCase())) {
                                 // заносим данные об вагоне
                                 cimSmgsCarList.setNvag(mapPeregruz.getNvag());
                                 cimSmgsCarList.setKolOs(mapPeregruz.getKolOs());
@@ -104,17 +102,16 @@ public class MapPogruzDBOperations {
                             }
                             else // ищем нужный вагон для нашего контейнера
                             {
-                                Boolean findVagFlag = false;
+                                boolean findVagFlag = false;
                                 String carName2Find = mapPeregruz.getNvag();
                                 Iterator<Byte> carListMapIterator = carListMap.keySet().iterator();
                                 while (carListMapIterator.hasNext()) {
                                     CimSmgsCarList carList2Check = carListMap.get(carListMapIterator.next());
-                                    if (carList2Check.getNvag().toLowerCase().equals(carName2Find.toLowerCase())) {
+                                    if (carList2Check.getNvag()!=null&&carList2Check.getNvag().toLowerCase().equals(carName2Find.toLowerCase())) {
                                         // нашли нужный вагон
                                         // получаем номер по порядку для контейнера на новом вагоне
                                         Byte konListKeyMaxValue = Collections.max(carList2Check.getCimSmgsKonLists().keySet());
                                         konListKeyMaxValue++;
-
 
                                         cimSmgsKonList.setCimSmgsCarList(carList2Check);
                                         cimSmgsKonList.setSort(konListKeyMaxValue);
@@ -168,12 +165,11 @@ public class MapPogruzDBOperations {
                             }
 
                         }
-                    }
-                    if (stop_flag)
-                        break;
                 }
-                cs.setAltered(new Date());
-
+                if (stop_flag)
+                    break;
+            }
+            cs.setAltered(new Date());
 // записываем в базу данных
             HibernateUtil.commitTransaction();
         }
@@ -188,7 +184,7 @@ public class MapPogruzDBOperations {
      *
      * @param delPlombMap карта пломб
      */
-    private static void delPlombs(Map<Byte, CimSmgsPlomb> delPlombMap) {
+    public static void delPlombs(Map<Byte, CimSmgsPlomb> delPlombMap) {
         log.debug("delPlombs");
         Iterator<Byte> byteIterator = delPlombMap.keySet().iterator();
         while (byteIterator.hasNext()) {

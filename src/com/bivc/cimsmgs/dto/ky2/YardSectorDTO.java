@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class YardSectorDTO {
     private Integer hid;
+    private Long routeHid;
     private String name;
     private String descr;
     private String groups;
@@ -57,5 +58,13 @@ public class YardSectorDTO {
 
     public void setYardSectorGroups(Set<YardSectorGroupsDTO> yardSectorGroups) {
         this.yardSectorGroups = yardSectorGroups;
+    }
+
+    public Long getRouteHid() {
+        return routeHid;
+    }
+
+    public void setRouteHid(Long routeHid) {
+        this.routeHid = routeHid;
     }
 }

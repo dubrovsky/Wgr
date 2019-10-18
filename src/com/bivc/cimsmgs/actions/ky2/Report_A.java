@@ -74,6 +74,15 @@ public class Report_A extends CimSmgsSupport_A implements ServletRequestAware, S
 
     private String action;
     private String reportParams;
+    private Long hid_client;
+
+    public Long getHid_client() {
+        return hid_client;
+    }
+
+    public void setHid_client(Long hid_client) {
+        this.hid_client = hid_client;
+    }
 
     public String getReportParams() {
         return reportParams;

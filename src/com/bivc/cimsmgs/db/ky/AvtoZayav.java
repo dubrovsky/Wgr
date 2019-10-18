@@ -1,7 +1,9 @@
 package com.bivc.cimsmgs.db.ky;
 
+import com.bivc.cimsmgs.dao.NsiClientDAO;
 import com.bivc.cimsmgs.db.PackDoc;
 import com.bivc.cimsmgs.db.Route;
+import com.bivc.cimsmgs.db.nsi.Client;
 import com.bivc.cimsmgs.doc2doc.orika.Mapper;
 import com.bivc.cimsmgs.dto.ky2.*;
 import com.bivc.cimsmgs.formats.json.serializers.DateTimeSerializer;
@@ -29,7 +31,7 @@ public class AvtoZayav {
     private String no_avto;
     private String no_trail;
     private String driver_fio;
-    private String client;
+    private Client client;
 //    private String transport;
 //    @JsonSerialize(using = DateTimeSerializer.class)
 @JsonSerialize(using = DateTimeSerializer.class)
@@ -42,10 +44,12 @@ public class AvtoZayav {
     private Date altered;
     private Set<Kont> konts = new TreeSet<>();
     private Set<Gruz> gruzs = new TreeSet<>();
+    private Set<AvtoFiles> avtoFiles = new TreeSet<>();
+
     private Integer kontCount;
     private Integer kontCountDone;
 
-    public List<Kont> updateKonts(Set<KontDTO> dtos, Mapper mapper) {
+    public List<Kont> updateKonts(Set<KontDTO> dtos, Mapper mapper, NsiClientDAO clientDAO) {
         // delete
         Set<Kont> kontsToRemove = new HashSet<>();
         for (Kont kont : getKonts()) {
@@ -70,16 +74,10 @@ public class AvtoZayav {
             for (KontDTO kontIntoDTO : dtos) {
                 if (Objects.equals(kont.getHid(), kontIntoDTO.getHid())) {
                     mapper.map(kontIntoDTO, kont);
-//                    if(kontIntoDTO.getOtpravka() == Otpravka.CONT){
-//                        kont.updateKonts(kontIntoDTO.getKonts(), mapper);
-//                    } else if (kontIntoDTO.getOtpravka() == Otpravka.GRUZ){
+                    kont.setIsZayav(Byte.parseByte("1"));
+                    kont.updateClient(kontIntoDTO, clientDAO);
                     kont.updateGruzs(kontIntoDTO.getGruzs(), mapper);
                     kont.updatePlombs(kontIntoDTO.getPlombs(), mapper);
-
-//                    } else {  // can be deleted and getOtpravka is null
-//                        kont.removeKonts();
-//                        kont.removeGruzy();
-//                    }
 
                     kontDtoToRemove.add(kontIntoDTO);
                 }
@@ -91,13 +89,12 @@ public class AvtoZayav {
         // insert
         for (KontDTO kontIntoDTO : dtos) {
             Kont kont = mapper.map(kontIntoDTO, Kont.class);
+            kont.setIsZayav(Byte.parseByte("1"));
+            kont.updateClient(kontIntoDTO, clientDAO);
             addKont(kont);
             kontsForHistory.add(kont);
-//            if(vagonIntoDTO.getOtpravka() == Otpravka.CONT){
-//                vagon.updateKonts(vagonIntoDTO.getKonts(), mapper);
-//            } else if(vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
             kont.updateGruzs(kontIntoDTO.getGruzs(), mapper);
-//            }
+            kont.updatePlombs(kontIntoDTO.getPlombs(), mapper);
         }
         return kontsForHistory;
     }
@@ -168,6 +165,14 @@ public class AvtoZayav {
     }
 
 
+    public Set<AvtoFiles> getAvtoFiles() {
+        return avtoFiles;
+    }
+
+    public void setAvtoFiles(Set<AvtoFiles> avtoFiles) {
+        this.avtoFiles = avtoFiles;
+    }
+
     public String getNo_avto() {
         return no_avto;
     }
@@ -192,11 +197,11 @@ public class AvtoZayav {
         this.driver_fio = driver_fio;
     }
 
-    public String getClient() {
+    public Client getClient() {
         return client;
     }
 
-    public void setClient(String client) {
+    public void setClient(Client client) {
         this.client = client;
     }
 
@@ -324,7 +329,7 @@ public class AvtoZayav {
                 no_avto.equals(avtoZayav.no_avto) &&
                 no_trail.equals(avtoZayav.no_trail) &&
                 driver_fio.equals(avtoZayav.driver_fio) &&
-                client.equals(avtoZayav.client) &&
+//                client.equals(avtoZayav.client) &&
                 dateZayav.equals(avtoZayav.dateZayav) &&
                 un.equals(avtoZayav.un) &&
                 dattr.equals(avtoZayav.dattr) &&
@@ -334,6 +339,6 @@ public class AvtoZayav {
 
     @Override
     public int hashCode() {
-        return Objects.hash(direction, hid, no_zayav, no_avto, no_trail, driver_fio, client, dateZayav, un, dattr, trans, altered);
+        return Objects.hash(direction, hid, no_zayav, no_avto, no_trail, driver_fio,  dateZayav, un, dattr, trans, altered);
     }
 }

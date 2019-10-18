@@ -17,6 +17,7 @@ public class PoezdDTO {
 
     private Long hid;
     private Long clientHid;
+    private Long routeHid;
     private Byte direction;
     private String nppr;
     private String gruzotpr;
@@ -136,5 +137,13 @@ public class PoezdDTO {
 
     public void setDotpTime(Date dotpTime) {
         this.dotpTime = dotpTime;
+    }
+
+    public Long getRouteHid() {
+        return routeHid;
+    }
+
+    public void setRouteHid(Long routeHid) {
+        this.routeHid = routeHid;
     }
 }

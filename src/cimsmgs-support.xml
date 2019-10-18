@@ -304,6 +304,17 @@ name="Doc2Doc_uploadXLSvags" method="uploadXLSvags" class="doc2doc_A">
                 <param name="contentDisposition">attachment;filename="${fileName}"</param>
             </result>
         </action>
+       <action name="secure/AvtoFiles" class="avtoFiles_A">
+            <result name="success" type="json"/>
+            <result name="excel" type="stream">
+                <param name="contentType">application/vnd.ms-excel</param>
+                <param name="contentDisposition">attachment;filename="${fileName}"</param>
+            </result>
+           <interceptor-ref name="fileUploadStack"/>
+        </action>
+        <action name="secure/Client" class="client2_A">
+            <result name="success" type="json"/>
+        </action>
         <action name="secure/PoezdZayav" class="poezdZayav2_A">
             <result name="success" type="json"/>
             <interceptor-ref name="fileUploadStack"/>

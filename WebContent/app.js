@@ -91,6 +91,7 @@ Ext.application({
         'ky2.BindAvtoAndAvtoController',
         'ky2.BindPoezdAndAvtoController',
         'ky2.ReportController',
+        'ky2.ClientController',
 
         'ky2.YardController'
     ],

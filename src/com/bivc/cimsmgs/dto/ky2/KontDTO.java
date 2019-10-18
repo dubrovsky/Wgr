@@ -19,6 +19,7 @@ public class KontDTO implements Comparable<KontDTO>{
 
     private Long hid;
     private Long clientHid;
+    private Long routeHid;
     private String nkon;
     private String notp;
 
@@ -340,5 +341,13 @@ public class KontDTO implements Comparable<KontDTO>{
 
     public void setClientHid(Long clientHid) {
         this.clientHid = clientHid;
+    }
+
+    public Long getRouteHid() {
+        return routeHid;
+    }
+
+    public void setRouteHid(Long routeHid) {
+        this.routeHid = routeHid;
     }
 }

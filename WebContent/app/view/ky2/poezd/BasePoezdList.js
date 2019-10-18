@@ -39,13 +39,17 @@ Ext.define('TK.view.ky2.poezd.BasePoezdList', {
     },
     buildTopToolbar: function (config) {
         this.callParent(arguments);
-        config.tbar.splice(6, 0,
-            {text: 'Отчет', iconCls:'export2Xls', action:'showReportParams'},'-'
-        );
+        /*config.tbar.splice(6, 0,
+            {   xtype: 'splitbutton', text: 'Отчеты', iconCls: 'excel', action: 'reports',
+                menu: [
+                    {text: 'Отчет', iconCls:'export2Xls', action:'showReportParams'}, '-',
+                    {text: 'Карта перегруза', iconCls:'export2Xls', action:'kartaPrzeladunkowa'}
+                ]
+            },
+            '-'
+        );   */
         config.tbar.splice(4, 0,
             {text: '+Вагон/Контейнер/Груз', iconCls:'edit', action:'editVgCtGr'},'-'
         );
-        // config.tbar.unshift({text: 'Фильтр', iconCls:'filter', action:'filterPoezd'},'-');
-        // config.tbar.push('->', '-', {text: 'Поиск контейнера', iconCls:'search', action:'searchKont'});
     }
 });

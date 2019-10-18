@@ -5,7 +5,8 @@ Ext.define('TK.model.ky2.YardSector', {
         {name:'hid', type:'int', useNull:true},
         'name',
         'descr',
-        'groups'
+        'groups',
+        'routeHid'
     ],
     hasMany:[{
         primaryKey:'hid',

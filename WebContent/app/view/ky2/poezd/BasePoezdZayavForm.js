@@ -90,7 +90,9 @@ Ext.define('TK.view.ky2.poezd.BasePoezdZayavForm', {
                     name: 'gruzotpr',
                     itemId: 'gruzotpr',
                     maxLength: 128,
-                    flex: 1
+                    flex: 1,
+                    readOnly: true,
+                    allowBlank: false
                 }, {
                     xtype: 'button',
                     margins: {top: 0, right: 0, bottom: 0, left: 3},

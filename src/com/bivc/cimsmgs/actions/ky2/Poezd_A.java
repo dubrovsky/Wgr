@@ -74,6 +74,8 @@ public class Poezd_A extends CimSmgsSupport_A {
                     return addToPoezdintoFromZayavinto();
                 case ADD_TO_POEZDOUT_FROM_ZAYAVOUT:
                     return addToPoezdoutFromZayavout();
+                case CREATE_POEZDINTO_FROM_ZAYAVINTO:
+                    return createPoezdintoFromZayavinto();
                 /*case GET_POEZDS_IN_INTERVAL:
                     return getPoezdsInInterval();
                 case GET_GRUZOTPR_IN_INTERVAL:
@@ -658,11 +660,27 @@ public class Poezd_A extends CimSmgsSupport_A {
         return SUCCESS;
     }
 
-    private String addToPoezdintoFromZayavinto() {
+    private String addToPoezdintoFromZayavinto() throws Exception {
         Poezd poezdInto = poezdDAO.getById(getHid(), false);
         PoezdZayav zayav = poezdZayavDAO.getById(zayavHid, false);
         copyZajavDataToPoezd(poezdInto, zayav);
 
+        copyToPoezdintoFormZayavInto(poezdInto, zayav);
+
+        setJSONData(
+                defaultSerializer
+                        .setLocale(getLocale())
+                        .write(
+                                new Response<>(
+                                        kypoezdMapper.copy(poezdInto, PoezdBaseDTO.class)
+                                )
+                        )
+        );
+
+        return SUCCESS;
+    }
+
+    private void copyToPoezdintoFormZayavInto(Poezd poezdInto, PoezdZayav zayav) {
         Map<String, List<?>> contGruz4History = new HashMap<>(2);
         contGruz4History.put("konts", new ArrayList<Kont>());
         contGruz4History.put("gruzs", new ArrayList<>());
@@ -705,6 +723,18 @@ public class Poezd_A extends CimSmgsSupport_A {
         }
 
         saveContGruzHistory(contGruz4History, kontGruzHistoryDAO, POEZD);
+    }
+
+    private String createPoezdintoFromZayavinto() throws Exception {
+        PoezdZayav zayav = poezdZayavDAO.getById(zayavHid, false);
+        final Poezd poezd = copyPoezdMapper.map(zayav, Poezd.class);
+        poezd.setKoleya(getKoleya());
+
+        PackDoc pack = new PackDoc(zayav.getRoute(), getUser().getUsr().getGroup());
+        pack.addPoezdItem(poezd);
+        getPackDocDAO().makePersistent(pack);
+
+        copyToPoezdintoFormZayavInto(poezd, zayav);
 
         return SUCCESS;
     }
@@ -793,7 +823,9 @@ public class Poezd_A extends CimSmgsSupport_A {
     }
 
     enum Action {
-        LIST, EDIT, SAVE, DELETE, POEZDS_DIR_FOR_POEZD_BIND, CREATE_POEZDOUT_FROM_POEZDINTO, CREATE_POEZDOUT_FROM_POEZDSINTO, IMPORT_POEZD_LIST, IMPORT_POESD, UPLOAD, GET_POEZDS_IN_INTERVAL, GET_GRUZOTPR_IN_INTERVAL, GET_POEZDINTO_FOR_POEZDOUT, ADD_TO_POEZDINTO_FROM_ZAYAVINTO, ADD_TO_POEZDOUT_FROM_ZAYAVOUT
+        LIST, EDIT, SAVE, DELETE, POEZDS_DIR_FOR_POEZD_BIND, CREATE_POEZDOUT_FROM_POEZDINTO, CREATE_POEZDOUT_FROM_POEZDSINTO,
+        IMPORT_POEZD_LIST, IMPORT_POESD, UPLOAD, GET_POEZDS_IN_INTERVAL, GET_GRUZOTPR_IN_INTERVAL, GET_POEZDINTO_FOR_POEZDOUT,
+        ADD_TO_POEZDINTO_FROM_ZAYAVINTO, ADD_TO_POEZDOUT_FROM_ZAYAVOUT, CREATE_POEZDINTO_FROM_ZAYAVINTO
     }
 
     private List<Filter> filters;
@@ -820,6 +852,8 @@ public class Poezd_A extends CimSmgsSupport_A {
     private PoezdZayavDAO poezdZayavDAO;
     @Autowired
     private NsiClientDAO clientDAO;
+    @Autowired
+    private RouteDAO routeDAO;
     @Autowired
     private Mapper kypoezdMapper;
     @Autowired

@@ -5,6 +5,7 @@ import com.bivc.cimsmgs.commons.Response;
 import com.bivc.cimsmgs.dao.AvtoDAO;
 import com.bivc.cimsmgs.dao.AvtoZayavDAO;
 import com.bivc.cimsmgs.dao.KontGruzHistoryDAO;
+import com.bivc.cimsmgs.dao.NsiClientDAO;
 import com.bivc.cimsmgs.db.ky.Avto;
 import com.bivc.cimsmgs.db.ky.AvtoZayav;
 import com.bivc.cimsmgs.db.ky.Gruz;
@@ -70,11 +71,11 @@ public class AvtoZayavCtGr_A extends CimSmgsSupport_A {
 	private String save() throws Exception {
 		final AvtoDTO dto = defaultDeserializer.setLocale(getLocale()).read(AvtoDTO.class, dataObj);
 		AvtoZayav avtoZayav = avtoZayavDAO.findById(dto.getHid(), false);
-		Map<String, List<?>> contGruz4History = new HashMap<>(2);
-		contGruz4History.put("konts", new ArrayList<Kont>());
-		contGruz4History.put("gruzs", new ArrayList<Gruz>());
+//		Map<String, List<?>> contGruz4History = new HashMap<>(2);
+//		contGruz4History.put("konts", new ArrayList<Kont>());
+//		contGruz4History.put("gruzs", new ArrayList<Gruz>());
 
-		List<Kont> konts = avtoZayav.updateKonts(dto.getKonts(), mapper);
+		List<Kont> konts = avtoZayav.updateKonts(dto.getKonts(), mapper, clientDAO);
 		List<Gruz> gruzs = avtoZayav.updateGruzs(dto.getGruzs(), mapper);
 //		((List<Kont>) contGruz4History.get("konts")).addAll(konts);
 //		((List<Gruz>) contGruz4History.get("gruzs")).addAll(gruzs);
@@ -104,7 +105,8 @@ public class AvtoZayavCtGr_A extends CimSmgsSupport_A {
 	private AvtoZayavDAO avtoZayavDAO;
 	@Autowired
 	private KontGruzHistoryDAO kontGruzHistoryDAO;
-
+	@Autowired
+	private NsiClientDAO clientDAO;
 
 	private String action;
 	private String dataObj;

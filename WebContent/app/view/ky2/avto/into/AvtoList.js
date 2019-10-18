@@ -33,5 +33,9 @@ Ext.define('TK.view.ky2.avto.into.AvtoList', {
                 ]
             }
         );
+        config.tbar.splice(1, 0,
+            {text: 'Создать из заявки', iconCls:'truck', action:'importFromZayav'}
+
+        );
     }
 });

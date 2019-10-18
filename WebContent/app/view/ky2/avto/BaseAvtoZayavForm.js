@@ -117,11 +117,12 @@ Ext.define('TK.view.ky2.avto.BaseAvtoZayavForm', {
                 fieldLabel: 'Клиент',
                 items: [{
                     xtype: 'textfield',
-                    name: 'client',
+                    name: 'client.sname',
                     maxLength: 128,
                     // rows: 3,
                     flex: 1,
-                    readOnly: true
+                    readOnly: true,
+                    allowBlank: false
                 }, {
                     xtype: 'button',
                     text: '...',
@@ -277,11 +278,8 @@ Ext.define('TK.view.ky2.avto.BaseAvtoZayavForm', {
                 iconCls: 'save_close',
                 action: 'saveExit'
             }, '-',
-            {
-                text: '+Контейнер/Груз',
-                iconCls: 'edit',
-                action: 'editCtGr'
-            }, '-'
+            {text: '+Контейнер/Груз', iconCls: 'edit', action: 'editCtGr'}, '-'
+
 
         );
         config.tbar.push('-'

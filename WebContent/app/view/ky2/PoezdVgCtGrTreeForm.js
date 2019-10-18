@@ -235,7 +235,8 @@ Ext.define('TK.view.ky2.PoezdVgCtGrTreeForm', {
                         itemId: 'gruzotpr',
                         maxLength: 128,
                         flex: 1,
-                        readOnly: true
+                        readOnly: true,
+                        allowBlank: false
                     }, {
                         xtype: 'button',
                         margins: {top: 0, right: 0, bottom: 0, left: 3},
@@ -252,6 +253,7 @@ Ext.define('TK.view.ky2.PoezdVgCtGrTreeForm', {
                 },
 
                 {xtype: 'hidden', name: "clientHid"},
+                {xtype: 'hidden', name: "routeHid"},
                 {xtype: 'hidden', name: "sort"},
                 {xtype: 'hidden', name: "hid"}
             ]

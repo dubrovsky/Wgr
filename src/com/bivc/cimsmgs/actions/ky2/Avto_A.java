@@ -1,8 +1,7 @@
 package com.bivc.cimsmgs.actions.ky2;
 
 import com.bivc.cimsmgs.actions.CimSmgsSupport_A;
-import com.bivc.cimsmgs.commons.Filter;
-import com.bivc.cimsmgs.commons.Response;
+import com.bivc.cimsmgs.commons.*;
 import com.bivc.cimsmgs.dao.*;
 import com.bivc.cimsmgs.db.PackDoc;
 import com.bivc.cimsmgs.db.ky.*;
@@ -15,6 +14,7 @@ import com.bivc.cimsmgs.formats.json.Serializer;
 import com.bivc.cimsmgs.services.ky2.AvtoWzPzService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +22,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.math.BigDecimal;
+import java.sql.Blob;
+import java.util.*;
 
+import static com.bivc.cimsmgs.actions.CimSmgsSupport_A.KontGruzHistoryType.AVTO;
 import static com.bivc.cimsmgs.services.ky2.AvtoWzPzService.AvtoDocType.PZ;
 import static com.bivc.cimsmgs.services.ky2.AvtoWzPzService.AvtoDocType.WZ;
 
@@ -139,6 +139,11 @@ public class Avto_A extends CimSmgsSupport_A {
         } else {
             saved = update(dto);
         }
+        if(dto.getClient() != null && dto.getClient().getHid() != null) {
+            saved.setClient(clientDAO.getById(dto.getClient().getHid(), false));
+        } else {
+            saved.setClient(null);
+        }
 
         setJSONData(
                 defaultSerializer
@@ -192,14 +197,34 @@ public class Avto_A extends CimSmgsSupport_A {
     }
 
 
-    public String importFromZayav() {
-        Avto avto = avtoDAO.findById(getHid(), false);
+    public String importFromZayav() throws Exception {
         AvtoZayav avtoZayav = avtoZayavDAO.findById(getZayavHid(), false);
+        Avto avto;
+        if (getHid() != 0L) {
+            avto = avtoDAO.findById(getHid(), false);
+            copyZajavDataToAvto(avto, avtoZayav);
+        }
+        else {
+            avto = copyAvtoMapper.map(avtoZayav, Avto.class);
+            avto.setDprb(new Date());
+            PackDoc pack = new PackDoc(avtoZayav.getRoute(), getUser().getUsr().getGroup());
+            pack.addAvtoItem(avto);
+            getPackDocDAO().makePersistent(pack);
+        }
+        avto.setClient(avtoZayav.getClient());
+
+        Map<String, List<?>> contGruz4History = new HashMap<>(2);
+        contGruz4History.put("konts", new ArrayList<Kont>());
+        contGruz4History.put("gruzs", new ArrayList<>());
+
         for (Kont kont : avtoZayav.getKonts()) {
             Kont kontCopy = copyKontMapper.map(kont, Kont.class);
             kontCopy.setAvto(avto);
+            kontCopy.setClient(kont.getClient());
             avto.getKonts().add(kontCopy);
 //            kontDAO.makePersistent(kontCopy);
+            ((List<Kont>) contGruz4History.get("konts")).add(kontCopy);
+
             for (Gruz gruz : kont.getGruzs()) {
                 Gruz gruzCopy = copyKontMapper.map(gruz, Gruz.class);
                 gruzCopy.setKont(kontCopy);
@@ -218,10 +243,22 @@ public class Avto_A extends CimSmgsSupport_A {
             gruzCopy.setAvto(avto);
             avto.getGruzs().add(gruzCopy);
 //            gruzDAO.makePersistent(gruzCopy);
+            ((List<Gruz>) contGruz4History.get("gruzs")).add(gruzCopy);
+
         }
         avtoDAO.makePersistent(avto);
 
+        saveContGruzHistory(contGruz4History, kontGruzHistoryDAO, AVTO);
 
+        setJSONData(
+                defaultSerializer
+                        .setLocale(getLocale())
+                        .write(
+                                new Response<>(
+                                        kyavtoMapper.copy(avto, AvtoDTO.class)
+                                )
+                        )
+        );
         return SUCCESS;
     }
 
@@ -235,6 +272,7 @@ public class Avto_A extends CimSmgsSupport_A {
         avtoCopy.setDirection((byte) 1);
         avtoCopy.setRet_nkon(null);
         avtoCopy.setDprb(new Date());
+        avtoCopy.setClient(avtoInto.getClient());
 
         // save new pack and poezd
         PackDoc pack = new PackDoc(avtoCopy.getRoute(), getUser().getUsr().getGroup());
@@ -252,6 +290,7 @@ public class Avto_A extends CimSmgsSupport_A {
         Avto avtoCopy = copyAvtoMapper.map(avtoInto, Avto.class);
         // set props
         avtoCopy.setDirection((byte) 2);
+        avtoCopy.setClient(avtoInto.getClient());
 
         // save new pack and poezd
         PackDoc pack = new PackDoc(avtoCopy.getRoute(), getUser().getUsr().getGroup());
@@ -289,10 +328,39 @@ public class Avto_A extends CimSmgsSupport_A {
         baos.flush();
         baos.close();
         inputStream = new ByteArrayInputStream(baos.toByteArray());
-        fileName = avtoDocType + "_" + avto.getNo_avto() + ".xlsx";
+
+        saveFile(avto, baos.toByteArray(), avtoDocType.toString());
         return "excel";
 
     }
+
+    public void saveFile(Avto avto, byte[] file, String docType) throws Exception {
+        log.info("saveFile");
+        Long curNpp = avtoFilesDAO.maxNpp(avto.getRoute().getHid(), docType);
+        if (curNpp != null)
+            curNpp++;
+        else
+            curNpp = 1L;
+        AvtoFiles avtoFiles = new AvtoFiles();
+        fileName = docType + "_" + curNpp.toString() + "_" + (avto.getClient() != null ? avto.getClient().getSname() : "") + ".xlsx";
+        avtoFiles.setFileName(fileName);
+        avtoFiles.setContentType("application/vnd.ms-excel");
+        avtoFiles.setLength(new BigDecimal(file.length));
+        avtoFiles.setDocType(docType);
+        avtoFiles.setNpp(curNpp);
+        avtoFiles.setAvto(avto);
+
+        avtoFilesDAO.save(avtoFiles, file);
+    }
+
+
+    private void copyZajavDataToAvto(Avto avto, AvtoZayav zayav) {
+        avto.setDriver_fio(zayav.getDriver_fio());
+        avto.setNo_avto(zayav.getNo_avto());
+        avto.setNo_trail(zayav.getNo_trail());
+    }
+
+
 
     private String action;
     private Byte direction;
@@ -308,6 +376,10 @@ public class Avto_A extends CimSmgsSupport_A {
 
 
     @Autowired
+    private KontGruzHistoryDAO kontGruzHistoryDAO;
+    @Autowired
+    private AvtoFilesDAO avtoFilesDAO;
+    @Autowired
     private AvtoDAO avtoDAO;
     @Autowired
     private KontDAO kontDAO;
@@ -317,6 +389,8 @@ public class Avto_A extends CimSmgsSupport_A {
     private PlombDAO plombDAO;
     @Autowired
     private AvtoZayavDAO avtoZayavDAO;
+    @Autowired
+    private NsiClientDAO clientDAO;
     @Autowired
     private Mapper kyavtoMapper;
     @Autowired

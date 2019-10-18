@@ -70,7 +70,7 @@ Ext.define('TK.view.edit.ClientEdit', {
                         itemId: 'group',
                         afterLabelTextTpl: this.required,
                         items: [
-                            {xtype: 'textarea', name: "usr.groupsIds", flex: 1, readOnly: true, allowBlank: false},
+                            {xtype: 'textarea', name: "usr.groupsIds", flex: 1, readOnly: true, allowBlank: true},
                             {xtype: 'button', text: '...', action: 'getUserGroups', margins: '0 0 0 5'}
                         ]
                     }

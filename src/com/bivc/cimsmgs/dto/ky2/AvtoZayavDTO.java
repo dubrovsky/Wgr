@@ -6,8 +6,27 @@ public class AvtoZayavDTO {
 
     private Long hid;
     private Byte direction;
+    private Long clientHid;
+    private String client;
+
     private TreeSet<KontDTO> konts = new TreeSet<>();
     private TreeSet<GruzDTO> gruzs = new TreeSet<>();
+
+    public Long getClientHid() {
+        return clientHid;
+    }
+
+    public void setClientHid(Long clientHid) {
+        this.clientHid = clientHid;
+    }
+
+    public String getClient() {
+        return client;
+    }
+
+    public void setClient(String client) {
+        this.client = client;
+    }
 
     public Long getHid() {
         return hid;

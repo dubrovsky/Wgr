@@ -23,11 +23,15 @@ public class jsonStore {
           case Types.SMALLINT:
           case Types.INTEGER:
           case Types.BIGINT:
-            nd_r.put(st.getColumnName(j), (Long) ((Number)st.getObject(i,j)).longValue());
+            Number v = (Number)st.getObject(i,j);
+            if(v != null) nd_r.put(st.getColumnName(j), v.longValue());
+            else nd_r.put(st.getColumnName(j), (Long) null);
             break;
           case Types.NUMERIC:
           case Types.DECIMAL:
-            nd_r.put(st.getColumnName(j), (BigDecimal) st.getObject(i,j));
+              BigDecimal v1 = (BigDecimal)st.getObject(i,j);
+              if(v1 != null) nd_r.put(st.getColumnName(j), v1);
+              else nd_r.put(st.getColumnName(j), (BigDecimal) null);
             break;
           default:
             nd_r.put(st.getColumnName(j), st.getText(i,j));

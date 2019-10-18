@@ -3,15 +3,17 @@ package com.bivc.cimsmgs.doc2doc.orika.config.ky;
 import com.bivc.cimsmgs.db.PackDoc;
 import com.bivc.cimsmgs.db.Route;
 import com.bivc.cimsmgs.db.ky.Avto;
-import com.bivc.cimsmgs.db.ky.NsiKyOwners;
+import com.bivc.cimsmgs.db.ky.AvtoFiles;
+import com.bivc.cimsmgs.db.ky.AvtoZayav;
+import com.bivc.cimsmgs.db.nsi.Client;
 import com.bivc.cimsmgs.dto.PackDocDTO;
 import com.bivc.cimsmgs.dto.RouteDTO;
 import com.bivc.cimsmgs.dto.ky.AvtoBaseDTO;
 import com.bivc.cimsmgs.dto.ky.AvtoDTO;
-import com.bivc.cimsmgs.dto.ky.NsiKyOwnersDTO;
-import ma.glasnost.orika.CustomMapper;
+import com.bivc.cimsmgs.dto.ky2.AvtoFilesViewDTO;
+import com.bivc.cimsmgs.dto.ky2.AvtoZayavBaseDTO;
+import com.bivc.cimsmgs.dto.ky2.ClientDTO;
 import ma.glasnost.orika.MapperFactory;
-import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.impl.ConfigurableMapper;
 
 /**
@@ -23,9 +25,11 @@ public class KyAvtoConfig extends ConfigurableMapper {
     protected void configure(MapperFactory mapperFactory) {
         mapRoute(mapperFactory);
         mapPackDoc(mapperFactory);
-        mapOwner(mapperFactory);
         mapAvto(mapperFactory);
         mapBaseAvto(mapperFactory);
+        mapBaseAvtoZayav(mapperFactory);
+        mapClient(mapperFactory);
+        mapFile(mapperFactory);
     }
 
     private void mapRoute(MapperFactory mapperFactory) {
@@ -40,30 +44,23 @@ public class KyAvtoConfig extends ConfigurableMapper {
                 .register();
     }
 
-
-    private void mapOwner(MapperFactory mapperFactory) {
-        mapperFactory.classMap(NsiKyOwners.class, NsiKyOwnersDTO.class)
-                .field("hid", "hid")
+    private void mapClient(MapperFactory mapperFactory) {
+        mapperFactory.classMap(Client.class, ClientDTO.class)
+                .fieldAToB("hid", "hid")
+                .fieldAToB("sname", "sname")
                 .register();
-
     }
 
     private void mapBaseAvto(MapperFactory mapperFactory) {
         mapperFactory.classMap(Avto.class, AvtoBaseDTO.class)
-                .fieldAToB("owner", "owner")
-                .customize(
-                        new CustomMapper<Avto, AvtoBaseDTO>() {
-                            @Override
-                            public void mapBtoA(AvtoBaseDTO dto, Avto avto, MappingContext context) {
-                                if (dto.getOwner() == null || dto.getOwner().getHid() == null) {
-                                    avto.setOwner(null);
-                                } else {
-                                    avto.setOwner(new NsiKyOwners());
-                                    mapperFacade.map(dto.getOwner(), avto.getOwner());
-                                }
-                            }
-                        }
-                )
+                .fieldAToB("konts", "konts")
+                .byDefault()
+                .register();
+
+    }
+    private void mapBaseAvtoZayav(MapperFactory mapperFactory) {
+        mapperFactory.classMap(AvtoZayav.class, AvtoZayavBaseDTO.class)
+                .fieldAToB("konts", "konts")
                 .byDefault()
                 .register();
 
@@ -71,7 +68,14 @@ public class KyAvtoConfig extends ConfigurableMapper {
 
     private void mapAvto(MapperFactory mapperFactory) {
         mapperFactory.classMap(Avto.class, AvtoDTO.class)
-                .fieldAToB("owner", "owner")
+//                .fieldAToB("owner", "owner")
+                .byDefault()
+                .register();
+
+    }
+
+    private void mapFile(MapperFactory mapperFactory) {
+        mapperFactory.classMap(AvtoFiles.class, AvtoFilesViewDTO.class)
                 .byDefault()
                 .register();
 

@@ -14,16 +14,18 @@ Ext.define('TK.model.ky2.AvtoZayavBase', {
 
         // {name:'transport', type: 'string'},
         {name:'direction', type:'int'},
-        {name:'client', type: 'string'},
         {name:'no_avto', type: 'string'},
         {name:'no_trail', type: 'string'},
         {name:'driver_fio', type: 'string'},
         {name:'dateZayav', type: 'string', persist: false},
         {name:'zayavDate', type: 'string', useNull:true},
         {name:'zayavTime', type: 'string', useNull:true, defaultValue: null},
-
+        {name: 'client.hid', type: 'int', useNull: true},
+        {name: 'client.sname', type: 'string', useNull: true},
         {name:'route.hid', type:'int', useNull:true},
-        {name:'packDoc.hid', type:'int', useNull:true}
+        {name:'packDoc.hid', type:'int', useNull:true},
+        {name: 'konts'}
+
     ],
     belongsTo:[{
         model:'TK.model.Route',
@@ -39,6 +41,13 @@ Ext.define('TK.model.ky2.AvtoZayavBase', {
         associationKey:'packDoc',
         primaryKey:'hid',
         foreignKey:'packDoc.hid'
+    }, {
+        model: 'TK.model.ky2.Client',
+        getterName: 'getClient',
+        setterName: 'setClient',
+        associationKey: 'client',
+        primaryKey: 'hid',
+        foreignKey: 'client.hid'
     }],
 
     idProperty:'hid',

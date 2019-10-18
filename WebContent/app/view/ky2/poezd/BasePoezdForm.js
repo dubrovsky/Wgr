@@ -37,7 +37,8 @@ Ext.define('TK.view.ky2.poezd.BasePoezdForm', {
                 itemId: 'gruzotpr',
                 maxLength: 128,
                 flex: 1,
-                readOnly: true
+                readOnly: true,
+                allowBlank: false
             }, {
                 xtype: 'button',
                 margins: {top: 0, right: 0, bottom: 0, left: 3},

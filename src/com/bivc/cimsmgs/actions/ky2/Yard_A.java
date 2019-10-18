@@ -58,8 +58,8 @@ public class Yard_A extends CimSmgsSupport_A {
                 (List<Filter>) defaultDeserializer.read(new ArrayList<Filter>(){}.getClass().getGenericSuperclass(), filter) :
                 Collections.EMPTY_LIST;
 
-        List<Yard> list = yardDAO.findAll(getLimit(), getStart(), filters, getLocale(), getUser().getUsr());
-        Long total = yardDAO.countAll(filters, getLocale(), getUser().getUsr());
+        List<Yard> list = yardDAO.findAll(getLimit(), getStart(), filters, getLocale(), getUser().getUsr(), getRouteId());
+        Long total = yardDAO.countAll(filters, getLocale(), getUser().getUsr(), getRouteId());
 
         log.debug("Found {} Yard entries.", total);
 
@@ -204,6 +204,14 @@ public class Yard_A extends CimSmgsSupport_A {
 
     private String action;
 
+    public long getRouteId() {
+        return routeId;
+    }
+
+    public void setRouteId(long routeId) {
+        this.routeId = routeId;
+    }
+
     enum Action { LIST, SAVE, EDIT, DELETE}
     @Autowired
     private Mapper kyyardMapper;
@@ -221,6 +229,7 @@ public class Yard_A extends CimSmgsSupport_A {
     private Deserializer defaultDeserializer;
     @Autowired
     private com.bivc.cimsmgs.doc2doc.orika.Mapper mapper;
+    private long routeId;
 
     public List<Filter> getFilters() {
         return filters;

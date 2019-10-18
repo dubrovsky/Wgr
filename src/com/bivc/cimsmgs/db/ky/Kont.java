@@ -9,6 +9,7 @@ import com.bivc.cimsmgs.dto.ky2.GruzDTO;
 import com.bivc.cimsmgs.dto.ky2.KontDTO;
 import com.bivc.cimsmgs.dto.ky2.PlombDTO;
 
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
@@ -799,6 +800,20 @@ public class Kont implements Serializable, Comparable<Kont> {
             iterator.remove();
             gruz.setKont(null);
         }
+    }
+
+    @Transient
+    public Long getRouteHid(){
+        Long routeHid = null;
+        if(getVagon() != null) {
+            if (getVagon().getPoezd() != null) {
+                routeHid = getVagon().getPoezd().getRoute().getHid();
+            } else if (getVagon().getZayav() != null) {
+                routeHid = getVagon().getZayav().getRoute().getHid();
+            }
+        }
+
+        return routeHid;
     }
 
     @Override

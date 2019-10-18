@@ -22,6 +22,9 @@ Ext.define('TK.controller.ky2.YardController', {
         'ky2.YardFilterDir'
     ],
     refs: [{
+        ref: 'menutree',
+        selector: 'viewport > menutree'
+    }, {
         ref: 'yardlist',
         selector: 'viewport > tabpanel grid'
     }, {
@@ -255,6 +258,7 @@ Ext.define('TK.controller.ky2.YardController', {
 
             yardsector.set(values);
             yardsector.set('groups', values['usr.groupsIds']);
+            yardsector.set('routeHid', this.getMenutree().lastSelectedLeaf.id.split('_')[2]);
             yardsector.save({
                 params: {action: 'save'},
                 callback: function (yard, operation, success) {

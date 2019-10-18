@@ -174,6 +174,7 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
                 rootNode.set('direction', poezdObj['direction']);
                 rootNode.set('gruzotpr', poezdObj['gruzotpr']);
                 rootNode.set('clientHid', poezdObj['clientHid']);
+                rootNode.set('routeHid', poezdObj['routeHid']);
                 // vagoncontainer.setPoezdId(poezdObj['hid']);
 
                 if (vags && !Ext.Object.isEmpty(vags)) {
@@ -493,6 +494,7 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
         contNodeModel.set('dotpTime', rootNode.get('dotpTime'));
         contNodeModel.set('gruzotpr', rootNode.get('gruzotpr'));
         contNodeModel.set('clientHid', rootNode.get('clientHid'));
+        contNodeModel.set('routeHid', rootNode.get('routeHid'));
     },
 
     onAddVagClick: function (btn) {
@@ -950,8 +952,7 @@ Ext.define('TK.controller.ky2.PoezdVgCtGrController', {
     },
 
     showNsiOtpr: function (form) {
-        var gruzotpr = form.findField('gruzotpr');
-        var nsiGrid = this.getController('Nsi').nsiKyClient(gruzotpr ? gruzotpr.getValue() : null).getComponent(0);
+        var nsiGrid = this.getController('Nsi').nsiKyClient(form.findField('gruzotpr').getValue(), form.getRecord().get('routeHid')).getComponent(0);
         nsiGrid.on('itemdblclick', this.selectClient, form);
     },
 
