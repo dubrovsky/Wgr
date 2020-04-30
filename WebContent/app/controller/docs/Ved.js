@@ -1,6 +1,13 @@
 Ext.define('TK.controller.docs.Ved', {
     extend: 'Ext.app.Controller',
 
+    requires: [
+        'TK.Utils',
+        'TK.view.ved.Form',
+        'TK.view.ved.MenuPart'
+    ],
+
+
     views: ['ved.List', 'ved.Form'],
     stores: ['Veds', 'Ved', 'VedVags', 'VedVagSmgses', 'VedSmgses', 'MenuPart', 'VedVagFilters', 'Smgses4Ved'],
     models: ['Ved', 'SmgsPlomb', 'VedVag', 'VedVagSmgs'],

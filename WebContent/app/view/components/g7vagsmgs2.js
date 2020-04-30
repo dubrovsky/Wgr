@@ -113,12 +113,16 @@ Ext.define('TK.view.components.g7vagsmgs2', {
                 }
             }
         });
+        var gridviewdragdrop = Ext.create('Ext.grid.plugin.DragDrop', {
+            dragText: this.drophlp
+        });
         this.items = [
             {
                 xtype: 'grid',
                 plugins: rowEditing,
                 itemId: 'g7grid',
                 columnLines: true,
+                cls:'grid-15px-height',
                 border: false,
                 // hideHeaders: true,
                 backstore: Ext.create('TK.store.tables.VgCtGrNodes'),
@@ -126,10 +130,7 @@ Ext.define('TK.view.components.g7vagsmgs2', {
                 viewConfig: {
                     markDirty: false,
                     stripeRows: true,
-                    plugins: {
-                        ptype: 'gridviewdragdrop',
-                        dragText: this.drophlp
-                    }
+                    plugins: gridviewdragdrop
                 },
                 listeners: {
                     drop: function(node, data, dropRec, dropPosition) {
@@ -143,8 +144,8 @@ Ext.define('TK.view.components.g7vagsmgs2', {
                     }
                 },
                 columns: [
-                    {text: '!Номер', dataIndex: 'sort', height: 2, width:20,sortable: false},
-                    {text: '!Номер вагона', dataIndex: 'nvag', height: 2, width:124,sortable: false, editor:
+                    {text: '!Номер', dataIndex: 'sort', height: 2, width:26,sortable: false},
+                    {text: '!Номер вагона', dataIndex: 'nvag', height: 2, width:100,sortable: false, editor:
                             {   maxLength:160,
                                 validator: TK.Validators.vagNum,
                                 xtype:'combo',
@@ -159,7 +160,7 @@ Ext.define('TK.view.components.g7vagsmgs2', {
                                     select: this.onSelect
                                 }
                             }},
-                    {text: '!Род вагона', dataIndex: 'rod', height: 2, width:60,sortable: false, editor:
+                    {text: '!Род вагона', dataIndex: 'rod', height: 2, width:36,sortable: false, editor:
                             {   maxLength:20,
                                 xtype:'combo',
                                 itemId:'rodCombo',
@@ -173,7 +174,7 @@ Ext.define('TK.view.components.g7vagsmgs2', {
                                     select: this.onSelect
                                 }
                             }},
-                    {text: '!Владелец вагона', dataIndex: 'klientName', height: 2, width:59,sortable: false, editor:
+                    {text: '!Владелец вагона', dataIndex: 'klientName', height: 2, width:101,sortable: false, editor:
                             {   maxLength:124,
                                 xtype:'combo',
                                 itemId:'klientNameCombo',

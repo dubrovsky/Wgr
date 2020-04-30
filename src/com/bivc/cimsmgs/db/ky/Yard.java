@@ -2,6 +2,10 @@ package com.bivc.cimsmgs.db.ky;
 
 // Generated 19.02.2014 14:19:48 by Hibernate Tools 3.4.0.CR1
 
+import com.bivc.cimsmgs.dao.NsiClientDAO;
+import com.bivc.cimsmgs.db.BoardMessenger;
+import com.bivc.cimsmgs.db.BoardTalkNewMess;
+import com.bivc.cimsmgs.db.PackDoc;
 import com.bivc.cimsmgs.doc2doc.orika.Mapper;
 import com.bivc.cimsmgs.dto.ky2.KontBindDTO;
 import com.bivc.cimsmgs.dto.ky2.KontDTO;
@@ -11,7 +15,6 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +24,7 @@ import java.util.*;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @JsonFilter("yardFilter")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Yard implements Serializable {
+public class Yard implements Serializable, BoardMessenger {
 
     private static final Logger log = LoggerFactory.getLogger(Yard.class);
 
@@ -30,6 +33,7 @@ public class Yard implements Serializable {
     private Long x;
     private Long y;
     private Long z;
+    private String h;
     private String notes;
 //	private Date dateRev;
 
@@ -46,6 +50,25 @@ public class Yard implements Serializable {
     /*@JsonInclude(JsonInclude.Include.ALWAYS)*/
     private Kont kont;
     private Set<KontGruzHistory> history = new TreeSet<>();
+    private Long messCount;
+    private Set<BoardTalkNewMess> boardTalkNewMesses = new TreeSet<>();
+    private long newMessCount;
+
+    public Long getMessCount() {
+        return messCount;
+    }
+
+    public void setMessCount(Long messCount) {
+        this.messCount = messCount;
+    }
+
+    public String getH() {
+        return h;
+    }
+
+    public void setH(String h) {
+        this.h = h;
+    }
 
     public Set<KontGruzHistory> getHistory() {
         return history;
@@ -63,7 +86,7 @@ public class Yard implements Serializable {
         this.konts = konts;
     }
 
-    public List<Kont> updateKonts(Set<KontViewDTO> dtos, Mapper mapper) {
+    public List<Kont> updateKonts(Set<KontViewDTO> dtos, Mapper mapper, NsiClientDAO clientDAO) {
         // delete
         Set<Kont> kontsToRemove = new HashSet<>();
         for(Kont kont: getKonts()){
@@ -91,7 +114,8 @@ public class Yard implements Serializable {
 //                    if(kontIntoDTO.getOtpravka() == Otpravka.CONT){
 //                        kont.updateKonts(kontIntoDTO.getKonts(), mapper);
 //                    } else if (kontIntoDTO.getOtpravka() == Otpravka.GRUZ){
-                    kont.updateGruzs(kontIntoDTO.getGruzs(), mapper);
+                    kont.updateClient(kontIntoDTO, clientDAO);
+                    kont.updateGruzs(kontIntoDTO.getGruzs(), mapper, clientDAO);
                     kont.updatePlombs(kontIntoDTO.getPlombs(), mapper);
 
 //                    } else {  // can be deleted and getOtpravka is null
@@ -109,12 +133,13 @@ public class Yard implements Serializable {
         // insert
         for(KontDTO kontIntoDTO : dtos){
             Kont kont = mapper.map(kontIntoDTO, Kont.class);
+            kont.updateClient(kontIntoDTO, clientDAO);
             addKont(kont);
             kontsForHistory.add(kont);
 //            if(vagonIntoDTO.getOtpravka() == Otpravka.CONT){
 //                vagon.updateKonts(vagonIntoDTO.getKonts(), mapper);
 //            } else if(vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
-                kont.updateGruzs(kontIntoDTO.getGruzs(), mapper);
+                kont.updateGruzs(kontIntoDTO.getGruzs(), mapper, clientDAO);
 //            }
         }
         return kontsForHistory;
@@ -132,7 +157,7 @@ public class Yard implements Serializable {
     }
 
 
-    public List<Kont> bindKonts(TreeSet<KontBindDTO> dtos, Mapper mapper, Set<Vagon> toVags, List<YardSector> yardSectors) {
+    public /*List<Kont>*/ Map<String, List<?>> bindKonts(TreeSet<KontBindDTO> dtos, Mapper mapper, Set<Vagon> toVags, List<YardSector> yardSectors) {
         // update kont that not moved
         Set<KontBindDTO> dtoToRemove = new HashSet<>();
         for (KontBindDTO kontDTO : dtos) {
@@ -147,7 +172,14 @@ public class Yard implements Serializable {
         }
         dtos.removeAll(dtoToRemove);
 
-        List<Kont> kontsForHistory = new ArrayList<>(dtos.size());
+        /*
+        Map<String, List<?>> contGruz4History = new HashMap<>(2);
+        contGruz4History.put("konts", new ArrayList<Kont>());
+        */
+        Map<String, List<?>> results = new HashMap<>(2);
+        results.put("konts", new ArrayList<Kont>());
+        results.put("rejectedKonts", new ArrayList<Kont>());
+//        List<Kont> kontsForHistory = new ArrayList<>();
         // insert from poezd
         dtoToRemove.clear();
         boolean found = false;
@@ -156,9 +188,16 @@ public class Yard implements Serializable {
                 for (Kont toKont : toVagon.getKonts()) {
                     if (Objects.equals(toKont.getHid(), kontDTO.getHid())) {
                         mapper.map(kontDTO, toKont);  // update kont, sort can change
-                        bindKont(toKont);
-                        kontsForHistory.add(toKont);
-                        log.info("Add kont to yard from another poezd, kont - {}", toKont.getNkon());
+                        if(getKonts() == null || getKonts().isEmpty()) {
+                            bindKont(toKont);
+                            ((List<Kont>) results.get("konts")).add(toKont);
+//                            kontsForHistory.add(toKont);
+                            log.info("Add kont to yard from another poezd, kont - {}", toKont.getNkon());
+                        } else {
+                            log.info("Can't add kont to yard from another poezd - already ADDED, kont - {}, yard - {}", toKont.getNkon(), getHid());
+                            ((List<Kont>) results.get("rejectedKonts")).add(toKont);
+                        }
+
                         dtoToRemove.add(kontDTO);
                         found = true;
                         break;
@@ -181,7 +220,8 @@ public class Yard implements Serializable {
                             if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
                                 mapper.map(kontDTO, kont);
                                 bindKont(kont);
-                                kontsForHistory.add(kont);
+//                                kontsForHistory.add(kont);
+                                ((List<Kont>) results.get("konts")).add(kont);
                                 log.info("Move kont in same yard, kont - {}", kont.getNkon());
                                 dtoToRemove.add(kontDTO);
                                 found = true;
@@ -205,10 +245,10 @@ public class Yard implements Serializable {
                 log.warn("Kont {} was not bound, something wrong!!!", kontDTO.getNkon());
             }
         }
-        return kontsForHistory;
+        return results;
     }
 
-    public List<Kont> bindKonts(TreeSet<KontBindDTO> dtos, Mapper mapper, Avto toAvto, List<YardSector> yardSectors) {
+    public /*List<Kont>*/ Map<String, List<?>> bindKonts(TreeSet<KontBindDTO> dtos, Mapper mapper, List<YardSector> yardSectors) {
         // update kont that not moved
         Set<KontBindDTO> dtoToRemove = new HashSet<>();
         for (KontBindDTO kontDTO : dtos) {
@@ -223,7 +263,72 @@ public class Yard implements Serializable {
         }
         dtos.removeAll(dtoToRemove);
 
-        List<Kont> kontsForHistory = new ArrayList<>(dtos.size());
+        /*
+        Map<String, List<?>> contGruz4History = new HashMap<>(2);
+        contGruz4History.put("konts", new ArrayList<Kont>());
+        */
+        Map<String, List<?>> results = new HashMap<>(2);
+        results.put("konts", new ArrayList<Kont>());
+        results.put("rejectedKonts", new ArrayList<Kont>());
+//        List<Kont> kontsForHistory = new ArrayList<>();
+        // insert from poezd
+
+        if (!dtos.isEmpty()) { // still have conts - may be when remove conts between yards or yardsectores
+            dtoToRemove.clear();
+            boolean found = false;
+            for (KontBindDTO kontDTO : dtos) {
+                for (YardSector yardSector : yardSectors) {
+                    for (Yard yard : yardSector.getYards()) {
+                        for (Kont kont : yard.getKonts()) {
+                            if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
+                                mapper.map(kontDTO, kont);
+                                bindKont(kont);
+//                                kontsForHistory.add(kont);
+                                ((List<Kont>) results.get("konts")).add(kont);
+                                log.info("Move kont in same yard, kont - {}", kont.getNkon());
+                                dtoToRemove.add(kontDTO);
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (found) {
+                            break;
+                        }
+                    }
+                    if (found) {
+                        break;
+                    }
+                }
+            }
+            dtos.removeAll(dtoToRemove);
+        }
+
+        if (!dtos.isEmpty()) {
+            for (KontBindDTO kontDTO : dtos) {
+                log.warn("Kont {} was not bound, something wrong!!!", kontDTO.getNkon());
+            }
+        }
+        return results;
+    }
+
+    public Map<String, List<?>> bindKonts(TreeSet<KontBindDTO> dtos, Mapper mapper, Avto toAvto, List<YardSector> yardSectors) {
+        // update kont that not moved
+        Set<KontBindDTO> dtoToRemove = new HashSet<>();
+        for (KontBindDTO kontDTO : dtos) {
+            for (Kont kont : getKonts()) {
+                if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
+                    mapper.map(kontDTO, kont);  // update kont, sort can change
+//                    log.info("Update kont in yard - {}", kont.getNkon());
+                    dtoToRemove.add(kontDTO);
+                    break;
+                }
+            }
+        }
+        dtos.removeAll(dtoToRemove);
+
+        Map<String, List<?>> results = new HashMap<>(2);
+        results.put("konts", new ArrayList<Kont>());
+        results.put("rejectedKonts", new ArrayList<Kont>());
         // insert from poezd
         dtoToRemove.clear();
         boolean found = false;
@@ -232,9 +337,18 @@ public class Yard implements Serializable {
                 for (Kont toKont : toAvto.getKonts()) {
                     if (Objects.equals(toKont.getHid(), kontDTO.getHid())) {
                         mapper.map(kontDTO, toKont);  // update kont, sort can change
-                        bindKont(toKont);
-                        kontsForHistory.add(toKont);
-                        log.info("Add kont to yard from another poezd, kont - {}", toKont.getNkon());
+                        if(getKonts() == null || getKonts().isEmpty()) {
+                            bindKont(toKont);
+                            ((List<Kont>) results.get("konts")).add(toKont);
+//                            kontsForHistory.add(toKont);
+                            log.info("Add kont to yard from another avto, kont - {}", toKont.getNkon());
+                        } else {
+                            log.info("Can't add kont to yard from another avto - already ADDED, kont - {}, yard - {}", toKont.getNkon(), getHid());
+                            ((List<Kont>) results.get("rejectedKonts")).add(toKont);
+                        }
+//                        bindKont(toKont);
+//                        ((List<Kont>) results.get("konts")).add(toKont);
+//                        log.info("Add kont to yard from another poezd, kont - {}", toKont.getNkon());
                         dtoToRemove.add(kontDTO);
                         found = true;
                         break;
@@ -257,7 +371,7 @@ public class Yard implements Serializable {
                             if (Objects.equals(kont.getHid(), kontDTO.getHid())) {
                                 mapper.map(kontDTO, kont);
                                 bindKont(kont);
-                                kontsForHistory.add(kont);
+                                ((List<Kont>) results.get("konts")).add(kont);
                                 log.info("Move kont in same yard, kont - {}", kont.getNkon());
                                 dtoToRemove.add(kontDTO);
                                 found = true;
@@ -281,7 +395,7 @@ public class Yard implements Serializable {
                 log.warn("Kont {} was not bound, something wrong!!!", kontDTO.getNkon());
             }
         }
-        return kontsForHistory;
+        return results;
     }
 
     private Kont bindKont(Kont kont) {
@@ -289,6 +403,34 @@ public class Yard implements Serializable {
         kont.setVagon(null);
         kont.setAvto(null);
         return kont;
+    }
+
+    @Override
+    public Set<BoardTalkNewMess> getBoardTalkNewMesses() {
+        return boardTalkNewMesses;
+    }
+
+    public void setBoardTalkNewMesses(Set<BoardTalkNewMess> boardTalkNewMesses) {
+        this.boardTalkNewMesses = boardTalkNewMesses;
+    }
+
+    public long getNewMessCount() {
+        return newMessCount;
+    }
+
+    @Override
+    public void setNewMessCount(long newMessCount) {
+        this.newMessCount = newMessCount;
+    }
+
+    @Override
+    public PackDoc getPackDoc() {
+        return new PackDoc(-1000L);
+    }
+
+    @Override
+    public String getDocName() {
+        return "kontyard2";
     }
 
     public enum FilterFields {
@@ -301,6 +443,7 @@ public class Yard implements Serializable {
         STARTDATE("startDate"),
         ENDDATE("endDate"),
         NPPRM("npprm"),
+        AVTO("avto"),
         GRUZOTPR("gruzotpr")
         ;
         private final String name;
@@ -314,10 +457,10 @@ public class Yard implements Serializable {
         }
     }
 
-    @Override
+    /*@Override
     public String toString() {
-        return ReflectionToStringBuilder.toStringExclude(this, "kont"/*, "sector"*/);
-    }
+        return ReflectionToStringBuilder.toStringExclude(this, "kont"*//*, "sector"*//*);
+    }*/
 
     public Kont getKont() {
         return kont;
@@ -492,6 +635,7 @@ public class Yard implements Serializable {
                 x.equals(yard.x) &&
                 y.equals(yard.y) &&
                 z.equals(yard.z) &&
+                h.equals(yard.h) &&
                 notes.equals(yard.notes) &&
                 altered.equals(yard.altered) &&
                 dattr.equals(yard.dattr) &&
@@ -501,6 +645,6 @@ public class Yard implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(hid, x, y, z, notes, altered, dattr, trans, un, empty);
+        return Objects.hash(hid, x, y, z, h, notes, altered, dattr, trans, un, empty);
     }
 }

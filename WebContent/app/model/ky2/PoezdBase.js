@@ -5,6 +5,7 @@ Ext.define('TK.model.ky2.PoezdBase', {
         {name: 'dattr', type: 'string', persist: false},
         {name: 'altered', type: 'string', persist: false},
         {name: 'un', type: 'string', persist: false},
+        {name: 'trans', type: 'string', persist: false},
 
         {name: 'hid', type: 'int', useNull: true},
         {name: 'nppr', type: 'string', useNull: true},
@@ -24,7 +25,10 @@ Ext.define('TK.model.ky2.PoezdBase', {
         {name: 'kstn', type: 'string'},
         {name: 'nstn', type: 'string'},
         {name: 'admnn', type: 'string'},
-        {name: 'gruzotpr', type: 'string'}/*,
+        {name: 'gruzotpr', type: 'string'},
+        {name: 'messCount', type: 'int', persist: false},
+        {name: 'newMessCount', type: 'int', persist: false}
+        /*,
         {name:'line', type: 'string'}*/
     ],
     belongsTo: [{

@@ -5,8 +5,8 @@ import com.bivc.cimsmgs.commons.*;
 import com.bivc.cimsmgs.dao.*;
 import com.bivc.cimsmgs.db.PackDoc;
 import com.bivc.cimsmgs.db.ky.*;
+import com.bivc.cimsmgs.db.nsi.Client;
 import com.bivc.cimsmgs.doc2doc.Mapper;
-import com.bivc.cimsmgs.doc2doc.orika.CopyGruzMapper;
 import com.bivc.cimsmgs.dto.ky.AvtoBaseDTO;
 import com.bivc.cimsmgs.dto.ky.AvtoDTO;
 import com.bivc.cimsmgs.formats.json.Deserializer;
@@ -14,7 +14,6 @@ import com.bivc.cimsmgs.formats.json.Serializer;
 import com.bivc.cimsmgs.services.ky2.AvtoWzPzService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +22,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.sql.Blob;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.bivc.cimsmgs.actions.CimSmgsSupport_A.KontGruzHistoryType.AVTO;
+import static com.bivc.cimsmgs.commons.Utils.setNewMessCount;
 import static com.bivc.cimsmgs.services.ky2.AvtoWzPzService.AvtoDocType.PZ;
 import static com.bivc.cimsmgs.services.ky2.AvtoWzPzService.AvtoDocType.WZ;
 
@@ -35,6 +36,7 @@ import static com.bivc.cimsmgs.services.ky2.AvtoWzPzService.AvtoDocType.WZ;
  */
 public class Avto_A extends CimSmgsSupport_A {
     private static final Logger log = LoggerFactory.getLogger(Avto_A.class);
+    private DateFormat dateyearFormat = new SimpleDateFormat("yyyy");
 
     public String execute() throws Exception {
         if (StringUtils.isEmpty(action)) {
@@ -82,6 +84,7 @@ public class Avto_A extends CimSmgsSupport_A {
                 }.getClass().getGenericSuperclass(), filter) :
                 Collections.EMPTY_LIST;
         List<Avto> list = avtoDAO.findAll(getLimit(), getStart(), getRouteId(), getDirection(), filters, getUser().getUsr(), getLocale());
+        setNewMessCount(list, getUser().getUsr().getUn());
         Long total = avtoDAO.countAll(getRouteId(), getDirection(), filters, getUser().getUsr(), getLocale());
 
         log.debug("Found {} Avto entries.", total);
@@ -143,6 +146,15 @@ public class Avto_A extends CimSmgsSupport_A {
             saved.setClient(clientDAO.getById(dto.getClient().getHid(), false));
         } else {
             saved.setClient(null);
+        }
+
+        for (Kont kont : saved.getKonts()) {
+            if(saved.getDprb() != null) {
+                kont.setDprb(saved.getDprb());
+            }
+            if(saved.getDotp() != null) {
+                kont.setDotp(saved.getDotp());
+            }
         }
 
         setJSONData(
@@ -248,7 +260,7 @@ public class Avto_A extends CimSmgsSupport_A {
         }
         avtoDAO.makePersistent(avto);
 
-        saveContGruzHistory(contGruz4History, kontGruzHistoryDAO, AVTO);
+        saveVagContGruzHistory(contGruz4History, kontGruzHistoryDAO, AVTO, vagonHistoryDAO, getUser().getUsr().getUn(), null);
 
         setJSONData(
                 defaultSerializer
@@ -291,6 +303,12 @@ public class Avto_A extends CimSmgsSupport_A {
         // set props
         avtoCopy.setDirection((byte) 2);
         avtoCopy.setClient(avtoInto.getClient());
+        if (dotp != null) {
+            avtoCopy.setDotp(dotp);
+            if (dotpTime != null)
+                avtoCopy.setDotp(DateTimeUtils.addTimeToDate(this.dotp, this.dotpTime));
+
+        }
 
         // save new pack and poezd
         PackDoc pack = new PackDoc(avtoCopy.getRoute(), getUser().getUsr().getGroup());
@@ -319,37 +337,69 @@ public class Avto_A extends CimSmgsSupport_A {
     }
 
     private String getWzPz(AvtoWzPzService.AvtoDocType avtoDocType) throws Exception {
-        Avto avto = avtoDAO.findById(getHid(), false);
-
-        XSSFWorkbook excel = avtoWzPzService.avtoDocsToExcel(avto, avtoDocType, getUser().getUsr());
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        excel.write(baos);
-        baos.flush();
-        baos.close();
-        inputStream = new ByteArrayInputStream(baos.toByteArray());
-
-        saveFile(avto, baos.toByteArray(), avtoDocType.toString());
+        byte[] xls = getWzPz(avtoDocType, getHid(), avtoDAO, getUser(), avtoWzPzService, avtoFilesDAO);
+        inputStream = new ByteArrayInputStream(xls);
         return "excel";
-
     }
 
-    public void saveFile(Avto avto, byte[] file, String docType) throws Exception {
+    public synchronized byte[] getWzPz(AvtoWzPzService.AvtoDocType avtoDocType, Long hid, AvtoDAO avtoDAO, myUser user, AvtoWzPzService avtoWzPzService, AvtoFilesDAO avtoFilesDAO) throws Exception {
+        byte[] xls;
+        String num = "";
+        Avto avto = avtoDAO.findById(hid, false);
+        for (AvtoFiles af : avto.getAvtoFiles()) {
+            if (avtoDocType.toString().equals(af.getDocType()) && af.getNum() != null) {
+                num = af.getNum();
+                fileName = af.getFileName();
+                break;
+            }
+        }
+        if (num.isEmpty()) {
+            Set<Kont> konts = avto.getKonts();
+            if (!konts.isEmpty()) {
+                Kont kont = (Kont) konts.toArray()[0];
+                Client client = kont.getClient();
+                if (client != null) {
+                    int npp = 1;
+                    if (PZ.equals(avtoDocType)) {
+                        if (client.getCntPZ() != null)
+                            npp = client.getCntPZ() + 1;
+                        client.setCntPZ(npp);
+                    } else {
+                        if (client.getCntWZ() != null)
+                            npp = client.getCntWZ() + 1;
+                        client.setCntWZ(npp);
+                    }
+                    num = npp + "/" + dateyearFormat.format(new Date());
+                    fileName = avtoDocType.toString() + "_" + num + "_" + StringUtils.defaultString(avto.getNo_zayav()) + "_" + client.getSname() + ".xlsx";
+                }
+            }
+            else {
+                fileName = avtoDocType.toString() + "_" + 0 + "_" + StringUtils.defaultString(avto.getNo_zayav()) + ".xlsx";
+            }
+        }
+
+        XSSFWorkbook excel = avtoWzPzService.avtoDocsToExcel(avto, avtoDocType, user.getUsr(), num);
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            excel.write(baos);
+//            baos.flush();
+//            baos.close();
+            xls = baos.toByteArray();
+        }
+
+
+        saveFile(avto, xls, avtoDocType.toString(), avtoFilesDAO, num, fileName);
+        return xls;
+    }
+
+    private void saveFile(Avto avto, byte[] file, String docType, AvtoFilesDAO avtoFilesDAO, String num, String fileName ) throws Exception {
         log.info("saveFile");
-        Long curNpp = avtoFilesDAO.maxNpp(avto.getRoute().getHid(), docType);
-        if (curNpp != null)
-            curNpp++;
-        else
-            curNpp = 1L;
         AvtoFiles avtoFiles = new AvtoFiles();
-        fileName = docType + "_" + curNpp.toString() + "_" + (avto.getClient() != null ? avto.getClient().getSname() : "") + ".xlsx";
         avtoFiles.setFileName(fileName);
         avtoFiles.setContentType("application/vnd.ms-excel");
         avtoFiles.setLength(new BigDecimal(file.length));
         avtoFiles.setDocType(docType);
-        avtoFiles.setNpp(curNpp);
+        avtoFiles.setNum(num.isEmpty() ? null : num);
         avtoFiles.setAvto(avto);
-
         avtoFilesDAO.save(avtoFiles, file);
     }
 
@@ -358,10 +408,12 @@ public class Avto_A extends CimSmgsSupport_A {
         avto.setDriver_fio(zayav.getDriver_fio());
         avto.setNo_avto(zayav.getNo_avto());
         avto.setNo_trail(zayav.getNo_trail());
+        avto.setNo_zayav(zayav.getNo_zayav());
     }
 
 
-
+    private Date dotp;
+    private Date dotpTime;
     private String action;
     private Byte direction;
     private long routeId;
@@ -407,9 +459,26 @@ public class Avto_A extends CimSmgsSupport_A {
     private com.bivc.cimsmgs.doc2doc.orika.CopyKontMapper copyKontMapper;
     @Autowired
     private com.bivc.cimsmgs.doc2doc.orika.CopyGruzMapper copyGruzMapper;
-
+    @Autowired
+    private VagonHistoryDAO vagonHistoryDAO;
 
     private InputStream inputStream;
+
+    public Date getDotpTime() {
+        return dotpTime;
+    }
+
+    public void setDotpTime(Date dotpTime) {
+        this.dotpTime = dotpTime;
+    }
+
+    public Date getDotp() {
+        return dotp;
+    }
+
+    public void setDotp(Date dotp) {
+        this.dotp = dotp;
+    }
 
     public long getZayavHid() {
         return zayavHid;

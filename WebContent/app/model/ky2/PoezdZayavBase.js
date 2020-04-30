@@ -1,10 +1,19 @@
 Ext.define('TK.model.ky2.PoezdZayavBase', {
     extend: 'Ext.data.Model',
 
+    requires: [
+        'TK.Utils',
+        'TK.model.PackDoc',
+        'TK.model.Route',
+        'TK.model.ky2.Client'
+    ],
+
+
     fields: [
         {name: 'dattr', type: 'string', persist: false},
         {name: 'altered', type: 'string', persist: false},
         {name: 'un', type: 'string', persist: false},
+        {name: 'trans', type: 'string', persist: false},
 
         {name: 'hid', type: 'int', useNull: true},
 
@@ -22,9 +31,13 @@ Ext.define('TK.model.ky2.PoezdZayavBase', {
         {name: 'zayavTime', type: 'string', useNull: true, defaultValue: null},
 
         {name: 'route.hid', type: 'int', useNull: true},
+        {name: 'routeId', type: 'int', useNull: true},
         {name: 'packDoc.hid', type: 'int', useNull: true},
+        {name: 'packId', type: 'int', useNull: true},
         {name: 'client.hid', type: 'int', useNull: true},
-        {name: 'client.sname', type: 'string', useNull: true}
+        {name: 'client.sname', type: 'string', useNull: true},
+        {name: 'messCount', type: 'int', persist: false},
+        {name: 'newMessCount', type: 'int', persist: false}
     ],
     belongsTo: [{
         model: 'TK.model.Route',

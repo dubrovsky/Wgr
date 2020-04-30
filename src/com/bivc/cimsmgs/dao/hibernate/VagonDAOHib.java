@@ -83,4 +83,14 @@ public class VagonDAOHib extends GenericHibernateDAO<Vagon, Long> implements Vag
             }
         }
     }
+
+    @Override
+    public Vagon findByNvag(String nvag) {
+        Criteria crit = getSession().createCriteria(getPersistentClass());
+        crit.add(Restrictions.eq("nvag", nvag));
+        crit.addOrder(Order.desc("hid"));
+        crit.setMaxResults(1);
+        return (Vagon) crit.uniqueResult();
+    }
+
 }

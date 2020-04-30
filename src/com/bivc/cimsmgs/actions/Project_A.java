@@ -317,6 +317,9 @@ public class Project_A extends CimSmgsSupport_A implements ProjectDAOAware, Prin
                     buffer.append("expanded:true");
                 }
                 buffer.append(",");
+                buffer.append("routeid:");
+                buffer.append(route1.getHid());
+                buffer.append(",");
                 buffer.append("children:");
                 buffer.append("[");
                 if (full) {

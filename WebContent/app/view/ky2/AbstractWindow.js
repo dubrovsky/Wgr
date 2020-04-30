@@ -1,5 +1,6 @@
 Ext.define('TK.view.ky2.AbstractWindow', {
     extend: 'Ext.window.Window',
+    alias: 'widget.ky2abstractwindow',
     autoShow: true,
     y: 0,
     modal: true,

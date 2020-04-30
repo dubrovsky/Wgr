@@ -6,7 +6,7 @@ Copyright (c) 2011-2013 Sencha Inc
 Contact:  http://www.sencha.com/contact
 
 Commercial Usage
-Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Licensees holding valid commercial licenses may use this file in accordance with override: "TK.Utils",the Commercial
 Software License Agreement provided with the Software or, alternatively, in accordance with the
 terms contained in a written agreement between you and Sencha.
 
@@ -19,14 +19,16 @@ Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
  * Simplified Chinese translation
  * By DavidHu
  * 09 April 2007
- *
  * update by andy_ghg
+ *
  * 2009-10-22 15:00:57
+ *
  */
 Ext.onReady(function() {
     var parseCodes;
 
     if (Ext.Date) {
+
         Ext.Date.monthNames = ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"];
 
         Ext.Date.dayNames = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
@@ -48,9 +50,13 @@ Ext.onReady(function() {
 
     if (Ext.util && Ext.util.Format) {
         Ext.apply(Ext.util.Format, {
+
             thousandSeparator: ',',
+
             decimalSeparator: '.',
+
             currencySign: '\u00a5',
+
             // Chinese Yuan
             dateFormat: 'y年m月d日'
         });
@@ -296,7 +302,7 @@ Ext.define("Ext.locale.zh_CN.grid.NumberColumn", {
 
 Ext.define("Ext.locale.zh_CN.grid.DateColumn", {
     override: "Ext.grid.DateColumn",
-    format: 'm/d/Y'
+    format: 'd.m.Y'
 });
 
 Ext.define("Ext.locale.zh_CN.form.field.Time", {
@@ -387,12 +393,13 @@ Ext.define("TK.locale.zh_CN.view.MenuTree", {
     avisogu29k1 :'Templates GU for agents',
     avisocimsmgs:'Templates CIM/SMGS',
     ved         :'Wagon and transfer list',
-    btnKontYards  :"Сontainers' yard",
-    btnKontYard    :'Containers\' storage and location',
+
+    btnKontYards  :"Сontainer\'s yard",
+    btnKontYard    :'Container\'s storage and location',
+    btnKont         :'Container\'s list',
     btnKontPoezdIn    :'Train\'s arrival',
     btnKontPoezdOut    :'Train\'s departure',
     btnKontReports    :'Reports',
-
     kyreport1: 'Report 1',
     kyreport2: 'Report 2',
     kyreport3: 'Report 3',
@@ -418,9 +425,15 @@ Ext.define("TK.locale.zh_CN.view.DocsList", {
     btnCopy    :'副本',
     btnCopyAviso:'Copy to template',
     btnCopySelect    :'Copy, select...',
+    btnCopy2ArchSel: 'Copy selection to archive',
+    btnCopy2ArchTrN: 'Copy to archive by train №',
+    btnCopy2RouteSel:'Copy/move selection to route',
+    btnCopy2RouteTrN: 'Copy/move to route by train №',
     btnEdit    :'编辑',
     btnDelete  :'删除',
+    btnArchive: 'Archive',
     btnMakeSmgs:'形成SMGS',
+    btnMakeSmgsXls: 'Create with XLS file',
     btnMakeCimSmgs:'形成CIM/SMGS',
     btnAppend2Smgs:'Append to SMGS',
     btnAppend2CimSmgs:'Append to CIM/SMGS',
@@ -438,6 +451,8 @@ Ext.define("TK.locale.zh_CN.view.DocsList", {
     btnExchBTLC:'BTLC',
     btnReports :'决算',
     btnView    :'查看',
+    btnSpecs:'Specification',
+    btnInvoiceImport:'Invoice import',
 
     btnCont    :'Containers',
     btnVag     :'Wagons',
@@ -491,7 +506,14 @@ Ext.define("TK.locale.zh_CN.view.DocsList", {
     statusBlocked  :'封锁',
     status4Approval:'为了协调',
     statusAgreed   :'协调一致',
-    statusNotAgreed:'不协调一致'
+    statusNotAgreed:'不协调一致',
+
+    avisoXsmgs:'Combine template and documents',
+    groupPrint:'Group print',
+    groupEdit: 'Group edit',
+
+    saveGridSettings:'Save settings',
+    clearGridSettings:'Clear settings'
 });
 
 Ext.define("TK.locale.zh_CN.view.avisocim.AvisoCimList", {
@@ -535,6 +557,7 @@ Ext.define("TK.locale.zh_CN.view.cimsmgs.CimSmgsList", {
 
     title        :'CIM/SMGS的清单',
     headerCimsmgs:'Num CIM/SMGS',
+    headerVagVed: 'Wagon list',
     headerDateTransp:'Date CIM/SMGS',
     headerExchBch:'Iftmin',
     menuTrSearch  :'Filter train'
@@ -605,7 +628,7 @@ Ext.define("TK.locale.zh_CN.view.smgs2.Smgs2List", {
     headerExchTBC :'与TBC交流',
     headerExchBch :'Iftmin',
     headerAvisoNum:'结算通知单号码',
-    headerVagVed: 'List wagons',
+    headerVagVed: 'Wagon list',
     titleVagVed: 'List',
     menuTrSearch  :'Filter train'
 });
@@ -613,9 +636,9 @@ Ext.define("TK.locale.zh_CN.view.smgs2.Smgs2List", {
 Ext.define("TK.locale.zh_CN.view.file.List", {
     override:"TK.view.file.List",
     title   :'图形数据的清单',
-    headerNumOtpr: '№ Shipment',
+    headerNumOtpr: 'Shipment №',
     headerNumCont: '№ cont',
-    headerDateOtpr: 'Data Shipment'
+    headerDateOtpr: 'Shipment Date'
 });
 
 Ext.define("TK.locale.zh_CN.view.logs.List", {
@@ -691,13 +714,16 @@ Ext.define("TK.locale.zh_CN.view.user.List", {
     headerLocked  :'断开连接?',
     headerSu      :'管理员?',
     headerEmail   :'E-mail',
+    headerLang: 'Interface<br>language',
     btnCreate     :'创造',
     btnEdit       :'编辑',
     btnCopy       :"复制",
     btnRefresh    :'升级',
 
     textYes: 'yes',
-    textNo: 'no'
+    textNo: 'no',
+    btnGrFilter:'Group filter',
+    btnResetGrFilter:'Reset group filter'
 });
 
 Ext.define("TK.locale.zh_CN.view.user.ListGroups", {
@@ -777,6 +803,9 @@ Ext.define("TK.locale.zh_CN.view.edit.DetailGrid", {
     btnDelete          :" 删除",
     btnCopy            :" 复制",
     btnOk              :'好',
+    btnCheckTnved:'Check HS codes',
+    btnImportXlsCargo:'Import cargo from XLS',
+    btnTranslate:'Translate',
 
     headerName         :'名称',
     headerRoutesGr     :'集团',
@@ -795,7 +824,8 @@ Ext.define("TK.locale.zh_CN.view.edit.DetailGrid", {
     headerPack: 'Package',
     headerPackVid: 'Type',
     headerPackKod: 'Code',
-    headerGoodsDescr   :'货物描述',
+    headerGoodsDescr   :'货物描述 RU',
+    headerGoodsDescrEn   :'货物描述 EN',
     headerPackage      :'包装种类',
     headerPackNum      :'包装数量',
     headerBrutto       :'毛重（公斤)',
@@ -832,8 +862,6 @@ Ext.define("TK.locale.zh_CN.view.edit.DetailPanel", {
     errorMsgValid :'检查数据',
     btnSave :'保存',
     btnClose:'关闭',
-    labelDescr   :'Desciption',
-    labelNotes            :'附注',
     labelSender           :'发货人',
     labelName             :'名称',
     labelName1            :'名称',
@@ -870,7 +898,7 @@ Ext.define("TK.locale.zh_CN.view.edit.VgCtGrTreeFormWin", {
     labelWagonNum     :'车辆号码',
     labelWagonsTonnage:'吨位, t',
     labelWagonsTara   :'自重, t',
-    labelWagonsAxes   :'轴数',
+    labelWagonsAxis   :'轴数',
     labelConts   :'集装箱',
     labelSize    :'集装箱大少',
     labelSizeMm  :'集装箱大少(mm)',
@@ -1041,7 +1069,7 @@ Ext.define("TK.locale.zh_CN.view.DocsForm", {
     labelWagonNum         :'车辆号码',
     labelWagonsTonnage    :'吨位, t',
     labelWagonsTara       :'自重, t',
-    labelWagonsAxes       :'轴数',
+    labelWagonsAxis       :'轴数',
 
     labelZayavSenderPayers:'发货人/付款人的声明',
     labelZayavSender      :'发货人的声明',
@@ -1053,7 +1081,7 @@ Ext.define("TK.locale.zh_CN.view.DocsForm", {
     labelDocSort         :'Serial number:',
     labelDocSummary :'Consolidated:',
 
-    labelTGNL: 'Code TGNL:',
+    labelTGNL: 'Code TGNL:' ,
     labelOKPO: 'Code OKPO:',
     labelINN: 'Code INN:',
 
@@ -1165,14 +1193,14 @@ Ext.define("TK.locale.zh_CN.view.avisogu29k.Form1", {
 Ext.define("TK.locale.zh_CN.view.cim.CimForm", {
     override        :"TK.view.cim.CimForm",
     
-    labelWagonOtpr  :'批号',
+labelWagonOtpr  :'批号',
     labelContPrivate:'自己(P)'
 });
 
 Ext.define("TK.locale.zh_CN.view.slovnakl.Form", {
     override        :"TK.view.slovnakl.Form",
     
-    labelWagonOtpr  :'批号'
+labelWagonOtpr  :'批号'
 });
 
 Ext.define("TK.locale.zh_CN.view.cimsmgs.CimSmgsForm", {
@@ -1200,7 +1228,7 @@ Ext.define("TK.locale.zh_CN.view.epd.Form", {
 Ext.define("TK.locale.zh_CN.view.file.Form", {
     override         :"TK.view.file.Form",
     
-    labelGeneralInfo :'共用信息',
+labelGeneralInfo :'共用信息',
     labelDownloadFile:'下载文件'
 });
 
@@ -1239,10 +1267,13 @@ Ext.define("TK.locale.zh_CN.view.invoice.Form", {
     labelNote           :'附注',
 
     lableCombo1: 'Invoice',
-    lableCombo2: 'Счет-фактура',
-    lableCombo3: 'Приложение к инвойсу',
-    lableCombo4: 'Грузовая ведомость',
-    lableCombo5: 'Манифест'
+    lableCombo2: 'Invoice',
+    lableCombo3: 'Invoice Attachment',
+    lableCombo4: 'Cargo sheet',
+    lableCombo5: 'Manifest',
+    deatailTitle:'Additional info',
+    btnShowDetails:'Show details',
+    btnHideDetails:'Hide details'
 });
 
 Ext.define("TK.locale.zh_CN.view.nsi.EditList", {
@@ -1289,7 +1320,7 @@ Ext.define("TK.locale.zh_CN.view.smgs.Form", {
     labelWagonNum     :'车辆号码 (27)',
     labelWagonsTonnage:'吨位(28), t',
     labelWagonsTara   :'自重(30), t',
-    labelWagonsAxes   :'轴数(29)',
+    labelWagonsAxis   :'轴数(29)',
     labelContNum      :'集装箱号码(9,19)',
     labelSize         :'集装箱大少',
     labelVid          :'集装箱种类(18)'
@@ -1393,6 +1424,8 @@ Ext.define("TK.locale.zh_CN.controller.Docs", {
     labelPPVInd     :':',
     labelInputDate  :':',
 
+    msgCopy2Arch:'Copy to archive records',
+
     btnPrint       :'打印',
     btnFind        :'查找',
     btnSearch      :'查看记录... ',
@@ -1440,7 +1473,11 @@ Ext.define("TK.locale.zh_CN.controller.Docs", {
     smgs2_13        :'13|Payments for carrier charges|23',
     smgs2_14        :'14|Documents attached by consignor|24',
     smgs2_15        :'15|Data not intended for the carrier: delivery contact number|25',
-    smgs2_16        :'16|Remarks for customers and administrative procedures|28'
+    smgs2_16        :'16|Remarks for customers and administrative procedures|28',
+
+    successMsgTitle:'The operation has been finished successfully',
+    processed:'Processed',
+    docs: 'documents'
 });
 
 Ext.define("TK.locale.zh_CN.controller.Ajax", {
@@ -1532,7 +1569,18 @@ Ext.define("TK.locale.zh_CN.controller.docs.Invoice", {
     override:"TK.controller.docs.Invoice",
 
     titleEpd:'电子运输文件不下载',
-    msgEpd  :'你须要选择电子运输文件的选项卡为了文件下载好'
+    msgEpd  :'你须要选择电子运输文件的选项卡为了文件下载好',
+    titlePrint      :'Print options',
+    lblCodes        :'Codes',
+    lblCodes6       :'6 symbols',
+    lblCodes10      :'10 symbols',
+    lblOptions      :'Options',
+    lblTnved        :'TNVED',
+    lblTnvedNzgr    :'TNVED+Name',
+    lblWithCost     :'With cost',
+    btnPrint        :'Print',
+    msgTitleWarn    :'Warning',
+    msgTxtSeveralDocs:'There is more than one filled  document in  the document!<br>You can generate specification only when only one document is filled!'
 });
 
 Ext.define("TK.locale.zh_CN.controller.Logs", {
@@ -1550,7 +1598,9 @@ Ext.define("TK.locale.zh_CN.controller.Logs", {
 Ext.define("TK.locale.zh_CN.controller.Menu", {
     override:"TK.controller.Menu",
 
-    errorMsg:'注意! 是错误...'
+    errorMsg:'注意! 是错误...',
+    warning:'Warning!',
+    warnMsg:'Are you sure want to exit?<br>Unsaved data can be lost!'
 });
 
 Ext.define("TK.locale.zh_CN.controller.Project", {
@@ -1580,7 +1630,6 @@ Ext.define("TK.locale.zh_CN.controller.Doc2Doc", {
     titleDownldInv:'Download Invoices',
     msgEpd  :'你须要选择电子运输文件的选项卡为了文件下载好',
     errorMsg:'注意! 是错误...',
-    successMsgTitle:'The operation has been finished successfully',
     btnClose       :'关闭',
     btnSave        :'保存',
     btnFind        :'查找',
@@ -1590,7 +1639,12 @@ Ext.define("TK.locale.zh_CN.controller.Doc2Doc", {
     titleContList:'Enter train num(-s[,])',
     labelWagenNums :'Train number(-s[,]):',
     warnTitle       :'Warning',
-    saveMgs         :'Save the document'
+    saveMgs         :'Save the document',
+    successMsgTitle:'The operation has been finished successfully',
+    processed:'Processed',
+    docs: 'documents',
+    titleWarning:'Warning',
+    msgSaveBeforeImport:'Save document before Invoice import'
 });
 
 Ext.define("TK.locale.zh_CN.controller.User", {
@@ -1599,8 +1653,8 @@ Ext.define("TK.locale.zh_CN.controller.User", {
     maskMsg :'数据请求...',
     errorMsg:'注意! 是错误...',
     waitMsg1:'保存数据时...',
-        titleNoUser :'Warning',
-        msgNoUser   :'Choose a user to perform an operation'
+    titleNoUser :'Warning',
+    msgNoUser   :'Choose a user to perform an operation'
 });
 
 Ext.define("TK.locale.zh_CN.controller.Nsi", {
@@ -1651,6 +1705,11 @@ Ext.define("TK.locale.zh_CN.view.nsi.List", {
     headerRoute       :'Route',
     headerDescr      :'成名',
     headerCode       :'代码',
+    headerNDog      :'Contract number',
+    headerPZ:'PZ',
+    headerWZ:'WZ',
+    headerDatDog        :'Contract date',
+    headerGroups        :'Groups',
     headerCountryRu  :'国家(RU)',
     headerCountry    :'国家',
     headerCountryS   :'国家',
@@ -1687,13 +1746,23 @@ Ext.define("TK.locale.zh_CN.view.nsi.List", {
     ttipDel          :'删除',
     btnClose         :'关闭',
     tooltipEdit: 'Edit',
-    tooltipDel: 'Delete'
+    tooltipDel: 'Delete',
+
+    zayavClientTitle        :'Orders',
+    zayavClientClmnNZayav   :'Order №',
+    zayavClientClmnClient   :'Client',
+    zayavClientClmnDate     :'Order date',
+    storeError              :'Warning! List loading error...'
 });
 
 Ext.define("TK.locale.zh_CN.controller.print.Print", {
     override: "TK.controller.print.Print",
     titlePrint: "Print settings",
     labelBlank: "With blank?",
+    labelFiles:'Separate file for each document',
+    printAll:'Print all pages',
+    printFirst:'Print only first pages',
+    printForth:'Print only forth pages',
     textPrint: "Print",
     textPages: 'Pages for print',
     textPage: 'Page ',
@@ -1718,7 +1787,6 @@ Ext.define("TK.locale.zh_CN.controller.print.PrintTemplates", {
 Ext.define("TK.locale.zh_CN.view.edit.TreeFormWin", {
     override: "TK.view.edit.TreeFormWin",
 
-    title: 'Car/Container/Cargo',
     titleVag: 'Car',
     titleCont: 'Container',
     titleCargo: 'Cargo',
@@ -1732,7 +1800,7 @@ Ext.define("TK.locale.zh_CN.view.edit.TreeFormWin", {
     btnCargoText: '+ Cargo',
     btnDanCargoText: '+ Dan.Cargo',
     btnDocText: '+ Doc',
-    btnPlombText: '+ Plomb',
+    btnPlombText: '+ Seal',
     btnSearch: 'Search',
     btnExpandAll: 'Expand All',
     btnCollapseAll: 'Collapse All',
@@ -1875,7 +1943,7 @@ Ext.define("TK.locale.zh_CN.view.ved.VagsList", {
     colTextOwner:   'Wagons<br>owner',
     colTextKind:    'Wagons<br>kind',
     colTextGp:      'Wagons<br>max load,m.t.',
-    colTextAxes:    'Axes<br>count',
+    colTextAxis:    'Axis<br>count',
     colTextTara:    'Wagones<br>tara,m.t.',
     colTextPlomb:   'Plombs',
     colTextKpl:     'Quantity',
@@ -1922,7 +1990,8 @@ Ext.define("TK.locale.zh_CN.view.pogruz.PoezdSelectForm", {
     train       :'Train number',
     count       :'Quantity',
     btnOk       :'Choose',
-    btnCancel   :'取消'
+    btnCancel   :'取消',
+    errorMsg       :'注意! 是错误...'
 });
 
 Ext.define("TK.locale.zh_CN.view.pogruz.SmgsSelectForm", {
@@ -2009,4 +2078,1667 @@ Ext.define("TK.locale.zh_CN.view.edit.SelectCopy2AvisoElements", {
     headngraph  :'N item',
     choose      :'Choose',
     cancel      :'Cancel'
+});
+Ext.define("TK.locale.zh_CN.Utils", {
+    override: "TK.Utils",
+
+    processed:'Processed documents:',
+    wrongAviso: 'Wrong template!<br>Check if the quantity of wagons/containers/cargo is less or equal 1',
+    unProcDocs:'Shipping type is different from shipping type of the template<br>in the following documents:',
+    successMsgTitle:'The operation has been finished successfully',
+    request:'Request...',
+    dataErrorHdr:'Warning! Data check failure',
+    dataErrormsg:'Check fields for correct data'
+});
+Ext.define("TK.locale.zh_CN.view.edit.GroupEdit", {
+    override: "TK.view.edit.GroupEdit",
+
+    title:'Group edit',
+    lookDoc:'look doc.',
+    nvagHdr:'№ wagon',
+    sortHdr:'№ in row',
+    klientNameHdr:"Wagon's owner",
+    vagOtmHdr:'Wagon<br>is given',
+    grPodHdr:'Tonnage,t',
+    kolOsHdr:'Axis',
+    taraVagHdr:'Tara<br>wagon,t',
+    utiNHdr:'Container',
+    utiTypeHdr:'Size<br>Type',
+    grPodKontHdr:'Max load,t',
+    taraKontHdr:'Container<br>tara, kg',
+    massaHdr:'Net weight,kg',
+    bruttoHdr:'Gross weight,kg',
+    kgvnHdr:'NHM',
+    placesHdr:'Places',
+    rodHdr:'Package',
+    g22Hdr:'Loaded by',
+    gs_48Hdr:'Mass determination<br>method',
+    g694Hdr:'№ CIM/SMGS',
+    g281Hdr:'Date of<br>CIM/SMGS',
+    npoezdHdr:'Train №',
+    plombsHdr:'Plombs',
+    changeAll:'Change all on ',
+    changeEmpty:'Change empty on ',
+    makeAllZeroes:'Change all on 0',
+    makeAllEmpty:'Change empty on ""',
+
+    btnSave:'Save',
+    btnCancel:'Cancel'
+});
+Ext.define("TK.locale.zh_CN.view.edit.RouteSelect", {
+    override: "TK.view.edit.RouteSelect",
+
+    title:'Choose destination route',
+    btnChoose:'Choose',
+    btnCancel:'Cancel',
+    labelCopy:'Copy',
+    labelMove:'Move',
+    showTitle: 'Warning',
+    noRouteSelMsg:'No route selected',
+    sameRouteMsg:'Destination route is the same as current'
+});
+
+//--------------- контейнерная площадка
+Ext.define("TK.locale.zh_CN.view.ky.yard.List", {
+    override:"TK.view.ky.yard.List",
+
+    headerCreation    :'Creation',
+    headerDateTime    :'Date&Time',
+    headerUser        :'User',
+    headerNKont        :'Train №',
+    headerDateIn        :'Arrival date',
+    headerDateOut        :'Departure date',
+    headerSector        :'Sector',
+    headerLoaded        :'Loaded',
+    headerStorageType        :'Storage type',
+    headerXYZ        :'Coordinates',
+    title:'Container yard'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.yard.YardList", {
+    override:"TK.view.ky2.yard.YardList",
+
+    headerCreation    :'Creation',
+    headerDateTime    :'Date&Time',
+    headerUser        :'User',
+    headerNKont        :'Container №',
+    headerDateIn        :'Arrival date',
+    headerDateOut        :'Departure date',
+    headerSector        :'Sector',
+    headerLoaded        :'Loaded',
+    headerStorageType        :'Storage type',
+    headerXYZ        :'Coordinates',
+    headerTara         :'Tara,t',
+    headerBrutto        :'Gross weight,kg',
+    headerMaxLoad       :'Tonnage,t',
+    headerContSize      :'Size Type',
+    headerTrNum     :'Train № by arrival',
+    headerArrDate       :'Arrival date',
+    headerClient        :'Client',
+    title:'Container yard',
+    btnEditKont     : 'Edit container',
+    btnKont         :'Container',
+    btnCreateKont   :'Create container',
+    btnSwitchClient :'Change client',
+    btnClearFilter  :'Clear filter',
+    btnActions      :'Actions',
+    btnXLSsearch    :'XLS (search)',
+    btnXLSexport    :'XLS (export)',
+    btnXLSrefresh   :'XLS (refresh)',
+    btnDelClient    :'Delete container'
+});
+
+Ext.define("TK.locale.zh_CN.controller.ky.Yard", {
+    override:"TK.controller.ky.Yard",
+
+    titleEdit:'Edit container yard position',
+    titleCreate:'Create container yard position',
+    delTitle :'Deleting...',
+    delMsg   :'Are you sure want to delete..?',
+    maskMsg :'Data request...',
+    errorMsg:'Warning! Error...',
+    headerName       :'Name',
+    headerDescr      :'Description'
+});
+
+Ext.define("TK.locale.zh_CN.controller.ky2.YardController", {
+    override:"TK.controller.ky2.YardController",
+
+    titleEdit:'Edit container yard position',
+    titleCreate:'Create container yard position',
+    delTitle :'Deleting...',
+    delMsg   :'Are you sure want to delete..?',
+    maskMsg :'Data request...',
+    errorMsg:'Warning! Error...',
+    headerName       :'Name',
+    headerDescr      :'Description',
+    titleCreateSector:'Create sector',
+    titleEditSector  :'Edit sector'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky.yard.Form", {
+    override:"TK.view.ky.yard.Form",
+
+    labelNKont:'Container №',
+    labelX     :'X',
+    labelY     :'Y',
+    labelZ   :'Z',
+    labelDateIn  :'Arrival date',
+    labelDate  :'date',
+    labelTime  :'time',
+    labelDateOut  :'Replacement',
+    labelSector  :'Sector',
+    labelLoaded  :'Loaded',
+    labelStorageType  :'Storage type',
+    labelStorageVACANT  :'Vacant position',
+    labelStorageTEMPORALLY  :'Temporal position',
+    labelStorageSTORAGE  :'Storage',
+    labelMileage  :'Mileage(km)',
+    labelNotes  :'Notes',
+    msgSearch  :'Searching...',
+    msgNothingFound:'Nothing found'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.yard.YardForm", {
+    override:"TK.view.ky2.yard.YardForm",
+
+    labelNKont:'Container №',
+    labelX     :'X',
+    labelY     :'Y',
+    labelZ   :'Z',
+    labelDateIn  :'Arrival date',
+    labelDate  :'date',
+    labelTime  :'time',
+    labelDateOut  :'Replacement',
+    labelSector  :'Sector',
+    labelLoaded  :'Loaded',
+    labelStorageType  :'Storage type',
+    labelStorageVACANT  :'Vacant position',
+    labelStorageTEMPORALLY  :'Temporal position',
+    labelStorageSTORAGE  :'Storage',
+    labelMileage  :'Mileage(km)',
+    labelNotes  :'Notes',
+    msgSearch  :'Searching...',
+    msgNothingFound:'Nothing found'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky.yard.Filter", {
+    override:"TK.view.ky.yard.Filter",
+
+    title: 'Filter',
+    btnFilter         :'Filter',
+    btnClear     :'Clear',
+    btnClose        :'Close',
+    labelNKont:'Container №',
+    labelDateIn  :'Arrival date',
+    labelDate  :'date',
+    labelTime  :'time',
+    labelDateOut  :'Replacement',
+    labelDateFrom  :'from',
+    labelDateTo  :'to',
+    labelSector  :'Sector',
+    labelLoaded  :'Loaded',
+    labelNotLoaded:'Empty',
+    labelStorageType  :'Storage type',
+    labelStorageVACANT  :'Vacant position',
+    labelStorageTEMPORALLY  :'Temporal position',
+    labelStorageSTORAGE  :'Storage',
+    msgSearch  :'Searching...',
+    msgNothingFound:'Nothing found'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.yard.Filter", {
+    override:"TK.view.ky2.yard.Filter",
+
+    title: 'Filter',
+    btnFilter         :'Filter',
+    btnClear     :'Clear ',
+    btnClose        :'Close ',
+    labelNKont:'Container №',
+    labelDateIn  :'Arrival date',
+    labelDate  :'date',
+    labelTime  :'time',
+    labelDateOut  :'Replacement',
+    labelDateFrom  :'from',
+    labelDateTo  :'to',
+    labelSector  :'Sector',
+    labelLoaded  :'Loaded',
+    labelNotLoaded:'Empty',
+    labelStorageType  :'Storage type',
+    labelStorageVACANT  :'Vacant position',
+    labelStorageTEMPORALLY  :'Temporal position',
+    labelStorageSTORAGE  :'Storage',
+    msgSearch  :'Searching...',
+    msgNothingFound:'Nothing found',
+    labelArrivalFrom:'Arrival, from',
+    labelArrivalTill:'Arrival, till',
+    lblInternationalTrNum:'International train №',
+    labelClient:'Client',
+    labelContainer:'Container'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky.yard.List", {
+    override:"TK.view.ky.yard.List",
+
+    storage_0       :"Vacant",
+    storage_1       :"Temporal",
+    storage_2       :"Storage"
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.yard.List", {
+    override:"TK.view.ky2.yard.List",
+
+    storage_0       :"Vacant",
+    storage_1       :"Temporal",
+    storage_2       :"Storage"
+});
+
+Ext.define("TK.locale.zh_CN.view.ky.AbstractForm", {
+    override:"TK.view.ky.AbstractForm",
+
+    btnSave         :'Save',
+    btnCancel     :'Cancel'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.AbstractForm", {
+    override:"TK.view.ky2.AbstractForm",
+
+    btnSave         :'Save',
+    btnSaveExit     :'Save&Exit',
+    btnClose        :'Close',
+    btnCancel     :'Cancel',
+    lblPosition     :'Position',
+    lblRow          :'Row',
+    lblFloor        :'Floor',
+    lblSector       :'Sector ',
+    lblName             :'Name',
+    lblDescription      :'Description',
+    lblUsrGroups        :'User groups'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky.BaseList", {
+    override:"TK.view.ky.BaseList",
+
+    btnEdit     :'Edit',
+    btnDelete   :'Delete',
+    btnFilter   :'Filter',
+    warnTitle:'Warning',
+    warnMsg  :'You should select row from data table',
+    btnVgCtGr:'+Wagon/Container/Cargo',
+    btnFromCar:'By truck',
+    btnFromTrainByArr:'+ From train by arrival',
+    btnReports:'Reports'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.BaseList", {
+    override:"TK.view.ky2.BaseList",
+
+    btnEdit     :'Edit',
+    btnDelete   :'Delete',
+    btnFilter   :'Filter',
+    warnTitle:'Warning',
+    warnMsg  :'You should select row from data table',
+    btnVgCtGr:'+Wagon/Container/Cargo',
+    btnVgCt:'Container/Cargo',
+    btnDocs:'Attached documents',
+    btnFromCar:'By truck',
+    btnFromTrainByArr:'+ From train by arrival',
+    btnReports:'Reports',
+    btnWide:'On a wide',
+    btnCreateFromOrder:'Create from order',
+    btnCopy:'Copy',
+    btnAddTrackByArr:'+ Truck by departure',
+    btnPrint:'Print',
+    btnSectors:'Sectors',
+    noData:'No data'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky.AbstractList", {
+    override:"TK.view.ky.AbstractList",
+
+    btnCreate   :'Create',
+    btnReport:'Raport'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.AbstractList", {
+    override:"TK.view.ky2.AbstractList",
+
+    btnCreate   :'Create',
+    warnTitle:'Warning',
+    warnMsg  :'You should select row from data table',
+    btnReport:'Report',
+    btnUniversalMap:'Universal map',
+    btnFilter   :'Filter',
+    noData:'No data',
+    labelNWag:'Wagon №',
+    btnChoose:'Choose',
+    labelNOrder:'Order №',
+    lblTrainNum         :'Train №',
+    loadingTxt          :'Searching',
+    emptyText           :'Nothing found'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky.AbstractWindow", {
+    override:"TK.view.ky.AbstractWindow",
+
+    btnClose         :'Close'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.AbstractWindow", {
+    override:"TK.view.ky2.AbstractWindow",
+
+    btnClose         :'Close'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky.poezd.into.List", {
+    override:"TK.view.ky.poezd.into.List",
+
+    headerCreation    :'Creation',
+    headerDateTime    :'Date&Time',
+    headerUser        :'User',
+    headerPoezdNum        :'Train №',
+    headerKoleya        :'Track',
+    headerDateIn        :'Arrival',
+    title:'Train list by Arrival'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.poezd.BasePoezdList", {
+    override:"TK.view.ky2.poezd.BasePoezdList",
+
+    headerCreation    :'Creation',
+    headerDateTime    :'Date&Time',
+    headerUser        :'User',
+    headerPoezdNum    :'Train №',
+    headerPoezdNumM   :'International train №',
+    headerKoleya      :'Track',
+    headerVagCount    :'Wagon quantity',
+    freeSpace         :'',
+    // title:'Список поездов по прибытию',
+    btnCreate   :'Create train',
+    btnEdit     :'Edit train',
+    btnCreateVags   :'Create wagon',
+    btnEditVags     :'Edit wagon'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.poezd.into.PoezdList", {
+    override:"TK.view.ky2.poezd.into.PoezdList",
+
+    // headerCreation    :'Создание',
+    // headerDateTime    :'Дата и время',
+    // headerUser        :'Пользователь',
+    //
+    // headerPoezdNum        :'Номер поезда',
+    // headerKoleya        :'Колея',
+    headerDateIn        :'Arrival date',
+    headerKontCount   :'Quantity of unloaded container',
+    btnToPoezdOut   : 'On train by departure',
+    btnToYard     : 'On container yard',
+    btnOnTrack:'On a track',
+    btnAddTrain:'+ Train by departure',
+    btnCreateFromOrder:'Create from order',
+    title:'Train list by arrival'
+    // btnCreate   :'Создать поезд',
+    // btnEdit     :'Редактировать поезд',
+    // btnCreateVags   :'Создать вагоны',
+    // btnEditVags     :'Редактировать вагоны'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.poezd.out.PoezdList", {
+    override:"TK.view.ky2.poezd.out.PoezdList",
+
+    // headerCreation    :'Создание',
+    // headerDateTime    :'Дата и время',
+    // headerUser        :'Пользователь',
+    //
+    // headerPoezdNum        :'Номер поезда',
+    // headerKoleya        :'Колея',
+    headerDateOut        :'Departure date',
+    headerKontCount :'Quantity of loaded container',
+    btnFromPoezdInto   : 'From train by arrival',
+    btnFromYard     : 'From container yard',
+    title:'Train list by departure'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky.poezd.out.List", {
+    override:"TK.view.ky.poezd.out.List",
+
+    headerCreation    :'Creation',
+    headerDateTime    :'Date&Time',
+    headerUser        :'User',
+    headerPoezdNum        :'Train №',
+    headerKoleya        :'Track',
+    headerDateOut        :'Departure date',
+    title:'Train list by departure'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.poezd.out.List", {
+    override:"TK.view.ky2.poezd.out.List",
+
+    headerCreation    :'Creation',
+    headerDateTime    :'Date&Time',
+    headerUser        :'User',
+    headerPoezdNum        :'Train №',
+    headerKoleya        :'Track',
+    headerDateOut        :'Departure date',
+    title:'Train list by departure'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky.poezd.into.vagon.List", {
+    override:"TK.view.ky.poezd.into.vagon.List",
+
+    headerVagonNum        :'Wagon №',
+    title:'Train\'s wagon list'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.poezd.into.vagon.List", {
+    override:"TK.view.ky2.poezd.into.vagon.List",
+
+    headerVagonNum        :'Wagon №',
+    title:'Train\'s wagon list'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky.poezd.out.vagon.List", {
+    override:"TK.view.ky.poezd.out.vagon.List",
+
+    headerVagonNum        :'Wagon №',
+    title:'Train\'s wagon list'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.poezd.out.vagon.List", {
+    override:"TK.view.ky2.poezd.out.vagon.List",
+
+    headerVagonNum        :'Wagon №',
+    title:'Train\'s wagon list'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky.poezd.into.vagon.kont.List", {
+    override:"TK.view.ky.poezd.into.vagon.kont.List",
+
+    headerKontNum        :'Container №',
+    title:'Wagon\'s container list'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.poezd.into.vagon.kont.List", {
+    override:"TK.view.ky2.poezd.into.vagon.kont.List",
+
+    headerKontNum        :'Container №',
+    title:'Wagon\'s container list'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky.poezd.out.vagon.kont.List", {
+    override:"TK.view.ky.poezd.out.vagon.kont.List",
+
+    headerKontNum        :'Container №',
+    title:'Wagon\'s container list'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.poezd.out.vagon.kont.List", {
+    override:"TK.view.ky2.poezd.out.vagon.kont.List",
+
+    headerKontNum        :'Container №',
+    title:'Wagon\'s container list'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky.kontnotransp.List", {
+    override:"TK.view.ky.kontnotransp.List",
+
+    headerCreation    :'Creation',
+    headerDateTime    :'Date&Time',
+    headerUser        :'User',
+    headerKontNum        :'Container №',
+    title:'Container list'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.kontnotransp.List", {
+    override:"TK.view.ky2.kontnotransp.List",
+
+    headerCreation    :'Creation',
+    headerDateTime    :'Date&Time',
+    headerUser        :'User',
+    headerKontNum        :'Container №',
+    title:'Container list'
+});
+
+
+Ext.define("TK.locale.zh_CN.view.ky.poezd.into.vagon.kont.gruz.List", {
+    override:"TK.view.ky.poezd.into.vagon.kont.gruz.List",
+
+    headerGruzCode        :'Code',
+    headerGruzName        :'Name',
+    title:'Container\'s cargo list'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.poezd.into.vagon.kont.gruz.List", {
+    override:"TK.view.ky2.poezd.into.vagon.kont.gruz.List",
+
+    headerGruzCode        :'Code',
+    headerGruzName        :'Name',
+    title:'Container\'s cargo list'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky.BaseGruzList", {
+    override:"TK.view.ky.BaseGruzList",
+
+    headerGruzCode        :'Code',
+    headerGruzName        :'Name',
+    title:'Container\'s cargo list'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.BaseGruzList", {
+    override:"TK.view.ky2.BaseGruzList",
+
+    headerGruzCode        :'Code',
+    headerGruzName        :'Name',
+    title:'Container\'s cargo list'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky.poezd.into.vagon.kont.plomb.List", {
+    override:"TK.view.ky.poezd.into.vagon.kont.plomb.List",
+
+    headerPlombKpl        :'Quantity',
+    headerPlombZnak        :'Plombs',
+    title:'Container\'s plomb list'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.poezd.into.vagon.kont.plomb.List", {
+    override:"TK.view.ky2.poezd.into.vagon.kont.plomb.List",
+
+    headerPlombKpl        :'Quantity',
+    headerPlombZnak        :'Plombs',
+    title:'Container\'s plomb list'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky.BasePlombList", {
+    override:"TK.view.ky.BasePlombList",
+
+    headerPlombKpl        :'Quantity',
+    headerPlombZnak        :'Plombs',
+    title:'Container\'s plomb list'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.BasePlombList", {
+    override:"TK.view.ky2.BasePlombList",
+
+    headerPlombKpl        :'Quantity',
+    headerPlombZnak        :'Plombs',
+    title:'Container\'s plomb list'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky.poezd.out.vagon.kont.gruz.List", {
+    override:"TK.view.ky.poezd.out.vagon.kont.gruz.List",
+
+    headerGruzCode        :'Code',
+    headerGruzName        :'Name',
+    title:'Container\'s cargo list'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.poezd.out.vagon.kont.gruz.List", {
+    override:"TK.view.ky2.poezd.out.vagon.kont.gruz.List",
+
+    headerGruzCode        :'Code',
+    headerGruzName        :'Name',
+    title:'Container\'s cargo list'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky.poezd.out.vagon.kont.plomb.List", {
+    override:"TK.view.ky.poezd.out.vagon.kont.plomb.List",
+
+    headerPlombKpl        :'Quantity',
+    headerPlombZnak        :'Plombs',
+    title:'Container\'s plomb list'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.poezd.out.vagon.kont.plomb.List", {
+    override:"TK.view.ky2.poezd.out.vagon.kont.plomb.List",
+
+    headerPlombKpl        :'Quantity',
+    headerPlombZnak        :'Plombs',
+    title:'Container\'s plomb list'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky.kontnotransp.gruz.List", {
+    override:"TK.view.ky.kontnotransp.gruz.List",
+
+    headerGruzCode        :'Code',
+    headerGruzName        :'Name',
+    title:'Container\'s cargo list'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.kontnotransp.gruz.List", {
+    override:"TK.view.ky2.kontnotransp.gruz.List",
+
+    headerGruzCode        :'Code',
+    headerGruzName        :'Name',
+    title:'Container\'s cargo list'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky.kontnotransp.plomb.List", {
+    override:"TK.view.ky.kontnotransp.plomb.List",
+
+    headerPlombKpl        :'Quantity',
+    headerPlombZnak        :'Plombs',
+    title:'Container\'s plomb list'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.kontnotransp.plomb.List", {
+    override:"TK.view.ky2.kontnotransp.plomb.List",
+    headerPlombKpl        :'Quantity',
+    headerPlombZnak        :'Plombs',
+    title:'Container\'s plomb list'
+});
+
+Ext.define("TK.locale.zh_CN.controller.ky.Poezd", {
+    override:"TK.controller.ky.Poezd",
+
+    titleCreate: 'Create train',
+    titleEdit: 'Edit train',
+    delTitle :'Deleting...',
+    delMsg   :'Are you sure you want to delete..?',
+    maskMsg :'Data request...',
+    errorMsg:'Warning! Error...'
+});
+
+Ext.define("TK.locale.zh_CN.controller.ky2.PoezdController", {
+    override:"TK.controller.ky2.PoezdController",
+
+    titleCreate: 'Create train',
+    titleCreateIntoWide: 'Create train t.1520 by arrival',
+    titleCreateOutWide: 'Create train t.1520 by departure',
+    titleCreateIntoNar: 'Create train t.1435 by arrival',
+    titleCreateOutNar: 'Create train t.1435 by departure',
+    titleEdit: 'Edit train',
+    delTitle :'Deleting...',
+    delMsg   :'Are you sure you want to delete..?',
+    maskMsg :'Data request...',
+    errorMsg:'Warning! Error...',
+    warningMsg:'Warning!',
+    warningText:'Train unsaved....',
+    uploadText:'Data uploaded',
+    titleUpload: 'Upload XLS',
+    labelSelectFile:'Select file for the upload...',
+    labelFile:'File',
+    btnSearch:'Search...',
+    btnSave  :'Save',
+    btnClose :'Close',
+    titleConfirmation:'Confirmation',
+    msgTrainByDeparture:'Create train by departure?',
+    titleWarn:'Warning',
+    msgInvalid:'Invalid form',
+    errorTitle:'Error',
+    noSelectionError:'Nothing was selected'
+});
+
+Ext.define("TK.locale.zh_CN.controller.ky2.PoezdZayavController", {
+    override:"TK.controller.ky2.PoezdZayavController",
+
+    titleCreate: 'Create order',
+    titleCreateOrderImport:'Create order for import',
+    titleCreateOrderExport:'Create order for export',
+    titleEdit: 'Edit order',
+    delTitle :'Deleting...',
+    delOrderMsg:'Delete order?',
+    delMsg   :'Are you sure you want to delete..?',
+    maskMsg :'Data request...',
+    errorMsg:'Warning! Error...',
+    warningMsg:'Warning!',
+    warningText:'Order unsaved....',
+    uploadText:'Data uploaded',
+    titleUpload: 'Upload XLS',
+    labelSelectFile:'Select file for the upload...',
+    labelFile:'File',
+    btnSearch:'Search...',
+    btnSave  :'Save',
+    btnClose :'Close',
+    formInvalid:'Form is not valid'
+});
+
+Ext.define("TK.locale.zh_CN.controller.ky2.AvtoCtGrController", {
+    override:"TK.controller.ky2.AvtoCtGrController",
+
+    delTitle :'Deleting...',
+    delMsg   :'Are you sure you want to delete..?',
+    maskMsg :'Data request...',
+    errorMsg:'Warning! Error...',
+    warningMsg:'Warning!',
+    warningText:'Truck unsaved....',
+    uploadText:'Data uploaded',
+    titleUpload: 'Upload XLS',
+    labelSelectFile:'Select file for the upload...',
+    labelFile:'File',
+    btnSearch:'Search...',
+    btnSave  :'Save',
+    btnClose :'Close',
+    titleCtGr:'Container/Cargo'
+});
+
+Ext.define("TK.locale.zh_CN.controller.ky.Vagon", {
+    override:"TK.controller.ky.Vagon",
+
+    titleCreate: 'Create wagon',
+    titleEdit: 'Edit wagon',
+    delTitle :'Deleting...',
+    delMsg   :'Are you sure you want to delete..?',
+    maskMsg :'Data request...',
+    errorMsg:'Warning! Error...'
+});
+
+Ext.define("TK.locale.zh_CN.controller.ky2.Vagon", {
+    override:"TK.controller.ky2.Vagon",
+
+    titleCreate: 'Create wagon',
+    titleEdit: 'Edit wagon',
+    delTitle :'Deleting...',
+    delMsg   :'Are you sure you want to delete..?',
+    maskMsg :'Data request...',
+    errorMsg:'Warning! Error...'
+});
+
+Ext.define("TK.locale.zh_CN.controller.ky.Gruz", {
+    override:"TK.controller.ky.Gruz",
+
+    titleCreate: 'Create truckgo',
+    titleEdit: 'Edit truckgo',
+    delTitle :'Deleting...',
+    delMsg   :'Are you sure you want to delete..?',
+    maskMsg :'Data request...',
+    errorMsg:'Warning! Error...'
+});
+
+Ext.define("TK.locale.zh_CN.controller.ky2.Gruz", {
+    override:"TK.controller.ky2.Gruz",
+
+    titleCreate: 'Create truckgo',
+    titleEdit: 'Edit truckgo',
+    delTitle :'Deleting...',
+    delMsg   :'Are you sure you want to delete..?',
+    maskMsg :'Data request...',
+    errorMsg:'Warning! Error...'
+});
+
+Ext.define("TK.locale.zh_CN.controller.ky.Kont", {
+    override:"TK.controller.ky.Kont",
+
+    titleCreate: 'Create container',
+    titleEdit: 'Edit container',
+    delTitle :'Deleting...',
+    delMsg   :'Are you sure you want to delete..?',
+    maskMsg :'Data request...',
+    errorMsg:'Warning! Error...'
+});
+
+Ext.define("TK.locale.zh_CN.controller.ky2.Kont", {
+    override:"TK.controller.ky2.Kont",
+
+    titleCreate: 'Create container',
+    titleEdit: 'Edit container',
+    delTitle :'Deleting...',
+    delMsg   :'Are you sure you want to delete..?',
+    maskMsg :'Data request...',
+    errorMsg:'Warning! Error...'
+});
+
+Ext.define("TK.locale.zh_CN.controller.ky.Plomb", {
+    override:"TK.controller.ky.Plomb",
+
+    titleCreate: 'Create plombs',
+    titleEdit: 'Edit plombs',
+    delTitle :'Deleting...',
+    delMsg   :'Are you sure you want to delete..?',
+    maskMsg :'Data request...',
+    errorMsg:'Warning! Error...'
+});
+
+Ext.define("TK.locale.zh_CN.controller.ky2.Plomb", {
+    override:"TK.controller.ky2.Plomb",
+
+    titleCreate: 'Create plombs',
+    titleEdit: 'Edit plombs',
+    delTitle :'Deleting...',
+    delMsg   :'Are you sure you want to delete..?',
+    maskMsg :'Data request...',
+    errorMsg:'Warning! Error...'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.poezd.into.PoezdList", {
+    override:"TK.view.ky2.poezd.into.PoezdList",
+
+    headerCreation    :'Creation',
+    headerDateTime    :'Date&Time',
+    headerUser        :'User',
+
+    headerPoezdNum        :'Train №',
+    headerKoleya        :'Track',
+    headerDateIn        :'Arrival date',
+
+    title:'Train list by arrival',
+
+    btnCreate   :'Create train',
+    btnEdit     :'Edit train',
+    btnCreateVags   :'Create wagon',
+    btnEditVags     :'Edit wagon'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.poezd.out.PoezdList", {
+    override:"TK.view.ky2.poezd.out.PoezdList",
+
+    headerCreation    :'Creation',
+    headerDateTime    :'Date&Time',
+    headerUser        :'User',
+
+    headerPoezdNum        :'Train №',
+    headerKoleya        :'Track',
+    headerDateOut        :'Departure',
+
+    title:'Train list by departure'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.poezd.BasePoezdForm", {
+    override:"TK.view.ky2.poezd.BasePoezdForm",
+
+    labelNppr         :'Train №',
+    labelNpprm        :'International train №',
+    labelKoleya       :'Track',
+    labelKoleyaWide   :'Wide',
+    labelKoleyaNarow  :'Tight',
+    labelClient       :'Client',
+    labelKstf         :'Formation station code',
+    labelNstf         :'Formation station name',
+    labelAdmf         :'Formation administration',
+    labelKstn         :'Destination station code',
+    labelNstn         :'Destination station name',
+    labelAdmn         :'Road',
+    labelArr      :'Arrival',
+    labelDate     :'Date',
+    labelTime     :'Time',
+    labelImport     :'Import',
+    labelImportXLS  :'XLS (Loading list)',
+    labelXLSrefresh :'XLS (refresh)',
+    labelPPV        :'BCh wagon list',
+    labelImportFromOrder  :'+ import from order',
+    labelVgCtGr     :'+Wagon/Container/Cargo'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.avto.BaseAvtoList", {
+    override:"TK.view.ky2.avto.BaseAvtoList",
+
+    headerCreation    :'Creation',
+    headerDateTime    :'Date&Time',
+    headerUser        :'User',
+    headerAvtoNum      :'Track №',
+    headerAvtoTrail    :'Trailer №',
+    headerNKont        :'Container №',
+    headerDriverFam    :'Driver\'s name',
+    headerDep          :'Point of departure',
+    headerDest         :'Point of arrival',
+    title:'List of cars upon arrival'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.BaseAvtoZayavsDir", {
+    override:"TK.view.ky2.BaseAvtoZayavsDir",
+
+    headerZayavNum     :'Order №',
+    headerAvtoNum      :'Track №',
+    headerAvtoTrail    :'Trailer №',
+    btnSelect          :'Select'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.avto.into.AvtoList", {
+    override:"TK.view.ky2.avto.into.AvtoList",
+
+    headerDateIn       :'Arrival',
+    btnToAvto          : "By truck on departure",
+    btnToPoezd         : "By train on departure",
+    btnToYard          : "On container yard",
+    title              :'Car list by arrival',
+    headerKontCount    :'Quantity of unloaded container',
+    headerPZWZ         :'№ PZ'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.avto.BaseAvtoZayavList", {
+    override:"TK.view.ky2.avto.BaseAvtoZayavList",
+
+    headerCreation    :'Creation',
+    headerDateTime    :'Date&Time',
+    headerUser        :'User',
+    txtUnload         :'Unload',
+    txtLoad           :'Load'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.into.AvtoZayavList", {
+    override:"TK.view.ky2.avto.into.AvtoZayavList",
+
+    title:'List of import orders'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.avto.out.AvtoZayavList", {
+    override:"TK.view.ky2.avto.out.AvtoZayavList",
+
+    title:'List of export orders'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.avto.out.AvtoList", {
+    override:"TK.view.ky2.avto.out.AvtoList",
+
+    headerDateOut      :'Departure date',
+    btnToAvto          : "By truck on departure",
+    btnToPoezd         : "By train on departure",
+    btnToYard          : "On container yard",
+    title              :'Car list by arrival',
+    headerKontCount    :'Quantity of unloaded container',
+    headerPZWZ         :'№ WZ'
+});
+
+Ext.define("TK.locale.zh_CN.controller.ky2.AvtoController", {
+    override:"TK.controller.ky2.AvtoController",
+
+    titleCreate: 'Create truck',
+    titleEdit: 'Edit truck',
+    delTitle :'Deleting...',
+    delMsg   :'Are you sure you want to delete..?',
+    maskMsg :'Data request...',
+    errorMsg:'Warning! Error...',
+    warningMsg:'Warning!',
+    warningText:'Truck is unsaved....',
+    lblConfirmation:'Confirmation',
+    msgCreateCarByDeparture:'Create truck by departure?',
+    msgCarByDepartureConfirm:'Truck by departure was created',
+    msgDataLoaded:'Data loaded',
+    titeltError:'Error',
+    msgNothingSel:'Nothing was selected',
+    titleConfirm:'Confirmation',
+    msgCopyTruck:'Copy truck?'
+});
+
+Ext.define("TK.locale.zh_CN.controller.ky2.PoezdVgCtGrController", {
+    override:"TK.controller.ky2.PoezdVgCtGrController",
+
+    titleTree       : 'Wagon/Container/Cargo',
+    titleTreeVgCt       : 'Wagon/Container'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.AbstractTreeForm", {
+    override:"TK.view.ky2.AbstractTreeForm",
+
+    btnSave       : 'Save',
+    btnSaveExit   : 'Save&Exit',
+    btnClose      : 'Close',
+    btnEditPoezd  : 'Edit train',
+    ttipEditOrder         :'Edit order',
+    ttipEditTruck           :'Edit truck',
+    ttipByTruckDeparture    :'By truck upon departure',
+    ttipByTruckArrival      :'By truck upon arrival',
+    ttipByTrainDeparture    :'By train upon departure',
+    ttipByTrainArrival      :'By train upon arrival',
+    ttipOnCYard             :'On container yard',
+    ttipHideWags            :'Hide wagons',
+    ttipShowWags            :'Show wagons',
+    ttipHide                :'Collapse',
+    ttipShow                :'Expand',
+    btnAddWag               :'+ Wagon',
+    btnAddCont              :'+ Container',
+    btnAddCorgo             :'+ Cargo',
+    btnAddPlomb             :'+ Seal',
+    titleWag                :'Wagon',
+    labelArrival            :'Arrival',
+    labelNvag               :'№ wagon',
+    labelNtrack             :'Track №',
+    labelTonnage            :'Tonnage, т',
+    labelKolOs              :'Axis',
+    labelTaraWag            :'Tara',
+    labelOwner              :'Owner',
+    titleCont               :'Container',
+    labelNum                :'Number',
+    labelCont               :'Container',
+    labalOtpr               :'CIM/SMGS №',
+    labelNorder             :'Order №',
+    labelDeparture          :'Departure',
+    labelDate               :'Date',
+    labelTime               :'Time',
+    labelEmtyWag            :'Empty',
+    labelBrutto             :'Gross weight,kg',
+    labelTara               :'Tara, kg',
+    labelTotalBrutto        :'Total gross weight,kg',
+    labelSize               :'Size',
+    labelContSize           :'Size Type',
+    labelClient             :'Client',
+    labelNotes              :'Notes',
+    titleCargo              :'Cargo',
+    labelCodeGng            :'NHM code',
+    labelNameGng            :'NHM name',
+    labelPackage            :'Package',
+    labelPlaces             :'Places',
+    labelMassa              :'Weight, kg',
+    titlePlomb              :'Seal',
+    labelPlomb              :'Seal',
+    labelSealingStation     :'Sealing station',
+    labelQuantity           :'Quantity',
+    btnAct                  :'Act',
+    btnInterchange          :'INTERCHANGE',
+    btnDelete               :'Delete'
+});
+Ext.define("TK.locale.zh_CN.ky2.AbstractBindTreeForm", {
+    override:"TK.view.ky2.AbstractBindTreeForm",
+
+    btnSave       : 'Save',
+    btnSaveExit   : 'Save&Exit',
+    btnClose      : 'Close',
+    btnEditPoezd  : 'Edit train',
+    btnVgCtGr     : '+Wagon/Container/Cargo',
+    ttipHideWags            :'Hide wagons',
+    ttipShowWags            :'Show wagons',
+    ttipHide                :'Collapse',
+    ttipShow                :'Expand',
+    labelMove       :'Move',
+    labelMoveAll    :'Move all',
+    lblOrder               :'Order',
+    columnLblName       :'Name',
+    columnLblDescription:'Description',
+    columnLblGroups     :'Groups',
+    btnEdit             :'Edit',
+    btnDelete           :'Delete',
+    btnRest             :'Reset',
+    btnFiltr            :'Filter'
+});
+
+Ext.define("TK.locale.zh_CN.ky2.avto.AvtoBindTreeForm", {
+    override:"TK.view.ky2.avto.AvtoBindTreeForm",
+
+    btnSave       : 'Save',
+    btnSaveExit   : 'Save&Exit',
+    btnClose      : 'Close',
+    btnEdit       : 'Edit truck',
+    btnVgCtGr     : 'Container/Cargo',
+    ttipMove      :'Move'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.poezd.zayav.PoezdZayavList", {
+    override:"TK.view.ky2.poezd.zayav.PoezdZayavList",
+
+    title:'Train orders list'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.poezd.BasePoezdZayavList", {
+    override:"TK.view.ky2.poezd.BasePoezdZayavList",
+
+    headerOrderNum      :'Order №',
+    headerTrainNum      :'Train №',
+    headerClient        :'Client',
+    headerOrderType     :'Order type',
+    headerWagonQuantity     :'Wagon quantity',
+    headerContainerQuantity     :'Container quantity',
+    headerCreation      :'Creation',
+    headerDateTime      :'Date&time',
+    headerUser          :'User'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.avto.BaseAvtoZayavList", {
+    override:"TK.view.ky2.avto.BaseAvtoZayavList",
+
+    title: 'Truck order list',
+    headerOrderNum      :'Order №',
+    headerAvtoNum      :'Truck №',
+    headerTrailerNum      :'Trailer №',
+    headerDriver        :'Driver',
+    headerClient        :'Client',
+    headerContainerNum     :'Container №',
+    headerOrderType     :'Order type'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.client.ClientList", {
+    override:"TK.view.ky2.client.ClientList",
+
+    title: 'Client',
+    headerSector        :'Sector',
+    headerPlace         :'Placement',
+    headerContainer     :'Container',
+    headerTara          :'Tara',
+    headerBrutto        :'Gross weight,kg',
+    headerContainerNum  :'Container №',
+    headerContSize      :'Size type',
+    headerTrainNbyArrival  :'Train №<br/>by arrival',
+    hederArrDate        :'Arraival<br/>date',
+    headerClient        :'Client',
+    headerDaysInKP      :'In storage<br/>(days)',
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.ReportParams", {
+    override:"TK.view.ky2.ReportParams",
+
+    title: 'Report parameters',
+    labelDepArr        :'Arrival/Departure',
+    labelFrom         :'from',
+    labelTo             :'to',
+    labelIntTrainNumber          :'International train №',
+    loadintTxt          :'Search',
+    emptyText           :'Nothing found',
+    labelClient      :'Client',
+    labelVehicleByArr  :'Vehicles by arrival',
+    labelVehicleByDep  :'Vehicles by departure',
+    buttonOk            :'Ok',
+    buttonClear        :'Clear',
+    buttonClose      :'Close',
+    storeTxtAll         :'All',
+    storeTxtArrival     :'Arrival',
+    storeTxtDeparture   :'Departure',
+    storeTxtVagon       :'Vagon',
+    storeTxtTruck       :'Truck'
+});
+
+Ext.define("TK.locale.zh_CN.view.edit.ClientEdit", {
+    override:"TK.view.edit.ClientEdit",
+
+    title          : 'Client',
+    btnSave        :'Save',
+    btnCancel      :'Close',
+    lblContractNum  :'Contract number',
+    lblContractDate :'Contract date',
+    lblFullName     :'Full name',
+    lblShortName    :'Short name',
+    lblClientCode   :'Clients code',
+    lblDaysWoutPayment:'Days without payment',
+    lblUserGroups   :'User groups',
+    lblPZ           :'PZ',
+    lblWZ           :'WZ'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.avto.BaseAvtoForm", {
+    override:"TK.view.ky2.avto.BaseAvtoForm",
+
+    lblArrival          : 'Arrival',
+    lblDate             :'Date',
+    lblTime             :'Time',
+    btnPrint            :'Print',
+    btnPZ               :'PZ',
+    btnAddContGr        :'+Container/Cargo',
+    btnTrucksByDeparture:'+ Trucks by departure',
+    btnImportFromOrder  :'+ Import from order',
+    lblTruckN           :'Truck №',
+    lblTrailerN         :'Trailer №',
+    lblDriverFullName   :'Drivers full name',
+    lblDriversPasport   :'Drivers passport',
+    lblNotes            :'Notes',
+    btnWZ               :'WZ'
+});
+
+Ext.define("TK.locale.zh_CN.controller.ky2.BindAvtoAndAvtoController", {
+    override:"TK.controller.ky2.BindAvtoAndAvtoController",
+
+    tittle1         : 'Container №/Tara weight/Gross weight/Size Type/Tonnage',
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.poezd.into.PoezdIntoForPoezdOutDir", {
+    override:"TK.view.ky2.poezd.into.PoezdIntoForPoezdOutDir",
+
+    title       :'List of train wagons by departure'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.poezd.into.PoezdZayavsIntoDir", {
+    override:"TK.view.zh_CN.poezd.into.PoezdZayavsIntoDir",
+
+    title :'Order list by arrival'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.poezd.zayav.Filter", {
+    override:"TK.view.ky2.poezd.zayav.Filter",
+
+    title               :'Filter',
+    labelFateFrom       :'Date, from',
+    labelNOrder         :'Order №',
+    labelClient         :'Client',
+    labelNTraint        :'Train №',
+    btnFilter           :'Filter',
+    btnClear            :'Clear',
+    btnClose            :'Close'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.avto.FilterAvto", {
+    override:"TK.view.ky2.avto.FilterAvto",
+
+    title               :'Filter',
+    labelFateFrom       :'Date, from',
+    labelNTruck         :'Truck №',
+    labelNTrailer       :'Trailer №',
+    labelDriverFam      :'Driver\'s name',
+    labelContainer      :'Container',
+    btnFilter           :'Filter',
+    btnClear            :'Clear',
+    btnClose            :'Close'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.avto.out.AvtoForm", {
+    override:"TK.view.ky2.avto.out.AvtoForm",
+
+    title               :'Truck, departure',
+    lblDeparture        :'Departure',
+    lblDate             :'Date',
+    lblTime             :'Time'
+});
+
+Ext.define("TK.locale.zh_CN.controller.ky2.BindPoezdAndPoezdController", {
+    override:"TK.controller.ky2.BindPoezdAndPoezdController",
+
+    titlForPoezd               :"Wagon №/Tonnage/Tara/Axis/Owner" + '<br/>' +
+        "Container №/Client/Tara weight/Brutto/Size Type/Tonnage/Notes"
+});
+
+Ext.define("TK.locale.zh_CN.view.zh_CN.avto.into.AvtoZayavsIntoDir", {
+    override:"TK.view.ky2.avto.into.AvtoZayavsIntoDir",
+
+    title: 'Order list for download'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.InterchangeKont", {
+    override:"TK.view.ky2.InterchangeKont",
+
+    title               :'Choose malfunction',
+    lblMalfunction      :'Malfunction',
+    btnChoose           :'Choose',
+    btnClose            :'Close'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.FilesForm", {
+    override:"TK.view.ky2.FilesForm",
+
+    title               :'List of truck documents'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.poezd.out.PoezdForm", {
+    override:"TK.view.ky2.poezd.out.PoezdForm",
+
+    labelDep       :'Departure',
+    labelDate       :'Date',
+    labelTime       :'Time',
+    labelImport     :'Import',
+    labelImportFromOrder  :'+ import from order',
+});
+
+Ext.define("TK.locale.zh_CN.controller.ky2.BindPoezdAndYardController", {
+    override:"TK.controller.ky2.BindPoezdAndYardController",
+
+    titleAddOnConYard       :'+ On container yard',
+    labelTrNum              :'Train № ',
+    titleContYard           :'Container yard ',
+    titleCnumTypeBrTon      :'Container №/Client/Tara weight/Gross weight/Size Type/Tonnage/Notes',
+    titleWarn               :'Warning',
+    warnMsg                 :'Found container duplicates, move them anyway?',
+    warnMsg2                :'Not enough free places on a sector to move all containers, continue?',
+    allertTitle             :'Satus',
+    allertMsg               :'Wrong field values.'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.VagKontSearch", {
+    override:"TK.view.ky2.VagKontSearch",
+
+    emptyText               :'search... '
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.avto.out.Avto2YardBindTreeForm", {
+    override:"TK.view.ky2.avto.out.Avto2YardBindTreeForm",
+
+    lblOrder               :'Order'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.poezd.out.PoezdsIntoForPoezdOutDir", {
+    override:"TK.view.ky2.poezd.out.PoezdsIntoForPoezdOutDir",
+
+    title               :'List of train wagons by departure'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.yard.YardSectorList", {
+    override:"TK.view.ky2.yard.YardSectorList",
+
+    title               :'Sectors'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.poezd.BasePoezdZayavForm", {
+    override:"TK.view.ky2.poezd.BasePoezdZayavForm",
+
+    lblOrderNum         :'Order №',
+    lblOrderType        :'Order type',
+    lblUnloading        :'Unloading',
+    lblLoading          :'Loading',
+    titleDesigned       :'Created',
+    lblDate             :'Date',
+    lblTime             :'Time',
+    lblInternationalTrNum:'International train №',
+    lblTrainNum         :'Train №',
+    lblClient           :'Client',
+    btnSaveExit         : 'Save&Exit',
+    btnVgCtGr           :'+Wagon/Container/Cargo',
+    btnImportFromXLS    :'Import from XLS',
+    btnClose            : 'Close'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.avto.BaseAvtoZayavForm", {
+    override:"TK.view.ky2.avto.BaseAvtoZayavForm",
+
+    lblOrderNum         :'Order №',
+    lblOrderType        :'Order type',
+    lblUnloading        :'Unloading',
+    lblLoading          :'Loading',
+    titleDesigned       :'Created',
+    lblDate             :'Date',
+    lblTime             :'Time',
+    lblClient           :'Client',
+    btnSaveExit         : 'Save&Exit',
+    btnCtGr           :'+ Container/Cargo',
+    btnImportFromXLS    :'Import from XLS',
+    btnClose            : 'Close',
+    lblTruckNum         :'Truck №',
+    lblTrailerNum       :'Trailer №',
+    lblDriverFIO        :'Drivers full name',
+    lblDriverPassport   :'Drivers passport',
+    lblNotes            :'Notes'
+});
+
+Ext.define("TK.locale.zh_CN.controller.ky2.AvtoZayavController", {
+    override:"TK.controller.ky2.AvtoZayavController",
+
+    titleCreateOrderforUnload       :'Create an order for unloading',
+    titleCreateOrderforLoad         :'Create an order for loading',
+    titleCreateOrder                :'Create order',
+    msgDelOrder                     :'Delete order?',
+    titleEdit                       :'Edit order '
+});
+
+Ext.define("TK.locale.zh_CN.controller.ky2.AvtoZayavCtGrController", {
+    override:"TK.controller.ky2.AvtoZayavCtGrController",
+
+    titleContGr             :'Container/Cargo',
+    mgsCont                 :'Container ',
+    mgsInOrder              :' found in order № ',
+    mgsFrom                 :' from ',
+    btnContinue             :'Continue',
+    btnCancel               :'Cancel',
+    titleError              :'Error...'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.avto.into.AvtoZayavForm", {
+    override:"TK.view.ky2.avto.into.AvtoZayavForm",
+
+    title               :'Truck order, import'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.avto.out.AvtoZayavForm", {
+    override:"TK.view.ky2.avto.out.AvtoZayavForm",
+
+    title               :'Truck, departure'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.poezd.into.PoezdZayavForm", {
+    override:"TK.view.ky2.poezd.into.PoezdZayavForm",
+
+    title               :'Train order, import'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.poezd.PoezdsImportDir", {
+    override:"TK.view.ky2.poezd.PoezdsImportDir",
+
+    title               :'Train list for import'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.BasePoezdsImportDir", {
+    override:"TK.view.ky2.BasePoezdsImportDir",
+
+    columnTrain         :'Train',
+    columnDate          :'Date',
+    columnVed           :'List',
+    columnVagQuantity   :'Wagon<br/>quantity',
+    coumnKontQuantity   :'Container<br/>quantity',
+    btnFilter           :'Filter',
+    btnChoose           :'Choose'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.avto.DotpQuestionAvto", {
+    override:"TK.view.ky2.avto.DotpQuestionAvto",
+
+    title               :'Create a truck by departure with a specified date?',
+    lblDeartureTime     :'Departure date',
+    txtYes              :'Yes',
+    txtNo               :'No'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.ClientTrainAvtoFilter", {
+    override:"TK.view.ky2.ClientTrainAvtoFilter",
+
+    title               :'Filter Clients/Trains/Trucks',
+    panelClients        :'Clients',
+    clmnClient          :'Client',
+    panelTrains        :'Train',
+    clmnTrNum           :'Train №',
+    btnFilter           :'Filter',
+    btnCancel           :'Cancel',
+    ckeckByTruck        :'Arrived by truck'
+});
+
+Ext.define("TK.locale.zh_CN.view.stamp.StampList", {
+    override:"TK.view.stamp.StampList",
+
+    title               :'Stamps',
+
+    hdrTrans           :'Group',
+    hdrdescr           :'Description',
+    hdrCodePer         :'Carrier code',
+    hdrAltered         :'Altered',
+    hdrDattr           :'Createdd'
+});
+
+Ext.define("TK.locale.zh_CN.view.stamp.StampForm", {
+    override:"TK.view.stamp.StampForm",
+
+    title               :'Stamp',
+    mainTitle           :'General',
+    hdrdescr           :'Description',
+    labelllx              :'X left lower corner on a blank',
+    labellly              :'Y left lower corner on a blank',
+    labelurx              :'Y right top corner on a blank',
+    labelury              :'Y right top corner on a blank',
+    hdrCodePer         :'Carrier code',
+    bordersTitle         :'Borders',
+    hdrBorder           :'Thickness',
+    hdrColor            :'Color',
+    hdrRadius           :'Radius',
+    btnAdd              :'Add',
+    btnEdit             :'Edit',
+    btnDel              :'Delete',
+    imgTitle            :'Images',
+    txtTitle            :'Texts',
+    hdrText             :'Text',
+    hdrfontFamily       :'Font',
+    hdrFontSize          :'Font<br>size',
+    hdrLeading          :'Leading',
+    hdrBold             :'Bold',
+    hdrItalic           :'Italic',
+    hdrRotate           :'Rotate',
+    hdrTabular          :'Tabular',
+    hdrUnderline        :'Underline ',
+    hdrUppercase        :'Uppercase ',
+    hdrName             :'Name',
+    hdrMask             :'Mask',
+    btnSaveExit         :'Save&Exit',
+    btnSave             :'Save',
+    btnPreView          :'Preview',
+    btnExit             :'Exit'
+});
+
+Ext.define("TK.locale.zh_CN.view.stamp.StampBorderForm", {
+    override:"TK.view.stamp.StampBorderForm",
+
+    title               :'Stamp',
+    lblBorderThick      :'Thickness',
+    labelrllx           :'Lower left corner relative to stamp X',
+    labelrlly           :'Lower left corner relative to stamp Y',
+    labelrurx           :'Right top corner relative to stamp X',
+    labelrury           :'Right top corner relative to stamp Y',
+    labelRadius         :'Radius',
+    labelColor          :'Color',
+    btnSave             :'Save',
+    btnExit             :'Exit'
+});
+
+Ext.define("TK.locale.zh_CN.view.stamp.StampTxtForm", {
+    override:"TK.view.stamp.StampTxtForm",
+
+    title               :'Text',
+    labelrllx           :'Lower left corner relative to stamp X',
+    labelrlly           :'Lower left corner relative to stamp Y',
+    labelrurx           :'Right top corner relative to stamp X',
+    labelrury           :'Right top corner relative to stamp Y',
+    labelFont           :'Font',
+    labelFontSize         :'Font size',
+    labelLeading          :'Leading',
+    labelRotate           :'Rotate',
+    labelColor          :'Color',
+    labelBold             :'Bold',
+    labelItalic           :'Italic',
+    labelTabular          :'Tabular',
+    labelUnderline        :'Underline',
+    labelUppercase        :'Uppercase ',
+    labelName             :'Name',
+    labelMask             :'Mask',
+    btnSave             :'Save',
+    btnExit             :'Exit'
+});
+
+Ext.define("TK.locale.zh_CN.view.stamp.StampPictureForm", {
+    override:"TK.view.stamp.StampPictureForm",
+
+    title               :'Image',
+    labelrllx           :'Lower left corner relative to stamp X',
+    labelrlly           :'Lower left corner relative to stamp Y',
+    labelrurx           :'Right top corner relative to stamp X',
+    labelrury           :'Right top corner relative to stamp Y',
+    labelDescr          :'Description',
+    labelImgFile        :'Image file',
+    btnSave             :'Save',
+    btnExit             :'Exit'
+});
+
+Ext.define("TK.locale.zh_CN.controller.print.PrintStamps", {
+    override:"TK.controller.print.PrintStamps",
+
+    delTitle       :'删除...',
+    delMsg         :'你确想删除文件吗?',
+    uploadtitle          :'Upload picture jpeg,jpg,png 64k',
+    labelPic            :'Picture',
+    btnUpload           :'Upload',
+    btnSelectPic        :'Choose picture'
+});
+
+Ext.define("TK.locale.zh_CN.view.messanger.Messanger", {
+    override:"TK.view.messanger.Messanger",
+
+    title               :'Messenger',
+    labelMsg            :'Message',
+    btnSend             :'Send',
+    btnRefresh          :'Refresh',
+    btnClose            :'Close',
+    chkOnMail           :'On mail',
+    panelUsrs           :'Users'
+});
+
+Ext.define("TK.locale.zh_CN.controller.ky2.BindAvtoAndYardController", {
+    override:"TK.controller.ky2.BindAvtoAndYardController",
+
+    titleUploadXls      :'Upload XLS',
+    emtyTxtFile         :'Choose file for upload...',
+    labelFile           :'File',
+    btnChoose           :'Choose...',
+    btnUpload           :'Upload',
+    msgUploading        :'Uploading',
+    btnClose            :'Close',
+    titleWarn           :'Warning',
+    msgCont1            :'Found containers: ',
+    msgCont2            :'<br>Nothing found: ',
+    msgNoContOnCar      :'No container on a truck',
+    msgContisOnyard     :'Container is already on a yard. Sector ',
+    msgAvtoByDepCreated :'Truck by arrival created',
+    titleOnYard         :'+ On a container yard',
+    titleyard           :'Container yard '
+});
+
+Ext.define("TK.locale.zh_CN.controller.ky2.YardCtGrController", {
+    override:"TK.controller.ky2.YardCtGrController",
+
+    titleWarn           :'Warning',
+    msgNoFreePlaces     :'Sector is full',
+    titleEditKont       :'Edit container',
+    titleDel            :'Deleting...',
+    msgDel              :'Are you sure want to delete..?',
+    errMsg1             :'No arrival date <br>',
+    errMsg2             :'no arrival time  <br>',
+    errMsg3             :'No client  <br>',
+    errMsg4             :'Wrong container number ',
+    msgNoKont           :'No container',
+    msgError            :'Error...',
+    titleCreateKont     :'Create container'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.YardCtGrTreeForm", {
+    override:"TK.view.ky2.YardCtGrTreeForm",
+
+    title               :'Container',
+    lblSector           :'Sector',
+    lblKontN            :'Container №',
+    lblOtprN            :'Shipment №',
+    lblArrival          :'Arrival',
+    lblDate             :'Date',
+    lblTime             :'Time',
+    lblOrderN           :'Order №',
+    lblDeparture        :'Departure',
+    lblEmpty            :'Empty',
+    lblBrutto           :'Cargo brutto,kg',
+    lblMasTara          :'Tara, weight,kg',
+    lblTotalBrutto      :'Total gross weight,kg',
+    lblMaxWeight        :'Tonnage, t',
+    lblSize             :'Size',
+    lblType             :'Type',
+    lblClient           :'Client',
+    lblNotes            :'Notes',
+    lblCodeGng          :'NHM code',
+    lblnameGng          :'NHM name',
+    lblPackege          :'Package',
+    lblPlaces           :'Places',
+    lblWeight           :'Weight',
+    lblPlomb            :'Plomb',
+    lblSealingStation   :'Sealing station',
+    lblQuantity         :'Quantity',
+    btnAddCargo         :'+ Cargo',
+    btnAddPlomb         :'+ Plomb',
+    titleCargo          :'Cargo'
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.yard.ChangeClient", {
+    override:"TK.view.ky2.yard.ChangeClient",
+
+    title               :'Change client',
+    lblDateFrom         :'Date, from',
+    lbltimeFrom         :'Time, to',
+    lblClient           :'Client',
+    btnChangeCl         :'Change client',
+    btnClose            :'Close'
+});
+
+Ext.define("Ext.locale.zh_CN.form.VTypes", {
+    override:"Ext.form.VTypes",
+
+    msgInvalidFsize     :'File size should be less than ',
+    msgInvalidFType     :'File type should be in '
+});
+
+Ext.define("TK.locale.zh_CN.view.ky2.client.Filter", {
+    override:"TK.view.ky2.client.Filter",
+
+    title                   :'Filter',
+    lblArrivalFrom          :'Arrival, from',
+    lblArrivalTo            :'Arrival, to',
+    lblContainer            :'Container',
+    lblPlace                :'Placement',
+    lblAll                  :'All',
+    lblVagon                :'Vagon',
+    lblTruck                :'Truck',
+    lblDaysQuantity         :'Days quan-ty',
+    btnFilter               :'Filter',
+    btnClear                :'Clear',
+    btnClose                :'Close'
 });

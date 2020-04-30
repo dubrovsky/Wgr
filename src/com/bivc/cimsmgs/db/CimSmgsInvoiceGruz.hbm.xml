@@ -39,6 +39,9 @@
         <property name="nzgr" type="string">
             <column name="NZGR" length="2500" />
         </property>
+        <property name="nzgrEn" type="string">
+            <column name="NZGR_EN" length="2500" />
+        </property>
         <property name="cost" type="string">
             <column name="COST" length="16"/>
         </property>

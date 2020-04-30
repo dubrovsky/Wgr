@@ -12,6 +12,9 @@
         <sec:protect-pointcut expression="execution(* com.bivc.cimsmgs.actions.exchange.Iftmin_A.*())" access="CIM_IFTMIN,CIM_BTLC"/>
         <sec:protect-pointcut expression="execution(* com.bivc.cimsmgs.actions.User_A.userProvfile())" access="IS_AUTHENTICATED_FULLY"/>
         <sec:protect-pointcut expression="execution(* com.bivc.cimsmgs.actions.User_A.unText())" access="IS_AUTHENTICATED_FULLY"/>
+        <sec:protect-pointcut expression="execution(* com.bivc.cimsmgs.actions.User_A.saveGridConfig())" access="IS_AUTHENTICATED_FULLY"/>
+        <sec:protect-pointcut expression="execution(* com.bivc.cimsmgs.actions.User_A.clearGridConfig())" access="IS_AUTHENTICATED_FULLY"/>
+        <sec:protect-pointcut expression="execution(* com.bivc.cimsmgs.actions.User_A.saveLang())" access="IS_AUTHENTICATED_FULLY"/>
         <sec:protect-pointcut expression="execution(* com.bivc.cimsmgs.actions.User_A.*())" access="CIM_USR_ADMIN"/>
         <sec:protect-pointcut expression="execution(* com.bivc.cimsmgs.actions.*_A.save*())" access="CIM_SAVE"/>
         <sec:protect-pointcut expression="execution(* com.bivc.cimsmgs.actions.*_A.delete*())" access="CIM_DELETE"/>

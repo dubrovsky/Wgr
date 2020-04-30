@@ -2,6 +2,7 @@ Ext.define('TK.view.cim.CimList', {
     extend:'TK.view.DocsList',
     alias:'widget.cimlist',
 
+    itemId:'cimlistMain',
     requires: [
         'Ext.button.Split',
         'TK.Utils'
@@ -46,6 +47,7 @@ Ext.define('TK.view.cim.CimList', {
         config.dockedItems = new Array({
             dock: 'top',
             xtype: 'toolbar',
+            layout: 'column',
             itemId: 'top',
             items: [
                 {text: this.btnStat, iconCls:'filter', action:'filter', itemId:'local', forDeleted: true, forPresent: true},
@@ -69,16 +71,28 @@ Ext.define('TK.view.cim.CimList', {
                     menu: [
                         {text: this.btnCopy, action:'copy', iconCls:'copy'},
                         {text: this.btnCopyAviso, action:'copy2aviso', iconCls:'copy'},
-                        {text: this.btnCopySelect, action:'showCopySelectedWin', iconCls:'copySelected'}
+                        {text: this.btnCopySelect, action:'showCopySelectedWin', iconCls:'copySelected'},
+                        {text: this.btnCopy2ArchSel, action:'copy2archSel', iconCls:'archive'},
+                        {text: this.btnCopy2ArchTrN, action:'copy2arch', iconCls:'archive'},
+                        //перенести/скопировать в другой маршрут выбранное
+                        {text: this.btnCopy2RouteSel, action:'copy2routeSel', iconCls:'routes'},
+                        //перенести/скопировать в другой маршрут по номеру поезда
+                        {text: this.btnCopy2RouteTrN, action:'copy2route', iconCls:'routes'}
                     ]
                 },'-',
-                {text: this.btnEdit,iconCls:'edit', action:'edit'},'-'
-
+                // {text: this.btnEdit,iconCls:'edit', action:'edit'},'-'
+                {xtype:'splitbutton', text: this.btnEdit, itemId:'edit', iconCls:'edit', action:'edit',
+                    menu: [
+                        {text: this.btnEdit, action:'edit', iconCls:'edit'},
+                        {text: this.groupEdit,action:'editgroup', iconCls:'editgroup'}
+                    ]
+                }
             ]
         });
 
         if(tkUser.hasPriv('CIM_DELETE')){
             config.dockedItems[0].items.push({text: this.btnDelete,iconCls:'del',itemId:'del', action:'del'},{xtype: 'tbseparator', itemId:'del1'});
+            config.dockedItems[0].items.push({text: this.btnArchive,iconCls:'archive',itemId:'delList', action:'delList'},{xtype: 'tbseparator', itemId:'del1'});
         }
         if(tkUser.hasPriv('CIM_ADMIN_DELETE')){
             config.dockedItems[0].items.push(
@@ -95,21 +109,25 @@ Ext.define('TK.view.cim.CimList', {
     // adding train search button
     listeners:{
         afterrender: function(c) {
-            var menu = c.headerCt.getMenu();
-            var menuItem = menu.add({
-                itemid:'searchTrainHeader',
-                text: this.menuTrSearch,
-                icon:'./images/loupe.png',
-                action:'searchTrains'
-            });
-            menu.on('beforeshow', function() {
-                var currentDataIndex = menu.activeHeader.dataIndex;
-                if (currentDataIndex === 'npoezd') {
-                    menuItem.show();
-                } else {
-                    menuItem.hide();
-                }
-            });
+            this.afterrenderFn(c);
         }
+    },
+    afterrenderFn:function (c) {
+        var menu = c.headerCt.getMenu();
+        var menuItem = menu.add({
+            itemid:'searchTrainHeader',
+            text: this.menuTrSearch,
+            icon:'./images/loupe.png',
+            action:'searchTrains'
+        });
+        menu.on('beforeshow', function() {
+            var currentDataIndex = menu.activeHeader.dataIndex;
+            if (currentDataIndex === 'npoezd') {
+                menuItem.show();
+            } else {
+                menuItem.hide();
+            }
+        });
+        this.callParent(arguments);
     }
 });

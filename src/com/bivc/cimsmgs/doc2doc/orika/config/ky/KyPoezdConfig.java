@@ -6,6 +6,7 @@ import com.bivc.cimsmgs.db.ky.Poezd;
 import com.bivc.cimsmgs.db.nsi.Client;
 import com.bivc.cimsmgs.dto.PackDocDTO;
 import com.bivc.cimsmgs.dto.RouteDTO;
+import com.bivc.cimsmgs.dto.ky.PoezdBaseDTO;
 import com.bivc.cimsmgs.dto.ky2.ClientDTO;
 import com.bivc.cimsmgs.dto.ky2.PoezdDTO;
 import ma.glasnost.orika.MapperFactory;
@@ -22,6 +23,7 @@ public class KyPoezdConfig extends ConfigurableMapper {
         mapPackDoc(mapperFactory);
         mapClient(mapperFactory);
         mapPoezd(mapperFactory);
+        mapPoezdBase(mapperFactory);
 //        mapKontInto(mapperFactory);
 //        mapVagon(mapperFactory);
     }
@@ -48,6 +50,13 @@ public class KyPoezdConfig extends ConfigurableMapper {
     private void mapPoezd(MapperFactory mapperFactory) {
         mapperFactory.classMap(Poezd.class, PoezdDTO.class)
                 .fieldAToB("client.sname", "gruzotpr")
+                .byDefault()
+                .register();
+    }
+
+    private void mapPoezdBase(MapperFactory mapperFactory) {
+        mapperFactory.classMap(Poezd.class, PoezdBaseDTO.class)
+                .fieldAToB("messCount", "messCount")
                 .byDefault()
                 .register();
     }

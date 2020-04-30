@@ -127,13 +127,12 @@ Ext.define('TK.controller.docs.Docs9TreeDetailController', {
     },
 
     onDocs9FormUpdateData: function(field){
-
         var rec = this.getDocs9panel().getRecord(),
             oldVal = rec.get(field.getName()),
             newVal = field.getSubmitValue(),
             lang = this.getLangCombo().getValue();
 
-        if(oldVal != newVal){
+        // if(oldVal != newVal){
             rec.set(field.getName(), newVal);
             var textFieldName = (lang == 'de' ? 'text2' : 'text1');
             if(field.getName() == textFieldName || field.getName() == 'ndoc'){
@@ -143,7 +142,7 @@ Ext.define('TK.controller.docs.Docs9TreeDetailController', {
                     (rec.get('ndoc') ? ' ' + rec.get('ndoc') : '')
                 );
             }
-        }
+        // }
     },
 
     onAddClick: function(btn){
@@ -190,10 +189,17 @@ Ext.define('TK.controller.docs.Docs9TreeDetailController', {
     saveFunc:function()
     {
         var ownerDoc = this.getWin().getOwnerDoc(),
-            dataObj = ownerDoc.dataObj[ownerDoc.getVagCollectionName()];
+            dataObj = ownerDoc.dataObj[ownerDoc.getVagCollectionName()],
+        rootNode=this.getTreepanel().getRootNode();
         if(this.getTreepanel().getRootNode().hasChildNodes() && dataObj){
             this.clearAllDocs9InDataObj();
             this.saveDocs9();
+
+            rootNode.removeAll();
+
+            //// fill tree
+            this.fillTree(ownerDoc, rootNode);
+
             ownerDoc.fireEvent('onChangeDocs9DisplField', ownerDoc);
         }
     },
@@ -343,6 +349,18 @@ Ext.define('TK.controller.docs.Docs9TreeDetailController', {
         rootNode.removeAll();
 
         //// fill tree
+        this.fillTree(ownerDoc, rootNode);
+
+        win.show();
+    },
+    /**
+     * Метож заполняем дерево документов записями
+     * @param ownerDoc документ вызвавший окно
+     * @param rootNode корневой элемент
+     */
+    fillTree:function(ownerDoc, rootNode)
+    {
+        //// fill tree
         var vags = ownerDoc.dataObj[ownerDoc.getVagCollectionName()];
         if(vags && !Ext.Object.isEmpty(vags)){
             if(this.isContOtpr()) {
@@ -351,9 +369,6 @@ Ext.define('TK.controller.docs.Docs9TreeDetailController', {
                 this.initVagsNodes(vags, rootNode);
             }
         }
-        /// END fill tree
-
-        win.show();
     },
 
     loopVagsNodes: function(vags, rootNode){
@@ -478,8 +493,9 @@ Ext.define('TK.controller.docs.Docs9TreeDetailController', {
 
             docs9DisplField = controller.getDoc9DispField(),
             docs9Result = '';
-
+        map = new Ext.util.HashMap();
         if(vags && !Ext.Object.isEmpty(vags)){
+
             for(var vagIndx in vags){
 
                 var vag = vags[vagIndx],
@@ -495,68 +511,102 @@ Ext.define('TK.controller.docs.Docs9TreeDetailController', {
                             var cont = conts[contIndx];
 
                             docs9 = cont[docForm.getDocs9CollectionName()];
-                            docs9Result += this.buildDisplayedDocs9String(docs9);
+                            // docs9Result +=
+                                this.buildDocs9Map(docs9,map);
                         }
                     }
                 } else {
                     docs9 = vag[docForm.getDocs9CollectionName()];
-                    docs9Result += this.buildDisplayedDocs9String(docs9);
+                    // docs9Result +=
+                        this.buildDocs9Map(docs9,map);
                 }
             }
         }
 
-        docs9DisplField.setValue(docs9Result);
+        docs9DisplField.setValue(this.buildDisplayedDocs9String(map));
     },
 
-    buildDisplayedDocs9String: function(docs9) {
-        var docs9Result = '';
+    buildDocs9Map: function(docs9,map) {
+        var docs9Result = ''
         if(docs9 && !Ext.Object.isEmpty(docs9)){
             var len=Object.keys(docs9).length,
                 used=[],count=0;
-            used.length=len;
-            used.fill(false);
-            for(var docs9Indx in docs9){
-                var doc9 = docs9[docs9Indx];
-                if(!used[count++])
-                {
-                    used[count-1]=true;
-                    var str='';
-                    str += (doc9['text'] ? doc9['text'] + ':' : '');
-                    str += (doc9['text2'] ? doc9['text2'] + '  ' : '');
-                    str += (doc9['ndoc'] ? doc9['ndoc'] + '  ' : '');
-                    str += (doc9['dat'] ? 'от ' + doc9['dat'] + '  ' : '');
-                    str += (doc9['ncopy'] ? doc9['ncopy'] + ' экз '  : '');
-                    if(doc9['text']&&doc9['ncas']&&(doc9['text'].toLowerCase()===doc9['ncas'].toLowerCase()))
-                    {
-                        var count2=0;
-                        for(var docs9Indx2 in docs9){
-                            var doc9_2=docs9[docs9Indx2];
-                            if(!used[count2++]&&doc9_2['text']&&doc9_2['ncas']&&(doc9['text'].toLowerCase()===doc9_2['text'].toLowerCase())&&(doc9_2['text'].toLowerCase()===doc9_2['ncas'].toLowerCase()))
-                            {
-                                used[count2-1]=true;
-                                var str_tmp='';
-                                str_tmp += (doc9_2['text2'] ? doc9_2['text2'] + '  ' : '');
-                                str_tmp += (doc9_2['ndoc'] ? doc9_2['ndoc'] + '  ' : '');
-                                str_tmp += (doc9_2['dat'] ? 'от ' + doc9_2['dat'] + '  ' : '');
-                                str_tmp += (doc9_2['ncopy'] ? doc9_2['ncopy'] + ' экз '  : '');
-                                if(str.length>0&&str_tmp.length>0)
-                                    str+=',';
-                                str+=str_tmp;
-                            }
-                        }
-                    }
-                    docs9Result+=str+'\n'
-                }
+            // used.length=len;
+            // used.fill(false);
+            for(var docs9Indx in docs9) {
+                var doc9rec = docs9[docs9Indx],
+                    mapRec=map.get(doc9rec['text']),strRec;
 
-                // docs9Result += (doc9['text'] ? doc9['text'] + '  ' : '');
-                // docs9Result += (doc9['text2'] ? doc9['text2'] + '  ' : '');
-                // docs9Result += (doc9['ndoc'] ? doc9['ndoc'] + '  ' : '');
-                // docs9Result += (doc9['dat'] ? 'от ' + doc9['dat'] + '  ' : '');
-                // docs9Result += (doc9['ncopy'] ? doc9['ncopy'] + ' экз '  : '');
-                // docs9Result += '\n';
+                strRec=mapRec?mapRec:'';
+                if(strRec!=='')
+                    strRec+=', ';
+                strRec+=doc9rec['ndoc'] ? doc9rec['ndoc'] + '  ' : '';
+                strRec += (doc9rec['dat'] ? 'от ' + doc9rec['dat'] : '');
+                map.add(doc9rec['text'],strRec);
+
             }
+            // var keys= map.getKeys();
+            // for(var keyIdx=0;keyIdx<keys.length;keyIdx++)
+            // {
+            //     docs9Result+=keys[keyIdx]+': '+map.get(keys[keyIdx])+'\n';
+            // }
+            // map.each(function(key, value, length){
+            //     console.log(key, value, length);
+            // });
+
+
+            // for(var docs9Indx in docs9){
+            //     var doc9 = docs9[docs9Indx];
+            //     if(!used[count++])
+            //     {
+            //         used[count-1]=true;
+            //         var str='';
+            //         str += (doc9['text'] ? doc9['text'] + ':' : '');
+            //         str += (doc9['text2'] ? doc9['text2'] + '  ' : '');
+            //         str += (doc9['ndoc'] ? doc9['ndoc'] + '  ' : '');
+            //         str += (doc9['dat'] ? 'от ' + doc9['dat'] + '  ' : '');
+            //         str += (doc9['ncopy'] ? doc9['ncopy'] + ' экз '  : '');
+            //         if(doc9['text']&&doc9['ncas']&&(doc9['text'].toLowerCase()===doc9['ncas'].toLowerCase()))
+            //         {
+            //             var count2=0;
+            //             for(var docs9Indx2 in docs9){
+            //                 var doc9_2=docs9[docs9Indx2];
+            //                 if(!used[count2++]&&doc9_2['text']&&doc9_2['ncas']&&(doc9['text'].toLowerCase()===doc9_2['text'].toLowerCase())&&(doc9_2['text'].toLowerCase()===doc9_2['ncas'].toLowerCase()))
+            //                 {
+            //                     used[count2-1]=true;
+            //                     var str_tmp='';
+            //                     str_tmp += (doc9_2['text2'] ? doc9_2['text2'] + '  ' : '');
+            //                     str_tmp += (doc9_2['ndoc'] ? doc9_2['ndoc'] + '  ' : '');
+            //                     str_tmp += (doc9_2['dat'] ? 'от ' + doc9_2['dat'] + '  ' : '');
+            //                     str_tmp += (doc9_2['ncopy'] ? doc9_2['ncopy'] + ' экз '  : '');
+            //                     if(str.length>0&&str_tmp.length>0)
+            //                         str+=',';
+            //                     str+=str_tmp;
+            //                 }
+            //             }
+            //         }
+            //         docs9Result+=str+'\n'
+            //     }
+            //
+            //     // docs9Result += (doc9['text'] ? doc9['text'] + '  ' : '');
+            //     // docs9Result += (doc9['text2'] ? doc9['text2'] + '  ' : '');
+            //     // docs9Result += (doc9['ndoc'] ? doc9['ndoc'] + '  ' : '');
+            //     // docs9Result += (doc9['dat'] ? 'от ' + doc9['dat'] + '  ' : '');
+            //     // docs9Result += (doc9['ncopy'] ? doc9['ncopy'] + ' экз '  : '');
+            //     // docs9Result += '\n';
+            // }
         }
 
+        // return docs9Result;
+    },
+    buildDisplayedDocs9String: function(map) {
+        var docs9Result = '';
+
+        var keys= map.getKeys();
+        for(var keyIdx=0;keyIdx<keys.length;keyIdx++)
+        {
+            docs9Result+=(keys[keyIdx]?keys[keyIdx]+': ':'')+map.get(keys[keyIdx])+'\n';
+        }
         return docs9Result;
     }
 });

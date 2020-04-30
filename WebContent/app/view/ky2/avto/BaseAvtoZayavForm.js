@@ -26,7 +26,7 @@ Ext.define('TK.view.ky2.avto.BaseAvtoZayavForm', {
                     type: 'hbox',
                     defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
                 },
-                fieldLabel: 'Номер заявки',
+                fieldLabel: this.lblOrderNum,
                 items: [{
                     xtype: 'textfield',
                     name: 'no_zayav',
@@ -46,18 +46,18 @@ Ext.define('TK.view.ky2.avto.BaseAvtoZayavForm', {
                 xtype: 'radiogroup',
                 width: 400,
                 labelWidth: 150,
-                fieldLabel: 'Тип заявки',
+                fieldLabel: this.lblOrderType,
                 itemId: 'koleya',
                 // columns: 1,
                 // vertical: true,
                 allowBlank: false,
                 items: [
-                    {boxLabel: 'Выгрузка', name: 'direction', inputValue: 1},
-                    {boxLabel: 'Погрузка', name: 'direction', inputValue: 2}
+                    {boxLabel: this.lblUnloading, name: 'direction', inputValue: 1},
+                    {boxLabel: this.lblLoading, name: 'direction', inputValue: 2}
                 ]
             }, {
                 xtype: 'fieldset',
-                title: 'Оформлена',
+                title: this.titleDesigned,
                 layout: 'anchor',
                 defaults: {
                     anchor: '100%'
@@ -65,13 +65,13 @@ Ext.define('TK.view.ky2.avto.BaseAvtoZayavForm', {
                 width: 450,
                 items: [{
                     labelWidth: '145px',
-                    fieldLabel: 'Дата',
+                    fieldLabel: this.lblDate,
                     name: 'zayavDate',
                     xtype: 'datefield',
                     altFormats: 'd.m.y'
                 }, {
                     labelWidth: '145px',
-                    fieldLabel: 'Время',
+                    fieldLabel: this.lblTime,
                     name: 'zayavTime',
                     xtype: 'timefield',
                     // altFormats:'H:i'
@@ -83,7 +83,7 @@ Ext.define('TK.view.ky2.avto.BaseAvtoZayavForm', {
                     type: 'hbox',
                     defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
                 },
-                fieldLabel: 'Номер авто',
+                fieldLabel: this.lblTruckNum,
                 items: [{
                     xtype: 'textfield',
                     name: 'no_avto',
@@ -100,28 +100,40 @@ Ext.define('TK.view.ky2.avto.BaseAvtoZayavForm', {
                 }]
             }, {
                 xtype: 'textfield',
-                fieldLabel: 'Номер прицепа',
+                fieldLabel: this.lblTrailerNum,
                 name: 'no_trail',
                 maxLength: 250
             }, {
                 xtype: 'textfield',
-                fieldLabel: 'ФИО водителя',
+                fieldLabel: this.lblDriverFIO,
                 name: 'driver_fio',
                 maxLength: 250
+            }, {
+                xtype: 'textfield',
+                fieldLabel: this.lblDriverPassport,
+                name: 'driver_pasp',
+                maxLength: 25
+            },{
+                name : 'prim',
+                xtype: 'textarea',
+                fieldLabel: this.lblNotes,
+                width:450,
+                maxLength: 500
             }, {
                 xtype: 'fieldcontainer',
                 layout: {
                     type: 'hbox',
                     defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
                 },
-                fieldLabel: 'Клиент',
+                fieldLabel: this.lblClient,
                 items: [{
                     xtype: 'textfield',
                     name: 'client.sname',
+                    itemId: 'gruzotpr',
                     maxLength: 128,
                     // rows: 3,
                     flex: 1,
-                    readOnly: true,
+                    readOnly: false,
                     allowBlank: false
                 }, {
                     xtype: 'button',
@@ -278,7 +290,7 @@ Ext.define('TK.view.ky2.avto.BaseAvtoZayavForm', {
                 iconCls: 'save_close',
                 action: 'saveExit'
             }, '-',
-            {text: '+Контейнер/Груз', iconCls: 'edit', action: 'editCtGr'}, '-'
+            {text: this.btnCtGr, iconCls: 'edit', action: 'editCtGr'}, '-'
 
 
         );

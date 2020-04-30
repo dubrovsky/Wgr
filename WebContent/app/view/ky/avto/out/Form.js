@@ -1,6 +1,12 @@
 Ext.define('TK.view.ky.avto.out.Form', {
     extend: 'Ext.container.Container',
     alias: 'widget.kyavtooutform',
+
+    requires: [
+        'TK.view.ky.avto.BaseAvtoForm',
+        'TK.view.ky.avto.out.kont.List'
+    ],
+
     title: 'Авто, отправление',
 
     closable: false,
@@ -16,7 +22,7 @@ Ext.define('TK.view.ky.avto.out.Form', {
             //this.callParent(arguments);
             config.items[0].items.splice(0, 0, {
                 xtype:'fieldset',
-                title: 'Отправление',
+                title: '!Отправление',
                 layout: 'anchor',
                 defaults: {
                     anchor: '100%'

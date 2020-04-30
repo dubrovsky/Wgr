@@ -1,7 +1,12 @@
 Ext.define('TK.view.ky2.avto.out.AvtoForm', {
     extend: 'Ext.container.Container',
     alias: 'widget.ky2avtooutform',
-    title: 'Авто, отправление',
+
+    requires: [
+        'TK.view.ky2.avto.BaseAvtoForm'
+    ],
+
+    title: this.title,
 
     closable: false,
     layout: 'fit',
@@ -16,7 +21,7 @@ Ext.define('TK.view.ky2.avto.out.AvtoForm', {
             //this.callParent(arguments);
             config.items.splice(0, 0, {
                 xtype:'fieldset',
-                title: 'Отправление',
+                title: this.lblDeparture,
                 layout: 'anchor',
                 defaults: {
                     anchor: '100%'
@@ -24,13 +29,13 @@ Ext.define('TK.view.ky2.avto.out.AvtoForm', {
                 width:450,
                 items: [{
                     labelWidth: '145px',
-                    fieldLabel:'Дата',
+                    fieldLabel:this.lblDate,
                     name : 'dotpDate',
                     xtype: 'datefield',
                     altFormats:'d.m.y'
                 },{
                     labelWidth: '145px',
-                    fieldLabel:'Время',
+                    fieldLabel:this.lblTime,
                     name : 'dotpTime',
                     xtype: 'timefield',
                     // altFormats:'H:i'
@@ -143,12 +148,12 @@ Ext.define('TK.view.ky2.avto.out.AvtoForm', {
         buildTopToolbar: function (config) {
             TK.view.ky2.avto.BaseAvtoForm.prototype.buildTopToolbar.apply(this, arguments);
             config.tbar.push(
-                {xtype:'splitbutton', text: 'Печать', iconCls:'upload', action: 'print',
+                {xtype:'splitbutton', text: this.btnPrint, iconCls:'upload', action: 'print',
                     menu: [
-                        {text: 'WZ', iconCls:'excel', action:'wz'},'-'
+                        {text: this.btnWZ, iconCls:'excel', action:'wz'},'-'
                     ]
                 },{
-                    text: '+Контейнер/Груз',
+                    text: this.btnAddContGr,
                     iconCls: 'edit',
                     action: 'editCtGr'
                 }

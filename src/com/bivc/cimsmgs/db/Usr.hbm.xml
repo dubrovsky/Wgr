@@ -15,6 +15,9 @@
         <property name="namKlient" type="string">
             <column name="NAM_KLIENT" length="96"/>
         </property>
+        <property name="lng" type="string">
+            <column name="LNG" length="5"/>
+        </property>
         <property name="email" type="string">
             <column name="EMAIL" length="250"/>
         </property>

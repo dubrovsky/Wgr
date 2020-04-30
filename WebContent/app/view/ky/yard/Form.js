@@ -2,6 +2,11 @@ Ext.define('TK.view.ky.yard.Form', {
     extend: 'TK.view.ky.AbstractWindow',
     alias:'widget.kyyardform',
 
+    requires: [
+        'TK.view.ky.AbstractForm'
+    ],
+
+
     buildItems: function(config) {
         var owner = this;
         config.items = [{
@@ -29,7 +34,7 @@ Ext.define('TK.view.ky.yard.Form', {
                     {
                         xtype: 'numberfield',
                         name : 'z',
-                        fieldLabel: /*owner.labelZ*/'Ярус',
+                        fieldLabel: /*owner.labelZ*/'!!!Ярус',
                         minValue: 0,
                         allowDecimals: false,
                         afterLabelTextTpl: this.required,

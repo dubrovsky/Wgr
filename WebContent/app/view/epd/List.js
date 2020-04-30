@@ -6,6 +6,7 @@ Ext.define('TK.view.epd.List', {
         'Ext.button.Split',
         'TK.Utils'
     ],
+    itemId:'epdlistMain',
 
     buildStore:function (config) {
         config.store = 'Epdes';

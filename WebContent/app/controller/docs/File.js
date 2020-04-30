@@ -2,10 +2,11 @@ Ext.define('TK.controller.docs.File', {
     extend: 'Ext.app.Controller',
 
     requires: [
-        'TK.Utils'
+        'TK.Utils',
+        'TK.view.file.Flags'
     ],
 
-    views: ['file.List','file.Form'],
+    views: ['file.List','file.Form', 'file.Win'],
     stores: ['FileInfs','Files'],
     models: ['FileInf','File'],
     refs: [
@@ -16,6 +17,14 @@ Ext.define('TK.controller.docs.File', {
         {
             ref: 'menutree',
             selector: 'viewport > menutree'
+        },
+        {
+            ref: 'filesGrid',
+            selector: 'viewport > tabpanel > panel > grid'
+        },
+        {
+            ref: 'filesWinGrid',
+            selector: 'filewininvoice > grid'
         }
     ],
     init: function() {
@@ -23,28 +32,71 @@ Ext.define('TK.controller.docs.File', {
             'viewport > tabpanel > panel > form button[action="saveFile"]': {
                 click: this.onSaveFile
             },
+            'filewininvoice > form button[action="saveFile"]': {
+                click: this.onSaveFile
+            },
             'viewport > tabpanel > panel > grid button[action="deleteFile"]': {
+                click: this.onDeleteFile
+            },
+            'filewininvoice > grid button[action="deleteFile"]': {
                 click: this.onDeleteFile
             },
             'viewport > tabpanel > panel > grid button[action="restoreFile"]': {
                 click: this.onRestoreFile
             },
+            'filewininvoice > grid button[action="restoreFile"]': {
+                click: this.onRestoreFile
+            },
             'viewport > tabpanel > panel > grid button[action="destroyFile"]': {
+                click: this.onDestroyFile
+            },
+            'filewininvoice > grid button[action="destroyFile"]': {
                 click: this.onDestroyFile
             },
             'viewport > tabpanel > panel > form button[action="save"]': {
                 click: this.onSaveFile
             },
+            'viewport > tabpanel > panel > grid button[action="flag"]': {
+                click: this.onFlag
+            },
+            'filewininvoice >  grid button[action="flag"]': {
+                click: this.onFlag
+            },
+            'fileflags button[action="saveFlag"]': {
+                click: this.onSaveFlag
+            },
             'viewport > tabpanel > panel > grid button[action="view"]': {
+                click: this.onView
+            },
+            'filewininvoice > grid button[action="view"]': {
                 click: this.onView
             },
             'viewport > tabpanel > panel > grid checkbox[action="viewDeletedFiles"]': {
                 change: this.onViewDeletedFiles
+            },
+            'filewininvoice > grid checkbox[action="viewDeletedFiles"]': {
+                change: this.onViewDeletedFiles
+            },
+            // 'filewininvoice toolbar button[action="close"]': {
+            'filewininvoice > toolbar > button[action="close"]': {
+                click: this.onWinClose
+            },
+            'filelist': {
+                itemclick: function (view, record) {
+                    this.fireEvent('updateMessanger', view, record);
+                }
             }
+
         });
     },
+    onWinClose: function(btn){
+        btn.up('window').close();
+        this.getController('docs.File').getCenter().down('grid').store.reload();
+    },
+
     initEvents: function(form){
     },
+
     onSaveFile: function(btn){
         var panel = btn.up('form');  // files
         if(panel.getForm().isValid()){
@@ -70,14 +122,47 @@ Ext.define('TK.controller.docs.File', {
     		TK.Utils.failureDataMsg();
     	}
     },
-    onView: function(btn){
-        var list = btn.up('grid');
-    	if(TK.Utils.isRowSelected(list))
-       {
-            var data = list.selModel.getLastSelected().data;
-            window.open('File_view.do?files.hid=' + data.hid,'_self','');
-       }
+    onSaveFlag: function(btn) {
+        var panel = btn.up('form');  // flags
+        if(panel.getForm().isValid()){
+	    	panel.getForm().submit({
+			    waitMsg: this.waitMsg1,
+	            url: 'File_' + btn.action + '.do',
+                params: {},
+	            scope: panel,
+			    success: function(form, action) {
+			            this.grid4Refresh.getStore().reload();
+			        panel.up('window').close();
+			    },
+			    failure: panel.failureAlert
+			});
+		} else {
+    		TK.Utils.failureDataMsg();
+    	}
     },
+    onFlag: function(btn) {
+        var list = btn.up('grid');
+        if (TK.Utils.isRowSelected(list)) {
+            var data = list.selModel.getLastSelected().data,
+                win = Ext.widget('fileflags');
+            win.initFlags(data['usersFlag'], data['hid'], list);
+        }
+    },
+    onView: function(btn) {
+        var list = btn.up('grid');
+        if (TK.Utils.isRowSelected(list)) {
+            var data = list.selModel.getLastSelected().data;
+            window.open('File_view.do?files.hid=' + data.hid, '_blank', '');
+            setTimeout(this.reloadList, 2000, list);
+            // list.getStore().reload();
+        }
+    },
+
+
+    reloadList: function(list){
+        list.getStore().reload()
+    },
+
     onDeleteFile: function(btn){
         var list = btn.up('grid'),
 	        me = this;

@@ -2,6 +2,17 @@ Ext.define('TK.controller.ky2.YardController', {
     extend: 'Ext.app.Controller',
     mixins: ['TK.controller.FilterUtils'],
 
+    requires: [
+        'TK.Utils',
+        'TK.model.ky2.YardBase',
+        'TK.model.ky2.YardSector',
+        'TK.view.ky2.yard.Filter',
+        'TK.view.ky2.yard.ChangeClient',
+        'TK.view.ky2.yard.YardSectorList',
+        'TK.view.user.ListGroups'
+    ],
+
+
     views: [
         'ky2.yard.YardList',
         'ky2.yard.YardForm',
@@ -40,20 +51,26 @@ Ext.define('TK.controller.ky2.YardController', {
 
     init: function () {
         this.control({
-            'ky2yardlist button[action="create"]': {
+            'ky2yardlist button[action="yard"] menuitem[action=create]': {
                 click: this.createYard
             },
             'ky2yardsectorlist button[action="create"]': {
                 click: this.createYardSector
             },
-            'ky2yardlist button[action="edit"]': {
-                click: this.editYard
-            },
+            // 'ky2yardlist button[action="yard"] menuitem[action=edit]': {
+            //     click: this.editYard
+            // },
             'ky2yardsectorlist button[action="edit"]': {
                 click: this.editYardSector
             },
             'ky2yardlist': {
-                itemdblclick: this.editYard/*,
+                itemdblclick: function() {
+                    this.getController('ky2.YardCtGrController').editKont();
+                },
+                itemclick: function (view, record) {
+                    this.fireEvent('updateMessanger', view, record);
+                }
+                /*,
                 select: this.selectYardInList*/
             },
             'ky2yardlist button[action="delete"]': {
@@ -64,6 +81,9 @@ Ext.define('TK.controller.ky2.YardController', {
             },
             'ky2yardlist button[action="filterKontYard"]': {
                 click: this.filterKontYard
+            },
+            'ky2yardlist button[action="clearFilter"]': {
+                click: this.clearFilter
             },
             /*'ky2yardfilter datefield[name="startDate"]': {
                 select: this.selectFilterStartDate
@@ -85,7 +105,30 @@ Ext.define('TK.controller.ky2.YardController', {
             },
             'ky2yardsectorform button[action=getUserGroups]': {
                 click: this.getUserGroups
+            },
+            'ky2yardlist button[action="xls"] menuitem[action=xlsfilter]': {
+                click: this.onUploadXLS
+            },
+            'ky2yardlist button[action="xls"] menuitem[action=xlsexport]': {
+                click: this.onExportXLS
+            },
+            'ky2yardlist button[action="xls"] menuitem[action=xlsstan]': {
+                click: this.onExportXLS
+            },
+            'ky2yardlist button[action="xls"] menuitem[action=xlsupdate]': {
+                click: this.onUpdateXLS
+            },
+            'ky2yardchangeclient button[action="changeClient"]': {
+                click: this.changeClient
+            },
+            'ky2yardlist button[action="changeClient"]': {
+                click: this.onChangeClient
+            },
+            'ky2yardchangeclient button[action="nsiOtpr"]': {
+                click: this.showNsiOtpr
             }
+
+
             /*,
             'ky2yardsectorlist > grid': {
                 // itemdblclick: this.selectYardSector,
@@ -95,19 +138,199 @@ Ext.define('TK.controller.ky2.YardController', {
         });
     },
 
+    showNsiOtpr: function (btn) {
+        var panel = btn.up(),
+            nsiGrid = this.getController('Nsi').nsiKyClient(panel.down('#gruzotpr').getValue()).getComponent(0);
+        nsiGrid.on('itemdblclick', this.selectClient, panel);
+    },
+
+    selectClient: function (view, record) {
+        var data = record.data;
+        this.down('#clientHid').setValue(data['hid']);
+        this.down('#gruzotpr').setValue(data['sname']);
+        view.up('window').close();
+    },
+
+
+
+    onUpdateXLS: function () {
+        var win = Ext.create('Ext.window.Window', {
+            title: 'Загрузка XLS',
+            width: 600, y: 100, modal: true,
+            layout: 'fit',
+            items: {
+                xtype: 'form',
+                autoHeight: true,
+                bodyStyle: 'padding: 10px 10px 0 10px;',
+                labelWidth: 40,
+                items: [
+                    {
+                        xtype: 'filefield',
+                        emptyText: 'Выбор файла для загрузки...',
+                        fieldLabel: 'Файл',
+                        name: 'upload',
+                        buttonText: 'Обзор...',
+                        anchor: '100%'
+                    }
+                ],
+                buttons: [{
+                    text: 'Загрузить',
+                    handler: function (btn) {
+                        var form = btn.up('form').getForm();
+                        if (form.isValid()) {
+                            form.submit({
+                                url: 'ky2/secure/Yard.do',
+                                params: {action: 'update', routeId: this.getYardlist().getStore().getProxy().extraParams.routeId},
+                                waitMsg: 'Загрузка',
+                                scope: this,
+                                success: function (form, action) {
+                                    Ext.Msg.alert('Внимание', 'Данные обновлены');
+                                    this.getYardlist().getStore().reload();
+
+                                    win.close();
+                                }
+                                , failure: function (form, action) {
+                                    TK.Utils.makeErrMsg(action.response, this.errorMsg);
+                                }
+                            });
+                        }
+                    },
+                    scope: this
+                }, {
+                    text: 'Закрыть',
+                    handler: function (btn) {
+                        btn.up('window').close();
+                    }
+                }]
+            }
+        }).show();
+    },
+
+    onExportXLS: function (btn) {
+        var store = this.getYardlist().getStore(),
+            proxy = store.getProxy(),
+            params = Ext.clone(proxy.extraParams),
+            url = proxy.url,
+            filters = [];
+        params.action = btn.action;
+        if(store.filters && store.filters.getCount() > 0) {
+            store.filters.each(function (filter) {
+                filters.push({property: filter.property, value: filter.value});
+            });
+            params.filter = Ext.encode(filters);
+        }
+
+        window.open(url + '?' + Ext.Object.toQueryString (params), '_blank', '');
+    },
+
+    onUploadXLS: function () {
+        var win = Ext.create('Ext.window.Window', {
+            title: 'Загрузка XLS',
+            width: 600, y: 100, modal: true,
+            layout: 'fit',
+            items: {
+                xtype: 'form',
+                autoHeight: true,
+                bodyStyle: 'padding: 10px 10px 0 10px;',
+                labelWidth: 40,
+                items: [
+                    {
+                        xtype: 'filefield',
+                        emptyText: 'Выбор файла для загрузки...',
+                        fieldLabel: 'Файл',
+                        name: 'upload',
+                        buttonText: 'Обзор...',
+                        anchor: '100%'
+                    }
+                ],
+                buttons: [{
+                    text: 'Загрузить',
+                    handler: function (btn) {
+                        var form = btn.up('form').getForm();
+                        if (form.isValid()) {
+                            form.submit({
+                                url: 'ky2/secure/Yard.do',
+                                params: {action: 'upload'},
+                                waitMsg: 'Загрузка',
+                                scope: this,
+                                success: function (form, action) {
+                                    var nkons = Ext.JSON.decode(action.response.responseText).rows[0];
+                                    this.getYardlist().getStore().getProxy().extraParams.nkons = nkons;
+                                    this.getYardlist().getStore().load({
+                                        callback: function (records, operation, success) {
+                                            var nkonsReturn = [],
+                                                notFoundCounter = 0,
+                                                notFoundString = '',
+                                                invalidLastDigit = '';
+                                            Ext.Object.each(records, function (idx, sector) {
+                                                Ext.each(sector.get('konts'), function (kont) {
+                                                    nkonsReturn.push(kont['nkon']);
+                                                });
+                                            });
+                                            Ext.each(nkons, function (nkon) {
+                                                if (!nkonsReturn.includes(nkon)) {
+                                                    notFoundCounter ++;
+                                                    notFoundString += nkon + ' ';
+                                                    var valid = TK.Validators.kontNumLastDigit(nkon);
+                                                    if (Ext.isString(valid) || !valid)
+                                                        invalidLastDigit += nkon + ' ';
+                                                }
+                                            }, this);
+                                            Ext.Msg.show({
+                                                width: 500,
+                                                title: 'Внимание',
+                                                msg: 'Не найдено: ' + notFoundCounter + '<br> ' + notFoundString + '<br>' + (invalidLastDigit.length !== 0 ? 'Неверный контрольный знак:<br>' + invalidLastDigit : ''),
+                                                buttons: Ext.MessageBox.OK,
+                                                icon: Ext.MessageBox.WARNING
+                                            });
+                                        },
+                                        scope: this
+                                    });
+                                    // this.applyFilter(nkons);
+                                    win.close();
+                                }
+                                , failure: function (form, action) {
+                                    TK.Utils.makeErrMsg(action.response, this.errorMsg);
+                                }
+                            });
+                        }
+                    },
+                    scope: this
+                }, {
+                    text: 'Закрыть',
+                    handler: function (btn) {
+                        btn.up('window').close();
+                    }
+                }]
+            }
+        }).show();
+    },
+
     createYard: function (btn) {
         var yardcontainer = Ext.widget('ky2yardform', {title: this.titleCreate});
         yardcontainer.down('form').loadRecord(Ext.create('TK.model.ky2.YardBase'));
     },
 
     createYardSector: function (btn) {
-        var yardcontainer = Ext.widget('ky2yardsectorform', {title: 'Создать сектор'});
+        var yardcontainer = Ext.widget('ky2yardsectorform', {title: this.titleCreateSector});
         yardcontainer.down('form').loadRecord(Ext.create('TK.model.ky2.YardSector'));
+    },
+
+    onChangeClient: function (btn) {
+        var yardlist = this.getYardlist();
+        if (!TK.Utils.isRowSelected(yardlist)) {
+            return false;
+        }
+        var win = Ext.widget('ky2yardchangeclient');
+        Ext.each(yardlist.selModel.getSelection(), function (yard) {
+                win.down('form').add({xtype: 'numberfield', hidden:'true', name: 'hid', value: yard.get('konts')[0]['hid']});
+            }
+        );
     },
 
     editYard: function (btn) {
         var yardlist = this.getYardlist();
-        if (!TK.Utils.isRowSelected(yardlist)) {
+        if (!TK.Utils.isOneRowSelected(yardlist)) {
             return false;
         }
 
@@ -136,7 +359,7 @@ Ext.define('TK.controller.ky2.YardController', {
             return false;
         }
 
-        var yardsectorcontainer = Ext.widget('ky2yardsectorform', {title: 'Редактировать'});
+        var yardsectorcontainer = Ext.widget('ky2yardsectorform', {title: this.titleEditSector});
         yardsectorcontainer.setLoading(true);
 
         var yardsector = Ext.ModelManager.getModel('TK.model.ky2.YardSector'),
@@ -276,14 +499,43 @@ Ext.define('TK.controller.ky2.YardController', {
     },
     filterKontYard: function (btn) {
         var win = Ext.widget('ky2yardfilter');
+        win.down('#gruzotpr').getStore().getProxy().extraParams['routeId'] = this.getYardlist().getStore().getProxy().extraParams['routeId'];
         this.initFilter(win.down('form').getForm(), btn.up('grid').getStore());
     },
+
     applyFilterKontYard: function (btn) {
         var form = btn.up('form').getForm();
         if (form.isValid()) {
             this.applyFilter(form, this.getYardlist().getStore());
         }
     },
+
+    changeClient: function (btn) {
+        var form = btn.up('form').getForm();
+        if (form.isValid()) {
+            Ext.Ajax.request({
+                url: 'ky2/secure/Yard.do',
+                params: {action: 'change_client', jsonRequest: Ext.encode(form.getValues())},
+                scope: this,
+                success: function (response, options) {
+                    this.getYardlist().getStore().reload();
+                    btn.up('window').close();
+                },
+                failure: function (response, options) {
+                    TK.Utils.makeErrMsg(response, 'Error!..');
+                }
+            });
+
+        }
+    },
+
+    clearFilter: function (btn) {
+        var store = this.getYardlist().getStore();
+        store.clearFilter(true);
+        delete store.getProxy().extraParams.nkons;
+        store.load();
+    },
+
     getYardSectors: function (btn) {
         var win = Ext.widget('ky2yardsectorlist'),
             store = win.down('grid').getStore();

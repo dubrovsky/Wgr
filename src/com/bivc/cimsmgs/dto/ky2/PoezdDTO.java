@@ -1,5 +1,6 @@
 package com.bivc.cimsmgs.dto.ky2;
 
+import com.bivc.cimsmgs.commons.DateTimeUtils;
 import com.bivc.cimsmgs.commons.TimeSerializer;
 import com.bivc.cimsmgs.formats.json.serializers.DateSerializer;
 import com.bivc.cimsmgs.formats.json.serializers.DateTimeDeserializer;
@@ -21,8 +22,10 @@ public class PoezdDTO {
     private Byte direction;
     private String nppr;
     private String gruzotpr;
+
     @JsonSerialize(using = DateTimeSerializer.class)
     private Date dprb;
+
     @JsonSerialize(using = DateSerializer.class)
     @JsonDeserialize(using = DateTimeDeserializer.class)
     private Date dprbDate;
@@ -33,6 +36,7 @@ public class PoezdDTO {
 
     @JsonSerialize(using = DateTimeSerializer.class)
     private Date dotp;
+
     @JsonSerialize(using = DateSerializer.class)
     @JsonDeserialize(using = DateTimeDeserializer.class)
     private Date dotpDate;
@@ -68,7 +72,13 @@ public class PoezdDTO {
     }
 
     public Date getDprb() {
-        return dprb;
+        if(this.dprbDate != null){
+            this.dprb = this.dprbDate;
+            if(this.dprbTime != null){
+                this.dprb = DateTimeUtils.addTimeToDate(this.dprbDate, this.dprbTime);
+            }
+        }
+        return this.dprb;
     }
 
     public void setDprb(Date dprb) {

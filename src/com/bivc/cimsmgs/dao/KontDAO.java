@@ -40,4 +40,6 @@ public interface KontDAO extends GenericDAO<Kont, Long> {
     List<Kont> findKyKontsForDocsKont(String utiN, Route route, Usr usr);
 
     List<Kont> findAll(String nkon);
+
+    Kont findByNkon(String nkon);
 }

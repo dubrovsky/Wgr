@@ -1,5 +1,10 @@
 Ext.define('TK.model.ky.KontAbstract', {
     extend: 'Ext.data.Model',
+
+    requires: [
+        'TK.Utils'
+    ],
+
     fields: [
         {name:'nkon', type: 'string'},
         {name:'poruz', type: 'boolean'},

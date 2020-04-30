@@ -1,7 +1,12 @@
 Ext.define('TK.view.ky2.poezd.into.PoezdZayavForm', {
     extend: 'Ext.container.Container',
     alias: 'widget.ky2poezdzayavintoform',
-    title: 'Заявка на поезд, ввоз',
+
+    requires: [
+        'TK.view.ky2.poezd.BasePoezdZayavForm'
+    ],
+
+    title: this.title,
 
     closable: false,
     layout: 'fit',

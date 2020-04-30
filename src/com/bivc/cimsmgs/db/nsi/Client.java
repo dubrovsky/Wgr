@@ -20,6 +20,8 @@ public class Client implements Serializable {
     private String sname;
     private String noDog;
     private Integer freeDays;
+    private Integer cntPZ;
+    private Integer cntWZ;
     private String trans;
     private String groups;
     @JsonSerialize(using = DateTimeSerializer.class)
@@ -31,7 +33,16 @@ public class Client implements Serializable {
     private Set<Avto> avtos = new HashSet<>();
     private Set<AvtoZayav> avtoZayavs = new HashSet<>();
     private Set<Kont> konts = new HashSet<>();
+    private Set<Gruz> gruzs = new HashSet<>();
     private Set<ClientGroups> clientGroups = new HashSet<>(0);
+
+    public Set<Gruz> getGruzs() {
+        return gruzs;
+    }
+
+    public void setGruzs(Set<Gruz> gruzs) {
+        this.gruzs = gruzs;
+    }
 
     public Set<ClientGroups> buildGroups(ClientDTO dto) {
         Set<ClientGroups> clientrGroups = new HashSet<>();
@@ -41,12 +52,28 @@ public class Client implements Serializable {
             ClientGroups clientGroup;
             StringTokenizer st = new StringTokenizer(dto.getGroups());
             while (st.hasMoreTokens()) {
-                group = new UsrGroupsDir(st.nextToken());
+                group = new UsrGroupsDir(st.nextToken().replaceAll(",", "") );
                 clientGroup = new ClientGroups(new ClientGroupsId(getHid().intValue(), group.getName()), this, group);
                 clientrGroups.add(clientGroup);
             }
         }
         return clientrGroups;
+    }
+
+    public Integer getCntPZ() {
+        return cntPZ;
+    }
+
+    public void setCntPZ(Integer cntPZ) {
+        this.cntPZ = cntPZ;
+    }
+
+    public Integer getCntWZ() {
+        return cntWZ;
+    }
+
+    public void setCntWZ(Integer cntWZ) {
+        this.cntWZ = cntWZ;
     }
 
     public Long getHidRoute() {

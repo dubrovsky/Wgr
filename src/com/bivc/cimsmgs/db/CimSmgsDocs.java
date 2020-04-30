@@ -37,6 +37,7 @@ public class CimSmgsDocs implements Serializable {
     private Date dat;
     private Integer ncopy;
     private String text3;
+    private String text4;
     private String road_s_name_r;
 
     public String getRoad_s_name_r() {
@@ -53,6 +54,14 @@ public class CimSmgsDocs implements Serializable {
 
     public void setText3(String text3) {
         this.text3 = text3;
+    }
+
+    public String getText4() {
+        return text4;
+    }
+
+    public void setText4(String text4) {
+        this.text4 = text4;
     }
 
     public Integer getNcopy() {
@@ -212,6 +221,7 @@ public class CimSmgsDocs implements Serializable {
                 Objects.equals(dat, that.dat) &&
                 Objects.equals(ncopy, that.ncopy) &&
                 Objects.equals(text3, that.text3) &&
+                Objects.equals(text4, that.text4) &&
                 Objects.equals(road_s_name_r, that.road_s_name_r);
     }
 
@@ -221,7 +231,7 @@ public class CimSmgsDocs implements Serializable {
                 cimSmgs != null ? cimSmgs.getHid() : "",
                 cimSmgsKonList != null ? cimSmgsKonList.getHid() : "",
                 cimSmgsCarList != null ? cimSmgsCarList.getHid() : "",
-                code, text, text2, fieldNum, sort, ncas, ndoc, dat, ncopy, text3, road_s_name_r);
+                code, text, text2, fieldNum, sort, ncas, ndoc, dat, ncopy, text3,text4, road_s_name_r);
     }
 
     /*public String toString() {
@@ -262,5 +272,20 @@ public class CimSmgsDocs implements Serializable {
 
     public void setCimSmgsCarList(CimSmgsCarList cimSmgsCarList) {
         this.cimSmgsCarList = cimSmgsCarList;
+    }
+    public CimSmgsDocs makeCopy()
+    {
+        CimSmgsDocs copy = new CimSmgsDocs();
+
+        copy.setText(this.getText());
+        copy.setText2(this.getText2());
+        copy.setText3(this.getText3());
+        copy.setText4(this.getText4());
+        copy.setNcas(this.getNcas());
+        copy.setNcas(this.getNcas());
+        copy.setDat(this.getDat());
+        copy.setNcopy(this.getNcopy());
+        copy.setNdoc(this.getNdoc());
+        return copy;
     }
 }

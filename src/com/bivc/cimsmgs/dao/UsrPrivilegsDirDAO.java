@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface UsrPrivilegsDirDAO extends GenericDAO<UsrPrivilegsDir, String> {
 	public List<UsrPrivilegsDir> findAll();
+	public List<UsrPrivilegsDir> findAll(String query);
 }

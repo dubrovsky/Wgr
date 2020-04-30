@@ -14,6 +14,7 @@ public class YardSectorDTO {
     private Long routeHid;
     private String name;
     private String descr;
+    private Integer typeView;
     private String groups;
     private Set<YardSectorGroupsDTO> yardSectorGroups;
 
@@ -66,5 +67,13 @@ public class YardSectorDTO {
 
     public void setRouteHid(Long routeHid) {
         this.routeHid = routeHid;
+    }
+
+    public Integer getTypeView() {
+        return typeView;
+    }
+
+    public void setTypeView(Integer typeView) {
+        this.typeView = typeView;
     }
 }

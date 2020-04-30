@@ -19,6 +19,9 @@
         <property name="descr" type="string">
             <column name="DESCR" length="100"/>
         </property>
+        <property name="typeView" type="integer">
+            <column name="TYPEVIEW" length="1"/>
+        </property>
         <set name="yards" table="KY_KONT_YARD" inverse="true" lazy="true" fetch="select" batch-size="50" cascade="all, delete-orphan">
             <key>
                 <column name="HID_SECTOR" precision="20" scale="0" not-null="true"/>

@@ -10,8 +10,10 @@ Ext.define('TK.view.ved.MenuPart', {
     // viewConfig: {toggleOnDblClick: false},
     store: 'MenuPart',
     selType:     'checkboxmodel',
+    autoScroll: true,
     selModel: {
         mode : 'MULTI',
+        checkOnly: true,
         renderer: function(value, metaData, record) {
             var baseCSSPrefix = Ext.baseCSSPrefix;
             metaData.tdCls = baseCSSPrefix + 'grid-cell-special ' + baseCSSPrefix + 'grid-cell-row-checker';

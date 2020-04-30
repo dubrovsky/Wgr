@@ -8,13 +8,15 @@ Ext.define('TK.model.ky2.PoezdBindTreeNode', {
         {name: 'contHid', type: 'int', useNull: true},
         {name: 'yardHid', type: 'int', useNull: true},
         {name: 'yardSectorHid', type: 'int', useNull: true},
+        {name: 'vagsInPoezd', type: 'int'},
+        {name: 'contsInPoezd', type: 'int'},
 
         {name: 'sort', type: 'int'},
 
         // poezd
-        {name:'direction', type:'int', useNull: true},
-        {name:'nppr', type:'string'},
-        {name:'npprm', type:'string'},
+        {name: 'direction', type: 'int', useNull: true},
+        {name: 'nppr', type: 'string'},
+        {name: 'npprm', type: 'string'},
 
         // vag
         {name: 'nvag', type: 'string'},
@@ -23,6 +25,7 @@ Ext.define('TK.model.ky2.PoezdBindTreeNode', {
         {name: 'kolOs', type: 'string'},
         {name: 'sobstv', type: 'string'},
         {name: 'otpravka', type: 'string', useNull: true, defaultValue: null},
+        {name: 'updated', type: 'boolean', defaultValue: false},
 
         // kont
         {name: 'nkon', type: 'string'},
@@ -36,14 +39,16 @@ Ext.define('TK.model.ky2.PoezdBindTreeNode', {
         'kgvn',
 
         // sector
-        {name:'name', type:'string'},
+        {name: 'name', type: 'string'},
+        {name: 'typeView', type: 'int'},
 
         // yard
-        {name:'x', type:'int', useNull: true},
-        {name:'y', type:'int', useNull: true},
-        {name:'z', type:'int', useNull: true},
-        {name:'contsInYardSector', type:'int'},
-        {name:'placesInYardSector', type:'int'},
+        {name: 'x', type: 'int', useNull: true},
+        {name: 'y', type: 'int', useNull: true},
+        {name: 'z', type: 'int', useNull: true},
+        {name: 'h', type: 'string'},
+        {name: 'contsInYardSector', type: 'int'},
+        {name: 'placesInYardSector', type: 'int'},
 
         // tree node fields
         'who',

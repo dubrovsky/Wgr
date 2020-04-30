@@ -1,6 +1,12 @@
 Ext.define('TK.view.logs.List', {
     extend:'TK.view.DocsList',
     alias:'widget.logslist',
+    ItemId:'loglistMain',
+
+    requires: [
+        'TK.Utils'
+    ],
+
 
     buildStore:function (config) {
         config.store = 'Logs';

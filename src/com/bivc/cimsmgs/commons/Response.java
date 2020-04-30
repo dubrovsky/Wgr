@@ -11,6 +11,7 @@ public class Response<T> {
     private List<T> rows;
     private Long total;
     private boolean success;
+    private String message;
 
     public Response(List<T> rows, Long total){
         this.rows = rows;
@@ -26,6 +27,11 @@ public class Response<T> {
     }
 
     public Response(){
+        this.success = true;
+    }
+
+    public Response(String message){
+        this.message = message;
         this.success = true;
     }
 
@@ -55,5 +61,13 @@ public class Response<T> {
 
     public void setSuccess(boolean success) {
         this.success = success;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

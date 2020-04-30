@@ -30,6 +30,7 @@ public class ReportParamsDTO {
 //    private String gruzotpr;
     private String tr_arrival = "-";
     private String tr_departure = "-";
+    private String status_ad = "-";
     private Long hid_client;
 
     public ReportParamsDTO() {
@@ -95,6 +96,14 @@ public class ReportParamsDTO {
 
     public void setTr_departure(String tr_departure) {
         this.tr_departure = tr_departure;
+    }
+
+    public String getStatus_ad() {
+        return status_ad;
+    }
+
+    public void setStatus_ad(String status_ad) {
+        this.status_ad = status_ad;
     }
 
     public Long getHid_client() {

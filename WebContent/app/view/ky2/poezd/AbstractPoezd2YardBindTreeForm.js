@@ -16,10 +16,21 @@ Ext.define('TK.view.ky2.poezd.AbstractPoezd2YardBindTreeForm', {
         );*/
         items.push('-', // в конец
             {
-                text: 'Переместить все >>',
-                action: 'moveRightAll'
+                tooltip: this.labelMoveAll,
+                action: 'moveRightAll',
+                iconCls: 'd_arrow_r'
             }
         );
         return items;
+    },
+    buildTreeRightPanelTopToolbarZayavFilter: function () {
+        return [
+                '-',
+                {xtype:'button', text:this.btnRest, action:'clearFiltr', margins: '0 0 0 40'},
+                '-',
+                {xtype:'button', text:this.lblOrder, action:'zayvlist'},
+                '-',
+                {xtype:'button', text:this.btnFiltr, action:'clTrAvtoFilter'}
+            ];
     }
 });

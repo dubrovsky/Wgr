@@ -1,10 +1,15 @@
 Ext.define('TK.view.ky2.avto.into.AvtoZayavsIntoDir', {
     extend: 'TK.view.ky2.AbstractWindow',
     alias:'widget.ky2avtozayavsintodir',
+
+    requires: [
+        'TK.view.ky2.BaseAvtoZayavsDir'
+    ],
+
     itemId:'ky2avtozayavsintodir',
 
     width: 550,
-    title: 'Список заявок на выгрузку',
+    title: this.title,
 
     buildItems: function (config) {
         config.items = [ {

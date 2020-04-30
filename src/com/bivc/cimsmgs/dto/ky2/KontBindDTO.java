@@ -9,7 +9,7 @@ public class KontBindDTO implements Comparable<KontBindDTO> {
 
     private Long hid;
     private String nkon;
-    private Byte sort;
+    private Integer sort;
     private TreeSet<GruzBindDTO> gruzs = new TreeSet<>();
 
     public Long getHid() {
@@ -28,11 +28,11 @@ public class KontBindDTO implements Comparable<KontBindDTO> {
         this.nkon = nkon;
     }
 
-    public Byte getSort() {
+    public Integer getSort() {
         return sort;
     }
 
-    public void setSort(Byte sort) {
+    public void setSort(Integer sort) {
         this.sort = sort;
     }
 

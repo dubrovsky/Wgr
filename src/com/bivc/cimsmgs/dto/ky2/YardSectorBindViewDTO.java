@@ -9,6 +9,7 @@ public class YardSectorBindViewDTO {
 
     private Integer hid;
     private String name;
+    private Integer typeView;
     private TreeSet<YardBindViewDTO> yards = new TreeSet<>();
 
     public Integer getHid() {
@@ -33,5 +34,13 @@ public class YardSectorBindViewDTO {
 
     public void setYards(TreeSet<YardBindViewDTO> yards) {
         this.yards = yards;
+    }
+
+    public Integer getTypeView() {
+        return typeView;
+    }
+
+    public void setTypeView(Integer typeView) {
+        this.typeView = typeView;
     }
 }

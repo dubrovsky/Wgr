@@ -14,6 +14,13 @@
         <many-to-one name="cimSmgsFileInf" class="com.bivc.cimsmgs.db.CimSmgsFileInf" fetch="select">
             <column name="HID_INF" precision="22" scale="0"/>
         </many-to-one>
+        <set fetch="select" inverse="true" lazy="true" name="cimSmgsFileNew" sort="natural" table="CIM_SMGS_FILE_NEW" batch-size="50" cascade="all, delete-orphan">
+            <key>
+                <column name="HID_FILE" precision="20" scale="0" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.CimSmgsFileNew" />
+        </set>
+
         <property name="files" type="blob">
             <column name="FILES" />
         </property>
@@ -28,6 +35,27 @@
         </property>
         <property name="deleted" type="boolean">
             <column name="DELETED" precision="1" scale="0" />
+        </property>
+        <property name="newg" type="string">
+            <column name="NEWG" length="1" />
+        </property>
+        <property name="className" type="string">
+            <column name="CLASS_NAME" length="4" />
+        </property>
+        <property name="flags" type="integer">
+            <column name="FLAGS" precision="1"/>
+        </property>
+        <property name="userFlag" type="integer">
+            <column name="USER_FLAG" precision="1"/>
+        </property>
+        <property name="descr" type="string">
+            <column name="DESCR" length="1000" />
+        </property>
+        <property name="dat" type="timestamp">
+            <column name="DATTR" length="7" not-null="true" />
+        </property>
+        <property name="un" type="string">
+            <column name="UN" length="20" not-null="true" />
         </property>
     </class>
 </hibernate-mapping>

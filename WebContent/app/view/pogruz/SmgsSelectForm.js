@@ -5,15 +5,20 @@
 Ext.define('TK.view.pogruz.SmgsSelectForm', {
     extend: 'Ext.window.Window',
     xtype: 'smgsselectform',
+    alias: 'widget.smgsselectform',
 
     requires: [
+        'TK.Utils',
         'TK.store.PeregruzSmgsSelectStore',
+        'TK.view.components.CheckColumn',
+        'TK.view.edit.GroupEdit',
         'TK.view.edit.UploadPogruzListFormWin'
     ],
 
     title: this.title,
+    itemId:'smgsselectform',
     height: 500,
-    width: 650,
+    width: 700,
     layout: 'fit',
     dateFilter: false,
     modal:true,
@@ -23,16 +28,19 @@ Ext.define('TK.view.pogruz.SmgsSelectForm', {
     initComponent: function () {
         this.items = [
             {
-                 xtype: 'panel',
+                xtype: 'panel',
                 layout: 'fit',
+                itemId:'smgsselectformPanel',
                 items: [
                     {
                         xtype: 'grid',
+                        itemId:'smgsselectformGrid',
                         columnLines: true,
                         store: this.localStore,
                         viewConfig: {
                             stripeRows: true,
                             singleSelect: true,
+                            markDirty: false,
                             enableTextSelection: true
                         },
 
@@ -40,26 +48,27 @@ Ext.define('TK.view.pogruz.SmgsSelectForm', {
                             {xtype: 'rownumberer', width: 40,sortable: false},
                             {
                                 dataIndex: 'hid',
-                                 hidden: true
+                                hidden: false,
+                                flex: 2
                             },
                             {
                                 text: this.headerG694,
                                 dataIndex: 'g694',
                                 sortable: true,
-                                flex: 2
+                                flex: 3
                             },
 
                             {
                                 text: this.headerVagNum,
                                 dataIndex: 'vags',
                                 sortable: false,
-                                flex: 3
+                                flex: 4
                             },
                             {
                                 text: this.headerContNum,
                                 dataIndex: 'konts',
                                 sortable: false,
-                                flex: 3
+                                flex: 4
                             },
                             {
                                 text: this.headertNstn,
@@ -74,7 +83,7 @@ Ext.define('TK.view.pogruz.SmgsSelectForm', {
                                 flex: 5
                             },
                             {
-                                xtype: 'checkcolumn',
+                                xtype: 'checkallcheckcolumn',
                                 flex: 1,
                                 dataIndex: 'isSelected'
                             }
@@ -109,15 +118,126 @@ Ext.define('TK.view.pogruz.SmgsSelectForm', {
         ],
             this.callParent();
     },
+    listeners: {
+        'close': function closeWin(win) {
+            Ext.ComponentQuery.query('poezdselectform')[0].localStore.reload();
+        }
+    },
+    /**
+     * нажатие кнопки Отмена
+     * @param btn
+     */
     onCancel: function (btn) {
         this.up().up().close();
     },
+    /**
+     * нажатие кнопки OK
+     * @param btn
+     */
     onOk:function (btn) {
         var sel=[];
         this.up('panel').localStore.each(function(record,id){
             if(record.get('isSelected'))
                 sel.push(record.get('hid'));
         });
+        if(sel.length===0)
+            return;
+        switch (this.up('smgsselectform').mode)
+        {
+            //слияние шаблона и документа
+            case 'avisoXsmgses':
+                this.up('smgsselectform').avisoXsmgses(sel); break;
+            //групповая печать
+            case 'groupPrintTmpl':
+                this.up('smgsselectform').groupPrintTmpl(sel); break;
+            //групповое редактирование
+            case 'groupEdit':
+                this.up('smgsselectform').groupEdit(sel); break;
+            case 'copy2arch':
+                    this.up('smgsselectform').copy2arch(sel); break;
+            case 'copy2route':
+                this.up('smgsselectform').copy2route(sel); break;
+            default:this.up('smgsselectform').uploadMapPogruz(sel);
+        }
+    },
+    /**
+     *  слияние шаблона и документа
+     * @param sel список ID выбранных записей
+     */
+    avisoXsmgses:function(sel)
+    {
+        var params = {};
+        params['search.hid']=this.hid;
+        params['query']=sel;
+        params['name']='smgslist';
+        TK.Utils.makeAjaxRequest('Doc2Doc_avisoxsmgses.do',params,TK.Utils.avisoXsmgsMsgText,this);
+    },
+    /**
+     *  групповая печать
+     * @param sel список ID выбранных записей
+     */
+    groupPrintTmpl:function(sel)
+    {
+        var params={};
+
+        params['routeId'] = this.routeId;
+        params['search.type'] = this.type;
+        params['task'] = this.task;
+        params['query'] = sel.join(",");
+        params['isView'] = false;
+        params['smgs.hid'] = sel[0];
+        this.fireEvent('doGroupPrintTmpl', params);
+    },
+    /**
+     * копировать в архив
+     * @param sel список ID выбранных записей
+     */
+    copy2route:function(sel){
+        this.fireEvent("copy2routesmgses", sel,this.routeId,this.parentStore);
+    },
+    /**
+     * копировать в архив
+     * @param sel список ID выбранных записей
+     */
+    copy2arch:function(sel){
+        var initObj = {task:'copy2arch',query1:sel};
+        TK.Utils.makeAjaxRequest('Smgs_copy2arch.do',initObj,function () {return 'OK';},this);
+    },
+    /**
+     * групповое редактирование
+     * @param sel список ID выбранных записей
+     */
+    groupEdit:function(sel)
+    {
+        if (sel.length > 0) {
+            var url='Smgs_getGroupEdit.do',params={},me=this;
+            params['query'] = sel.join(",");
+            me.setLoading(true);
+            Ext.Ajax.request({
+                url: url,
+                params: params,
+                scope: me,
+                success: function(response, options) {
+                    var win = Ext.widget('groupedit'),
+                        grid=Ext.ComponentQuery.query('#groupEditForm > #groupEditGrid')[0];
+                    win.parentStore=Ext.ComponentQuery.query('#smgsselectform >#smgsselectformPanel> #smgsselectformGrid')[0].getStore();
+                    grid.store.loadRawData(Ext.JSON.decode(response.responseText.replace('success: true,','')));
+                    me.setLoading(false);
+                    win.show();
+                },
+                failure: function(response){
+                    TK.Utils.makeErrMsg(response, this.errorMsg);
+                    me.setLoading(false);
+                }
+            });
+        }
+    },
+    /**
+     * Отображение диалога загрузки файла карты погрузки
+     * @param btn
+     */
+    uploadMapPogruz:function (sel) {
+
         if (sel.length > 0) {
             var win = Ext.widget('uploadPogruzListFormWin');
             var form = win.down('form').getForm();

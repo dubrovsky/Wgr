@@ -129,4 +129,18 @@ public class CimSmgsPerevoz implements Serializable {
     public int hashCode() {
         return Objects.hash(hid, cimSmgs != null ? cimSmgs.getHid() : "", sort, namPer, stBeg, stEnd, codStBeg, codStEnd, admStBeg, admStEnd, codePer);
     }
+    public CimSmgsPerevoz makeCopy()
+    {
+        CimSmgsPerevoz copy=new CimSmgsPerevoz();
+        copy.setNamPer(this.getNamPer());
+        copy.setCodePer(this.getCodePer());
+        copy.setStBeg(this.getStBeg());
+        copy.setAdmStBeg(this.getAdmStBeg());
+        copy.setCodStBeg(this.getCodStBeg());
+        copy.setStEnd(this.stEnd);
+        copy.setAdmStEnd(this.getAdmStEnd());
+        copy.setCodStEnd(this.getCodStEnd());
+
+        return copy;
+    }
 }

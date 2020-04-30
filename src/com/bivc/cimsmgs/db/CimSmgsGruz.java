@@ -516,6 +516,17 @@ public class CimSmgsGruz implements Serializable {
             danGruz.setCimSmgsGruz(this);
         }
     }
+    public void copy2another(CimSmgsGruz another)
+    {
+        another.setKgvn(this.getKgvn());
+        another.setNzgr(this.getNzgr());
+        another.setNzgrEu(this.getNzgrEu());
+        another.setEkgvn(this.getEkgvn());
+        another.setEnzgr(this.getEnzgr());
+        another.setMassa(this.getMassa());
+        another.setUpak(this.getUpak());
+        another.setPlaces(this.getPlaces());
+    }
 
     public Map<String, Integer> upakGroupsRu() {
         return upakGroupsRu;

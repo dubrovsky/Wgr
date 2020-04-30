@@ -20,6 +20,8 @@ import java.util.*;
 
 public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements SmgsDAO {
     final static private Logger log = LoggerFactory.getLogger(SmgsDAOHib.class);
+    public static Integer DUPLICATE_PERIOD = 14;
+    public final static long DAY_IN_MS = 1000 * 60 * 60 * 24;
     /////////   !!!!!!!!!!!!!!!!!!!!!!!!!
 //    DISTINCT_ROOT_ENTITY can be used only when NOT using pagination (setFirstResult() and setMaxResults())
 
@@ -27,6 +29,10 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
 //        log.info("findAll");
         Criteria crit = getSession().createCriteria(getPersistentClass(), "smgs");
 
+
+        if (search.getWagonContainerDublicatePeriod() != null) {
+            DUPLICATE_PERIOD = search.getWagonContainerDublicatePeriod();
+        }
 
         if (search.getNpoezd() != null)
             crit.add(Restrictions.eq("npoezd", search.getNpoezd()));
@@ -185,7 +191,17 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
         if (search.getDocId() != 0) { // for aviso filter comments
             getSession().enableFilter("limitFieldCommentsByDocId").setParameter("docId", new BigDecimal(search.getDocId()));
         }
-        return listAndCast(crit);
+
+        List<CimSmgs> smgses = listAndCast(crit);
+
+        // ище дубликаты вагонов за введенный интервал дней или 14дней (по умолчанию)
+        if (search.getType() == 12 || search.getType() == 1 || search.getType() == 7) {
+            DetachedCriteria hids = getSmgsListDeatachedCriteriaByDuplicatePeriod(search);
+            findDuplicatesCar(smgses, hids);
+            if (search.getType() != 7)
+                findDuplicatesKon(smgses, hids);
+        }
+        return smgses;
     }
 
     public Long countAll(Search search, Usr usr) {
@@ -737,42 +753,46 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
      * @return CimSmgs LList
      */
     public List<CimSmgs> findSmgsTrainDate(Integer limit, Integer start, Search search, Usr usr) {
-        List<CimSmgs> res = new ArrayList<>();
 
+        String[] poezdNes = search.getNpoezd().split(",");
+        for (int i = 0; i < poezdNes.length; i++) {
+            poezdNes[i] = poezdNes[i].trim();
+        }
+        List<CimSmgs> cimSmgs = new ArrayList<>();
+
+//        for (String poezdN:poezdNes) {
         Criteria crit = getSession().createCriteria(getPersistentClass(), "smgs");
 
         crit.createAlias("packDoc", "pack").
                 createAlias("pack.usrGroupsDir", "gr").
                 add(Restrictions.in("gr.name", usr.getTrans())).
                 add(Restrictions.isNotNull("npoezd"));
-
         if (start >= 0) { // for local stat excell report, start == '-1'
             crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 1000 : limit);
         }
 
-        if (search != null) {
-
-            if (search.getDeleted() != null)
-                crit.add(Restrictions.eq("pack.deleted", search.getDeleted() != 0));
-            if (search.getRouteId() != null)
-                crit.createAlias("route", "route").
-                        add(Restrictions.eq("route.hid", search.getRouteId()));
-            if (search.getType() != null) {
-                crit.add(Restrictions.eq("type", search.getType()));
-            }
-            Date date1 = search.getDate1();
-            Date date2 = search.getDate2();
-            if (search.getDate1() != null) {
-                crit.add(Restrictions.gt("altered", date1));
-            }
-            if (search.getDate2() != null) {
-                crit.add(Restrictions.le("altered", date2));
-            }
-            if (search.getNpoezd() != null)
-                crit.add(Restrictions.eq("npoezd", search.getNpoezd()));
+        if (search.getDeleted() != null)
+            crit.add(Restrictions.eq("pack.deleted", search.getDeleted() != 0));
+        if (search.getRouteId() != null)
+            crit.createAlias("route", "route").
+                    add(Restrictions.eq("route.hid", search.getRouteId()));
+        if (search.getType() != null) {
+            crit.add(Restrictions.eq("type", search.getType()));
+        }
+        Date date1 = search.getDate1();
+        Date date2 = search.getDate2();
+        if (search.getDate1() != null) {
+            crit.add(Restrictions.gt("altered", date1));
+        }
+        if (search.getDate2() != null) {
+            crit.add(Restrictions.le("altered", date2));
         }
 
-        List<CimSmgs> cimSmgs = crit.list();
+//                crit.add(Restrictions .eq("npoezd", poezdN.trim()));
+        crit.add(Restrictions.in("npoezd", poezdNes));
+        cimSmgs.addAll(crit.list());
+//            }
+
         return cimSmgs;
     }
 
@@ -815,9 +835,10 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
 
     /**
      * findDocsByNPoezdAndDateInterval getes list of CimSmgs by train numbers, date interval, user, route and document type
+     *
      * @param npoezds array of train numbers
-     * @param search search object with search paramentrs
-     * @param usr user
+     * @param search  search object with search paramentrs
+     * @param usr     user
      * @return
      */
     public List<CimSmgs> findDocsByNPoezdAndDateInterval(String[] npoezds, Search search, Usr usr) {
@@ -969,16 +990,18 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
 //        crit.add(Restrictions.ne("kind", 1));
         return (Long) crit.uniqueResult();
     }
+
     public CimSmgs findById3(Long id) {
         Criteria crit = getSession().createCriteria(getPersistentClass());
         crit.add(Restrictions.eq("hid", id));
         return (CimSmgs) crit.uniqueResult();
     }
+
     public CimSmgs findById1(Long id) {
         String query = "SELECT new CimSmgs(smgs.un) FROM CimSmgs smgs WHERE smgs.hid = :id";
         Query q = getSession().createQuery(query);
         q.setParameter("id", id);
-        CimSmgs smgs =(CimSmgs) q.uniqueResult();
+        CimSmgs smgs = (CimSmgs) q.uniqueResult();
         return smgs;
     }
 
@@ -1213,6 +1236,128 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
         // q.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 
         return q.list();
+    }
+
+    /**
+     * Ищет вагоны, которые повторяются в документе за DUPLICATE_PERIOD и устанавливает сarDuplicates флаг в классе CimSmgsCarList
+     *
+     * @param smgses список документов
+     * @param hids   подзапрос списка идентификаторов документов за DUPLICATE_PERIOD
+     */
+    public void findDuplicatesCar(List<CimSmgs> smgses, DetachedCriteria hids) {
+        Set<String> duplicates = new HashSet<>();
+        Set<String> nvags = new HashSet<>();
+
+        for (CimSmgs smgs : smgses)
+            if ((new Date().getTime() - smgs.getDattr().getTime()) < 14 * DAY_IN_MS)
+                for (CimSmgsCarList carList : smgs.getCimSmgsCarLists().values())
+                    if (carList.getNvag() != null)
+                        nvags.add(carList.getNvag().trim());
+
+        if (nvags.size() > 0) {
+            Criteria crit = getSession().createCriteria(CimSmgsCarList.class);
+
+            crit
+                    .add(Restrictions.in("nvag", nvags))
+                    .add(Subqueries.propertyIn("cimSmgs.hid", hids));
+
+            ProjectionList projectionList = Projections.projectionList();
+            projectionList
+                    .add(Projections.groupProperty("nvag"))
+                    .add(Projections.countDistinct("hid"));
+            crit.setProjection(projectionList);
+
+            List<Object[]> res = crit.list();
+            for (Object[] o : res) {
+                if ((Long) o[1] > 1)
+                    duplicates.add((String) o[0]);
+            }
+
+            for (CimSmgs smgs : smgses) {
+                if ((new Date().getTime() - smgs.getDattr().getTime()) < DUPLICATE_PERIOD * DAY_IN_MS) {
+                    for (CimSmgsCarList carList : smgs.getCimSmgsCarLists().values()) {
+                        if (carList.getNvag() != null) {
+                            if (duplicates.contains(carList.getNvag().trim())) {
+                                carList.setCarDuplicates(true);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Ищет контейнеры, которые повторяются в документе за DUPLICATE_PERIOD и устанавливает konDuplicates флаг в классе CimSmgsKonList
+     *
+     * @param smgses список документов
+     * @param hids   подзапрос списка идентификаторов документов за DUPLICATE_PERIOD
+     */
+    public void findDuplicatesKon(List<CimSmgs> smgses, DetachedCriteria hids) {
+        Set<String> duplicates = new HashSet<>();
+        Set<String> utines = new HashSet<>();
+
+        for (CimSmgs smgs : smgses)
+
+            if ((new Date().getTime() - smgs.getDattr().getTime()) < DUPLICATE_PERIOD * DAY_IN_MS && smgs.isContOtpr())
+                for (CimSmgsCarList carList : smgs.getCimSmgsCarLists().values()) {
+                    for (CimSmgsKonList konList : carList.getCimSmgsKonLists().values()) {
+                        if (konList.getUtiN() != null && !konList.getUtiN().trim().isEmpty()) {
+                            utines.add(konList.getUtiN().trim().toUpperCase());
+                        }
+                    }
+                }
+
+        if (utines.size() > 0) {
+            Criteria crit = getSession().createCriteria(CimSmgsKonList.class, "kon");
+
+            crit
+                    .add(Restrictions.in("utiN", utines))
+                    .createAlias("cimSmgsCarList", "cars")
+                    .createAlias("cars.cimSmgs", "smgs")
+                    .add(Subqueries.propertyIn("smgs.hid", hids));
+
+            ProjectionList projectionList = Projections.projectionList();
+            projectionList
+                    .add(Projections.groupProperty("utiN"))
+                    .add(Projections.countDistinct("hid"));
+            crit.setProjection(projectionList);
+
+            List<Object[]> res = crit.list();
+            for (Object[] o : res) {
+                if ((Long) o[1] > 1)
+                    duplicates.add((String) o[0]);
+            }
+
+            for (CimSmgs smgs : smgses) {
+                if ((new Date().getTime() - smgs.getDattr().getTime()) < 14 * 1000 * DAY_IN_MS && smgs.isContOtpr()) {
+                    for (CimSmgsCarList carList : smgs.getCimSmgsCarLists().values()) {
+                        for (CimSmgsKonList konList : carList.getCimSmgsKonLists().values()) {
+                            if (konList.getUtiN() != null && duplicates.contains(konList.getUtiN().trim().toUpperCase())) {
+                                konList.setKonDuplicates(true);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Создает подзапрос списка идентификаторов документов за DUPLICATE_PERIOD
+     *
+     * @param search параметры поиска
+     * @return Возвращает подзапрос
+     */
+    public DetachedCriteria getSmgsListDeatachedCriteriaByDuplicatePeriod(Search search) {
+        DetachedCriteria hids = DetachedCriteria.forClass(CimSmgs.class);
+        hids
+                .setProjection(Property.forName("hid"))
+                .add(Restrictions.ge("dattr", new Date(new Date().getTime() - (DUPLICATE_PERIOD * DAY_IN_MS))))
+                .add(Restrictions.le("dattr", new Date()))
+                .add(Restrictions.eq("type", search.getType()))
+                .add(Restrictions.eq("route.hid", search.getRouteId()));
+        return hids;
     }
 
     /* ! IFTMIN */

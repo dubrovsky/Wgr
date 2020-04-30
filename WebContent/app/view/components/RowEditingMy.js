@@ -8,6 +8,7 @@ Ext.define('TK.view.components.RowEditingMy', {
         var form = me.editor;
         form.updateRecord(me.context.record);
         me.editor.hide();
+        me.fireEvent('edit', me, me.context);
         return true;
     }
 });

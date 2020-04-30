@@ -5,16 +5,20 @@ Ext.define('TK.view.ky2.poezd.BasePoezdIntoForPoezdOut', {
     selType: 'checkboxmodel',
     selModel: {mode: 'MULTI'},
 
+    config: {
+        poezdHid: undefined
+    },
+
     buildColumns: function (config) {
         config.columns = {
             items: [
-                {text: '№ Вагона', dataIndex: 'nvag', flex: 1}
+                {text: this.labelNWag, dataIndex: 'nvag', flex: 1}
             ]
         };
     },
     buildTopToolbar: function (config) {
         config.tbar = [
-            {text: 'Выбрать', action: 'createPoezdOutFromPoezdInto', iconCls: 'check1'}, '-'
+            {text: this.btnChoose, action: 'createPoezdOutFromPoezdInto', iconCls: 'check1'}, '-'
         ];
     }
 });

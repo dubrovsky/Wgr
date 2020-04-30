@@ -2,6 +2,8 @@ package com.bivc.cimsmgs.actions;
 
 import com.bivc.cimsmgs.commons.Print;
 import com.bivc.cimsmgs.dao.*;
+import com.bivc.cimsmgs.dao.hibernate.StatusDAOHib;
+import com.bivc.cimsmgs.dao.hibernate.StatusDirDAOHib;
 import com.bivc.cimsmgs.db.*;
 import com.bivc.cimsmgs.exceptions.BusinessException;
 import com.itextpdf.text.DocumentException;
@@ -9,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.interceptor.ServletResponseAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
@@ -17,13 +20,18 @@ import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Pdf_A extends CimSmgsSupport_A implements ServletResponseAware, SmgsDAOAware, VedDAOAware, PrintTemplatesDAOAware {
     final static private Logger log = LoggerFactory.getLogger(Pdf_A.class);
+    @Autowired
+    private StatusDAO statusDAO;
+
+    @Autowired
+    private StatusDirDAO statusDirDAO;
+
+    @Autowired
+    PrintDataStampDAO stampDAO;
 
     /**
      * execute generates PDF file for smgs or ved
@@ -50,9 +58,30 @@ public class Pdf_A extends CimSmgsSupport_A implements ServletResponseAware, Smg
             List<PrintTemplates> printTemplatesListDopList = new ArrayList<>();
             printTemplatesListDopList.add(findMainPrintTemplate());
             printTemplatesListDopList.add(checkDefaultTemplate());
+
             for (String s:hIDsInput ) {
 
                 smgs = smgsDao.findById(Long.parseLong(s),false);
+
+                // добавляем документам статус НАПЕЧАТНО, если такого еще небыло
+                boolean printed=false;
+                for (Status status : smgs.getStatuses()) {
+                    if (status.getStatusDir().getHid().intValue() == 17) {
+                        printed=true;
+                        break;
+                    }
+                }
+                if(!printed)
+                {
+                    Status status =new Status();
+                    status.setHidCs(smgs.getHid());
+                    StatusDir statusDir = statusDirDAO.getById(new BigDecimal(17),true);
+                    status.setStatusDir(statusDir);
+                    statusDAO.makePersistent(status);
+                    smgs.getStatuses().add(status);
+                    smgsDao.makePersistent(smgs);
+                }
+                //-----------
 
                 if (smgs.hasDopList()) {
                     smgsTemplatesObject.put(smgs,printTemplatesListDopList);
@@ -61,7 +90,7 @@ public class Pdf_A extends CimSmgsSupport_A implements ServletResponseAware, Smg
                     smgsTemplatesObject.put(smgs,printTemplatesList);
 
             }
-            baos = (print == null ? new Print().generatePdf(smgsTemplatesObject, isView) : print.generatePdf(smgsTemplatesObject, isView));
+            baos = (print == null ? new Print().generatePdf(smgsTemplatesObject, isView,stampDAO) : print.generatePdf(smgsTemplatesObject, isView,stampDAO));
 //            String hIDsInput[] = getQuery().split(",");
 //            // check in route and user
 //            List<PrintTemplates> printTemplatesList = new ArrayList<>();
@@ -75,7 +104,7 @@ public class Pdf_A extends CimSmgsSupport_A implements ServletResponseAware, Smg
 //
 //            baos = (print == null ? new Print().generatePdf(printTemplatesList, smgs, isView) : print.generatePdf(printTemplatesList, smgs, isView));
         }
-        else if (ved != null) {
+        else if (ved != null) {// печатаем ведомость
             ved = vedDao.findById2(ved);
             if ("vag".equals(doc.getName()))
                 baos = new Print().generateVagPdf(ved, getPageSize());
@@ -100,9 +129,16 @@ public class Pdf_A extends CimSmgsSupport_A implements ServletResponseAware, Smg
         response.setHeader("Expires", "0");
         response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
         response.setHeader("Pragma", "public");
-        response.setContentType("application/pdf");
+        if(print.isUseZip()) {
+            response.setContentType("application/zip");
+            response.setHeader("Content-Disposition", " inline; filename=\"pack.zip\"");
+        }
+        else {
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", " inline; filename=\"document.pdf\"");
+        }
         response.setContentLength(baos.size());
-        response.setHeader("Content-Disposition", " inline; filename=\"document.pdf\"");
+
         OutputStream os = response.getOutputStream();
             baos.writeTo(os);
             os.flush();
@@ -261,4 +297,15 @@ public class Pdf_A extends CimSmgsSupport_A implements ServletResponseAware, Smg
         this.vedDao = dao;
     }
 
+    public void setStatusDAO(StatusDAO statusDAO) {
+        this.statusDAO = statusDAO;
+    }
+
+    public StatusDAO getStatusDAO() {
+        return statusDAO;
+    }
+
+    public void setStatusDirDAO(StatusDirDAO statusDirDAO) {
+        this.statusDirDAO = statusDirDAO;
+    }
 }

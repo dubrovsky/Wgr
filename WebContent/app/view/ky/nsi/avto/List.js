@@ -1,6 +1,12 @@
 Ext.define('TK.view.ky.nsi.avto.List', {
     extend: 'TK.view.ky.AbstractWindow',
     alias:'widget.kynsiavtolist',
+
+    requires: [
+        'TK.Utils',
+        'TK.view.ky.nsi.BaseList'
+    ],
+
     itemId:'kynsiavtolist',
 
     width: 800,

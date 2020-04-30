@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.BoardTalkNewMess" table="BOARDTALK_NEW_MESS">
+        <composite-id name="id" class="com.bivc.cimsmgs.db.BoardTalkNewMessId">
+            <key-property name="packDocHid" type="java.lang.Long">
+                <column name="PACK_DOC_HID" precision="20" scale="0" />
+            </key-property>
+            <key-property name="docName" type="string">
+                <column name="DOC_NAME" length="30" />
+            </key-property>
+            <key-property name="docHid" type="java.lang.Long">
+                <column name="DOC_HID" precision="20" scale="0" />
+            </key-property>
+            <key-property name="un" type="string">
+                <column name="UN" length="20" />
+            </key-property>
+        </composite-id>
+        <property name="dattr" type="timestamp">
+            <column length="7" name="DATTR" />
+        </property>
+        <property name="newCount" type="java.lang.Integer">
+            <column name="NEW_COUNT" precision="10" scale="0"/>
+        </property>
+
+    </class>
+</hibernate-mapping>

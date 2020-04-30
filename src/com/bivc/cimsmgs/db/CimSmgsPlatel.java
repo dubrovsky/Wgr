@@ -288,4 +288,22 @@ public class CimSmgsPlatel implements Serializable {
     public int hashCode() {
         return Objects.hash(hid, cimSmgs != null ? cimSmgs.getHid() : "", dor, plat, prim, sort, kplat, kplat1, kplat2, kplat3, dorR, platR, primR, strana, flag, primR1,codDir,codPer,namePer,nDog,datDog);
     }
+
+    public CimSmgsPlatel makeCopy()
+	{
+		CimSmgsPlatel copy= new CimSmgsPlatel();
+
+		copy.setCodPer(this.getCodPer());
+		copy.setDorR(this.getDorR());
+		copy.setPlatR(this.getPlatR());
+		copy.setPrimR(this.getPrimR());
+		copy.setKplat(this.getKplat());
+		copy.setKplat1(this.getKplat1());
+		copy.setKplat3(this.getKplat3());
+		copy.setPrim(this.getPrim());
+		copy.setnDog(this.getnDog());
+		copy.setDatDog(this.getDatDog());
+
+		return copy;
+	}
 }

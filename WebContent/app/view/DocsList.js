@@ -13,10 +13,11 @@ Ext.define('TK.view.DocsList', {
     closable: false,
     autoScroll: true,
     columnLines: true,
-    enableColumnHide:false,
-    enableColumnMove:false,
+    // enableColumnHide:false,
+    enableColumnMove:true,
 //    enableColumnResize:false,
     sortableColumns:false,
+    sealedColumns:true,
 //    forceFit: true,
     initComponent: function() {
         var config = {};
@@ -94,7 +95,7 @@ Ext.define('TK.view.DocsList', {
         config.dockedItems.push({
             dock: 'bottom',
             xtype: 'pagingtoolbar',
-            plugins : [Ext.create('TK.view.components.PagingSizeChangerPlugin', {options : [ 20, 50, 100, 200 ] })],
+            plugins : [Ext.create('TK.view.components.PagingSizeChangerPlugin', {options : [ 20, 50, 100, 200, 1000] })],
             store: config.store,
             displayInfo: true
         });
@@ -134,8 +135,86 @@ Ext.define('TK.view.DocsList', {
         } else {
 	        return val;
         }
-    }
+    },
 //    rendererID: function(val, meta, rec) {
 //        	return (rec.data.ready ? '<div class="ux-cell-value">' + val  + '<div class="ux-cell-actions" style="width: 20px;"><div class="ux-cell-action locked"></div></div></div>' : val);
 //        }
+    listeners:{
+        //добавляем обработчик для применения действий после рендеринга компонента
+        afterrender: function(c) {
+            this.afterrenderFn(c);
+        }
+    },
+    /**
+     * добавляем кнопки сохранения/очистки настроек во все компоненты потомки имеюие itemId
+     * @param c компонент
+     */
+    afterrenderFn: function (c) {
+        if(c.itemId) {
+            var menu = c.headerCt.getMenu();
+
+            if(menu.items.length>0&&menu.items.items[0].menu) {
+                //добавляем кнопку сохранение настроек столбцов таблицы
+                // сохранить настройки
+                menu.items.items[0].menu.add({
+                    text: this.saveGridSettings,
+                    icon: './images/save.gif',
+                    action: 'saveGridConfig'
+                });
+                // удалить настройки и использовать настройки по умолчанию
+                menu.items.items[0].menu.add({
+                    text: this.clearGridSettings,
+                    icon: './images/clear-16.gif',
+                    action: 'clearGridConfig'
+                });
+            }
+            // применяем настройки столбцов к столбцам, если настройки существуют
+            if (c.itemId &&gridConfig&& gridConfig[c.itemId]) {
+                var config = gridConfig[c.itemId];
+                for (var i = 0; i < c.columns.length; i++) {
+                    if (config[c.columns[i].dataIndex]) {
+                        if (config[c.columns[i].dataIndex].hidden === "true")
+                            c.columns[i].toHide=true; // устанавливаем значение, если нужно спрятать колонку
+                        if (config[c.columns[i].dataIndex].width) {
+                            c.columns[i].setWidth(parseInt(config[c.columns[i].dataIndex].width));
+                        }
+                        c.columns[i].sort=parseInt(config[c.columns[i].dataIndex].sort);
+                    }
+                }
+
+                // устанавливаем сохраненный порядок столбцов
+                //ищем максимальный номер по порядку
+                var gridColumns=c.down('headercontainer').getVisibleGridColumns(),maxSort=0;
+                for( i=0;i<gridColumns.length;i++)
+                {
+                    if(gridColumns[i].sort>maxSort)
+                        maxSort=gridColumns[i].sort;
+                }
+                // пересортируем столбцы
+                for(n=0;n<=maxSort;n++) {
+                    var sort=0,prevSort=-1;
+                    for (i = 0; i < gridColumns.length; i++) {
+                        // ищем нужный столбец по порядку
+                        if(gridColumns[i].sort===n) {
+                            c.headerCt.moveHeader(sort, gridColumns[i].sort);
+                            gridColumns=c.down('headercontainer').getVisibleGridColumns();
+                            break;
+                        }
+                        if(gridColumns[i].sort!==prevSort) {
+                            // sort указывает на текущий порядковый номер столбца при интарации через массив столбцов
+                            sort++;
+                            prevSort=gridColumns[i].sort;
+                        }
+                    }
+                }
+                // прячем столбцы, которые спрятаны в настройках пользователя
+                for (var i = 0; i < c.columns.length; i++) {
+                    if(c.columns[i].toHide===true)
+                        c.columns[i].hide();
+                }
+
+            }
+        }
+    }
+
 });

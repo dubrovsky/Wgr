@@ -4,7 +4,7 @@ Ext.define('TK.view.ky2.yard.Filter', {
     autoShow: true,
     modal: true,
     y: 0,
-    title: "Фильтр",
+    title: this.title,
     initComponent: function () {
         this.items = [
             {
@@ -15,17 +15,17 @@ Ext.define('TK.view.ky2.yard.Filter', {
                         xtype: 'datefield',
                         name: 'startDate',
                         altFormats: 'd.m.y',
-                        fieldLabel: 'Прибытие, с'
+                        fieldLabel: this.labelArrivalFrom
                     },
                     {
                         xtype: 'datefield',
                         name: 'endDate',
                         altFormats: 'd.m.y',
-                        fieldLabel: 'Прибытие, по'
+                        fieldLabel: this.labelArrivalTill
                     },
                     {
                         xtype: 'combo',
-                        fieldLabel: 'Международный номер поезда',
+                        fieldLabel: this.lblInternationalTrNum,
                         itemId: 'npprm',
                         // queryMode: 'local',
                         store: 'ky2.YardFilterPoezdsDir',
@@ -35,36 +35,42 @@ Ext.define('TK.view.ky2.yard.Filter', {
                         forceSelection: true,
                         name: 'npprm',
                         listConfig: {
-                            loadingText: "Поиск",
-                            emptyText: "Не найдено"
+                            loadingText: this.msgSearch,
+                            emptyText: this.msgNothingFound
                         }
                     },
                     {
                         xtype: 'combo',
-                        fieldLabel: 'Клиент',
+                        fieldLabel: this.labelClient,
                         itemId: 'gruzotpr',
                         // queryMode: 'local',
                         store: 'ky2.YardFilterGruzotprsDir',
                         displayField: 'gruzotpr',
-                        valueField: 'gruzotpr',
+                        valueField: 'hid',
                         typeAhead: false,
                         forceSelection: true,
                         name: 'gruzotpr',
                         listConfig: {
-                            loadingText: "Поиск",
-                            emptyText: "Не найдено"
+                            loadingText: this.msgSearch,
+                            emptyText: this.msgNothingFound
                         }
                     },
                     // {xtype:'textfield', fieldLabel:'Международный номер поезда', name:"npprm"},
                     // {xtype:'textfield', fieldLabel:'Клиент', name:"gruzotpr"},
                     {
+                        xtype: 'checkbox',
+                        name: 'avto',
+                        fieldLabel: 'AUTO',
+                        inputValue: '1'
+                    },
+                    {
                         xtype: 'textfield',
                         name: 'nkon',
-                        fieldLabel: 'Контейнер'
+                        fieldLabel: this.labelContainer
                     },
                     {
                         xtype: 'combo',
-                        fieldLabel: 'Сектор',
+                        fieldLabel: this.labelSector,
                         itemId: 'kontsectors',
                         store: 'ky2.YardSectors',
                         displayField: 'name',
@@ -75,8 +81,8 @@ Ext.define('TK.view.ky2.yard.Filter', {
                         forceSelection: true,
                         name: 'sector',
                         listConfig: {
-                            loadingText: "Поиск",
-                            emptyText: "Не найдено"
+                            loadingText: this.msgSearch,
+                            emptyText: this.msgNothingFound
                         }
                     }/*,
                     {
@@ -93,19 +99,19 @@ Ext.define('TK.view.ky2.yard.Filter', {
                 ],
                 buttons: [
                     {
-                        text: "Фильтровать",
+                        text: this.btnFilter,
                         formBind: true,
                         disabled: true,
                         action: 'applyFilterKontYard'
                     },
                     {
-                        text: "Очистить",
+                        text: this.btnClear,
                         handler: function (btn) {
                             btn.up('form').getForm().reset();
                         }
                     },
                     {
-                        text: "Закрыть",
+                        text: this.btnClose,
                         scope: this,
                         handler: function (btn) {
                             btn.up('window').close();

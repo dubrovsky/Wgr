@@ -4,9 +4,7 @@ import com.bivc.cimsmgs.commons.*;
 import com.bivc.cimsmgs.dao.*;
 import com.bivc.cimsmgs.db.CimSmgs;
 import com.bivc.cimsmgs.db.PackDoc;
-import com.bivc.cimsmgs.db.ky.Gruz;
-import com.bivc.cimsmgs.db.ky.Kont;
-import com.bivc.cimsmgs.db.ky.KontGruzHistory;
+import com.bivc.cimsmgs.db.ky.*;
 import com.opensymphony.xwork2.ActionSupport;
 
 import java.math.BigDecimal;
@@ -173,6 +171,11 @@ public class CimSmgsSupport_A extends ActionSupport implements JSONAware, UserAw
     private Long hid;
     private Long id;
     private String name;
+
+    private Boolean flag;
+    public Boolean getFlag() { return flag; }
+
+    public void setFlag(Boolean flag) { this.flag = flag; }
 
     /**
      * <p>Provide worklow task.</p>
@@ -348,7 +351,7 @@ public class CimSmgsSupport_A extends ActionSupport implements JSONAware, UserAw
         }
     }
 
-    public void saveContGruzHistory(Map<String, List<?>> contGruz4History, KontGruzHistoryDAO kontGruzHistoryDAO, KontGruzHistoryType historyType) {
+    public static void saveVagContGruzHistory(Map<String, List<?>> contGruz4History, KontGruzHistoryDAO kontGruzHistoryDAO, KontGruzHistoryType historyType, VagonHistoryDAO vagonHistoryDAO, String un, Date operationDate) {
         for (Map.Entry<String, List<?>> entries : contGruz4History.entrySet()) {
             if (entries.getKey().equals("konts")) {
                 for (int i = 0; i < entries.getValue().size(); i++) {
@@ -357,18 +360,30 @@ public class CimSmgsSupport_A extends ActionSupport implements JSONAware, UserAw
                     switch (historyType) {
                         case POEZD:
                             kontGruzHistory = new KontGruzHistory(
-                                    kont.getVagon().getPoezd(), kont.getVagon(), kont, kont.getVagon().getPoezd().getKoleya(), kont.getVagon().getPoezd().getDirection(), new Date(), getUser().getUsr().getUn()
+                                    kont.getVagon().getPoezd(), kont.getVagon(), kont, kont.getVagon().getPoezd().getKoleya(), kont.getVagon().getPoezd().getDirection(), new Date(), /*getUser().getUsr().getUn()*/un
                             );
                             break;
                         case YARD: {
                             kontGruzHistory = new KontGruzHistory(
-                                    kont.getYard().getSector(), kont.getYard(), kont, new Date(), getUser().getUsr().getUn()
+                                    kont.getYard().getSector(), kont.getYard(), kont, operationDate != null ? operationDate : new Date(), /*getUser().getUsr().getUn()*/un
                             );
                             break;
                         }
                         case AVTO: {
                             kontGruzHistory = new KontGruzHistory(
-                                    kont.getAvto(), kont, kont.getAvto().getDirection(), new Date(), getUser().getUsr().getUn()
+                                    kont.getAvto(), kont, kont.getAvto().getDirection(), new Date(), /*getUser().getUsr().getUn()*/un
+                            );
+                            break;
+                        }
+                        case INPUT: {
+                            kontGruzHistory = new KontGruzHistory(
+                                    null, kont, Byte.parseByte("1"), operationDate != null ? operationDate : kont.getDprb(), /*getUser().getUsr().getUn()*/un
+                            );
+                            break;
+                        }
+                        case OUTPUT: {
+                            kontGruzHistory = new KontGruzHistory(
+                                    null, null, kont, Byte.parseByte("2"), operationDate, /*getUser().getUsr().getUn()*/un
                             );
                             break;
                         }
@@ -383,19 +398,19 @@ public class CimSmgsSupport_A extends ActionSupport implements JSONAware, UserAw
                         kontGruzHistoryDAO.clear();
                     }*/
                 }
-            } else { // gruz
+            } else if (entries.getKey().equals("gruzs")) { // gruz
                 for (int i = 0; i < entries.getValue().size(); i++) {
                     Gruz gruz = (Gruz) entries.getValue().get(i);
                     KontGruzHistory kontGruzHistory;
                     switch (historyType) {
                         case POEZD:
                             kontGruzHistory = new KontGruzHistory(
-                                    gruz.getVagon().getPoezd(), gruz.getVagon(), gruz, gruz.getVagon().getPoezd().getKoleya(), gruz.getVagon().getPoezd().getDirection(), new Date(), getUser().getUsr().getUn()
+                                    gruz.getVagon().getPoezd(), gruz.getVagon(), gruz, gruz.getVagon().getPoezd().getKoleya(), gruz.getVagon().getPoezd().getDirection(), new Date(), /*getUser().getUsr().getUn()*/un
                             );
                             break;
                         case AVTO:
                             kontGruzHistory = new KontGruzHistory(
-                                    gruz.getAvto(), gruz, gruz.getAvto().getDirection(), new Date(), getUser().getUsr().getUn()
+                                    gruz.getAvto(), gruz, gruz.getAvto().getDirection(), new Date(), /*getUser().getUsr().getUn()*/un
                             );
                             break;
                         default:
@@ -408,6 +423,12 @@ public class CimSmgsSupport_A extends ActionSupport implements JSONAware, UserAw
                         kontGruzHistoryDAO.flush();
                         kontGruzHistoryDAO.clear();
                     }*/
+                }
+            } else if (entries.getKey().equals("vags")) {
+                for (int i = 0; i < entries.getValue().size(); i++) {
+                    Vagon vagon = (Vagon) entries.getValue().get(i);
+                    VagonHistory vagonHistory = new VagonHistory(vagon.getPoezd(), vagon, vagon.getPoezd().getKoleya(), vagon.getPoezd().getDirection(), new Date(), /*getUser().getUsr().getUn()*/un);
+                    vagonHistoryDAO.makePersistent(vagonHistory);
                 }
             }
         }
@@ -425,6 +446,8 @@ public class CimSmgsSupport_A extends ActionSupport implements JSONAware, UserAw
         POEZD,
         YARD,
         GRUZ,
-        AVTO
+        AVTO,
+        INPUT,
+        OUTPUT
     }
 }

@@ -2,7 +2,7 @@ Ext.define('TK.model.InvoiceGruz', {
     extend: 'Ext.data.Model',
     idProperty:'hid',
     fields: [
-        'tnved','nzgr',/*'znak',*/'nzyp','kypk',
+        'tnved','nzgr','nzgrEn',/*'znak',*/'nzyp','kypk',
         {name: 'kolm', type: 'int', useNull:true},
         {name: 'mbrt', type: 'float', useNull:true},
         {name: 'mnet', type: 'float', useNull:true},
@@ -14,6 +14,7 @@ Ext.define('TK.model.InvoiceGruz', {
     ],
     validations: [
         {type: 'length', field: 'tnved', max: 12},
+        {type: 'length', field: 'nzgrEn', max: 2500},
         {type: 'length', field: 'nzgr', max: 2500},
         {type: 'length', field: 'nzyp', max: 30},
         {type: 'length', field: 'kypk', max: 5},

@@ -24,6 +24,7 @@ Ext.define('TK.view.MenuTree', {
         this.on({
             load: controller.onRender,
             itemclick: {fn: controller.onItemclick, scope: controller, buffer: 250},
+            beforecellclick:{fn: controller.onBeforecellclick,scope:controller},
 //            itemdblclick: controller.onItemdblclick,
             scope: controller
         });

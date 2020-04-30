@@ -46,7 +46,7 @@ public class KontDTO implements Comparable<KontDTO>{
     private Date dotp;
 
     private Boolean poruz;
-    private Long massa_tar;
+    private BigDecimal massa_tar;
     private BigDecimal massa_brutto;
     private BigDecimal massa_brutto_all;
     private BigDecimal pod_sila;
@@ -55,14 +55,14 @@ public class KontDTO implements Comparable<KontDTO>{
     private String prizn_sob;
     private String naim_sob;
     private String gruzotpr;
-    private String punkt_otpr;
-    private String punkt_nazn;
+    private String zayav_in;
+    private String zayav_out;
 
     @JsonDeserialize(using = DateTimeDeserializer.class)
     @JsonSerialize(using = DateSerializer.class)
     private Date teh_obsl;
     private String prim;
-    private Byte sort;
+    private Integer sort;
     private Byte isZayav = 0;
     private Byte isUnloading = 0;
     private Byte isLoading = 0;
@@ -103,7 +103,7 @@ public class KontDTO implements Comparable<KontDTO>{
     }
 
     public Date getDprbDate() {
-        return dprbDate;
+        return this.dprbDate != null ? this.dprbDate : this.dprb;
     }
 
     public void setDprbDate(Date dprbDate) {
@@ -111,7 +111,7 @@ public class KontDTO implements Comparable<KontDTO>{
     }
 
     public Date getDprbTime() {
-        return dprbTime;
+        return this.dprbTime != null ? this.dprbTime : this.dprb;
     }
 
     public void setDprbTime(Date dprbTime) {
@@ -129,7 +129,7 @@ public class KontDTO implements Comparable<KontDTO>{
     }
 
     public Date getDotpDate() {
-        return dotpDate;
+        return this.dotpDate != null ? this.dotpDate : this.dotp;
     }
 
     public void setDotpDate(Date dotpDate) {
@@ -137,7 +137,7 @@ public class KontDTO implements Comparable<KontDTO>{
     }
 
     public Date getDotpTime() {
-        return dotpTime;
+        return this.dotpTime != null ? this.dotpTime : this.dotp;
     }
 
     public void setDotpTime(Date dotpTime) {
@@ -182,11 +182,11 @@ public class KontDTO implements Comparable<KontDTO>{
         this.poruz = poruz;
     }
 
-    public Long getMassa_tar() {
+    public BigDecimal getMassa_tar() {
         return massa_tar;
     }
 
-    public void setMassa_tar(Long massa_tar) {
+    public void setMassa_tar(BigDecimal massa_tar) {
         this.massa_tar = massa_tar;
     }
 
@@ -238,20 +238,20 @@ public class KontDTO implements Comparable<KontDTO>{
         this.gruzotpr = gruzotpr;
     }
 
-    public String getPunkt_otpr() {
-        return punkt_otpr;
+    public String getZayav_in() {
+        return zayav_in;
     }
 
-    public void setPunkt_otpr(String punkt_otpr) {
-        this.punkt_otpr = punkt_otpr;
+    public void setZayav_in(String zayav_in) {
+        this.zayav_in = zayav_in;
     }
 
-    public String getPunkt_nazn() {
-        return punkt_nazn;
+    public String getZayav_out() {
+        return zayav_out;
     }
 
-    public void setPunkt_nazn(String punkt_nazn) {
-        this.punkt_nazn = punkt_nazn;
+    public void setZayav_out(String zayav_out) {
+        this.zayav_out = zayav_out;
     }
 
     public Date getTeh_obsl() {
@@ -270,11 +270,11 @@ public class KontDTO implements Comparable<KontDTO>{
         this.prim = prim;
     }
 
-    public Byte getSort() {
+    public Integer getSort() {
         return sort;
     }
 
-    public void setSort(Byte sort) {
+    public void setSort(Integer sort) {
         this.sort = sort;
     }
 

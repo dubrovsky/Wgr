@@ -12,7 +12,7 @@ Ext.define('TK.view.ky.nsi.BaseFilter', {
                 items: this.buildItems(),
                 buttons: [
                     {
-                        text: 'Фильтровать',
+                        text: '!Фильтровать',
                         formBind: true,
                         disabled: true,
                         action: 'applyFilter'

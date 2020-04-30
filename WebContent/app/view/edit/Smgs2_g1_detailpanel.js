@@ -3,7 +3,6 @@
  */
 Ext.define('TK.view.edit.Smgs2_g1_detailpanel', {
     extend: 'TK.view.edit.DetailPanel',
-
     xtype: 'smgs2_g1_detailpanel',
 
     requires: [
@@ -12,7 +11,6 @@ Ext.define('TK.view.edit.Smgs2_g1_detailpanel', {
 
     x: 400, y: 100, width: 400, height: 470,
     itemId: 'g1_panel',
-    title: this.labelSender,
     layout: {
         type: 'vbox',
         align: 'stretch'
@@ -44,7 +42,14 @@ Ext.define('TK.view.edit.Smgs2_g1_detailpanel', {
             itemId: 'naim',
             items: [
                 {xtype: 'textarea', name: "smgs.g1r", itemId: "smgs.g1r", maxLength: 512, flex: 1},
-                {xtype: 'button', text: '...', action: 'otpr', margins: '0 0 0 5'}
+                {
+                    xtype: 'fieldcontainer',
+                    layout: 'vbox',
+                    items: [
+                        {xtype: 'button', text: '...', action: 'otpr', margins: '0 0 0 5'},
+                        {xtype: 'button', text: 'Translit', action: 'trlitg1', margins: '5 0 0 5'}
+                    ]
+                }
             ]
         },
         // код отправителя
@@ -201,7 +206,6 @@ Ext.define('TK.view.edit.Smgs2_g1_detailpanel', {
             result += row3;
         }
 
-
         this.ownerCt.getComponent('disp.g1').setValue(result);
 //                    this.ownerCt.getComponent('smgs.g2_').setValue(this.getComponent('code_p1').getComponent('smgs.g2').getValue());
     },
@@ -245,6 +249,10 @@ Ext.define('TK.view.edit.Smgs2_g1_detailpanel', {
                 this.bufData[arr[1]] = data[arr[1]];
             }
         }, this);
+    },
+    onClose:function () {
+        if(this.g1_dop_infoBack)
+            this.getComponent('smgs.g1_dop_info').setValue(this.g1_dop_infoBack);
+        this.callParent(arguments);
     }
-
 });

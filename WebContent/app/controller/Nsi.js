@@ -17,18 +17,19 @@ Ext.define('TK.controller.Nsi', {
         'Ext.window.Window',
         'TK.Utils',
         'TK.model.NsiCarrier',
-        'TK.model.ky2.NsiClient',
         'TK.model.NsiSta',
         'TK.model.SmgsOtpr',
         'TK.model.SmgsPlat',
+        'TK.view.edit.ClientEdit',
         'TK.view.edit.OtpavitelEdit',
         'TK.view.edit.StationCatalogEdit',
-        'TK.view.edit.ClientEdit'
+        'TK.view.user.ListGroups'
+
     ],
 
     views: ['nsi.ListDir'],
     stores: ['NsiDirs'],
-    models: ['NsiDir', 'SmgsPlat', 'SmgsOtpr', 'NsiSta', 'NsiCarrier'],
+    models: ['NsiDir', 'SmgsPlat', 'SmgsOtpr', 'NsiSta', 'NsiCarrier','TK.model.ky2.NsiClient'],
     refs: [
         {
             ref: 'center',
@@ -1338,11 +1339,17 @@ Ext.define('TK.controller.Nsi', {
         rec.set('name', data.name);
         view.up('window').close();
     },
+    /**
+     * Отображает таблицу выбора клиента
+     * @param query текущий клиент
+     * @param routeId индентификатор маршрута
+     * @returns {*}
+     */
     nsiKyClient: function (query, routeId) {
         var me = this,
             modelName = 'TK.model.ky2.NsiClient',
             win = Ext.widget('nsieditlist', {
-                width: 600,
+                width: 650,
                 prefix: 'client',
                 editPrivileg: 'CIM_DIR',
                 search: query,
@@ -1385,10 +1392,11 @@ Ext.define('TK.controller.Nsi', {
                         },
                         {text: this.headerCode, dataIndex: 'clNo', flex: 1, editor: {xtype: 'textfield', maxLength: 10}},
                         {text: this.headerName, dataIndex: 'sname', flex: 4, editor: {xtype: 'textfield', maxLength: 255}},
-                        {text: 'Номер договора', dataIndex: 'noDog', flex: 2, editor: {xtype: 'textfield', maxLength: 50}},
-                        {text: 'Дата договора', dataIndex: 'dateDog', flex: 2, editor: {xtype: 'textfield', maxLength: 255}},
-                        {text: 'Группы', dataIndex: 'usr.groupsIds', flex: 2, renderer: TK.Utils.renderLongStr}
-
+                        {text: this.headerPZ, dataIndex: 'cntPZ', flex: 1, editor: {xtype: 'textfield', maxLength: 50}},
+                        {text: this.headerWZ, dataIndex: 'cntWZ', flex: 1, editor: {xtype: 'textfield', maxLength: 50}},
+                        {text: this.headerNDog, dataIndex: 'noDog', flex: 2, editor: {xtype: 'textfield', maxLength: 50}},
+                        {text: this.headerDatDog, dataIndex: 'dateDog', flex: 2, editor: {xtype: 'textfield', maxLength: 255}},
+                        {text: this.headerGroups, dataIndex: 'usr.groupsIds', flex: 2, renderer: TK.Utils.renderLongStr}
                     ];
                 },
                 newRecord: function () {
@@ -1408,9 +1416,9 @@ Ext.define('TK.controller.Nsi', {
                      }*/
                 },
                 prepareData: function (rec) {
-                    rec['groups'] = rec['usr.groupsIds'];
-                    delete rec['usr.groupsIds'];
-                    return rec;
+                    // rec['groups'] = rec['usr.groupsIds'];
+                    // delete rec['usr.groupsIds'];
+                    return {'hid': rec.data['hid']};
                 }
             });
         return win;
@@ -1420,6 +1428,7 @@ Ext.define('TK.controller.Nsi', {
         var me = this,
             win = Ext.widget('nsieditlist', {
                 width: 1000,
+                height:600,
                 prefix: 'carrier',
                 editPrivileg: 'CIM_DIR',
                 search: query,

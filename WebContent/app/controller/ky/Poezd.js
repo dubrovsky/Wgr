@@ -1,6 +1,7 @@
 Ext.define('TK.controller.ky.Poezd', {
     extend:'Ext.app.Controller',
     mixins: ['TK.controller.FilterUtils'],
+
     views: [
         'ky.poezd.into.List',
         'ky.poezd.into.Form',
@@ -198,6 +199,7 @@ Ext.define('TK.controller.ky.Poezd', {
                                 buttons: Ext.Msg.OK,
                                 icon: Ext.Msg.INFO
                             });
+                            poezdlist.getStore().reload();
                             // var text = Ext.decode(response.responseText);
                         },
                         failure: function(response){

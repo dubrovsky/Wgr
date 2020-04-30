@@ -23,7 +23,7 @@ Ext.define('TK.view.ky.BaseKontIntoList', {
                                 width: 50
                             },
                             {
-                                text: 'Ярус',
+                                text: '!Ярус',
                                 dataIndex: 'ky_z',
                                 width: 50
                             }

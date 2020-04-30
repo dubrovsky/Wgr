@@ -28,7 +28,7 @@ public class VagonBaseDTO implements Comparable<VagonBaseDTO> {
 
     private String kpv;
     private Integer kolOs;
-    private Long masTar;
+    private Float masTar;
     private String sobstv;
     private String foot;
 
@@ -253,11 +253,11 @@ public class VagonBaseDTO implements Comparable<VagonBaseDTO> {
         this.kolOs = kolOs;
     }
 
-    public Long getMasTar() {
+    public Float getMasTar() {
         return masTar;
     }
 
-    public void setMasTar(Long masTar) {
+    public void setMasTar(Float masTar) {
         this.masTar = masTar;
     }
 

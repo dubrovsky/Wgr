@@ -21,6 +21,7 @@ Ext.define('TK.view.project.List', {
         config.dockedItems = new Array({
             dock: 'top',
             xtype: 'toolbar',
+            layout: 'column',
             itemId: 'top',
             items: [
                 {text: this.btnCreate,iconCls:'doc_new', action:'create'},'-',

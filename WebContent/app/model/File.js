@@ -4,6 +4,9 @@ Ext.define('TK.model.File', {
     fields: [
         {name:'hid', type:'int'},
         'fileName','contentType',
-        {name:'length', type:'int'}
+        {name:'length', type:'int'},
+        {name:'userFlag', type:'int', useNull: true},
+        {name:'newDoc', type:'boolean'},
+        'altered', 'un'
     ]
 });

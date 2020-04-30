@@ -11,6 +11,7 @@ public class YardBindDTO  implements Comparable<YardBindDTO>{
     private Long x;
     private Long y;
     private Long z;
+    private String h;
     private TreeSet<KontBindDTO> konts = new TreeSet<>();
 
     public Long getX() {
@@ -72,5 +73,13 @@ public class YardBindDTO  implements Comparable<YardBindDTO>{
 
     public void setKonts(TreeSet<KontBindDTO> konts) {
         this.konts = konts;
+    }
+
+    public String getH() {
+        return h;
+    }
+
+    public void setH(String h) {
+        this.h = h;
     }
 }

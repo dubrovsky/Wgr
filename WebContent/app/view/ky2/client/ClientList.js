@@ -2,21 +2,26 @@ Ext.define('TK.view.ky2.client.ClientList', {
     extend: 'TK.view.ky2.AbstractList',
     alias: 'widget.ky2clientlist',
 
-    title: 'Клиент',
+    requires: [
+        'TK.view.components.PagingSizeChangerPlugin'
+    ],
+
+
+    title: this.title,
     buildColumns: function (config) {
         config.columns = {
             items: [
-                {text: 'Сектор', dataIndex: 'sectorName', width: 150},
-                {text: 'Место<br/>положения', dataIndex: 'location', width: 150},
-                {text: 'Контейнер', dataIndex: 'nkon', width: 150},
-                {text: 'Тара', dataIndex: 'massa_tar', width: 150},
-                {text: 'Брутто', dataIndex: 'massa_brutto', width: 150},
-                {text: 'Грузо<br/>подъемность', dataIndex: 'pod_sila', width: 150},
-                {text: 'Типоразмер', dataIndex: 'vid', width: 150},
-                {text: '№ поезда<br/>по приб', dataIndex: 'npprm', width: 150},
-                {text: 'Дата<br/>приб', dataIndex: 'dprb', width: 150},
-                {text: 'Клиент', dataIndex: 'clientName', width: 150},
-                {text: 'Дней<br/>на КП', dataIndex: 'kyDays', width: 150}
+                {text: this.headerSector, dataIndex: 'sectorName', width: 150},
+                {text: this.headerPlace, dataIndex: 'location', width: 150},
+                {text: this.headerContainer, dataIndex: 'nkon', width: 150},
+                {text: this.headerTara, dataIndex: 'massa_tar', width: 150},
+                {text: this.headerBrutto, dataIndex: 'massa_brutto', width: 150},
+                {text: this.headerContainerNum, dataIndex: 'pod_sila', width: 150},
+                {text: this.headerContSize, dataIndex: 'vid', width: 150},
+                {text: this.headerTrainNbyArrival, dataIndex: 'npprm', width: 150},
+                {text: this.hederArrDate, dataIndex: 'dprb', width: 150},
+                {text: this.headerClient, dataIndex: 'clientName', width: 150},
+                {text: this.headerDaysInKP, dataIndex: 'kyDays', width: 150}
             ]
         };
     },
@@ -28,6 +33,7 @@ Ext.define('TK.view.ky2.client.ClientList', {
     buildBottomToolbar: function (config) {
         config.bbar = {
             xtype: 'pagingtoolbar',
+            plugins : [Ext.create('TK.view.components.PagingSizeChangerPlugin', {options : [ 20, 50, 100, 200, 1000] })],
             store: config.store,
             displayInfo: true
         };
@@ -35,7 +41,7 @@ Ext.define('TK.view.ky2.client.ClientList', {
 
     buildTopToolbar: function (config) {
         config.tbar = [
-            {text: 'Фильтр', iconCls: 'filter', action: 'filterClient'}, '-'
+            {text: this.btnFilter, iconCls: 'filter', action: 'filterClient'}, '-'
         ];
     }
 });

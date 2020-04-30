@@ -4,15 +4,14 @@ Ext.define('TK.view.ky2.KontByZayavFilter', {
     trigger2Cls: 'x-form-clear-trigger',
 
     margin: '0 0 0 20',
-    fieldLabel: 'Заявка',
-    labelWidth: 35,
+    // fieldLabel: this.lblOrder,
+    labelWidth: 'auto',
     queryMode: 'local',
     valueField: 'hid',
     typeAhead: false,
     editable: false,
     name: 'zayav',
-
-
+    cls: 'leftSearch',
 
     initComponent: function () {
         this.addEvents('clearFilter');

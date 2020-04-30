@@ -1,5 +1,11 @@
 Ext.define('TK.model.ky.NsiVagShir', {
     extend: 'Ext.data.Model',
+
+    requires: [
+        'TK.Utils',
+        'TK.model.ky.NsiOwner'
+    ],
+
     idProperty:'hid',
     fields: [
         {name:'hid', type:'int', useNull:true},

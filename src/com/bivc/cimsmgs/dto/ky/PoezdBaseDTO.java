@@ -11,7 +11,6 @@ import com.bivc.cimsmgs.formats.json.serializers.DateTimeSerializer;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import java.util.Date;
 
@@ -43,6 +42,7 @@ public class PoezdBaseDTO {
     @JsonSerialize(using = DateTimeSerializer.class)
     private Date altered;
     private String un;
+    private String trans;
 
     @JsonSerialize(using = DateTimeSerializer.class)
     private Date dprb;
@@ -67,6 +67,33 @@ public class PoezdBaseDTO {
     @JsonDeserialize(using = DateTimeDeserializer.class)
     @JsonInclude(JsonInclude.Include.ALWAYS)
     private Date dotpTime;
+
+    @JsonSerialize(using = DateTimeSerializer.class)
+    private Date dpogr;
+
+    @JsonSerialize(using = DateSerializer.class)
+    @JsonDeserialize(using = DateTimeDeserializer.class)
+    private Date dpogrDate;
+
+    @JsonSerialize(using = TimeSerializer.class)
+    @JsonDeserialize(using = DateTimeDeserializer.class)
+    @JsonInclude(JsonInclude.Include.ALWAYS)
+    private Date dpogrTime;
+
+    @JsonSerialize(using = DateTimeSerializer.class)
+    private Date duved;
+
+    @JsonSerialize(using = DateSerializer.class)
+    @JsonDeserialize(using = DateTimeDeserializer.class)
+    private Date duvedDate;
+
+    @JsonSerialize(using = TimeSerializer.class)
+    @JsonDeserialize(using = DateTimeDeserializer.class)
+    @JsonInclude(JsonInclude.Include.ALWAYS)
+    private Date duvedTime;
+
+    private Long messCount;
+    private Long newMessCount;
 
     public PoezdBaseDTO() {}
 
@@ -182,10 +209,10 @@ public class PoezdBaseDTO {
         this.dprb = dprb;
     }
 
-    @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toStringExclude(this, "route", "packDoc");
-    }
+//    @Override
+//    public String toString() {
+//        return ReflectionToStringBuilder.toStringExclude(this, "route", "packDoc");
+//    }
 
     public Date getDprbDate() {
         return this.dprbDate != null ? this.dprbDate : this.dprb;
@@ -201,6 +228,70 @@ public class PoezdBaseDTO {
 
     public void setDprbTime(Date dprbTime) {
         this.dprbTime = dprbTime;
+    }
+
+    public Date getDpogr() {
+        if(this.dpogrDate != null){
+            this.dpogr = this.dpogrDate;
+            if(this.dpogrTime != null){
+                this.dpogr = DateTimeUtils.addTimeToDate(this.dpogrDate, this.dpogrTime);
+            }
+        }
+        return this.dpogr;
+    }
+
+    public void setDpogr(Date dpogr) {
+        this.dpogr = dpogr;
+    }
+
+    public Date getDuved() {
+        if(this.duvedDate != null){
+            this.duved = this.duvedDate;
+            if(this.duvedTime != null){
+                this.duved = DateTimeUtils.addTimeToDate(this.duvedDate, this.duvedTime);
+            }
+        }
+        return duved;
+    }
+
+    public void setDuved(Date duved) {
+        this.duved = duved;
+    }
+//    @Override
+//    public String toString() {
+//        return ReflectionToStringBuilder.toStringExclude(this, "route", "packDoc");
+//    }
+
+    public Date getDpogrDate() {
+        return this.dpogrDate != null ? this.dpogrDate : this.dpogr;
+    }
+
+    public void setDpogrDate(Date dpogrDate) {
+        this.dpogrDate = dpogrDate;
+    }
+
+    public Date getDpogrTime() {
+        return this.dpogrTime != null ? this.dpogrTime : this.dpogr;
+    }
+
+    public void setDpogrTime(Date dpogrTime) {
+        this.dpogrTime = dpogrTime;
+    }
+
+    public Date getDuvedDate() {
+        return this.duvedDate != null ? this.duvedDate : this.duved;
+    }
+
+    public void setDuvedDate(Date duvedDate) {
+        this.duvedDate = duvedDate;
+    }
+
+    public Date getDuvedTime() {
+        return this.duvedTime != null ? this.duvedTime : this.duved;
+    }
+
+    public void setDuvedTime(Date duvedTime) {
+        this.duvedTime = duvedTime;
     }
 
     public Long getHid() {
@@ -297,5 +388,29 @@ public class PoezdBaseDTO {
 
     public void setClient(ClientDTO client) {
         this.client = client;
+    }
+
+    public String getTrans() {
+        return trans;
+    }
+
+    public void setTrans(String trans) {
+        this.trans = trans;
+    }
+
+    public Long getMessCount() {
+        return messCount;
+    }
+
+    public void setMessCount(Long messCount) {
+        this.messCount = messCount;
+    }
+
+    public Long getNewMessCount() {
+        return newMessCount;
+    }
+
+    public void setNewMessCount(Long newMessCount) {
+        this.newMessCount = newMessCount;
     }
 }

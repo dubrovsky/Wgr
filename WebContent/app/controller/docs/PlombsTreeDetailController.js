@@ -403,9 +403,9 @@ Ext.define('TK.controller.docs.PlombsTreeDetailController', {
                         // очистка формы
                         tree.up().down('form').items.each(function (item, index, length) {
                             item.setValue('');
-                            controller.saveFunc();
                         });
                     }
+                    controller.saveFunc();
                 }
             });
         }
@@ -430,8 +430,11 @@ Ext.define('TK.controller.docs.PlombsTreeDetailController', {
                     kpl=model.data['kpl'],
                     znakArr=[],
                     // вначале разбиваем по ,
-                    znakArr2=mainField.split(','),
+                    znakArr2=[],
                     who= model.data['who'];
+
+                if(mainField)
+                    znakArr2=mainField.split(',');
 
                 fields.forEach(function (item) {
                     copyFields[item]=model.data[item];
@@ -503,7 +506,6 @@ Ext.define('TK.controller.docs.PlombsTreeDetailController', {
                     parentDataObj[this.getWin().getOwnerDoc().getPlombsCollectionName()] = {};
 
                     parentNodeModel.eachChild(function(plombsModel) {
-                        // console.log(plombsModel);
                         parentDataObj[this.getWin().getOwnerDoc().getPlombsCollectionName()][plombsIndex] = {};
 
                         this.getPlombspanel().items.each(function(plombsItem,index,length){

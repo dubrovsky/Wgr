@@ -1,11 +1,11 @@
 Ext.define('TK.Utils', {
     singleton: true,
-    arrru: new Array('Кю','кю','Я', 'я', 'Ю', 'ю', 'Ч', 'ч', 'Ш', 'ш', 'Щ', 'щ', 'Ж', 'ж', 'А', 'а', 'Б', 'б', 'В', 'в', 'Г', 'г', 'Д', 'д', 'Е', 'е', 'Ё', 'ё', 'З', 'з', 'И', 'и', 'Й', 'й', 'К', 'к', 'Л', 'л', 'М', 'м', 'Н', 'н', 'О', 'о', 'П', 'п', 'Р', 'р', 'С', 'с', 'Т', 'т', 'У', 'у', 'Ф', 'ф', 'Х', 'х', 'Ц', 'ц', 'Ы', 'ы', 'ь', 'ь', 'ъ', 'ъ', 'Э', 'э'),
-    arren: new Array('Q','q','Ya', 'ya', 'Yu', 'yu', 'Ch', 'ch', 'Sh', 'sh', 'Sh', 'sh', 'Zh', 'zh', 'A', 'a', 'B', 'b', 'V', 'v', 'G', 'g', 'D', 'd', 'E', 'e', 'E', 'e', 'Z', 'z', 'I', 'i', 'J', 'j', 'K', 'k', 'L', 'l', 'M', 'm', 'N', 'n', 'O', 'o', 'P', 'p', 'R', 'r', 'S', 's', 'T', 't', 'U', 'u', 'F', 'f', 'H', 'h', 'C', 'c', 'Y', 'y', '`', '`', '\'', '\'', 'E', 'e'),
-    arrde: new Array('Ä','ä','Ö','ö','ẞ','ß','Ü','ü','W','w'),
-    arrde_en: new Array('Ae','ae','Oe','oe','Ss','ss','Ue','ue','V','v'),
-    arrpl: new Array('Ą',	'ą','Ć','ć','Ę','ę','Ł','ł','Ń','ń','Ó','ó','Ś','ś','Ź','ź','Ż','ż'),
-    arrpl_en: new Array('A','a','C','c','E','e','L','l','N','n','O','o','S','s','Z','z','Z','z'),
+    arrru: new Array('Кю', 'кю', 'Я', 'я', 'Ю', 'ю', 'Ч', 'ч', 'Ш', 'ш', 'Щ', 'щ', 'Ж', 'ж', 'А', 'а', 'Б', 'б', 'В', 'в', 'Г', 'г', 'Д', 'д', 'Е', 'е', 'Ё', 'ё', 'З', 'з', 'И', 'и', 'Й', 'й', 'К', 'к', 'Л', 'л', 'М', 'м', 'Н', 'н', 'О', 'о', 'П', 'п', 'Р', 'р', 'С', 'с', 'Т', 'т', 'У', 'у', 'Ф', 'ф', 'Х', 'х', 'Ц', 'ц', 'Ы', 'ы', 'ь', 'ь', 'ъ', 'ъ', 'Э', 'э'),
+    arren: new Array('Q', 'q', 'Ya', 'ya', 'Yu', 'yu', 'Ch', 'ch', 'Sh', 'sh', 'Sh', 'sh', 'Zh', 'zh', 'A', 'a', 'B', 'b', 'V', 'v', 'G', 'g', 'D', 'd', 'E', 'e', 'E', 'e', 'Z', 'z', 'I', 'i', 'J', 'j', 'K', 'k', 'L', 'l', 'M', 'm', 'N', 'n', 'O', 'o', 'P', 'p', 'R', 'r', 'S', 's', 'T', 't', 'U', 'u', 'F', 'f', 'H', 'h', 'C', 'c', 'Y', 'y', '`', '`', '\'', '\'', 'E', 'e'),
+    arrde: new Array('Ä', 'ä', 'Ö', 'ö', 'ẞ', 'ß', 'Ü', 'ü', 'W', 'w'),
+    arrde_en: new Array('Ae', 'ae', 'Oe', 'oe', 'Ss', 'ss', 'Ue', 'ue', 'V', 'v'),
+    arrpl: new Array('Ą', 'ą', 'Ć', 'ć', 'Ę', 'ę', 'Ł', 'ł', 'Ń', 'ń', 'Ó', 'ó', 'Ś', 'ś', 'Ź', 'ź', 'Ż', 'ż'),
+    arrpl_en: new Array('A', 'a', 'C', 'c', 'E', 'e', 'L', 'l', 'N', 'n', 'O', 'o', 'S', 's', 'Z', 'z', 'Z', 'z'),
 
     makeErrMsg: function (response, title) {
         var msg = response.statusText ? response.statusText : '';
@@ -39,26 +39,106 @@ Ext.define('TK.Utils', {
     },
     failureDataMsg: function () {
         Ext.Msg.show({
-                title: 'Внимание! Данные не прошли проверку',
-                msg: 'Проверьте правильно ли заполнены поля',
+                title: this.dataErrorHdr,
+                msg: this.dataErrormsg,
                 buttons: Ext.MessageBox.OK,
                 icon: Ext.MessageBox.ERROR
             }
         );
         return false;
     },
+    /**
+     * обрабатывает текст ответа от сервера после запроса объединения документов и шаблона
+     * @param response ответ сервера
+     * @returns {*} текст ответа
+     */
+    avisoXsmgsMsgText: function (response) {
+        var me = TK.Utils;
+        var succ = Ext.decode(response.responseText)['success'], msgText = '';
+        if (succ) {
+            msgText = me.processed + ' ' + Ext.decode(response.responseText)['result'];
+            if (Ext.decode(response.responseText)['errors']) {
+                msgText += '<br>' + me.unProcDocs + Ext.decode(response.responseText)['errors'];
+            }
+        } else
+            msgText = this.wrongAviso;
+
+        return msgText;
+    },
+    /**
+     * Делает Ajax запрос на сервер
+     * @param url адрес запроса
+     * @param params объект с параметрами запроса
+     * @param respHandler обработчик сообщения ответа
+     * @param form форма которую надо затенить на время запроса
+     * @param afterMsgHandler обработчик выполняющий действия после нажатия OK в окнее с сообщением
+     * @param opts переменные для обработчика
+     */
+    makeAjaxRequest: function (url, params, respHandler, form, afterMsgHandler, opts) {
+        var me = TK.Utils, afterHandl = afterMsgHandler ? afterMsgHandler : function () {
+        }
+        if (form)
+            form.getEl().mask(me.request, 'x-mask-loading');
+        Ext.Ajax.request({
+            url: url,
+            params: params,
+           // scope: this,
+            success: function (response, options) {
+                var msgTxt;
+                if(respHandler)
+                    msgTxt=respHandler(response,form);
+                if(msgTxt)
+                Ext.Msg.show({
+                    title: me.successMsgTitle,
+                    msg: msgTxt,
+                    buttons: Ext.Msg.OK,
+                    icon: Ext.Msg.INFO,
+                    fn: afterHandl(opts)
+                });
+                if (form && form.getEl())
+                    form.getEl().unmask();
+            },
+            failure: function (response) {
+                TK.Utils.makeErrMsg(response, this.errorMsg);
+                if (form)
+                    form.getEl().unmask();
+            }
+        });
+    },
+
     renderLongStr: function (value, meta) {
         meta.style = 'white-space:normal;';
         return value;
     },
+
+    renderMessCount: function (value) {
+        return value ? value : '';
+    },
+
     renderNonZeroStr: function (value, meta) {
-        return value!==0?value:'';
+        return value !== 0 ? value : '';
+    },
+    rendererNewDoc: function (value) {
+        return value ? '<img src="./resources/images/doc_new.png" width="16" height="16">' : '';
     },
     isRowSelected: function (grid) {
         if (grid.selModel.getCount() == 0) {
             Ext.Msg.show({
                 title: grid.warnTitle,
                 msg: grid.warnMsg,
+                buttons: Ext.MessageBox.OK,
+                icon: Ext.MessageBox.WARNING
+            });
+            return false;
+        } else {
+            return true;
+        }
+    },
+    isOneRowSelected: function (grid) {
+        if (grid.selModel.getCount() !== 1) {
+            Ext.Msg.show({
+                title: grid.warnTitle,
+                msg: 'Следует выбрать одну строку из таблицы с данными',
                 buttons: Ext.MessageBox.OK,
                 icon: Ext.MessageBox.WARNING
             });
@@ -153,12 +233,12 @@ Ext.define('TK.Utils', {
         // kop == 0? res += " ноль " + K[0]: 0;
         return (minus + res).substr(0, 1).toUpperCase() + (minus + res).substr(1);
     },
-    findFieldBy: function(name, items){
+    findFieldBy: function (name, items) {
         var me = this;
-        for(var i = 0; i < items.length; i++){
+        for (var i = 0; i < items.length; i++) {
             if (items[i].items) {
                 return me.findFieldBy(name, items[i].items);
-            } else if(items[i].name === name){
+            } else if (items[i].name === name) {
                 return items[i];
             }
         }
@@ -200,8 +280,7 @@ Ext.define('TK.Utils', {
         }
         return text;
     },
-    translit:function(text,arrayFrom,arrayTo)
-    {
+    translit: function (text, arrayFrom, arrayTo) {
         for (var i = 0; i < arrayFrom.length; i++) {
             var reg = new RegExp(arrayFrom[i], "g");
             text = text.replace(reg, arrayTo[i]);
@@ -215,18 +294,37 @@ Ext.define('TK.Utils', {
      * @param component
      * @param lang
      */
-    set_translit:function (text,component,lang)
-    {
-        if(text&&component)
-        {   if(lang==='ru')
-                component.setValue(this.translit(text,this.arrru,this.arren));
-            if(lang==='en') {
+    set_translit: function (text, component, lang) {
+        if (text && component) {
+            if (lang === 'ru')
+                component.setValue(this.translit(text, this.arrru, this.arren));
+            if (lang === 'en') {
 
-                text=this.translit(text,this.arrde,this.arrde_en);
-                text=this.translit(text,this.arrpl,this.arrpl_en);
-                component.setValue(this.translit(text,this.arren,this.arrru));
+                text = this.translit(text, this.arrde, this.arrde_en);
+                text = this.translit(text, this.arrpl, this.arrpl_en);
+                component.setValue(this.translit(text, this.arren, this.arrru));
             }
         }
+    },
+    /**
+     * translit text to chosen destination .
+     * @param text input text
+     * @param lang language destination
+     * @returns {string} transliterated text
+     */
+    perform_translit: function (text, lang) {
+        var res = '';
+        if (text && component) {
+            if (lang === 'ru')
+                res = this.translit(text, this.arrru, this.arren);
+            if (lang === 'en') {
+
+                text = this.translit(text, this.arrde, this.arrde_en);
+                text = this.translit(text, this.arrpl, this.arrpl_en);
+                res = this.translit(text, this.arren, this.arrru);
+            }
+        }
+        return res;
     },
     /**
      * Method used to compare 2 objects.
@@ -248,7 +346,8 @@ Ext.define('TK.Utils', {
             if (!one || !two) {
                 return false;
             }
-
+            if (!skippedProperties)
+                skippedProperties = [];
             for (var propertyName in one) {
                 if (skippedProperties.indexOf(propertyName) > -1) {
                     continue;
@@ -258,7 +357,7 @@ Ext.define('TK.Utils', {
                     equals = false;
                 } else if (one[propertyName] != null && two[propertyName] != null) {
                     if (typeof one[propertyName] == 'object' && typeof two[propertyName] == 'object') {
-                        equals = equals && Ext.Object.deepEquals(one[propertyName], two[propertyName], skippedProperties);
+                        equals = equals && TK.Utils.deepEquals(one[propertyName], two[propertyName], skippedProperties);
                     } else {
                         equals = equals && (one[propertyName] == two[propertyName]);
                     }
@@ -273,17 +372,48 @@ Ext.define('TK.Utils', {
 
         return (oneEqualsTwo && twoEqualsOne);
     },
-    firstContainsSecond:function (first,second,skippedProperties) {
+    firstContainsSecond: function (first, second, skippedProperties) {
 
         for (var propertyName in second) {
-            // console.log(propertyName)
             if (skippedProperties.indexOf(propertyName) > -1) {
-                // console.log('skip'+propertyName)
-            }
-            else
-            if(first[propertyName]==null||first[propertyName]!==second[propertyName])
+            } else if (first[propertyName] == null || first[propertyName] !== second[propertyName])
                 return false;
         }
         return true;
+    },
+    /**
+     * Метод снимает Dirty флаг со всех полей формы
+     * @param doc документ
+     */
+    cleanDirtyFlags: function (doc, scope) {
+        if (!doc || !doc.form)
+            return;
+
+        if (doc.dataObj) {
+            // if(!doc.dataObj.back)
+            // {
+            doc.dataObj.back = {};
+            doc.dataObj.back['cimSmgsCarLists'] = doc.dataObj['cimSmgsCarLists'] ? Ext.clone(doc.dataObj['cimSmgsCarLists']) : {};
+            doc.dataObj.back['cimSmgsDocses7'] = doc.dataObj['cimSmgsDocses7'] ? Ext.clone(doc.dataObj['cimSmgsDocses7']) : {};
+            doc.dataObj.back['cimSmgsDocses13'] = doc.dataObj['cimSmgsDocses13'] ? Ext.clone(doc.dataObj['cimSmgsDocses13']) : {};
+            doc.dataObj.back['cimSmgsDocses136'] = doc.dataObj['cimSmgsDocses136'] ? Ext.clone(doc.dataObj['cimSmgsDocses136']) : {};
+            doc.dataObj.back['cimSmgsPerevoz'] = doc.dataObj['cimSmgsPerevoz'] ? Ext.clone(doc.dataObj['cimSmgsPerevoz']) : {};
+            doc.dataObj.back['cimSmgsPlatels'] = doc.dataObj['cimSmgsPlatels'] ? Ext.clone(doc.dataObj['cimSmgsPlatels']) : {};
+            // }
+        }
+
+        var form, fields, it, l;
+        form = doc.getForm();
+
+        fields = form.getFields();
+        it = fields.items;
+        l = it.length;
+        for (var i = 0; i < l; i++) {
+            var c = it[i];
+            c.originalValue = c.getValue();
+        }
+    },
+    isFunction:function(functionToCheck) {
+    return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
     }
 });

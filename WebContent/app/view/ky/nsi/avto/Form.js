@@ -2,6 +2,11 @@ Ext.define('TK.view.ky.nsi.avto.Form', {
     extend: 'TK.view.ky.AbstractWindow',
     alias:'widget.kynsiavtoform',
 
+    requires: [
+        'TK.view.ky.nsi.BaseForm'
+    ],
+
+
     buildItems: function(config) {
         config.items = [
             {

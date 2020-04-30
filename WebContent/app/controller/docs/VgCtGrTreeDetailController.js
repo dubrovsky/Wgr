@@ -48,10 +48,10 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
     }, {
         ref: 'searchField',
         selector: 'vgCtGrTreeFormWin textfield#searchField'
-    }, {
+    },{
         ref: 'uploadVagsSmgs2',
         selector: 'vgCtGrTreeFormWin button#uploadVagsSmgs2'
-    }, {
+    },{
         ref: 'uploadContsSmgs2',
         selector: 'vgCtGrTreeFormWin button#uploadContsSmgs2'
     }, {
@@ -296,7 +296,7 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
 
         win.show();
         // делаем пломбы выбранной в дереве, если в окно попали через двойно мелчок по пломбе в графе 19
-        if (typeof record === 'object' && record.data) {
+        if (typeof record === 'object'&&record.data) {
             rootNode.findChildBy(function (child) {
                 var treeHid = child.data.hid;
 
@@ -308,10 +308,13 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
         }
         this.onExpandAllClick();
 
-        if (this.isContOtpr()) {
+        if(this.isContOtpr())
+        {
             this.getUploadVagsSmgs2().hide();
             this.getUploadContsSmgs2().show();
-        } else {
+        }
+        else
+        {
             this.getUploadVagsSmgs2().show();
             this.getUploadContsSmgs2().hide();
         }
@@ -631,19 +634,29 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
             });
         }
     },
-    hideVags: function (treepanel, win) {
+    hideVags:function(treepanel, win)
+    {
+
+
         var rootNode = this.getTreepanel().getStore().getRootNode();
-        rootNode.eachChild(function (vagNodeModel) { // write vags
-            if (vagNodeModel.get('who') === 'vag')
-                vagNodeModel.set('cls', 'hideTreeNode');
-        }, this);
+
+            rootNode.eachChild(function (vagNodeModel) { // write vags
+
+                if(vagNodeModel.get('who')==='vag')
+                    vagNodeModel.set('cls','hideTreeNode');
+    },this);
     },
-    showVags: function (treepanel, win) {
+    showVags:function(treepanel, win)
+    {
+
+
         var rootNode = this.getTreepanel().getStore().getRootNode();
+
         rootNode.eachChild(function (vagNodeModel) { // write vags
-            if (vagNodeModel.get('who') === 'vag')
-                vagNodeModel.set('cls', 'showTreeNode');
-        }, this);
+
+            if(vagNodeModel.get('who')==='vag')
+                vagNodeModel.set('cls','showTreeNode');
+        },this);
     },
     onSaveClick: function (btn) {
         var dataObj = {};
@@ -906,11 +919,17 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
             scope: this,
             success: function (response) {
                 var respObj = Ext.decode(response.responseText);
+                var field = this.getGryzpanel().getForm().findField(fieldName);
                 if (respObj['nzgr']) {
-                    var field = this.getGryzpanel().getForm().findField(fieldName);
                     if (field) {
                         field.setValue(respObj['nzgr']);
                         field.fireEvent('blur', field);
+                    }
+                }
+                else
+                {
+                    if (field) {
+                        field.setValue('');
                     }
                 }
             },
@@ -1081,7 +1100,7 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
             contsMassa = 0,
             contDisplField = controller.getKontDispField(),
             gryzDisplField = controller.getGruzDispField(),
-            vagStoreTab, grStore, kontStore, ctCount = 0, plCount = 0;
+            vagStoreTab, grStore,kontStore, ctCount = 0, plCount = 0,isContSMGS=this.isContOtpr()
         // очищаем хранилище компонента g7vagsmgs2, если он присутствует на форме
         if (controller.getDocForm().getComponent('disp.g7v') && controller.getDocForm().getComponent('disp.g7v').xtype === 'g7vagsmgs2') {
             vagStoreTab = controller.getDocForm().getComponent('disp.g7v').getComponent('g7grid').getStore();
@@ -1091,8 +1110,9 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
             grStore = controller.getDocForm().getComponent('disp.g7g').getComponent('g15grid').getStore();
             grStore.removeAll();
         }
-        if (controller.getDocForm().getComponent('disp.g7k') && controller.getDocForm().getComponent('disp.g7k').xtype === 'g15contsmgs2') {
-            kontStore = controller.getDocForm().getComponent('disp.g7k').getComponent('g15Kgrid').getStore();
+        if(controller.getDocForm().getComponent('disp.g7k')&&controller.getDocForm().getComponent('disp.g7k').xtype==='g15contsmgs2')
+        {
+            kontStore=controller.getDocForm().getComponent('disp.g7k').getComponent('g15Kgrid').getStore();
             kontStore.removeAll();
         }
 
@@ -1116,12 +1136,22 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
                     }
                 )
             // подсчет количества контейнеров и мест занимаемых грузом
-
-            for (var ctIndx in vag.cimSmgsKonLists) {
-                ctCount++;
-                for (var grIndx in vag.cimSmgsKonLists[ctIndx].cimSmgsGruzs) {
-                    if (vag.cimSmgsKonLists[ctIndx].cimSmgsGruzs[grIndx]['places']) {
-                        plCount += vag.cimSmgsKonLists[ctIndx].cimSmgsGruzs[grIndx]['places'];
+            if(isContSMGS) //контейнерная перевозка
+            {
+                for (var ctIndx in vag.cimSmgsKonLists) {
+                    ctCount++;
+                    for (var grIndx in vag.cimSmgsKonLists[ctIndx].cimSmgsGruzs) {
+                        if (vag.cimSmgsKonLists[ctIndx].cimSmgsGruzs[grIndx]['places']) {
+                            plCount += vag.cimSmgsKonLists[ctIndx].cimSmgsGruzs[grIndx]['places'];
+                        }
+                    }
+                }
+            }
+            else//вагонная  перевозка
+            {
+                for (var grIndx in vag.cimSmgsGruzs) {
+                    if (vag.cimSmgsGruzs[grIndx]['places']) {
+                        plCount += vag.cimSmgsGruzs[grIndx]['places'];
                     }
                 }
             }
@@ -1139,7 +1169,7 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
             if (this.isContOtpr()) {
                 conts = vag[controller.getDocForm().getContCollectionName()];
                 if (conts) {
-                    contsGryzyResult = this.setDisplayedContFields(controller, conts, gryzyGngMap, kontStore);
+                    contsGryzyResult = this.setDisplayedContFields(controller, conts, gryzyGngMap,kontStore);
                     contResult += contsGryzyResult['contResult'];
                     contsMassa += contsGryzyResult['contsMassa'];
                 }
@@ -1156,8 +1186,12 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
             contDisplField.setValue(contResult);
         controller.getDocForm().getComponent('smgs.g24N').setValue(gryzyGngMap.sum('massa'));
         controller.getDocForm().getComponent('smgs.g24T').setValue(contsMassa);
-        if (controller.getDocForm().xtype === 'smgs2' || controller.getDocForm() === 'aviso2') {
-            controller.getDocForm().getComponent('smgs.ctcount').setValue('КОНТЕЙНЕРОВ:\n' + ctCount);
+        if(controller.getDocForm().xtype==='smgs2'||controller.getDocForm()==='aviso2')
+        {
+            if(isContSMGS)
+                controller.getDocForm().getComponent('smgs.ctcount').setValue('КОНТЕЙНЕРОВ:\n' + ctCount);
+            else
+                controller.getDocForm().getComponent('smgs.ctcount').setValue('');
             controller.getDocForm().getComponent('smgs.plcount').setValue('ИТОГО:\n' + plCount);
         }
         if (gryzyGngMap.getCount() > 0) {
@@ -1166,29 +1200,31 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
             }
 
             gryzResult += this.setDisplayedGryzFields(controller, gryzyGngMap, vags, grStore);
-            // gryzDisplField.setValue(gryzResult);
+            if(gryzDisplField)
+                gryzDisplField.setValue(gryzResult);
         } else {
-            // gryzDisplField.setValue('');
+            if(gryzDisplField)
+                gryzDisplField.setValue('');
         }
     },
 
-    setDisplayedContFields: function (controller, conts, gryzyGngMap, kontStore) {
+    setDisplayedContFields: function (controller, conts, gryzyGngMap,kontStore) {
         var contResult = '',
             contsMassa = 0;
 
         for (var contIndx in conts) {
             var cont = conts[contIndx];
-            if (kontStore)
-                kontStore.add(
-                    {
-                        'hid': cont['hid'],
-                        'utiN': cont['utiN'],
-                        'sizeFoot': cont['sizeFoot'],
-                        'taraKont': cont['taraKont'],
-                        'utiType': cont['utiType'],
-                        'grpod': cont['grpod']
-                    }
-                )
+            if(kontStore)
+            kontStore.add(
+                {
+                    'hid':cont['hid'],
+                    'utiN':cont['utiN'],
+                    'sizeFoot':cont['sizeFoot'],
+                    'taraKont':cont['taraKont'],
+                    'utiType':cont['utiType'],
+                    'grpod':cont['grpod']
+                }
+            )
 
             contResult += (cont['sizeFoot'] ? '1x' + cont['sizeFoot'] : '');
             contResult += (cont['notes'] ? ' ' + cont['notes'] : '');
@@ -1254,10 +1290,8 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
             }
             gruzTemp['upakGroupsDe'][upak] += isNaN(places) ? 0 : places;
 
-
         }
-//         console.log(gryzy);
-//         console.log(gryzMap);
+
 //         for(var gryzIndx in gryzy) {
 //             var gryz = gryzy[gryzIndx],
 //                 gruzTemp = gryz['kgvn'] ? gryzMap.get(gryz['kgvn'].trim()) : null;
@@ -1299,13 +1333,19 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
 //             gruzTemp['upakGroupsDe'][upak] += isNaN(places) ? 0 : places;
 //
 //         }
-//         console.log(gryzMap);
     },
 
     setDisplayedGryzFields: function (controller, gryzyGngMap, vags, grStore) {
 
         var gryzResult = '',
-            g11PrimResult = '';
+            kgvnResult=[],
+            ekgvnResult=[],
+            g11PrimResult = '',
+            kgvnField,ekgvnField;
+        if(controller.id==='docs.Cimsmgs') {
+            kgvnField = controller.getKgvnField();
+            ekgvnField=controller.getEkgvnField();
+        }
 
         gryzyGngMap.each(function (gryz, gryzIndx) {
 
@@ -1325,6 +1365,11 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
                 gryzResult += (gryz['nzgrEu'] ? '\n' + gryz['nzgrEu'] : '');
                 gryzResult += (gryz['kgvn'] ? '\nГНГ- ' + gryz['kgvn'] : '');
                 gryzResult += (gryz['ekgvn'] ? '\nЕТ СНГ- ' + gryz['ekgvn'] : '');
+
+                if(gryz['kgvn'])
+                    kgvnResult.push(gryz['kgvn']);
+                if(gryz['ekgvn'])
+                    ekgvnResult.push(gryz['ekgvn']);
 
 
                 // gryzResult += (gryz['upak'] ? '\nУпаковка- ' + gryz['upak'] : '');
@@ -1393,6 +1438,10 @@ Ext.define('TK.controller.docs.VgCtGrTreeDetailController', {
             this
         );
 
+        if(controller.id==='docs.Cimsmgs') {
+            kgvnField.setValue(kgvnResult);
+            ekgvnField.setValue(ekgvnResult);
+        }
         return gryzResult;
     }
 });

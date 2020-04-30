@@ -87,12 +87,17 @@ Ext.define('TK.view.file.Form', {
                     {xtype: 'hidden', name:'file.route.hid', itemId:'file.route.hid'},
                     {xtype: 'hidden', name:'file.type', itemId:'file.type'},
                     {
-                        xtype: 'filefield',
+                        xtype: 'filesfield',
                         name: 'upload',
                         fieldLabel: this.labelFile,
                         allowBlank: false,
                         anchor: '100%',
-                        buttonText: this.labelFileSearch
+                        buttonText: this.labelFileSearch,
+                        listeners: {
+                            afterrender: function (cmp) {
+                                cmp.fileInputEl.dom.setAttribute('multiple', '1');
+                            }
+                        }
                     }
                 ];
             },
@@ -130,7 +135,11 @@ Ext.define('TK.view.file.Form', {
             buildColumns: function(config) {
                 config.columns = [
                     {text: this.headerID, dataIndex: 'hid', width: 45, sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false},
+                    {text: '', dataIndex: 'newDoc', width: 28, sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false, renderer: TK.Utils.rendererNewDoc},
+                    {text: '', dataIndex: 'userFlag', width: 28, sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false, renderer: this.rendererUserFlag},
                     {text: this.headerFileName, dataIndex: 'fileName', flex: 1, sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false},
+                    {text: this.headerDateTime, dataIndex: 'altered', renderer: TK.Utils.renderLongStr, width: 125},
+                    {text: this.headerUser, dataIndex: 'un', width: 100},
                     {text: this.headerContentType, dataIndex: 'contentType', width: 100, sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false},
                     {text: this.headerSizeByte, dataIndex: 'length', width: 100, sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false}
                 ];
@@ -141,7 +150,8 @@ Ext.define('TK.view.file.Form', {
                     xtype: 'toolbar',
                     itemId: 'top',
                     items: [
-                        {text: this.btnView,iconCls:'doc_view',itemId:'view', action:'view', forDeleted: true, forPresent: true},{xtype: 'tbseparator', forDeleted: true, forPresent: true}
+                        {text: 'Флаг', iconCls:'flag_3', itemId:'flag', action:'flag', forDeleted: true, forPresent: true},{xtype: 'tbseparator', forDeleted: true, forPresent: true},
+                        {text: this.btnView, iconCls:'doc_view',itemId:'view', action:'view', forDeleted: true, forPresent: true},{xtype: 'tbseparator', forDeleted: true, forPresent: true}
                     ]
                 });
                 if(tkUser.hasPriv('CIM_DELETE')){
@@ -163,6 +173,9 @@ Ext.define('TK.view.file.Form', {
                 config.viewConfig = {
                     stripeRows: true
                 };
+            },
+            rendererUserFlag: function (value) {
+                return value != null ? '<img src="./resources/images/flag-' + value + '.png" width="16" height="16">' : '';
             }
         }];
     },

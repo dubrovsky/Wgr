@@ -1,19 +1,26 @@
 Ext.define('TK.view.ky2.avto.BaseAvtoList', {
-    extend:'TK.view.ky2.BaseList',
-    alias:'widget.ky2baseavtolist',
+    extend: 'TK.view.ky2.BaseList',
+    alias: 'widget.ky2baseavtolist',
 
-    buildColumns:function (config) {
+    requires: [
+        'TK.Utils',
+        'TK.view.components.PagingSizeChangerPlugin'
+    ],
+
+
+    buildColumns: function (config) {
         config.columns = {
-            items:[
-                {text: this.headerAvtoNum, dataIndex:'no_avto', flex:1, maxWidth:200},
-                {text: this.headerAvtoTrail, dataIndex:'no_trail', flex:1, maxWidth:100},
+            items: [
+                {text: this.headerAvtoNum, dataIndex: 'no_avto', flex: 1, maxWidth: 200},
+                {text: this.headerAvtoTrail, dataIndex: 'no_trail', flex: 1, maxWidth: 100},
                 {text: this.headerNKont, dataIndex: 'konts', width: 200, renderer: this.renderNkon},
-                {text: this.headerDriverFam, dataIndex:'driver_fio', flex:1, maxWidth:200},
-                {text: this.headerKontCount, dataIndex:'kontCount', flex:1, maxWidth:100},
+                {text: this.headerDriverFam, dataIndex: 'driver_fio', flex: 1, maxWidth: 200},
+                {text: this.headerPZWZ, dataIndex: 'docType', width: 60},
+                {text: this.headerKontCount, dataIndex: 'kontCount', flex: 1, maxWidth: 100},
                 // {text:this.headerDep, dataIndex:'departure', width:200},
                 // {text:this.headerDest, dataIndex:'destination', width:200},
                 {
-                    text:this.headerCreation,
+                    text: this.headerCreation,
                     columns: [{
                         text: this.headerDateTime,
                         dataIndex: 'altered',
@@ -26,7 +33,15 @@ Ext.define('TK.view.ky2.avto.BaseAvtoList', {
                         width: 100
                     }]
                 },
-                {text:'ID', dataIndex:'hid', flex:1, maxWidth:100, minWidth:70, maxWidth:100}
+                {text: 'ID', dataIndex: 'hid', flex: 1, maxWidth: 100, minWidth: 70},
+                {
+                    text: 'Сообщения',
+                    dataIndex: 'messCount',
+                    flex: 1,
+                    maxWidth: 100,
+                    minWidth: 70,
+                    renderer: TK.Utils.renderMessCount
+                }
             ]
         };
 
@@ -35,14 +50,18 @@ Ext.define('TK.view.ky2.avto.BaseAvtoList', {
     buildBottomToolbar: function (config) {
         config.bbar = {
             xtype: 'pagingtoolbar',
+            plugins: [Ext.create('TK.view.components.PagingSizeChangerPlugin', {options: [20, 50, 100, 200, 1000]})],
             displayInfo: true
         };
     },
     buildTopToolbar: function (config) {
         this.callParent(arguments);
         config.tbar.splice(3, 0,
-            {text: 'Контейнер/Груз', iconCls:'edit', action:'editCtGr'},'-',
-            {text: 'Приложенные документы', iconCls:'bind', action:'attach'},'-'
+            {text: this.btnVgCt, iconCls: 'edit', action: 'editCtGr'}, '-',
+            {tooltip: this.btnDocs, iconCls: 'bind', action: 'attach'}, '-'
+        );
+        config.tbar.splice(0, 0,
+            {tooltip: this.btnFilter, iconCls: 'filter', action: 'filterAvto'}, '-'
         );
     },
 

@@ -7,7 +7,9 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.connection.ConnectionProvider;
 import org.hibernate.engine.SessionFactoryImplementor;
+import org.hibernate.engine.SessionImplementor;
 import org.hibernate.impl.SessionFactoryImpl;
+import org.hibernate.impl.SessionImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,6 +72,12 @@ public class HibernateUtil {
     }
 
     public static dbTool initDbTool() throws Exception {
+//        ConnectionProvider connectionProvider = sessionFactory.getConnectionProvider();
+        SessionImplementor sessionImpl = (SessionImplementor) sessionFactory.getCurrentSession();
+        return new dbTool(sessionImpl.connection(), null);
+    }
+
+    public static dbTool initDbToolNew() throws Exception {
         ConnectionProvider connectionProvider = sessionFactory.getConnectionProvider();
         return new dbTool(connectionProvider.getConnection(), null);
     }

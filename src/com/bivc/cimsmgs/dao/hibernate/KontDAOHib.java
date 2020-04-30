@@ -64,6 +64,16 @@ public class KontDAOHib extends GenericHibernateDAO<Kont, Long> implements KontD
     }
 
     @Override
+    public Kont findByNkon(String nkon) {
+        Criteria crit = getSession().createCriteria(getPersistentClass());
+        crit.add(Restrictions.eq("nkon", nkon));
+//        crit.add(Restrictions.isNull("isZayav"));
+        crit.addOrder(Order.desc("hid"));
+        crit.setMaxResults(1);
+        return (Kont) crit.uniqueResult();
+    }
+
+    @Override
     public List<Kont> findKontDir(Integer limit, Integer start, List<Filter> filters, Usr usr, Locale locale, KontStatus[] kontStatuses) {
         Criteria crit = getSession().createCriteria(getPersistentClass());
 

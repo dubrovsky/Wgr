@@ -2,6 +2,11 @@ Ext.define('TK.view.ky.poezd.into.vagon.Form', {
     extend:'TK.view.ky.AbstractWindow',
     alias:'widget.kyvagonintoform',
 
+    requires: [
+        'TK.view.ky.poezd.BaseVagonForm'
+    ],
+
+
     buildItems: function(config) {
         config.items = [
             {

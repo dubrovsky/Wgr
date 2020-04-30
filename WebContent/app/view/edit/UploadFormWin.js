@@ -69,7 +69,9 @@ Ext.define('TK.view.edit.UploadFormWin', {
     buildFormItems: function() {
         return [
             {xtype:'filefield', fieldLabel: this.labelFile, name: 'upload',itemId:'uploadField', allowBlank: false, buttonText: this.labelUpload},
-            {xtype: 'hidden', name: "name",itemId:'uploadName', text: '', allowBlank: true}
+            {xtype: 'hidden', name: "name",itemId:'uploadName', text: '', allowBlank: true},
+            {xtype: 'hidden', name: "hid",itemId:'hid', text: '', allowBlank: true},
+            {xtype: 'hidden', name: "query",itemId:'query', text: '', allowBlank: true}
         ];
     }
 });

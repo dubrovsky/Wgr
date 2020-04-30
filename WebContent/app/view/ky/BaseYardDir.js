@@ -22,7 +22,7 @@ Ext.define('TK.view.ky.BaseYardDir', {
                             width: 60
                         },
                         {
-                            text: 'Ярус',
+                            text: '!!!Ярус',
                             dataIndex: 'z',
                             width: 60
                         }

@@ -2,9 +2,10 @@ Ext.define('TK.view.gu29k.Form', {
     extend: 'TK.view.DocsForm',
     alias: 'widget.gu29k',
     requires: [
+        'TK.model.SmgsPlomb',
+        'TK.view.edit.DetailGrid',
         'TK.view.edit.DetailPanel',
-        'TK.view.edit.DetailTabPanel',
-        'TK.view.edit.DetailGrid'
+        'TK.view.edit.DetailTabPanel'
     ],
     buildItems:function(config) {
     	config.items = [

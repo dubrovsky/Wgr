@@ -9,7 +9,13 @@
 
     <bean id="doc2DocTemplDao" class="com.bivc.cimsmgs.dao.hibernate.Doc2DocTemplatesDAOHib"/>
     <bean id="smgsDAO" class="com.bivc.cimsmgs.dao.hibernate.SmgsDAOHib"/>
+    <bean id="statusDirDAO" class="com.bivc.cimsmgs.dao.hibernate.StatusDirDAOHib"/>
+    <bean id="statusDAO" class="com.bivc.cimsmgs.dao.hibernate.StatusDAOHib"/>
     <bean id="invoiceDAO" class="com.bivc.cimsmgs.dao.hibernate.InvoiceDAOHib"/>
+
+    <bean id="printDataStampDAO" class="com.bivc.cimsmgs.dao.hibernate.PrintDataStampDAOHib"/>
+
+    <bean id="managementDAO" class="com.bivc.cimsmgs.dao.hibernate.ManagementDAOHib"/>
 
     <bean id="jacksonObjectMapper" class="com.fasterxml.jackson.databind.ObjectMapper"/>
     <bean id="defaultDeserializer" class="com.bivc.cimsmgs.formats.json.jackson.DeserializerImpl">
@@ -19,7 +25,7 @@
         <constructor-arg ref="jacksonObjectMapper"/>
     </bean>
 
-    <bean id="cimSmgsMapper" class="com.bivc.cimsmgs.doc2doc.orika.customize.CimSmgsCustomMapper"/>
+    <bean id="cimSmgsMapper" class="com.bivc.cimsmgs.doc2doc.orika.customize.CimSmgsCustomMapper" scope=""/>
     <bean id="cimSmgsAllCopyMapper" class="com.bivc.cimsmgs.doc2doc.orika.customize.CimSmgsAllCopyCustomMapper"/>
     <bean id="cimSmgsAppendMapper" class="com.bivc.cimsmgs.doc2doc.orika.customize.CimSmgsAppendCustomMapper"/>
     <bean id="cimSmgsCarListMapper" class="com.bivc.cimsmgs.doc2doc.orika.customize.CarListCustomMapper"/>
@@ -61,7 +67,8 @@
           p:cimSmgsMapper-ref="cimSmgsAllCopyMapper"
           p:cimSmgsCarListMapper-ref="cimSmgsCarListMapperAll"
           p:cimSmgsKonListMapper-ref="cimSmgsKonListMapperAll"
-          p:cimSmgsExcludes="cimSmgsCarLists"
+          
+          p:cimSmgsExcludes="cimSmgsCarLists,boardTalkNewMesses,newMessCount"
           p:cimSmgsCarListExcludes="cimSmgsKonLists, cimSmgsGruzs, cimSmgsPlombs, cimSmgsDocses9"
           p:cimSmgsGruzExcludes="cimSmgsDanGruzs"
           p:cimSmgsKonListExcludes="cimSmgsGruzs,cimSmgsDocses9,cimSmgsPlombs"
@@ -96,10 +103,9 @@
     <!--<bean id="doc2ExcelContList" class="com.bivc.cimsmgs.doc2doc.Doc2ExcelContList"/>-->
     <bean id="smgs2ExcelContList_pl" class="com.bivc.cimsmgs.doc2doc.Smgs2ExcelContList_pl"/>
     <bean id="cimSmgs2ExcelContList_de" class="com.bivc.cimsmgs.doc2doc.CimSmgs2ExcelContList_de"/>
-    <bean 
-id="smgs2ExcelContList" class="com.bivc.cimsmgs.doc2doc.Smgs2ExcelContVagList"/>
-    <bean 
-id="excelTples" class="com.bivc.cimsmgs.doc2doc.ExcelTpls"/>
+    <bean id="smgs2ExcelContList" class="com.bivc.cimsmgs.doc2doc.Smgs2ExcelContVagList"/>
+    <bean id="excelTples" class="com.bivc.cimsmgs.doc2doc.ExcelTpls"/>
+    <bean id="invoiceSpecs" class="com.bivc.cimsmgs.doc2doc.InvoiceSpecs"/>
     <bean id="cimSmgs2ExcelDopList_de" class="com.bivc.cimsmgs.doc2doc.CimSmgs2ExcelDopList_de"/>
 
 
@@ -115,14 +121,20 @@ id="excelTples" class="com.bivc.cimsmgs.doc2doc.ExcelTpls"/>
           p:cimSmgs2CimSmgs4ContList-ref="cimSmgs2CimSmgs4ContList"
           p:smgs2ExcelContList_pl-ref="smgs2ExcelContList_pl"
           p:cimSmgs2ExcelContList_de-ref="cimSmgs2ExcelContList_de"
-          
-p:smgs2ExcelContList-ref="smgs2ExcelContList"
-          
-p:excelTpls-ref="excelTples"
+          p:smgs2ExcelContList-ref="smgs2ExcelContList"
+          p:excelTpls-ref="excelTples"
+          p:invoiceSpecs-ref="invoiceSpecs"
           p:smgs2ExcelVagList-ref="smgs2ExcelContList"
           p:cimSmgs2ExcelDopList_de-ref="cimSmgs2ExcelDopList_de"
           p:defaultSerializer-ref="defaultSerializer"
     />
+
+<bean id="pdf_a" class="com.bivc.cimsmgs.actions.Pdf_A" scope="prototype"
+          p:statusDAO-ref="statusDAO"
+          p:statusDirDAO="statusDirDAO"
+    />
+
+<bean id="printstamp_A" class="com.bivc.cimsmgs.actions.PrintStamp_A" scope="prototype"/>
 
     <bean id="doc2EpdCustomMapper" class="com.bivc.cimsmgs.doc2doc.orika.customize.epd.Doc2EpdCustomMapper"/>
     <bean id="carList2EpdCustomMapper" class="com.bivc.cimsmgs.doc2doc.orika.customize.epd.CarList2EpdCustomMapper"/>
@@ -165,6 +177,11 @@ p:excelTpls-ref="excelTples"
           p:cimSmgsKonListSerializer-ref="cimSmgsSerializer"
     />
 
+<bean id="user_a" class="com.bivc.cimsmgs.actions.User_A" scope="prototype"
+          p:gridConfigDAO-ref="gridConfigDAO">
+        <constructor-arg ref="jacksonObjectMapper"/>
+    </bean>
+
     <bean id="epdAddConfig" class="com.bivc.cimsmgs.doc2doc.orika.epd.EpdInvoiceAddConfig" init-method="init">
         <constructor-arg ref="epdInvoiceCustomMapper"/>
         <constructor-arg ref="destinationNotEmptyFilter"/>
@@ -192,9 +209,12 @@ p:excelTpls-ref="excelTples"
     <bean id="bindAvtoAndPoezd_A" class="com.bivc.cimsmgs.actions.ky2.BindAvtoAndPoezd_A" scope="prototype"/>
     <bean id="bindPoezdAndPoezd_A" class="com.bivc.cimsmgs.actions.ky2.BindPoezdAndPoezd_A" scope="prototype"/>
     <bean id="bindPoezdAndYard_A" class="com.bivc.cimsmgs.actions.ky2.BindPoezdAndYard_A" scope="prototype"/>
+    <bean id="bindYardAndYard_A" class="com.bivc.cimsmgs.actions.ky2.BindYardAndYard_A" scope="prototype"/>
     <bean id="bindPoezdAndAvto_A" class="com.bivc.cimsmgs.actions.ky2.BindPoezdAndAvto_A" scope="prototype"/>
     <bean id="poezd2_A" class="com.bivc.cimsmgs.actions.ky2.Poezd_A" scope="prototype"/>
     <bean id="client2_A" class="com.bivc.cimsmgs.actions.ky2.Client_A" scope="prototype"/>
+    <bean id="kont2_A" class="com.bivc.cimsmgs.actions.ky2.Kont_A" scope="prototype"/>
+    <bean id="vagon2_A" class="com.bivc.cimsmgs.actions.ky2.Vagon_A" scope="prototype"/>
     <bean id="poezdZayav2_A" class="com.bivc.cimsmgs.actions.ky2.PoezdZayav_A" scope="prototype"/>
     <bean id="report2_A" class="com.bivc.cimsmgs.actions.ky2.Report_A" scope="prototype"/>
     <bean id="ping_A" class="com.bivc.cimsmgs.actions.Ping_A" scope="prototype"/>
@@ -251,6 +271,10 @@ p:excelTpls-ref="excelTples"
     <bean id="mdcontareax_A" class="com.bivc.cimsmgs.actions.ky.Mdcontareax_A" scope="prototype"/>
     <bean id="nsiAvtoA" class="com.bivc.cimsmgs.actions.ky.NsiAvto_A" scope="prototype"/>
 
+    <bean id="bindPoezdAndYardService" class="com.bivc.cimsmgs.services.ky2.BindPoezdAndYardService"/>
+    <bean id="bindAvtoAndYardService" class="com.bivc.cimsmgs.services.ky2.BindAvtoAndYardService"/>
+    <bean id="bindYardAndYardService" class="com.bivc.cimsmgs.services.ky2.BindYardAndYardService"/>
+    <bean id="gridConfigDAO" class="com.bivc.cimsmgs.dao.hibernate.GridConfigDAOHib"/>
     <bean id="gruzDAO" class="com.bivc.cimsmgs.dao.hibernate.GruzDAOHib"/>
     <bean id="plombDAO" class="com.bivc.cimsmgs.dao.hibernate.PlombDAOHib"/>
     <bean id="yardDAO" class="com.bivc.cimsmgs.dao.hibernate.YardDAOHib"/>
@@ -261,7 +285,10 @@ p:excelTpls-ref="excelTples"
     <bean id="routeDAO" class="com.bivc.cimsmgs.dao.hibernate.RouteDAOHib"/>
     <bean id="poezdDAO" class="com.bivc.cimsmgs.dao.hibernate.PoezdDAOHib"/>
     <bean id="clientDAO" class="com.bivc.cimsmgs.dao.hibernate.NsiClientDAOHib"/>
+    <bean 
+id="tnvedDictDAO" class="com.bivc.cimsmgs.dao.hibernate.NsiTnvedDictDAOHib"/>
     <bean id="kontGruzHistoryDAO" class="com.bivc.cimsmgs.dao.hibernate.KontGruzHistoryDAOHib"/>
+    <bean id="vagonHistoryDAO" class="com.bivc.cimsmgs.dao.hibernate.VagonHistoryDAOHib"/>
     <bean id="avtoDAO" class="com.bivc.cimsmgs.dao.hibernate.AvtoDAOHib"/>
     <bean id="avtoZayavDAO" class="com.bivc.cimsmgs.dao.hibernate.AvtoZayavDAOHib"/>
     <bean id="poezdZayavDAO" class="com.bivc.cimsmgs.dao.hibernate.PoezdZayavDAOHib"/>

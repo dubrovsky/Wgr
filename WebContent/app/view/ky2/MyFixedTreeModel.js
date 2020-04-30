@@ -20,7 +20,8 @@ Ext.define('TK.view.ky2.MyFixedTreeModel', {
         depth0 = store.getAt(startRow).data.depth;
         toSelect = [];
         for (i = startRow; i <= endRow; i++){
-            if (!me.isSelected(store.getAt(i)) && depth0 == store.getAt(i).data.depth) {
+            cls_i = store.getAt(i).get('cls');
+            if (!me.isSelected(store.getAt(i)) && depth0 == store.getAt(i).data.depth && (cls_i == null || cls_i.indexOf('hideTreeNode') == -1)) {
                 toSelect.push(store.getAt(i));
             }
         }

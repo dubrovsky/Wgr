@@ -1,6 +1,14 @@
 Ext.define('TK.controller.ky2.PoezdZayavController', {
     extend: 'Ext.app.Controller',
     mixins: ['TK.controller.FilterUtils'],
+
+    requires: [
+        'TK.Utils',
+        'TK.model.PackDoc',
+        'TK.model.Route',
+        'TK.view.ky2.poezd.zayav.Filter'
+    ],
+
     views: [
         'ky2.poezd.into.PoezdZayavList',
         'ky2.poezd.into.PoezdZayavForm',
@@ -10,6 +18,7 @@ Ext.define('TK.controller.ky2.PoezdZayavController', {
         'ky2.poezd.BasePoezdZayavForm',
         'ky2.poezd.zayav.PoezdZayavList',
         'ky2.poezd.zayav.PoezdZayavForm',
+        'ky2.poezd.zayav.Filter',
         'ky2.AbstractList',
         'ky2.AbstractForm'
     ],
@@ -71,13 +80,22 @@ Ext.define('TK.controller.ky2.PoezdZayavController', {
                 click: this.editZayavOutFromOutside
             },
             'ky2poezdzayavlist': {
-                itemdblclick: this.onEditZayav
+                itemdblclick: this.onEditZayav,
+                itemclick: function (view, record) {
+                    this.fireEvent('updateMessanger', view, record);
+                }
             },
             'ky2poezdzayavintolist': {
-                itemdblclick: this.editZayavInto
+                itemdblclick: this.editZayavInto,
+                itemclick: function (view, record) {
+                    this.fireEvent('updateMessanger', view, record);
+                }
             },
             'ky2poezdzayavoutlist': {
-                itemdblclick: this.editZayavOut
+                itemdblclick: this.editZayavOut,
+                itemclick: function (view, record) {
+                    this.fireEvent('updateMessanger', view, record);
+                }
             },
             'ky2poezdzayavlist button[action="delete"]': {
                 click: this.onDeleteZayav
@@ -107,10 +125,16 @@ Ext.define('TK.controller.ky2.PoezdZayavController', {
                 click: this.saveZayav
             },
             'ky2basepoezdzayavform button[action="upload"]': {
-                click: this.uploadZayav
+                click: this.onUploadZayav
             },
             'ky2poezdzayavform button[action="nsiOtpr"]': {
                 click: this.onShowNsiOtpr
+            },
+            'ky2poezdzayavlist button[action="filterPoezdZayav"]': {
+                click: this.filterZayav
+            },
+            'ky2poezdzayavfilter button[action="applyFilter"]': {
+                click: this.applyFilterZayav
             }
         });
     },
@@ -133,10 +157,12 @@ Ext.define('TK.controller.ky2.PoezdZayavController', {
                 direction: extraParams['direction'],
                 transport: 'P'
             }),
-            zayavcontainer = Ext.widget(xtype, {title: 'Создание заявки'});
+            zayavcontainer = Ext.widget(xtype, {title: this.titleCreate});
 
         zayavcontainer.down('form').loadRecord(zayav);
         zayavcontainer.down('form').initFieldsWithDefaultsValues();
+        this.getController('ky2.AvtoZayavController').getClientForCreate(zayavcontainer.down('form'), zayav, extraParams['routeId']);
+
         //  poezdcontainer.down('form').getForm().findField('dprbDate').setValue(new Date());
 
         this.getCenter().add(zayavcontainer);
@@ -144,9 +170,9 @@ Ext.define('TK.controller.ky2.PoezdZayavController', {
 
     getFormTitle: function (direction) {
         if (direction === 1)
-            return 'Создание заявки на ввоз';
+            return this.titleCreateOrderImport;
         else if (direction === 2)
-            return 'Создание заявки на вывоз';
+            return this.titleCreateOrderExport;
         else
             return '';
     },
@@ -190,7 +216,7 @@ Ext.define('TK.controller.ky2.PoezdZayavController', {
 
     editZayav: function (xtype, modelClsName, hid) {
         this.getCenter().remove(this.getCenter().getComponent(0), true);
-        var zayavcontainer = this.getCenter().add(Ext.widget(xtype, {title: 'Редактирование заявки'}));
+        var zayavcontainer = this.getCenter().add(Ext.widget(xtype, {title: this.titleEdit}));
 
         zayavcontainer.setLoading(true);
 
@@ -222,7 +248,7 @@ Ext.define('TK.controller.ky2.PoezdZayavController', {
         }
 
         Ext.Msg.show({
-            title: this.delTitle, msg: 'Удалить заявку?', buttons: Ext.Msg.YESNO,
+            title: this.delTitle, msg: this.delOrderMsg, buttons: Ext.Msg.YESNO,
             closable: false, icon: Ext.Msg.QUESTION, scope: this,
             fn: function (buttonId) {
                 if (buttonId === 'yes') {
@@ -248,7 +274,7 @@ Ext.define('TK.controller.ky2.PoezdZayavController', {
         this.saveZayav(1);
     },
 
-    saveZayav: function (close) {
+    saveZayav: function (close, nextStepFunction) {
         var form = this.getZayavform();
         if (form.isValid()) {
             var zayav = form.getRecord(),
@@ -272,6 +298,9 @@ Ext.define('TK.controller.ky2.PoezdZayavController', {
                             if (newZayav) {       // packdoc will be available after save
                                 zayav.setPackDoc(Ext.create('TK.model.PackDoc', {hid: zayav.get('packDoc.hid')}));
                             }
+                            if (nextStepFunction instanceof Function) {
+                                nextStepFunction();
+                            }
                         }
                     }
                     this.getCenter().setLoading(false);
@@ -279,11 +308,15 @@ Ext.define('TK.controller.ky2.PoezdZayavController', {
                 scope: this
             });
         } else {
-            Ext.Msg.alert('Warning', 'Form is not valid');
+            Ext.Msg.alert(this.warningMsg, this.formInvalid);
         }
     },
 
-    uploadZayav: function (btn, url) {
+    onUploadZayav: function (btn) {
+        this.saveZayav(null, this.uploadZayav.bind(this));
+    },
+
+    uploadZayav: function () {
         var record = this.getZayavform().getRecord(),
             zayavHid = record.get('hid');
         if (zayavHid == null) {
@@ -346,8 +379,19 @@ Ext.define('TK.controller.ky2.PoezdZayavController', {
         }).show();
     },
 
-    onShowNsiOtpr: function(btn) {
+    onShowNsiOtpr: function (btn) {
         this.getController('ky2.PoezdController').showNsiOtpr(this.getZayavform().getForm());
+    },
+
+    filterZayav: function (btn) {
+        var win = Ext.widget('ky2poezdzayavfilter');
+        this.initFilter(win.down('form').getForm(), btn.up('grid').getStore());
+    },
+    applyFilterZayav: function (btn) {
+        var form = btn.up('form').getForm();
+        if (form.isValid()) {
+            this.applyFilter(form, this.getZayavlist().getStore());
+        }
     }
 
 });

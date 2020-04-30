@@ -2,6 +2,12 @@ Ext.define('TK.view.ky.avto.BaseAvtoList', {
     extend:'TK.view.ky.BaseList',
     alias:'widget.kybaseavtolist',
 
+    requires: [
+        'TK.Utils',
+        'TK.view.components.PagingSizeChangerPlugin'
+    ],
+
+
     buildColumns:function (config) {
         config.columns = {
             items:[
@@ -30,6 +36,7 @@ Ext.define('TK.view.ky.avto.BaseAvtoList', {
     buildBottomToolbar: function (config) {
         config.bbar = {
             xtype: 'pagingtoolbar',
+            plugins : [Ext.create('TK.view.components.PagingSizeChangerPlugin', {options : [ 20, 50, 100, 200, 1000] })],
             displayInfo: true
         };
     },

@@ -2,6 +2,11 @@ Ext.define('TK.view.ky.nsi.kont.Form', {
     extend: 'TK.view.ky.AbstractWindow',
     alias:'widget.kynsikontform',
 
+    requires: [
+        'TK.view.ky.nsi.BaseForm'
+    ],
+
+
     buildItems: function(config) {
         config.items = [
             {

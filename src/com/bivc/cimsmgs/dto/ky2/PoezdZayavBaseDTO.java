@@ -51,6 +51,24 @@ public class PoezdZayavBaseDTO {
     private String nppr;
     private String npprm;
     private String gruzotpr;
+    private Long packId;
+    private Long routeId;
+
+    public Long getPackId() {
+        return packId;
+    }
+
+    public void setPackId(Long packId) {
+        this.packId = packId;
+    }
+
+    public Long getRouteId() {
+        return routeId;
+    }
+
+    public void setRouteId(Long routeId) {
+        this.routeId = routeId;
+    }
 
     public Integer getVagCount() {
         return vagCount;

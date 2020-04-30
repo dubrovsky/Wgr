@@ -14,11 +14,21 @@ Ext.define('TK.controller.Menu', {
         'TK.view.ky.reports.Report4',
         'TK.view.ky.reports.Report5',
         'TK.view.ky.reports.Report6',
-        'TK.view.ky.yard.List',
+        'TK.view.ky2.avto.BaseAvtoZayavList',
+        'TK.view.ky2.avto.into.AvtoList',
+        'TK.view.ky2.avto.out.AvtoList',
+        'TK.view.ky2.client.ClientList',
+        'TK.view.ky2.poezd.into.PoezdList',
+        'TK.view.ky2.poezd.into.PoezdZayavList',
+        'TK.view.ky2.poezd.out.PoezdList',
+        'TK.view.ky2.poezd.out.PoezdZayavList',
+        'TK.view.ky2.poezd.zayav.PoezdZayavList',
+        'TK.view.ky2.yard.YardList',
         'TK.view.logs.List',
         'TK.view.nsi.ListDir',
         'TK.view.printtmpl.List',
         'TK.view.project.List',
+        'TK.view.stamp.StampList',
         'TK.view.stat.List',
         'TK.view.user.List',
         'TK.view.user.ListGroups',
@@ -71,10 +81,11 @@ Ext.define('TK.controller.Menu', {
                     un: data['un'],
                     group: data['group'],
                     privs: data['priv'],
-                    docs: data['docs']
+                    docs: data['docs'],
+                    lang: data['lang']
                 });
                 menutree = me.getMenutree();
-
+                gridConfig = data['gridConfig'];
                 if (tkUser.hasPriv('CIM_USR_ADMIN')) {
                     root.appendChild({text: 'Users', iconCls: 'users', leaf: true, id: 'user'});
                     root.appendChild({text: 'Groups', iconCls: 'users', leaf: true, id: 'userGroups'});
@@ -101,7 +112,7 @@ Ext.define('TK.controller.Menu', {
                                 iconCls: 'print'
                             },
                             {
-                                text: this.doplist ? this.doplist : 'btnDopList',
+                                text: this.doplist ? this.doplist : 'doplist',
                                 leaf: true,
                                 id: 'smgsPrnTmpl_11',
                                 iconCls: 'print'
@@ -115,7 +126,10 @@ Ext.define('TK.controller.Menu', {
                                 iconCls: 'print'
                             },
                             {text: this.cim ? this.cim : 'CIM', leaf: true, id: 'cimPrnTmpl_21', iconCls: 'print'},
-                            {text: this.cmr ? this.cmr : 'CMR', leaf: true, id: 'cmrPrnTmpl_23', iconCls: 'print'}/*,
+                            {text: this.cmr ? this.cmr : 'CMR', leaf: true, id: 'cmrPrnTmpl_23', iconCls: 'print'},
+                            {text: this.stamps ? this.stamps : 'stamps', leaf: true, id: 'stamps', iconCls: 'print'}
+                            // {text: this.invoice ? this.invoice : 'invoice', leaf: true, id: 'invoicePrnTmpl_2', iconCls: 'print'}
+                            /*,
                             {text:"Словацкая накладная", leaf:true, id:'cmrPrnTmpl_6', iconCls:'print'}*/
                         ]
                     });
@@ -179,16 +193,24 @@ Ext.define('TK.controller.Menu', {
                 }
                 usrHeader.getComponent(1).el.update(viewport.headerUser + data['un'] + '(' + data['group'] + ')' + (data['fio'] ? ' - ' + data['fio'] : ''));
 //                header.getComponent(1).el.update(viewport.headerUser + data['un'] + '(' + data['group'] + ')' + (data['fio'] ? ' - ' + data['fio'] : ''));
-                me.clearLoadingElems();
+
                 TK.VTypes.init();
 
                 // menu localisation
                 // language defining
-                var cur_lang = 'ru', read_lang;
-                read_lang = Ext.urlDecode(window.location.search.substring(1)).lang;
-                if (typeof read_lang !== 'undefined')
-                    cur_lang = Ext.urlDecode(window.location.search.substring(1)).lang;
+                if(tkUser['lang'])
+                {
+                    Ext.get("langProp").setHTML(tkUser['lang']);
+                    var langCombo=Ext.ComponentQuery.query('viewport #localeCombo #langCombo')[0];
+                    if(langCombo)
+                        langCombo.setValue(tkUser['lang']);
+                }
 
+                var cur_lang = 'ru', read_lang;
+                read_lang =Ext.get("langProp").getHTML()?Ext.get("langProp").getHTML(): Ext.urlDecode(window.location.search.substring(1)).lang;
+                if (typeof read_lang !== 'undefined')
+                    cur_lang =read_lang;
+                me.clearLoadingElems();
                 translate(this, cur_lang);
 
             },
@@ -209,6 +231,89 @@ Ext.define('TK.controller.Menu', {
 //            {itemclick: {fn: this.onItemclick, scope: this, delay: 350}}
 //        );
 //    },
+    /* Обработчик передосновноым обработчиком щелчка по основному дереву меню
+     * @param view
+     * @param td
+     * @param cellIndex
+     * @param record запись дерева
+     * @returns {boolean}
+     */
+    onBeforecellclick: function (view, td, cellIndex, record) {
+        // если есть закладки и выбранный элемент дерева является оконечным
+        if (this.getCenter().getTabBar().activeTab && record.data['leaf']) {
+            var isDirty = false, tab, tXtype, form;
+            // проверяем есть ли документы в закладках с несохраненными измеенниями
+            for (var n = 0; n < this.getCenter().items.length; n++) {
+                // получаем тип документа в  закладке
+                tab = this.getCenter().items.getAt(n);
+                if (tab.form) {
+                    form = tab.getForm();
+                    if (form.isDirty()) {
+                        isDirty = true;
+                        break;
+                    }
+                    // проверяем объекты на изменение
+                    if (tab.dataObj && tab.dataObj.back) {
+                        if (!TK.Utils.deepEquals(tab.dataObj['cimSmgsCarLists'], tab.dataObj.back['cimSmgsCarLists'])) {
+                            isDirty = true;
+                            break;
+                        }
+                        if (!TK.Utils.deepEquals(tab.dataObj['cimSmgsDocses7'], tab.dataObj.back['cimSmgsDocses7'])) {
+                            isDirty = true;
+                            break;
+                        }
+                        if (!TK.Utils.deepEquals(tab.dataObj['cimSmgsDocses13'], tab.dataObj.back['cimSmgsDocses13'])) {
+                            isDirty = true;
+                            break;
+                        }
+                        if (!TK.Utils.deepEquals(tab.dataObj['cimSmgsDocses136'], tab.dataObj.back['cimSmgsDocses136'])) {
+                            isDirty = true;
+                            break;
+                        }
+                        if (!TK.Utils.deepEquals(tab.dataObj['cimSmgsPerevoz'], tab.dataObj.back['cimSmgsPerevoz'])) {
+                            isDirty = true;
+                            break;
+                        }
+                        if (!TK.Utils.deepEquals(tab.dataObj['cimSmgsPlatels'], tab.dataObj.back['cimSmgsPlatels'])) {
+                            isDirty = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            // для отладки выводит грязные поля в консоль
+            // var total=0;
+            // if(form) {
+            //     console.log('doc:'+tab.xtype);
+            //     for (var i = 0; i < form.getFields().items.length; i++) {
+            //         if (form.getFields().items[i].isDirty()) {
+            //             console.log(form.getFields().items[i]);
+            //             total++;
+            //         }
+            //     }
+            //     console.log('total:'+total);
+            // }
+            tab = this.getCenter().items.getAt(0);
+            tXtype = tab.xtype;
+            //проверяем тип документов
+            if ((tXtype === 'smgs2' || tXtype === 'aviso2' || tXtype === 'cim' || tXtype === 'avisocim' || tXtype === 'cimsmgs' || tXtype === 'avisocimsmgs' || tXtype === 'ved') && isDirty) {
+                Ext.Msg.show({
+                    title: this.warning, msg: this.warnMsg, buttons: Ext.Msg.YESNO,
+                    closable: false, icon: Ext.Msg.QUESTION, scope: this,
+                    fn: function (buttonId) {
+                        if (buttonId === 'yes') {
+                            //выбираем пукт в меню
+                            this.getMenutree().getSelectionModel().select(record);
+                            //запускаем событие нажатия
+                            this.onItemclick(view, record);
+                        }
+                    }
+                });
+                // отменяем событие нажатия
+                return false;
+            }
+        }
+    },
     onItemclick: function (view, record) {
         var ids = record.data['id'].split('_'),
             doc = ids[3] || record.data['id'],
@@ -218,11 +323,17 @@ Ext.define('TK.controller.Menu', {
             menu = this.getMenutree(),
             reloadStore = true, // reload store with currentset of params in the same Route - saved cur page number in page toolbar
             prevRouteId = menu.lastSelectedLeaf ? menu.lastSelectedLeaf.data['id'].split('_')[2] : undefined,
-            grid, gridParams = {};
+            prevDoc = menu.lastSelectedLeaf ? menu.lastSelectedLeaf.data['id'].split('_')[3] : undefined,
+            grid, gridParams = {}, menuDocItemChanged = false;
 
         if (record.childNodes.length === 0) { // leaf
             menu.lastSelectedLeaf = record;
-            reloadStore = routeId && prevRouteId && (routeId == prevRouteId) ? true : false;
+            reloadStore = routeId && prevRouteId && (routeId === prevRouteId) ? true : false; // same Route
+            var sameDoc = doc && prevDoc && (doc === prevDoc) ? true : false;
+            if (!sameDoc || !reloadStore) {
+                menuDocItemChanged = true;
+               // this.fireEvent('menuDocItemChanged', record);
+            }
         }
 
         switch (doc) {
@@ -231,7 +342,11 @@ Ext.define('TK.controller.Menu', {
                 //очищаем параметры фильтрации списка документов
                 if (grid.getStore().proxy.extraParams)
                     grid.getStore().proxy.extraParams = [];
-                gridParams = {'search.routeId': routeId, 'search.type': 1, 'task': 'list'};
+                gridParams = {
+                    'search.routeId': routeId, 'search.type': 1, 'task': 'list',
+                    docName: doc,
+                    tableName: 'CIM_SMGS'
+                };
 //                grid.initGrid({'search.routeId':routeId, 'search.type':1, 'task':'list'});
                 break;
             case 'smgs':
@@ -245,7 +360,13 @@ Ext.define('TK.controller.Menu', {
                 if (grid.getStore().proxy.extraParams)
                     grid.getStore().proxy.extraParams = [];
 
-                gridParams = {'search.routeId': routeId, 'search.type': 12, 'task': 'list'};
+                gridParams = {
+                    'search.routeId': routeId,
+                    'search.type': 12,
+                    'task': 'list',
+                    docName: doc,
+                    tableName: 'CIM_SMGS'
+                };
                 break;
             case 'aviso':
             case 'aviso1':
@@ -265,7 +386,9 @@ Ext.define('TK.controller.Menu', {
                     'search.routeId': routeId,
                     'search.type': 11,
                     'search.docId': tkUser.docs.get(doc)['hid'],
-                    'task': 'list'
+                    'task': 'list',
+                    'docName': doc,
+                    'tableName': 'CIM_SMGS'
                 };
                 break;
             case 'avisogu29k':
@@ -286,7 +409,9 @@ Ext.define('TK.controller.Menu', {
                     'search.routeId': routeId,
                     'search.type': 10,
                     'search.docId': tkUser.docs.get(doc)['hid'],
-                    'task': 'list'
+                    'task': 'list',
+                    'docName': doc,
+                    'tableName': 'CIM_SMGS'
                 };
                 break;
             case 'gu29k':
@@ -376,72 +501,107 @@ Ext.define('TK.controller.Menu', {
                 break;
 
             case 'poezdin':
-                gridParams = {action: 'list', direction: 1, routeId: routeId};
+                gridParams = {action: 'list', direction: 1, routeId: routeId, docName: doc, tableName: 'KY_POEZD'};
                 grid = Ext.widget('kypoezdintolist');
                 break;
 
             case 'poezd2innar':
-                gridParams = {action: 'list', direction: 1, routeId: routeId, koleya: 2};
+                gridParams = {
+                    action: 'list',
+                    direction: 1,
+                    routeId: routeId,
+                    koleya: 2,
+                    docName: doc,
+                    tableName: 'KY_POEZD'
+                };
                 grid = Ext.widget('ky2poezdintolist');
                 break;
 
             case 'poezd2outnar':
-                gridParams = {action: 'list', direction: 2, routeId: routeId, koleya: 2};
+                gridParams = {
+                    action: 'list',
+                    direction: 2,
+                    routeId: routeId,
+                    koleya: 2,
+                    docName: doc,
+                    tableName: 'KY_POEZD'
+                };
                 grid = Ext.widget('ky2poezdoutlist');
                 break;
 
             case 'poezd2inwide':
-                gridParams = {action: 'list', direction: 1, routeId: routeId, koleya: 1};
+                gridParams = {
+                    action: 'list',
+                    direction: 1,
+                    routeId: routeId,
+                    koleya: 1,
+                    docName: doc,
+                    tableName: 'KY_POEZD'
+                };
                 grid = Ext.widget('ky2poezdintolist');
                 break;
 
             case 'poezd2outwide':
-                gridParams = {action: 'list', direction: 2, routeId: routeId, koleya: 1};
+                gridParams = {
+                    action: 'list',
+                    direction: 2,
+                    routeId: routeId,
+                    koleya: 1,
+                    docName: doc,
+                    tableName: 'KY_POEZD'
+                };
                 grid = Ext.widget('ky2poezdoutlist');
                 break;
 
             case 'poezdout':
-                gridParams = {action: 'list', direction: 2, routeId: routeId};
+                gridParams = {action: 'list', direction: 2, routeId: routeId, docName: doc, tableName: 'KY_POEZD'};
                 grid = Ext.widget('kypoezdoutlist');
                 break;
 
             case 'avtoin':
-                gridParams = {action: 'list', direction: 1, routeId: routeId};
+                gridParams = {action: 'list', direction: 1, routeId: routeId, docName: doc, tableName: 'KY_AVTO'};
                 grid = Ext.widget('kyavtointolist');
                 break;
             case 'avtoout':
-                gridParams = {action: 'list', direction: 2, routeId: routeId};
+                gridParams = {action: 'list', direction: 2, routeId: routeId, docName: doc, tableName: 'KY_AVTO'};
                 grid = Ext.widget('kyavtooutlist');
                 break;
             case 'avto2in':
-                gridParams = {action: 'list', direction: 1, routeId: routeId};
+                gridParams = {action: 'list', direction: 1, routeId: routeId, docName: doc, tableName: 'KY_AVTO'};
                 grid = Ext.widget('ky2avtointolist');
+                // this.setGridTopTbLayout(grid,'column');
                 break;
             case 'avto2out':
-                gridParams = {action: 'list', direction: 2, routeId: routeId};
+                gridParams = {action: 'list', direction: 2, routeId: routeId, docName: doc, tableName: 'KY_AVTO'};
                 grid = Ext.widget('ky2avtooutlist');
+                // this.setGridTopTbLayout(grid,'column');
                 break;
             case 'avtoZayav2':
-                gridParams = {action: 'list', routeId: routeId};
+                gridParams = {action: 'list', routeId: routeId, docName: doc, tableName: 'KY_ZAYAV_AVTO'};
                 grid = Ext.widget('ky2basezayavavtolist');
+                // this.setGridTopTbLayout(grid,'column');
                 break;
             case 'poezdZayav2in':
-                gridParams = {action: 'list', direction: 1, routeId: routeId};
+                gridParams = {action: 'list', direction: 1, routeId: routeId, docName: doc, tableName: 'KY_ZAYAV'};
                 grid = Ext.widget('ky2poezdzayavintolist');
+                // this.setGridTopTbLayout(grid,'column');
                 break;
             case 'poezdZayav2out':
-                gridParams = {action: 'list', direction: 2, routeId: routeId};
+                gridParams = {action: 'list', direction: 2, routeId: routeId, docName: doc, tableName: 'KY_ZAYAV'};
                 grid = Ext.widget('ky2poezdzayavoutlist');
+                // this.setGridTopTbLayout(grid,'column');
                 break;
 
             case 'poezdZayav2':
-                gridParams = {action: 'list', routeId: routeId};
+                gridParams = {action: 'list', routeId: routeId, docName: doc, tableName: 'KY_ZAYAV'};
                 grid = Ext.widget('ky2poezdzayavlist');
+                // this.setGridTopTbLayout(grid,'column');
                 break;
 
             case 'client2':
                 gridParams = {action: 'list', routeId: routeId};
                 grid = Ext.widget('ky2clientlist');
+                // this.setGridTopTbLayout(grid,'column');
                 break;
 
             /*case 'kont_yard':
@@ -451,7 +611,8 @@ Ext.define('TK.controller.Menu', {
 
             case 'kontyard2':
                 grid = Ext.widget('ky2yardlist');
-                gridParams = {action: 'list', routeId: routeId};
+                gridParams = {action: 'list', routeId: routeId, docName: doc, tableName: 'KY_YARD'};
+                // this.setGridTopTbLayout(grid,'column');
                 break;
 
             case 'kyreport1':
@@ -531,6 +692,11 @@ Ext.define('TK.controller.Menu', {
                 gridParams = {'search.docType': doc.split('_')[1]};
 //                grid.initGrid({'search.docType':doc.split('_')[1]});
                 break;
+            case 'stamps': // штампы
+                console.log('stamps');
+                grid = Ext.widget('stampList');
+              //  gridParams = {'search.docType': doc.split('_')[1]};
+                break;
             case 'info':
                 window.open('http://trcont.by/tkportal', '_blank');
                 return;
@@ -550,6 +716,10 @@ Ext.define('TK.controller.Menu', {
                  }*/
                 record.isExpanded() ? record.collapse() : record.expand();
                 return;
+        }
+
+        if(menuDocItemChanged) {
+            this.fireEvent('menuDocItemChanged', record, gridParams);
         }
 
 //        if (center.getComponent(0)) {
@@ -610,6 +780,23 @@ Ext.define('TK.controller.Menu', {
             grid.getStore().load();
         }
     }
+    /**
+     * Устанавливает расположение объектор в Top Toolbar панели
+     * @param grid панель
+     * @param layout настройка расположения объяктов
+     */
+    // setGridTopTbLayout:function(grid,layout)
+    // {
+        // if(grid.dockedItems)
+        // for(var n=0;n<grid.dockedItems.items.length;n++)
+        // {
+        //     if(grid.dockedItems.items[n].xtype==='toolbar'&&grid.dockedItems.items[n].dock==='top')
+        //     {
+        //         grid.dockedItems.items[n].layout= layout;
+        //         return;
+        //     }
+        // }
+//     }
 });
 
 /**
@@ -660,8 +847,21 @@ function translate(me, cur_lang) {
             exit: 'Exit',
             poezdin: 'Trains, in',
             poezdout: 'Trains, out',
-            avtoin: 'Avto, in',
-            avtoout: 'Avto, out'
+            poezd2inwide: 'Train 1520mm(arrival)',
+            poezd2outwide: 'Train 1520mm(departure)',
+            kontyard2: 'Container yard',
+            poezd2innar: 'Train 1435mm(arrival)',
+            poezd2outnar: 'Train 1435mm(departure)',
+            avtoin: 'Track, in',
+            avtoout: 'Track, out',
+            avto2in: 'Track, arrival',
+            avto2out: 'Track, departure',
+            avtoZayav2: 'Track orders',
+            poezdZayav2in: 'Train, unloading order',
+            poezdZayav2out: 'Поезд, loading order',
+            poezdZayav2: 'Train, orders',
+            client2: 'Container availability',
+            stamps:'Stamps'
         },
 
         ru: {
@@ -717,7 +917,8 @@ function translate(me, cur_lang) {
             poezdZayav2in: 'Поезд, заявка на выгрузку',
             poezdZayav2out: 'Поезд, заявка на погрузку',
             poezdZayav2: 'Поезд, заявка',
-            client2: 'Наличие контейнеров'
+            client2: 'Наличие контейнеров',
+            stamps:'Штампы'
         },
 
         de: {
@@ -747,7 +948,7 @@ function translate(me, cur_lang) {
             fileaviso: 'Graphics Templates SMGS',
             fileinvoice: 'Graphics Invoice',
             filecimsmgs: 'Graphics ЦИМ/СМГС',
-            avisogu29k: 'Инструкция GU for CKP',
+            avisogu29k: 'Templates GU for CKP',
             cim: 'CIM',
             avisocim: 'Templates CIM',
             files: 'Other documents',
@@ -760,8 +961,21 @@ function translate(me, cur_lang) {
             exit: 'Exit',
             poezdin: 'Trains, in',
             poezdout: 'Trains, out',
-            avtoin: 'Avto, in',
-            avtoout: 'Avto, out'
+            poezd2inwide: 'Train 1520mm(arrival)',
+            poezd2outwide: 'Train 1520mm(departure)',
+            kontyard2: 'Container yard',
+            poezd2innar: 'Train 1435mm(arrival)',
+            poezd2outnar: 'Train 1435mm(departure)',
+            avtoin: 'Track, in',
+            avtoout: 'Track, out',
+            avto2in: 'Track, arrival',
+            avto2out: 'Track, departure',
+            avtoZayav2: 'Track orders',
+            poezdZayav2in: 'Train, unloading order',
+            poezdZayav2out: 'Train, loading order',
+            poezdZayav2: 'Train, orders',
+            client2: 'Container availability',
+            stamps:'Stamps'
         },
 
         zh_CN: {
@@ -804,8 +1018,21 @@ function translate(me, cur_lang) {
             exit: '出口',
             poezdin: 'Trains, in',
             poezdout: 'Trains, out',
-            avtoin: 'Avto, in',
-            avtoout: 'Avto, out'
+            poezd2inwide: 'Train 1520mm(arrival)',
+            poezd2outwide: 'Train 1520mm(departure)',
+            kontyard2: 'Container yard',
+            poezd2innar: 'Train 1435mm(arrival)',
+            poezd2outnar: 'Train 1435mm(departure)',
+            avtoin: 'Track, in',
+            avtoout: 'Track, out',
+            avto2in: 'Track, arrival',
+            avto2out: 'Track, departure',
+            avtoZayav2: 'Track orders',
+            poezdZayav2in: 'Train, unloading order',
+            poezdZayav2out: 'Train, loading order',
+            poezdZayav2: 'Train, orders',
+            client2: 'Container availability',
+            stamps:'Stamps'
         },
 
         pl: {
@@ -846,38 +1073,71 @@ function translate(me, cur_lang) {
             avisocimsmgs: 'Templates CIM/SMGS',
             ved: 'Wagon and transfer list',
             exit: 'Exit',
-            poezdin: 'Trains, in',
-            poezdout: 'Trains, out',
-            avtoin: 'Avto, in',
-            avtoout: 'Avto, out'
+            poezdin: 'Pociągi, in',
+            poezdout: 'Pociągi, out',
+            poezd2inwide: 'Pociąg 1520mm(przyjazd)',
+            poezd2outwide: 'Pociąg 1520mm(wyjazd)',
+            kontyard2: 'Terminal kontenerowy',
+            poezd2innar: 'Pociąg 1435mm(przyjazd)',
+            poezd2outnar: 'Pociąg 1435mm(wyjazd)',
+            avtoin: 'Samochód, in',
+            avtoout: 'Samochód, out',
+            avto2in: 'Samochód, przyjazd',
+            avto2out: 'Samochód, wyjazd',
+            avtoZayav2: 'Samochód, avizo',
+            poezdZayav2in: 'Pociąg, kolejność rozładunku',
+            poezdZayav2out: 'Train, loading order',
+            poezdZayav2: 'Pociąg, avizo',
+            client2: 'Dostępność kontenera',
+            stamps:'Pieczęć'
         }
     };
 
     // documents localisation
     // tree walkthrough and localisation
-    if (root.childNodes) {
-        for (var nod = 0; nod < root.childNodes.length; nod++) {
-            var s_nod = root.childNodes[nod].raw.children;
-            if (s_nod) {
-                for (var cld = 0; cld < s_nod.length; cld++) {
-                    var l_nod = s_nod[cld].children;
-                    if (l_nod) {
-                        for (var leaf = 0; leaf < l_nod.length; leaf++) {
-                            var c = root.findChild("text", l_nod[leaf].text, true);
-                            var text = langs[cur_lang][l_nod[leaf].text];
-                            if (text) {
-                                c.set('text', text);
-                                c.commit();
+    root.cascadeBy(function (nodeModel) {
+        if(nodeModel.data.text)
+        {
+            var text = langs[cur_lang][nodeModel.data.text];
+            if(text)
+            {
+                nodeModel.set('text', text);
+                nodeModel.commit();
                             }
+            else
+            {
+                var textId = langs[cur_lang][nodeModel.data.id];
+                if(textId)
+                {
+                    nodeModel.set('text', textId);
+                    nodeModel.commit();
                         }
                     }
                 }
-            }
-            // if(langs[cur_lang][root.childNodes[nod].get('id')])
-            var text_tr = langs[cur_lang][root.childNodes[nod].get('id')];
-            if (text_tr)
-                root.childNodes[nod].set('text', text_tr);
-            root.childNodes[nod].commit();
-        }
-    }
+    }, this);
+    // if (root.childNodes) {
+    //     for (var nod = 0; nod < root.childNodes.length; nod++) {
+    //         var s_nod = root.childNodes[nod].raw.children;
+    //         if (s_nod) {
+    //             for (var cld = 0; cld < s_nod.length; cld++) {
+    //                 var l_nod = s_nod[cld].children;
+    //                 if (l_nod) {
+    //                     for (var leaf = 0; leaf < l_nod.length; leaf++) {
+    //                         var c = root.findChild("text", l_nod[leaf].text, true);
+    //                         var text = langs[cur_lang][l_nod[leaf].text];
+    //                         if (text) {
+    //                             c.set('text', text);
+    //                             c.commit();
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //         // if(langs[cur_lang][root.childNodes[nod].get('id')])
+    //         var text_tr = langs[cur_lang][root.childNodes[nod].get('id')];
+    //         if (text_tr)
+    //             root.childNodes[nod].set('text', text_tr);
+    //         root.childNodes[nod].commit();
+    //     }
+    // }
 }

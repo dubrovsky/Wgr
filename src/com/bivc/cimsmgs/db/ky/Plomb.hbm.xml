@@ -22,8 +22,8 @@
         <property name="station" type="string">
             <column length="100" name="STATION"/>
         </property>
-        <property name="sort" type="java.lang.Byte">
-            <column name="SORT" precision="2" scale="0"/>
+        <property name="sort" type="java.lang.Integer">
+            <column name="SORT" precision="3" scale="0"/>
         </property>
         <property name="trans" type="string" update="false">
             <column length="60" name="TRANS" />

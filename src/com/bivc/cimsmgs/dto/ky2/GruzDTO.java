@@ -8,12 +8,15 @@ import java.math.BigDecimal;
 public class GruzDTO implements Comparable<GruzDTO> {
 
     private Long hid;
+    private Long clientHid;
+    private Long routeHid;
+    private String gruzotpr;
     private String kgvn;
     private String nzgr;
     private String upak;
     private Integer places;
     private BigDecimal massa;
-    private Byte sort;
+    private Integer sort;
 
     public String getKgvn() {
         return kgvn;
@@ -55,12 +58,28 @@ public class GruzDTO implements Comparable<GruzDTO> {
         this.massa = massa;
     }
 
-    public Byte getSort() {
+    public Integer getSort() {
         return sort;
     }
 
-    public void setSort(Byte sort) {
+    public void setSort(Integer sort) {
         this.sort = sort;
+    }
+
+    public Long getClientHid() {
+        return clientHid;
+    }
+
+    public void setClientHid(Long clientHid) {
+        this.clientHid = clientHid;
+    }
+
+    public Long getRouteHid() {
+        return routeHid;
+    }
+
+    public void setRouteHid(Long routeHid) {
+        this.routeHid = routeHid;
     }
 
     @Override
@@ -90,5 +109,13 @@ public class GruzDTO implements Comparable<GruzDTO> {
 
     public void setHid(Long hid) {
         this.hid = hid;
+    }
+
+    public String getGruzotpr() {
+        return gruzotpr;
+    }
+
+    public void setGruzotpr(String gruzotpr) {
+        this.gruzotpr = gruzotpr;
     }
 }

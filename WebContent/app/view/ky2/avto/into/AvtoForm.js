@@ -1,6 +1,11 @@
 Ext.define('TK.view.ky2.avto.into.AvtoForm', {
     extend: 'Ext.container.Container',
     alias: 'widget.ky2avtointoform',
+
+    requires: [
+        'TK.view.ky2.avto.BaseAvtoForm'
+    ],
+
     title: 'Авто, прибытие',
 
     closable: false,
@@ -16,7 +21,7 @@ Ext.define('TK.view.ky2.avto.into.AvtoForm', {
             //this.callParent(arguments);
             config.items.splice(0, 0, {
                 xtype:'fieldset',
-                title: 'Прибытие',
+                title: this.lblArrival,
                 layout: 'anchor',
                 defaults: {
                     anchor: '100%'
@@ -24,13 +29,13 @@ Ext.define('TK.view.ky2.avto.into.AvtoForm', {
                 width:450,
                 items: [{
                     labelWidth: '145px',
-                    fieldLabel:'Дата',
+                    fieldLabel:this.lblDate,
                     name : 'dprbDate',
                     xtype: 'datefield',
                     altFormats:'d.m.y'
                 },{
                     labelWidth: '145px',
-                    fieldLabel:'Время',
+                    fieldLabel:this.lblTime,
                     name : 'dprbTime',
                     xtype: 'timefield',
                     //snapToIncrement: true,
@@ -38,35 +43,35 @@ Ext.define('TK.view.ky2.avto.into.AvtoForm', {
                     format:'H:i'
                 }]
             });
-            config.items.push(
-                {
-                    xtype: 'fieldcontainer',
-                    layout: {
-                        type: 'hbox',
-                        defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
-                    },
-                    width: 450,
-                    labelWidth: 150,
-                    fieldLabel: 'Заявка на контейнер',
-                    items: [{
-                        xtype: 'textfield',
-                        name: 'ret_nkon',
-                        maxLength: 15,
-                        // rows: 3,
-                        flex: 1
-                    }, {
-                        xtype: 'button',
-                        text: '...',
-                        action: 'retNkonFind'
-                    }]
-                }, {
-                        xtype: 'label',
-                        text: '',
-                        id: 'kontSectorLocation',
-                        margin: '0 0 0 160',
-                        cls: 'green'
-                    }
-            );
+            // config.items.push(
+            //     {
+            //         xtype: 'fieldcontainer',
+            //         layout: {
+            //             type: 'hbox',
+            //             defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
+            //         },
+            //         width: 450,
+            //         labelWidth: 150,
+            //         fieldLabel: 'Заявка на контейнер',
+            //         items: [{
+            //             xtype: 'textfield',
+            //             name: 'ret_nkon',
+            //             maxLength: 15,
+            //             // rows: 3,
+            //             flex: 1
+            //         }, {
+            //             xtype: 'button',
+            //             text: '...',
+            //             action: 'retNkonFind'
+            //         }]
+            //     }, {
+            //             xtype: 'label',
+            //             text: '',
+            //             id: 'kontSectorLocation',
+            //             margin: '0 0 0 160',
+            //             cls: 'green'
+            //         }
+            // );
             // config.items[0].items.splice(0, 0, {
             //     fieldLabel:'Прибытие',
             //     name : 'dprbDate',
@@ -175,17 +180,17 @@ Ext.define('TK.view.ky2.avto.into.AvtoForm', {
             // );
 
             config.tbar.push(
-                {xtype:'splitbutton', text: 'Печать', iconCls:'upload', action: 'print',
+                {xtype:'splitbutton', text: this.btnPrint, iconCls:'upload', action: 'print',
                     menu: [
-                        {text: 'PZ', iconCls:'excel', action:'pz'},'-'
+                        {text: this.btnPZ, iconCls:'excel', action:'pz'},'-'
                     ]
                 },'-',{
-                    text: '+Контейнер/Груз',
+                    text: this.btnAddContGr,
                     iconCls: 'edit',
                     action: 'editCtGr'
                 },'-',
-                {text: '+ Авто по отправлению', iconCls:'truck', action:'createAvtoOutFromInto'},'-',
-                {text: '+ Импорт из заявки', iconCls:'truck', action:'importFromZayav'},'-'
+                {text: this.btnTrucksByDeparture, iconCls:'truck', action:'createAvtoOutFromInto'},'-',
+                {text: this.btnImportFromOrder, iconCls:'truck', action:'importFromZayav'},'-'
             );
 
         }

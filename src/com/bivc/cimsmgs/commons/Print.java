@@ -1,5 +1,6 @@
 package com.bivc.cimsmgs.commons;
 
+import com.bivc.cimsmgs.dao.PrintDataStampDAO;
 import com.bivc.cimsmgs.db.*;
 import com.bivc.cimsmgs.exceptions.BusinessException;
 import com.bivc.cimsmgs.exchange.DateFormat;
@@ -12,12 +13,16 @@ import org.apache.commons.lang3.text.WordUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Date: 06.03.12
@@ -26,7 +31,17 @@ import java.util.*;
 public class Print {
 
     private boolean useBlanks;
+    private boolean useZip;
+    private Integer pageOpts;
     private List<Integer> pages;
+
+    public void setPageOpts(Integer pageOpts) {
+        this.pageOpts = pageOpts;
+    }
+
+    public Integer getPageOpts() {
+        return pageOpts;
+    }
 
     public boolean isUseBlanks() {
         return useBlanks;
@@ -34,6 +49,14 @@ public class Print {
 
     public void setUseBlanks(boolean useBlanks) {
         this.useBlanks = useBlanks;
+    }
+
+    public boolean isUseZip() {
+        return useZip;
+    }
+
+    public void setUseZip(boolean useZip) {
+        this.useZip = useZip;
     }
 
     public List<Integer> getPages() {
@@ -509,149 +532,284 @@ public class Print {
      * @throws SQLException
      */
     //    public ByteArrayOutputStream generatePdf(List<PrintTemplates> printTemplates, List<Object> smgses, boolean isView) throws DocumentException, InvocationTargetException, IllegalAccessException, IOException, SQLException {
-    public ByteArrayOutputStream generatePdf(Map<Object, List<PrintTemplates>> smgsTemplatesObject, boolean isView) throws DocumentException, InvocationTargetException, IllegalAccessException, IOException, SQLException {
+    public ByteArrayOutputStream generatePdf(Map<Object, List<PrintTemplates>> smgsTemplatesObject, boolean isView, PrintDataStampDAO stampDAO) throws DocumentException, InvocationTargetException, IllegalAccessException, IOException, SQLException {
         ;
 //        PrintTemplates printTemplate = printTemplates.iterator().next();
         Object firstSmgs = smgsTemplatesObject.keySet().iterator().next();
         PrintTemplates printTemplate = smgsTemplatesObject.get(firstSmgs).iterator().next();
-        Document document = new Document(new Rectangle(Utilities.millimetersToPoints(printTemplate.getPaperWidth()), Utilities.millimetersToPoints(printTemplate.getPaperHeight())), 0f, 0f, 0f, 0f);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ZipOutputStream zipOut=null;
+        Document document=null;
+        PdfWriter writer=null;
+        ByteArrayOutputStream baos=null;
+        ByteArrayOutputStream zipBaos=new ByteArrayOutputStream();
 
-        PdfWriter writer = PdfWriter.getInstance(document, baos);
-        writer.setPdfVersion(PdfWriter.VERSION_1_5);
-        writer.addViewerPreference(PdfName.PRINTSCALING, PdfName.NONE);
-        writer.addViewerPreference(PdfName.PICKTRAYBYPDFSIZE, PdfBoolean.PDFTRUE);
+        if(isUseZip()) // если выбран вывод по файлово в архиве
+        {
+            zipOut = new ZipOutputStream(zipBaos);
+            zipOut.setLevel(9);
+        }
+        HashSet<String>nameSet = new HashSet<>();
 
-        document.open();
-        PdfContentByte content = writer.getDirectContent();
-
-        for (Object smgs : smgsTemplatesObject.keySet()) {
-            int templatesCount = 0;
-            List<PrintTemplates> printTemplates = smgsTemplatesObject.get(smgs);
-            if (!isView) {
-                for (PrintTemplates prnTempl : printTemplates) {
-                    if (templatesCount > 0) {
-                        document.newPage();
+        for (Object smgs : smgsTemplatesObject.keySet())
+        {
+            if(isUseZip()||document==null)
+            {
+                if(isUseZip())// если выбран вывод по файлово в архиве
+                {
+                    String name=getPdfName((CimSmgs) smgs);
+                    String backName=name;
+                    int inc=0;
+                    // проверяем имя на уникальность и если не уникально генерируем уникальное имя
+                    while (nameSet.contains(name))
+                    {
+                        inc++;
+                        name=backName+"("+inc+")";
                     }
-
-                    List<PrintData> list = new ArrayList<>(prnTempl.getPrintDatas().values());
-                    Collections.sort(list, new Comparator<PrintData>() {
-                        @Override
-                        public int compare(PrintData o1, PrintData o2) {
-                            return new CompareToBuilder()
-                                    .append(o1.getPage(), o2.getPage())
-                                    .toComparison();
-                        }
-                    });
-
-
-                    if (!needBlank() || templatesCount > 0) { // no blank
-                        for (PrintData printData : list) {
-                            if (printThisPage(printData.getPage()) && printData.printThisColumn()) {
-                                if (needNewPage(printData.getPage())) {
-                                    document.newPage();
-                                }
-                                drawText(printData, content, smgs);
-                            }
-                        }
-                    } else {   // print with blank      Only 1st template can have blanks
-                        List<PrintBlank> blanks = new ArrayList<>(prnTempl.getPrintBlankTemplRefs().size());
-                        for (PrintBlankTemplRef refs : prnTempl.getPrintBlankTemplRefs()) {
-                            if (!refs.getPrintBlank().isPreview()) {
-                                blanks.add(refs.getPrintBlank());
-                            }
-                        }
-                        Collections.sort(blanks, new Comparator<PrintBlank>() {
-                            @Override
-                            public int compare(PrintBlank o1, PrintBlank o2) {
-                                int result;
-                                if (o1.getPage() == o2.getPage()) {
-                                    result = new CompareToBuilder()
-                                            .append(o1.getNcopy(), o2.getNcopy())
-                                            .toComparison();
-                                    return result;
-                                } else if (o1.getPage() < o2.getPage() && o1.getPage() - o2.getPage() == -1) {
-                                    if (o1.getNcopy() <= o2.getNcopy()) {
-                                        result = -1;
-                                    } else {
-                                        result = 1;
-                                    }
-                                    return result;
-                                } else if (o1.getPage() > o2.getPage() && o1.getPage() - o2.getPage() == 1) {
-                                    if (o1.getNcopy() < o2.getNcopy()) {
-                                        result = -1;
-                                    } else {
-                                        result = 1;
-                                    }
-                                    return result;
-                                } else {
-                                    result = new CompareToBuilder()
-                                            .append(o1.getPage(), o2.getPage())
-                                            .toComparison();
-                                    return result;
-                                }
-                            }
-                        });
-                        for (PrintBlank blank : blanks) {
-                            document.newPage();
-                            if ("application/pdf".equals(blank.getContentType())) {
-                                importFromPdf(writer, content, blank);
-                            } else {
-                                document.add(createBlank1(prnTempl, blank));
-                            }
-                            for (PrintData printData : list) {
-                                if (printThisPage1(blank.getPage(), printData.getPage()) && printData.printThisColumn()) {
-                                    drawText(printData, content, smgs);
-                                }
-                            }
-                        /*if (isView) {
-                            break;
-                        }*/
-                        }
-                    }
-
-                /*if (isView) {   // print only 1st page
-                    break;
-                }*/
-                    templatesCount++;
+                    nameSet.add(name);
+                    zipOut.putNextEntry(new ZipEntry(name+ ".pdf"));
                 }
-            } else {
-                PrintTemplates prnTempl = printTemplates.iterator().next();
-                if (prnTempl != null) {
-                    List<PrintData> list = new ArrayList<>(prnTempl.getPrintDatas().values());
-                    PrintBlank blank = null;
-                    for (PrintBlankTemplRef refs : prnTempl.getPrintBlankTemplRefs()) {
-                        if (refs.getPrintBlank().isPreview()) {
-                            blank = refs.getPrintBlank();
-                            break;
-                        }
-                    }
 
-                    if (blank != null) {
-                        if ("application/pdf".equals(blank.getContentType())) {
-                            importFromPdf(writer, content, blank);
-                        } else {
-                            document.add(createBlank1(prnTempl, blank));
-                        }
-                        for (PrintData printData : list) {
-                            if (printThisPage1(blank.getPage(), printData.getPage()) && printData.printThisColumn()) {
-                                drawText(printData, content, smgs);
-                            }
-                        }
-                    } else {
-                        for (PrintData printData : list) {
-                            if (printThisPage(printData.getPage()) && printData.printThisColumn()) {
-                                drawText(printData, content, smgs);
-                            }
-                        }
+                document = new Document(new Rectangle(Utilities.millimetersToPoints(printTemplate.getPaperWidth()), Utilities.millimetersToPoints(printTemplate.getPaperHeight())), 0f, 0f, 0f, 0f);
+                baos = new ByteArrayOutputStream();
+
+                writer = PdfWriter.getInstance(document, baos);
+                writer.setPdfVersion(PdfWriter.VERSION_1_5);
+                writer.addViewerPreference(PdfName.PRINTSCALING, PdfName.NONE);
+                writer.addViewerPreference(PdfName.PICKTRAYBYPDFSIZE, PdfBoolean.PDFTRUE);
+
+                document.open();
+            }
+
+
+            PrintDataStamp stamp=null;
+            // проверяем нужен ли штамп и находим подходящий
+            if(((CimSmgs)smgs).getG281()!=null)
+            {
+                Collection<CimSmgsPerevoz> perevozs= ((CimSmgs) smgs).getCimSmgsPerevoz().values();
+                if(perevozs.size()>0)
+                {
+                    String codePer=null;
+                    // ищем код перевозчика в зависимости от типа докуемнта
+                    //7- СМГС2
+                    if(((CimSmgs) smgs).getDocType1().equals(BigDecimal.valueOf(7)))
+                        codePer=perevozs.iterator().next().getCodePer();
+                    else
+                        codePer=((CimSmgs) smgs).getG693();
+
+                    if(codePer!=null)
+                    {
+                        stamp=stampDAO.findByCodePer(codePer);
                     }
                 }
             }
+
+            writeSmgs2Document(document, (CimSmgs) smgs,smgsTemplatesObject.get(smgs),writer,isView,stamp);
+            if(isUseZip())// если выбран вывод по файлово в архиве
+            {
+                document.close();
+                // пересохранения документа с удалением лишнего
+                zipOut.write(smartCopyPdf(baos).toByteArray());
+
+                zipOut.closeEntry();
+            }
+//            int templatesCount = 0;
+//            List<PrintTemplates> printTemplates = smgsTemplatesObject.get(smgs);
+//            if (!isView) {
+//                for (PrintTemplates prnTempl : printTemplates) {
+//                    if (templatesCount > 0) {
+//                        document.newPage();
+//                    }
+//
+//                    List<PrintData> list = new ArrayList<>(prnTempl.getPrintDatas().values());
+//                    Collections.sort(list, new Comparator<PrintData>() {
+//                        @Override
+//                        public int compare(PrintData o1, PrintData o2) {
+//                            return new CompareToBuilder()
+//                                    .append(o1.getPage(), o2.getPage())
+//                                    .toComparison();
+//                        }
+//                    });
+//
+//
+//                    if (!needBlank() || templatesCount > 0) { // no blank
+//                        for (PrintData printData : list) {
+//                            if (printThisPage(printData.getPage()) && printData.printThisColumn()) {
+//                                if (needNewPage(printData.getPage())) {
+//                                    document.newPage();
+//                                }
+//                                drawText(printData, content, smgs);
+//                            }
+//                        }
+//                    } else {   // print with blank      Only 1st template can have blanks
+//                        List<PrintBlank> blanks = new ArrayList<>(prnTempl.getPrintBlankTemplRefs().size());
+//                        for (PrintBlankTemplRef refs : prnTempl.getPrintBlankTemplRefs()) {
+//                            if (!refs.getPrintBlank().isPreview()) {
+//                                blanks.add(refs.getPrintBlank());
+//                            }
+//                        }
+//                        Collections.sort(blanks, new Comparator<PrintBlank>() {
+//                            @Override
+//                            public int compare(PrintBlank o1, PrintBlank o2) {
+//                                int result;
+//                                if (o1.getPage() == o2.getPage()) {
+//                                    result = new CompareToBuilder()
+//                                            .append(o1.getNcopy(), o2.getNcopy())
+//                                            .toComparison();
+//                                    return result;
+//                                } else if (o1.getPage() < o2.getPage() && o1.getPage() - o2.getPage() == -1) {
+//                                    if (o1.getNcopy() <= o2.getNcopy()) {
+//                                        result = -1;
+//                                    } else {
+//                                        result = 1;
+//                                    }
+//                                    return result;
+//                                } else if (o1.getPage() > o2.getPage() && o1.getPage() - o2.getPage() == 1) {
+//                                    if (o1.getNcopy() < o2.getNcopy()) {
+//                                        result = -1;
+//                                    } else {
+//                                        result = 1;
+//                                    }
+//                                    return result;
+//                                } else {
+//                                    result = new CompareToBuilder()
+//                                            .append(o1.getPage(), o2.getPage())
+//                                            .toComparison();
+//                                    return result;
+//                                }
+//                            }
+//                        });
+//                        int cntr=0;
+//                        int printPgsCntr=0;
+//                        List<Integer> printPgs= new ArrayList<>();
+//                        // создаем список страниц для печати
+//                        if(pageOpts!=null)
+//                            switch(pageOpts)
+//                            {
+//                                case 1:{
+//                                    // только первые страницы
+//                                    printPgs.add(0);
+//                                }break;
+//                                case 2:{
+//                                    // только четвертые страницы
+//                                    printPgs.add(6);
+//                                }break;
+//                            }
+//
+//                        for (PrintBlank blank : blanks) {
+//                            boolean allowPrint=true;
+//                            // если задан список стрраниц для печати
+//                            if(printPgs.size()>0)
+//                            {
+//                                if(printPgsCntr<printPgs.size()&&cntr==printPgs.get(printPgsCntr))
+//                                {
+//                                    printPgsCntr++;
+//                                }
+//                                else
+//                                    allowPrint=false;
+//                            }
+//                            if(allowPrint) {
+//                                document.newPage();
+//                                if ("application/pdf".equals(blank.getContentType())) {
+//                                    importFromPdf(writer, content, blank);
+//                                }
+//                                else {
+//                                    document.add(createBlank1(prnTempl, blank));
+//                                }
+//                                for (PrintData printData : list) {
+//                                    if (printThisPage1(blank.getPage(), printData.getPage()) && printData.printThisColumn()) {
+//                                        drawText(printData, content, smgs);
+//                                    }
+//                                }
+//                        /*if (isView) {
+//                            break;
+//                        }*/
+//                            }
+//                            cntr++;
+//                        }
+//                    }
+//
+//                /*if (isView) {   // print only 1st page
+//                    break;
+//                }*/
+//                    templatesCount++;
+//                }
+//            } else {
+//                PrintTemplates prnTempl = printTemplates.iterator().next();
+//                if (prnTempl != null) {
+//                    List<PrintData> list = new ArrayList<>(prnTempl.getPrintDatas().values());
+//                    PrintBlank blank = null;
+//                    for (PrintBlankTemplRef refs : prnTempl.getPrintBlankTemplRefs()) {
+//                        if (refs.getPrintBlank().isPreview()) {
+//                            blank = refs.getPrintBlank();
+//                            break;
+//                        }
+//                    }
+//
+//                    if (blank != null) {
+//                        if ("application/pdf".equals(blank.getContentType())) {
+//                            importFromPdf(writer, content, blank);
+//                        } else {
+//                            document.add(createBlank1(prnTempl, blank));
+//                        }
+//                        for (PrintData printData : list) {
+//                            if (printThisPage1(blank.getPage(), printData.getPage()) && printData.printThisColumn()) {
+//                                drawText(printData, content, smgs);
+//                            }
+//                        }
+//                    } else {
+//                        for (PrintData printData : list) {
+//                            if (printThisPage(printData.getPage()) && printData.printThisColumn()) {
+//                                drawText(printData, content, smgs);
+//                            }
+//                        }
+//                    }
+//                }
+//            }
         }
-        document.close();
-//        return baos;
-        // пересохранения документа с удалением лишнего
-        document = new Document();
+        if(isUseZip()) // возвращаем поток архива файлов
+        {
+            zipOut.finish();
+            return zipBaos;
+        }
+        else { // возвращаем поток одного файла
+            document.close();
+
+            // пересохранения документа с удалением лишнего
+            ByteArrayOutputStream res = smartCopyPdf(baos);
+            document.close();
+            return res;
+        }
+    }
+
+    private String getPdfName(CimSmgs smgs)
+    {
+        String res=smgs.getHid().toString();
+        if(smgs.getCimSmgsCarLists().size()==1) {
+            CimSmgsCarList carList= smgs.getCimSmgsCarLists().values().iterator().next();
+            if (smgs.isContOtpr()) {
+                if(carList.getCimSmgsKonLists().size()==1) {
+                    CimSmgsKonList konList = carList.getCimSmgsKonLists().values().iterator().next();
+                    if(konList.getUtiN()!=null&&!konList.getUtiN().trim().isEmpty())
+                        return konList.getUtiN().trim();
+                }
+            }
+            else {
+                if(carList.getNvag()!=null&&!carList.getNvag().trim().isEmpty())
+                    return carList.getNvag().trim();
+            }
+        }
+    return res;
+    }
+
+    /**
+     * пересохранения документа с удалением лишнего
+     * @param baos выходной поток
+     * @return новый выходной поток
+     * @throws DocumentException
+     * @throws IOException
+     */
+    private ByteArrayOutputStream smartCopyPdf(ByteArrayOutputStream baos) throws DocumentException, IOException {
+        Document document = new Document();
         ByteArrayOutputStream res = new ByteArrayOutputStream();
         PdfCopy copy = new PdfSmartCopy(document, res);
         document.open();
@@ -664,6 +822,330 @@ public class Print {
         return res;
     }
 
+    /**
+     * Создает 1 PDF документ
+     * @param document PDF документ
+     * @param smgs СМГС
+     * @param printTemplates Шаблон печати
+     * @param writer
+     * @param isView
+     * @param stamp штамп
+     * @throws DocumentException
+     * @throws SQLException
+     * @throws IOException
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
+    private void writeSmgs2Document(Document document,CimSmgs smgs,List<PrintTemplates> printTemplates,PdfWriter writer, boolean isView,PrintDataStamp stamp) throws DocumentException, SQLException, IOException, InvocationTargetException, IllegalAccessException {
+        int templatesCount = 0;
+
+        PdfContentByte content = writer.getDirectContent();
+
+        if (!isView) {
+            for (PrintTemplates prnTempl : printTemplates) {
+                if (templatesCount > 0) {
+                    document.newPage();
+                }
+
+                List<PrintData> list = new ArrayList<>(prnTempl.getPrintDatas().values());
+                Collections.sort(list, new Comparator<PrintData>() {
+                    @Override
+                    public int compare(PrintData o1, PrintData o2) {
+                        return new CompareToBuilder()
+                                .append(o1.getPage(), o2.getPage())
+                                .toComparison();
+                    }
+                });
+
+
+                if (!needBlank() || templatesCount > 0) { // no blank
+                    for (PrintData printData : list) {
+                        if (printThisPage(printData.getPage()) && printData.printThisColumn()) {
+                            if (needNewPage(printData.getPage())) {
+                                document.newPage();
+                            }
+                            drawText(printData, content, smgs);
+                        }
+                    }
+                } else {   // print with blank      Only 1st template can have blanks
+                    List<PrintBlank> blanks = new ArrayList<>(prnTempl.getPrintBlankTemplRefs().size());
+                    for (PrintBlankTemplRef refs : prnTempl.getPrintBlankTemplRefs()) {
+                        if (!refs.getPrintBlank().isPreview()) {
+                            blanks.add(refs.getPrintBlank());
+                        }
+                    }
+                    Collections.sort(blanks, new Comparator<PrintBlank>() {
+                        @Override
+                        public int compare(PrintBlank o1, PrintBlank o2) {
+                            int result;
+                            if (o1.getPage() == o2.getPage()) {
+                                result = new CompareToBuilder()
+                                        .append(o1.getNcopy(), o2.getNcopy())
+                                        .toComparison();
+                                return result;
+                            } else if (o1.getPage() < o2.getPage() && o1.getPage() - o2.getPage() == -1) {
+                                if (o1.getNcopy() <= o2.getNcopy()) {
+                                    result = -1;
+                                } else {
+                                    result = 1;
+                                }
+                                return result;
+                            } else if (o1.getPage() > o2.getPage() && o1.getPage() - o2.getPage() == 1) {
+                                if (o1.getNcopy() < o2.getNcopy()) {
+                                    result = -1;
+                                } else {
+                                    result = 1;
+                                }
+                                return result;
+                            } else {
+                                result = new CompareToBuilder()
+                                        .append(o1.getPage(), o2.getPage())
+                                        .toComparison();
+                                return result;
+                            }
+                        }
+                    });
+                    int cntr=0;
+                    int printPgsCntr=0;
+                    List<Integer> printPgs= new ArrayList<>();
+                    // создаем список страниц для печати
+                    if(pageOpts!=null)
+                        switch(pageOpts)
+                        {
+                            case 1:{
+                                // только первые страницы
+                                printPgs.add(0);
+                            }break;
+                            case 2:{
+                                // только четвертые страницы
+                                printPgs.add(6);
+                            }break;
+                        }
+
+                    for (PrintBlank blank : blanks) {
+                        //признак разрешения на печать
+                        boolean allowPrint=true;
+                        // если задан список стрраниц для печати
+                        if(printPgs.size()>0)
+                        {
+                            if(printPgsCntr<printPgs.size()&&cntr==printPgs.get(printPgsCntr))
+                            {
+                                printPgsCntr++;
+                            }
+                            else
+                                allowPrint=false;  //запрещаем печатать если страницы нет в списке страниц на печать
+                        }
+                        if(allowPrint) {
+                            document.newPage();
+                            if ("application/pdf".equals(blank.getContentType())) {
+                                importFromPdf(writer, content, blank);
+                            }
+                            else {
+                                document.add(createBlank1(prnTempl, blank));
+                            }
+                            PrintData stampData=null;
+                            for (PrintData printData : list) {
+                                if(printData.getName().toLowerCase().equals("stamp"))
+                                {
+                                    stampData=printData;
+                                }
+                                else
+                                if (printThisPage1(blank.getPage(), printData.getPage()) && printData.printThisColumn()) {
+                                    drawText(printData, content, smgs);
+                                }
+                            }
+                            // печатаем штамп на каждой четной странице--------------------
+
+                            if((stamp!=null)&&(cntr%2==0)&&stampData!=null)
+                                printStamp(writer,stamp,smgs.getG281(),stampData);
+
+                        /*if (isView) {
+                            break;
+                        }*/
+                        }
+                        cntr++;
+                    }
+                }
+
+                /*if (isView) {   // print only 1st page
+                    break;
+                }*/
+                templatesCount++;
+            }
+        } else {
+            PrintTemplates prnTempl = printTemplates.iterator().next();
+            if (prnTempl != null) {
+                List<PrintData> list = new ArrayList<>(prnTempl.getPrintDatas().values());
+                PrintBlank blank = null;
+                for (PrintBlankTemplRef refs : prnTempl.getPrintBlankTemplRefs()) {
+                    if (refs.getPrintBlank().isPreview()) {
+                        blank = refs.getPrintBlank();
+                        break;
+                    }
+                }
+
+                if (blank != null) {
+                    if ("application/pdf".equals(blank.getContentType())) {
+                        importFromPdf(writer, content, blank);
+                    } else {
+                        document.add(createBlank1(prnTempl, blank));
+                    }
+                    for (PrintData printData : list) {
+                        if (printThisPage1(blank.getPage(), printData.getPage()) && printData.printThisColumn()) {
+                            drawText(printData, content, smgs);
+                        }
+                    }
+                } else {
+                    for (PrintData printData : list) {
+                        if (printThisPage(printData.getPage()) && printData.printThisColumn()) {
+                            drawText(printData, content, smgs);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Печатает штамп на странице
+     * @param writer PdfWriter
+     * @param stamp штамп
+     * @param g281 дата отправки
+     * @throws IOException
+     * @throws DocumentException
+     */
+    private void printStamp(PdfWriter writer, PrintDataStamp stamp,Date g281,PrintData stampData) throws IOException, DocumentException
+    {
+
+        // печатает рамки---------------------------------------------------------------
+        PdfContentByte content= writer.getDirectContent();
+        for (PrintDataStampBorder border:stamp.getBorders()) {
+            content.saveState();
+            BaseColor color=null;
+            if(border.getColor()!=null&&!border.getColor().isEmpty())
+            {
+                color = new BaseColor((int)Long.parseLong(border.getColor(), 16));
+            }
+            content.setLineWidth(border.getBorder());
+            if((border.getRadius()!=null)&&(border.getRadius()!=0))
+            {
+                content.roundRectangle(
+                        Utilities.millimetersToPoints(stampData.getLlx()+border.getRllx()),
+                        Utilities.millimetersToPoints(stampData.getLly()+border.getRlly()),
+                        Utilities.millimetersToPoints(border.getRurx()- border.getRllx()),
+                        Utilities.millimetersToPoints(border.getRury()-border.getRlly()),
+                        border.getRadius()
+                );
+            }
+            else
+            {
+                content.rectangle(
+                        Utilities.millimetersToPoints(stampData.getLlx()+border.getRllx()),
+                        Utilities.millimetersToPoints(stampData.getLly()+border.getRlly()),
+                        Utilities.millimetersToPoints(border.getRurx()- border.getRllx()),
+                        Utilities.millimetersToPoints(border.getRury()-border.getRlly())
+                );
+            }
+            if(color!=null)
+                content.setColorStroke(color);
+            content.stroke();
+            content.restoreState();
+        }
+        // печатает текст-----------------------------------------------
+        for (PrintDataStampText text:stamp.getTexts()) {
+            String printTxt=text.getTxt();
+
+            // если в тексте есть маска даты, то игнорируем поле текста и формируем дату
+            if(text.getMask()!=null&&!text.getMask().isEmpty())
+            {
+                try {
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(text.getMask());
+                    printTxt=simpleDateFormat.format(g281);
+                }
+                catch (Exception e)
+                {
+                    printTxt="error date format!";
+                }
+            }
+
+            if(text.getUppercase())
+                printTxt=printTxt.toUpperCase();
+
+            String fontFamily = text.getFontFamily().isEmpty()?"courier new":text.getFontFamily();
+
+            int txtStyle=text.getBold()?(text.getItalic()?Font.BOLDITALIC:Font.BOLD):(text.getItalic()?Font.ITALIC:Font.NORMAL);
+
+            Font font = FontFactory.getFont(fontFamily, BaseFont.IDENTITY_H, BaseFont.EMBEDDED, text.getFontSize(), txtStyle);
+          //  FontSelector selector = new FontSelector();
+         //   selector.addFont(font);
+
+            if(text.getColor()!=null&&!text.getColor().isEmpty())
+            {
+                BaseColor color = new BaseColor((int)Long.parseLong(text.getColor(), 16));
+                font.setColor(color);
+            }
+
+//            Phrase phrase = selector.process(printTxt);
+            Phrase phrase = new Phrase(printTxt);
+            phrase.setFont(font);
+            phrase.setLeading(text.getLeading()==0?text.getFontSize()-2:text.getLeading());
+            if (text.isUnderline()) {
+                underline(phrase);
+            }
+            float imgWidth= Utilities.millimetersToPoints(text.getRurx()-text.getRllx());
+            float imgHeight=Utilities.millimetersToPoints(text.getRury()-text.getRlly());
+//            if(text.getRotate()==null||text.getRotate()==0)
+//            {
+//                // текст без вращения
+//                //Создаем колонку с текстом
+//                ColumnText column = new ColumnText(content);
+//                column.setAlignment(Element.ALIGN_LEFT);
+//                column.setLeading(text.getLeading());
+//                column.setSimpleColumn(
+//                        Utilities.millimetersToPoints(stampData.getLlx()+text.getRllx()),
+//                        Utilities.millimetersToPoints(stampData.getLly()+text.getRlly()),
+//                        Utilities.millimetersToPoints(stampData.getLlx()+text.getRurx()),
+//                        Utilities.millimetersToPoints(stampData.getLly()+text.getRury())
+//                );
+//                column.addElement(phrase);
+//                column.go();
+//            }
+//            else
+//            {
+
+                //Создаем шаблон
+                PdfTemplate textTemplate = content.createTemplate(imgWidth, imgHeight);
+            //Создаем колонку с текстом
+                ColumnText columnText = new ColumnText(textTemplate);
+                columnText.setAlignment(Element.ALIGN_LEFT);
+                //columnText.setLeading(text.getLeading());
+                columnText.setSimpleColumn(0, 0, imgWidth, imgHeight);
+                columnText.addElement(phrase);
+                columnText.go();
+
+            //Создаем изображения обертки нашего шаблона
+                Image textImg = Image.getInstance(textTemplate);
+
+    //устанавливаем размер изображения и поварачиваем изображение
+                textImg.setInterpolation(true);
+                textImg.scaleAbsolute(imgWidth, imgHeight);
+            // текст повернутый на значение Rotate
+                textImg.setRotationDegrees(text.getRotate()==null?0:text.getRotate());
+                textImg.setAbsolutePosition(Utilities.millimetersToPoints(stampData.getLlx()+text.getRllx()), Utilities.millimetersToPoints(stampData.getLly()+text.getRlly()));
+
+//вставляем картинку на PDF
+                content.addImage(textImg);
+//            }
+        }
+        //печатает изображения в штампе-----------------------------------------------------------
+        for(PrintDataStampPicture picture:stamp.getPics())
+        {
+            Image textImg = Image.getInstance(picture.getPict());
+            textImg.setAbsolutePosition(Utilities.millimetersToPoints(stampData.getLlx()+picture.getRllx()),Utilities.millimetersToPoints(stampData.getLly()+picture.getRlly()));
+            textImg.scaleAbsolute(Utilities.millimetersToPoints(picture.getRurx()-picture.getRllx()),Utilities.millimetersToPoints(picture.getRury()-picture.getRlly()));
+            writer.getDirectContentUnder().addImage(textImg);
+        }
+    }
     private void importFromPdf(PdfWriter writer, PdfContentByte content, PrintBlank blank) throws IOException, SQLException {
         PdfReader reader = new PdfReader(blank.getData().getBytes(1, (int) blank.getData().length()));
         PdfImportedPage page = writer.getImportedPage(reader, 1);
@@ -726,6 +1208,9 @@ public class Print {
     }
 
     private void drawText(PrintData printData, PdfContentByte content, Object doc) throws DocumentException, InvocationTargetException, IllegalAccessException {
+        if(printData.getName()!=null&&printData.getName().equals("stamp"))
+            return;
+
         if (printData.getPrintDataTables().values().size() == 0) { // no table
             drawTextInRectangle(printData, content, doc);
         } else { // table
@@ -742,6 +1227,7 @@ public class Print {
     }
 
     private void drawManyPhrases(PrintData printData, PdfContentByte content, Object doc) throws IllegalAccessException, InvocationTargetException, DocumentException {
+
         Rectangle rectangle = drawRectangle(printData, content);
         ColumnText column = new ColumnText(content);
         column.setAlignment(Element.ALIGN_LEFT);
@@ -791,6 +1277,7 @@ public class Print {
                 column.setSimpleColumn(rectangle);
                 int status=column.go(true);
                 Byte fontBackUp=printData.getFontSize();
+                // проверяем весь ли текст влез и пытаемся вписать
                 if(ColumnText.hasMoreText(status))
                 {
                     text=text.replaceAll("\n","")

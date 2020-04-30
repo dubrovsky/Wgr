@@ -20,16 +20,35 @@ Ext.define('TK.view.ky2.avto.out.AvtoList', {
     },
     buildTopToolbar: function (config) {
         this.callParent(arguments);
-        config.tbar.splice(8, 0,
+        config.tbar.splice(9, 0,
             {tooltip: this.btnToAvto, iconCls:'truck', action:'showAvtosIntoDir4AvtoOutBind'},'-' ,
             {tooltip: this.btnToPoezd, iconCls:'train2', action:'getAvtoAndPoezdForBind'},'-',
-            {tooltip: this.btnToYard, iconCls:'cont', action:'getAvtoAndYardForBind'},'-',
-            {
-                xtype: 'splitbutton', text: 'Печать', iconCls: 'upload', action: 'print',
-                menu: [
-                    {text: 'WZ', iconCls: 'excel', action: 'wz'}, '-'
-                ]
-            }
+            {tooltip: this.btnToYard, iconCls:'cont', action:'getAvtoAndYardForBind'},'-'
         );
+
+        var splitbutton = Ext.create('Ext.button.Split', {
+            tooltip: this.btnPrint, iconCls: 'print', action: 'print',
+            menu: [
+                {text: 'WZ', iconCls: 'excel', action: 'wz'}, '-'
+            ]
+        });
+
+        if (tkUser.hasPriv('KY_AKT')) {
+            splitbutton.menu.add(
+                {text: 'Акт', iconCls: 'excel', action: 'addAct'}
+            );
+        }
+        if (tkUser.hasPriv('KY_INTERCHANGE')) {
+            splitbutton.menu.add(
+                {text: 'INTERCHANGE', iconCls: 'excel', action: 'addInterchange'}
+            );
+        }
+        config.tbar.splice(15, 0, splitbutton);
+        if (tkUser.hasPriv('KY_AVTO_REP_OUT')) {
+            config.tbar.push(
+                {tooltip: 'Отчет по отправлению', iconCls: 'excel', action: 'avtoReportOut'}
+            );
+        }
+
     }
 });

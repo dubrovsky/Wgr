@@ -19,7 +19,7 @@ Ext.define('TK.view.components.g15contsmgs2', {
                 itemId: 'g15Kgrid',
                 columnLines: true,
                 border: false,
-                cls:'grid-13px-height',
+                cls:'grid-16px-height',
                 store: Ext.create('TK.store.tables.CtNodes'),
                 columns:[
                     {text: '!Н контейнера', dataIndex: 'utiN', width:156,height:1,sortable: false},

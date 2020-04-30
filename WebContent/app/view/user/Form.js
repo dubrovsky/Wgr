@@ -44,6 +44,20 @@ Ext.define('TK.view.user.Form', {
             {fieldLabel: this.labelPass1,name: 'ps_cnfm',inputType: 'password',initPassFld: 'usr.ps',vtype: 'password',maxLength: 64},
             {fieldLabel: this.labelFIO,name: 'usr.namKlient', allowBlank: true,maxLength: 32},
             {fieldLabel: this.labelEmail,name: 'usr.email', allowBlank: true, maxLength: 250, vtype: 'email'},
+            {fieldLabel: '!Язык интерфейса',xtype:'combobox',name: 'usr.lng', forceSelection: true,
+                 queryMode:'local',valueField: 'lng', displayField: 'language',editable :false,
+                store:Ext.create('Ext.data.ArrayStore', {
+                    fields:['lng', 'language'],
+                    data:[
+                        ['ru', 'Русский'],
+                        ['pl', 'Polski'],
+                        ['en', 'English'],
+                        ['de', 'Deutsch'],
+                        ['zh_CN', '中国的']
+                    ]
+                }),
+            },
+
             {xtype: 'checkbox',fieldLabel: this.labelLocked,name: 'usr.locked',inputValue: true},
             {xtype: 'checkbox',fieldLabel: this.labelSu,name: 'usr.su',inputValue: true/*,handler:this.onCheckAdmin,scope:this*/},
             {

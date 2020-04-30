@@ -6,7 +6,7 @@ import java.util.Objects;
 /**
  * @author p.dzeviarylin
  */
-public class KontGruzHistory implements Comparable<KontGruzHistory>{
+public class KontGruzHistory implements Comparable<KontGruzHistory> {
     private Long hid;
     private Poezd poezd;
     private Vagon vagon;
@@ -48,6 +48,15 @@ public class KontGruzHistory implements Comparable<KontGruzHistory>{
         this.un = un;
     }
 
+    public KontGruzHistory(YardSector yardSector, Yard yard, Kont kont, Byte direction, Date dateOperation, String un) {
+        this.yardSector = yardSector;
+        this.yard = yard;
+        this.kont = kont;
+        this.direction = direction;
+        this.dateOperation = dateOperation;
+        this.un = un;
+    }
+
     public KontGruzHistory(Avto avto, Kont kont, Byte direction, Date dateOperation, String un) {
         this.avto = avto;
         this.kont = kont;
@@ -65,7 +74,6 @@ public class KontGruzHistory implements Comparable<KontGruzHistory>{
     }
 
     public KontGruzHistory() {
-
     }
 
     public String getUn() {
@@ -199,6 +207,14 @@ public class KontGruzHistory implements Comparable<KontGruzHistory>{
 
     @Override
     public int hashCode() {
-        return Objects.hash(hid, koleya, direction, dateOperation, un);
+        return Objects.hash(hid, koleya, direction, dateOperation, un/*,
+                poezd != null ? poezd.getHid() : 37,
+                vagon != null ? vagon.getHid() : 37,
+                kont != null ? kont.getHid() : 37,
+                gruz != null ? gruz.getHid() : 37,
+                yard != null ? yard.getHid() : 37,
+                yardSector != null ? yardSector.getHid() : 37,
+                avto != null ? avto.getHid() : 37*/
+        );
     }
 }

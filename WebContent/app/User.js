@@ -3,6 +3,7 @@ Ext.define('TK.User', {
     constructor: function(conf/*,un, group, privs, docs*/) {
         this.un = conf.un;
         this.group = conf.group;
+        this.lang = conf.lang;
         if (conf.privs) {
             this.privs = conf.privs;
         }
@@ -35,7 +36,7 @@ Ext.define('TK.User', {
             el;
         docsInRoute.each(function(item,index,len){
             el = this.docs.getByKey(item);
-            if(el['groupAlias'] == doc['groupAlias']){
+            if(el !== undefined && el['groupAlias'] === doc['groupAlias']){
                 result.add(el);
                /* if(el.range == 'list'){
                     var child = Ext.clone(el);

@@ -50,8 +50,8 @@ public class AvtoFiles_A extends CimSmgsSupport_A {
 //                    return edit();
                 case SAVE:
                     return save();
-//                case DELETE:
-//                    return delete();
+                case DELETE:
+                    return delete();
                 case LIST:
                     return list();
                 case ZAYAVLIST:
@@ -139,6 +139,14 @@ public class AvtoFiles_A extends CimSmgsSupport_A {
         inputStream = new ByteArrayInputStream(avtoFiles.getFiles().getBytes((long) 1, (int) avtoFiles.getFiles().length()));
         fileName = avtoFiles.getFileName();
         return "excel";
+    }
+
+    public String delete() throws SQLException {
+        log.info(getTask());
+        AvtoFiles avtoFiles = avtoFilesDAO.findById(getHid(), false);
+        avtoFilesDAO.makeTransient(avtoFiles);
+        setJSONData(Constants.convert2JSON_True());
+        return SUCCESS;
     }
 
     public String save() throws Exception {

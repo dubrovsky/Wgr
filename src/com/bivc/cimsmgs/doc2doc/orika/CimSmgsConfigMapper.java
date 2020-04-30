@@ -163,6 +163,7 @@ public class CimSmgsConfigMapper extends ConfigurableMapper {
                 .exclude("hid")
                 .exclude("cimSmgs")
                 .exclude("cimSmgsKonList")
+                .exclude("cimSmgsCarList")
                 .exclude("dattr")
                 .constructorB()
                 .byDefault()

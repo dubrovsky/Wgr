@@ -97,8 +97,18 @@ public class CimSmgsCarList implements Serializable {
     private String nameSob;
     private String klientName;
     private String klientCode;
+    private boolean carDuplicates=false;
 
-    public String getKlientCode() {
+
+	public boolean isCarDuplicates() {
+		return carDuplicates;
+	}
+
+	public void setCarDuplicates(boolean carDuplicates) {
+		this.carDuplicates = carDuplicates;
+	}
+
+	public String getKlientCode() {
         return klientCode;
     }
 

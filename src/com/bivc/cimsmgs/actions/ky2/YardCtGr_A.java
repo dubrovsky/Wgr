@@ -2,12 +2,7 @@ package com.bivc.cimsmgs.actions.ky2;
 
 import com.bivc.cimsmgs.actions.CimSmgsSupport_A;
 import com.bivc.cimsmgs.commons.Response;
-import com.bivc.cimsmgs.dao.AvtoDAO;
-import com.bivc.cimsmgs.dao.KontGruzHistoryDAO;
-import com.bivc.cimsmgs.dao.YardDAO;
-import com.bivc.cimsmgs.dao.YardSectorDAO;
-import com.bivc.cimsmgs.db.ky.Avto;
-import com.bivc.cimsmgs.db.ky.Gruz;
+import com.bivc.cimsmgs.dao.*;
 import com.bivc.cimsmgs.db.ky.Kont;
 import com.bivc.cimsmgs.db.ky.Yard;
 import com.bivc.cimsmgs.doc2doc.orika.Mapper;
@@ -25,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.bivc.cimsmgs.actions.CimSmgsSupport_A.KontGruzHistoryType.INPUT;
 import static com.bivc.cimsmgs.actions.CimSmgsSupport_A.KontGruzHistoryType.YARD;
 
 public class YardCtGr_A extends CimSmgsSupport_A {
@@ -39,6 +35,8 @@ public class YardCtGr_A extends CimSmgsSupport_A {
 			switch (Action.valueOf(action.toUpperCase())) {
 				case SAVE:
 					return save();
+				case DELETE:
+					return delete();
 				case EDIT:
 					return edit();
 				default:
@@ -67,17 +65,32 @@ public class YardCtGr_A extends CimSmgsSupport_A {
 
 	private String save() throws Exception {
 		final YardDTO dto = defaultDeserializer.setLocale(getLocale()).read(YardDTO.class, dataObj);
-		Yard yard = yardDAO.findById(dto.getHid(), false);
-		Map<String, List<?>> contGruz4History = new HashMap<>(2);
-		contGruz4History.put("konts", new ArrayList<Kont>());
-//		contGruz4History.put("gruzs", new ArrayList<Gruz>());
+		Yard yard;
+		if(dto.getHid() == null) {
+			yard = yardDAO.findPlace4Kont(dto.getSector().getHid());
+			if (yard == null) {
+				setJSONData(
+						defaultSerializer
+								.setLocale(getLocale())
+								.write(new Response<>(false))
+				);
+				return SUCCESS;
+			}
+		}
+		else
+			yard = yardDAO.findById(dto.getHid(), false);
 
-		List<Kont> konts = yard.updateKonts(dto.getKonts(), mapper);
+		List<Kont> konts = yard.updateKonts(dto.getKonts(), mapper, clientDAO);
+		for(Kont kont: yard.getKonts())
+			kontDAO.makePersistent(kont);
+		Map<String, List<?>> contGruz4History = new HashMap<>(1);
+		contGruz4History.put("konts", new ArrayList<Kont>());
 		((List<Kont>) contGruz4History.get("konts")).addAll(konts);
-//		((List<Gruz>) contGruz4History.get("gruzs")).addAll(gruzs);
-		yard.setSector(yardSectorDAO.getById(dto.getSector().getHid(), false));
-		yard = yardDAO.makePersistent(yard);
-//		saveContGruzHistory(contGruz4History, kontGruzHistoryDAO, YARD);
+//		yard.setSector(yardSectorDAO.getById(dto.getSector().getHid(), false));
+
+//		yard = yardDAO.makePersistent(yard);
+		saveVagContGruzHistory(contGruz4History, kontGruzHistoryDAO, KontGruzHistoryType.INPUT, vagonHistoryDAO, getUser().getUsr().getUn(), null);
+		saveVagContGruzHistory(contGruz4History, kontGruzHistoryDAO, YARD, vagonHistoryDAO, getUser().getUsr().getUn(), null);
 
 		yardDAO.flush(); // to get ids
 		setJSONData(
@@ -85,13 +98,24 @@ public class YardCtGr_A extends CimSmgsSupport_A {
 						.setLocale(getLocale())
 						.write(
 								new Response<>(
-										mapper.map(yard, AvtoDTO.class)
+										mapper.map(yard, YardDTO.class)
 								)
 						)
 		);
 		return SUCCESS;
 	}
 
+	private String delete() throws Exception {
+		final Kont kont = kontDAO.getById(getHid(), false);
+		kontDAO.makeTransient(kont);
+		setJSONData(defaultSerializer.setLocale(getLocale()).write(new Response()));
+		return SUCCESS;
+	}
+
+	@Autowired
+	private VagonHistoryDAO vagonHistoryDAO;
+	@Autowired
+	private KontGruzHistoryDAO kontGruzHistoryDAO;
 	@Autowired
 	private Serializer defaultSerializer;
 	@Autowired
@@ -101,11 +125,11 @@ public class YardCtGr_A extends CimSmgsSupport_A {
 	@Autowired
 	private YardDAO yardDAO;
 	@Autowired
-	private KontGruzHistoryDAO kontGruzHistoryDAO;
-	@Autowired
 	private YardSectorDAO yardSectorDAO;
-
-
+	@Autowired
+	private NsiClientDAO clientDAO;
+	@Autowired
+	private KontDAO kontDAO;
 
 	private String action;
 	private String dataObj;
@@ -118,6 +142,6 @@ public class YardCtGr_A extends CimSmgsSupport_A {
 		this.dataObj = dataObj;
 	}
 
-	enum Action {SAVE, EDIT}
+	enum Action {SAVE, EDIT, DELETE}
 
 }

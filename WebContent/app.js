@@ -24,6 +24,7 @@ Ext.application({
         'Nsi',
         'Stat',
         'Doc2Doc',
+        'Messanger',
 
         'exchange.Viewers',
         'exchange.Senders',
@@ -54,6 +55,7 @@ Ext.application({
         'docs.Avisocim',
 
         'print.PrintTemplates',
+        'print.PrintStamps',
         'print.Print',
 
         'Logs',
@@ -82,6 +84,7 @@ Ext.application({
         'ky2.BindPoezdAndYardController',
         'ky2.BindAvtoAndYardController',
         'ky2.BindAvtoAndPoezdController',
+        'ky2.BindYardAndYardController',
 
         'ky2.AvtoController',
         'ky2.AvtoZayavController',
@@ -123,8 +126,16 @@ Ext.application({
         'TK.User',
         'TK.Utils',
         'TK.VTypes',
+        'TK.Files',
         'TK.view.ky2.VagKontSearch'
     ],
     autoCreateViewport: true,
-    name:'TK'
+    name:'TK',
+    init: function () {
+        Ext.EventManager.on(window, 'beforeunload', this.onWindowUnloading, this);
+    },
+    onWindowUnloading: function (e) {
+        var msgBody = 'Are you sure?';
+        e.browserEvent.returnValue = msgBody;
+    }
 });

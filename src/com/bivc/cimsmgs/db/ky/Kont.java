@@ -4,6 +4,7 @@ package com.bivc.cimsmgs.db.ky;
 
 import com.bivc.cimsmgs.dao.NsiClientDAO;
 import com.bivc.cimsmgs.db.nsi.Client;
+import com.bivc.cimsmgs.doc2doc.orika.CopyKontMapper;
 import com.bivc.cimsmgs.doc2doc.orika.Mapper;
 import com.bivc.cimsmgs.dto.ky2.GruzDTO;
 import com.bivc.cimsmgs.dto.ky2.KontDTO;
@@ -17,6 +18,7 @@ import java.util.*;
 public class Kont implements Serializable, Comparable<Kont> {
 
     private Long hid;
+    private Long sid;
     private KontStatus status;
     private KontStatus prevStatus;
     private Vagon vagon;
@@ -29,7 +31,7 @@ public class Kont implements Serializable, Comparable<Kont> {
      private Poezd poezdInto;*/
     private String trans;
     //    private Set<KontStatusHistory> kontStatusHistory;
-    private Long massa_tar;
+    private BigDecimal massa_tar;
     private BigDecimal massa_brutto;
     private BigDecimal massa_brutto_all;
     private BigDecimal pod_sila;
@@ -60,30 +62,38 @@ public class Kont implements Serializable, Comparable<Kont> {
 
     private Date dprb;
 
-    private Date dprbDate;
+    /*private Date dprbDate;
 
-    private Date dprbTime;
+    private Date dprbTime;*/
 
     private Date dotp;
 
-    private Date dotpDate;
+    /*private Date dotpDate;
 
-    private Date dotpTime;
+    private Date dotpTime;*/
 
     private String storeKy;
     private Boolean poruz;
-    private Byte sort;
+    private Integer sort;
     private Set<Gruz> gruzs = new TreeSet<>();
     private Set<Plomb> plombs = new TreeSet<>();
     private String prim;
     private Date dyard;
     private NsiKyOwners owner;
-    private String punkt_otpr;
-    private String punkt_nazn;
+    private String zayav_in;
+    private String zayav_out;
     private Set<KontGruzHistory> history = new TreeSet<>();
     private Byte isZayav;
     private Byte isUnloading = 0;
     private Byte isLoading = 0;
+
+    public Long getSid() {
+        return sid;
+    }
+
+    public void setSid(Long sid) {
+        this.sid = sid;
+    }
 
     public Client getClient() {
         return client;
@@ -149,23 +159,23 @@ public class Kont implements Serializable, Comparable<Kont> {
         this.notp = notp;
     }
 
-    public String getPunkt_nazn() {
-        return punkt_nazn;
+    public String getZayav_in() {
+        return zayav_in;
     }
 
-    public void setPunkt_nazn(String punkt_nazn) {
-        this.punkt_nazn = punkt_nazn;
+    public void setZayav_in(String zayav_in) {
+        this.zayav_in = zayav_in;
     }
 
-    public String getPunkt_otpr() {
-        return punkt_otpr;
+    public String getZayav_out() {
+        return zayav_out;
     }
 
-    public void setPunkt_otpr(String punkt_otpr) {
-        this.punkt_otpr = punkt_otpr;
+    public void setZayav_out(String zayav_out) {
+        this.zayav_out = zayav_out;
     }
 
-    /*public NsiKyOwners getOwner() {
+/*public NsiKyOwners getOwner() {
         return owner;
     }
 
@@ -391,7 +401,7 @@ public class Kont implements Serializable, Comparable<Kont> {
     }
 
 
-    public void updateGruzs(TreeSet<GruzDTO> dtos, Mapper mapper) {
+    public void updateGruzs(TreeSet<GruzDTO> dtos, Mapper mapper, NsiClientDAO clientDAO) {
         // delete
         Set<Gruz> gruzyToRemove = new HashSet<>();
         for (Gruz gruz : getGruzs()) {
@@ -416,6 +426,7 @@ public class Kont implements Serializable, Comparable<Kont> {
             for (GruzDTO gruzDto : dtos) {
                 if (Objects.equals(gruz.getHid(), gruzDto.getHid())) {
                     mapper.map(gruzDto, gruz);
+                    gruz.updateClient(gruzDto, clientDAO);
                     dtoToRemove.add(gruzDto);
                     break;
                 }
@@ -426,8 +437,29 @@ public class Kont implements Serializable, Comparable<Kont> {
         // insert
         for (GruzDTO gruzDto : dtos) {
             Gruz gruz = mapper.map(gruzDto, Gruz.class);
+            gruz.updateClient(gruzDto, clientDAO);
             addGruz(gruz);
         }
+    }
+
+    public void copyGruzs(Set<Gruz> gruzSet, CopyKontMapper copyKontMapper) {
+        Set<Gruz> gruzyCopied = new TreeSet<>();
+        for (Gruz gruz : gruzSet) {
+            Gruz gruzCopy = copyKontMapper.map(gruz, Gruz.class);
+            gruzCopy.setKont(this);
+            gruzyCopied.add(gruzCopy);
+        }
+        this.setGruzs(gruzyCopied);
+    }
+
+    public void copyPlombs(Set<Plomb> plombSet, CopyKontMapper copyKontMapper) {
+        Set<Plomb> plombCopied = new TreeSet<>();
+        for (Plomb plomb : plombSet) {
+            Plomb plombCopy = copyKontMapper.map(plomb, Plomb.class);
+            plombCopy.setKont(this);
+            plombCopied.add(plombCopy);
+        }
+        this.setPlombs(plombCopied);
     }
 
     private void removeGruz(Gruz gruz) {
@@ -438,6 +470,14 @@ public class Kont implements Serializable, Comparable<Kont> {
     private void removePlomb(Plomb plomb) {
         plombs.remove(plomb);
     }
+
+    public void removePlomby() {
+        for (Plomb plomb : plombs) {
+            plomb.setKont(null);
+        }
+        plombs.clear();
+    }
+
 
 
     public Vagon getVagon() {
@@ -550,11 +590,11 @@ public class Kont implements Serializable, Comparable<Kont> {
         this.pod_sila = pod_sila;
     }
 
-    public Long getMassa_tar() {
+    public BigDecimal getMassa_tar() {
         return massa_tar;
     }
 
-    public void setMassa_tar(Long massa_tar) {
+    public void setMassa_tar(BigDecimal massa_tar) {
         this.massa_tar = massa_tar;
     }
 
@@ -719,11 +759,11 @@ public class Kont implements Serializable, Comparable<Kont> {
         this.poruz = poruz;
     }
 
-    public Byte getSort() {
+    public Integer getSort() {
         return this.sort;
     }
 
-    public void setSort(Byte sort) {
+    public void setSort(Integer sort) {
         this.sort = sort;
     }
 
@@ -735,7 +775,7 @@ public class Kont implements Serializable, Comparable<Kont> {
         this.gruzs = gruzs;
     }
 
-    public Date getDprbDate() {
+    /*public Date getDprbDate() {
         return this.dprbDate != null ? this.dprbDate : this.dprb;
     }
 
@@ -765,7 +805,7 @@ public class Kont implements Serializable, Comparable<Kont> {
 
     public void setDotpTime(Date dotpTime) {
         this.dotpTime = dotpTime;
-    }
+    }*/
 
     @Override
     public int compareTo(Kont that) {
@@ -776,8 +816,8 @@ public class Kont implements Serializable, Comparable<Kont> {
             return BEFORE;
         }
 
-        Comparable thisHid = this.getHid();
-        Comparable thatHid = that.getHid();
+        Long thisHid = this.getHid();
+        Long thatHid = that.getHid();
 
         if (thisHid == null) {
             return AFTER;
@@ -843,18 +883,18 @@ public class Kont implements Serializable, Comparable<Kont> {
                 nkon.equals(kont.nkon) &&
                 notp.equals(kont.notp) &&
                 dprb.equals(kont.dprb) &&
-                dprbDate.equals(kont.dprbDate) &&
-                dprbTime.equals(kont.dprbTime) &&
+//                dprbDate.equals(kont.dprbDate) &&
+//                dprbTime.equals(kont.dprbTime) &&
                 dotp.equals(kont.dotp) &&
-                dotpDate.equals(kont.dotpDate) &&
-                dotpTime.equals(kont.dotpTime) &&
+//                dotpDate.equals(kont.dotpDate) &&
+//                dotpTime.equals(kont.dotpTime) &&
                 storeKy.equals(kont.storeKy) &&
                 poruz.equals(kont.poruz) &&
                 sort.equals(kont.sort) &&
                 prim.equals(kont.prim) &&
                 dyard.equals(kont.dyard) &&
-                punkt_otpr.equals(kont.punkt_otpr) &&
-                punkt_nazn.equals(kont.punkt_nazn) &&
+                zayav_in.equals(kont.zayav_in) &&
+                zayav_out.equals(kont.zayav_out) &&
                 isZayav.equals(kont.isZayav) &&
                 isUnloading.equals(kont.isUnloading) &&
                 Objects.equals(isLoading, kont.isLoading);
@@ -862,6 +902,6 @@ public class Kont implements Serializable, Comparable<Kont> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(hid, trans, massa_tar, massa_brutto, massa_brutto_all, pod_sila, type, vid, prizn_sob, naim_sob, gruzotpr, teh_obsl, ky_x, ky_y, ky_z, ky_sector, dattr, un, altered, nkon, notp, dprb, dprbDate, dprbTime, dotp, dotpDate, dotpTime, storeKy, poruz, sort, prim, dyard, punkt_otpr, punkt_nazn, isZayav, isUnloading, isLoading);
+        return Objects.hash(hid, trans, massa_tar, massa_brutto, massa_brutto_all, pod_sila, type, vid, prizn_sob, naim_sob, gruzotpr, teh_obsl, ky_x, ky_y, ky_z, ky_sector, dattr, un, altered, nkon, notp, dprb, /*dprbDate, dprbTime,*/ dotp, /*dotpDate, dotpTime,*/ storeKy, poruz, sort, prim, dyard, zayav_in, zayav_out, isZayav, isUnloading, isLoading);
     }
 }

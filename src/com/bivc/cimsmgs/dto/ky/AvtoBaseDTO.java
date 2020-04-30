@@ -32,23 +32,24 @@ public class AvtoBaseDTO {
     private String pol_cargo;
     private String departure;
     private String destination;
-    private String driver_nm;
-    private String prim_avto;
+    private String driver_pasp;
+    private String prim;
     private Byte direction;
     private RouteDTO route;
     private PackDocDTO packDoc;
     private String naim_sob;
     private String ret_nkon;
+    private String docType;
     private Integer kontCount;
     private ClientDTO client;
     private TreeSet<KontDTO> konts = new TreeSet<>();
-
 
     @JsonSerialize(using = DateTimeSerializer.class)
     private Date dattr;
     @JsonSerialize(using = DateTimeSerializer.class)
     private Date altered;
     private String un;
+    private String trans;
 
     @JsonSerialize(using = DateTimeSerializer.class)
     private Date dprb;
@@ -74,6 +75,25 @@ public class AvtoBaseDTO {
     @JsonInclude(JsonInclude.Include.ALWAYS)
     private Date dotpTime;
 
+    private Long messCount;
+    private Long newMessCount;
+
+    public String getTrans() {
+        return trans;
+    }
+
+    public void setTrans(String trans) {
+        this.trans = trans;
+    }
+
+    public Long getMessCount() {
+        return messCount;
+    }
+
+    public void setMessCount(Long messCount) {
+        this.messCount = messCount;
+    }
+
     public Date getDotp() {
         if(this.dotpDate != null){
             this.dotp = this.dotpDate;
@@ -82,6 +102,22 @@ public class AvtoBaseDTO {
             }
         }
         return this.dotp;
+    }
+
+//    public TreeSet<AvtoFiles> getAvtoFiles() {
+//        return avtoFiles;
+//    }
+//
+//    public void setAvtoFiles(TreeSet<AvtoFiles> avtoFiles) {
+//        this.avtoFiles = avtoFiles;
+//    }
+
+    public String getDocType() {
+        return docType;
+    }
+
+    public void setDocType(String docType) {
+        this.docType = docType;
     }
 
     public TreeSet<KontDTO> getKonts() {
@@ -251,20 +287,20 @@ public class AvtoBaseDTO {
         this.destination = destination;
     }
 
-    public String getDriver_nm() {
-        return driver_nm;
+    public String getDriver_pasp() {
+        return driver_pasp;
     }
 
-    public void setDriver_nm(String driver_nm) {
-        this.driver_nm = driver_nm;
+    public void setDriver_pasp(String driver_pasp) {
+        this.driver_pasp = driver_pasp;
     }
 
-    public String getPrim_avto() {
-        return prim_avto;
+    public String getPrim() {
+        return prim;
     }
 
-    public void setPrim_avto(String prim_avto) {
-        this.prim_avto = prim_avto;
+    public void setPrim(String prim) {
+        this.prim = prim;
     }
 
     public RouteDTO getRoute() {
@@ -316,4 +352,11 @@ public class AvtoBaseDTO {
     }
 
 
+    public Long getNewMessCount() {
+        return newMessCount;
+    }
+
+    public void setNewMessCount(Long newMessCount) {
+        this.newMessCount = newMessCount;
+    }
 }

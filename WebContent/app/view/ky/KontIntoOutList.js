@@ -82,12 +82,12 @@ Ext.define('TK.view.ky.KontIntoOutList', {
             text: 'Авто',
             columns: [
                 {
-                    text: 'Прибытие',
+                    text: '!Прибытие',
                     dataIndex: 'avtoInto.no_avto',
                     width: 100
                 },
                 {
-                    text: 'Отправление',
+                    text: '!Отправление',
                     dataIndex: 'avtoOut.no_avto',
                     width: 100
                 }

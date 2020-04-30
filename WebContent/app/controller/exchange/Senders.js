@@ -74,8 +74,19 @@ Ext.define('TK.controller.exchange.Senders', {
             } ,
             'docslist button[action="exchange"] menuitem[action="greenrail"]': {
                 click: this.sendGreenRail
+            },
+            'docslist button[action="exchange"] menuitem[action="unload_5_12"]': {
+                click: this.unload_5_12
             }
         });
+    },
+    unload_5_12: function(btn) {
+        var list = btn.up('grid');
+        if (!TK.Utils.isRowSelected(list)) {
+            return;
+        }
+        var hid_cs = list.selModel.getLastSelected().get('hid');
+        window.open('Astana1_unLoad_5_12.do?' + 'hid_cs=' + hid_cs, '_blank', '');
     },
     sendGreenRail: function(btn){
         var grid = btn.up('docslist'),

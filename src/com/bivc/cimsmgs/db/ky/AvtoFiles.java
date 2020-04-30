@@ -3,6 +3,7 @@ package com.bivc.cimsmgs.db.ky;
 // Generated 01.11.2011 8:57:21 by Hibernate Tools 3.4.0.CR1
 
 import com.bivc.cimsmgs.db.CimSmgsFileInf;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -20,15 +21,25 @@ public class AvtoFiles implements Serializable, Comparable<AvtoFiles> {
 	private Long npp;
 	private Avto avto;
 	private AvtoZayav avtoZayav;
+	@JsonIgnore
 	private Blob files;
 	private String fileName;
 	private String contentType;
 	private String docType;
+	private String num;
 	private BigDecimal length;
 	private Date uploaded;
 
 
-    public AvtoFiles() {
+	public String getNum() {
+		return num;
+	}
+
+	public void setNum(String num) {
+		this.num = num;
+	}
+
+	public AvtoFiles() {
     	this.uploaded = new Date();
 	}
 
@@ -143,16 +154,33 @@ public class AvtoFiles implements Serializable, Comparable<AvtoFiles> {
 				Objects.equals(contentType, avtoFiles.contentType) &&
 				Objects.equals(docType, avtoFiles.docType) &&
 				Objects.equals(length, avtoFiles.length) &&
-				Objects.equals(uploaded, avtoFiles.uploaded);
+				Objects.equals(uploaded, avtoFiles.uploaded) &&
+				Objects.equals(num, avtoFiles.num);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(hid, npp, avto, files, fileName, contentType, docType, length, uploaded);
+		return Objects.hash(hid, npp, avto, files, fileName, contentType, docType, length, uploaded, num);
 	}
 
 	@Override
-	public int compareTo(AvtoFiles o) {
-		return 0;
+	public int compareTo(AvtoFiles that) {
+		final int BEFORE = -1;
+		final int AFTER = 1;
+
+		if (that == null) {
+			return BEFORE;
+		}
+
+		Long thisHid = this.getHid();
+		Long thatHid = that.getHid();
+
+		if (thisHid == null) {
+			return AFTER;
+		} else if (thatHid == null) {
+			return BEFORE;
+		} else {
+			return thisHid.compareTo(thatHid);
+		}
 	}
 }

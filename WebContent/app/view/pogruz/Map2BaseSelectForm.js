@@ -7,7 +7,8 @@ Ext.define('TK.view.pogruz.Map2BaseSelectForm', {
 
     requires: [
         'TK.Utils',
-        'TK.store.PeregruzMap2Base'
+        'TK.store.PeregruzMap2Base',
+        'TK.view.components.CheckColumn'
     ],
 
     title: this.title,
@@ -31,6 +32,7 @@ Ext.define('TK.view.pogruz.Map2BaseSelectForm', {
                         viewConfig: {
                             stripeRows: true,
                             singleSelect: true,
+                            markDirty: false,
                             enableTextSelection: true
                         },
                         columns: [
@@ -49,7 +51,7 @@ Ext.define('TK.view.pogruz.Map2BaseSelectForm', {
                             {text: this.headerKolOs, dataIndex: 'kolos', sortable: false, flex: 3},
                             {text: this.headerPlomb, dataIndex: 'znak', sortable: false, flex: 3},
                             {text: this.headerG694, dataIndex: 'g694', sortable: true, flex: 4},
-                            {xtype: 'checkcolumn', flex: 1, dataIndex: 'isSelected',
+                            {xtype: 'checkallcheckcolumn', flex: 1, dataIndex: 'isSelected',
                                 listeners: {
                                     beforecheckchange: function (view, cell, cellIdx, record, row, rowIdx, eOpts) {
                                         var storeD = view.up().up().store.data.items[cell];
@@ -114,7 +116,7 @@ Ext.define('TK.view.pogruz.Map2BaseSelectForm', {
                     this.up().up().parent.getCenter().getActiveTab().getStore().reload();
                     Ext.Msg.show({
                         title: this.successMsgTitle,
-                        msg: 'OK',
+                        msg: Ext.decode(response.responseText)['result'],
                         buttons: Ext.Msg.OK,
                         icon: Ext.Msg.INFO,
                         scope: this,

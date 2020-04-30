@@ -137,10 +137,26 @@ Ext.define('TK.controller.ky2.BindPoezdAndAvtoController', {
             },
             'ky2poezd2avtobindtreeformout button[action=collapseAll]': {
                 click: this.collapseAllRight
+            },
+            'ky2vgctgrtreeform button[action="showAvtosIntoDir4PoezdOutBind"]': {
+                click: this.getPoesdAndAvtoForBindFromVgCntGr
+            },
+            'ky2vgctgrtreeform button[action="showAvtosOutDir4PoezdIntoBind"]': {
+                click: this.getPoesdAndAvtoForBindFromVgCntGr
             }
-
-
         });
+    },
+
+    getPoesdAndAvtoForBindFromVgCntGr: function (btn) {
+        var rootNode = btn.up('panel').down('treepanel').getRootNode();
+        if (rootNode.get('direction') === 1)
+            this.getController('ky2.PoezdVgCtGrController').saveClick(null, null, null, btn, null, null, null, null,
+                this.getPoesdAndAvtoForBind.bind(this, 'ky2poezd2avtobindtreeforminto', rootNode.get('hid'), 2));
+            // this.getPoesdAndAvtoForBind('ky2poezd2avtobindtreeforminto', rootNode.get('hid'), 2);
+        else
+            this.getController('ky2.PoezdVgCtGrController').saveClick(null, null, null, btn, null, null, null, null,
+                this.getPoesdAndAvtoForBind.bind(this, 'ky2poezd2avtobindtreeformout', rootNode.get('hid'), 1));
+            // this.getPoesdAndAvtoForBind('ky2poezd2avtobindtreeformout', rootNode.get('hid'), 1);
     },
 
     getPoesdIntoAndAvtoForBind: function (btn) {
@@ -462,6 +478,10 @@ Ext.define('TK.controller.ky2.BindPoezdAndAvtoController', {
             scope: this,
             success: function (response) {
                 this.getCenter().setLoading(false);
+                var leftRootNode = this.getTreepanelLeft().getRootNode();
+                if (!leftRootNode.findChild('who', 'cont', true) && !leftRootNode.findChild('who', 'gryz', true) && leftRootNode.get('direction') === 1) {
+                    this.getController('ky2.PoezdController').getPoezdIntoForPoezdOut(leftRootNode.get('hid'));
+                }
                 if (Ext.isNumber(close)) {
                     var closeBtn = this.getPoezdform().down('button[action="close"]');
                     closeBtn.fireEvent('click',closeBtn);

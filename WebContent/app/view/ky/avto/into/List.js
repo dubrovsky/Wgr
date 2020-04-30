@@ -1,6 +1,11 @@
 Ext.define('TK.view.ky.avto.into.List', {
     extend:'TK.view.ky.avto.BaseAvtoList',
     alias:'widget.kyavtointolist',
+
+    requires: [
+        'TK.Utils'
+    ],
+
     itemId:'kyavtolist',
     title:'Список автомобилей по прибытию',
 

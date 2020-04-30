@@ -23,7 +23,7 @@ Ext.define('TK.view.ky.BaseKontsYardDir', {
                             width: 60
                         },
                         {
-                            text: 'Ярус',
+                            text: '!Ярус',
                             dataIndex: 'ky_z',
                             width: 60
                         }

@@ -1,5 +1,6 @@
 Ext.define('TK.model.Project', {
     extend:'Ext.data.Model',
+
     idProperty:'hid',
     fields:[
         {name:'hid', type:'int'},

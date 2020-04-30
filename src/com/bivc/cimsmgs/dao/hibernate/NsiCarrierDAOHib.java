@@ -21,8 +21,11 @@ public class NsiCarrierDAOHib extends GenericHibernateDAO<Carrier, Long> impleme
         Criteria crit = getSession().createCriteria(getPersistentClass());
         crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 10 : limit);
         if (query != null && query.trim().length() > 0) {
-            crit.add(Restrictions.or(Restrictions.ilike("carrName", query.trim(), MatchMode.ANYWHERE),
-                    Restrictions.ilike("carrNameShort", query.trim(), MatchMode.ANYWHERE)));
+            crit.add(Restrictions.disjunction()
+                    .add(Restrictions.ilike("carrName", query.trim(), MatchMode.ANYWHERE))
+                    .add(Restrictions.ilike("carrNameShort", query.trim(), MatchMode.ANYWHERE))
+                    .add(Restrictions.ilike("carrNo", query.trim(), MatchMode.ANYWHERE))
+            );
         }
         return listAndCast(crit);
     }
@@ -32,8 +35,11 @@ public class NsiCarrierDAOHib extends GenericHibernateDAO<Carrier, Long> impleme
         Criteria crit = getSession().createCriteria(getPersistentClass());
         crit.setProjection(Projections.rowCount());
         if (query != null && query.trim().length() > 0) {
-            crit.add(Restrictions.or(Restrictions.ilike("carrName", query.trim(), MatchMode.ANYWHERE),
-                    Restrictions.ilike("carrNameShort", query.trim(), MatchMode.ANYWHERE)));
+            crit.add(Restrictions.disjunction()
+                    .add(Restrictions.ilike("carrName", query.trim(), MatchMode.ANYWHERE))
+                    .add(Restrictions.ilike("carrNameShort", query.trim(), MatchMode.ANYWHERE))
+                    .add(Restrictions.ilike("carrNo", query.trim(), MatchMode.ANYWHERE))
+            );
         }
         return (Long) crit.uniqueResult();
     }

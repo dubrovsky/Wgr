@@ -55,51 +55,79 @@ Ext.define('TK.view.ky2.AbstractTreeForm', {
 
     buildToolbarItems: function () {
         return this.buildTreeToolbarItems().concat({
-            text: 'Удалить',
+            text: this.btnDelete,
             action: 'del',
             iconCls: 'del'
         }, {
             xtype: 'tbfill',  // ->
             hidden: false
         }, {
-            text: this.btnEditPoezd,
-            // hidden: false,
+            tooltip: this.btnEditPoezd,
             iconCls: 'edit',
             itemId: 'editPoezd',
             action: 'editPoezd'
         }, {
-            text: 'Редактировать заявку',
-            // hidden: false,
+            tooltip: this.tooltipEditOrder,
             iconCls: 'edit',
             itemId: 'editZajav',
             action: 'editZajav'
         }, {
-            tooltip: 'На поезд по отпр.',
+            tooltip: this.ttipEditTruck,
+            iconCls: 'edit',
+            itemId: 'editAvto',
+            action: 'editAvto'
+        }, {
+            tooltip: this.tooltipEditOrder,
+            iconCls: 'edit',
+            itemId: 'editAvtoZayav',
+            action: 'editAvtoZayav'
+        }, {
+            tooltip: this.ttipByTruckDeparture,
+            iconCls: 'truck',
+            itemId: 'showAvtosOutDir4PoezdIntoBind',
+            action: 'showAvtosOutDir4PoezdIntoBind'
+        }, {
+            tooltip: this.ttipByTruckArrival,
+            iconCls: 'truck',
+            itemId: 'showAvtosIntoDir4PoezdOutBind',
+            action: 'showAvtosIntoDir4PoezdOutBind'
+        }, {
+            tooltip: this.ttipByTrainDeparture,
             iconCls: 'train2',
             itemId: 'showPoezdsOutDir4PoezdIntoBind',
             action: 'showPoezdsOutDir4PoezdIntoBind'
         }, {
-            tooltip: 'На поезд по приб.',
+            tooltip: this.ttipByTrainArrival,
             iconCls: 'train2',
             itemId: 'showPoezdsIntoDir4PoezdOutBind',
             action: 'showPoezdsIntoDir4PoezdOutBind'
         }, {
-            tooltip: 'На авто по отпр.',
+            tooltip: this.ttipByTruckDeparture,
             iconCls: 'truck',
             itemId: 'showAvtosOutDir4AvtoIntoBind',
             action: 'showAvtosOutDir4AvtoIntoBind'
         }, {
-            tooltip: 'На авто по приб.',
+            tooltip: this.ttipByTruckArrival,
             iconCls: 'truck',
             itemId: 'showAvtosIntoDir4AvtoOutBind',
             action: 'showAvtosIntoDir4AvtoOutBind'
         }, {
-            tooltip: 'На конт. площадку',
+            tooltip: this.ttipByTrainDeparture,
+            iconCls: 'train2',
+            itemId: 'showPoezdOutDir4AvtoIntoBind',
+            action: 'showPoezdOutDir4AvtoIntoBind'
+        }, {
+            tooltip: this.ttipByTrainArrival,
+            iconCls: 'train2',
+            itemId: 'showPoezdIntoDir4AvtoOutBind',
+            action: 'showPoezdIntoDir4AvtoOutBind'
+        }, {
+            tooltip: this.ttipOnCYard,
             iconCls: 'cont',
             itemId: 'showPoezd4YardOutBind',
             action: 'showPoezd4YardOutBind'
         }, {
-            tooltip: 'На конт. площадку',
+            tooltip: this.ttipOnCYard,
             iconCls: 'cont',
             itemId: 'showAvto4YardOutBind',
             action: 'showAvto4YardOutBind'
@@ -160,12 +188,14 @@ Ext.define('TK.view.ky2.AbstractTreeForm', {
     buildTreePanelTopToolbarItems: function () {
         return [
             {
-                text: 'Спрятать вагоны',
-                action: 'hideVags'
+                tooltip: this.ttipHideWags,
+                action: 'hideVags',
+                iconCls: 'hide'
             }, '-',
             {
-                text: 'Показать вагоны',
-                action: 'showVags'
+                tooltip: this.ttipShowWags,
+                action: 'showVags',
+                iconCls: 'show'
             }, '-'
         ].concat(this.buildTreePanelTopToolbarItemsExpandCollapse());
     },

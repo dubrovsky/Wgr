@@ -242,5 +242,5 @@ Ext.define('TK.view.edit.OtpavitelEdit', {
         value = container.getComponent('g18_1').getValue();
         field_to = container.getComponent('g18r_1');
         TK.Utils.set_translit(value,field_to,'en');
-    },
+    }
 });

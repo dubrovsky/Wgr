@@ -4,29 +4,44 @@ import Ti.DataProcessing.Tools.DataProcessingTools;
 import com.bivc.cimsmgs.commons.Constants;
 import com.bivc.cimsmgs.commons.JsonUtils;
 import com.bivc.cimsmgs.dao.*;
-import com.bivc.cimsmgs.db.CimSmgs;
-import com.bivc.cimsmgs.db.CimSmgsInvoice;
-import com.bivc.cimsmgs.db.PackDoc;
+import com.bivc.cimsmgs.db.*;
 import com.bivc.cimsmgs.doc2doc.Mapper;
 import com.bivc.cimsmgs.exceptions.InfrastructureException;
+import com.bivc.cimsmgs.formats.json.Serializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.sf.beanlib.hibernate.HibernateBeanReplicator;
 import net.sf.beanlib.hibernate3.Hibernate3BeanReplicator;
 import net.sf.beanlib.spi.PropertyFilter;
+import org.apache.struts2.interceptor.ServletRequestAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
+import java.util.*;
 
 import static com.bivc.cimsmgs.commons.Constants.*;
 
-public class Invoice_A extends CimSmgsSupport_A implements InvoiceDAOAware, SmgsDAOAware, FileInfDAOAware/*, PackDocDAOAware*/ {
+public class Invoice_A extends CimSmgsSupport_A implements InvoiceDAOAware, SmgsDAOAware, FileInfDAOAware/*, PackDocDAOAware*/, ServletRequestAware {
 
     private static final long serialVersionUID = -1977115763537716668L;
 
     final static private Logger log = LoggerFactory.getLogger(Invoice_A.class);
     private FileInfDAO fileInfDAO;
+
+    @Autowired
+    NsiTnvedDictDAO dictDAO;
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private Serializer defaultSerializer;
+
+    private HttpServletRequest request;
+
+
 
     public String create() {
         log.info("create");
@@ -72,6 +87,8 @@ public class Invoice_A extends CimSmgsSupport_A implements InvoiceDAOAware, Smgs
             throw new InfrastructureException("Error. Please contact support team.");
         }
 
+        saveTranslate(invoice.getInvoiceGruzs().values());
+
         invoice.prepare4save();
         if (invoice.getHid() != null) { // update
             update();
@@ -82,6 +99,57 @@ public class Invoice_A extends CimSmgsSupport_A implements InvoiceDAOAware, Smgs
         saveEpd(invoice.getPackDoc(), EPD_ACTION.ADD);
 
         setJSONData(convert2JSON_Smgs_Save_Results(invoice, "invoice"));
+        return SUCCESS;
+    }
+
+    /**
+     * СОхраняет переводы грузов в таблицу переводов
+     * @param gruzs список грузов
+     */
+    private void saveTranslate(Collection<CimSmgsInvoiceGruz> gruzs)
+    {
+        log.info("saveTranslate");
+        for (CimSmgsInvoiceGruz gruz : gruzs){
+            if(gruz.getNzgr()!=null&&gruz.getNzgrEn()!=null)
+            {
+                NsiTnvedDict dict= dictDAO.findByNaimEn(gruz.getNzgrEn());
+                if(dict==null)
+                    dict= new NsiTnvedDict();
+
+                dict.setUn(getUser().getUsr().getUn());
+                dict.setTrans(getUser().getUsr().getGroup().getName());
+                dict.setKod(gruz.getTnved());
+                dict.setNaim(gruz.getNzgr());
+                dict.setNaimEn(gruz.getNzgrEn());
+                dict.setVendorCode("");
+
+                dictDAO.merge(dict);
+            }
+        }
+    }
+    public String translateCargo() throws Exception {
+        log.info("translateCargo");
+        List<NsiTnvedDict> dicts;
+        List<NsiTnvedDict> trDicts= new ArrayList<>();
+        Map<String,NsiTnvedDict> dictMap = new HashMap<>();
+        dicts=objectMapper.readValue(getServletRequest().getParameter("jsonData"), objectMapper.getTypeFactory().constructCollectionType(List.class, NsiTnvedDict.class));
+        for (NsiTnvedDict dict:dicts) {
+            dict.setNaimEn(dict.getNaimEn().trim().toUpperCase());
+            dict.setKod(
+                  //  dict.getKod().trim().toUpperCase()
+                    null
+            );
+
+            dictMap.putIfAbsent(dict.getNaimEn(), dict);
+        }
+
+        for (NsiTnvedDict dict:dictMap.values()) {
+            List<NsiTnvedDict> tempList=dictDAO.findByExample(dict);
+            if(tempList!=null)
+                trDicts.addAll(tempList);
+        }
+
+        setJSONData(defaultSerializer.write(trDicts));
         return SUCCESS;
     }
 
@@ -125,9 +193,11 @@ public class Invoice_A extends CimSmgsSupport_A implements InvoiceDAOAware, Smgs
         else{
             invoice = getInvoiceDAO().getById(invoice.getHid(), false);
             if(invoice != null){
-                PackDoc packDoc = invoice.getPackDoc();
-                packDoc.setDeleted(delete);
-                getPackDocDAO().makePersistent(packDoc);
+//                PackDoc packDoc = invoice.getPackDoc();
+//                packDoc.setDeleted(delete);
+//                getPackDocDAO().makePersistent(packDoc);
+                invoice.setDeleted(delete);
+                getInvoiceDAO().makePersistent(invoice);
             }
         }
     }
@@ -440,4 +510,16 @@ public String restore() throws IllegalAccessException, InvocationTargetException
     public PackDocDAO getPackDocDAO() {
         return packDocDAO;
     }*/
+
+    public void setDictDAO(NsiTnvedDictDAO dictDAO) {
+        this.dictDAO = dictDAO;
+    }
+
+    public HttpServletRequest getServletRequest() {
+        return request;
+    }
+
+    public void setServletRequest(HttpServletRequest request) {
+        this.request = request;
+    }
 }

@@ -2,6 +2,11 @@ Ext.define('TK.view.ky2.yard.YardSectorForm', {
     extend: 'TK.view.ky2.AbstractWindow',
     alias: 'widget.ky2yardsectorform',
 
+    requires: [
+        'TK.view.ky2.AbstractForm'
+    ],
+
+
     required: '<span style="color:red;font-weight:bold">*</span>',
     width: 500,
 
@@ -13,18 +18,18 @@ Ext.define('TK.view.ky2.yard.YardSectorForm', {
                     {
                         xtype: 'textfield',
                         name: 'name',
-                        fieldLabel: 'Наименование',
+                        fieldLabel: this.lblName,
                         allowBlank: false,
                         afterLabelTextTpl: this.required
                     },
                     {
                         xtype: 'textarea',
                         name: 'descr',
-                        fieldLabel: 'Описание'
+                        fieldLabel: this.lblDescription
                     },
                     {
                         xtype: 'fieldcontainer',
-                        fieldLabel: 'Группы пользователей',
+                        fieldLabel: this.lblUsrGroups,
                         layout: 'hbox',
                         itemId: 'group',
                         afterLabelTextTpl: this.required,

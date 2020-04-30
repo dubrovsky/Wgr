@@ -2,8 +2,6 @@ package com.bivc.cimsmgs.db.ky;
 
 // Generated 19.02.2014 14:19:48 by Hibernate Tools 3.4.0.CR1
 
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
@@ -16,15 +14,15 @@ public class Plomb implements Serializable, Comparable<Plomb> {
 	private String znak;
 	private String station;
 	private Date dattr;
-	private Byte sort;
+	private Integer sort;
     private String trans;
     private String un;
     private Date altered;
 
-    @Override
+    /*@Override
     public String toString() {
         return ReflectionToStringBuilder.toStringExclude(this, "kont");
-    }
+    }*/
 
 	public String getStation() {
 		return station;
@@ -65,7 +63,7 @@ public class Plomb implements Serializable, Comparable<Plomb> {
 		this.hid = hid;
 	}
 
-	public Plomb(Long hid, Kont kont, Short kpl, String znak, Date dattr, Byte sort, String trans, String un, Date altered) {
+	public Plomb(Long hid, Kont kont, Short kpl, String znak, Date dattr, Integer sort, String trans, String un, Date altered) {
 		this.hid = hid;
 		this.kont = kont;
 		this.kpl = kpl;
@@ -117,11 +115,11 @@ public class Plomb implements Serializable, Comparable<Plomb> {
 		this.dattr = dattr;
 	}
 
-	public Byte getSort() {
+	public Integer getSort() {
 		return this.sort;
 	}
 
-	public void setSort(Byte sort) {
+	public void setSort(Integer sort) {
 		this.sort = sort;
 	}
 

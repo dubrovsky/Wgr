@@ -8,6 +8,7 @@ Ext.define('TK.model.User', {
         {name:'usr.su', mapping:'su',type: 'boolean'},
         {name:'usr.privilegsIds', mapping:'privilegsIds'},
         {name:'usr.email', mapping:'email'},
-        {name:'usr.namKlient', mapping:'namKlient'}
+        {name:'usr.namKlient', mapping:'namKlient'},
+        {name:'usr.lng',mapping:'lng'}
     ]
 });

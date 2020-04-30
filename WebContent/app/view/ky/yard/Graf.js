@@ -2,6 +2,11 @@ Ext.define('TK.view.ky.yard.Graf', {
     extend: 'TK.view.ky.AbstractWindow',
     alias:'widget.kygrafyardform',
 
+    requires: [
+        'TK.view.ky.AbstractForm'
+    ],
+
+
     buildItems: function(config) {
         var owner = this;
         config.items = [{

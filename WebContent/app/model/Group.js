@@ -1,5 +1,6 @@
 Ext.define('TK.model.Group', {
     extend: 'Ext.data.Model',
+
     idProperty:'name',
     fields: [
         {name:'name', type:'string', defaultValue:''},

@@ -3,10 +3,21 @@ Ext.define('TK.view.ky2.VagKontSearch', {
     alias: 'widget.vagkontsearch',
     triggerCls: 'x-form-search-trigger', // the default
     trigger2Cls: 'x-form-clear-trigger',
-    emptyText:'поиск... мин 6 зн.',
+    emptyText:this.emptyText,
     width: 170,
-    minChars: 6,
+    minChars: 2,
+    enableKeyEvents: true,
+    timeout: null,
+    cls: 'leftSearch',
 
+    listeners: {
+        change: function (field) {
+            clearTimeout(this.timeout);
+            this.timeout = setTimeout((function () {
+                    this.onTriggerClick();
+                }.bind(this)), 1000);
+        }
+    },
     // override onTriggerClick
     onTriggerClick: function () {
         var tree = this.up('panel'),
@@ -29,11 +40,15 @@ Ext.define('TK.view.ky2.VagKontSearch', {
                     } else if (parentNode.get('who') === 'avto') {
                         if (!parentNode.isExpanded())
                             parentNode.expand();
+                    } else if (parentNode.get('who') === 'poezd') {
+                        if (!parentNode.isExpanded())
+                            parentNode.expand();
                     }
                     if (!firstFocused) {
                         tree.getView().focusNode(this);
                         firstFocused = true;
                     }
+                    me.focus();
                 }
                 else if (this.get('cls') !== 'hideTreeNode')
                     this.set('cls', '');

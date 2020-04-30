@@ -28,7 +28,7 @@ public class InvoiceDAOHib extends GenericHibernateDAO<CimSmgsInvoice, Long> imp
         crit.createAlias("packDoc", "pack").
                 createAlias("pack.usrGroupsDir", "gr").
                 add(Restrictions.in("gr.name", usr.getTrans()));
-        
+
         crit.createAlias("route", "route").
                 add(Restrictions.eq("route.hid", search.getRouteId()));
 
@@ -207,6 +207,14 @@ public class InvoiceDAOHib extends GenericHibernateDAO<CimSmgsInvoice, Long> imp
 //		q.setParameterList("trans", usr.getTrans());
 //		return (CimSmgsInvoice) q.uniqueResult();
         return (CimSmgsInvoice) crit.uniqueResult();
+    }
+
+    @Override
+    public List<CimSmgsInvoice>   findByIdinList(List<Long> hids) {
+        Criteria crit = getSession().createCriteria(getPersistentClass(), "invoice");
+        crit.add(Restrictions.in("hid",hids));
+
+        return crit.list();
     }
 
     public List<CimSmgsInvoice> findStat(Integer limit, Integer start, Search search, Usr usr) {

@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface UsrDAO extends GenericDAO<Usr, String> {
     public List<Usr> findAll(Integer limit, Integer start, String query, Usr usr);
+    public List<Usr> findAll(Integer limit, Integer start, String query,String query1, Usr usr);
 
     //  public Integer update(Usr usr);
     public Usr findByName(String username);
@@ -16,4 +17,5 @@ public interface UsrDAO extends GenericDAO<Usr, String> {
     public List<DocDir> findDocs4User(Usr usr);
 
     Long countAll(String search);
+    Long countAll(String query,String query1);
 }

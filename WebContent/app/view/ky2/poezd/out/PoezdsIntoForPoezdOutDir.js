@@ -1,12 +1,17 @@
 Ext.define('TK.view.ky2.poezd.out.PoezdsIntoForPoezdOutDir', {
     extend: 'TK.view.ky2.AbstractWindow',
     alias: 'widget.ky2poezdsintoforpoezdoutdir',
+
+    requires: [
+        'TK.view.ky2.poezd.BasePoezdIntoForPoezdOut'
+    ],
+
     itemId: 'ky2poezdsintoforpoezdoutdir',
 
     width: 400,
     maxHeight: 700,
     autoScroll: true,
-    title: 'Список вагонов для поезда по отправлению',
+    title: this.title,
 
     buildItems: function (config) {
         config.items = [{
@@ -19,7 +24,7 @@ Ext.define('TK.view.ky2.poezd.out.PoezdsIntoForPoezdOutDir', {
                 config.tbar.push(
                     {
                         xtype: 'combo',
-                        fieldLabel: 'Номер поезда',
+                        fieldLabel: this.lblTrainNum,
                         labelWidth: 80,
                         width: 180,
                         store: 'ky2.PoezdsIntoForPoezdOutDir',
@@ -29,8 +34,8 @@ Ext.define('TK.view.ky2.poezd.out.PoezdsIntoForPoezdOutDir', {
                         forceSelection: true,
                         name: 'npprm',
                         listConfig: {
-                            loadingText: "Поиск",
-                            emptyText: "Не найдено"
+                            loadingText: this.loadingTxt,
+                            emptyText: this.emptyText
                         }
                     }, '-'
                 );

@@ -1,12 +1,12 @@
 /**
  *  класс для модели отображающий строку XLS файла вагонов
  */
-package Ti.model;
+package Ti.model.excel;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-public class VagSmgs2 {
+public class VagSmgs2 extends XlsDefaultModel {
 
     /**
      * № вагона(платформы)/ Nr.platformy

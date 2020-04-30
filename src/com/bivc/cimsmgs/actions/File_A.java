@@ -9,9 +9,11 @@ import com.bivc.cimsmgs.db.*;
 import com.bivc.cimsmgs.exchange.AvisoLoader;
 import com.bivc.cimsmgs.exchange.ExchangeServer;
 import com.isc.leechdictionary.SynchPNSI;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.mail.internet.MimeUtility;
 import javax.servlet.http.HttpServletRequest;
@@ -20,12 +22,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import static com.bivc.cimsmgs.commons.Constants.convert2JSON_True;
 
-public class File_A extends CimSmgsSupport_A implements FileDAOAware, FileInfDAOAware, ServletRequestAware, InvoiceDAOAware, SmgsDAOAware {
+public class File_A extends CimSmgsSupport_A implements FileDAOAware, FileInfDAOAware, ServletRequestAware, InvoiceDAOAware, SmgsDAOAware, FileNewDAOAware {
     final static private Logger log = LoggerFactory.getLogger(File_A.class);
     private InvoiceDAO invoiceDAO;
     private SmgsDAO smgsDAO;
@@ -34,7 +38,7 @@ public class File_A extends CimSmgsSupport_A implements FileDAOAware, FileInfDAO
         log.info("listInf");
         List<CimSmgsFileInf> files = getFileInfDAO().findAll(getLimit(), getStart(), getSearch(), getUser().getUsr());
         Long total = getFileInfDAO().countAll(getSearch(), getUser().getUsr());
-        setJSONData(Constants.convert2JSON_FileInfList(files, total));
+        setJSONData(Constants.convert2JSON_FileInfList(files, total, getUser()));
         return SUCCESS;
     }
 
@@ -42,7 +46,7 @@ public class File_A extends CimSmgsSupport_A implements FileDAOAware, FileInfDAO
         log.info("list");
         List<CimSmgsFile> files = getFileDAO().findAll(getLimit(), getStart(), getSearch(), getUser().getUsr());
         Long total = getFileDAO().countAll(getSearch(), getUser().getUsr());
-        setJSONData(Constants.convert2JSON_FileList(files, total));
+        setJSONData(Constants.convert2JSON_FileList(files, total, getUser().getUsr()));
         return SUCCESS;
     }
 
@@ -64,28 +68,44 @@ public class File_A extends CimSmgsSupport_A implements FileDAOAware, FileInfDAO
         log.info(getTask());
         files = getFileDAO().findById(files.getHid(), false);
         inputStream = new ByteArrayInputStream(files.getFiles().getBytes((long) 1, (int) files.getFiles().length()));
+
+        // set record about view of document
+        CimSmgsFileNew cimSmgsFileNew = new CimSmgsFileNew(new Date(), getUser().getUsr().getUn(), getUser().getUsr().getGroup().getName());
+        cimSmgsFileNew.setCimSmgsFile(files);
+        fileNewDAO.makePersistent(cimSmgsFileNew);
         return "view";
+    }
+
+    public String saveFlag() throws Exception {
+        CimSmgsFile cimSmgsFile = getFileDAO().findById(files.getHid(), false);
+        cimSmgsFile.setUserFlag(getUserFlag());
+        getFileDAO().makePersistent(cimSmgsFile);
+        setJSONData(Constants.convert2JSON_True());
+        return SUCCESS;
     }
 
     public String saveFile() throws Exception {
         log.info("saveFile");
-        saveFileHelper();
 
-        getFileDAO().save(files, fileData);
+        for (int i=0; i< fileData.length; i++) {
+            saveFileHelper(fileData[i], filename[i], contentType[i], getUser().getUsr().getUn());
+
+            getFileDAO().save(files, fileData[i]);
+        }
         setJSONData(Constants.convert2JSON_Smgs_Save_Results(file, "file"));
         return SUCCESS;
     }
 
     public String saveFile(OutputStreamWriters osw) throws Exception {
         log.info("saveFile");
-        saveFileHelper();
+        saveFileHelper(null, filename[0], contentType[0], "");
 
         getFileDAO().save(files, osw);
         setJSONData(Constants.convert2JSON_Smgs_Save_Results(file, "file"));
         return SUCCESS;
     }
 
-    private void saveFileHelper() throws Exception {
+    private void saveFileHelper(File fileData, String filename, String contentType, String un) throws Exception {
 
         if (file == null || file.getHid() == null) {
             save();
@@ -95,6 +115,8 @@ public class File_A extends CimSmgsSupport_A implements FileDAOAware, FileInfDAO
         files = new CimSmgsFile();
         files.setFileName(filename);
         files.setContentType(contentType);
+        files.setDat(new Date());
+        files.setUn(un);
         if(fileData != null){
             files.setLength(new BigDecimal(fileData.length()));
         }
@@ -262,7 +284,7 @@ public class File_A extends CimSmgsSupport_A implements FileDAOAware, FileInfDAO
     }*/
     public String uploadAviso() throws Exception {
         log.info("uploadAviso");
-        PackDoc pack = new AvisoLoader().loadXML(fileData, getUser().getUsername(), getUser().getUsr().getGroup().getName(), new Route(getSearch().getRouteId()), getUser().getUsr().getGroup(), new BigDecimal(getSearch().getDocId()), getSearch().getType(), getSearch().getKod());
+        PackDoc pack = new AvisoLoader().loadXML(fileData[0], getUser().getUsername(), getUser().getUsr().getGroup().getName(), new Route(getSearch().getRouteId()), getUser().getUsr().getGroup(), new BigDecimal(getSearch().getDocId()), getSearch().getType(), getSearch().getKod());
         smgs = pack.getCimSmgses().iterator().next(); // for status log
         setJSONData(Constants.convert2JSON_True());
         return SUCCESS;
@@ -270,14 +292,14 @@ public class File_A extends CimSmgsSupport_A implements FileDAOAware, FileInfDAO
 
     public String uploadAvisoDB() throws Exception {
         log.info("uploadAvisoDB");
-        PackDoc pack = new ExchangeServer().receiveDBXML(fileData, getUser().getUsername(), getUser().getUsr().getGroup().getName(), new Route(getSearch().getRouteId()), getUser().getUsr().getGroup());
+        PackDoc pack = new ExchangeServer().receiveDBXML(fileData[0], getUser().getUsername(), getUser().getUsr().getGroup().getName(), new Route(getSearch().getRouteId()), getUser().getUsr().getGroup());
         smgs = pack.getCimSmgses().iterator().next(); // for status log
         setJSONData(Constants.convert2JSON_True());
         return SUCCESS;
     }
 
     public String uploadNsi() throws Exception {
-        log.info(getUploadFileName());
+        log.info(getUploadFileName()[0]);
         SynchPNSI rp = new SynchPNSI();
         rp.setLogPath(
                 new File(request.getSession().getServletContext().getRealPath("/")).getParentFile().getParentFile().getAbsolutePath() +
@@ -285,8 +307,8 @@ public class File_A extends CimSmgsSupport_A implements FileDAOAware, FileInfDAO
         );
         rp.init();
 
-        if (fileData != null) {
-            rp.replaceTablePNSI(new FileInputStream(fileData));
+        if (fileData != null && fileData.length != 0) {
+            rp.replaceTablePNSI(new FileInputStream(fileData[0]));
             setJSONData(Constants.convert2JSON_True());
         }
         return SUCCESS;
@@ -294,7 +316,7 @@ public class File_A extends CimSmgsSupport_A implements FileDAOAware, FileInfDAO
 
     public String uploadTBC() throws IOException {
         log.info("uploadTBC");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileData), "UTF-8"));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileData[0]), "UTF-8"));
 //        BufferedReader reader = new BufferedReader(new FileReader(fileData));
         String line = null;
         StringBuilder stringBuilder = new StringBuilder();
@@ -307,7 +329,7 @@ public class File_A extends CimSmgsSupport_A implements FileDAOAware, FileInfDAO
         reader.close();
 
         ExchangeServer server = new ExchangeServer();
-        server.ReceiveTBCFile(stringBuilder.toString(), filename, getUser().getUsername(), getUser().getUsr().getGroup().getName(), route, getUser().getUsr().getGroup());
+        server.ReceiveTBCFile(stringBuilder.toString(), filename[0], getUser().getUsername(), getUser().getUsr().getGroup().getName(), route, getUser().getUsr().getGroup());
         setJSONData(Constants.convert2JSON_True());
         return SUCCESS;
     }
@@ -316,14 +338,17 @@ public class File_A extends CimSmgsSupport_A implements FileDAOAware, FileInfDAO
     private FileInfDAO fileInfDAO;
     private CimSmgsFileInf file;
     private CimSmgsFile files;
-    private File fileData;
-    private String contentType;
-    private String filename;
+    private File[] fileData;
+    private String[] contentType;
+    private String[] filename;
     private InputStream inputStream;
     private OutputStream outputStreamt;
     private HttpServletRequest request;
     private CimSmgs smgs;
     private Route route;
+    private FileNewDAO fileNewDAO;
+    Integer userFlag;
+
 
     public String getEncodedFileName() throws UnsupportedEncodingException {
         String user_agent = request.getHeader("user-agent");
@@ -335,27 +360,35 @@ public class File_A extends CimSmgsSupport_A implements FileDAOAware, FileInfDAO
         }
     }
 
-    public void setUpload(File file) {
+    public Integer getUserFlag() {
+        return userFlag;
+    }
+
+    public void setUserFlag(Integer userFlag) {
+        this.userFlag = userFlag;
+    }
+
+    public void setUpload(File[] file) {
         this.fileData = file;
     }
 
-    public File getUpload() {
+    public File[] getUpload() {
         return this.fileData;
     }
 
-    public void setUploadContentType(String contentType) {
+    public void setUploadContentType(String[] contentType) {
         this.contentType = contentType;
     }
 
-    public String getUploadContentType() {
+    public String[] getUploadContentType() {
         return this.contentType;
     }
 
-    public void setUploadFileName(String filename) {
+    public void setUploadFileName(String[] filename) {
         this.filename = filename;
     }
 
-    public String getUploadFileName() {
+    public String[] getUploadFileName() {
         return this.filename;
     }
 
@@ -373,6 +406,14 @@ public class File_A extends CimSmgsSupport_A implements FileDAOAware, FileInfDAO
 
     public void setFileDAO(FileDAO fileDAO) {
         this.fileDAO = fileDAO;
+    }
+
+    public FileNewDAO getFileNewDAO() {
+        return fileNewDAO;
+    }
+
+    public void setFileNewDAO(FileNewDAO fileNewDAO) {
+        this.fileNewDAO = fileNewDAO;
     }
 
     public CimSmgsFileInf getFile() {

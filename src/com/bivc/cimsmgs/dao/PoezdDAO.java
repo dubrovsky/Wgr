@@ -32,5 +32,5 @@ public interface PoezdDAO extends GenericDAO<Poezd, Long> {
 
 //    List<Poezd> findGruzotprInInterval(ReportParamsDTO dto);
 
-    List<Poezd> getPoezdsIntoForPoezdOutDir(Usr usr, long routeId);
+    List<Poezd> getPoezdsIntoForPoezdOutDir(Usr usr, long routeId, byte koleya);
 }

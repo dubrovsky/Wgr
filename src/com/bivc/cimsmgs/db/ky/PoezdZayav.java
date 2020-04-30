@@ -1,6 +1,8 @@
 package com.bivc.cimsmgs.db.ky;
 
 import com.bivc.cimsmgs.dao.NsiClientDAO;
+import com.bivc.cimsmgs.db.BoardMessenger;
+import com.bivc.cimsmgs.db.BoardTalkNewMess;
 import com.bivc.cimsmgs.db.PackDoc;
 import com.bivc.cimsmgs.db.Route;
 import com.bivc.cimsmgs.db.nsi.Client;
@@ -15,7 +17,7 @@ import java.util.*;
 /**
  * @author p.dzeviarylin
  */
-public class PoezdZayav implements Serializable {
+public class PoezdZayav implements Serializable, PoezdZayavParent, BoardMessenger {
     private Long hid;
     private Route route;
     private PackDoc packDoc;
@@ -36,7 +38,19 @@ public class PoezdZayav implements Serializable {
     private Integer vagCount;
     private Integer kontCount;
     private Integer kontCountDone;
+    private Long messCount;
+    private Set<BoardTalkNewMess> boardTalkNewMesses = new TreeSet<>();
+    private long newMessCount;
 
+    public Long getMessCount() {
+        return messCount;
+    }
+
+    public void setMessCount(Long messCount) {
+        this.messCount = messCount;
+    }
+
+    @Override
     public Client getClient() {
         return client;
     }
@@ -69,6 +83,7 @@ public class PoezdZayav implements Serializable {
         this.kontCountDone = kontCountDone;
     }
 
+    @Override
     public String getGruzotpr() {
         return gruzotpr;
     }
@@ -93,6 +108,7 @@ public class PoezdZayav implements Serializable {
         this.nppr = nppr;
     }
 
+    @Override
     public Set<Vagon> getVagons() {
         return vagons;
     }
@@ -161,6 +177,11 @@ public class PoezdZayav implements Serializable {
         return packDoc;
     }
 
+    @Override
+    public String getDocName() {
+        return "poezdZayav2";
+    }
+
     public void setPackDoc(PackDoc packDoc) {
         this.packDoc = packDoc;
     }
@@ -181,13 +202,14 @@ public class PoezdZayav implements Serializable {
         this.hid = hid;
     }
 
+    @Override
     public Vagon addVagon(Vagon vagon) {
         vagons.add(vagon);
         vagon.setZayav(this);
         return vagon;
     }
 
-    public void updateVags(TreeSet<VagonDTO> dtos, Mapper mapper, NsiClientDAO clientDAO) {
+    public void updateVags(TreeSet<VagonDTO> dtos, Mapper mapper, NsiClientDAO clientDAO) {       //
         // delete
         Set<Vagon> vagsToRemove = new HashSet<>();
         for (Vagon vagon : getVagons()) {
@@ -215,7 +237,7 @@ public class PoezdZayav implements Serializable {
                     if (vagonIntoDTO.getOtpravka() == Otpravka.CONT) {
                         vagon.updateKonts(vagonIntoDTO.getKonts(), mapper, clientDAO);
                     } else if (vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
-                        vagon.updateGruzs(vagonIntoDTO.getGruzs(), mapper);
+                        vagon.updateGruzs(vagonIntoDTO.getGruzs(), mapper, clientDAO);
                     } else {  // can be deleted and getOtpravka is null
                         vagon.removeKonts();
                         vagon.removeGruzy();
@@ -234,7 +256,7 @@ public class PoezdZayav implements Serializable {
             if (vagonIntoDTO.getOtpravka() == Otpravka.CONT) {
                 vagon.updateKonts(vagonIntoDTO.getKonts(), mapper, clientDAO);
             } else if (vagonIntoDTO.getOtpravka() == Otpravka.GRUZ) {
-                vagon.updateGruzs(vagonIntoDTO.getGruzs(), mapper);
+                vagon.updateGruzs(vagonIntoDTO.getGruzs(), mapper, clientDAO);
             }
         }
     }
@@ -274,5 +296,23 @@ public class PoezdZayav implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(hid, noZayav, transport, direction, dateZayav, un, dattr, trans, altered, nppr, npprm, gruzotpr);
+    }
+
+    @Override
+    public Set<BoardTalkNewMess> getBoardTalkNewMesses() {
+        return boardTalkNewMesses;
+    }
+
+    public void setBoardTalkNewMesses(Set<BoardTalkNewMess> boardTalkNewMesses) {
+        this.boardTalkNewMesses = boardTalkNewMesses;
+    }
+
+    public long getNewMessCount() {
+        return newMessCount;
+    }
+
+    @Override
+    public void setNewMessCount(long newMessCount) {
+        this.newMessCount = newMessCount;
     }
 }

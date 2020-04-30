@@ -36,6 +36,7 @@ public class CopyAvtoMapper extends ConfigurableMapper {
                 .field("route", "route")
                 .field("no_avto", "no_avto")
                 .field("no_trail", "no_trail")
+                .field("no_zayav", "no_zayav")
                 .field("driver_fio", "driver_fio")
                 .field("direction", "direction")
                 .register();

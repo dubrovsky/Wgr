@@ -1,6 +1,9 @@
 Ext.define('TK.view.ky.avto.out.List', {
     extend:'TK.view.ky.avto.BaseAvtoList',
     alias:'widget.kyavtooutlist',
+
+    requires: [],
+
     itemId:'kyavtolist',
     title:'Список автомобилей по отправлению',
 

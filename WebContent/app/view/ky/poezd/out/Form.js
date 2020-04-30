@@ -2,6 +2,13 @@ Ext.define('TK.view.ky.poezd.out.Form', {
     extend:'Ext.container.Container',
     alias:'widget.kypoezdoutform',
 
+    requires: [
+        'TK.view.ky.poezd.BasePoezdForm',
+        'TK.view.ky.poezd.out.vagon.List',
+        'TK.view.ky.poezd.out.vagon.kont.List'
+    ],
+
+
     closable: false,
     layout: 'border',
     items: [{

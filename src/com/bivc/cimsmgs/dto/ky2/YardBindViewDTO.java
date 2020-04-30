@@ -11,6 +11,7 @@ public class YardBindViewDTO implements Comparable<YardBindViewDTO> {
     private Long x;
     private Long y;
     private Long z;
+    private String h;
     private TreeSet<KontBindViewDTO> konts = new TreeSet<>();
 
     public Long getX() {
@@ -62,16 +63,30 @@ public class YardBindViewDTO implements Comparable<YardBindViewDTO> {
             return BEFORE;
         }
 
-        Comparable thisHid = this.getHid();
-        Comparable thatHid = that.getHid();
-
-        if (thisHid == null) {
-            return AFTER;
-        } else if (thatHid == null) {
+        if (this.getKonts().size() < that.getKonts().size())
             return BEFORE;
-        } else {
-            return thisHid.compareTo(thatHid);
+        else if (this.getKonts().size() > that.getKonts().size())
+            return AFTER;
+        else {
+            Comparable thisHid = this.getHid();
+            Comparable thatHid = that.getHid();
+
+            if (thisHid == null) {
+                return AFTER;
+            } else if (thatHid == null) {
+                return BEFORE;
+            } else {
+                return thisHid.compareTo(thatHid);
+            }
         }
+    }
+
+    public String getH() {
+        return h;
+    }
+
+    public void setH(String h) {
+        this.h = h;
     }
 }
 

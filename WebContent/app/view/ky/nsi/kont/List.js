@@ -1,6 +1,11 @@
 Ext.define('TK.view.ky.nsi.kont.List', {
     extend: 'TK.view.ky.AbstractWindow',
     alias:'widget.kynsikontlist',
+
+    requires: [
+        'TK.view.ky.nsi.BaseList'
+    ],
+
     itemId:'kynsikontlist',
 
     width: 800,

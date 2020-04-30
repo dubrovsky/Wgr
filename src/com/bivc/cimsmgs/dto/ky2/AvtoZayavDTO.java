@@ -7,10 +7,19 @@ public class AvtoZayavDTO {
     private Long hid;
     private Byte direction;
     private Long clientHid;
+    private Long routeHid;
     private String client;
 
     private TreeSet<KontDTO> konts = new TreeSet<>();
     private TreeSet<GruzDTO> gruzs = new TreeSet<>();
+
+    public Long getRouteHid() {
+        return routeHid;
+    }
+
+    public void setRouteHid(Long routeHid) {
+        this.routeHid = routeHid;
+    }
 
     public Long getClientHid() {
         return clientHid;

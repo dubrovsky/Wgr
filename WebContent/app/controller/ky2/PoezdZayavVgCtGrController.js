@@ -1,6 +1,11 @@
 Ext.define('TK.controller.ky2.PoezdZayavVgCtGrController', {
     extend: 'Ext.app.Controller',
 
+    requires: [
+        'TK.Utils'
+    ],
+
+
     views: [
         'ky2.AbstractTreeForm',
         'ky2.PoezdZayavVgCtGrTreeForm',
@@ -134,12 +139,16 @@ Ext.define('TK.controller.ky2.PoezdZayavVgCtGrController', {
             },
             'ky2poezdzayavvgctgrtreeform button[action="nsiOtpr"]': {
                 click: this.onShowNsiOtpr
+            },
+            'ky2poezdzayavvgctgrtreeform button[action="nsiOtprGryz"]': {
+                click: this.onShowNsiOtprGryz
             }
         });
     },
 
     onEditVgCtGrFromOutside: function (btn) {
-        this.editVgCtGrFromOutside('ky2poezdzayavvgctgrtreeformpoezd', 'TK.model.ky2.PoezdVgCtGrTreeNode');
+        this.getController("ky2.PoezdZayavController").saveZayav(null, this.editVgCtGrFromOutside.bind(this, 'ky2poezdzayavvgctgrtreeformpoezd', 'TK.model.ky2.PoezdVgCtGrTreeNode'));
+        // this.editVgCtGrFromOutside('ky2poezdzayavvgctgrtreeformpoezd', 'TK.model.ky2.PoezdVgCtGrTreeNode');
     },
 
     editVgCtGrIntoFromOutside: function (btn) {
@@ -205,7 +214,7 @@ Ext.define('TK.controller.ky2.PoezdZayavVgCtGrController', {
     },
 
     onDelClick: function (btn) {
-        this.getController("ky2.PoezdVgCtGrController").delClick(this.getTreepanel(), this.getDelBtn(), this.getAddContBtn(), this.getAddGryzBtn(), this.getAddPlombBtn());
+        this.getController("ky2.PoezdVgCtGrController").delClick(this.getTreepanel(), this.getDelBtn(), this.getAddContBtn(), this.getAddGryzBtn(), this.getAddPlombBtn(), this.getTabpanel());
     },
 
     onSaveExit: function () {
@@ -238,5 +247,9 @@ Ext.define('TK.controller.ky2.PoezdZayavVgCtGrController', {
 
     onShowNsiOtpr: function (btn) {
         this.getController("ky2.PoezdVgCtGrController").showNsiOtpr(this.getContpanel().getForm());
+    },
+
+    onShowNsiOtprGryz: function (btn) {
+        this.getController("ky2.PoezdVgCtGrController").showNsiOtprGryz(this.getGryzpanel().getForm());
     }
 });

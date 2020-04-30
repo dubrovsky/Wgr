@@ -35,7 +35,7 @@ public class VagonDTO implements Comparable<VagonDTO> {
     private String kpv;
     private BigDecimal podSila;
     private Integer kolOs;
-    private Long masTar;
+    private BigDecimal masTar;
     private String foot;
     private String sobstv;
     private Boolean poruz;
@@ -122,11 +122,11 @@ public class VagonDTO implements Comparable<VagonDTO> {
         this.kolOs = kolOs;
     }
 
-    public Long getMasTar() {
+    public BigDecimal getMasTar() {
         return masTar;
     }
 
-    public void setMasTar(Long masTar) {
+    public void setMasTar(BigDecimal masTar) {
         this.masTar = masTar;
     }
 

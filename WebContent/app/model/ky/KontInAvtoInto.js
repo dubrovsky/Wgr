@@ -1,6 +1,13 @@
 Ext.define('TK.model.ky.KontInAvtoInto', {
     extend: 'TK.model.ky.KontInTranspInto',
 
+    requires: [
+        'TK.model.ky.AvtoInto',
+        'TK.model.ky.GruzInAvtoInto',
+        'TK.model.ky.PlombInAvtoInto'
+    ],
+
+
     fields: [
         {name:'avtoInto.hid', type:'int', useNull:true}
     ],

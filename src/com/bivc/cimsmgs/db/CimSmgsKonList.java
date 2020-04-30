@@ -92,8 +92,17 @@ public class CimSmgsKonList implements Serializable {
     private String bruttoSuf;
     private String prim;
     private BigDecimal grpod;
+	private boolean konDuplicates=false;
 
-    public BigDecimal getGrpod() {
+	public boolean isKonDuplicates() {
+		return konDuplicates;
+	}
+
+	public void setKonDuplicates(boolean konDuplicates) {
+		this.konDuplicates = konDuplicates;
+	}
+
+	public BigDecimal getGrpod() {
         return grpod;
     }
 

@@ -32,6 +32,27 @@ public class dbPaketTool {
     return;
   }
 
+  public void fillRownum(String packName, String aColumn, stPack st, RowNum rowNum) throws Exception {
+    if (st.getInfo().packName.equals(packName)) {
+      for (int r = 0; r < st.getRowCount(); r++) {
+        st.setObject(r, aColumn, rowNum.rownum++);
+      }
+    } else {
+      for(int i = 0; i < st.getRowCount(); i++) {
+        modelDbForm f = st.getForm(i);
+        TreeMap<String, modelDbPack> p = f.getPacks();
+        Iterator it = p.keySet().iterator();
+
+        while(it.hasNext()) {
+          stPack pk = (stPack) p.get(it.next());
+          fillRownum(packName, aColumn, pk, rowNum);
+        }
+      }
+    }
+    return;
+  }
+
+
   public void fill_Rownum(String packName, String aColumn, stPack st, int rr) throws Exception {
     if (st.getInfo().packName.equals(packName)) {
       for (int r = 0; r < st.getRowCount(); r++) {
@@ -103,7 +124,7 @@ public class dbPaketTool {
     return;
   }
 
-  private void fillSequence(sequenceFields sequences, modelDbPack st) throws Exception {
+  public void fillSequence(sequenceFields sequences, modelDbPack st) throws Exception {
     for (int i = 0; i < st.getRowCount(); i++) {
       for (int j = 0;sequences != null && j < sequences.getSequenceCount(); j++) {
         stPack st_seq = new stPack();

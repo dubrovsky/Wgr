@@ -2,6 +2,11 @@ Ext.define('TK.view.ky.kontnotransp.gruz.Form', {
     extend: 'TK.view.ky.AbstractWindow',
     alias:'widget.kygruznotranspform',
 
+    requires: [
+        'TK.view.ky.BaseGruzForm'
+    ],
+
+
     buildItems: function(config) {
         config.items = [
             {

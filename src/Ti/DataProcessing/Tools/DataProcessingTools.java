@@ -1,16 +1,14 @@
 package Ti.DataProcessing.Tools;
 
-import Ti.model.MapPogruz;
+import Ti.model.excel.MapPogruz;
+import com.bivc.cimsmgs.db.CimSmgsPlomb;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class DataProcessingTools {
 
@@ -86,12 +84,41 @@ public class DataProcessingTools {
         Long res[] = new Long[input.length];
         for (int i = 0; i < input.length; i++) {
             try {
-                res[i] = Long.parseLong(input[i]);
+                res[i] = Long.parseLong(input[i].trim());
             }
             catch (Exception e) {
                 return null;
             }
         }
         return res;
+    }
+
+    /**
+     * СОздает коллекцию Здщмб из строки пломб разделенных запятыми
+     * @param plombsString строка пломб
+     * @return коллекцию пломб
+     */
+    public static Collection<CimSmgsPlomb> plombsFromString(String plombsString)
+    {
+        Map<String,CimSmgsPlomb> plombsMap = new HashMap();
+        String[] arrPlombs= plombsString.split(",");
+        Byte sort=0;
+
+        for (String s:arrPlombs) {
+            if(!s.trim().isEmpty()) {
+                if (plombsMap.get(s) != null) {
+                    CimSmgsPlomb plomb = plombsMap.get(s);
+                    plomb.setKpl((short) (plomb.getKpl() + 1));
+                }
+                else {
+                    CimSmgsPlomb plomb = new CimSmgsPlomb();
+                    plomb.setZnak(s);
+                    plomb.setKpl((short) 1);
+                    plombsMap.put(s, plomb);
+                    plomb.setSort(sort++);
+                }
+            }
+        }
+        return plombsMap.values();
     }
 }

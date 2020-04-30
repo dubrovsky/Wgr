@@ -2,6 +2,10 @@ Ext.define('TK.view.ky2.poezd.into.PoezdForm', {
     extend: 'Ext.container.Container',
     alias: 'widget.ky2poezdintoform',
 
+    requires: [
+        'TK.view.ky2.poezd.BasePoezdForm'
+    ],
+
     closable: false,
     layout: 'fit',
     items: [{
@@ -11,7 +15,7 @@ Ext.define('TK.view.ky2.poezd.into.PoezdForm', {
             TK.view.ky2.poezd.BasePoezdForm.prototype.buildItems.apply(this, arguments);     // callParent doesn't work in inline override
             config.items.splice(2, 0, {
                 xtype: 'fieldset',
-                title: 'Прибытие',
+                title: this.labelArr,
                 layout: 'anchor',
                 defaults: {
                     anchor: '100%'
@@ -19,13 +23,13 @@ Ext.define('TK.view.ky2.poezd.into.PoezdForm', {
                 width: 400,
                 items: [{
                     labelWidth: '140px',
-                    fieldLabel: 'Дата',
+                    fieldLabel: this.labelDate,
                     name: 'dprbDate',
                     xtype: 'datefield',
                     altFormats: 'd.m.y'
                 }, {
                     labelWidth: '140px',
-                    fieldLabel: 'Время',
+                    fieldLabel: this.labelTime,
                     name: 'dprbTime',
                     xtype: 'timefield',
                     //snapToIncrement: true,
@@ -44,13 +48,14 @@ Ext.define('TK.view.ky2.poezd.into.PoezdForm', {
             TK.view.ky2.poezd.BasePoezdForm.prototype.buildTopToolbar.apply(this, arguments);
             config.tbar.push(
                 {
-                    xtype: 'splitbutton', text: 'Импорт', iconCls: 'upload', action: 'import',
+                    xtype: 'splitbutton', text: this.labelImport, iconCls: 'upload', action: 'import',
                     menu: [
-                        {text: 'XLS (карта погрузки)', iconCls: 'excel', action: 'upload'}, '-',
-                        {text: 'ППВ', iconCls: 'train', action: 'showPoezdsImportDir'}
+                        {text: this.labelImportXLS, iconCls: 'excel', action: 'upload'}, '-',
+                        {text: this.labelXLSrefresh, iconCls: 'excel', action: 'uploadUpdate'}, '-',
+                        {text: this.labelPPV, iconCls: 'train', action: 'showPoezdsImportDir'}, '-',
+                        {text: this.labelImportFromOrder, iconCls: 'train', action: 'getZajavIntoForPoezdInto'}
                     ]
-                }, '-',
-                {text: '+ Импорт из заявки', iconCls: 'train', action: 'getZajavIntoForPoezdInto'}, '-'
+                }, '-'
             );
         }
     }]

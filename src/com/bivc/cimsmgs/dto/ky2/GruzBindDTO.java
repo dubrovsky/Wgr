@@ -8,7 +8,7 @@ public class GruzBindDTO implements Comparable<GruzBindDTO> {
     private Long hid;
     private String kgvn;
 //    private String nzgr;
-    private Byte sort;
+    private Integer sort;
 
     public Long getHid() {
         return hid;
@@ -34,11 +34,11 @@ public class GruzBindDTO implements Comparable<GruzBindDTO> {
         this.nzgr = nzgr;
     }*/
 
-    public Byte getSort() {
+    public Integer getSort() {
         return sort;
     }
 
-    public void setSort(Byte sort) {
+    public void setSort(Integer sort) {
         this.sort = sort;
     }
 

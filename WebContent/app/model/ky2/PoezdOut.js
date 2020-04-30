@@ -4,7 +4,13 @@ Ext.define('TK.model.ky2.PoezdOut', {
     fields: [
         {name:'dotp', type: 'string', persist: false},
         {name:'dotpDate', type: 'string', useNull:true},
-        {name:'dotpTime', type: 'string', useNull:true, defaultValue: null}
+        {name:'dotpTime', type: 'string', useNull:true, defaultValue: null},
+        {name:'dpogr', type: 'string', persist: false},
+        {name:'dpogrDate', type: 'string', useNull:true},
+        {name:'dpogrTime', type: 'string', useNull:true, defaultValue: null},
+        {name:'duved', type: 'string', persist: false},
+        {name:'duvedDate', type: 'string', useNull:true},
+        {name:'duvedTime', type: 'string', useNull:true, defaultValue: null}
     ]/*,
     hasMany:[{
         primaryKey:'hid',

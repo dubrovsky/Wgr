@@ -24,7 +24,7 @@ Ext.define('TK.view.ky.BaseKontsAllDir', {
     },
     buildTopToolbar: function(config) {
         config.tbar = [
-            {text: 'Фильтр', iconCls:'filter', action:'filterKontsAll'},'-'
+            {text: this.btnFilter, iconCls:'filter', action:'filterKontsAll'},'-'
         ];
     }
 });

@@ -1,10 +1,15 @@
 Ext.define('TK.view.ky2.ReportParams', {
     extend: 'Ext.window.Window',
     alias: 'widget.ky2reportparams',
+
+    requires: [
+        'TK.store.ky2.ReportsForm'
+    ],
+
     autoShow: true,
     modal: true,
     y: 0,
-    title: "Параметры отчета",
+    title: this.title,
     initComponent: function () {
         this.items = [
             {
@@ -13,21 +18,30 @@ Ext.define('TK.view.ky2.ReportParams', {
                 bodyPadding: 5,
                 items: [
                     {
+                        xtype: 'combo',
+                        queryMode: 'local',
+                        forceSelection: true,
+                        fieldLabel: this.labelDepArr,
+                        name:'status_ad',
+                        allowBlank: true,
+                        store: [['-', this.storeTxtAll], ['a', this.storeTxtArrival], ['d', this.storeTxtDeparture]]
+                    },
+                    {
                         xtype: 'datefield',
                         name: 'startDate',
                         altFormats: 'd.m.y',
-                        fieldLabel: 'Прибытие, с'
+                        fieldLabel: this.labelFrom
                     },
                     {
                         xtype: 'datefield',
                         name: 'endDate',
                         itemId: 'endDate',
                         altFormats: 'd.m.y',
-                        fieldLabel: 'Прибытие, по'
+                        fieldLabel: this.labelTo
                     },
                     {
                         xtype: 'combo',
-                        fieldLabel: 'Международный номер поезда',
+                        fieldLabel: this.labelIntTrainNumber,
                         itemId: 'npprm',
                         multiSelect: true,
                         queryMode: 'local',
@@ -38,13 +52,13 @@ Ext.define('TK.view.ky2.ReportParams', {
                         forceSelection: true,
                         name: 'npprm',
                         listConfig: {
-                            loadingText: "Поиск",
-                            emptyText: "Не найдено"
+                            loadingText: this.loadintTxt,
+                            emptyText: this.emptyText
                         }
                     },
                     {
                         xtype: 'combo',
-                        fieldLabel: 'Клиент',
+                        fieldLabel: this.labelClient,
                         itemId: 'hid_client',
                         queryMode: 'local',
                         store: 'ky2.ReportsClientInterval',
@@ -54,45 +68,45 @@ Ext.define('TK.view.ky2.ReportParams', {
                         forceSelection: true,
                         name: 'hid_client',
                         listConfig: {
-                            loadingText: "Поиск",
-                            emptyText: "Не найдено"
+                            loadingText: this.loadintTxt,
+                            emptyText: this.emptyText
                         }
                     },
                     {
                         xtype: 'combo',
                         queryMode: 'local',
                         forceSelection: true,
-                        fieldLabel: 'Транспорт по прибытию',
+                        fieldLabel: this.labelVehicleByArr,
                         name:'tr_arrival',
                         allowBlank: true,
-                        store: [['-', 'Все'], ['w', 'Вагон'], ['a', 'Авто']]
+                        store: [['-', this.storeTxtAll], ['w', this.storeTxtVagon], ['a', this.storeTxtTruck]]
                     },
                     {
                         xtype: 'combo',
                         queryMode: 'local',
                         forceSelection: true,
-                        fieldLabel: 'Транспорт по отправлению',
+                        fieldLabel: this.labelVehicleByDep,
                         name:'tr_departure',
                         allowBlank: true,
-                        store: [['-', 'Все'], ['w', 'Вагон'], ['a', 'Авто']]
+                        store: [['-', this.storeTxtAll], ['w', this.storeTxtVagon], ['a', this.storeTxtTruck]]
                     }
 
                 ],
                 buttons: [
                     {
-                        text: "Ок",
+                        text: this.buttonOk,
                         formBind: true,
                         disabled: true,
                         action: 'getReport'
                     },
                     {
-                        text: "Очистить",
+                        text: this.buttonClear,
                         handler: function (btn) {
                             btn.up('form').getForm().reset();
                         }
                     },
                     {
-                        text: "Закрыть",
+                        text: this.buttonClose,
                         scope: this,
                         handler: function (btn) {
                             btn.up('window').close();

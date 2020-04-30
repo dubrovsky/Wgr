@@ -1,6 +1,8 @@
 package com.bivc.cimsmgs.db.ky;
 
 import com.bivc.cimsmgs.dao.NsiClientDAO;
+import com.bivc.cimsmgs.db.BoardMessenger;
+import com.bivc.cimsmgs.db.BoardTalkNewMess;
 import com.bivc.cimsmgs.db.PackDoc;
 import com.bivc.cimsmgs.db.Route;
 import com.bivc.cimsmgs.db.nsi.Client;
@@ -11,6 +13,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.Transient;
 import java.util.*;
 
 /**
@@ -20,7 +23,7 @@ import java.util.*;
 /*@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @JsonFilter("avtoFilter")
 @JsonInclude(JsonInclude.Include.NON_NULL)*/
-public class AvtoZayav {
+public class AvtoZayav implements BoardMessenger {
     private static final Logger log = LoggerFactory.getLogger(AvtoZayav.class);
 
     private Byte direction;
@@ -31,10 +34,12 @@ public class AvtoZayav {
     private String no_avto;
     private String no_trail;
     private String driver_fio;
+    private String driver_pasp;
+    private String prim;
     private Client client;
 //    private String transport;
 //    @JsonSerialize(using = DateTimeSerializer.class)
-@JsonSerialize(using = DateTimeSerializer.class)
+    @JsonSerialize(using = DateTimeSerializer.class)
     private Date dateZayav;
     private String un;
     @JsonSerialize(using = DateTimeSerializer.class)
@@ -48,6 +53,17 @@ public class AvtoZayav {
 
     private Integer kontCount;
     private Integer kontCountDone;
+    private Long messCount;
+    private Set<BoardTalkNewMess> boardTalkNewMesses = new TreeSet<>();
+    private long newMessCount;
+
+    public Long getMessCount() {
+        return messCount;
+    }
+
+    public void setMessCount(Long messCount) {
+        this.messCount = messCount;
+    }
 
     public List<Kont> updateKonts(Set<KontDTO> dtos, Mapper mapper, NsiClientDAO clientDAO) {
         // delete
@@ -76,7 +92,7 @@ public class AvtoZayav {
                     mapper.map(kontIntoDTO, kont);
                     kont.setIsZayav(Byte.parseByte("1"));
                     kont.updateClient(kontIntoDTO, clientDAO);
-                    kont.updateGruzs(kontIntoDTO.getGruzs(), mapper);
+                    kont.updateGruzs(kontIntoDTO.getGruzs(), mapper, clientDAO);
                     kont.updatePlombs(kontIntoDTO.getPlombs(), mapper);
 
                     kontDtoToRemove.add(kontIntoDTO);
@@ -93,7 +109,7 @@ public class AvtoZayav {
             kont.updateClient(kontIntoDTO, clientDAO);
             addKont(kont);
             kontsForHistory.add(kont);
-            kont.updateGruzs(kontIntoDTO.getGruzs(), mapper);
+            kont.updateGruzs(kontIntoDTO.getGruzs(), mapper, clientDAO);
             kont.updatePlombs(kontIntoDTO.getPlombs(), mapper);
         }
         return kontsForHistory;
@@ -165,6 +181,22 @@ public class AvtoZayav {
     }
 
 
+    public String getPrim() {
+        return prim;
+    }
+
+    public void setPrim(String prim) {
+        this.prim = prim;
+    }
+
+    public String getDriver_pasp() {
+        return driver_pasp;
+    }
+
+    public void setDriver_pasp(String driver_pasp) {
+        this.driver_pasp = driver_pasp;
+    }
+
     public Set<AvtoFiles> getAvtoFiles() {
         return avtoFiles;
     }
@@ -215,6 +247,11 @@ public class AvtoZayav {
 
     public PackDoc getPackDoc() {
         return packDoc;
+    }
+
+    @Override
+    public String getDocName() {
+        return "avtoZayav2";
     }
 
     public void setPackDoc(PackDoc packDoc) {
@@ -318,6 +355,12 @@ public class AvtoZayav {
         this.kontCountDone = kontCountDone;
     }
 
+    @Transient
+    public Long getRouteHid(){
+        return getRoute() != null ? getRoute().getHid() : null;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -340,5 +383,23 @@ public class AvtoZayav {
     @Override
     public int hashCode() {
         return Objects.hash(direction, hid, no_zayav, no_avto, no_trail, driver_fio,  dateZayav, un, dattr, trans, altered);
+    }
+
+    @Override
+    public Set<BoardTalkNewMess> getBoardTalkNewMesses() {
+        return boardTalkNewMesses;
+    }
+
+    public void setBoardTalkNewMesses(Set<BoardTalkNewMess> boardTalkNewMesses) {
+        this.boardTalkNewMesses = boardTalkNewMesses;
+    }
+
+    public long getNewMessCount() {
+        return newMessCount;
+    }
+
+    @Override
+    public void setNewMessCount(long newMessCount) {
+        this.newMessCount = newMessCount;
     }
 }

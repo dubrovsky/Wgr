@@ -2,26 +2,20 @@ package com.bivc.cimsmgs.actions.ky2;
 
 import com.bivc.cimsmgs.actions.CimSmgsSupport_A;
 import com.bivc.cimsmgs.commons.Response;
-import com.bivc.cimsmgs.dao.KontGruzHistoryDAO;
-import com.bivc.cimsmgs.dao.PoezdDAO;
-import com.bivc.cimsmgs.dao.YardDAO;
-import com.bivc.cimsmgs.dao.YardSectorDAO;
-import com.bivc.cimsmgs.db.ky.Poezd;
-import com.bivc.cimsmgs.db.ky.YardSector;
+import com.bivc.cimsmgs.dao.*;
+import com.bivc.cimsmgs.db.ky.*;
 import com.bivc.cimsmgs.doc2doc.orika.Mapper;
-import com.bivc.cimsmgs.dto.ky2.PoezdBindDTO;
-import com.bivc.cimsmgs.dto.ky2.PoezdBindViewDTO;
-import com.bivc.cimsmgs.dto.ky2.YardSectorBindDTO;
-import com.bivc.cimsmgs.dto.ky2.YardSectorBindViewDTO;
+import com.bivc.cimsmgs.dto.ky2.*;
 import com.bivc.cimsmgs.formats.json.Deserializer;
 import com.bivc.cimsmgs.formats.json.Serializer;
+import com.bivc.cimsmgs.services.ky2.BindPoezdAndYardService;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.bivc.cimsmgs.actions.CimSmgsSupport_A.KontGruzHistoryType.POEZD;
 import static com.bivc.cimsmgs.actions.CimSmgsSupport_A.KontGruzHistoryType.YARD;
@@ -52,40 +46,50 @@ public class BindPoezdAndYard_A extends CimSmgsSupport_A {
         }
     }
 
-    private String bindPoezdToYard() throws Exception {
-        final PoezdBindDTO poezdBindDTO = defaultDeserializer.read(PoezdBindDTO.class, poezdObj);
+    public String bindPoezdToYard() throws Exception {
+        setJSONData(bindPoezdAndYardService.bindPoezdToYard(poezdObj, yardSectorsObj, getUser().getUsr()));
+
+
+        /*final PoezdBindDTO poezdBindDTO =  defaultDeserializer.read(PoezdBindDTO.class, poezdObj);
         final List<YardSectorBindDTO> yardSectorsBindDTO = defaultDeserializer.read(new ArrayList<YardSectorBindDTO>() {}.getClass().getGenericSuperclass(), yardSectorsObj);
 
         Poezd poezd = poezdDAO.findById(poezdBindDTO.getHid(), false);
         final List<YardSector> yardSectors = yardSectorDAO.findAll(getUser().getUsr());
 
-        Map<String, List<?>> contGruz4History = poezd.bindPoezdToYard(poezdBindDTO.getVagons(), yardSectors, mapper);
-        poezd.getVagons().forEach(vagon -> {
-           if(!vagon.getGruzs().isEmpty()) {
-               Hibernate.initialize(vagon.getGruzs());   // in yard gruz not used, need to init to avoid  error - AssertionFailure: collection [com.bivc.cimsmgs.db.ky.Gruz.history] was not processed by flush()
-           }
-        });
+        Map<String, List<?>> contGruz4History = poezd.bindPoezdToYard(poezdBindDTO.getVagons(), yardSectors, mapper, poezd.getDotp());
         poezdDAO.makePersistent(poezd);
-        saveContGruzHistory(contGruz4History, kontGruzHistoryDAO, POEZD);
+        saveVagContGruzHistory(contGruz4History, kontGruzHistoryDAO, POEZD, vagonHistoryDAO, getUser().getUsr().getUn());
 
         for (YardSectorBindDTO yardSectorBindDTO : yardSectorsBindDTO){
             for(YardSector yardSector: yardSectors){
                 if (Objects.equals(yardSector.getHid(), yardSectorBindDTO.getHid())) {  // found sector
                     contGruz4History = yardSector.bindYardToPoezd(yardSectorBindDTO, poezd.getVagons(), mapper, yardSectors);
                     yardSectorDAO.makePersistent(yardSector);
-                    saveContGruzHistory(contGruz4History, kontGruzHistoryDAO, YARD);
+                    saveVagContGruzHistory(contGruz4History, kontGruzHistoryDAO, YARD, vagonHistoryDAO, getUser().getUsr().getUn());
                     break;
                 }
             }
         }
 
-        setJSONData(defaultSerializer.write(new Response<>()));
+        final List<Kont> rejectedKonts = (List<Kont>) contGruz4History.get("rejectedKonts");
+        if(rejectedKonts == null || rejectedKonts.isEmpty()) {
+            setJSONData(defaultSerializer.write(new Response<>()));
+        } else {
+            setJSONData(defaultSerializer.write(new Response<>(rejectedKonts.stream().map(Kont::getNkon).collect(Collectors.joining(", ")))));
+        }*/
+
         return SUCCESS;
     }
 
     private String getPoezdAndYardForBind() throws Exception {
         Poezd poezd = poezdDAO.findById(poezdHid, false);
         final List<YardSector> yardSectors = yardSectorDAO.findAll(getUser().getUsr());
+        List<YardSectorBindViewDTO> yardSectorBindViewDTOS= mapper.mapAsList(yardSectors, YardSectorBindViewDTO.class);
+
+        if(getFlag()!=null&&getFlag())
+        {
+            addHistory(yardSectorBindViewDTOS);
+        }
         setJSONData(
                 defaultSerializer
                         .setLocale(getLocale())
@@ -93,7 +97,7 @@ public class BindPoezdAndYard_A extends CimSmgsSupport_A {
                                 new Response<>(
                                         Arrays.asList(
                                                 mapper.map(poezd, PoezdBindViewDTO.class),
-                                                mapper.mapAsList(yardSectors, YardSectorBindViewDTO.class)
+                                                yardSectorBindViewDTOS
                                         ),
                                         2L
                                 )
@@ -101,7 +105,61 @@ public class BindPoezdAndYard_A extends CimSmgsSupport_A {
         );
         return SUCCESS;
     }
-
+    private void addHistory(List<YardSectorBindViewDTO> list)
+    {
+        List<Long> hids= new ArrayList<>();
+        for (YardSectorBindViewDTO sector : list) {
+            for (YardBindViewDTO yard : sector.getYards()) {
+                hids.addAll(yard.getKonts().stream().map(KontBindViewDTO::getHid).collect(Collectors.toList()));
+//                   List<KontGruzHistory>histories=kontGruzHistoryDAO.findEarliestHistoryByArrivalList(hids);
+//                for (KontBindViewDTO kont : yard.getKonts()) {
+//                    for(KontGruzHistory history:histories)
+//                    {
+//                     if(history.getKont().getHid()==kont.getHid())
+//                     {
+//                        Poezd poezd=history.getPoezd();
+//                        if(poezd!=null)
+//                            kont.setPoezd(new PoezdFilterDTO(poezd.getHid(),poezd.getNpprm()));
+//                        Avto avto=history.getAvto();
+//                        if(avto!=null)
+//                            kont.setAvto(new AvtoFilterDTO(avto.getHid()));
+//                         break;
+//                     }
+//                    }
+////                    KontGruzHistory history=kontGruzHistoryDAO.findEarliestHistoryByArrival(kont.getHid());
+////                    if(history!=null)
+////                    {
+////                        Poezd poezd=history.getPoezd();
+////                        if(poezd!=null)
+////                            kont.setPoezd(new PoezdFilterDTO(poezd.getHid(),poezd.getNpprm()));
+////                        Avto avto=history.getAvto();
+////                        if(avto!=null)
+////                            kont.setAvto(new AvtoFilterDTO(avto.getHid()));
+////                    }
+//                }
+            }
+        }
+        List<KontGruzHistory>histories=kontGruzHistoryDAO.findEarliestHistoryByArrivalList(hids);
+        for (YardSectorBindViewDTO sector : list) {
+            for (YardBindViewDTO yard : sector.getYards()) {
+                for (KontBindViewDTO kont : yard.getKonts()) {
+                    for(KontGruzHistory history:histories)
+                    {
+                        if(history.getKont().getHid().equals(kont.getHid()))
+                        {
+                            Poezd poezd=history.getPoezd();
+                            if(poezd!=null)
+                                kont.setPoezd(new PoezdFilterDTO(poezd.getHid(),poezd.getNpprm()));
+                            Avto avto=history.getAvto();
+                            if(avto!=null)
+                                kont.setAvto(new AvtoFilterDTO(avto.getHid()));
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
     @Autowired
     private Serializer defaultSerializer;
     @Autowired
@@ -116,6 +174,10 @@ public class BindPoezdAndYard_A extends CimSmgsSupport_A {
     private YardSectorDAO yardSectorDAO;
     @Autowired
     private KontGruzHistoryDAO kontGruzHistoryDAO;
+    @Autowired
+    private VagonHistoryDAO vagonHistoryDAO;
+    @Autowired
+    private BindPoezdAndYardService bindPoezdAndYardService;
 
     private String action;
     private String dataObj;

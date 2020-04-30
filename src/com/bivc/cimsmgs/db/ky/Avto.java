@@ -1,6 +1,8 @@
 package com.bivc.cimsmgs.db.ky;
 
 import com.bivc.cimsmgs.dao.NsiClientDAO;
+import com.bivc.cimsmgs.db.BoardMessenger;
+import com.bivc.cimsmgs.db.BoardTalkNewMess;
 import com.bivc.cimsmgs.db.PackDoc;
 import com.bivc.cimsmgs.db.Route;
 import com.bivc.cimsmgs.db.nsi.Client;
@@ -8,6 +10,7 @@ import com.bivc.cimsmgs.doc2doc.orika.Mapper;
 import com.bivc.cimsmgs.dto.ky2.*;
 import com.bivc.cimsmgs.formats.json.serializers.DateTimeSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +23,7 @@ import java.util.*;
 /*@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @JsonFilter("avtoFilter")
 @JsonInclude(JsonInclude.Include.NON_NULL)*/
-public class Avto {
+public class Avto implements BoardMessenger {
     private static final Logger log = LoggerFactory.getLogger(Avto.class);
 
     private Byte direction;
@@ -37,12 +40,12 @@ public class Avto {
     private String pol_cargo;
     private String departure;
     private String destination;
-    private String driver_nm;
+    private String driver_pasp;
     @JsonSerialize(using = DateTimeSerializer.class)
     private Date dprb;
     @JsonSerialize(using = DateTimeSerializer.class)
     private Date dotp;
-    private String prim_avto;
+    private String prim;
     private String un;
     @JsonSerialize(using = DateTimeSerializer.class)
     private Date dattr;
@@ -54,7 +57,12 @@ public class Avto {
     private Set<AvtoFiles> avtoFiles = new TreeSet<>();
     private Integer kontCount;
     private String ret_nkon;
+    private String docType;
     private Set<KontGruzHistory> history  = new TreeSet<>();
+    private String no_zayav;
+    private Long messCount;
+    private Set<BoardTalkNewMess> boardTalkNewMesses = new TreeSet<>();
+    private long newMessCount;
 
     public Avto() {
     }
@@ -82,7 +90,7 @@ public class Avto {
         return contGruz4History;
     }
 
-    public Map<String, List<?>> bindAvtoToYard(Set<KontBindDTO> kDtos, List<YardSector> yardSectors, Mapper mapper) {
+    public Map<String, List<?>> bindAvtoToYard(Set<KontBindDTO> kDtos, List<YardSector> yardSectors, Mapper mapper, Date dotp) {
         Map<String, List<?>> contGruz4History = new HashMap<>(1);
         contGruz4History.put("konts", new ArrayList<Kont>());
 
@@ -90,7 +98,7 @@ public class Avto {
 //            for (Vagon vagon : getVagons()) {
 //                if (Objects.equals(vagon.getHid(), vagonIntoDTO.getHid())) {
 //                    mapper.map(vagonIntoDTO, vagon); // update otpravka
-        List<Kont> konts = this.bindKontsToYardKonts(kDtos, mapper, yardSectors);
+        List<Kont> konts = this.bindKontsToYardKonts(kDtos, mapper, yardSectors, dotp);
         ((List<Kont>) contGruz4History.get("konts")).addAll(konts);
 //                    break;
 //                }
@@ -353,7 +361,7 @@ public class Avto {
         return gruzsForHistory;
     }
 
-    public List<Kont> bindKontsToYardKonts(Set<KontBindDTO> dtos, Mapper mapper, List<YardSector> yardSectors) {
+    public List<Kont> bindKontsToYardKonts(Set<KontBindDTO> dtos, Mapper mapper, List<YardSector> yardSectors, Date dotp) {
         // update kont that not moved
         Set<KontBindDTO> dtoToRemove = new HashSet<>();
         for (KontBindDTO kontDTO : dtos) {
@@ -380,6 +388,8 @@ public class Avto {
                         if (Objects.equals(yardKont.getHid(), kontDTO.getHid())) {
                             mapper.map(kontDTO, yardKont);
                             bindKont(yardKont);
+                            if (yardKont.getDotp() == null)
+                                yardKont.setDotp(dotp);
                             kontsForHistory.add(yardKont);
                             log.info("Add kont from avto, kont - {}", yardKont.getNkon());
                             dtoToRemove.add(kontDTO);
@@ -651,7 +661,7 @@ public class Avto {
                 if (Objects.equals(kont.getHid(), kontIntoDTO.getHid())) {
                     mapper.map(kontIntoDTO, kont);
                     kont.updateClient(kontIntoDTO, clientDAO);
-                    kont.updateGruzs(kontIntoDTO.getGruzs(), mapper);
+                    kont.updateGruzs(kontIntoDTO.getGruzs(), mapper, clientDAO);
                     kont.updatePlombs(kontIntoDTO.getPlombs(), mapper);
 
                     kontDtoToRemove.add(kontIntoDTO);
@@ -667,7 +677,7 @@ public class Avto {
             kont.updateClient(kontIntoDTO, clientDAO);
             addKont(kont);
             kontsForHistory.add(kont);
-            kont.updateGruzs(kontIntoDTO.getGruzs(), mapper);
+            kont.updateGruzs(kontIntoDTO.getGruzs(), mapper, clientDAO);
             kont.updatePlombs(kontIntoDTO.getPlombs(), mapper);
 //            }
         }
@@ -1061,6 +1071,16 @@ public class Avto {
         return gruzsForHistory;
     }
 
+    public String getDocType() {
+        String docType = "";
+        for (AvtoFiles avtoFiles: getAvtoFiles())
+            if (StringUtils.isNotBlank(avtoFiles.getNum())) {
+                docType = avtoFiles.getNum();
+                break;
+        }
+        return docType;
+    }
+
     public Set<KontGruzHistory> getHistory() {
         return history;
     }
@@ -1069,9 +1089,39 @@ public class Avto {
         this.history = history;
     }
 
+    public Long getMessCount() {
+        return messCount;
+    }
+
+    public void setMessCount(Long messCount) {
+        this.messCount = messCount;
+    }
+
+    @Override
+    public Set<BoardTalkNewMess> getBoardTalkNewMesses() {
+        return boardTalkNewMesses;
+    }
+
+    public void setBoardTalkNewMesses(Set<BoardTalkNewMess> boardTalkNewMesses) {
+        this.boardTalkNewMesses = boardTalkNewMesses;
+    }
+
+    public long getNewMessCount() {
+        return newMessCount;
+    }
+
+    @Override
+    public void setNewMessCount(long newMessCount) {
+        this.newMessCount = newMessCount;
+    }
+
 
     public enum FilterFields {
-        NO_AVTO("no_avto");
+        NO_AVTO("no_avto"),
+        NO_TRAIL("no_trail"),
+        DRIVER_FIO("driver_fio"),
+        STARTDATE("startDate"),
+        NKON("nkon");
         private final String name;
 
         FilterFields(String name) {
@@ -1081,6 +1131,14 @@ public class Avto {
         public String getName() {
             return name;
         }
+    }
+
+    public String getNo_zayav() {
+        return no_zayav;
+    }
+
+    public void setNo_zayav(String no_zayav) {
+        this.no_zayav = no_zayav;
     }
 
     public Set<AvtoFiles> getAvtoFiles() {
@@ -1125,6 +1183,18 @@ public class Avto {
 
     public PackDoc getPackDoc() {
         return packDoc;
+    }
+
+    @Override
+    public String getDocName() {
+        switch (direction) {
+            case 1:
+                return "avto2in";
+            case 2:
+                return "avto2out";
+            default:
+                return null;
+        }
     }
 
     public void setPackDoc(PackDoc packDoc) {
@@ -1188,12 +1258,12 @@ public class Avto {
         this.un = un;
     }
 
-    public String getPrim_avto() {
-        return prim_avto;
+    public String getPrim() {
+        return prim;
     }
 
-    public void setPrim_avto(String prim_avto) {
-        this.prim_avto = prim_avto;
+    public void setPrim(String prim) {
+        this.prim = prim;
     }
 
     public Date getDotp() {
@@ -1212,12 +1282,12 @@ public class Avto {
         this.dprb = dprb;
     }
 
-    public String getDriver_nm() {
-        return driver_nm;
+    public String getDriver_pasp() {
+        return driver_pasp;
     }
 
-    public void setDriver_nm(String driver_nm) {
-        this.driver_nm = driver_nm;
+    public void setDriver_pasp(String driver_pasp) {
+        this.driver_pasp = driver_pasp;
     }
 
     public String getDestination() {
@@ -1317,10 +1387,10 @@ public class Avto {
                 pol_cargo.equals(avto.pol_cargo) &&
                 departure.equals(avto.departure) &&
                 destination.equals(avto.destination) &&
-                driver_nm.equals(avto.driver_nm) &&
+                driver_pasp.equals(avto.driver_pasp) &&
                 dprb.equals(avto.dprb) &&
                 dotp.equals(avto.dotp) &&
-                prim_avto.equals(avto.prim_avto) &&
+                prim.equals(avto.prim) &&
                 un.equals(avto.un) &&
                 dattr.equals(avto.dattr) &&
                 trans.equals(avto.trans) &&
@@ -1331,6 +1401,6 @@ public class Avto {
 
     @Override
     public int hashCode() {
-        return Objects.hash(direction, naim_sob, hid, type_avto, no_avto, no_trail, driver_fio, otp_cargo, pol_cargo, departure, destination, driver_nm, dprb, dotp, prim_avto, un, dattr, trans, altered, ret_nkon);
+        return Objects.hash(direction, naim_sob, hid, type_avto, no_avto, no_trail, driver_fio, otp_cargo, pol_cargo, departure, destination, driver_pasp, dprb, dotp, prim, un, dattr, trans, altered, ret_nkon);
     }
 }

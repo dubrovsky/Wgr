@@ -1,5 +1,11 @@
 Ext.define('TK.store.NsiDirs', {
 	extend: 'Ext.data.Store',
+
+    requires: [
+        'TK.Utils',
+        'TK.model.NsiDir'
+    ],
+
     model: 'TK.model.NsiDir',
     proxy: {
         type: 'ajax',

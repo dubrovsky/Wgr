@@ -76,6 +76,15 @@
             </result>
         </action>
 
+        <action name="Astana1_*" method="{1}" class="com.bivc.cimsmgs.actions.exchange.Astana1_A">
+            <result name="success" type="json"/>
+            <result name="view-text" type="stream">
+                <param name="contentType">${contentType}</param>
+                <param name="contentDisposition">attachment;filename="${fileName}"</param>
+                <param name="contentLength">${fileLength}</param>
+            </result>
+        </action>
+
         <action name="Btlc_*" method="{1}" class="com.bivc.cimsmgs.actions.exchange.Btlc_A">
             <result name="success" type="json"/>
         </action>
@@ -100,9 +109,14 @@
             <result name="success" type="json"/>
         </action>
 
+</package>
+    <package name="stamp-support" namespace="/" extends="cimsmgs-default">
+        <action name="PrintStamp_*" method="{1}" class="com.bivc.cimsmgs.actions.PrintStamp_A">
+            <result name="success" type="json"/>
+        </action>
     </package>
 
-    <package name="file-support" namespace="/" extends="cimsmgs-default">
+<package name="file-support" namespace="/" extends="cimsmgs-default">
         <action name="File_saveFile" method="saveFile" class="com.bivc.cimsmgs.actions.File_A">
             <result name="success" type="json"/>
             <interceptor-ref name="fileUploadStack"/>
@@ -185,6 +199,10 @@
             <result name="success" type="json"/>
             <interceptor-ref name="fileUploadStack"/>
         </action>
+        <action name="Doc2Doc_uploadGrafCopies" method="uploadGrafCopies" class="doc2doc_A">
+            <result name="success" type="json"/>
+            <interceptor-ref name="fileUploadStack"/>
+        </action>
         <action name="Doc2Doc_uploadPogruzList" method="uploadPogruzList" class="doc2doc_A">
             <result name="success" type="json"/>
             <interceptor-ref name="fileUploadStack"/>
@@ -193,12 +211,16 @@
             <result name="success" type="json"/>
         </action>
         <action 
-name="Doc2Doc_uploadXLSvags" method="uploadXLSvags" class="doc2doc_A">
+name="Doc2Doc_uploadXLS" method="uploadXLS" class="doc2doc_A">
             <result name="success" type="json"/>
             <interceptor-ref name="fileUploadStack"/>
         </action>
     
-<!--<action name="Doc2Doc_uploadPogruzListTrain" method="uploadPogruzListTrain" class="doc2doc_A">-->
+<action name="Doc2Doc_avisoxsmgses" method="avisoXsmgses" class="doc2doc_A">
+            <result name="success" type="json"/>
+        </action>
+
+        <!--<action name="Doc2Doc_uploadPogruzListTrain" method="uploadPogruzListTrain" class="doc2doc_A">-->
             <!--<result name="success" type="json"/>-->
             <!--<interceptor-ref name="fileUploadStack"/>-->
         <!--</action>-->
@@ -293,6 +315,11 @@ name="Doc2Doc_uploadXLSvags" method="uploadXLSvags" class="doc2doc_A">
         <action name="secure/Poezd" class="poezd2_A">
             <result name="success" type="json"/>
             <interceptor-ref name="fileUploadStack"/>
+            <result name="excel" type="stream">
+                <param name="contentType">application/vnd.ms-excel</param>
+                <param name="contentDisposition">attachment;filename="${fileName}"</param>
+            </result>
+
         </action>
         <action name="secure/Poezd_*" method="{1}" class="poezd2_A">
             <result name="success" type="json"/>
@@ -311,6 +338,12 @@ name="Doc2Doc_uploadXLSvags" method="uploadXLSvags" class="doc2doc_A">
                 <param name="contentDisposition">attachment;filename="${fileName}"</param>
             </result>
            <interceptor-ref name="fileUploadStack"/>
+        </action>
+        <action name="secure/Kont" class="kont2_A">
+            <result name="success" type="json"/>
+        </action>
+        <action name="secure/Vagon" class="vagon2_A">
+            <result name="success" type="json"/>
         </action>
         <action name="secure/Client" class="client2_A">
             <result name="success" type="json"/>
@@ -349,14 +382,23 @@ name="Doc2Doc_uploadXLSvags" method="uploadXLSvags" class="doc2doc_A">
         <action name="secure/BindPoezdAndAvto" class="bindPoezdAndAvto_A">
             <result name="success" type="json"/>
         </action>
+        <action name="secure/BindYardAndYard" class="bindYardAndYard_A">
+            <result name="success" type="json"/>
+        </action>
         <action name="secure/BindAvtoAndYard" class="bindAvtoAndYard_A">
             <result name="success" type="json"/>
+            <interceptor-ref name="fileUploadStack"/>
         </action>
         <action name="secure/BindAvtoAndPoezd" class="bindAvtoAndPoezd_A">
             <result name="success" type="json"/>
         </action>
         <action name="secure/Yard" class="yard2_A">
             <result name="success" type="json"/>
+            <interceptor-ref name="fileUploadStack"/>
+            <result name="excel" type="stream">
+                <param name="contentType">application/vnd.ms-excel</param>
+                <param name="contentDisposition">attachment;filename="${fileName}"</param>
+            </result>
         </action>
         <action name="secure/Yard_*" method="{1}" class="yard2_A">
             <result name="success" type="json"/>

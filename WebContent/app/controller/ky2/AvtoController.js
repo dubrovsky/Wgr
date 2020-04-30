@@ -1,6 +1,17 @@
 Ext.define('TK.controller.ky2.AvtoController', {
     extend: 'Ext.app.Controller',
     mixins: ['TK.controller.FilterUtils'],
+
+    requires: [
+        'TK.Utils',
+        'TK.model.PackDoc',
+        'TK.model.Route',
+        'TK.model.ky2.AvtoInto',
+        'TK.view.ky2.FilesForm',
+        'TK.view.ky2.avto.FilterAvto',
+        'TK.view.ky2.avto.into.AvtoZayavsIntoDir'
+    ],
+
     views: [
         'ky2.avto.into.AvtoList',
         'ky2.avto.into.AvtoForm',
@@ -13,7 +24,9 @@ Ext.define('TK.controller.ky2.AvtoController', {
         'ky2.avto.into.AvtoZayavsIntoDir',
         'ky2.AbstractList',
         'ky2.AbstractForm',
-        'ky2.FilesForm'
+        'ky2.FilesForm',
+        'ky2.avto.FilterAvto'
+
     ],
     stores: [
         'ky2.AvtosBase',
@@ -67,10 +80,16 @@ Ext.define('TK.controller.ky2.AvtoController', {
             },
 
             'ky2avtointolist': {
-                itemdblclick: this.editAvtoInto
+                itemdblclick: this.editAvtoInto,
+                itemclick: function (view, record) {
+                    this.fireEvent('updateMessanger', view, record);
+                }
             },
             'ky2avtooutlist': {
-                itemdblclick: this.editAvtoOut
+                itemdblclick: this.editAvtoOut,
+                itemclick: function (view, record) {
+                    this.fireEvent('updateMessanger', view, record);
+                }
             },
             'ky2avtointolist button[action="delete"]': {
                 click: this.deleteAvto
@@ -108,8 +127,20 @@ Ext.define('TK.controller.ky2.AvtoController', {
             'ky2avtooutlist button[action="print"] menuitem[action="wz"]': {
                 click: this.createWZlist
             },
+            'ky2avtooutlist button[action="print"] menuitem[action="addAct"]': {
+                click: this.createAct
+            },
+            'ky2avtooutlist button[action="print"] menuitem[action="addInterchange"]': {
+                click: this.createInterchange
+            },
             'ky2avtointolist button[action="print"] menuitem[action="pz"]': {
                 click: this.createPZlst
+            },
+            'ky2avtointolist button[action="print"] menuitem[action="addAct"]': {
+                click: this.createAct
+            },
+            'ky2avtointolist button[action="print"] menuitem[action="addInterchange"]': {
+                click: this.createInterchange
             },
             // 'ky2avtooutform button[action="print"] menuitem[action="pz"]': {
             //     click: this.createPZ
@@ -121,10 +152,10 @@ Ext.define('TK.controller.ky2.AvtoController', {
                 click: this.copyAvtoIntoToInto
             },
             'ky2avtointoform button[action="createAvtoOutFromInto"]': {
-                click: this.createAvtoOutFromAvtoIntoform
+                click: this.saveAndCreateAvtoOutFromAvtoIntoform
             },
             'ky2avtointoform button[action="importFromZayav"]': {
-                click: this.importFromZayav4Form
+                click: this.saveAndImportFromZayav4Form
             },
             'ky2avtointolist button[action="importFromZayav"]': {
                 click: this.importFromZayav
@@ -138,9 +169,9 @@ Ext.define('TK.controller.ky2.AvtoController', {
             'ky2avtooutform button[action="nsiOtpr"]': {
                 click: this.showNsiOtpr
             },
-            'ky2avtointoform button[action="retNkonFind"]': {
-                click: this.retNkonFind
-            },
+            // 'ky2avtointoform button[action="retNkonFind"]': {
+            //     click: this.retNkonFind
+            // },
             'ky2avtointolist button[action="attach"]': {
                 click: this.showAttached
             },
@@ -149,12 +180,52 @@ Ext.define('TK.controller.ky2.AvtoController', {
             },
             'filesform button[action="view"]': {
                 click: this.viewWZPZ
+            },
+            'filesform button[action="deleteFile"]': {
+                click: this.delFile
+            },
+            'ky2avtointoform button[action="editCtGr"]': {
+                click: this.saveAndGoToCtGr
+            },
+            'ky2avtooutform button[action="editCtGr"]': {
+                click: this.saveAndGoToCtGr
+            },
+            'ky2avtobindtreeform button[action=editAvto]': {
+                click: this.editAvtoFromOutside
+            },
+            'ky2avtoctgrtreeform button[action="editAvto"]': {
+                click: this.editAvtoFromOutside
+            },
+            'ky2avtointolist button[action="filterAvto"]': {
+                click: this.filterAvto
+            },
+            'ky2avtooutlist button[action="filterAvto"]': {
+                click: this.filterAvto
+            },
+            'ky2avtofilter button[action="applyFilterAvto"]': {
+                click: this.applyFilterAvto
+            },
+            'ky2avtofilter button[action="clearFilterAvto"]': {
+                click: this.clearFilterAvto
             }
-
 
 
         });
     },
+
+    saveAndGoToCtGr: function (btn) {
+        this.saveAvto(null, this.toCtGr.bind(this))
+    },
+
+    toCtGr: function (btn) {
+        var record = this.getAvtoform().getRecord();
+        if (record.get('hid') == null) {
+            Ext.Msg.alert(this.warningMsg, this.warningText);
+            return false;
+        }
+        this.getController('ky2.AvtoCtGrController').editCtGr('ky2ctgrtreeformavtointo', 'TK.model.ky2.AvtoCtGrTreeNode', record.get('hid'));
+    },
+
 
     copyAvtoIntoToInto: function (btn) {
         var avtolist = this.getAvtolist();
@@ -162,8 +233,8 @@ Ext.define('TK.controller.ky2.AvtoController', {
             return false;
         }
         Ext.Msg.show({
-            title: 'Подтверждение',
-            msg: 'Копировать авто?',
+            title: this.titleConfirm,
+            msg: this.msgCopyTruck,
             buttons: Ext.Msg.YESNO,
             icon: Ext.Msg.QUESTION,
             scope: this,
@@ -196,6 +267,10 @@ Ext.define('TK.controller.ky2.AvtoController', {
                 }
             }
         })
+    },
+
+    saveAndImportFromZayav4Form: function () {
+        this.saveAvto(null, this.importFromZayav4Form.bind(this))
     },
 
     importFromZayav4Form: function () {
@@ -236,8 +311,8 @@ Ext.define('TK.controller.ky2.AvtoController', {
             avtoZayavDir = this.getZayavintodir().getSelectionModel().getLastSelected();
         if (avtoZayavDir == null) {
             Ext.Msg.show({
-                title: 'Ошибка',
-                msg: 'Не выбрано значение',
+                title: this.titeltError,
+                msg: this.msgNothingSel,
                 buttons: Ext.Msg.OK,
                 icon: Ext.Msg.ERROR
             });
@@ -257,7 +332,7 @@ Ext.define('TK.controller.ky2.AvtoController', {
                 this.getCenter().setLoading(false);
                 this.getZayavintodir().up('window').close();
                 if (success) {
-                    Ext.Msg.alert(this.warningMsg, 'Данные загружены');
+                    Ext.Msg.alert(this.warningMsg, this.msgDataLoaded);
                     if (form) {
                         var respObj = Ext.decode(response.responseText);
                         this.getAvtoform().getForm().setValues(respObj.rows[0]);
@@ -281,11 +356,15 @@ Ext.define('TK.controller.ky2.AvtoController', {
         var hid = avtolist.getSelectionModel().getLastSelected().get('hid'),
             win = Ext.widget('filesform'),
             initData = {};
-        win.down('#file').hide();
+        win.down('#avtofile').hide();
         initData['store'] = 'TK.store.ky2.AvtoFiles';
         initData['hid'] = hid;
         initData['action'] = 'list';
         win.initServiceFields(initData);
+    },
+
+    saveAndCreateAvtoOutFromAvtoIntoform: function (btn) {
+        this.saveAvto(null, this.createAvtoOutFromAvtoIntoform.bind(this));
     },
 
     createAvtoOutFromAvtoIntoform: function (btn) {
@@ -309,8 +388,8 @@ Ext.define('TK.controller.ky2.AvtoController', {
     createAvtoOutFromAvtoInto: function (hid) {
 
         Ext.Msg.show({
-            title: 'Подтверждение',
-            msg: 'Создать авто по отправлению?',
+            title: this.lblConfirmation,
+            msg: this.msgCreateCarByDeparture,
             buttons: Ext.Msg.YESNO,
             icon: Ext.Msg.QUESTION,
             scope: this,
@@ -328,7 +407,7 @@ Ext.define('TK.controller.ky2.AvtoController', {
                             this.getCenter().setLoading(false);
                             Ext.Msg.show({
                                 title: '',
-                                msg: 'Авто по отправлению создано',
+                                msg: this.msgCarByDepartureConfirm,
                                 buttons: Ext.Msg.OK,
                                 icon: Ext.Msg.INFO
                             });
@@ -344,38 +423,77 @@ Ext.define('TK.controller.ky2.AvtoController', {
         })
     },
 
+    createAct: function(btn) {
+        var avtolist = this.getAvtolist();
+        if (!TK.Utils.isRowSelected(avtolist)) {
+            return false;
+        }
+        var konts = avtolist.getSelectionModel().getLastSelected().get('konts');
+        if (konts.length === 1) {
+            this.getController('ky2.AvtoCtGrController').createAct(konts[0].hid);
+        }
+    },
+
+    createInterchange: function(btn) {
+        var avtolist = this.getAvtolist();
+        if (!TK.Utils.isRowSelected(avtolist)) {
+            return false;
+        }
+        var konts = avtolist.getSelectionModel().getLastSelected().get('konts');
+        if (konts.length === 1) {
+            this.getController('ky2.AvtoCtGrController').createInterchange(konts[0].hid);
+        }
+    },
 
     createWZlist: function(btn) {
         this.createWZPZlist('get_wz');
     },
+
     createPZlst: function(btn) {
         this.createWZPZlist('get_pz');
     },
+
     createWZ: function(btn) {
-        this.createWZPZ('get_wz');
+        this.saveAndCreateWZPZ('get_wz');
     },
+
     createPZ: function(btn) {
-        this.createWZPZ('get_pz');
+        this.saveAndCreateWZPZ('get_pz');
     },
+
     createWZPZlist: function(action) {
         var avtolist = this.getAvtolist();
         if (!TK.Utils.isRowSelected(avtolist)) {
             return false;
         }
+        // else if (avtolist.getSelectionModel().getLastSelected().get('konts').length === 0) {
+        //     Ext.Msg.alert(this.warningMsg, 'На авто отсутствует контейнер');
+        //     return false;
+        // }
         var hid = avtolist.getSelectionModel().getLastSelected().get('hid');
         this.openWZPZ(hid, action);
     },
+
+    saveAndCreateWZPZ: function(action) {
+        this.saveAvto(null, this.createWZPZ.bind(this, action));
+    },
+
     createWZPZ: function(action) {
         var record = this.getAvtoform().getRecord();
         if (record.get('hid') == null) {
             Ext.Msg.alert(this.warningMsg, this.warningText);
             return false;
         }
+        // else if (record.get('konts').length === 0) {
+        //     Ext.Msg.alert(this.warningMsg, 'На авто отсутствует контейнер');
+        //     return false;
+        // }
         this.openWZPZ(record.get('hid'), action);
+        this.getAvtolist().getStore().reload();
     },
 
     openWZPZ: function(hid, action) {
-        window.open('ky2/secure/Avto.do?hid=' + hid + '&action=' + action, '_self', '');
+        window.open('ky2/secure/Avto.do?hid=' + hid + '&action=' + action, '_blank', '');
     },
 
     viewWZPZ: function() {
@@ -383,7 +501,33 @@ Ext.define('TK.controller.ky2.AvtoController', {
         if (!TK.Utils.isRowSelected(fileslist)) {
             return false;
         }
-        window.open('ky2/secure/AvtoFiles.do?hid=' + fileslist.getSelectionModel().getLastSelected().get('hid') + '&action=view', '_self', '');
+        window.open('ky2/secure/AvtoFiles.do?hid=' + fileslist.getSelectionModel().getLastSelected().get('hid') + '&action=view', '_blank', '');
+    },
+
+    delFile: function() {
+        var fileslist = this.getFileslist();
+        if (!TK.Utils.isRowSelected(fileslist)) {
+            return false;
+        }
+        Ext.Msg.show({title: 'Подтверждение', msg: 'Удалить файл?', buttons: Ext.Msg.YESNO,
+            closable: false, icon: Ext.Msg.QUESTION, scope: this,
+            fn: function(buttonId) {
+                if(buttonId === 'yes') {
+                    Ext.Ajax.request({
+                        url: 'ky2/secure/AvtoFiles.do',
+                        params: {action: 'delete', hid: fileslist.getSelectionModel().getLastSelected().get('hid')},
+                        scope: fileslist,
+                        success: function(response, options) {
+                            this.store.reload();
+                        },
+                        failure: function(response){
+                            TK.Utils.makeErrMsg(response, me.errorMsg);
+                        }
+                    });
+                }
+            }
+        });
+
     },
 
     createAvtoInto: function (btn) {
@@ -407,27 +551,36 @@ Ext.define('TK.controller.ky2.AvtoController', {
 
         this.getCenter().add(poezdcontainer);
     },
+
+    editAvtoFromOutside: function (btn) {
+        var rootNode = btn.up('panel').down('treepanel').getRootNode();
+        if (rootNode.get('direction') === 1)
+            this.editAvto('ky2avtointoform', 'TK.model.ky2.AvtoInto', rootNode.get('hid'));
+        else
+            this.editAvto('ky2avtooutform', 'TK.model.ky2.AvtoOut', rootNode.get('hid'));
+    },
+
     editAvtoInto: function (btn) {
-        this.editAvto('ky2avtointoform', 'TK.model.ky2.AvtoInto');
+        this.editAvtoCheck('ky2avtointoform', 'TK.model.ky2.AvtoInto');
     },
+
     editAvtoOut: function (btn) {
-        this.editAvto('ky2avtooutform', 'TK.model.ky2.AvtoOut');
+        this.editAvtoCheck('ky2avtooutform', 'TK.model.ky2.AvtoOut');
     },
-    editAvto: function (xtype, modelClsName) {
+
+    editAvtoCheck: function (widget, modelClsName) {
         var avtolist = this.getAvtolist();
         if (!TK.Utils.isRowSelected(avtolist)) {
             return false;
         }
+        this.editAvto(widget, modelClsName, avtolist.getSelectionModel().getLastSelected().get('hid'));
+    },
 
-        var hid = avtolist.getSelectionModel().getLastSelected().get('hid');
-
+    editAvto: function (xtype, modelClsName, hid) {
         this.getCenter().remove(this.getCenter().getComponent(0), true);
         var avtocontainer = this.getCenter().add(Ext.widget(xtype, {title: this.titleEdit}));
-
         avtocontainer.setLoading(true);
-
         var avto = Ext.ModelManager.getModel(modelClsName);
-
         avto.load(hid, {
             scope: this,
             //params:{action: serverAction},
@@ -476,7 +629,7 @@ Ext.define('TK.controller.ky2.AvtoController', {
         this.saveAvto(1);
     },
 
-    saveAvto: function (close) {
+    saveAvto: function (close, nextStepFunction) {
         var form = this.getAvtoform();
         if (form.isValid()) {
             var avto = form.getRecord(),
@@ -504,6 +657,8 @@ Ext.define('TK.controller.ky2.AvtoController', {
                             if (newAvto) {       // packdoc will be available after save
                                 avto.setPackDoc(Ext.create('TK.model.PackDoc', {hid: avto.get('packDoc.hid')}));
                             }
+                            if (nextStepFunction instanceof Function)
+                                nextStepFunction();
                         }
                     }
                     this.getCenter().setLoading(false);
@@ -516,6 +671,7 @@ Ext.define('TK.controller.ky2.AvtoController', {
     },
 
     showNsiOtpr: function(btn){
+        console.log("AvtoController showNsiOtpr");
         var form = this.getAvtoform().getForm(),
             nsiGrid = this.getController('Nsi').nsiKyClient('', form.getRecord().get('route.hid')).getComponent(0);
         nsiGrid.on('itemdblclick', this.selectClient, form);
@@ -529,55 +685,22 @@ Ext.define('TK.controller.ky2.AvtoController', {
         view.up('window').close();
     },
 
-    retNkonFind: function(btn) {
-        var form = this.getAvtoform().getForm(),
-            url = 'ky2/secure/Yard.do',
-            retNkon = form.findField('ret_nkon').getValue(),
-            labelText;
-        if (retNkon.trim() !== '') {
 
-            Ext.Ajax.request({
-                url: url,
-                params: {filter: '[{"property":"nkon","value":"'+retNkon+'"}]', action: 'list', start: 0, limit: 1, page: 1},
-                scope: this,
-                success: function (response) {
-                    var respObj = Ext.decode(response.responseText);
-                    if (respObj.rows.length !== 0) {
-                        labelText = 'Контейнер в секторе ' + respObj.rows[0].sector.descr;
-                    }
-                    else {
-                        labelText = 'Контейнер не найден';
-                    }
-                    Ext.getCmp('kontSectorLocation').setText(labelText);
-                },
-                failure: function (response) {
-                    TK.Utils.makeErrMsg(response, 'Error...');
-                }
-            });
+    filterAvto: function (btn) {
+        var win = Ext.widget('ky2avtofilter');
+        this.initFilter(win.down('form').getForm(), btn.up('grid').getStore());
+    },
+
+    applyFilterAvto: function (btn) {
+        var form = btn.up('form').getForm();
+        if (form.isValid()) {
+            this.applyFilter(form, this.getAvtolist().getStore());
         }
+    },
+
+    clearFilterAvto: function (btn) {
+        btn.up('form').getForm().reset();
+        this.getAvtolist().getStore().clearFilter(true);
+        this.getAvtolist().getStore().load();
     }
-
-
-    // showAvtosOutDir4AvtoIntoBind: function (btn) {
-    //     this.showAvtosDir4AvtoBind('ky2avtosout4avtointodir', 2);
-    // },
-    //
-    // showAvtosIntoDir4AvtoOutBind: function (btn) {
-    //     this.showAvtosDir4AvtoBind('ky2avtosinto4avtooutdir', 1);
-    // },
-    //
-    // showAvtosDir4AvtoBind: function (widget, direction) {
-    //     var avtolist = this.getAvtolist();
-    //     if (!TK.Utils.isRowSelected(avtolist)) {
-    //         return false;
-    //     }
-    //
-    //     var win = Ext.widget(widget),
-    //         store = win.down('grid').getStore(),
-    //         avtoModel = avtolist.getSelectionModel().getLastSelected();
-    //
-    //     store.getProxy().extraParams = {action: 'avtos_dir_for_avto_bind', direction: direction, routeId: avtoModel.get('route.hid')};
-    //     store.load();
-    // }
-
 });

@@ -1,6 +1,12 @@
 Ext.define('TK.view.ky.nsi.owner.List', {
     extend: 'TK.view.ky.AbstractWindow',
     alias:'widget.kynsiownerlist',
+
+    requires: [
+        'TK.Utils',
+        'TK.view.ky.nsi.BaseList'
+    ],
+
     itemId:'kynsiownerlist',
 
     width: 800,

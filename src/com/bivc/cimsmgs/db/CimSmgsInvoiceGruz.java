@@ -20,6 +20,7 @@ public class CimSmgsInvoiceGruz implements Serializable {
     private String tnved;
     private String cus_edizm;
     private String nzgr;
+    private String nzgrEn;
     private String cost;
     private String itogo;
     private CimSmgsInvoice invoice;
@@ -30,6 +31,14 @@ public class CimSmgsInvoiceGruz implements Serializable {
 
 //    Logger log = LoggerFactory.getLogger(CimSmgsInvoiceGruz.class);
     private String kypk;
+
+    public String getNzgrEn() {
+        return nzgrEn;
+    }
+
+    public void setNzgrEn(String nzgrEn) {
+        this.nzgrEn = nzgrEn;
+    }
 
     public String getKypk() {
         return kypk;
@@ -254,6 +263,7 @@ public class CimSmgsInvoiceGruz implements Serializable {
                 Objects.equals(tnved, that.tnved) &&
                 Objects.equals(cus_edizm, that.cus_edizm) &&
                 Objects.equals(nzgr, that.nzgr) &&
+                Objects.equals(nzgrEn, that.nzgrEn) &&
                 Objects.equals(cost, that.cost) &&
                 Objects.equals(itogo, that.itogo) &&
                 Objects.equals(invoice != null ? invoice.getHid() : "", that.invoice != null ? that.invoice.getHid() : "") &&
@@ -266,6 +276,6 @@ public class CimSmgsInvoiceGruz implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(hid, hid_csinv, znak, kolm, mbrt, mnet, klms, cus_kolm, tnved, cus_edizm, nzgr, cost, itogo, invoice != null ? invoice.getHid() : "", nzyp, type, kole, eizm, kypk);
+        return Objects.hash(hid, hid_csinv, znak, kolm, mbrt, mnet, klms, cus_kolm, tnved, cus_edizm, nzgr,nzgrEn, cost, itogo, invoice != null ? invoice.getHid() : "", nzyp, type, kole, eizm, kypk);
     }
 }

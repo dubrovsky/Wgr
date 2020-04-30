@@ -27,7 +27,7 @@
             <column name="DATTR" length="7" not-null="true" />
         </property>
         <property name="un" type="string">
-            <column name="UN" length="60" not-null="true" />
+            <column name="UN" length="20" not-null="true" />
         </property>
         <property name="trans" type="string">
             <column name="TRANS" length="20" />

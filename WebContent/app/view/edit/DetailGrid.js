@@ -2,6 +2,9 @@ Ext.define('TK.view.edit.DetailGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.detailgrid',
 
+    requires:[
+        'TK.view.components.CellEditingOverride'
+    ],
 //    enableColumnResize: false,
     enableColumnHide:false,
     enableColumnMove:false,
@@ -53,14 +56,14 @@ Ext.define('TK.view.edit.DetailGrid', {
             Ext.create('Ext.grid.plugin.CellEditing', {
                 clicksToEdit: 1,
                 listeners: {
-                    edit: this.onEdit/*function(editor, e){
-                        e.grid.getView().refresh();
-                    }*/
+                    edit: this.onEdit,
+                    beforeedit:this.beforeEdit
                 }
             })
         ];
     },
     onEdit: function(editor, e){},
+    beforeEdit:function(editor, e){},
     newRecord: function() {},
     onAddRecord: function(btn){
         var r = this.newRecord(),

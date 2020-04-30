@@ -1,7 +1,14 @@
 Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
     extend: 'Ext.app.Controller',
 
+    requires: [
+        'TK.Utils',
+        'TK.model.ky2.PoezdBindTreeNode'
+    ],
+
+
     sourceVagModels: [], // to use in after drop event
+    sourcePoezdModels: [], // to use in after drop event
     selectedNodesLeft: [], // last selection
     selectedNodesRight: [], // last selection
     views: [
@@ -179,18 +186,20 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
             return false;
         }
         var poezdModel = poezdlist.getSelectionModel().getLastSelected();
-        this.getPoesdAndPoezdForBind(widget, title, direction, poezdModel.get('hid'));
-
+        this.getPoesdAndPoezdForBind(widget, title, direction === 1 ? 2 : 1, poezdModel.get('hid'));
     },
 
     getPoesdIntoAndPoezdOutForBindFromVgCntGr: function (btn) {
         var rootNode = btn.up('panel').down('treepanel').getRootNode();
         if (rootNode.get('direction') === 1)
-            this.getPoesdAndPoezdForBind('ky2poezd2poezdbindtreeforminto', 'На поезд по отправлению', 2, rootNode.get('hid'));
+            this.getController('ky2.PoezdVgCtGrController').saveClick(null, null, null, btn, null, null, null, null,
+                this.getPoesdAndPoezdForBind.bind(this, 'ky2poezd2poezdbindtreeforminto', 'На поезд по отправлению', 2, rootNode.get('hid')));
+            // this.getPoesdAndPoezdForBind('ky2poezd2poezdbindtreeforminto', 'На поезд по отправлению', 2, rootNode.get('hid'));
         else
-            this.getPoesdAndPoezdForBind('ky2poezd2poezdbindtreeformout', 'На поезд по прибытию', 1, rootNode.get('hid'));
+            this.getController('ky2.PoezdVgCtGrController').saveClick(null, null, null, btn, null, null, null, null,
+                this.getPoesdAndPoezdForBind.bind(this, 'ky2poezd2poezdbindtreeformout', 'На поезд по прибытию', 1, rootNode.get('hid')));
+            // this.getPoesdAndPoezdForBind('ky2poezd2poezdbindtreeformout', 'На поезд по прибытию', 1, rootNode.get('hid'));
     },
-
 
     getPoesdAndPoezdForBind: function (/*poezdDir*/ widget, title, direction, poezdHid) {
         /*var poezdlist = this.getPoezdlist(),
@@ -207,8 +216,8 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
             });
             return false;
         }*/
-        var menuItem    = this.getMenutree().lastSelectedLeaf,
-            routeId     = menuItem.id.split('_')[2];
+        var menuItem = this.getMenutree().lastSelectedLeaf,
+            routeId = menuItem.id.split('_')[2];
 
 
         this.getCenter().setLoading(true);
@@ -238,9 +247,10 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
                     var vags = poezd1Obj['vagons'];
                     this.getTreepanelLeft().setTitle(this.titleForPoezd("Поезд № " + poezd1Obj['npprm'] + '<br/>'));
                     var rootNode = this.getTreepanelLeft().getRootNode();
-                    if (vags && !Ext.Object.isEmpty(vags)) {
+                    this.initRootNode(rootNode, poezd1Obj, vags);
+                    /*if (vags && !Ext.Object.isEmpty(vags)) {
                         this.initRootNode(rootNode, poezd1Obj, vags);
-                    }
+                    }*/
 
                     this.getTreepanelRight().setTitle(this.titleForPoezd('<br/>'));
                     rootNode = this.getTreepanelRight().getRootNode();
@@ -266,6 +276,10 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         });
     },
 
+    titleForPoezd: function (title, rootNode) {
+        return title + (rootNode ? '(' + rootNode.get('vagsInPoezd') + '/' + rootNode.get('contsInPoezd') + ')' : '') + '<br/>' + this.titlForPoezd;
+    },
+
     initPoezdsNodes: function (poezdsArr, rootNode) {
         for (var i = 0; i < poezdsArr.length; i++) {
             var poezd = poezdsArr[i],
@@ -276,7 +290,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
                     leaf: false,
                     iconCls: 'vag',
                     allowDrag: false,
-                    allowDrop: false,
+                    // allowDrop: false,
                     expanded: false
                 });
 
@@ -291,30 +305,28 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         }
     },
 
-    titleForPoezd: function(title) {
-        return title +
-            "№ вагона/Грузоподъемность/Тара/Оси/Собственник" + '<br/>' +
-            "Номер контейнера/Масса тары/Масса брутто/Типоразмер/Грузоподъемность";
+    initRootNode: function (rootNode, poezd, vags) {
+        var poezdModel = Ext.create('TK.model.ky2.PoezdBindTreeNode', {
+            text: poezd['npprm'],
+            who: 'poezd',
+            leaf: false,
+            iconCls: 'vag',
+            allowDrag: false,
+            // allowDrop: false,
+            expanded: true
+        });
+
+        Ext.Object.each(poezd, function (prop, value) {
+            poezdModel.set(prop, value);
+        }, this);
+
+        poezdModel.set('poezdHid', poezd['hid']); // poezd hid
+        rootNode.set('hid', poezd['hid']); // poezd hid
+        rootNode.appendChild(poezdModel);
+        this.initVagsNodes(vags, poezdModel, false);
     },
 
-    initRootNode: function (rootNode, dataObj, vags) {
-        rootNode.set('hid', dataObj['hid']);
-        rootNode.set('poezdHid', dataObj['hid']); // poezd hid
-        rootNode.set('direction', dataObj['direction']);
-        rootNode.set('nppr', dataObj['nppr']);
-        rootNode.set('who', 'poezd');
-        this.initVagsNodes(vags, rootNode, false);
-    },
-
-    /*vagNodeText: function(vag) {
-        return '<b>' + (vag['nvag'] ? vag['nvag'] : '...') + '</b>'
-            + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/ ' + (vag['podSila'] ? vag['podSila'] : '...')
-            + ' / ' + (vag['masTar'] ? vag['masTar'] : '...')
-            + ' / ' + (vag['kolOs'] ? vag['kolOs'] : '...')
-            + ' / ' + (vag['sobstv'] ? vag['sobstv'] : '...');
-    },*/
-
-    vagNodeText: function(vag) {
+    vagNodeText: function (vag) {
         return '<b>' + (vag.get('nvag') ? vag.get('nvag') : '...') + '</b>'
             + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/ ' + (vag.get('podSila') ? vag.get('podSila') : '...')
             + ' / ' + (vag.get('masTar') ? vag.get('masTar') : '...')
@@ -323,6 +335,8 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
     },
 
     initVagsNodes: function (vags, rootNode, isYard) {    //isYard - poezd for yard
+        rootNode.set('vagsInPoezd', vags.length);
+        var contsInPoezd = 0;
         for (var vagIndx in vags) {
             var vag = vags[vagIndx],
                 conts = vag['konts'],
@@ -333,7 +347,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
                     poezdHid: rootNode.get('hid'),
                     leaf: false,
                     iconCls: 'vag1',
-                    allowDrag: false,
+                    // allowDrag: false,
                     expanded: true
                     // expanded: (conts && conts['0']) || (gruzy && gruzy['0'])
                 });
@@ -351,6 +365,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
             if (vag['otpravka'] === 'CONT') {
                 if (conts && !Ext.Object.isEmpty(conts)) {
                     this.initContsNodes(conts, vagIndx, vagModel, isYard);
+                    contsInPoezd += conts.length;
                 }
             } else if (vag['otpravka'] === 'GRUZ' && !isYard) {
                 if (gruzy && !Ext.Object.isEmpty(gruzy)) {
@@ -358,6 +373,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
                 }
             }
         }
+        rootNode.set('contsInPoezd', contsInPoezd);
     },
 
     /*contNodeText: function(cont) {
@@ -368,12 +384,16 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
            + ' / ' + (cont['pod_sila'] ? cont['pod_sila'] : '...');
     },*/
 
-    contNodeText: function(cont) {
+    contNodeText: function (cont) {
         return '<b>' + (cont.get('nkon') ? cont.get('nkon') : '...') + '</b>'
-            + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/ ' + (cont.get('massa_tar') ? cont.get('massa_tar') : '...')
+            + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '
+            + ' / ' + (cont.get('gruzotpr') ? cont.get('gruzotpr') : '...')
+            + ' / ' + (cont.get('massa_tar') ? cont.get('massa_tar') : '...')
             + ' / ' + (cont.get('massa_brutto_all') ? cont.get('massa_brutto_all') : '...')
             + ' / ' + (cont.get('vid') ? cont.get('vid') : '...')
-            + ' / ' + (cont.get('pod_sila') ? cont.get('pod_sila') : '...');
+            + ' / ' + (cont.get('pod_sila') ? cont.get('pod_sila') : '...')
+            + (cont.get('prim') ? ' / ' + cont.get('prim') : "")
+        // + ' / ' + (cont.get('prim') ? cont.get('prim') : '...');
     },
 
     initContsNodes: function (conts, vagIndx, vagModel, isYard) {
@@ -448,7 +468,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
     },
 
     bindPoezdToPoezd: function (close) {
-        var dataObjLeft = this.bindPoezd(this.getTreepanelLeft().getRootNode());
+        var dataObjLeft = this.bindPoezd(this.getTreepanelLeft().getRootNode().firstChild);
         // var dataObjRight = this.bindPoezd(this.getTreepanelRight().getRootNode());
         var dataObjRight = this.bindPoezds(this.getTreepanelRight().getRootNode());
 
@@ -456,15 +476,24 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         this.getCenter().setLoading(true);
         Ext.Ajax.request({
             url: url,
-            params: {poezdObj: Ext.encode(dataObjLeft), poezdsObj: Ext.encode(dataObjRight), action: 'bind_poezd_to_poezd'},
+            params: {
+                poezdObj: Ext.encode(dataObjLeft),
+                poezdsObj: Ext.encode(dataObjRight),
+                action: 'bind_poezd_to_poezd'
+            },
             scope: this,
             success: function (response) {
                 this.getCenter().setLoading(false);
+                var leftRootNode = this.getTreepanelLeft().getRootNode();
+                var rightRootNode = this.getTreepanelRight().getRootNode();
+                this.clearVagsUpdatedProperty(leftRootNode, rightRootNode);
+                if (!leftRootNode.findChild('who', 'cont', true) && !leftRootNode.findChild('who', 'gryz', true) && leftRootNode.get('direction') === 1) {
+                    this.getController('ky2.PoezdController').getPoezdIntoForPoezdOut(leftRootNode.get('hid'));
+                }
                 if (Ext.isNumber(close)) {
                     var closeBtn = this.getPoezdform().down('button[action="close"]');
-                    closeBtn.fireEvent('click',closeBtn);
-                }
-                else {
+                    closeBtn.fireEvent('click', closeBtn);
+                } else {
                     var respObj = Ext.decode(response.responseText);
                 }
             },
@@ -472,6 +501,19 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
                 this.getCenter().setLoading(false);
                 TK.Utils.makeErrMsg(response, 'Error...');
             }
+        });
+    },
+
+    clearVagsUpdatedProperty: function (leftRootNode, rightRootNode) {
+        leftRootNode.eachChild(function (poezdNode) {
+            poezdNode.eachChild(function (vagNode) {
+                vagNode.set('updated', false);
+            });
+        });
+        rightRootNode.eachChild(function (poezdNode) {
+            poezdNode.eachChild(function (vagNode) {
+                vagNode.set('updated', false);
+            });
         });
     },
 
@@ -509,23 +551,26 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         dataObj['vagons'] = [];
 
         rootNodeModel.eachChild(function (vagNodeModel) { // write vags
-            var vagDataObj = {};
-            vagDataObj['hid'] = vagNodeModel.get('hid');
-            // vagDataObj['sort'] = vagNodeModel.get('sort');
-            vagDataObj['otpravka'] = vagNodeModel.get('otpravka');
-            vagDataObj['nvag'] = vagNodeModel.get('nvag');
+            if (vagNodeModel.get('updated')) {
+                var vagDataObj = {};
+                vagDataObj['hid'] = vagNodeModel.get('hid');
+                // vagDataObj['sort'] = vagNodeModel.get('sort');
+                vagDataObj['otpravka'] = vagNodeModel.get('otpravka');
+                vagDataObj['nvag'] = vagNodeModel.get('nvag');
 
-            dataObj['vagons'].push(vagDataObj);
+                dataObj['vagons'].push(vagDataObj);
 
-            if (vagNodeModel.hasChildNodes()) {
-                if (vagNodeModel.get('otpravka') === 'CONT') {
-                    this.bindConts(vagNodeModel, vagDataObj);
-                } else if (vagNodeModel.get('otpravka') === 'GRUZ') {
-                    this.bindGryzy(vagNodeModel, vagDataObj);
+                if (vagNodeModel.hasChildNodes()) {
+                    if (vagNodeModel.get('otpravka') === 'CONT') {
+                        this.bindConts(vagNodeModel, vagDataObj);
+                    } else if (vagNodeModel.get('otpravka') === 'GRUZ') {
+                        this.bindGryzy(vagNodeModel, vagDataObj);
+                    }
                 }
+
+                vagIndex++;
             }
 
-            vagIndex++;
         }, this);
 
         return dataObj;
@@ -630,9 +675,12 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         var vags = Ext.Array.filter(selected, function (item, index, array) {
             return item.get('who') === 'vag';
         });
-        if (vags.length !== 0) {   // vags can't be more than 1
-            return false;
+        if (vags.length === selected.length) {// all selected must be vags
+            return true;
         }
+        /*if (vags.length !== 0) {   // vags can't be more than 1
+            return false;
+        }*/
 
         var conts = Ext.Array.filter(selected, function (item, index, array) {
             return item.get('who') === 'cont';
@@ -664,7 +712,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         this.moveNodes(this.getTreepanelRight(), this.getTreepanelLeft(), this.checkBeforeMoveToVag, this.afterDropToVag, this);
     },
 
-    moveNodes: function (sourcePanel, targetPanel, beforeMoveFn, afterMoveFn, fnScope) {
+    moveNodes: function (sourcePanel, targetPanel, beforeMoveFn, afterMoveFn, fnScope, beforeDropFn) {
         var sourceNodes = sourcePanel.getSelectionModel().getSelection();
         if (sourceNodes.length === 0) {
             return;
@@ -679,11 +727,15 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
             return;
         }
 
-        for (var y = 0; y < sourceNodes.length; y++) {
-            targetNode.insertChild(targetNode.childNodes.length, sourceNodes[y]); // appendChild don't work, no need to remove before insert
-        }
+        if (!beforeDropFn) {
+            for (var y = 0; y < sourceNodes.length; y++) {
+                targetNode.insertChild(targetNode.childNodes.length, sourceNodes[y]); // appendChild don't work, no need to remove before insert
+            }
 
-        afterMoveFn.call(fnScope, sourceNodes, targetNode);
+            afterMoveFn.call(fnScope, sourceNodes, targetNode);
+        } else {
+            beforeDropFn.call(fnScope, sourceNodes, targetNode);
+        }
     },
 
     beforeDropToVag: function (targetModel, position, dragData) {
@@ -698,23 +750,25 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
 
             isDrop = false;
             // check source
-            isDrop = sourceModel.get('who') !== 'vag' && sourceModel.get('who') !== 'poezd'; // vag, poezd can't be moved
-            if (isDrop) { // can be moved cont in vag, gruz in vag
-                isDrop = sourceParentModel.get('who') === 'vag';  // sourceParentModel can be only vag
+            isDrop = sourceModel.get('who') !== 'poezd'; // poezd can't be moved
+            if (isDrop) { // can be moved cont in vag, gruz in vag, vag in poezd
+                isDrop = sourceParentModel.get('who') === 'vag' || sourceParentModel.get('who') === 'poezd';  // sourceParentModel can be vag or poezd
             }
 
             // check target
-            if (isDrop) { // can be dropped only in vag
-                isDrop = targetModel.get('who') === 'vag' /*&& sourceParentModel.parentNode.get('hid') !== targetModel.parentNode.get('hid')*/;
+            if (isDrop) { // cont and gruz can be dropped in vag, vag in poezd
+                isDrop =
+                    (targetModel.get('who') === 'vag' && (sourceModel.get('who') === 'cont' || sourceModel.get('who') === 'gryz')) ||
+                    (targetModel.get('who') === 'poezd' && sourceModel.get('who') === 'vag');
             }
-            if (isDrop) { // vag otpravka should be null or the same as in source parent model
+            if (isDrop && targetModel.get('who') === 'vag') { // vag otpravka should be null or the same as in source parent model
                 isDrop = !targetModel.get('otpravka') || sourceParentModel.get('otpravka') === targetModel.get('otpravka');
             }
             if (isDrop) {
-                isDrop = sourceParentModel.get('hid') !== targetModel.get('hid'); // prevent dropping in same node
+                isDrop = sourceParentModel.get('who') !== targetModel.get('who') || sourceParentModel.get('hid') !== targetModel.get('hid'); // prevent dropping in same node
             }
 
-            this.cacheDistinctSourceModels(isDrop, sourceParentModel, this.sourceVagModels);
+            this.cacheDistinctSourceModels(isDrop, sourceParentModel, sourceParentModel.get('who') === 'vag' ? this.sourceVagModels : this.sourcePoezdModels);
             if (!isDrop) {
                 break;
             }
@@ -722,47 +776,61 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         return isDrop;
     },
 
-    cacheDistinctSourceModels: function (isDrop, sourceParentModel, sourceVagModels) {
+    cacheDistinctSourceModels: function (isDrop, sourceParentModel, sourceModels) {
         if (isDrop) {    // save distinct sourceVagModels
             var found = false;
-            for (var y = 0; y < sourceVagModels.length; y++) {
-                if (sourceVagModels[y].get('hid') === sourceParentModel.get('hid')) {
+            for (var y = 0; y < sourceModels.length; y++) {
+                if (sourceModels[y].get('hid') === sourceParentModel.get('hid')) {
                     found = true;
                     break;
                 }
             }
             if (!found) {
-                sourceVagModels.push(sourceParentModel); // save sourceParentModel to later use it in drop event
+                sourceModels.push(sourceParentModel); // save sourceParentModel to later use it in drop event
             }
         } else {
-            while (sourceVagModels.length) {
-                sourceVagModels.pop(); // clear array
+            while (sourceModels.length) {
+                sourceModels.pop(); // clear array
             }
         }
     },
 
-    afterDropToVag: function (records, targetVagModel) {
+    afterDropToVag: function (records, targetModel) {
         var sourceModel = records[0];   // all models go in one place
 
         if (sourceModel.get('who') === 'cont') {
-            targetVagModel.set('otpravka', 'CONT');
+            targetModel.set('otpravka', 'CONT');
         } else if (sourceModel.get('who') === 'gryz') {
-            targetVagModel.set('otpravka', 'GRUZ');
+            targetModel.set('otpravka', 'GRUZ');
         }
 
-        this.sortChildNodes(targetVagModel);
+        this.sortChildNodes(targetModel);
 
-        for (var i = 0; i < this.sourceVagModels.length; i++) {
-            if (!this.sourceVagModels[i].hasChildNodes()) {
-                this.sourceVagModels[i].set('otpravka', undefined);
-            } else {
-                this.sortChildNodes(this.sourceVagModels[i]);
+        if (targetModel.get('who') === 'vag') {
+            for (var i = 0; i < this.sourceVagModels.length; i++) {
+                if (!this.sourceVagModels[i].hasChildNodes()) {
+                    this.sourceVagModels[i].set('otpravka', undefined);
+                } else {
+                    this.sortChildNodes(this.sourceVagModels[i]);
+                }
+                this.sourceVagModels[i].set('updated', true);  // source vag - if target is vag - update target and source vags
+            }
+            targetModel.set('updated', true); // target vag
+        } else if (targetModel.get('who') === 'poezd') {
+            for (var i = 0; i < this.sourcePoezdModels.length; i++) {
+                if (this.sourcePoezdModels[i].hasChildNodes()) {
+                    this.sortChildNodes(this.sourcePoezdModels[i]);
+                }
             }
         }
 
         for (var i = 0; i < records.length; i++) {
-            records[i].set('poezdHid', targetVagModel.get('poezdHid'));
-            records[i].set('vagHid', targetVagModel.get('hid'));
+            records[i].set('poezdHid', targetModel.get('poezdHid'));
+            if (targetModel.get('who') === 'vag') {
+                records[i].set('vagHid', targetModel.get('hid'));
+            } else if (targetModel.get('who') === 'poezd') { // if target is poezd - update vag records
+                records[i].set('updated', true); //
+            }
             records[i].set('cls', 'selectTreeNode');
         }
 
@@ -771,10 +839,11 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
         this.selectedNodesLeft = [];
         this.selectedNodesRight = [];
         this.sourceVagModels = [];
+        this.sourcePoezdModels = [];
     },
 
-    dropToVag: function (node, dragData, targetVagModel, dropPosition) {
-        this.afterDropToVag(dragData.records, targetVagModel);
+    dropToVag: function (node, dragData, targetModel, dropPosition) {
+        this.afterDropToVag(dragData.records, targetModel);
     },
 
     expandContsLeft: function (btn) {
@@ -787,7 +856,7 @@ Ext.define('TK.controller.ky2.BindPoezdAndPoezdController', {
 
     collapseContsLeft: function (btn) {
         this.getTreepanelLeft().getRootNode().cascadeBy(function (nodeModel) {
-            if (nodeModel.get('who') === 'cont' && nodeModel.isExpanded() ) {
+            if (nodeModel.get('who') === 'cont' && nodeModel.isExpanded()) {
                 nodeModel.collapse();
             }
         }, this);

@@ -1,6 +1,20 @@
 Ext.define('TK.controller.ky2.PoezdController', {
     extend: 'Ext.app.Controller',
     mixins: ['TK.controller.FilterUtils'],
+
+    requires: [
+        'TK.Utils',
+        'TK.model.PackDoc',
+        'TK.model.Route',
+        'TK.model.ky2.PoezdInto',
+        'TK.view.ky2.poezd.FilterPPV',
+        'TK.view.ky2.poezd.PoezdsImportDir',
+        'TK.view.ky2.poezd.VagonsImportDir',
+        'TK.view.ky2.poezd.into.PoezdIntoForPoezdOutDir',
+        'TK.view.ky2.poezd.out.PoezdsIntoForPoezdOutDir',
+        'TK.view.ky2.poezd.zayav.Filter'
+    ],
+
     views: [
         'ky2.poezd.into.PoezdList',
         'ky2.poezd.into.PoezdForm',
@@ -14,6 +28,8 @@ Ext.define('TK.controller.ky2.PoezdController', {
         'ky2.AbstractForm',
         'ky2.poezd.PoezdsImportDir',
         'ky2.BasePoezdsImportDir',
+        'ky2.poezd.VagonsImportDir',
+        'ky2.BaseVagonsImportDir',
         'ky2.poezd.into.PoezdIntoForPoezdOutDir',
         'ky2.poezd.BasePoezdIntoForPoezdOut',
         'ky2.poezd.out.PoezdsIntoForPoezdOutDir',
@@ -21,7 +37,8 @@ Ext.define('TK.controller.ky2.PoezdController', {
         'ky2.poezd.out.PoezdZayavsOutDir',
         'ky2.BasePoezdZayavsDir',
         'nsi.EditList',
-        'nsi.List'
+        'nsi.List',
+        'ky2.poezd.FilterPPV'
     ],
     stores: [
         'ky2.PoezdsBase',
@@ -29,6 +46,7 @@ Ext.define('TK.controller.ky2.PoezdController', {
         'ky2.PoezdsOut',
         'ky2.PoezdsDir',
         'ky2.PoezdsImportDir',
+        'ky2.VagonsImportDir',
         'ky2.PoezdIntoForPoezdOutDir',
         'ky2.PoezdsIntoForPoezdOutDir',
         'ky2.PoezdZayavsDir'
@@ -39,6 +57,7 @@ Ext.define('TK.controller.ky2.PoezdController', {
         'ky2.PoezdOut',
         'ky2.PoezdDir',
         'ky2.PoezdImportDir',
+        'ky2.VagonImportDir',
         'ky2.PoezdIntoForPoezdOutDir',
         'ky2.PoezdsIntoForPoezdOutDir',
         'ky2.PoezdZayavDir',
@@ -60,6 +79,9 @@ Ext.define('TK.controller.ky2.PoezdController', {
     }, {
         ref: 'poezdsImportDir',
         selector: 'ky2poezdsimportdir > ky2basepoezdsimportdir'
+    }, {
+        ref: 'vagonsImportDir',
+        selector: 'ky2vagonsimportdir > ky2basevagonsimportdir'
     }, {
         ref: 'poezdIntoForPoezdOutList',
         selector: 'ky2poezdintoforpoezdoutdir > ky2basepoezdintoforpoezdout'
@@ -86,7 +108,7 @@ Ext.define('TK.controller.ky2.PoezdController', {
                 click: this.editPoezdInto
             },
             'ky2poezdintolist button[action="getPoezdIntoForPoezdOut"]': {
-                click: this.getPoezdIntoForPoezdOut
+                click: this.onGetPoezdIntoForPoezdOut
             },
             'ky2poezdoutlist button[action="getPoezdsIntoForPoezdOut"]': {
                 click: this.getPoezdsIntoForPoezdOut
@@ -105,18 +127,25 @@ Ext.define('TK.controller.ky2.PoezdController', {
             },
 
             'ky2poezdintolist': {
-                itemdblclick: this.editPoezdInto
+                itemdblclick: this.editPoezdInto,
+                itemclick: this.onClickItem
             },
             'ky2poezdoutlist': {
-                itemdblclick: this.editPoezdOut
+                itemdblclick: this.editPoezdOut,
+                itemclick: function (view, record) {
+                    this.fireEvent('updateMessanger', view, record);
+                }
             },
             'ky2poezdintolist button[action="delete"]': {
                 click: this.deletePoezd
             },
             'ky2poezdintoform button[action="import"] menuitem[action="showPoezdsImportDir"]': {
-                click: this.showPoezdsImportDir
+                click: this.onShowPoezdsImportDir
             },
             'ky2poezdsimportdir button[action="getPoesdsForImport"]': {
+                click: this.showVagonsImportDir
+            },
+            'ky2basevagonsimportdir button[action="getVagonsForImport"]': {
                 click: this.importPoesd
             },
             /*'ky2poezdintolist button[action="showPoezdsOutDir4PoezdIntoBind"]': {
@@ -141,7 +170,22 @@ Ext.define('TK.controller.ky2.PoezdController', {
                 click: this.saveExit
             },
             'ky2poezdintoform button[action="import"] menuitem[action=upload]': {
-                click: this.uploadPoezd
+                click: this.onUploadPoezd
+            },
+            'ky2poezdintoform button[action="import"] menuitem[action=uploadUpdate]': {
+                click: this.onUpdatePoezd
+            },
+            'ky2basepoezdlist button[action="reports"] menuitem[action="xlsexport"]': {
+                click: this.exportPoezd
+            },
+            // 'ky2basepoezdlist button[action="reports"] menuitem[action="r27"]': {
+            //     click: this.r27
+            // },
+            // 'ky2basepoezdlist button[action="reports"] menuitem[action="r27Blank"]': {
+            //     click: this.r27
+            // },
+            'ky2poezdoutform button[action="import"] menuitem[action=uploadUpdate]': {
+                click: this.onUpdatePoezd
             },
 
             // 'ky2basepoezdform radiogroup#koleya': {
@@ -157,7 +201,7 @@ Ext.define('TK.controller.ky2.PoezdController', {
                 click: this.toVgCtGrFromOutside
             },
             'ky2vgctgrtreeform button[action=editPoezd]': {
-                click: this.editPoezdFromOutside
+                click: this.editPoezdFromVgCtGr
             },
             'ky2bindtreeform button[action=editPoezd]': {
                 click: this.editPoezdFromOutside
@@ -168,13 +212,13 @@ Ext.define('TK.controller.ky2.PoezdController', {
             'ky2poezdoutform button[action="nsiOtpr"]': {
                 click: this.onShowNsiOtpr
             },
-            'ky2poezdintoform button[action="getZajavIntoForPoezdInto"]': {
+            'ky2poezdintoform button[action="import"] menuitem[action="getZajavIntoForPoezdInto"]': {
                 click: this.getZajavIntoForPoezdInto
             },
             'ky2poezdintolist button[action="getZajavIntoForPoezdInto"]': {
                 click: this.getZajavIntoForPoezdInto
             },
-            'ky2poezdoutform button[action="getZajavOutForPoezdOut"]': {
+            'ky2poezdoutform button[action="import"] menuitem[action="getZajavOutForPoezdOut"]': {
                 click: this.getZajavOutForPoezdOut
             },
             'ky2poezdzayavsintodir button[action="addToPoezdFromZayav"]': {
@@ -182,11 +226,64 @@ Ext.define('TK.controller.ky2.PoezdController', {
             },
             'ky2poezdzayavsoutdir button[action="addToPoezdFromZayav"]': {
                 click: this.addToPoezdOutFromZayavOut
+            },
+            'ky2poezdintolist button[action="filterPoezd"]': {
+                click: this.filterPoezd
+            },
+            'ky2poezdoutlist button[action="filterPoezd"]': {
+                click: this.filterPoezd
+            },
+            'ky2poezdzayavfilter button[action="applyFilter"]': {
+                click: this.applyFilterPoezd
+            },
+            'ky2poezdzayavfilter button[action="clearFilter"]': {
+                click: this.clearFilterPoezd
+            },
+            'ky2poezdsimportdir button[action="filterPPV"]': {
+                click: this.filterPPV
+            },
+            'ky2poezdfilterppv button[action="applyFilter"]': {
+                click: this.applyFilterPPV
+            },
+            'ky2poezdfilterppv button[action="clearFilter"]': {
+                click: this.clearFilterPPV
+            },
+            'ky2basevagonsimportdir': {
+                selectionchange: this.onSelectionchange
             }
+
         });
     },
 
-    uploadPoezd: function (btn, url) {
+    onExportPoezd: function (btn) {
+        this.savePoezd(null, this.exportPoezd.bind(this));
+    },
+
+    onUploadPoezd: function (btn) {
+        this.savePoezd(null, this.uploadPoezd.bind(this, 'upload'));
+    },
+
+    onUpdatePoezd: function (btn) {
+        this.savePoezd(null, this.uploadPoezd.bind(this, 'update'));
+    },
+
+    exportPoezd: function (btn) {
+        var poezdlist = this.getPoezdlist();
+        if (!TK.Utils.isRowSelected(poezdlist)) {
+            return false;
+        }
+        window.open('ky2/secure/Poezd.do?hid=' + poezdlist.getSelectionModel().getLastSelected().get('hid') + '&action=export_poezd', '_blank', '');
+    },
+
+    r27: function (btn) {
+        var poezdlist = this.getPoezdlist();
+        if (!TK.Utils.isRowSelected(poezdlist)) {
+            return false;
+        }
+        window.open('ky2/secure/Poezd.do?hid=' + poezdlist.getSelectionModel().getLastSelected().get('hid') + '&action=' + btn.action, '_blank', '');
+    },
+
+    uploadPoezd: function (action) {
         var record = this.getPoezdform().getRecord(),
             poezdHid = record.get('hid');
         if (poezdHid == null) {
@@ -224,7 +321,7 @@ Ext.define('TK.controller.ky2.PoezdController', {
                         if (form.isValid()) {
                             form.submit({
                                 url: 'ky2/secure/Poezd.do',
-                                params: {action: 'upload'},
+                                params: {action: action},
                                 waitMsg: this.waitMsg,
                                 scope: this,
                                 success: function (form, action) {
@@ -259,11 +356,11 @@ Ext.define('TK.controller.ky2.PoezdController', {
     },
 
     toVgCtGrInto: function (btn) {
-        this.toVgCtGr('ky2vgctgrtreeformpoezdinto', 'TK.model.ky2.PoezdVgCtGrTreeNode');
+        this.savePoezd(null, this.toVgCtGr.bind(this, 'ky2vgctgrtreeformpoezdinto', 'TK.model.ky2.PoezdVgCtGrTreeNode'));
     },
 
     toVgCtGrOut: function (btn) {
-        this.toVgCtGr('ky2vgctgrtreeformpoezdout', 'TK.model.ky2.PoezdVgCtGrTreeNode');
+        this.savePoezd(null, this.toVgCtGr.bind(this, 'ky2vgctgrtreeformpoezdout', 'TK.model.ky2.PoezdVgCtGrTreeNode'));
     },
 
     toVgCtGr: function (xtype, modelClsName) {
@@ -296,6 +393,10 @@ Ext.define('TK.controller.ky2.PoezdController', {
         //  poezdcontainer.down('form').getForm().findField('dprbDate').setValue(new Date());
 
         this.getCenter().add(poezdcontainer);
+    },
+
+    editPoezdFromVgCtGr: function (btn) {
+        this.getController('ky2.PoezdVgCtGrController').saveClick(null, null, null, btn, null, null, null, null, this.editPoezdFromOutside.bind(this, btn));
     },
 
     editPoezdFromOutside: function (btn) {
@@ -383,7 +484,7 @@ Ext.define('TK.controller.ky2.PoezdController', {
         this.savePoezd(1);
     },
 
-    savePoezd: function (close) {
+    savePoezd: function (close, nextStepFunction) {
         var form = this.getPoezdform();
         if (form.isValid()) {
             var poezd = form.getRecord(),
@@ -407,6 +508,9 @@ Ext.define('TK.controller.ky2.PoezdController', {
                             if (newPoezd) {       // packdoc will be available after save
                                 poezd.setPackDoc(Ext.create('TK.model.PackDoc', {hid: poezd.get('packDoc.hid')}));
                             }
+                            if (nextStepFunction instanceof Function) {
+                                nextStepFunction();
+                            }
                         }
                     }
                     this.getCenter().setLoading(false);
@@ -414,7 +518,7 @@ Ext.define('TK.controller.ky2.PoezdController', {
                 scope: this
             });
         } else {
-            Ext.Msg.alert('Warning', 'Form is not valid');
+            Ext.Msg.alert(this.titleWarn, this.msgInvalid);
         }
     },
 
@@ -444,6 +548,10 @@ Ext.define('TK.controller.ky2.PoezdController', {
         store.load();
     },
 
+    onShowPoezdsImportDir: function (btn) {
+        this.savePoezd(null, this.showPoezdsImportDir.bind(this));
+    },
+
     showPoezdsImportDir: function () {
         var record = this.getPoezdform().getRecord(),
             poezdHid = record.get('hid');
@@ -452,31 +560,81 @@ Ext.define('TK.controller.ky2.PoezdController', {
             return false;
         }
 
-        // var poezdlist = this.getPoezdlist();
-        // if (!TK.Utils.isRowSelected(poezdlist)) {
-        //     return false;
-        // }
-
         var win = Ext.widget('ky2poezdsimportdir'),
             store = win.down('grid').getStore();
+        Ext.apply(store.getProxy().extraParams, {'action': 'import_poezd_list'});
         // poezdModel = poezdlist.getSelectionModel().getLastSelected();
 
-        store.load({
-            params: {
-                action: 'import_poezd_list'/*,
-                 routeId: poezdModel.get('route.hid')*/
-            }
-        });
+        store.load();
+        // store.load({
+        //     extraParams: {
+        //         action: 'import_poezd_list'/*,
+        //          routeId: poezdModel.get('route.hid')*/
+        //     }
+        // });
     },
 
-    importPoesd: function () {
-        // var poezdlist = this.getPoezdlist(),
-        // poezdModel = poezdlist.getSelectionModel().getLastSelected(),
-        // extraParams = poezdlist.getStore().getProxy().extraParams,
+    showVagonsImportDir: function (btn) {
         var poezdModel = this.getPoezdform().getRecord(),
             poezdsDir = this.getPoezdsImportDir().getSelectionModel().getSelection(),
             poezdDirModel = poezdsDir.length > 0 ? poezdsDir[0] : null;
         if (poezdDirModel == null) {
+            Ext.Msg.show({
+                title: this.errorTitle,
+                msg: this.noSelectionError,
+                buttons: Ext.Msg.OK,
+                icon: Ext.Msg.ERROR
+            });
+            return false;
+        }
+
+        var win = Ext.widget('ky2vagonsimportdir'),
+            grid = win.down('grid'),
+            store = grid.getStore();
+        store.getProxy().extraParams = {
+            action: 'import_poezd_vagon_list',
+            n_packet: poezdDirModel.get('n_packet'),
+            n_poezd: poezdDirModel.get('n_poezd'),
+            ved_nomer: poezdDirModel.get('ved_nomer')
+        };
+        store.load({
+            scope: this,
+            callback: function (records, operation, success) {
+                if (success) {
+                    grid.getSelectionModel().selectAll(true);
+                    this.vagKontRecount4PPV(grid.getSelectionModel(), true);
+                }
+            }
+        });
+        btn.up('window').close();
+    },
+
+    onSelectionchange: function(model) {
+        this.vagKontRecount4PPV(model);
+    },
+
+    vagKontRecount4PPV: function(model, init) {
+        var selected = model.getSelection(),
+            grid = model.view.ownerCt,
+            kontsSel = 0;
+        Ext.Object.each(selected, function (index, vagon) {
+            kontsSel += vagon.get('cnkon');
+        });
+        if (init)
+            grid.up('window').down('#vagContAll').setText('Всего вагонов/контейнеров - ' + selected.length + '/' + kontsSel);
+        grid.up('window').down('#vagContSel').setText('Выбрано - ' + selected.length + '/' + kontsSel);
+    },
+
+    importPoesd: function (btn) {
+        // var poezdlist = this.getPoezdlist(),
+        // poezdModel = poezdlist.getSelectionModel().getLastSelected(),
+        // extraParams = poezdlist.getStore().getProxy().extraParams,
+        var poezdModel = this.getPoezdform().getRecord(),
+            vagonsDir = this.getVagonsImportDir().getSelectionModel().getSelection(),
+            extraParams = this.getVagonsImportDir().getStore().getProxy().extraParams,
+            nvags = [];
+        // poezdDirModel = poezdsDir.length > 0 ? poezdsDir[0] : null;
+        if (vagonsDir.length === 0) {
             Ext.Msg.show({
                 title: 'Ошибка',
                 msg: 'Не выбрано значение',
@@ -486,15 +644,18 @@ Ext.define('TK.controller.ky2.PoezdController', {
             return false;
         }
 
+        Ext.Array.each(vagonsDir, function (vagon) {
+            nvags.push(vagon.get('nvag'));
+        });
         this.getCenter().setLoading(true);
-
         Ext.Ajax.request({
-            url: Ext.ModelManager.getModel('TK.model.ky2.PoezdBase').getProxy().url,
+            url: Ext.ModelManager.getModel('TK.model.ky2.VagonImportDir').getProxy().url,
             params: {
-                n_packet: poezdDirModel.get('n_packet'),
-                n_poezd: poezdDirModel.get('n_poezd'),
-                ved_nomer: poezdDirModel.get('ved_nomer'),
+                n_packet: extraParams['n_packet'],
+                n_poezd: extraParams['n_poezd'],
+                ved_nomer: extraParams['ved_nomer'],
                 action: 'import_poesd',
+                nvag: nvags,
                 hid: poezdModel.get('hid')
                 // koleya: extraParams['koleya'],
                 // direction: extraParams['direction'],
@@ -504,8 +665,10 @@ Ext.define('TK.controller.ky2.PoezdController', {
             callback: function (options, success, response) {
                 this.getCenter().setLoading(false);
                 if (success) {
-                    this.getPoezdsImportDir().up('window').close();
-                    Ext.Msg.alert(this.warningMsg, this.uploadText);
+                    this.getVagonsImportDir().up('window').close();
+                    var editVagKontGruz = this.getPoezdform().down('button[action="editVgCtGr"]');
+                    editVagKontGruz.fireEvent('click', editVagKontGruz);
+                    // Ext.Msg.alert(this.warningMsg, this.uploadText);
                     // this.getPoezdlist().getStore().reload();
 
                 } else {
@@ -535,14 +698,14 @@ Ext.define('TK.controller.ky2.PoezdController', {
             Ext.each(vagModels, function (model, index) {
                 vagHids.push(model.get('hid'));
             });
-            var poezdModel = this.getPoezdlist().getSelectionModel().getLastSelected();
             win.setLoading(true);
             Ext.Ajax.request({
-                url: poezdModel.getProxy().url,
+                // url: poezdModel.getProxy().url,
+                url: 'ky2/secure/Poezd.do',
                 params: {
                     action: 'create_poezdout_from_poezdinto',
                     hids: vagHids,
-                    hid: poezdModel.get('hid')
+                    hid: vaglist.getPoezdHid()
                 },
                 scope: this,
                 success: function (response, options) {
@@ -554,6 +717,13 @@ Ext.define('TK.controller.ky2.PoezdController', {
                         buttons: Ext.Msg.OK,
                         icon: Ext.Msg.INFO
                     });
+                    var isYardTreepanel = win.getIsYardTreepanel(); // come from yard
+                    if (isYardTreepanel) {
+                        var respObj = Ext.decode(response.responseText);
+                        this.fireEvent("onRemoveVagsFromYard", respObj['rows'][0]);
+                    } else {
+                        this.getPoezdlist().getStore().reload();
+                    }
                     // var text = Ext.decode(response.responseText);
                 },
                 failure: function (response) {
@@ -643,7 +813,8 @@ Ext.define('TK.controller.ky2.PoezdController', {
                 scope: this,
                 success: function (response, options) {
                     win.setLoading(false);
-
+                    this.getPoezdlist().getStore().reload();
+                    vaglist.getStore().reload();
                     Ext.Msg.show({
                         title: '',
                         msg: 'Ok',
@@ -660,19 +831,38 @@ Ext.define('TK.controller.ky2.PoezdController', {
         }
     },
 
-    getPoezdIntoForPoezdOut: function (btn) {
+    onGetPoezdIntoForPoezdOut: function (btn) {
         var poezdlist = this.getPoezdlist();
         if (!TK.Utils.isRowSelected(poezdlist)) {
             return false;
         }
 
-        var win = Ext.widget('ky2poezdintoforpoezdoutdir'),
-            store = win.down('grid').getStore();
+        this.getPoezdIntoForPoezdOut(poezdlist.getSelectionModel().getLastSelected().get('hid'));
+    },
 
-        store.load({
-            params: {
-                action: 'get_poezdinto_for_poezdout',
-                hid: poezdlist.getSelectionModel().getLastSelected().get('hid')
+    getPoezdIntoForPoezdOut: function (hid, isYardTreepanel) {
+        Ext.Msg.show({
+            title: this.titleConfirmation,
+            msg: this.msgTrainByDeparture,
+            buttons: Ext.Msg.YESNO,
+            icon: Ext.Msg.QUESTION,
+            scope: this,
+            fn: function (buttonId) {
+                if (buttonId === 'yes') {
+                    var win = Ext.widget('ky2poezdintoforpoezdoutdir'),
+                        store = win.down('grid').getStore();
+
+                    win.down('grid').setPoezdHid(hid);
+                    if (isYardTreepanel) {
+                        win.setIsYardTreepanel(true);
+                    }
+                    store.load({
+                        params: {
+                            action: 'get_poezdinto_for_poezdout',
+                            hid: hid
+                        }
+                    });
+                }
             }
         });
     },
@@ -701,11 +891,12 @@ Ext.define('TK.controller.ky2.PoezdController', {
             gridStore = win.down('grid').getStore(),
             poezdModel = poezdlist.getSelectionModel().getLastSelected();
 
-        comboStore.getProxy().extraParams = {routeId: poezdModel.get('route.hid')};
+        comboStore.getProxy().extraParams = {routeId: poezdModel.get('route.hid'), koleya: poezdModel.get('koleya')};
         gridStore.removeAll(true); // clear store
     },
 
     onShowNsiOtpr: function (btn) {
+        console.log("PoezdController NsiOtpr")
         this.showNsiOtpr(this.getPoezdform().getForm());
     },
 
@@ -724,30 +915,28 @@ Ext.define('TK.controller.ky2.PoezdController', {
 
     getZajavOutForPoezdOut: function (btn) {
         var form = btn.up('form');
-        this.getZajavForPoezd('ky2poezdzayavsoutdir', 'get_zayavout_for_poezdout', form.getRecord(), form);
+        // this.getZajavForPoezd('ky2poezdzayavsoutdir', 'get_zayavout_for_poezdout', form.getRecord(), form);
+        this.savePoezd(null, this.getZajavForPoezd.bind(this, 'ky2poezdzayavsoutdir', 'get_zayavout_for_poezdout', form.getRecord(), form));
     },
 
     getZajavIntoForPoezdInto: function (btn) {
         var poezdModel;
         var list = btn.up('grid');
         if (list) {
-            // if (!TK.Utils.isRowSelected(list)) {
-            //     return false;
-            // }
-            // poezdModel = list.getStore().first();
             var extraParams = list.getStore().getProxy().extraParams;
             poezdModel = Ext.create('TK.model.ky2.PoezdInto', {
                 'route.hid': extraParams['routeId'],
                 direction: extraParams['direction'],
                 koleya: extraParams['koleya']
             });
-
+            this.getZajavForPoezd('ky2poezdzayavsintodir', 'get_zayavinto_for_poezdinto', poezdModel, list);
         } else {
             var form = btn.up('form');
             poezdModel = form.getRecord();
+            this.savePoezd(null, this.getZajavForPoezd.bind(this, 'ky2poezdzayavsintodir', 'get_zayavinto_for_poezdinto', poezdModel, form));
         }
 
-        this.getZajavForPoezd('ky2poezdzayavsintodir', 'get_zayavinto_for_poezdinto', poezdModel, list ? list : form);
+        // this.getZajavForPoezd('ky2poezdzayavsintodir', 'get_zayavinto_for_poezdinto', poezdModel, form);
     },
 
     getZajavForPoezd: function (xtype, action, poezdModel, caller) {
@@ -773,5 +962,52 @@ Ext.define('TK.controller.ky2.PoezdController', {
                 routeId: poezdModel.get('route.hid')
             }
         });
+    },
+
+    filterPoezd: function (btn) {
+        var win = Ext.widget('ky2poezdzayavfilter');
+        win.down('#noZayav').hide();
+        this.initFilter(win.down('form').getForm(), btn.up('grid').getStore());
+    },
+
+    applyFilterPoezd: function (btn) {
+        var form = btn.up('form').getForm();
+        if (form.isValid()) {
+            this.applyFilter(form, this.getPoezdlist().getStore());
+        }
+    },
+
+    clearFilterPoezd: function (btn) {
+        btn.up('form').getForm().reset();
+        this.getPoezdlist().getStore().clearFilter(true);
+        this.getPoezdlist().getStore().load();
+    },
+
+    filterPPV: function (btn) {
+        var win = Ext.widget('ky2poezdfilterppv');
+        this.initFilter(win.down('form').getForm(), btn.up('grid').getStore());
+    },
+
+    applyFilterPPV: function (btn) {
+        var form = btn.up('form').getForm();
+        if (form.isValid()) {
+            this.applyFilter(form, this.getPoezdsImportDir().getStore());
+        }
+    },
+
+    clearFilterPPV: function (btn) {
+        btn.up('form').getForm().reset();
+        this.getPoezdsImportDir().getStore().clearFilter(true);
+        this.getPoezdsImportDir().getStore().load();
+    },
+
+    onClickItem: function (gridview, record) {
+        this.fireEvent('updateMessanger', gridview, record);
+        var yardBtn = gridview.ownerCt.down('toolbar[dock="top"] button#yard');
+        if (!record.get('vagCount') || record.get('vagCount') === 0) {
+            yardBtn.hide();
+        } else {
+            yardBtn.show();
+        }
     }
 });

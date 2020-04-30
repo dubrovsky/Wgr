@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.PrintDataStampText" table="PRINT_DATA_STAMP_TEXT" batch-size="50">
+        <id name="hid" type="java.lang.Long">
+            <column name="HID" precision="20" scale="0"/>
+            <generator class="sequence">
+                <param name="sequence">PRINT_DATA_STAMP_BORDER_HID</param>
+            </generator>
+        </id>
+        <many-to-one name="stamp" class="com.bivc.cimsmgs.db.PrintDataStamp" fetch="select" not-null="true">
+            <column name="HID_STAMP" precision="20" scale="0" />
+        </many-to-one>
+        <property name="rllx" type="java.lang.Float">
+            <column name="RLLX" precision="6" scale="1" not-null="true" />
+        </property>
+        <property name="rlly" type="java.lang.Float">
+            <column name="RLLY" precision="6" scale="1" not-null="true" />
+        </property>
+        <property name="rurx" type="java.lang.Float">
+            <column name="RURX" precision="6" scale="1" not-null="true" />
+        </property>
+        <property name="rury" type="java.lang.Float">
+            <column name="RURY" precision="6" scale="1" not-null="true" />
+        </property>
+        <property name="fontFamily" type="string">
+            <column name="FONT_FAMILY" length="30"/>
+        </property>
+        <property name="fontSize" type="java.lang.Float" >
+            <column name="FONT_SIZE" precision="2" scale="1" />
+        </property>
+        <property name="leading" type="java.lang.Float" >
+            <column name="[LEADING]" precision="2" scale="1" />
+        </property>
+        <property name="bold" type="boolean" >
+            <column name="BOLD" precision="1" scale="0"/>
+        </property>
+        <property name="italic" type="boolean" >
+            <column name="ITALIC" precision="1" scale="0"/>
+        </property>
+        <property name="underline" type="boolean" >
+            <column name="UNDERLINE" precision="1" scale="0"/>
+        </property>
+        <property name="uppercase" type="boolean" >
+            <column name="UPPERCASE" precision="1" scale="0"/>
+        </property>
+        <property name="rotate" type="java.lang.Integer" >
+            <column name="ROTATE" precision="3" />
+        </property>
+        <property name="tabular" type="boolean" >
+            <column name="TABULAR" precision="1" scale="0"/>
+        </property>
+        <property name="name" type="string">
+            <column name="NAME" length="20"/>
+        </property>
+        <property name="mask" type="string">
+            <column name="MASK" length="20"/>
+        </property>
+        <property name="txt" type="string">
+            <column name="TXT" length="50"/>
+        </property>
+        <property name="color" type="string">
+            <column name="COLOR" length="8"/>
+        </property>
+    </class>
+</hibernate-mapping>

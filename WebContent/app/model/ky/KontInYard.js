@@ -1,6 +1,12 @@
 Ext.define('TK.model.ky.KontInYard', {
     extend: 'TK.model.ky.KontBase',
 
+    requires: [
+        'TK.model.ky.GruzInYard',
+        'TK.model.ky.PlombInYard'
+    ],
+
+
     fields: [
         {name:'dyardDate', type: 'string', useNull:true},
         {name:'dyardTime', type: 'string', useNull:true, defaultValue: null},

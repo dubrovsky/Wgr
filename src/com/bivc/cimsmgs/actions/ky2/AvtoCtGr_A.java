@@ -2,19 +2,15 @@ package com.bivc.cimsmgs.actions.ky2;
 
 import com.bivc.cimsmgs.actions.CimSmgsSupport_A;
 import com.bivc.cimsmgs.commons.Response;
-import com.bivc.cimsmgs.dao.AvtoDAO;
-import com.bivc.cimsmgs.dao.KontGruzHistoryDAO;
-import com.bivc.cimsmgs.dao.NsiClientDAO;
-import com.bivc.cimsmgs.dao.PoezdDAO;
+import com.bivc.cimsmgs.dao.*;
 import com.bivc.cimsmgs.db.ky.Avto;
 import com.bivc.cimsmgs.db.ky.Gruz;
 import com.bivc.cimsmgs.db.ky.Kont;
-import com.bivc.cimsmgs.db.ky.Poezd;
 import com.bivc.cimsmgs.doc2doc.orika.Mapper;
 import com.bivc.cimsmgs.dto.ky2.AvtoDTO;
-import com.bivc.cimsmgs.dto.ky2.PoezdDTO;
 import com.bivc.cimsmgs.formats.json.Deserializer;
 import com.bivc.cimsmgs.formats.json.Serializer;
+import com.bivc.cimsmgs.services.ky2.AvtoWzPzService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.bivc.cimsmgs.actions.CimSmgsSupport_A.KontGruzHistoryType.AVTO;
+import static com.bivc.cimsmgs.services.ky2.AvtoWzPzService.AvtoDocType.PZ;
 
 /**
  * @author p.dzeviarylin
@@ -80,7 +77,7 @@ public class AvtoCtGr_A extends CimSmgsSupport_A {
 		((List<Kont>) contGruz4History.get("konts")).addAll(konts);
 		((List<Gruz>) contGruz4History.get("gruzs")).addAll(gruzs);
 		avto = avtoDAO.makePersistent(avto);
-		saveContGruzHistory(contGruz4History, kontGruzHistoryDAO, AVTO);
+		saveVagContGruzHistory(contGruz4History, kontGruzHistoryDAO, AVTO, vagonHistoryDAO, getUser().getUsr().getUn(), null);
 
 		avtoDAO.flush(); // to get ids
 		setJSONData(
@@ -92,9 +89,18 @@ public class AvtoCtGr_A extends CimSmgsSupport_A {
 								)
 						)
 		);
+
+		if (avto.getDirection() == 1 && !avto.getKonts().isEmpty()) {
+			new Avto_A().getWzPz(PZ, avto.getHid(), avtoDAO, getUser(), avtoWzPzService, avtoFilesDAO);
+		}
+
 		return SUCCESS;
 	}
 
+	@Autowired
+	private AvtoFilesDAO avtoFilesDAO;
+	@Autowired
+	private AvtoWzPzService avtoWzPzService;
 	@Autowired
 	private Serializer defaultSerializer;
 	@Autowired
@@ -107,7 +113,8 @@ public class AvtoCtGr_A extends CimSmgsSupport_A {
 	private KontGruzHistoryDAO kontGruzHistoryDAO;
 	@Autowired
 	private NsiClientDAO clientDAO;
-
+	@Autowired
+	private VagonHistoryDAO vagonHistoryDAO;
 
 
 	private String action;

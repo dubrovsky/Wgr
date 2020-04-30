@@ -14,7 +14,7 @@ Ext.define('TK.view.ky2.poezd.BasePoezdForm', {
             fieldLabel: this.labelNpprm,
             //decimalPrecision: 0,
             name: 'npprm',
-            maxLength: 10
+            maxLength: 50
         }, {
             xtype: 'textfield',
             width: 400,
@@ -50,7 +50,7 @@ Ext.define('TK.view.ky2.poezd.BasePoezdForm', {
     },
     buildTopToolbar: function (config) {
         config.tbar = this.buildButtons();
-        config.tbar.push({text: '+Вагон/Контейнер/Груз', iconCls: 'edit', action: 'editVgCtGr'});
+        config.tbar.push({text: this.labelVgCtGr, iconCls: 'edit', action: 'editVgCtGr'});
         config.tbar.splice(1, 0,
             {
                 text: this.btnSaveExit,

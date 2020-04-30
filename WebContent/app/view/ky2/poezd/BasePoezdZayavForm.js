@@ -18,7 +18,7 @@ Ext.define('TK.view.ky2.poezd.BasePoezdZayavForm', {
                     type: 'hbox',
                     defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
                 },
-                fieldLabel: 'Номер заявки',
+                fieldLabel: this.lblOrderNum,
                 items: [{
                     xtype: 'textfield',
                     name: 'noZayav',
@@ -30,18 +30,18 @@ Ext.define('TK.view.ky2.poezd.BasePoezdZayavForm', {
                 xtype: 'radiogroup',
                 width: 400,
                 labelWidth: 150,
-                fieldLabel: 'Тип заявки',
+                fieldLabel: this.lblOrderType,
                 // itemId: 'koleya',
                 // columns: 1,
                 // vertical: true,
                 allowBlank: false,
                 items: [
-                    {boxLabel: 'Выгрузка', name: 'direction', inputValue: 1},
-                    {boxLabel: 'Погрузка', name: 'direction', inputValue: 2}
+                    {boxLabel: this.lblUnloading, name: 'direction', inputValue: 1},
+                    {boxLabel: this.lblLoading, name: 'direction', inputValue: 2}
                 ]
             }, {
                 xtype: 'fieldset',
-                title: 'Оформлена',
+                title: this.titleDesigned,
                 layout: 'anchor',
                 defaults: {
                     anchor: '100%'
@@ -49,13 +49,13 @@ Ext.define('TK.view.ky2.poezd.BasePoezdZayavForm', {
                 width: 450,
                 items: [{
                     labelWidth: '145px',
-                    fieldLabel: 'Дата',
+                    fieldLabel: this.lblDate,
                     name: 'zayavDate',
                     xtype: 'datefield',
                     altFormats: 'd.m.y'
                 }, {
                     labelWidth: '145px',
-                    fieldLabel: 'Время',
+                    fieldLabel: this.lblTime,
                     name: 'zayavTime',
                     xtype: 'timefield',
                     // altFormats:'H:i'
@@ -65,15 +65,15 @@ Ext.define('TK.view.ky2.poezd.BasePoezdZayavForm', {
                 xtype: 'textfield',
                 width: 400,
                 labelWidth: 150,
-                fieldLabel: 'Международный номер поезда',
+                fieldLabel: this.lblInternationalTrNum,
                 //decimalPrecision: 0,
                 name: 'npprm',
-                maxLength: 10
+                maxLength: 50
             }, {
                 xtype: 'textfield',
                 width: 400,
                 labelWidth: 150,
-                fieldLabel: 'Номер поезда',
+                fieldLabel: this.lblTrainNum,
                 //decimalPrecision: 0,
                 name: 'nppr',
                 maxLength: 5
@@ -82,7 +82,7 @@ Ext.define('TK.view.ky2.poezd.BasePoezdZayavForm', {
                 layout: {
                     type: 'hbox'
                 },
-                fieldLabel: 'Клиент',
+                fieldLabel: this.lblClient,
                 labelWidth: 150,
                 width: 400,
                 items: [{
@@ -114,11 +114,11 @@ Ext.define('TK.view.ky2.poezd.BasePoezdZayavForm', {
                 iconCls: 'save_close',
                 action: 'saveExit'
             }, '-', {
-                text: '+Вагон/Контейнер/Груз',
+                text: this.btnVgCtGr,
                 iconCls: 'edit',
                 action: 'editVgCtGr'
             }, '-', {
-                text: 'Импорт из XLS',
+                text: this.btnImportFromXLS,
                 iconCls: 'excel',
                 action: 'upload'
             }, '-', {

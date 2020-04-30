@@ -2,7 +2,13 @@ Ext.define('TK.view.ky2.yard.YardSectorList', {
     extend: 'TK.view.ky2.AbstractWindow',
     alias: 'widget.ky2yardsectorlist',
 
-    title: 'Сектора',
+    requires: [
+        'TK.Utils',
+        'TK.view.ky2.AbstractList'
+    ],
+
+
+    title: this.title,
     width: 700,
     maxHeight: 600,
     autoScroll: true,
@@ -13,9 +19,9 @@ Ext.define('TK.view.ky2.yard.YardSectorList', {
             buildColumns: function (config) {
                 config.columns = {
                     items: [
-                        {text: 'Наименование', dataIndex: 'name', flex: 1, renderer: TK.Utils.renderLongStr},
-                        {text: 'Описание', dataIndex: 'descr', flex: 1, renderer: TK.Utils.renderLongStr},
-                        {text: 'Группы', dataIndex: 'groups', flex: 1, renderer: TK.Utils.renderLongStr}
+                        {text: this.columnLblName, dataIndex: 'name', flex: 1, renderer: TK.Utils.renderLongStr},
+                        {text: this.columnLblDescription, dataIndex: 'descr', flex: 1, renderer: TK.Utils.renderLongStr},
+                        {text: this.columnLblGroups, dataIndex: 'groups', flex: 1, renderer: TK.Utils.renderLongStr}
                     ]
                 };
             },
@@ -24,12 +30,12 @@ Ext.define('TK.view.ky2.yard.YardSectorList', {
             },
             buildTopToolbar: function (config) {
                 config.tbar = [
-                    {text: 'Создать', iconCls: 'doc_new', action: 'create'}, '-',
-                    {text: "Редактировать", iconCls: 'edit', action: 'edit'}, '-'
+                    {text: this.btnCreate, iconCls: 'doc_new', action: 'create'}, '-',
+                    {text: this.btnEdit, iconCls: 'edit', action: 'edit'}, '-'
                 ];
 
                 if (tkUser.hasPriv('CIM_DELETE')) {
-                    config.tbar.push({text: "Удалить", iconCls: 'del', action: 'delete'}, '-');
+                    config.tbar.push({text: this.btnDelete, iconCls: 'del', action: 'delete'}, '-');
                 }
             }
         }];

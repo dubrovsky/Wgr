@@ -6,7 +6,7 @@ Ext.define('TK.view.ky.BaseKontOutForm', {
         this.callParent(arguments);
         config.items[0].items.splice(1, 0, {
             xtype:'fieldset',
-            title: 'Отправление',
+            title: '!!Отправление',
             layout: 'anchor',
             defaults: {
                 anchor: '100%'

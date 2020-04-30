@@ -2,6 +2,13 @@ Ext.define('TK.view.ky.poezd.into.Form', {
     extend:'Ext.container.Container',
     alias:'widget.kypoezdintoform',
 
+    requires: [
+        'TK.view.ky.poezd.BasePoezdForm',
+        'TK.view.ky.poezd.into.vagon.List',
+        'TK.view.ky.poezd.into.vagon.kont.List'
+    ],
+
+
     closable: false,
     layout: 'border',
     items: [{
@@ -12,19 +19,19 @@ Ext.define('TK.view.ky.poezd.into.Form', {
             //this.callParent(arguments);
             config.items.splice(2, 0, {
                 xtype:'fieldset',
-                title: 'Прибытие',
+                title: '!!!!!!Прибытие',
                 layout: 'anchor',
                 defaults: {
                     anchor: '100%'
                 },
                 width:250,
                 items: [{
-                    fieldLabel:'Дата',
+                    fieldLabel:'!!!!!!Дата',
                     name : 'dprbDate',
                     xtype: 'datefield',
                     altFormats:'d.m.y'
                 },{
-                    fieldLabel:'Время',
+                    fieldLabel:'!!!!!!Время',
                     name : 'dprbTime',
                     xtype: 'timefield',
                     //snapToIncrement: true,

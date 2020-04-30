@@ -51,6 +51,12 @@ Ext.define('TK.controller.User', {
             'viewport > tabpanel > userlist button[action=copy]': {
                 click: this.onCopy
             },
+            'viewport > tabpanel > userlist button[action=grFilter]': {
+                click: this.onGroupFilter
+            },
+            'viewport > tabpanel > userlist button[action=grFilterReset]': {
+                click: this.onGroupFilterReset
+            },
             'viewport > tabpanel > userlist': {
                 itemdblclick: function(){
                     this.onEdit(Ext.create('Ext.Button', {action:'edit'}));
@@ -97,6 +103,9 @@ Ext.define('TK.controller.User', {
             },
             'userlistgroups button[action=edit]': {
                 click: this.onEditGroups
+            },
+            'userlistgroups button[action=filterUsersGr]': {
+                click: this.filterUsers
             },
             'window > userlistgroups': {
                 itemdblclick: function(){
@@ -191,7 +200,7 @@ Ext.define('TK.controller.User', {
     onUserFormShow: function(win){
         var panel = this.getUserForm(), form = panel.getForm(), field = form.findField('ps_cnfm');
         field.setDisabled(true);
-        if (panel.mode == 'edit') {
+        if (panel.mode === 'edit') {
             field = form.findField('usr.ps');
             field.allowBlank = true;
             field.labelEl.update(panel.labelPass2);
@@ -210,7 +219,7 @@ Ext.define('TK.controller.User', {
                 field.setValue(field.getValue().replace(/,/g, '\n'));
             }
         }
-        if (panel.mode == 'copy') {
+        if (panel.mode === 'copy') {
 
             form.loadRecord(this.getUserList().selModel.getLastSelected());
             field = form.findField('usr.un').reset();
@@ -225,7 +234,7 @@ Ext.define('TK.controller.User', {
         }
     },
     onEdit: function (btn) {
-        if (btn.action == 'edit') {
+        if (btn.action === 'edit') {
             if (!TK.Utils.isRowSelected(this.getUserList())) {
                 Ext.Msg.alert(this.titleNoUser, this.msgNoUser);
                 return;
@@ -310,6 +319,9 @@ Ext.define('TK.controller.User', {
             listeners: {show: function(win){win.getComponent(0).store.load();}}
         });
     },
+    /**
+     * Функция выставляет галочки ВЫБРАНО, согласго выбранных групп в записи.
+     */
     onUserGroupsStoreLoad: function (store, records) {
         if(this.getUserForm()) {
             var form = this.getUserForm().getForm(),
@@ -436,5 +448,42 @@ Ext.define('TK.controller.User', {
         } else {
             TK.Utils.failureDataMsg();
         }
+    },
+    onGroupFilter:function (btn) {
+        console.log('onGroupFilter');
+        var win=Ext.create('Ext.window.Window', {
+            width: 500, height:500, y: 1,
+            modal: true,
+            layout: 'fit',
+            autoShow: true,
+            items: {xtype:'userlistgroups', ownerBtn: btn}
+        });
+        win.down('#selBtn').action='filterUsersGr';
+    },
+    filterUsers:function (btn) {
+        console.log('filterUsers');
+        var form=Ext.ComponentQuery.query('userlistgroups')[0],
+            selRec=form.down('gridview').getSelectionModel().getLastSelected(),
+            formUser=Ext.ComponentQuery.query('userlist')[0],
+            groupNam;
+        if(selRec)
+        {
+            groupNam=selRec.data['id'];
+        }
+        if(groupNam || searchFieldVal)
+        {
+            var userStore=formUser.down('gridview').getStore();
+            userStore.proxy.extraParams['query1'] = groupNam;
+            userStore.reload();
+            var fltrBtn=formUser.down('#grFilter');
+            fltrBtn.setText(fltrBtn.getText().split("<br>")[0]+"<br>"+groupNam);
+            form.up().destroy();
+        }
+    },
+    onGroupFilterReset:function (btn) {
+        var userStore=Ext.getStore('Users');
+        userStore.proxy.extraParams['query1'] = null;
+        btn.up().down('#grFilter').setText(btn.getText().split("<br>")[0]);
+        userStore.reload();
     }
 });

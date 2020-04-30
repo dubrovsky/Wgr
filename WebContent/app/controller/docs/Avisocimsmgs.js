@@ -53,7 +53,10 @@ Ext.define('TK.controller.docs.Avisocimsmgs', {
     init:function () {
         this.control({
             'avisocimsmgslist':{
-                select: this.onRowclick
+                select: this.onRowclick,
+                itemclick: function (view, record) {
+                    this.fireEvent('updateMessanger', view, record);
+                }
             },
             'avisocimsmgs button[action=changeVgCtGr]': {
                 click: this.onCimSmgsVgCtGrWinShow

@@ -2,8 +2,11 @@ package com.bivc.cimsmgs.db.ky;
 
 // Generated 19.02.2014 14:19:48 by Hibernate Tools 3.4.0.CR1
 
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import com.bivc.cimsmgs.dao.NsiClientDAO;
+import com.bivc.cimsmgs.db.nsi.Client;
+import com.bivc.cimsmgs.dto.ky2.GruzDTO;
 
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -18,16 +21,18 @@ public class Gruz implements Serializable, Comparable<Gruz> {
 	private Vagon vagon;
 	private Avto avto;
 	private AvtoZayav avtoZayav;
+	private Client client;
 	private String upak;
 	private String kgvn;
 	private String nzgr;
 	private Integer places;
 	private Date dattr;
-	private Byte sort;
+	private Integer sort;
 	private BigDecimal massa;
     private String trans;
     private String un;
     private Date altered;
+	private String gruzotpr;
 	private Set<KontGruzHistory> history = new TreeSet<>();
 
 	public Set<KontGruzHistory> getHistory() {
@@ -38,10 +43,10 @@ public class Gruz implements Serializable, Comparable<Gruz> {
 		this.history = history;
 	}
 
-	@Override
+	/*@Override
     public String toString() {
         return ReflectionToStringBuilder.toStringExclude(this, "kont");
-    }
+    }*/
 
     public Date getAltered() {
         return altered;
@@ -70,7 +75,7 @@ public class Gruz implements Serializable, Comparable<Gruz> {
     public Gruz() {
 	}
 
-	public Gruz(Long hid, Kont kont, String upak, String kgvn, String nzgr, Integer places, Date dattr, Byte sort, BigDecimal massa, String trans, String un, Date altered) {
+	public Gruz(Long hid, Kont kont, String upak, String kgvn, String nzgr, Integer places, Date dattr, Integer sort, BigDecimal massa, String trans, String un, Date altered) {
 		this.hid = hid;
 		this.kont = kont;
 		this.upak = upak;
@@ -141,11 +146,11 @@ public class Gruz implements Serializable, Comparable<Gruz> {
 		this.dattr = dattr;
 	}
 
-	public Byte getSort() {
+	public Integer getSort() {
 		return this.sort;
 	}
 
-	public void setSort(Byte sort) {
+	public void setSort(Integer sort) {
 		this.sort = sort;
 	}
 
@@ -202,6 +207,20 @@ public class Gruz implements Serializable, Comparable<Gruz> {
 		this.avtoZayav = avtoZayav;
 	}
 
+	@Transient
+	public Long getRouteHid(){
+		Long routeHid = null;
+		if(getVagon() != null) {
+			if (getVagon().getPoezd() != null) {
+				routeHid = getVagon().getPoezd().getRoute().getHid();
+			} else if (getVagon().getZayav() != null) {
+				routeHid = getVagon().getZayav().getRoute().getHid();
+			}
+		}
+
+		return routeHid;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -217,11 +236,36 @@ public class Gruz implements Serializable, Comparable<Gruz> {
 				massa.equals(gruz.massa) &&
 				trans.equals(gruz.trans) &&
 				un.equals(gruz.un) &&
+				gruzotpr.equals(gruz.gruzotpr) &&
 				altered.equals(gruz.altered);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(hid, upak, kgvn, nzgr, places, dattr, sort, massa, trans, un, altered);
+		return Objects.hash(hid, upak, kgvn, nzgr, places, dattr, sort, massa, trans, un, altered, gruzotpr);
+	}
+
+	public Client getClient() {
+		return client;
+	}
+
+	public void setClient(Client client) {
+		this.client = client;
+	}
+
+	public String getGruzotpr() {
+		return gruzotpr;
+	}
+
+	public void setGruzotpr(String gruzotpr) {
+		this.gruzotpr = gruzotpr;
+	}
+
+	public void updateClient(GruzDTO dto, NsiClientDAO clientDAO) {
+		if (dto.getClientHid() != null) {
+			setClient(clientDAO.getById(dto.getClientHid(), false));
+		} else {
+			setClient(null);
+		}
 	}
 }

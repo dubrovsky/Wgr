@@ -1,6 +1,11 @@
 Ext.define('TK.view.ky.KontSearchList', {
     extend: 'Ext.window.Window',
     alias:'widget.kykontsearchlist',
+
+    requires: [
+        'TK.view.ky.KontIntoOutList'
+    ],
+
     title: 'Поиск контейнера',
     autoShow: true,
     maxHeight: 500,

@@ -1,12 +1,12 @@
 /**
  *  класс для модели отображающий строку XLS файла контейнеров
  */
-package Ti.model;
+package Ti.model.excel;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-public class ContSmgs2 {
+public class ContSmgs2 extends XlsDefaultModel {
     /**
      * № вагона(платформы)/ Nr.platformy
      */

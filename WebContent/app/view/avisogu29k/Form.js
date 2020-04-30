@@ -1,7 +1,12 @@
 Ext.define('TK.view.avisogu29k.Form', {
     extend:'TK.view.DocsForm',
     alias:'widget.avisogu29k',
-    requires:['TK.view.edit.DetailPanel', 'TK.view.edit.DetailTabPanel', 'TK.view.edit.DetailGrid'],
+    requires: [
+        'TK.model.SmgsKon',
+        'TK.view.edit.DetailGrid',
+        'TK.view.edit.DetailPanel',
+        'TK.view.edit.DetailTabPanel'
+    ],
     buildItems:function (config) {
         config.items = [
             //            {xtype:'box', autoEl:{tag: 'img', src: 'resources/images/aviso.jpg'}, itemId:'blank'},

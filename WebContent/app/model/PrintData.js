@@ -1,5 +1,6 @@
 Ext.define('TK.model.PrintData', {
     extend:'Ext.data.Model',
+
     idProperty:'hid',
     fields:[
         'name', 'descr','fontFamily',

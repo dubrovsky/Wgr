@@ -18,9 +18,11 @@ public interface YardDAO extends GenericDAO<Yard, Long> {
 
     List<Yard> findAll(Integer limit, Integer start, List<Filter> filters, Locale locale);
 
-    Long countAll(List<Filter> filters, Locale locale, Usr usr, Long routeId);
+    Long countAll(List<Filter> filters, Locale locale, Usr usr, Long routeId, List<String> nkons);
 
-    List<Yard> findAll(Integer limit, Integer start, List<Filter> filters, Locale locale, Usr usr, Long routeId);
+    List<Yard> findAll(Integer limit, Integer start, List<Filter> filters, Locale locale, Usr usr, Long routeId, List<String> nkons);
+
+    Yard findPlace4Kont(Integer sectorHid);
 
     List<Yard> findPlaces4Kont(Integer limit, Integer start, List<Filter> filters, Usr usr, Locale locale);
 
@@ -32,7 +34,7 @@ public interface YardDAO extends GenericDAO<Yard, Long> {
 
     List<YardFilerDirDTO> getPoezdsForFilter(Usr usr);
 
-    List<YardFilerDirDTO> getGruzotprsForFilter(Usr usr);
+    List<YardFilerDirDTO> getGruzotprsForFilter(Usr usr, Long routeId);
 
 
 //    public void delete(Long hid);

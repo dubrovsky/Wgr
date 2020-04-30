@@ -4,7 +4,7 @@ Ext.define('TK.view.ky2.client.Filter', {
     autoShow: true,
     modal: true,
     y: 0,
-    title: "Фильтр",
+    title: this.title,
     initComponent: function () {
         this.items = [
             {
@@ -15,28 +15,28 @@ Ext.define('TK.view.ky2.client.Filter', {
                         xtype: 'datefield',
                         name: 'dprbStart',
                         altFormats: 'd.m.y',
-                        fieldLabel: 'Прибытие, с'
+                        fieldLabel: this.lblArrivalFrom
                     },
                     {
                         xtype: 'datefield',
                         name: 'dprbEnd',
                         altFormats: 'd.m.y',
-                        fieldLabel: 'Прибытие, по'
+                        fieldLabel: this.lblArrivalTo
                     },
                     {
                         xtype: 'textfield',
                         name: 'nkon',
-                        fieldLabel: 'Контейнер'
+                        fieldLabel: this.lblContainer
                     },
                     {
                         xtype: 'radiogroup',
-                        fieldLabel: 'Место положения',
+                        fieldLabel: this.lblPlace,
                         columns: 1,
                         vertical: true,
                         items: [
-                            {boxLabel: 'Все', name: 'location', inputValue: '0', checked: true},
-                            {boxLabel: 'Вагон', name: 'location', inputValue: '1'},
-                            {boxLabel: 'Авто', name: 'location', inputValue: '2'}
+                            {boxLabel: this.lblAll, name: 'location', inputValue: '0', checked: true},
+                            {boxLabel: this.lblVagon, name: 'location', inputValue: '1'},
+                            {boxLabel: this.lblTruck, name: 'location', inputValue: '2'}
                         ]
                     },
                     {
@@ -44,24 +44,24 @@ Ext.define('TK.view.ky2.client.Filter', {
                         minValue: 1,
                         allowDecimals: false,
                         name: 'kyDays',
-                        fieldLabel: 'Кол-во дней'
+                        fieldLabel: this.lblDaysQuantity
                     }
                 ],
                 buttons: [
                     {
-                        text: "Фильтровать",
+                        text: this.btnFilter,
                         formBind: true,
                         disabled: true,
                         action: 'applyFilterClient'
                     },
                     {
-                        text: "Очистить",
+                        text: this.btnClear,
                         handler: function (btn) {
                             btn.up('form').getForm().reset();
                         }
                     },
                     {
-                        text: "Закрыть",
+                        text: this.btnClose,
                         scope: this,
                         handler: function (btn) {
                             btn.up('window').close();

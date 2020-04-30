@@ -17,7 +17,7 @@ Ext.define('TK.view.ky.BaseKontForm', {
                     type: 'hbox',
                     defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
                 },
-                fieldLabel: 'Номер контейнера',
+                fieldLabel: '!Номер контейнера',
                 items: [{
                     xtype:'textfield',
                     name: 'nkon',

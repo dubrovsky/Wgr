@@ -18,6 +18,7 @@ Ext.define('TK.view.nsi.List', {
     layout: 'fit',
     autoShow: true,
     maximizable:true,
+    defaultFocus: 'sfield',
     initComponent: function() {
         var config = {};
         this.buildConfig(config);
@@ -87,6 +88,7 @@ Ext.define('TK.view.nsi.List', {
             xtype: 'toolbar',
             items: {
                 xtype: 'searchfield',
+                itemId:'sfield',
                 store: config.items.store,
                 value: this.search
             }

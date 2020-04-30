@@ -2,6 +2,11 @@ Ext.define('TK.view.ky2.yard.YardForm', {
     extend: 'TK.view.ky2.AbstractWindow',
     alias:'widget.ky2yardform',
 
+    requires: [
+        'TK.view.ky2.AbstractForm'
+    ],
+
+
     buildItems: function(config) {
         var owner = this;
         config.items = [{
@@ -11,7 +16,7 @@ Ext.define('TK.view.ky2.yard.YardForm', {
                     {
                         xtype: 'numberfield',
                         name : 'x',
-                        fieldLabel: /*owner.labelX*/'Позиция',
+                        fieldLabel: /*owner.labelX*/this.lblPosition,
                         minValue: 0,
                         allowDecimals: false,
                         afterLabelTextTpl: this.required,
@@ -20,7 +25,7 @@ Ext.define('TK.view.ky2.yard.YardForm', {
                     {
                         xtype: 'numberfield',
                         name : 'y',
-                        fieldLabel: /*owner.labelY*/'Ряд',
+                        fieldLabel: /*owner.labelY*/this.lblRow,
                         minValue: 0,
                         allowDecimals: false,
                         afterLabelTextTpl: this.required,
@@ -29,7 +34,7 @@ Ext.define('TK.view.ky2.yard.YardForm', {
                     {
                         xtype: 'numberfield',
                         name : 'z',
-                        fieldLabel: /*owner.labelZ*/'Ярус',
+                        fieldLabel: /*owner.labelZ*/this.lblFloor,
                         minValue: 0,
                         allowDecimals: false,
                         afterLabelTextTpl: this.required,
@@ -43,7 +48,7 @@ Ext.define('TK.view.ky2.yard.YardForm', {
                             type: 'hbox',
                             defaultMargins: {top: 0, right: 10, bottom: 0, left: 0}
                         },
-                        fieldLabel: owner.labelSector,
+                        fieldLabel: this.lblSector,
                         afterLabelTextTpl: this.required,
                         items: [
                             {

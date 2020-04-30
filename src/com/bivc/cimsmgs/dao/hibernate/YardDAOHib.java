@@ -7,6 +7,8 @@ import com.bivc.cimsmgs.dao.YardDAO;
 import com.bivc.cimsmgs.db.Usr;
 import com.bivc.cimsmgs.db.ky.*;
 import com.bivc.cimsmgs.dto.ky2.YardFilerDirDTO;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
@@ -42,7 +44,7 @@ public class YardDAOHib extends GenericHibernateDAO<Yard, Long> implements YardD
     }
 
     @Override
-    public List<Yard> findAll(Integer limit, Integer start, List<Filter> filters, Locale locale, Usr usr, Long routeId) {
+    public List<Yard> findAll(Integer limit, Integer start, List<Filter> filters, Locale locale, Usr usr, Long routeId, List<String> nkons) {
         final Criteria crit = getSession().createCriteria(getPersistentClass(), "yard1");
         final Criteria sectorCrit = crit.createAlias("sector", "sector");
         crit.createAlias("sector.route", "route").add(Restrictions.eq("route.hid", routeId));
@@ -56,6 +58,10 @@ public class YardDAOHib extends GenericHibernateDAO<Yard, Long> implements YardD
         crit.add(Subqueries.exists(yardSectorGroups));
 
         crit.createAlias("konts", "konts");   // select only with konts
+        crit.createAlias("konts.client", "client",  CriteriaSpecification.LEFT_JOIN);
+        if (CollectionUtils.isNotEmpty(nkons))
+            crit.add(Restrictions.in("konts.nkon", nkons));
+
 
         /*DetachedCriteria kontsCrit =          // select only with konts by default
                 DetachedCriteria.forClass(Kont.class, "kont1").
@@ -66,7 +72,7 @@ public class YardDAOHib extends GenericHibernateDAO<Yard, Long> implements YardD
         if (start >= 0) {
             crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 200 : limit);
         }
-        crit.addOrder(Order.asc("sector.name"));
+        crit.addOrder(Order.asc("sector.name")).addOrder(Order.asc("hid"));
 
         applyFilter(filters, crit, sectorCrit, locale);
 
@@ -74,7 +80,7 @@ public class YardDAOHib extends GenericHibernateDAO<Yard, Long> implements YardD
     }
 
     @Override
-    public Long countAll(List<Filter> filters, Locale locale, Usr usr, Long routeId) {
+    public Long countAll(List<Filter> filters, Locale locale, Usr usr, Long routeId, List<String> nkons) {
         final Criteria crit = getSession().createCriteria(getPersistentClass(), "yard1");
         final Criteria sectorCrit = crit.createAlias("sector", "sector");
         crit.createAlias("sector.route", "route").add(Restrictions.eq("route.hid", routeId));
@@ -88,7 +94,12 @@ public class YardDAOHib extends GenericHibernateDAO<Yard, Long> implements YardD
                         add(Property.forName("ysg.id.yardSectorId").eqProperty("sector.hid"));
         crit.add(Subqueries.exists(yardSectorGroups));
 
-        crit.createAlias("konts", "konts");   // select only with konts
+        crit.createAlias("konts", "konts");   // select only with konts         crit.createAlias("konts.client", "client");
+        crit.createAlias("konts.client", "client",  CriteriaSpecification.LEFT_JOIN);
+
+        if (CollectionUtils.isNotEmpty(nkons))
+            crit.add(Restrictions.in("konts.nkon", nkons));
+
 
         applyFilter(filters, crit, sectorCrit, locale);
 
@@ -104,6 +115,25 @@ public class YardDAOHib extends GenericHibernateDAO<Yard, Long> implements YardD
         applyFilter(filters, crit, null, locale);
 
         return (Long) crit.uniqueResult();
+    }
+
+    @Override
+    public Yard findPlace4Kont(Integer sectorHid) {
+        Criteria crit = getSession().createCriteria(getPersistentClass(), "yard1").createAlias("yard1.sector", "sector");
+
+//        crit.add(Restrictions.in("trans", usr.getTrans()));
+
+            crit.setMaxResults(1);
+
+//        crit.add(Restrictions.eq("empty", true));
+        DetachedCriteria kontsCrit = DetachedCriteria.forClass(Kont.class, "kont1").
+                setProjection(Property.forName("hid")).
+                add(Property.forName("kont1.yard.hid").eqProperty("yard1.hid"));
+
+        crit.add(Subqueries.notExists(kontsCrit));
+        crit.add(Restrictions.eq("sector.hid", sectorHid));
+
+        return (Yard)crit.uniqueResult();
     }
 
     @Override
@@ -193,13 +223,13 @@ public class YardDAOHib extends GenericHibernateDAO<Yard, Long> implements YardD
     }
 
     @Override
-    public List<YardFilerDirDTO> getGruzotprsForFilter(Usr usr) {
+    public List<YardFilerDirDTO> getGruzotprsForFilter(Usr usr, Long routeId) {
         Criteria crit = getSession().createCriteria(Kont.class);
-        final Criteria sectorCrit = crit.createAlias("yard", "yard").createAlias("yard.sector", "sector");
+        final Criteria sectorCrit = crit.createAlias("yard", "yard").createAlias("yard.sector", "sector").createAlias("client", "client");
         crit.add(Restrictions.conjunction()
 //                .add(Restrictions.isNotNull("yard"))
-                        .add(Restrictions.isNotNull("gruzotpr"))
-                        .add(Restrictions.ne("gruzotpr", ""))
+                        .add(Restrictions.isNotNull("client"))
+//                        .add(Restrictions.ne("gruzotpr", ""))
 
         );
 
@@ -213,7 +243,8 @@ public class YardDAOHib extends GenericHibernateDAO<Yard, Long> implements YardD
 
         crit.setProjection(
                 Projections.distinct(
-                        Projections.projectionList().add(Projections.property("gruzotpr"), "gruzotpr")
+                        Projections.projectionList().add(Projections.property("client.hid"), "hid")
+                                                    .add(Projections.property("client.sname"), "gruzotpr")
                 )
         );
         crit.setResultTransformer(Transformers.aliasToBean(YardFilerDirDTO.class));
@@ -252,6 +283,19 @@ public class YardDAOHib extends GenericHibernateDAO<Yard, Long> implements YardD
                                 .add(Property.forName("history.kont.hid").eqProperty("konts.hid"));
 
                 crit.add(Subqueries.exists(historyCrit));
+            } else if (filters.stream().anyMatch(
+                    filter -> StringUtils.isNotBlank(filter.getValue()) && StringUtils.isNotBlank(filter.getProperty()) && (
+                            Yard.FilterFields.valueOf(filter.getProperty().toUpperCase()) == AVTO
+                    )
+            )) {
+                historyCrit =
+                        DetachedCriteria.forClass(KontGruzHistory.class, "history")
+                                .createAlias("avto", "avto")
+                                .setProjection(Property.forName("hid"))
+                                .add(Restrictions.isNotNull("avto"))
+                                .add(Property.forName("history.kont.hid").eqProperty("konts.hid"));
+
+                crit.add(Subqueries.exists(historyCrit));
             }
 
             for (Filter filter : filters) {
@@ -271,8 +315,12 @@ public class YardDAOHib extends GenericHibernateDAO<Yard, Long> implements YardD
                             assert historyCrit != null;
                             historyCrit.add(Restrictions.eq("poezd.npprm", StringUtils.trim(filter.getValue())));
                             break;
+                        case AVTO:
+                            assert historyCrit != null;
+                            historyCrit.add(Restrictions.isNotNull("avto"));
+                            break;
                         case GRUZOTPR:
-                            crit.add(Restrictions.eq("konts.gruzotpr", StringUtils.trim(filter.getValue())));
+                            crit.add(Restrictions.eq("client.hid", Long.valueOf(StringUtils.trim(filter.getValue()))));
                             break;
                         case STARTDATE:
                             date = DateTimeUtils.Parser.valueOf(locale.getLanguage()).parse(StringUtils.trim(filter.getValue()));

@@ -26,6 +26,7 @@ Ext.define('TK.view.printtmpl.List', {
         config.dockedItems = new Array({
             dock: 'top',
             xtype: 'toolbar',
+            layout: 'column',
             itemId: 'top',
             items: []
         });

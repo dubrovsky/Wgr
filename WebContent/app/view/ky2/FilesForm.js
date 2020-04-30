@@ -10,14 +10,13 @@ Ext.define('TK.view.ky2.FilesForm', {
         'Ext.form.field.Text',
         'Ext.layout.container.Anchor',
         'Ext.toolbar.Separator',
-        'TK.store.Files',
         'TK.view.DocsForm',
         'TK.view.DocsList'
     ],
     closable: false,
     bodyPadding: 5,
     width: 700,
-    title: 'Список документов на авто',
+    title: this.title,
 
     buildItems:function(config) {
         config.items = [{
@@ -28,7 +27,7 @@ Ext.define('TK.view.ky2.FilesForm', {
             fieldDefaults: {labelWidth: 100},
             frame: true,
             // margin: '20 0 0 0',
-            itemId:'file',
+            id:'avtofile',
             layout:'anchor',
             buildItems:function(config){
                 config.items = [
@@ -69,14 +68,14 @@ Ext.define('TK.view.ky2.FilesForm', {
             }
         }, {
             xtype:'docslist',
-            itemId:'filesList',
+            id:'avtofilesList',
             buildStore: function(config) {
                 config.store = this.store;
             },
             buildColumns: function(config) {
                 config.columns = [
                     {text: this.headerID, dataIndex: 'hid', width: 35, sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false},
-                    {text: 'Дата создания', dataIndex: 'uploaded', flex: 2, maxWidth: 95, sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false},
+                    {text: this.headerCreation, dataIndex: 'uploaded', flex: 2, maxWidth: 95, sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false},
                     {text: this.headerFileName, dataIndex: 'fileName', flex: 4, sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false},
                     {text: this.headerContentType, dataIndex: 'contentType', flex: 2, sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false},
                     {text: this.headerSizeByte, dataIndex: 'length', flex: 1, sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false}
@@ -88,7 +87,9 @@ Ext.define('TK.view.ky2.FilesForm', {
                     xtype: 'toolbar',
                     itemId: 'top',
                     items: [
-                        {text: this.btnView, iconCls:'doc_view', itemId:'view', action:'view', forDeleted: true, forPresent: true},{xtype: 'tbseparator', forDeleted: true, forPresent: true}
+                        {text: this.btnView, iconCls:'doc_view', itemId:'view', action:'view', forDeleted: true, forPresent: true},
+                        {xtype: 'tbseparator', forDeleted: true, forPresent: true},
+                        {text: this.btnDelete,iconCls:'del',itemId:'del', action:'deleteFile'}
                     ]
                 });
                 // if(tkUser.hasPriv('CIM_DELETE')){
@@ -105,8 +106,8 @@ Ext.define('TK.view.ky2.FilesForm', {
     },
     
     initServiceFields: function(data){
-        var form = this.getComponent('file'),
-            grid = this.getComponent('filesList');
+        var form = this.getComponent('avtofile'),
+            grid = this.getComponent('avtofilesList');
         // data['file.type'] = this.xtype;
     	form.initServiceFields(data);
         // this.getComponent('file').initServiceFields(data);

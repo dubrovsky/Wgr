@@ -124,7 +124,7 @@
             <column name="G_25" precision="1" scale="0"/>
         </property>
         <property name="g26" type="string">
-            <column name="G_26" length="128"/>
+            <column name="G_26" length="1024"/>
         </property>
         <property name="g27" type="string">
             <column name="G_27" length="64"/>
@@ -1031,6 +1031,12 @@
         <property name="g16_dop_info" type="string">
             <column name="G_16_DOP_INFO" length="100"/>
         </property>
+        <property name="btsNomer" type="string">
+            <column name="BTS_NOMER" length="50"/>
+        </property>
+        <property name="messCount" type="java.lang.Long">
+            <column length="128" name="MESS_COUNT"/>
+        </property>
         <property name="vagVedNum" type="string" formula="(select distinct v.hid_ved from VED_VAG v where v.hid_cs=hid and v.hid_cs !=0 and v.hid_cs is not null)">
         </property>
 
@@ -1145,6 +1151,13 @@
                 <column name="HID_CS" precision="20" scale="0" not-null="false"/>
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.Status"/>
+        </set>
+
+        <set fetch="select" inverse="true" lazy="true" name="boardTalkNewMesses" sort="natural" table="BOARDTALK_NEW_MESS" batch-size="50" cascade="none">
+            <key>
+                <column name="DOC_HID" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.BoardTalkNewMess"/>
         </set>
 
     </class>

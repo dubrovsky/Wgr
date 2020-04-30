@@ -4,6 +4,7 @@ import com.bivc.cimsmgs.actions.CimSmgsSupport_A;
 import com.bivc.cimsmgs.commons.Response;
 import com.bivc.cimsmgs.dao.KontGruzHistoryDAO;
 import com.bivc.cimsmgs.dao.PoezdDAO;
+import com.bivc.cimsmgs.dao.VagonHistoryDAO;
 import com.bivc.cimsmgs.db.ky.Poezd;
 import com.bivc.cimsmgs.doc2doc.orika.Mapper;
 import com.bivc.cimsmgs.dto.ky2.PoezdBindDTO;
@@ -65,14 +66,14 @@ public class BindPoezdAndPoezd_A extends CimSmgsSupport_A {
 
         Map<String, List<?>> contGruz4History = poezd.bindPoezdToPoezds(poezdBindDTO.getVagons(), poezds, mapper);
         poezdDAO.makePersistent(poezd);
-        saveContGruzHistory(contGruz4History, kontGruzHistoryDAO, POEZD);
+        saveVagContGruzHistory(contGruz4History, kontGruzHistoryDAO, POEZD, vagonHistoryDAO, getUser().getUsr().getUn(), null);
 
         for (PoezdBindDTO poezdBindDTO1 : poezdsBindDTO) {
             for (Poezd poezd1 : poezds) {
                 if (Objects.equals(poezd1.getHid(), poezdBindDTO1.getHid())) {  // found poezd
                     contGruz4History = poezd1.bindPoezdsToPoezd(poezdBindDTO1.getVagons(), poezd.getVagons(), mapper, poezds);
                     poezdDAO.makePersistent(poezd1);
-                    saveContGruzHistory(contGruz4History, kontGruzHistoryDAO, POEZD);
+                    saveVagContGruzHistory(contGruz4History, kontGruzHistoryDAO, POEZD, vagonHistoryDAO, getUser().getUsr().getUn(), null);
                     break;
                 }
             }
@@ -137,6 +138,8 @@ public class BindPoezdAndPoezd_A extends CimSmgsSupport_A {
     private PoezdDAO poezdDAO;
     @Autowired
     private KontGruzHistoryDAO kontGruzHistoryDAO;
+    @Autowired
+    private VagonHistoryDAO vagonHistoryDAO;
 
     private String action;
     private String dataObj;

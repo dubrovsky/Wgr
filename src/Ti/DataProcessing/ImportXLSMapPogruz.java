@@ -1,6 +1,6 @@
 package Ti.DataProcessing;
 
-import Ti.model.MapPogruz;
+import Ti.model.excel.MapPogruz;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 
@@ -11,64 +11,9 @@ import java.util.List;
 
 public class ImportXLSMapPogruz extends ImportXLS {
 
-//    /**
-//     * errors array
-//     */
-//    private ArrayList<String> errors;
-//    /**
-//     * excel sheet.
-//     */
-//    private Sheet datatypeSheet;
-//    /**
-//     * shows was the file inited corectly.
-//     */
-//    private boolean isInited = false;
-
     public ImportXLSMapPogruz() {
         super();
     }
-
-//    public boolean isInited() {
-//        return isInited;
-//    }
-
-//    public ArrayList<String> getErrors() {
-//        return errors;
-//    }
-
-//    /**
-//     * Простая проверка на месте ли начало таблицы.
-//     *
-//     * @param inputStream - входной поток файла EXCEL.
-//     * @return результат проверки листа на валидность.
-//     */
-//    public boolean init(InputStream inputStream) {
-//        Workbook workbook;
-//        Cell cell;
-//        try {
-//            workbook = WorkbookFactory.create(inputStream);
-//            setDatatypeSheet(workbook.getSheetAt(0));
-//
-////            cell = safeGetCell(2, 0);
-////            if (StringUtils.isNumeric(getStringCellValue(cell))) {
-////                setInited(true);
-////                return true;
-////            }
-////            else
-////                return false;
-//            return true;
-//        }
-//        catch (IOException e) {
-//            e.printStackTrace();
-//            return false;
-//        }
-//        catch (InvalidFormatException e) {
-//            getErrors().add("Wrong Excel File");
-////            e.printStackTrace();
-//            return false;
-//        }
-//
-//    }
 
     /**
      * Метод считывает данные из листа EXCEL документа и преобразует их в нужный формат.

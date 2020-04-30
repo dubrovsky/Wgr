@@ -1,5 +1,10 @@
 Ext.define('TK.model.ky.PlombBase', {
     extend: 'Ext.data.Model',
+
+    requires: [
+        'TK.Utils'
+    ],
+
     idProperty:'hid',
     fields: [
         {name:'dattr', type: 'string', persist: false},

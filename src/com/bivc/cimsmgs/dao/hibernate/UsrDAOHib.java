@@ -26,7 +26,24 @@ public class UsrDAOHib extends GenericHibernateDAO<Usr, String> implements UsrDA
 		return crit.list();
 	}
 
-    @Override
+	@Override
+	public List<Usr> findAll(Integer limit, Integer start, String query, String query1, Usr usr) {
+		Criteria crit = getSession().createCriteria(getPersistentClass());
+		crit.setFirstResult(start).setMaxResults(limit == null || limit == 0 ? 20 : limit);
+		if (query != null && query.trim().length() > 0) {
+			crit.add(Restrictions.and(
+					Restrictions.or(Restrictions.ilike("un", query.trim(), MatchMode.ANYWHERE),
+							Restrictions.ilike("namKlient", query.trim(), MatchMode.ANYWHERE)),
+					Restrictions.eq("group.name", query1.trim())
+			) );
+		}
+		else
+			crit.add(Restrictions.eq("group.name", query1.trim()));
+		crit.addOrder(Order.desc("dattr"));
+		return crit.list();
+	}
+
+	@Override
     public Long countAll(String query) {
         Criteria crit = getSession().createCriteria(getPersistentClass());
         crit.setProjection(Projections.rowCount());
@@ -36,6 +53,20 @@ public class UsrDAOHib extends GenericHibernateDAO<Usr, String> implements UsrDA
         }
         return (Long) crit.uniqueResult();
     }
+
+	@Override
+	public Long countAll(String query, String query1) {
+		Criteria crit = getSession().createCriteria(getPersistentClass());
+		crit.setProjection(Projections.rowCount());
+		if (query != null && query.trim().length() > 0) {
+			crit.add(Restrictions.or(Restrictions.ilike("un", query.trim(), MatchMode.ANYWHERE),
+					Restrictions.ilike("namKlient", query.trim(), MatchMode.ANYWHERE)));
+		}
+
+		crit.add(Restrictions.eq("group.name", query1.trim()));
+
+		return (Long) crit.uniqueResult();
+	}
 
 //	public Integer update(Usr usr) {
 //		boolean isPs = (usr.getPs() != null && usr.getPs().trim().length() > 0);

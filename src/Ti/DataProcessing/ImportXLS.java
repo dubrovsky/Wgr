@@ -1,5 +1,6 @@
 package Ti.DataProcessing;
 
+import Ti.model.excel.XlsDefaultModel;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
@@ -109,7 +110,16 @@ public abstract class ImportXLS {
     {
         if(!test.isEmpty()) {
             if (StringUtils.isNumeric(test.replaceAll(",", "").replaceAll("\\.", ""))) {
-                return test.replaceAll(",", ".");
+                String[] arr =test.replaceAll(",", ".").split("\\.");
+                if(arr.length==1)
+                    return arr[0];
+                StringBuilder out = new StringBuilder();
+                for (int i=0;i<arr.length-1;i++)
+                {
+                    out.append(arr[i]);
+                }
+                out.append(".").append(arr[arr.length-1]);
+                return out.toString();
             }
             else {
                 if(errors!=null&&column_num!=null)
@@ -119,6 +129,30 @@ public abstract class ImportXLS {
         }
         else
             return "0";
+    }
+    String parseNumirecNull(String test, ArrayList<String> errors, Integer column_num)
+    {
+        if(!test.isEmpty()) {
+            if (StringUtils.isNumeric(test.replaceAll(",", "").replaceAll("\\.", ""))) {
+                String[] arr =test.replaceAll(",", ".").split("\\.");
+                if(arr.length==1)
+                    return arr[0];
+                StringBuilder out = new StringBuilder();
+                for (int i=0;i<arr.length-1;i++)
+                {
+                    out.append(arr[i]);
+                }
+                out.append(".").append(arr[arr.length-1]);
+                return out.toString();
+            }
+            else {
+                if(errors!=null&&column_num!=null)
+                    errors.add("Data:" + test + "  Row:" + (column_num + 2) + " Column:"+ CellReference.convertNumToColString(column_num));
+                return  null;
+            }
+        }
+        else
+            return null;
     }
     Date parseDate(String test, ArrayList<String> errors, Integer column_num)
     {
@@ -141,7 +175,7 @@ public abstract class ImportXLS {
      * обработка листа XLS файла
      * @return список записей
      */
-    public abstract ArrayList<?> processSheet();
+    public abstract ArrayList<? extends XlsDefaultModel> processSheet();
     /**
      * Простая проверка на месте ли начало таблицы.
      *

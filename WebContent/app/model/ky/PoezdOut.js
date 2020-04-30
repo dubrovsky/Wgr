@@ -1,6 +1,12 @@
 Ext.define('TK.model.ky.PoezdOut', {
     extend: 'TK.model.ky.PoezdBase',
 
+    requires: [
+        'TK.model.ky.KontInPoezdOut',
+        'TK.model.ky.VagonOut'
+    ],
+
+
     fields: [
         {name:'dotp', type: 'string', persist: false},
         {name:'dotpDate', type: 'string', useNull:true},

@@ -1,10 +1,19 @@
 Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
     extend: 'Ext.app.Controller',
 
+    requires: [
+        'TK.Utils',
+        'TK.model.ky2.AvtoBindTreeNode',
+        'TK.model.ky2.PoezdBindTreeNode',
+        'TK.view.ky2.avto.DotpQuestionAvto'
+    ],
+
+
     selectedNodesPoezd: [],  // last selection
     selectedNodesYard: [],  // last selection
     sourceVagModels: [],   // to use in after drop event
     sourceYardModels: [],   // to use in after drop event
+    autoOutCreated: false,
 
     views: [
         'ky2.avto.into.Avto2AvtoBindTreeForm',
@@ -12,7 +21,8 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
         'ky2.avto.into.Avto2YardBindTreeForm',
         'ky2.avto.out.Avto2YardBindTreeForm',
         'ky2.avto.AbstractAvto2YardBindTreeForm',
-        'ky2.KontByZayavFilter'
+        'ky2.KontByZayavFilter',
+        'ky2.avto.DotpQuestionAvto'
     ],
     models: [
         'ky2.YardBindTreeNode',
@@ -71,7 +81,8 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
             },
             'ky2avto2yardbindtreeforminto treepanel#treepanelRight > treeview': {
                 drop: this.dropToYard,
-                nodedragover: this.beforeDropToYard
+                nodedragover: this.beforeDropToYard,
+                beforedrop: this.beforeDropDataToYard
             },
             'ky2avto2yardbindtreeformout treepanel#treepanelLeft > treeview': {
                 drop: this.dropToAvto,
@@ -118,7 +129,114 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
             },
             'ky2avtoctgrtreeform button[action=showAvto4YardOutBind]': {
                 click: this.getAvtoAndYardForBindFromVgCntGr
+            },
+            'ky2avtodotpquestion button[action=applyDotp]': {
+                click: this.createAvtoOutFromAvtoInto
+            },
+            'ky2avtodotpquestion button[action=cancelDotp]': {
+                click: this.cancelAvtoOutFromAvtoInto
+            },
+            'ky2avtobindtreeform treepanel#treepanelRight button[action="zayvlist"]': {
+                click: this.buildZayavList
+            },
+            'ky2avtobindtreeform treepanel#treepanelRight button[action="clTrAvtoFilter"]': {
+                click: this.buildClTrAvtoFilter
+            },
+            'ky2avtobindtreeform treepanel#treepanelRight button[action="clearFiltr"]': {
+                click: this.clearCombo
+            },
+            'ky2avto2yardbindtreeformout button[action="upload"]': {
+                click: this.onUploadXLS
             }
+
+        });
+    },
+
+    onUploadXLS: function () {
+        var win = Ext.create('Ext.window.Window', {
+            title: this.titleUploadXls,
+            width: 600, y: 100, modal: true,
+            layout: 'fit',
+            items: {
+                xtype: 'form',
+                autoHeight: true,
+                bodyStyle: 'padding: 10px 10px 0 10px;',
+                labelWidth: 40,
+                items: [
+                    {
+                        xtype: 'filefield',
+                        emptyText: this.emtyTxtFile,
+                        fieldLabel: this.labelFile,
+                        name: 'upload',
+                        buttonText: this.btnChoose,
+                        anchor: '100%'
+                    }
+                ],
+                buttons: [{
+                    text: this.btnUpload,
+                    handler: function (btn) {
+                        var form = btn.up('form').getForm();
+                        if (form.isValid()) {
+                            form.submit({
+                                url: 'ky2/secure/BindAvtoAndYard.do',
+                                params: {action: 'upload'},
+                                waitMsg: this.msgUploading,
+                                scope: this,
+                                success: function (form, action) {
+                                    var nkons = Ext.JSON.decode(action.response.responseText).rows[0];
+                                    this.applyFilter(nkons);
+                                    win.close();
+                                }
+                                , failure: function (form, action) {
+                                    TK.Utils.makeErrMsg(action.response, this.errorMsg);
+                                }
+                            });
+                        }
+                    },
+                    scope: this
+                }, {
+                    text: this.btnClose,
+                    handler: function (btn) {
+                        btn.up('window').close();
+                    }
+                }]
+            }
+        }).show();
+    },
+
+    applyFilter: function (nkons) {
+        var found = new Set(),
+            notfound = new Set(),
+            notFoundString = '';
+        this.getTreepanelRight().suspendLayouts();
+        this.getTreepanelRight().getRootNode().cascadeBy(function (nodeModel) {
+            if (nodeModel.get('who') === 'cont') {
+                var parentNode = nodeModel.parentNode.parentNode;
+                if (nkons.indexOf(nodeModel.get('nkon')) === -1) {
+                    nodeModel.set('cls', 'hideTreeNode');
+                    // if (parentNode.isExpanded())
+                    //     parentNode.collapse();
+                } else {
+                    found.add(nodeModel.get('nkon'));
+                    nodeModel.set('cls', '');
+                    if (!parentNode.isExpanded())
+                        parentNode.expand();
+                }
+            }
+        }, this);
+        Ext.Array.each(nkons, function(nkon) {
+            if (!found.has(nkon)) {
+                notfound.add(nkon);
+                notFoundString += nkon + ' ';
+            }
+        });
+        this.getTreepanelRight().resumeLayouts(true);
+        Ext.Msg.show({
+            width: 500,
+            title: this.titleWarn,
+            msg: this.msgCont1 + found.size + msgCont2 + notfound.size + '<br> ' + notFoundString,
+            buttons: Ext.MessageBox.OK,
+            icon: Ext.MessageBox.WARNING
         });
     },
 
@@ -129,7 +247,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
                 nodeModel.set('cls', '')
         }, this);
         this.getTreepanelRight().resumeLayouts(true);
-
+        if(zayavCombo&&zayavCombo==='combo')
         zayavCombo.clearValue();
     },
 
@@ -152,15 +270,23 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
                         Ext.Object.each(konts, function (prop, value) {
                             nkons.push(value['nkon']);
                         }, this);
-                        this.getTreepanelRight().suspendLayouts();
-                        rootNode.cascadeBy(function (nodeModel) {
-                            if (nodeModel.get('who') === 'cont')
-                                if (nkons.indexOf(nodeModel.get('nkon')) === -1 )
-                                    nodeModel.set('cls', 'hideTreeNode');
-                                else
-                                    nodeModel.set('cls', '')
-                        }, this);
-                        this.getTreepanelRight().resumeLayouts(true);
+                        // this.getTreepanelRight().suspendLayouts();
+                        // rootNode.cascadeBy(function (nodeModel) {
+                        //     if (nodeModel.get('who') === 'cont') {
+                        //         var parentNode = nodeModel.parentNode.parentNode;
+                        //         if (nkons.indexOf(nodeModel.get('nkon')) === -1) {
+                        //             nodeModel.set('cls', 'hideTreeNode');
+                        //             // if (parentNode.isExpanded())
+                        //             //     parentNode.collapse();
+                        //         } else {
+                        //             nodeModel.set('cls', '');
+                        //             if (!parentNode.isExpanded())
+                        //                 parentNode.expand();
+                        //         }
+                        //     }
+                        // }, this);
+                        // this.getTreepanelRight().resumeLayouts(true);
+                        this.applyFilter(nkons);
                     }
                 } else {
                     TK.Utils.makeErrMsg(response, 'Error!..');
@@ -207,7 +333,17 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
         if (!TK.Utils.isRowSelected(avtolist)) {
             return false;
         }
-        this.getAvtoAndYardForBind(widget, avtolist.getSelectionModel().getLastSelected().get('hid'));
+        var selected = avtolist.getSelectionModel().getLastSelected();
+        if (selected.get('direction') === 1 && selected.get('kontCount') === 0) {
+            Ext.Msg.show({
+                title: this.titleWarn,
+                msg: this.msgNoContOnCar,
+                buttons: Ext.MessageBox.OK,
+                icon: Ext.MessageBox.WARNING
+            });
+            return false;
+        }
+        this.getAvtoAndYardForBind(widget, selected.get('hid'));
     },
 
     getAvtoAndYardForBind: function (widget, avtoHId) {
@@ -221,6 +357,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
             url: 'ky2/secure/BindAvtoAndYard.do',
             params: {
                 action: 'get_avto_and_yard_for_bind',
+                flag:true, //with history
                 'avtoHid': avtoHId
             },
             scope: this,
@@ -232,7 +369,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
                         ret_nkon = avtoObj['ret_nkon'];
 
 
-                    var bindcontainer = Ext.widget(widget, {title: '+ На конт. площадку'});
+                    var bindcontainer = Ext.widget(widget, {title: this.titleOnYard});
 
                     //// fill trees
                     this.getTreepanelLeft().setTitle(this.getController('ky2.BindAvtoAndAvtoController').titleForAvto(avtoObj['no_avto'] + "<br/>"));
@@ -246,7 +383,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
                     //     this.initRootNode(rootNode, poezdObj, vags);
                     // }
 
-                    this.getTreepanelRight().setTitle(this.getController('ky2.BindPoezdAndYardController').titleForYard("Контейнерная площадка " + '<br/>'));
+                    this.getTreepanelRight().setTitle(this.getController('ky2.BindPoezdAndYardController').titleForYard(this.titleyard + '<br/>'));
                     rootNode = this.getTreepanelRight().getRootNode();
                     if (yardSectorArr && yardSectorArr.length > 0) {
                         this.initYardSectorNodes(yardSectorArr, rootNode);
@@ -259,6 +396,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
                     }
                     this.getCenter().remove(this.getCenter().getComponent(0), true);
                     this.getCenter().add(bindcontainer);
+                    this.autoOutCreated = false;
 
                 } else {
                     TK.Utils.makeErrMsg(response, 'Error!..');
@@ -280,10 +418,10 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
         rootNode.set('routeId', dataObj['route']['hid']);
         if (konts && !Ext.Object.isEmpty(konts))
             this.getController('ky2.BindAvtoAndAvtoController').initContsNodes(konts, rootNode);
-                // this.initContsNodes(konts, rootNode);
+        // this.initContsNodes(konts, rootNode);
         if (gruzs && !Ext.Object.isEmpty(gruzs))
             this.getController('ky2.BindAvtoAndAvtoController').initGryzyNodes(gruzs, rootNode, true);
-            // this.initGryzyNodes(gruzs, rootNode, true);
+        // this.initGryzyNodes(gruzs, rootNode, true);
     },
 
     // initRootNode: function (rootNode, dataObj, vags) {
@@ -305,7 +443,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
                     leaf: false,
                     iconCls: 'cont',
                     allowDrag: false,
-                    expanded: true
+                    expanded: false
                     // expanded: (yards && yards['0']) && i === 0
                 });
 
@@ -325,7 +463,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
     },
 
     updateYardSectorModelText: function (yardSectorModel) {
-        yardSectorModel.set('text', yardSectorModel.get('name') + ' (' + yardSectorModel.get('contsInYardSector') + '/' + yardSectorModel.get('placesInYardSector') + ')');
+        yardSectorModel.set('text', yardSectorModel.get('name') + ' (' + yardSectorModel.get('contsInYardSector') + '/' + (yardSectorModel.get('placesInYardSector') - yardSectorModel.get('contsInYardSector')) + ')');
         yardSectorModel.commit(true); // to remove red triangle
     },
 
@@ -440,6 +578,25 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
         return this.checkBeforeMoveToYard(dragData.records, targetModel);
     },
 
+    beforeDropDataToYard: function (node, data, targetModel, dropPosition, dropHandlers) {
+        var nkon = data.records[0].data['nkon'],
+            hid = data.records[0].data['hid'],
+            found = false,
+            sector;
+        this.getTreepanelRight().getRootNode().cascadeBy(function(){
+            if (this.get('who') === 'cont' && this.get('nkon') === nkon && this.get('hid') !==  hid) {
+                found = true;
+                sector = this.parentNode.parentNode.get('name');
+                return false;
+            }
+        });
+        if (found) {
+            Ext.Msg.alert(this.titleWarn, this.msgContisOnyard + sector);
+            return false;
+        }
+
+    },
+
     checkBeforeMoveToAvto: function (records, targetModel) {
         var isDrop = false;
         for (var i = 0; i < records.length; i++) {
@@ -493,6 +650,10 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
                 isDrop = targetModel.get('who') === 'yardsector';
                 // isDrop = targetModel.get('who') === 'yard';
             }
+            // check if exist
+            // if (isDrop) {
+            // }
+
             if (isDrop && (!optParams || optParams['checkFreePlaces'])) { // check free places
                 isDrop = (targetModel.get('contsInYardSector') + records.length <= targetModel.get('placesInYardSector'));
                 // isDrop = (targetModel.parentNode.get('contsInYardSector') + records.length <= targetModel.parentNode.get('placesInYardSector'));
@@ -523,13 +684,13 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
         this.getController('ky2.BindPoezdAndPoezdController').sortChildNodes(targetVagModel);
 
         for (var i = 0; i < records.length; i++) {
-            // if (records[i].get('yardSectorHid')) { // diff trees - move from yard
             if (records[i].get('yardHid')) { // diff trees - move from yard
                 for (var y = 0; y < this.sourceYardModels.length; y++) {
-                    // if (records[i].get('yardSectorHid') === this.sourceYardModels[y].get('hid')) {
                     if (records[i].get('yardHid') === this.sourceYardModels[y].get('hid')) { // this.sourceYardModels here yards
                         this.sourceYardModels[y].parentNode.set('contsInYardSector', (this.sourceYardModels[y].parentNode.get('contsInYardSector') - 1));
                         this.updateYardSectorModelText(this.sourceYardModels[y].parentNode);
+                        this.sourceYardModels[y].set('updated', true);
+                        this.sourceYardModels[y].parentNode.set('updated', true);
                         break;
                     }
                 }
@@ -541,22 +702,15 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
                         } else {
                             this.getController('ky2.BindPoezdAndPoezdController').sortChildNodes(this.sourceVagModels[y]);
                         }
+                        this.sourceVagModels[i].set('updated', true);
                         break;
                     }
                 }
             }
+            targetVagModel.set('updated', true);
             records[i].set('yardSectorHid', null);
             records[i].set('yardHid', null);
             records[i].set('cls', 'selectTreeNode');
-
-            // records[i].set('x', null);
-            // records[i].set('y', null);
-            // records[i].set('z', null);
-            // records[i].set('poezdHid', records[i].parentNode.parentNode.get('poezdHid'));
-            // records[i].set('vagHid', records[i].parentNode.get('hid'));
-
-            // records[i].set('poezdHid', targetVagModel.get('poezdHid'));
-            // records[i].set('vagHid', targetVagModel.get('hid'));
         }
 
         this.getTreepanelLeft().getSelectionModel().deselectAll(true);
@@ -587,7 +741,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
         }
     },
 
-    moveContToFreeYard: function(contModel, targetYardSectorModel){
+    moveContToFreeYard: function (contModel, targetYardSectorModel) {
         if (contModel.get('who') === 'cont') {
             var freeYard;
             targetYardSectorModel.eachChild(function (yardModel) {
@@ -598,6 +752,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
             });
             if (freeYard) {
                 freeYard.insertChild(freeYard.childNodes.length, contModel); // appendChild don't work, no need to remove before insert
+                freeYard.set('updated', true);
             }
         }
     },
@@ -615,6 +770,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
                         } else {
                             this.getController('ky2.BindPoezdAndPoezdController').sortChildNodes(this.sourceVagModels[y]);
                         }
+                        this.sourceVagModels[y].set('updated', true);
                         break;
                     }
                 }
@@ -625,11 +781,13 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
                     if (records[i].get('yardHid') === this.sourceYardModels[y].get('hid')) {
                         this.sourceYardModels[y].parentNode.set('contsInYardSector', (this.sourceYardModels[y].parentNode.get('contsInYardSector') - 1));
                         this.updateYardSectorModelText(this.sourceYardModels[y].parentNode);
+                        this.sourceYardModels[y].set('updated', true);
+                        this.sourceYardModels[y].parentNode.set('updated', true);
                         break;
                     }
                 }
             }
-
+            targetModel.set('updated', true);
             records[i].set('yardSectorHid', records[i].parentNode.parentNode.get('hid'));
             records[i].set('yardHid', records[i].parentNode.get('hid'));
             records[i].set('cls', 'selectTreeNode');
@@ -657,7 +815,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
         this.sourceVagModels = [];
         this.sourceYardModels = [];
 
-        Ext.Msg.alert('Внимание', 'Свободных мест осталось - ' +  (targetModel.get('placesInYardSector') - targetModel.get('contsInYardSector')));
+        // Ext.Msg.alert('Внимание', 'Свободных мест осталось - ' +  (targetModel.get('placesInYardSector') - targetModel.get('contsInYardSector')));
     },
 
     moveNodesRight: function (btn) {
@@ -728,6 +886,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
 
     bindAvtoAndYard: function (close) {
         var leftRootNode = this.getTreepanelLeft().getRootNode(),
+            rightRootNode = this.getTreepanelRight().getRootNode(),
             dataObjLeft = this.getController('ky2.BindAvtoAndAvtoController').bindAvto(this.getTreepanelLeft().getRootNode()),
             dataObjRight = this.bindYardSectors(this.getTreepanelRight().getRootNode());
 
@@ -743,16 +902,79 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
             scope: this,
             success: function (response) {
                 this.getCenter().setLoading(false);
-                if (!leftRootNode.hasChildNodes() && leftRootNode.get('direction') === 1) {
-                    this.getController('ky2.AvtoController').createAvtoOutFromAvtoInto(leftRootNode.get('hid'));
-                }
-                if (Ext.isNumber(close)) {
+                this.clearUpdatedProperty(leftRootNode, rightRootNode);
+                if (!leftRootNode.hasChildNodes() && leftRootNode.get('direction') === 1 && !this.autoOutCreated) {
+                    var win = Ext.widget('ky2avtodotpquestion');
+                    win.closePanel = Ext.isNumber(close);
+                } else if (Ext.isNumber(close)) {
                     var closeBtn = this.getAvtoform().down('button[action="close"]');
-                    closeBtn.fireEvent('click',closeBtn);
+                    closeBtn.fireEvent('click', closeBtn);
                 }
-                else {
-                    var respObj = Ext.decode(response.responseText);
-                }
+                // else {
+                //     var respObj = Ext.decode(response.responseText);
+                // }
+            },
+            failure: function (response) {
+                this.getCenter().setLoading(false);
+                TK.Utils.makeErrMsg(response, 'Error...');
+            }
+        });
+    },
+
+    clearUpdatedProperty: function (leftRootNode, rightRootNode) {
+        leftRootNode.eachChild(function (node) {
+            node.set('updated', false);
+        });
+
+        rightRootNode.eachChild(function (rootnode) {
+            rightRootNode.eachChild(function (sectorNode) {
+                sectorNode.set('updated', false);
+                sectorNode.eachChild(function (yardNode) {
+                    yardNode.set('updated', false);
+                });
+            });
+        });
+    },
+
+    cancelAvtoOutFromAvtoInto: function (btn) {
+        if (btn.up('window').closePanel) {
+            var closeBtn = this.getAvtoform().down('button[action="close"]');
+            closeBtn.fireEvent('click', closeBtn);
+        }
+        btn.up('window').close();
+    },
+
+    createAvtoOutFromAvtoInto: function (btn) {
+        var dotp = btn.up('form').getForm().getValues().dopt,
+            dotpTime = btn.up('form').getForm().getValues().dotpTime;
+        if (dotp !== '' &&  dotpTime !== undefined)
+            dotp = dotp + ' ' + dotpTime;
+
+        Ext.Ajax.request({
+            url: 'ky2/secure/Avto.do',
+            params: {
+                action: 'create_avtoout_from_avtointo',
+                hid: this.getTreepanelLeft().getRootNode().get('hid'),
+                dotp: dotp,
+                dotpTime: dotpTime
+            },
+            scope: this,
+            success: function (response, options) {
+                this.autoOutCreated = true;
+                this.getCenter().setLoading(false);
+                Ext.Msg.show({
+                    title: '',
+                    msg: this.msgAvtoByDepCreated,
+                    buttons: Ext.Msg.OK,
+                    icon: Ext.Msg.INFO
+                });
+                this.cancelAvtoOutFromAvtoInto(btn);
+
+                // if (btn.up('window').closePanel) {
+                //     var closeBtn = this.getAvtoform().down('button[action="close"]');
+                //     closeBtn.fireEvent('click', closeBtn);
+                // }
+                // btn.up('window').close();
             },
             failure: function (response) {
                 this.getCenter().setLoading(false);
@@ -767,17 +989,19 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
         if (rootNodeModel.hasChildNodes()) {
             var yardSectorIndex = 0;
             rootNodeModel.eachChild(function (yardSectorNodeModel) {
-                var yardSectorDataObj = {};
-                yardSectorDataObj['hid'] = yardSectorNodeModel.get('hid');
-                yardSectorDataObj['name'] = yardSectorNodeModel.get('name');
+                if (yardSectorNodeModel.get('updated')) {
+                    var yardSectorDataObj = {};
+                    yardSectorDataObj['hid'] = yardSectorNodeModel.get('hid');
+                    yardSectorDataObj['name'] = yardSectorNodeModel.get('name');
 
-                dataObj.push(yardSectorDataObj);
+                    dataObj.push(yardSectorDataObj);
 
-                if (yardSectorNodeModel.hasChildNodes()) {
-                    this.bindYards(yardSectorNodeModel, yardSectorDataObj);
+                    if (yardSectorNodeModel.hasChildNodes()) {
+                        this.bindYards(yardSectorNodeModel, yardSectorDataObj);
+                    }
+
+                    yardSectorIndex++;
                 }
-
-                yardSectorIndex++;
             }, this);
         }
 
@@ -789,29 +1013,50 @@ Ext.define('TK.controller.ky2.BindAvtoAndYardController', {
 
         yardSectorDataObj['yards'] = [];
         yardSectorNodeModel.eachChild(function (nodeModel) {
-            var yardDataObj = {};
-            yardDataObj['x'] = nodeModel.get('x');
-            yardDataObj['y'] = nodeModel.get('y');
-            yardDataObj['z'] = nodeModel.get('z');
-            yardSectorDataObj['yards'].push(yardDataObj);
+            if (nodeModel.get('updated')) {
+                var yardDataObj = {};
+                yardDataObj['x'] = nodeModel.get('x');
+                yardDataObj['y'] = nodeModel.get('y');
+                yardDataObj['z'] = nodeModel.get('z');
+                yardSectorDataObj['yards'].push(yardDataObj);
 
-            /*if (nodeModel.get('who') === 'cont') {
-                yardDataObj['hid'] = nodeModel.get('yardHid');// no yard places
-                var yardModel = Ext.create('TK.model.ky2.PoezdBindTreeNode', {
-                    hid: nodeModel.get('yardHid'),
-                    yardSectorHid: yardSectorNodeModel.get('hid'),
-                    who: 'yard'
-                });
-                yardModel.appendChild(nodeModel.copy(null, true));  // work only copt
-                this.getController('ky2.BindPoezdAndPoezdController').bindConts(yardModel, yardDataObj);  // add cont to virtual place
-                yardModel.destroy();
-            } else {*/
-            yardDataObj['hid'] = nodeModel.get('hid');
-            if (nodeModel.hasChildNodes()) {
-                this.getController('ky2.BindPoezdAndPoezdController').bindConts(nodeModel, yardDataObj);
+                /*if (nodeModel.get('who') === 'cont') {
+                    yardDataObj['hid'] = nodeModel.get('yardHid');// no yard places
+                    var yardModel = Ext.create('TK.model.ky2.PoezdBindTreeNode', {
+                        hid: nodeModel.get('yardHid'),
+                        yardSectorHid: yardSectorNodeModel.get('hid'),
+                        who: 'yard'
+                    });
+                    yardModel.appendChild(nodeModel.copy(null, true));  // work only copt
+                    this.getController('ky2.BindPoezdAndPoezdController').bindConts(yardModel, yardDataObj);  // add cont to virtual place
+                    yardModel.destroy();
+                } else {*/
+                yardDataObj['hid'] = nodeModel.get('hid');
+                if (nodeModel.hasChildNodes()) {
+                    this.getController('ky2.BindPoezdAndPoezdController').bindConts(nodeModel, yardDataObj);
+                }
+                // }
+                yardIndex++;
             }
-            // }
-            yardIndex++;
         }, this);
-    }
+    },
+    buildZayavList:function (btn,click) {
+        this.getController('ky2.BindPoezdAndYardController').buildZayavList(btn,click,'ky2/secure/AvtoZayav.do','IMPORT_ZAYAV_INTO_LIST','TK.store.ky2.AvtoZayavsFilter','ky2.BindAvtoAndYardController');
+    },
+    buildClTrAvtoFilter:function (btn,click) {
+        this.getController('ky2.BindPoezdAndYardController').buildClTrAvtoFilter(btn,click,this);
+    },
+    /**
+     * Вызывает функцию фильтрации дерева
+     * @param view окно
+     * @param record запись для фильтрации
+     * @param itm1
+     * @param itm2
+     * @param itm3
+     * @param controller контроллер
+     */
+    zayavDblClick:function (view, record,itm1,itm2,itm3,controller) {
+        controller.selectZayav4Filter(null, [record]);
+        view.up('nsilist').destroy();
+    },
 });

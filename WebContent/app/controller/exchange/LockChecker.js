@@ -4,7 +4,7 @@ Ext.define('TK.controller.exchange.LockChecker', {
     isStatusLocked: function (tbc, iftmin, fts, btlc, tdgFts) {
 
         if(tbc){     // no in cimsmgs
-            switch (tbc.toString()) {
+            switch (tbc&&tbc.toString()) {
                 case '8':
                 case '1':
                 case '2':
@@ -14,25 +14,25 @@ Ext.define('TK.controller.exchange.LockChecker', {
             }
         }
 
-        switch (iftmin.toString()) {
+        switch (iftmin&&iftmin.toString()) {
             case '22':
             case '24':
                 return true;
         }
 
-        switch (fts.toString()) {
+        switch (fts&&fts.toString()) {
             case '25':
             case '27':
                 return true;
         }
 
-        switch (btlc.toString()) {
+        switch (btlc&&btlc.toString()) {
             case '39':
             case '41':
                 return true;
         }
 
-        switch (tdgFts.toString()) {
+        switch (tdgFts&&tdgFts.toString()) {
             case '44':
             case '46':
                 return true;

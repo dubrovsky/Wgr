@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.GridConfig" table="GRID_CONFIG">
+        <id name="hid" type="long">
+            <column name="HID" precision="20" scale="0"/>
+            <generator class="native"/>
+        </id>
+
+        <property name="un" type="string">
+            <column name="UN" length="20" not-null="true" />
+        </property>
+        <property name="dataIndex" type="string">
+            <column name="DATAINDEX" length="40" not-null="true" />
+        </property>
+        <property name="itemId" type="string">
+            <column name="ITEM_ID" length="50" not-null="true" />
+        </property>
+        <property name="hidden" type="boolean">
+            <column name="HIDDEN" precision="1" scale="0" not-null="true"/>
+        </property>
+        <property name="width" type="java.lang.Integer">
+            <column name="WIDTH" precision="8" scale="0" />
+        </property>
+        <property name="sort" type="java.lang.Byte">
+            <column name="SORT" precision="2" scale="0" />
+        </property>
+    </class>
+</hibernate-mapping>

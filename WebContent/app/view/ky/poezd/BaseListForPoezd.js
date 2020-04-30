@@ -2,6 +2,11 @@ Ext.define('TK.view.ky.poezd.BaseListForPoezd', {
     extend: 'TK.view.ky.AbstractWindow',
     alias:'widget.kybaselistforpoezd',
 
+    requires: [
+        'TK.model.ky.ListForPoezd'
+    ],
+
+
     width: 1000,
     maxHeight: 500,
     title: 'Список по поезду',

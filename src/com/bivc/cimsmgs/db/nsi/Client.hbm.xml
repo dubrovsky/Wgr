@@ -29,6 +29,12 @@
         <property name="freeDays" type="integer">
             <column length="255" name="FREEDAYS" />
         </property>
+        <property name="cntPZ" type="integer">
+            <column length="255" name="CNT_PZ" />
+        </property>
+        <property name="cntWZ" type="integer">
+            <column length="255" name="CNT_WZ" />
+        </property>
         <property name="trans" type="string">
             <column length="20" name="TRANS" />
         </property>
@@ -71,6 +77,12 @@
                 <column name="HID_CLIENT" precision="20" scale="0"/>
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.ky.Kont"/>
+        </set>
+        <set fetch="select" inverse="true" lazy="true" name="gruzs" table="KY_GRUZ" batch-size="50" cascade="refresh, delete">
+            <key>
+                <column name="HID_CLIENT" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.Gruz"/>
         </set>
         <set name="clientGroups" table="NSI_CLIENT_GROUPS" inverse="true" lazy="true"  batch-size="50" cascade="all, delete-orphan">
             <key>

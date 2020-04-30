@@ -9,6 +9,19 @@ Ext.define('TK.view.components.SearchFieldLocal', {
 
     hasSearch : false,
     paramName : 'query',
+    //-------------- Filter function override----------
+    // flag shows usage override: function true- use override function, false -  use base function
+    filterOverride:false,
+    //extra parameters fo override function
+    extraParams:[],
+    /**
+     * override fn prototype
+     * @param me searchfield instance
+     * @param value value of searchfield
+     * @param extraParams extra parameters defined by user
+     */
+    overrideFn:function (me,value,extraParams) {
+    },
 
     initComponent: function() {
         var me = this;
@@ -24,6 +37,8 @@ Ext.define('TK.view.components.SearchFieldLocal', {
         });
 
         // We're going to use filtering
+        if(me.store)
+        {
         me.store.remoteFilter = true;
 
         // Set up the proxy to encode the filter in the simplest way as a name/value pair
@@ -34,6 +49,7 @@ Ext.define('TK.view.components.SearchFieldLocal', {
         }
         me.store.proxy.encodeFilters = function(filters) {
             return filters[0].value;
+        }
         }
     },
 
@@ -59,22 +75,30 @@ Ext.define('TK.view.components.SearchFieldLocal', {
 
         var me = this,
             value = me.getValue();
-        me.store.remoteFilter=false;
-        // if (value.length > 0) {
+
+        if(me.filterOverride)
+        {
+            me.overrideFn(me,value,me.extraParams);
+        }
+        else {
+            me.store.remoteFilter = false;
+            // if (value.length > 0) {
             // Param name is ignored here since we use custom encoding in the proxy.
             // id is used by the Store to replace any previous filter
             me.store.filter({
                 id: me.paramName,
                 property: me.paramName,
                 value: value,
-                anyMatch:true
+                anyMatch: true
             });
+
 
             me.hasSearch = true;
             // me.triggerCell.item(0).setDisplayed(true);
             // me.updateLayout();
-        // }
-        // else
-        //     me.onTrigger1Click();
+            // }
+            // else
+            //     me.onTrigger1Click();
+        }
     }
 });

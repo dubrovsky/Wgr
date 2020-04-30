@@ -31,6 +31,15 @@ public class YardSector implements Serializable {
     private Set<Yard> yards = new HashSet<Yard>(0);
     private Set<YardSectorGroups> yardSectorGroups = new HashSet<>(0);
     private Set<KontGruzHistory> history = new TreeSet<>();
+    private Integer typeView = 1;
+
+    public Integer getTypeView() {
+        return typeView;
+    }
+
+    public void setTypeView(Integer typeView) {
+        this.typeView = typeView;
+    }
 
     public Route getRoute() {
         return route;
@@ -103,16 +112,39 @@ public class YardSector implements Serializable {
         this.yards = kontYards;
     }
 
-    public Map<String, List<?>> bindYardToPoezd(YardSectorBindDTO yardSectorBindDTO, Set<Vagon> vagons, Mapper mapper, List<YardSector> yardSectors) {
+    public Map<String, List<?>> bindYardToYard(YardSectorBindDTO yardSectorBindDTO, Mapper mapper, List<YardSector> yardSectors) {
         Map<String, List<?>> contGruz4History = new HashMap<>(2);
         contGruz4History.put("konts", new ArrayList<Kont>());
+        contGruz4History.put("rejectedKonts", new ArrayList<Kont>());
 
         for (YardBindDTO yardBindDTO : yardSectorBindDTO.getYards()) {
             for (Yard yard : getYards()) {
                 if (Objects.equals(yard.getHid(), yardBindDTO.getHid())) {
 //                    mapper.map(yardBindDTO, yard); // update
-                    List<Kont> konts = yard.bindKonts(yardBindDTO.getKonts(), mapper, vagons, yardSectors);
-                    ((List<Kont>) contGruz4History.get("konts")).addAll(konts);
+                    /*List<Kont> konts*/
+                    Map<String, List<?>> results = yard.bindKonts(yardBindDTO.getKonts(), mapper, yardSectors);
+                    ((List<Kont>) contGruz4History.get("konts")).addAll(((List<Kont>) results.get("konts")));
+                    ((List<Kont>) contGruz4History.get("rejectedKonts")).addAll(((List<Kont>) results.get("rejectedKonts")));
+                    break;
+                }
+            }
+        }
+        return contGruz4History;
+    }
+
+    public Map<String, List<?>> bindYardToPoezd(YardSectorBindDTO yardSectorBindDTO, Set<Vagon> vagons, Mapper mapper, List<YardSector> yardSectors) {
+        Map<String, List<?>> contGruz4History = new HashMap<>(2);
+        contGruz4History.put("konts", new ArrayList<Kont>());
+        contGruz4History.put("rejectedKonts", new ArrayList<Kont>());
+
+        for (YardBindDTO yardBindDTO : yardSectorBindDTO.getYards()) {
+            for (Yard yard : getYards()) {
+                if (Objects.equals(yard.getHid(), yardBindDTO.getHid())) {
+//                    mapper.map(yardBindDTO, yard); // update
+                    /*List<Kont> konts*/
+                    Map<String, List<?>> results = yard.bindKonts(yardBindDTO.getKonts(), mapper, vagons, yardSectors);
+                    ((List<Kont>) contGruz4History.get("konts")).addAll(((List<Kont>) results.get("konts")));
+                    ((List<Kont>) contGruz4History.get("rejectedKonts")).addAll(((List<Kont>) results.get("rejectedKonts")));
                     break;
                 }
             }
@@ -195,13 +227,16 @@ public class YardSector implements Serializable {
     public Map<String, List<?>> bindYardToAvto(YardSectorBindDTO yardSectorBindDTO, Avto avto, Mapper mapper, List<YardSector> yardSectors) {
         Map<String, List<?>> contGruz4History = new HashMap<>(1);
         contGruz4History.put("konts", new ArrayList<Kont>());
+        contGruz4History.put("rejectedKonts", new ArrayList<Kont>());
+
 
         for (YardBindDTO yardBindDTO : yardSectorBindDTO.getYards()) {
             for (Yard yard : getYards()) {
                 if (Objects.equals(yard.getHid(), yardBindDTO.getHid())) {
 //                    mapper.map(yardBindDTO, yard); // update
-                    List<Kont> konts = yard.bindKonts(yardBindDTO.getKonts(), mapper, avto, yardSectors);
-                    ((List<Kont>) contGruz4History.get("konts")).addAll(konts);
+                    Map<String, List<?>> results =  yard.bindKonts(yardBindDTO.getKonts(), mapper, avto, yardSectors);
+                    ((List<Kont>) contGruz4History.get("konts")).addAll(((List<Kont>) results.get("konts")));
+                    ((List<Kont>) contGruz4History.get("rejectedKonts")).addAll(((List<Kont>) results.get("rejectedKonts")));
                     break;
                 }
             }
@@ -233,11 +268,12 @@ public class YardSector implements Serializable {
         YardSector that = (YardSector) o;
         return hid.equals(that.hid) &&
                 name.equals(that.name) &&
+                typeView.equals(that.typeView) &&
                 descr.equals(that.descr);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(hid, name, descr);
+        return Objects.hash(hid, name, descr, typeView);
     }
 }

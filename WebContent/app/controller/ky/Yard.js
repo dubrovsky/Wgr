@@ -3,6 +3,16 @@ Ext.define('TK.controller.ky.Yard', {
 
     mixins: ['TK.controller.FilterUtils'],
 
+    requires: [
+        'TK.Utils',
+        'TK.model.ky.Yard',
+        'TK.model.ky.YardSector',
+        'TK.view.ky.BaseYardDirFilter',
+        'TK.view.ky.yard.Filter',
+        'TK.view.ky.yard.Graf'
+    ],
+
+
     views: [
         'ky.yard.List',
         'ky.yard.Form',

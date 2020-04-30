@@ -1,5 +1,6 @@
 package com.bivc.cimsmgs.dao.hibernate;
 
+import com.bivc.cimsmgs.commons.DateTimeUtils;
 import com.bivc.cimsmgs.commons.Filter;
 import com.bivc.cimsmgs.dao.PoezdDAO;
 import com.bivc.cimsmgs.db.Usr;
@@ -40,7 +41,7 @@ public class PoezdDAOHib extends GenericHibernateDAO<Poezd, Long> implements Poe
         crit.add(Restrictions.eq("koleya", koleya));
         crit.addOrder(Order.desc("dattr"));
 
-        applyFilter(filters, crit, locale);
+        applyFilter(filters, crit, locale, direction);
 
         return listAndCast(crit);
     }
@@ -56,7 +57,7 @@ public class PoezdDAOHib extends GenericHibernateDAO<Poezd, Long> implements Poe
 
         crit.setProjection(Projections.countDistinct("hid"));
 
-        applyFilter(filters, crit, locale);
+        applyFilter(filters, crit, locale, direction);
 
         return (Long) crit.uniqueResult();
     }
@@ -141,7 +142,7 @@ public class PoezdDAOHib extends GenericHibernateDAO<Poezd, Long> implements Poe
     }*/
 
     @Override
-    public List<Poezd> getPoezdsIntoForPoezdOutDir(Usr usr, long routeId) {
+    public List<Poezd> getPoezdsIntoForPoezdOutDir(Usr usr, long routeId, byte koleya) {
         Criteria crit = getSession().createCriteria(getPersistentClass());
         crit.createAlias("packDoc", "pack").createAlias("pack.usrGroupsDir", "gr").add(Restrictions.in("gr.name", usr.getTrans()));
         crit.createAlias("route", "route").add(Restrictions.eq("route.hid", routeId));
@@ -152,6 +153,7 @@ public class PoezdDAOHib extends GenericHibernateDAO<Poezd, Long> implements Poe
         Date dateBefore = cal.getTime();
         crit.add(Restrictions.or(Restrictions.isNull("dprb"), Restrictions.between("dprb", dateBefore, new Date())));
         crit.add(Restrictions.eq("direction", (byte)1));
+        crit.add(Restrictions.eq("koleya", koleya));
         
         return listAndCast(crit);
     }
@@ -168,7 +170,7 @@ public class PoezdDAOHib extends GenericHibernateDAO<Poezd, Long> implements Poe
         return (Long) crit.uniqueResult();
     }
 
-    private void applyFilter(List<Filter> filters, Criteria crit, Locale locale) {
+    private void applyFilter(List<Filter> filters, Criteria crit, Locale locale, Byte direction) {
         if (CollectionUtils.isNotEmpty(filters)) {
             for (Filter filter : filters) {
                 if (StringUtils.isNotBlank(filter.getProperty()) && StringUtils.isNotBlank(filter.getValue())) {
@@ -177,10 +179,17 @@ public class PoezdDAOHib extends GenericHibernateDAO<Poezd, Long> implements Poe
                         case NPPR:
                             crit.add(Restrictions.ilike(Poezd.FilterFields.NPPR.getName(), StringUtils.trim(filter.getValue()), MatchMode.ANYWHERE));
                             break;
-                        /*case SECTOR:
-                            crit.add(Restrictions.eq(Yard.FilterFields.SECTOR.getName(), Long.valueOf(StringUtils.trim(filter.getValue()))) );
+                        case NPPRM:
+                            crit.add(Restrictions.ilike(Poezd.FilterFields.NPPRM.getName(), StringUtils.trim(filter.getValue()), MatchMode.ANYWHERE));
                             break;
-                        case LOADED:
+                        case SNAME:
+                            crit.createAlias("client", "client").add(Restrictions.ilike("client.sname", StringUtils.trim(filter.getValue()), MatchMode.ANYWHERE) );
+                            break;
+                        case STARTDATE:
+                            date = DateTimeUtils.Parser.valueOf(locale.getLanguage()).parse(StringUtils.trim(filter.getValue()));
+                            crit.add(Restrictions.gt(direction == 1 ?  "dprb" : "dotp", date));
+                            break;
+                        /*case LOADED:
                             crit.add(Restrictions.eq(Yard.FilterFields.LOADED.getName(), Boolean.valueOf(StringUtils.trim(filter.getValue()))));
                             break;
                         case NOTLOADED:

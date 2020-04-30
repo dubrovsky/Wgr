@@ -1,5 +1,11 @@
 Ext.define('TK.store.AvisoGu29ks', {
 	extend: 'Ext.data.Store',
+
+    requires: [
+        'TK.Utils',
+        'TK.model.AvisoGu29k'
+    ],
+
     model: 'TK.model.AvisoGu29k',
     pageSize: 20,
 	proxy: {

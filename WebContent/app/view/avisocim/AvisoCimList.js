@@ -7,7 +7,7 @@ Ext.define('TK.view.avisocim.AvisoCimList', {
     requires: [
         'TK.Utils'
     ],
-
+    itemId:'avisoCimlistMain',
     // title: 'Журнал Инструкций CIM',
 
     buildStore: function(config) {
@@ -51,6 +51,7 @@ Ext.define('TK.view.avisocim.AvisoCimList', {
         config.dockedItems = new Array({
             dock: 'top',
             xtype: 'toolbar',
+            layout: 'column',
             itemId: 'top',
             defaults:{iconAlign:'top', arrowAlign:'bottom'},
             items: [

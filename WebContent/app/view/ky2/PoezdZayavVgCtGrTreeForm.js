@@ -31,53 +31,40 @@ Ext.define('TK.view.ky2.PoezdZayavVgCtGrTreeForm', {
 
     buildTabPanelItems: function () {
         return [{
-            title: 'Вагон',
+            title: this.titleWag,
             itemId: 'vag',
             defaults: {
                 labelWidth: 150
             },
             items: [
-                {xtype: 'textfield', fieldLabel: '№ вагона', name: "nvag", maxLength: 13, allowBlank: false},
-                // {
-                //     name: 'dprb',
-                //     xtype: 'datefield',
-                //     fieldLabel: 'Прибытие',
-                //     altFormats: 'd.m.y H:i',
-                //     format: 'd.m.y H:i',
-                //     readOnly: true
-                // },
-                // {
-                //     xtype: 'combo',
-                //     queryMode: 'local',
-                //     forceSelection: true,
-                //     fieldLabel: 'Номер пути',
-                //     name: 'line',
-                //     allowBlank: false,
-                //     store: [['1', '1'], ['2', '2']]
-                // },
+                {xtype: 'textfield', fieldLabel: this.labelNvag, name: "nvag", maxLength: 13, allowBlank: false},
                 {
                     xtype: 'numberfield',
-                    fieldLabel: 'Грузоподъемность',
+                    fieldLabel: this.labelTonnage,
                     decimalPrecision: 2,
                     minValue: 0,
                     name: 'podSila',
+                    itemId: 'podSila',
                     maxLength: 20
                 }, {
                     xtype: 'numberfield',
-                    fieldLabel: 'Количество осей',
+                    fieldLabel: this.labelKolOs,
                     decimalPrecision: 0,
                     name: 'kolOs',
+                    itemId: 'kolOs',
                     maxLength: 2
                 }, {
                     xtype: 'numberfield',
-                    fieldLabel: 'Тара вагона',
-                    decimalPrecision: 0,
+                    fieldLabel: this.labelTaraWag,
+                    decimalPrecision: 2,
                     name: 'masTar',
+                    itemId: 'masTar',
                     maxLength: 20
                 }, {
                     xtype: 'textarea',
-                    fieldLabel: 'Собственник',
+                    fieldLabel: this.labelOwner,
                     name: 'sobstv',
+                    itemId: 'sobstv',
                     width: 400,
                     maxLength: 128
                 },
@@ -86,118 +73,170 @@ Ext.define('TK.view.ky2.PoezdZayavVgCtGrTreeForm', {
                 {xtype: 'hidden', name: "hid"}
             ]
         }, {
-            title: 'Контейнер',
+            title: this.labelCont,
             itemId: 'cont',
             defaults: {
                 labelWidth: 150
             },
             items: [
                 {
-                    fieldLabel: 'Номер контейнера',
-                    xtype: 'textfield',
-                    name: 'nkon',
-                    itemId: 'nkon',
-                    maxLength: 11,
-                    enableKeyEvents: true,
-                    allowBlank: false
-                }, {
-                    fieldLabel: 'Отправка №',
-                    xtype: 'textfield',
-                    name: 'notp',
-                    itemId: 'notp',
-                    maxLength: 11,
-                    enableKeyEvents: true,
-                    allowBlank: false
-                }, {
-                    xtype: 'fieldset',
-                    title: 'Прибытие',
-                    layout: 'anchor',
-                    defaults: {
-                        labelWidth: 138
+                    xtype: 'fieldcontainer',
+                    width: 520,
+                    layout: {
+                        type: 'table',
+                        defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
                     },
-                    width: 305,
+                    defaults: {
+                        columnWidth: 0.5
+                    },
                     items: [{
-                        fieldLabel: 'Дата',
-                        name: 'dprbDate',
-                        xtype: 'datefield',
-                        format: 'd.m.y'
+                        xtype: 'fieldset',
+                        title: this.labelNum,
+                        layout: 'anchor',
+                        defaults: {
+                            labelWidth: 80
+                        },
+                        items: [{
+                            fieldLabel: this.labelCont,
+                            xtype: 'textfield',
+                            name: 'nkon',
+                            itemId: 'nkon',
+                            maxLength: 11,
+                            enableKeyEvents: true,
+                            allowBlank: false
+                        }, {
+                            fieldLabel: this.labalOtpr,
+                            xtype: 'textfield',
+                            name: 'notp',
+                            itemId: 'notp',
+                            maxLength: 11
+                        }]
                     }, {
-                        fieldLabel: 'Время',
-                        name: 'dprbTime',
-                        xtype: 'timefield',
-                        //snapToIncrement: true,
-                        format: 'H:i'
+                        xtype: 'fieldset',
+                        title: this.labelNorder,
+                        layout: 'anchor',
+                        defaults: {
+                            labelWidth: 80
+                        },
+                        items: [{
+                            fieldLabel: this.labelArrival,
+                            xtype: 'textfield',
+                            name: 'zayav_in',
+                            itemId: 'zayav_in',
+                            maxLength: 50
+                        }, {
+                            fieldLabel: this.labelDeparture,
+                            xtype: 'textfield',
+                            name: 'zayav_out',
+                            itemId: 'zayav_out',
+                            maxLength: 50
+                        }]
                     }]
                 }, {
-                    xtype: 'fieldset',
-                    title: 'Отправление',
-                    layout: 'anchor',
-                    defaults: {
-                        labelWidth: 138
+                    xtype: 'fieldcontainer',
+                    width: 500,
+                    layout: {
+                        type: 'table',
+                        defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
                     },
-                    width: 305,
+                    defaults: {
+                        columnWidth: 0.5
+                    },
                     items: [{
-                        fieldLabel: 'Дата',
-                        name: 'dotpDate',
-                        xtype: 'datefield',
-                        format: 'd.m.y'
+                        xtype: 'fieldset',
+                        title: this.labelArrival,
+                        layout: 'anchor',
+                        defaults: {
+                            labelWidth: 80
+                        },
+
+                        items: [{
+                            fieldLabel: this.labelDate,
+                            name: 'dprbDate',
+                            xtype: 'datefield',
+                            altFormats: 'd.m.y'
+                        }, {
+                            fieldLabel: this.labelTime,
+                            name: 'dprbTime',
+                            xtype: 'timefield',
+                            //snapToIncrement: true,
+                            format: 'H:i'
+                        }]
                     }, {
-                        fieldLabel: 'Время',
-                        name: 'dotpTime',
-                        xtype: 'timefield',
-                        //snapToIncrement: true,
-                        format: 'H:i'
+                        xtype: 'fieldset',
+                        title: this.labelDeparture,
+                        layout: 'anchor',
+                        defaults: {
+                            labelWidth: 80
+                        },
+                        items: [{
+                            fieldLabel: this.labelDate,
+                            name: 'dotpDate',
+                            xtype: 'datefield',
+                            format: 'd.m.y'
+                        }, {
+                            fieldLabel: this.labelTime,
+                            name: 'dotpTime',
+                            xtype: 'timefield',
+                            //snapToIncrement: true,
+                            format: 'H:i'
+                        }]
                     }]
                 }, {
                     xtype: 'checkbox',
                     name: 'poruz',
-                    fieldLabel: 'Порожний',
+                    fieldLabel: this.labelEmtyWag,
                     inputValue: true,
                     uncheckedValue: false
                 }, {
                     xtype: 'numberfield',
-                    fieldLabel: 'Брутто груза',
-                    decimalPrecision: 0,
+                    fieldLabel: this.labelBrutto,
+                    decimalPrecision: 3,
                     name: 'massa_brutto',
+                    itemId: 'massa_brutto',
                     maxLength: 20
                 }, {
                     xtype: 'numberfield',
-                    fieldLabel: 'Масса тары контейнера',
-                    decimalPrecision: 0,
+                    fieldLabel: this.labelTara,
+                    decimalPrecision: 3,
                     name: 'massa_tar',
+                    itemId: 'massa_tar',
                     maxLength: 20
                 }, {
                     xtype: 'numberfield',
-                    fieldLabel: 'Общая масса брутто',
-                    decimalPrecision: 2,
+                    fieldLabel: this.labelTotalBrutto,
+                    decimalPrecision: 3,
                     minValue: 0,
                     name: 'massa_brutto_all',
                     itemId: 'massa_brutto_all',
                     maxLength: 20
                 }, {
                     xtype: 'numberfield',
-                    fieldLabel: 'Грузоподъемность',
+                    fieldLabel: this.labelTonnage,
                     decimalPrecision: 2,
                     minValue: 0,
                     name: 'pod_sila',
+                    itemId: 'pod_sila',
                     maxLength: 20
                 }, {
                     xtype: 'combo',
                     queryMode: 'local',
-                    fieldLabel: 'Футовость',
+                    fieldLabel: this.labelSize,
                     name: 'type',
+                    itemId: 'type',
                     store: ['20', '30', '40', '40HC', '45']
                 }, {
                     xtype: 'textfield',
-                    fieldLabel: 'Типоразмер контейнера',
+                    fieldLabel: this.labelContSize,
                     name: 'vid',
+                    itemId: 'vid',
                     maxLength: 28
                 }, {
                     xtype: 'fieldcontainer',
                     layout: {
                         type: 'hbox'
                     },
-                    fieldLabel: 'Клиент',
+                    fieldLabel: this.labelClient,
                     labelWidth: 150,
                     width: 400,
                     items: [{
@@ -218,7 +257,7 @@ Ext.define('TK.view.ky2.PoezdZayavVgCtGrTreeForm', {
                 }, {
                     name: 'prim',
                     xtype: 'textarea',
-                    fieldLabel: 'Примечание',
+                    fieldLabel: this.labelNotes,
                     width: 400,
                     maxLength: 128
                 },
@@ -230,7 +269,7 @@ Ext.define('TK.view.ky2.PoezdZayavVgCtGrTreeForm', {
                 {xtype: 'hidden', name: "hid"}
             ]
         }, {
-            title: "Груз",
+            title: this.titleCargo,
             itemId: 'gryz',
             defaults: {
                 labelWidth: 150
@@ -238,41 +277,66 @@ Ext.define('TK.view.ky2.PoezdZayavVgCtGrTreeForm', {
             items: [
                 {
                     xtype: 'textfield',
-                    fieldLabel: 'Код груза ГНГ',
+                    fieldLabel: this.labelCodeGng,
                     name: 'kgvn',
                     maxLength: 10
                 },
                 {
                     xtype: 'textarea',
-                    fieldLabel: 'Наименование груза ГНГ',
+                    fieldLabel: this.labelNameGng,
                     name: 'nzgr',
                     width: 400,
                     maxLength: 4000
                 }, {
                     xtype: 'textfield',
-                    fieldLabel: 'Упаковка',
+                    fieldLabel: this.labelPackage,
                     name: 'upak',
                     maxLength: 50
                 }, {
                     xtype: 'numberfield',
-                    fieldLabel: 'Места',
+                    fieldLabel: this.labelPlaces,
                     name: 'places',
                     minValue: 0,
                     decimalPrecision: 0,
                     maxLength: 8
                 }, {
                     xtype: 'numberfield',
-                    fieldLabel: 'Масса',
+                    fieldLabel: this.labelMassa,
                     name: 'massa',
                     minValue: 0,
                     decimalPrecision: 3,
                     maxLength: 14
+                }, {
+                    xtype: 'fieldcontainer',
+                    layout: {
+                        type: 'hbox'
+                    },
+                    fieldLabel: this.labelClient,
+                    labelWidth: 150,
+                    width: 400,
+                    items: [{
+                        xtype: 'textfield',
+                        name: 'gruzotpr',
+                        itemId: 'gruzotpr',
+                        maxLength: 128,
+                        flex: 1,
+                        readOnly: true,
+                        allowBlank: false
+                    }, {
+                        xtype: 'button',
+                        margins: {top: 0, right: 0, bottom: 0, left: 3},
+                        text: '...',
+                        itemId: 'gruzotprDir',
+                        action: 'nsiOtprGryz'
+                    }]
                 },
+                {xtype: 'hidden', name: "clientHid"},
+                {xtype: 'hidden', name: "routeHid"},
                 {xtype: 'hidden', name: "sort"},
                 {xtype: 'hidden', name: "hid"}
             ]
         }, {
-            title: "Пломба",
+            title: this.titlePlomb,
             itemId: 'plomb',
             defaults: {
                 labelWidth: 150
@@ -280,19 +344,19 @@ Ext.define('TK.view.ky2.PoezdZayavVgCtGrTreeForm', {
             items: [
                 {
                     xtype: 'textfield',
-                    fieldLabel: 'Пломба',
+                    fieldLabel: this.labelPlomb,
                     name: 'znak',
                     width: 400,
                     maxLength: 128
                 }, {
                     xtype: 'textfield',
-                    fieldLabel: 'Станция наложения',
+                    fieldLabel: this.labelSealingStation,
                     name: 'station',
                     width: 400,
                     maxLength: 100
                 }, {
                     xtype: 'numberfield',
-                    fieldLabel: 'Количество',
+                    fieldLabel: this.labelQuantity,
                     name: 'kpl',
                     minValue: 0,
                     decimalPrecision: 0,
@@ -310,20 +374,20 @@ Ext.define('TK.view.ky2.PoezdZayavVgCtGrTreeForm', {
 
     buildTreeToolbarItems: function () {
         return [{
-            text: '+ Вагон',
+            text: this.btnAddWag,
             action: 'addVag',
             iconCls: 'vag',
             hidden: false
         }, {
-            text: '+ Контейнер',
+            text: this.btnAddCont,
             action: 'addCont',
             iconCls: 'cont3'
         }, {
-            text: '+ Груз',
+            text: this.btnAddCorgo,
             action: 'addGryz',
             iconCls: 'gryz'
         }, {
-            text: '+ Пломба',
+            text: this.btnAddPlomb,
             action: 'addPlomb',
             iconCls: 'doc_new'
         }];
@@ -331,11 +395,11 @@ Ext.define('TK.view.ky2.PoezdZayavVgCtGrTreeForm', {
 
     buildTreePanelTopToolbarItemsExpandCollapse: function () {
         return [{
-            text: 'Развернуть',
+            text: this.ttipShow,
             action: 'expandConts'
         }, '-',
             {
-                text: 'Свернуть',
+                text: this.ttipHide,
                 action: 'collapseConts'
             }
         ];

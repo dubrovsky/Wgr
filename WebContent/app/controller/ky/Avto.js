@@ -1,6 +1,7 @@
 Ext.define('TK.controller.ky.Avto', {
     extend:'Ext.app.Controller',
     mixins: ['TK.controller.FilterUtils'],
+
     views: [
         'ky.avto.AvtoFilter',
         'ky.avto.BaseAvtoForm',

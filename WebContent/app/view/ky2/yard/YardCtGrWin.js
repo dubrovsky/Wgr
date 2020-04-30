@@ -1,13 +1,17 @@
 Ext.define('TK.view.ky2.yard.YardCtGrWin', {
     extend: 'Ext.window.Window',
     alias:'widget.ky2yardctgrwin',
+    requires: [
+        'TK.view.ky2.YardCtGrTreeForm'
+    ],
+
 
     autoShow: true,
     y: 0,
     modal: true,
     layout: 'fit',
     width: 600,
-    height: 580,
+    height: 680,
     closable: false,
 
     initComponent: function () {

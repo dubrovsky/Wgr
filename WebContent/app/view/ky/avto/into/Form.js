@@ -1,6 +1,12 @@
 Ext.define('TK.view.ky.avto.into.Form', {
     extend: 'Ext.container.Container',
     alias: 'widget.kyavtointoform',
+
+    requires: [
+        'TK.view.ky.avto.BaseAvtoForm',
+        'TK.view.ky.avto.into.kont.List'
+    ],
+
     title: 'Авто, прибытие',
 
     closable: false,
@@ -16,19 +22,19 @@ Ext.define('TK.view.ky.avto.into.Form', {
             //this.callParent(arguments);
             config.items[0].items.splice(0, 0, {
                 xtype:'fieldset',
-                title: 'Прибытие',
+                title: '!Прибытие',
                 layout: 'anchor',
                 defaults: {
                     anchor: '100%'
                 },
                 width:250,
                 items: [{
-                    fieldLabel:'Дата',
+                    fieldLabel:'!Дата',
                     name : 'dprbDate',
                     xtype: 'datefield',
                     altFormats:'d.m.y'
                 },{
-                    fieldLabel:'Время',
+                    fieldLabel:'!Время',
                     name : 'dprbTime',
                     xtype: 'timefield',
                     //snapToIncrement: true,

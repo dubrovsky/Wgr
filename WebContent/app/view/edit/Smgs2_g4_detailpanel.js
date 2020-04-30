@@ -8,7 +8,6 @@ Ext.define('TK.view.edit.Smgs2_g4_detailpanel', {
 
     x: 400, y: 100, width: 400, height: 470,
     itemId: 'g4_panel',
-    title: this.labelReceiver,
     layout: {
         type: 'vbox',
         align: 'stretch'
@@ -20,7 +19,7 @@ Ext.define('TK.view.edit.Smgs2_g4_detailpanel', {
         Ext.apply(this, config);
         this.callParent(arguments);
 
-        this.title = this.labelSender;
+        this.title = this.labelReceiver;
 
         this.getComponent('naim').getComponent('smgs.g1r_1').fieldLabel = this.labelName;
         this.getComponent('strn').fieldLabel = this.labelCountry;
@@ -38,7 +37,14 @@ Ext.define('TK.view.edit.Smgs2_g4_detailpanel', {
             itemId: 'naim',
             items: [
                 {xtype: 'textarea', name: "smgs.g4r", itemId: "smgs.g1r_1", maxLength: 512, flex: 1},
-                {xtype: 'button', text: '...', action: 'poluch', margins: '0 0 0 5'}
+                {
+                    xtype: 'fieldcontainer',
+                    layout: 'vbox',
+                    items: [
+                        {xtype: 'button', text: '...', action: 'poluch', margins: '0 0 0 5'},
+                        {xtype: 'button', text: 'Translit', action: 'trlitg4', margins: '5 0 0 5'}
+                    ]
+                }
             ]
         },
         // код получателя
@@ -215,6 +221,10 @@ Ext.define('TK.view.edit.Smgs2_g4_detailpanel', {
                 this.bufData[arr[1]] = data[arr[1]];
             }
         }, this);
+    },
+    onClose:function () {
+        if(this.g4_dop_infoBack)
+            this.getComponent('smgs.g4_dop_info').setValue(this.g4_dop_infoBack);
+        this.callParent(arguments);
     }
-
 });

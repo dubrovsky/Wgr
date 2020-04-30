@@ -180,5 +180,12 @@ public class CimSmgsPlomb implements Serializable {
         sb.append(StringUtils.defaultString(getZnak()));
         return sb.toString();
     }
+    public CimSmgsPlomb makeCopy()
+	{
+		CimSmgsPlomb plombCopy= new CimSmgsPlomb();
+		plombCopy.setKpl(getKpl());
+		plombCopy.setZnak(getZnak());
+		return plombCopy;
+	}
 
 }

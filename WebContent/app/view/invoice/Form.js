@@ -20,22 +20,31 @@ Ext.define('TK.view.invoice.Form', {
         'Ext.layout.container.VBox',
         'Ext.toolbar.Separator',
         'TK.model.InvoiceGruz',
-        'TK.view.edit.DetailGrid'
+        'TK.view.edit.DetailGrid',
+        'TK.view.edit.DetailPanel'
     ],
     bodyStyle: 'font-size:12px; background-color: #FFFFFF;',
-    layout: 'anchor',
+    layout: {
+        type: 'vbox',
+        align : 'stretch',
+        pack  : 'start'
+    },
     bodyPadding: 5,
+    wrongTnveds:[],
+    present6Tnveds:[],
     buildItems:function(config) {
         config.items = [
             {
                 xtype: 'fieldcontainer',
-                layout: 'hbox',
+                layout: 'column',
                 items: [
+                    {xtype:'hidden', name:'isAdditional',value:true, submitValue:false},
                     {xtype:'combo', fieldLabel:this.labelType,  name:'invoice.docType', itemId:"invoice.docType", maxLength:100,
                         typeAhead: true, forceSelection: true, triggerAction: 'all', selectOnFocus:true, margin: '0 5 0 0',
                         store: [this.lableCombo1, this.lableCombo2, this.lableCombo3, this.lableCombo4, this.lableCombo5], value: this.lableCombo1},
                     {xtype:'textfield', fieldLabel:'№', name:'invoice.invoice', itemId:'invoice.invoice', maxLength:20, margin: '0 5 0 0'},
-                    {xtype:'datefield', fieldLabel:this.labelDate, name:'invoice.dat_inv', itemId:'invoice.dat_inv', maxLength:10}
+                    {xtype:'datefield', fieldLabel:this.labelDate, name:'invoice.dat_inv', itemId:'invoice.dat_inv', maxLength:10},
+                    {xtype:'button', text: this.btnShowDetails, iconCls:'report', border:3,style: { borderStyle: 'solid'}, scope: this, handler: this.onShowdetails, margin: '0 0 0 20'}
                 ]
             },
             {
@@ -48,99 +57,126 @@ Ext.define('TK.view.invoice.Form', {
                 ]
             },
             {
-                xtype: 'fieldcontainer',
-                layout: 'hbox',
-                items: [
-                    {xtype:'textfield', fieldLabel:this.labelContractNum,name:'invoice.n_dog', itemId:'invoice.n_dog', maxLength:10, margin: '0 5 0 0'},
-                    {xtype:'datefield',  fieldLabel:this.labelContractDate,name: 'invoice.dat_dog', itemId:'invoice.dat_dog', maxLength:10}
-                ]
-            },
-            {
-                xtype: 'fieldcontainer',
-                layout: 'hbox',
-                defaults: {flex: 1},
-                itemId:'nsel_notd',
-                items: [
-                    {xtype:'trigger', fieldLabel:this.labelSellerName,name:"invoice.nsel", itemId:'invoice.nsel',triggerCls:'dir', maxLength:100, margin: '0 5 0 0'},
-                    {xtype:'trigger',  fieldLabel:this.labelSenderName,name:"invoice.notd", itemId:'invoice.notd',triggerCls:'dir', maxLength:250}
-                ]
-            },
-            {
-                xtype: 'fieldcontainer',
-                layout: 'hbox',
-                defaults: {flex: 1},
-                itemId:'adres_s_o',
-                items: [
-                    {xtype:'textarea',  fieldLabel:this.labelSellerAdress, name: 'invoice.adres_s', itemId:'invoice.adres_s', maxLength:200, margin: '0 5 0 0'},
-	                {
-		                layout: {
-	                        type: 'vbox',
-			                align:'stretch'
-	                    },
-		                border:false,
-		                itemId:'adres_s_o1',
-		                items:[
-			                {xtype:'textfield',  fieldLabel:this.labelSenderCountry, name: 'invoice.country_o', itemId:'invoice.country_o', maxLength:2},
-			                {xtype:'textfield',  fieldLabel:this.labelSenderZip, name: 'invoice.zip_o', itemId:'invoice.zip_o', maxLength:10},
-			                {xtype:'textfield',  fieldLabel:this.labelSenderCity, name: 'invoice.city_o', itemId:'invoice.city_o', maxLength:50},
-			                {xtype:'textfield',  fieldLabel:this.labelSenderAdress, name: 'invoice.adres_o', itemId:'invoice.adres_o', maxLength:250}
-		                ]
-	                }
-                ]
-            },
-            {
-                xtype: 'fieldcontainer',
-                layout: 'hbox',
-                defaults: {flex: 1},
-                itemId:'nbuy_npol',
-                items: [
-                    {xtype:'trigger',  fieldLabel:this.labelBuyerName, name:"invoice.nbuy", itemId:"invoice.nbuy",triggerCls:'dir', maxLength:100, margin: '0 5 0 0'},
-                    {xtype:'trigger', fieldLabel:this.labelReceiverName, name:"invoice.npol", itemId:"invoice.npol", triggerCls:'dir', maxLength:250}
-                ]
-            },
-            {
-                xtype: 'fieldcontainer',
-                layout: 'hbox',
-                defaults: {flex: 1},
-                itemId:'adres_b_p',
-                items: [
-                    {xtype:'textarea',  fieldLabel:this.labelBuyerAdress, name: 'invoice.adres_b', itemId:'invoice.adres_b', maxLength:200, margin: '0 5 0 0'},
-	                {
-                        layout: {
-                            type: 'vbox',
-                            align:'stretch'
-                        },
-		                itemId:'adres_b_p1',
-                        border:false,
-                        items:[
-                            {xtype:'textfield',  fieldLabel:this.labelReceiverCountry, name: 'invoice.country_p', itemId:'invoice.country_p', maxLength:2},
-                            {xtype:'textfield',  fieldLabel:this.labelReceiverZip, name: 'invoice.zip_p', itemId:'invoice.zip_p', maxLength:10},
-                            {xtype:'textfield',  fieldLabel:this.labelReceiverCity, name: 'invoice.city_p', itemId:'invoice.city_p', maxLength:50},
-                            {xtype:'textfield',  fieldLabel:this.labelReceiverAdress, name: 'invoice.adres_p', itemId:'invoice.adres_p', maxLength:250}
+                xtype:'detailpanel',
+                title:this.deatailTitle,
+                itemId:'invoiceDetails',
+                items:[
+
+                    {
+                        xtype: 'fieldcontainer',
+                        layout: 'hbox',
+                        items: [
+                            {xtype:'textfield', fieldLabel:this.labelContractNum,name:'invoice.n_dog', itemId:'invoice.n_dog', maxLength:10, margin: '0 5 0 0'},
+                            {xtype:'datefield',  fieldLabel:this.labelContractDate,name: 'invoice.dat_dog', itemId:'invoice.dat_dog', maxLength:10}
+                        ]
+                    },
+                    {
+                        xtype: 'fieldcontainer',
+                        layout: 'hbox',
+                        defaults: {flex: 1},
+                        itemId:'nsel_notd',
+                        items: [
+                            {xtype:'trigger', fieldLabel:this.labelSellerName,name:"invoice.nsel", itemId:'invoice.nsel',triggerCls:'dir', maxLength:100, margin: '0 5 0 0'},
+                            {xtype:'trigger',  fieldLabel:this.labelSenderName,name:"invoice.notd", itemId:'invoice.notd',triggerCls:'dir', maxLength:250}
+                        ]
+                    },
+                    {
+                        xtype: 'fieldcontainer',
+                        layout: 'hbox',
+                        defaults: {flex: 1},
+                        itemId:'adres_s_o',
+                        items: [
+                            {xtype:'textarea',  fieldLabel:this.labelSellerAdress, name: 'invoice.adres_s', itemId:'invoice.adres_s', maxLength:200, margin: '0 5 0 0'},
+                            {
+                                layout: {
+                                    type: 'vbox',
+                                    align:'stretch'
+                                },
+                                border:false,
+                                itemId:'adres_s_o1',
+                                items:[
+                                    {xtype:'trigger',  fieldLabel:this.labelSenderCountry, name: 'invoice.country_o', itemId:'invoice.country_o',triggerCls:'dir', maxLength:2},
+                                    {xtype:'textfield',  fieldLabel:this.labelSenderZip, name: 'invoice.zip_o', itemId:'invoice.zip_o', maxLength:10},
+                                    {xtype:'textfield',  fieldLabel:this.labelSenderCity, name: 'invoice.city_o', itemId:'invoice.city_o', maxLength:50},
+                                    {xtype:'textfield',  fieldLabel:this.labelSenderAdress, name: 'invoice.adres_o', itemId:'invoice.adres_o', maxLength:250}
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        xtype: 'fieldcontainer',
+                        layout: 'hbox',
+                        defaults: {flex: 1},
+                        itemId:'nbuy_npol',
+                        items: [
+                            {xtype:'trigger',  fieldLabel:this.labelBuyerName, name:"invoice.nbuy", itemId:"invoice.nbuy",triggerCls:'dir', maxLength:100, margin: '0 5 0 0'},
+                            {xtype:'trigger', fieldLabel:this.labelReceiverName, name:"invoice.npol", itemId:"invoice.npol", triggerCls:'dir', maxLength:250}
+                        ]
+                    },
+                    {
+                        xtype: 'fieldcontainer',
+                        layout: 'hbox',
+                        defaults: {flex: 1},
+                        itemId:'adres_b_p',
+                        items: [
+                            {xtype:'textarea',  fieldLabel:this.labelBuyerAdress, name: 'invoice.adres_b', itemId:'invoice.adres_b', maxLength:200, margin: '0 5 0 0'},
+                            {
+                                layout: {
+                                    type: 'vbox',
+                                    align:'stretch'
+                                },
+                                itemId:'adres_b_p1',
+                                border:false,
+                                items:[
+                                    {xtype:'textfield',  fieldLabel:this.labelReceiverCountry, name: 'invoice.country_p', itemId:'invoice.country_p', maxLength:2},
+                                    {xtype:'textfield',  fieldLabel:this.labelReceiverZip, name: 'invoice.zip_p', itemId:'invoice.zip_p', maxLength:10},
+                                    {xtype:'textfield',  fieldLabel:this.labelReceiverCity, name: 'invoice.city_p', itemId:'invoice.city_p', maxLength:50},
+                                    {xtype:'textfield',  fieldLabel:this.labelReceiverAdress, name: 'invoice.adres_p', itemId:'invoice.adres_p', maxLength:250}
+                                ]
+                            }
+//                    {xtype:'textarea',  fieldLabel:this.labelReceiverAdress, name: 'invoice.adres_p', itemId:'invoice.adres_p', maxLength:200}
+                        ]
+                    },
+                    {
+                        xtype: 'fieldcontainer',
+                        layout: 'hbox',
+                        itemId:'postavka',
+                        items: [
+                            {xtype:'trigger',  fieldLabel:this.labelDeliveryCode, name:'invoice.postavka', itemId:'invoice.postavka', maxLength:100, triggerCls:'dir',margin: '0 5 0 0'},
+                            {xtype:'textfield',  fieldLabel:this.labelDeliveryPlace,name:'invoice.postavkaPunkt', itemId:'invoice.postavkaPunkt', maxLength:250,flex: 1}
+                        ]
+                    },
+                    {
+                        xtype: 'fieldcontainer',
+                        layout: 'hbox',
+                        itemId:'cux',
+                        items: [
+                            {xtype:'trigger', fieldLabel:this.labelCurrency,name: 'invoice.cux', itemId:'invoice.cux', maxLength:150, triggerCls:'dir', editable:false, margin: '0 5 0 0'},
+                            {xtype:'textarea', fieldLabel:this.labelNote,name: 'invoice.prim', itemId:'invoice.prim', maxLength:250,flex: 1}
                         ]
                     }
-//                    {xtype:'textarea',  fieldLabel:this.labelReceiverAdress, name: 'invoice.adres_p', itemId:'invoice.adres_p', maxLength:200}
-                ]
+                ],
+                buildDockedItems: function(config) {
+                    config.dockedItems = [{
+                        dock: 'bottom',
+                        xtype: 'toolbar',
+                        items: ['->',
+                            '-',{
+                                text: this.btnClose,
+                                handler:this.onClose,
+                                scope:this
+                            }]
+                    }];
+                },
             },
             {
-                xtype: 'fieldcontainer',
-                layout: 'hbox',
-                itemId:'postavka',
-                items: [
-                    {xtype:'trigger',  fieldLabel:this.labelDeliveryCode, name:'invoice.postavka', itemId:'invoice.postavka', maxLength:100, triggerCls:'dir',margin: '0 5 0 0'},
-                    {xtype:'textfield',  fieldLabel:this.labelDeliveryPlace,name:'invoice.postavkaPunkt', itemId:'invoice.postavkaPunkt', maxLength:250,flex: 1}
-                ]
-            },
-            {
-                xtype: 'fieldcontainer',
-                layout: 'hbox',
-                itemId:'cux',
-                items: [
-                    {xtype:'trigger', fieldLabel:this.labelCurrency,name: 'invoice.cux', itemId:'invoice.cux', maxLength:150, triggerCls:'dir', editable:false, margin: '0 5 0 0'},
-                    {xtype:'textarea', fieldLabel:this.labelNote,name: 'invoice.prim', itemId:'invoice.prim', maxLength:250,flex: 1}
-                ]
-            },
-            {xtype:'detailgrid', title:this.labelCargo, itemId:'gruz', height: 200,
+                xtype:'detailgrid',
+                enableColumnHide:true,
+                enableColumnMove:true,
+                sortableColumns:true,
+                flex:2,
+                title:this.labelCargo,
+                itemId:'gruz',
                 doc:'invoice',
                 coll:'invoiceGruzs',
                 features: [{
@@ -155,9 +191,28 @@ Ext.define('TK.view.invoice.Form', {
                 buildColModel: function(config) {
                     config.columns = {
                         items:[
-                            {xtype: 'rownumberer'},
-                            {text: this.headerCodeTNVED, dataIndex: 'tnved', width:75, editor:{xtype:'trigger',maxLength:12,triggerCls:'dir'}},
-                            {text: this.headerGoodsDescr, dataIndex: 'nzgr', flex: 1,minWidth:300,editor:{xtype:'textarea', maxLength:2500}, renderer: TK.Utils.renderLongStr, summaryType: 'count', summaryRenderer: function() {return this.headerTotal;}},
+                            {xtype: 'rownumberer', minWidth: 36},
+                            {text: this.headerCodeTNVED, dataIndex: 'tnved', width:75, editor:{xtype:'trigger',maxLength:12,triggerCls:'dir'},
+                                renderer: function(value,metaData)
+                                {
+                                    var val6=value.substring(0,Math.min(value.length,6));
+                                    if(this.up('invoice').present6Tnveds.indexOf(val6)!==-1&&value.length>6)
+                                    {
+                                        return '<span style="color:' + '#b59e00' + ';">' + value + '</span>';
+                                    }
+
+                                    if(this.up('invoice').wrongTnveds.indexOf(value)!==-1)
+                                    {
+                                        return '<span style="color:' + '#b50013' + ';">' + value + '</span>';
+                                    }
+                                    return value;
+                                }
+
+                            },
+                            {text: this.headerGoodsDescr, dataIndex: 'nzgr', flex: 1,minWidth:200,editor:{xtype:'textarea', maxLength:2500,border: 1 },
+                                renderer: TK.Utils.renderLongStr, summaryType: 'count', summaryRenderer: function() {return this.headerTotal;}},
+                            {text: this.headerGoodsDescrEn, dataIndex: 'nzgrEn', flex: 1,minWidth:200,editor:{xtype:'textarea', maxLength:2500,border: 1},
+                                renderer: TK.Utils.renderLongStr},
 //                            {text: this.headerPackage, dataIndex: 'nzyp', width:70, editor:{xtype:'trigger', maxLength:30,triggerCls:'dir'}},
                             {
                                 text:this.headerPack,
@@ -183,7 +238,7 @@ Ext.define('TK.view.invoice.Form', {
                 },
                 newRecord: function(){
                     return Ext.create('TK.model.InvoiceGruz', {
-                        tnved: '',nzgr: '',nzyp: '',kypk:'',kolm: '',mbrt: '',mnet: '',kole: '',eizm:'',cost: '',itogo: '',type: 'Груз',hid:''
+                        tnved: '',nzgr: '',nzgrEn: '',nzyp: '',kypk:'',kolm: '',mbrt: '',mnet: '',kole: '',eizm:'',cost: '',itogo: '',type: 'Груз',hid:''
                     });
                 },
                 copyValues2MainFlds:function(){
@@ -192,6 +247,7 @@ Ext.define('TK.view.invoice.Form', {
                         var row = [];
                         row.push(coll[index].tnved ? coll[index].tnved : '');
                         row.push(coll[index].nzgr ? coll[index].nzgr : '');
+                        row.push(coll[index].nzgrEn ? coll[index].nzgrEn : '');
                         row.push(coll[index].nzyp ? coll[index].nzyp : '');
                         row.push(coll[index].kypk ? coll[index].kypk : '');
                         row.push(coll[index].kolm);
@@ -212,6 +268,7 @@ Ext.define('TK.view.invoice.Form', {
 				},
                 buildConstValues:function(){},
                 onEdit: function(editor, e){
+                    console.log('onEdit');
                     if(e.field == 'kole' || e.field == 'cost'){
                         var data = e.record.data,
                             val1 = parseFloat(data.kole),
@@ -229,25 +286,23 @@ Ext.define('TK.view.invoice.Form', {
                         dock: 'bottom',
                         xtype: 'toolbar',
                         items: [
-                            {
-                                text: this.btnAdd,
-                                iconCls:'add1',
-                                scope: this,
-                                handler: this.onAddRecord
-                            },
-                            '-',{
-                                text: this.btnDelete,
-                                iconCls:'delete1',
-                                scope: this,
-                                handler: this.onDelRecord
-                            },'-',{
-                                text: this.btnCopy,
-                                iconCls:'copy',
-                                scope: this,
-                                handler: this.onCopyRecord
-                            },'-'
+                            {text: this.btnAdd, iconCls:'add1', scope: this, handler: this.onAddRecord},
+                            '-',
+                            {text: this.btnDelete, iconCls:'delete1', scope: this, handler: this.onDelRecord},
+                            '-',
+                            {text: this.btnCopy, iconCls:'copy', scope: this, handler: this.onCopyRecord},
+                            '-',
+                            {text: this.btnCheckTnved, iconCls:'filter_check', scope: this, action:'checkCodes'},
+                            '-',
+                            {text: this.btnImportXlsCargo, iconCls:'excel',scope: this, action:'uploadInvoiceXlsCargo'}
                         ]
                     }];
+                    if(tkUser.hasPriv('INVOICE_TRANSLATE')) {
+                        config.dockedItems[0].items.push(
+                            '-',
+                            {text: this.btnTranslate, iconCls: 'translate', scope: this, action: 'translateInvCargo'}
+                        )
+                    }
                 },
                 onCopyRecord: function(btn) {
                     var sel = this.selModel.getLastSelected();
@@ -255,6 +310,17 @@ Ext.define('TK.view.invoice.Form', {
                         var rec = sel.copy(); // clone the record
                         Ext.data.Model.id(rec);
                         this.store.insert(this.store.data.length, rec);
+                    }
+                },
+                /**
+                 * Настройка высоты окна редактирования
+                 * @param editor окно редактирования
+                 * @param e контекст
+                 */
+                beforeEdit:function(editor, e){
+                    var h=Ext.fly(e.row).getHeight();
+                    if(e.column.getEditor().xtype==='textarea') {
+                        e.column.getEditor().height = h + 100;
                     }
                 }
             },
@@ -266,6 +332,26 @@ Ext.define('TK.view.invoice.Form', {
             {xtype:'hidden', name:'invoice.docType1', itemId:'invoice.docType1', value:2},
             {xtype:'hidden', name:'invoice.status', itemId:'invoice.status'}
         ];
+    },
+    /**
+     * Отобжаем/прячем панель с детальной информацией об инвойсе
+     * @param btn кнопка вызова
+     */
+    onShowdetails:function (btn) {
+        var panel=Ext.ComponentQuery.query('invoice #invoiceDetails')[0];
+
+        if(panel.isVisible())
+        {
+            panel.hide();
+            btn.setText(this.btnShowDetails);
+            panel.ownerCt.maskPanel(false);
+        }
+        else
+        {
+            panel.show();
+            btn.setText(this.btnHideDetails);
+            panel.ownerCt.maskPanel(true);
+        }
     },
     buildDockedItems: function(config) {
         this.callParent(arguments);

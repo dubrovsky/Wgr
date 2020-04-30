@@ -36,6 +36,7 @@ Ext.define('TK.VTypes', {
         this.vagUniqueCheck();
         this.kontInAvtoUniqueCheck();
         this.kontInPoezdUniqueCheck();
+        this.fileCheck();
     },
 
     passCheck: function() {
@@ -244,5 +245,25 @@ Ext.define('TK.VTypes', {
     },
     testUzVagNum: function(val){
         return this.uzvagnum.test(val);
+    },
+    fileCheck: function(val, field) {
+        Ext.apply(Ext.form.field.VTypes, {
+            file: function(val, field) {
+                var types = field.acceptMimes ||['png', 'jpeg','jpg'],
+                    acceptSize = field.acceptSize|| 65535,
+                    size=field.el.down('input[type=file]').dom.files[0].size;
+                if(size&&size>acceptSize) {
+                    this.fileText=this.msgInvalidFsize+acceptSize;
+                    return false;
+                }
+                ext = val.substring(val.lastIndexOf('.') + 1).toLowerCase();
+                if(Ext.Array.indexOf(types, ext) === -1) {
+                    this.fileText= this.msgInvalidFType+types;
+                    return false;
+                }
+                return true;
+            },
+            fileText: '!Invalid file type or size'
+        });
     }
 });

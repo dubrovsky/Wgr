@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 01.11.2011 8:57:21 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.CimSmgsFileNew" table="CIM_SMGS_FILE_NEW">
+        <id name="hid" type="long">
+            <column name="HID" precision="22" scale="0" />
+            <generator class="sequence">
+              <param name="sequence">CIM_SMGS_FILE_NEW_HID</param>
+            </generator>
+            <!--<generator class="native"/>-->
+        </id>
+        <property name="altered" type="timestamp">
+            <column name="ALTERED" length="7" not-null="true" />
+        </property>
+        <property name="un" type="string">
+            <column name="UN" length="60" not-null="true" />
+        </property>
+        <property name="trans" type="string">
+            <column name="TRANS" length="20" />
+        </property>
+        <many-to-one class="com.bivc.cimsmgs.db.CimSmgsFile" fetch="select" name="cimSmgsFile">
+            <column name="HID_FILE" precision="20" scale="0"/>
+        </many-to-one>
+    </class>
+</hibernate-mapping>

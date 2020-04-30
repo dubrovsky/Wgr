@@ -55,11 +55,23 @@ public class Search implements Serializable {
     private String tipRazmKont;
     private String plat;
     private boolean flag;
+    private Integer wagonContainerDublicatePeriod;
     private String scope;
     private byte docId = 0;
     private Byte deleted = 0;
     private List<Long> ids = new ArrayList<>();
     private List<Long> routeIds = new ArrayList<>();
+    private Long smgsId;
+    private String groupId;
+    private String num;
+
+    public Integer getWagonContainerDublicatePeriod() {
+        return wagonContainerDublicatePeriod;
+    }
+
+    public void setWagonContainerDublicatePeriod(Integer wagonContainerDublicatePeriod) {
+        this.wagonContainerDublicatePeriod = wagonContainerDublicatePeriod;
+    }
 
     public List<Long> getRouteIds() {
         return routeIds;
@@ -85,8 +97,6 @@ public class Search implements Serializable {
         this.tipRazmKont = tipRazmKont;
     }
 
-
-
     public String getNaimGrz() {
         return naimGrz;
     }
@@ -94,8 +104,6 @@ public class Search implements Serializable {
     public void setNaimGrz(String naimGrz) {
         this.naimGrz = naimGrz;
     }
-
-
 
     public String getZakazNo() {
         return zakazNo;
@@ -124,10 +132,6 @@ public class Search implements Serializable {
     public void setSmgsId(Long smgsId) {
         this.smgsId = smgsId;
     }
-
-    private Long smgsId;
-    private String groupId;
-    private String num;
 
     public String getNum(){
         return num;

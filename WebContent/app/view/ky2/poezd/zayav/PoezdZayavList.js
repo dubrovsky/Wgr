@@ -3,7 +3,7 @@ Ext.define('TK.view.ky2.poezd.zayav.PoezdZayavList', {
     alias:'widget.ky2poezdzayavlist',
     itemId:'ky2poezdzayavlist',
 
-    title: 'Список заявок поездов',
+    title: this.title,
 
     buildColumns:function (config) {
         this.callParent(arguments);

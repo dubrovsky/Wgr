@@ -54,6 +54,12 @@ Ext.define('TK.controller.docs.Cimsmgs', {
         ref:'gruzDispField',
         selector:'viewport > tabpanel > cimsmgs > field[name="disp.g19g"]'
     }, {
+        ref:'kgvnField',
+        selector:'viewport > tabpanel > cimsmgs > field[name="smgs.g23"]'
+    }, {
+        ref:'ekgvnField',
+        selector:'viewport > tabpanel > cimsmgs > field[name="smgs.g23b"]'
+    }, {
         ref:'doc9DispField',
         selector:'viewport > tabpanel > cimsmgs > field[name="disp.g9"]'
     }],
@@ -61,7 +67,10 @@ Ext.define('TK.controller.docs.Cimsmgs', {
         this.control({
             'cimsmgslist':{
                 select: this.onRowclick,
-                celldblclick: this.onCellDblClick
+                celldblclick: this.onCellDblClick,
+                itemclick: function (view, record) {
+                    this.fireEvent('updateMessanger', view, record);
+                }
             },
             'cimsmgs button[action=changeVgCtGr]': {
                 click: this.onCimSmgsVgCtGrWinShow
@@ -523,7 +532,7 @@ Ext.define('TK.controller.docs.Cimsmgs', {
     onCellDblClick: function(view, td, cIndex, record){
         var center = this.getCenter(),
             grid, gridParams = {},
-            dataIndex = view.getGridColumns()[cIndex].dataIndex;
+            dataIndex = view.initialConfig.grid.columns[cIndex].dataIndex;
         if (dataIndex === 'vagVedNum') {
             var value = record.get(dataIndex);
             if (value !== '') {

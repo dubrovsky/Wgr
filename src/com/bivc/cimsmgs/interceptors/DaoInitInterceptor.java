@@ -3,6 +3,7 @@ package com.bivc.cimsmgs.interceptors;
 
 import com.bivc.cimsmgs.dao.*;
 import com.bivc.cimsmgs.dao.hibernate.*;
+import com.bivc.cimsmgs.db.CimSmgsFileNew;
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.Interceptor;
@@ -263,6 +264,9 @@ public class DaoInitInterceptor implements Interceptor {
 
         if (action instanceof NsiClientDAOAware) {
             ((NsiClientDAOAware) action).setNsiClientDAO(new NsiClientDAOHib());
+        }
+        if (action instanceof FileNewDAOAware) {
+            ((FileNewDAOAware) action).setFileNewDAO(new FileNewDAOHib());
         }
 
         return actionInvocation.invoke();

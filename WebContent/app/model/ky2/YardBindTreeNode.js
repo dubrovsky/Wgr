@@ -9,11 +9,13 @@ Ext.define('TK.model.ky2.YardBindTreeNode', {
 
         // sector
         {name:'name', type:'string'},
+        {name:'typeView', type:'int'},
 
         // yard
         {name:'x', type:'int'},
         {name:'y', type:'int'},
         {name:'z', type:'int'},
+        {name:'h', type:'string'},
         {name:'contsInYardSector', type:'int'},
         {name:'placesInYardSector', type:'int'},
 

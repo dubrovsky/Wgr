@@ -42,6 +42,7 @@ Ext.define('TK.view.aviso2.AvisoSmgs2Form', {
             {xtype:'hidden', name:'search.docType', itemId:'search.docType', value:'aviso2'},
             {xtype:'hidden', name:'smgs.tbcStatus', itemId:'smgs.tbcStatus'},
             {xtype:'hidden', name:'smgs.g25', itemId:'smgs.g25'},
+            {xtype:'hidden', name:'smgs.messCount', itemId:'smgs.messCount'},
             {xtype:'hidden', name:'unSel', itemId:'unSel'}, //служебное поле списка невыбранных граф при трансформации документа в шаблон
 
             {x:9, y:8, xtype:'label', text:'№:'},
@@ -164,10 +165,10 @@ Ext.define('TK.view.aviso2.AvisoSmgs2Form', {
             {x:1092, y:1360, xtype:'checkbox', name:'smgs.g141c', inputValue:'1', itemId:'smgs.g141c', boxLabel:'Доп. лист'},
 
             // 26. Дата заключения договора перевозки
-            {x: 60, y: 1511, xtype: 'datefield', name: 'smgs.g281', itemId: 'smgs.g281',format: 'm.d.Y', width: 90},
+            {x: 60, y: 1511, xtype: 'datefield', name: 'smgs.g281', itemId: 'smgs.g281',format: 'd.m.Y', width: 90},
 
             // 28. Отметки для выполнения таможенных и других административных формальностей
-            {x:560, y:1500, xtype:'textarea', name:'smgs.g26', itemId:'smgs.g26', maxLength:128, width:610, height:180},
+            {x:560, y:1500, xtype:'textarea', name:'smgs.g26', itemId:'smgs.g26', maxLength:1024, width:610, height:180},
             {x:1128, y:1477, xtype:'checkbox', name:'smgs.g26c', inputValue:'1', itemId:'smgs.g26c', boxLabel:'Доп. лист'},
 
             // 15. Примечание
@@ -887,7 +888,7 @@ Ext.define('TK.view.aviso2.AvisoSmgs2Form', {
                                 itemId: 'dog',
                                 items:[
                                     {xtype: 'textfield',itemId: "nDog",  maxLength: 20,flex:5},
-                                    {xtype: 'datefield',itemId: "datDog",format: 'm.d.Y', flex: 3}
+                                    {xtype: 'datefield',itemId: "datDog",format: 'd.m.Y', flex: 3}
                                 ]
                             },
                             {xtype: 'hidden', itemId: "sort"},
@@ -1537,7 +1538,13 @@ Ext.define('TK.view.aviso2.AvisoSmgs2Form', {
                 iconCls:'save_close',
                 action:'save_close',
                 itemId:'save_close'
-            });
+            }, '-', { // сохранить и распечатать шаблон
+                    text:this.btnSavePrint,
+                    iconCls:'save_print2',
+                    action:'save_printAviso',
+                    itemId:'save_printAviso'
+            }
+            );
         }
 
         config.dockedItems[0].items.push(

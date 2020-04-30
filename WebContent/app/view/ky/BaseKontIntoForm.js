@@ -6,19 +6,19 @@ Ext.define('TK.view.ky.BaseKontIntoForm', {
         this.callParent(arguments);
         config.items[0].items.splice(1, 0, {
             xtype:'fieldset',
-            title: 'Прибытие',
+            title: '!!Прибытие',
             layout: 'anchor',
             defaults: {
                 anchor: '100%'
             },
             width:250,
             items: [{
-                fieldLabel:'Дата',
+                fieldLabel:'!!Дата',
                 name : 'dprbDate',
                 xtype: 'datefield',
                 altFormats:'d.m.y'
             },{
-                fieldLabel:'Время',
+                fieldLabel:'!!Время',
                 name : 'dprbTime',
                 xtype: 'timefield',
                 //snapToIncrement: true,

@@ -69,23 +69,31 @@ Ext.define('TK.view.DocsForm', {
                     iconCls:'save_print2',
                     action:'save_print2',
                     itemId:'save_print2'
-                }, '-', {
-                    text:this.btnPrintView,
-                    iconCls:'view',
-                    action:'printView',
-                    itemId:'printView'
-                }, '-', {
-                    text:'Документ => ЭПД',
-                    iconCls:'rewrite',
-                    action:'doc2EpdRewrite',
-                    itemId:'doc2EpdRewrite'
-                }, '-', {
-                    text:'ЭПД => Документ',
-                    iconCls:'update',
-                    action:'epd2DocRewrite',
-                    itemId:'epd2DocRewrite'
                 }
             );
+
+            if(this.xtype!=='avisocim') // проверка является ли докуент шаблоном CIM чтобы не добавлять ненужные кнопки
+            {
+                config.dockedItems[0].items.push(
+                    // '-', {
+                    //     text:this.btnPrintView,
+                    //     iconCls:'view',
+                    //     action:'printView',
+                    //     itemId:'printView'
+                    // },
+                    '-', {
+                        text:'Документ => ЭПД',
+                        iconCls:'rewrite',
+                        action:'doc2EpdRewrite',
+                        itemId:'doc2EpdRewrite'
+                    }, '-', {
+                        text:'ЭПД => Документ',
+                        iconCls:'update',
+                        action:'epd2DocRewrite',
+                        itemId:'epd2DocRewrite'
+                    }
+                )
+            }
         }
         config.dockedItems[0].items.push(
             '-', {

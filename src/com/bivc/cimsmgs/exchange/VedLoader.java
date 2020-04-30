@@ -264,7 +264,7 @@ public class VedLoader {
         VagPerVed ved = new VagPerVed();
         ved.setPor_vag(node.valueOf("por_vag"));
         ved.setNvag(node.valueOf("nvag"));
-        ved.setTara_vag(node.valueOf("tara_vag"));
+        ved.setTara_vag(norm(Utils.makeBigDecimal(node.valueOf("tara_vag"))));
         ved.setKol_osi(node.valueOf("kol_osi"));
         ved.setNsto_f(node.valueOf("nsto_f"));
         ved.setNsto(node.valueOf("nsto"));
@@ -289,7 +289,7 @@ public class VedLoader {
         ved.setAdres_o(node.valueOf("adres_o"));
         ved.setAdres_p(node.valueOf("adres_p"));
         ved.setOwnern(node.valueOf("vag_vl"));
-        ved.setGrpod(node.valueOf("grpdt"));
+        ved.setGrpod(norm(Utils.makeBigDecimal(node.valueOf("grpdt"))));
         ved.setVed_nomer(ved_nomer);
         ved.setN_poezd(n_poezd);
         ved.setDattr(d);
@@ -312,6 +312,16 @@ public class VedLoader {
         session.close();
     }*/
     return true;
+  }
+
+  private static BigDecimal norm(BigDecimal bd) {
+    if (bd != null) {
+      int x = bd.precision() - bd.scale();
+      if (x == 3 || x == 5 || x == 6) {
+        bd = bd.movePointLeft(x - 2);
+      }
+    }
+    return bd;
   }
 
   private <T> T processNode(List<Node> fields, T ob) {

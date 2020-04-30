@@ -34,6 +34,7 @@ Ext.define('TK.view.user.ListPrivs', {
             dock: 'top',
             xtype: 'toolbar',
             items: [
+                {xtype: 'searchfield', store: Ext.getStore('UsersPrivs')},'-',
                 {text: this.btnSelect, iconCls:'check1', action:'check'},'-'
             ]
         },{
@@ -47,6 +48,7 @@ Ext.define('TK.view.user.ListPrivs', {
     },
     buildStore: function(config) {
         config.store = 'UsersPrivs';
+        Ext.getStore('UsersPrivs').clearFilter(true);
     },
     buildColums:function(config) {
         config.columns = [

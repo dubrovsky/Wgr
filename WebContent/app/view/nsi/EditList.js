@@ -5,11 +5,12 @@ Ext.define('TK.view.nsi.EditList', {
     requires: [],
 
     prefix: 'nsi',
+    defaultFocus: 'add1',
     editPrivileg: '',
     buildStore: function (config) {
         config.items.store = Ext.create('Ext.data.Store', {
 //            autoLoad: true,
-            pageSize: 10,
+            pageSize: 50,
             model: this.buildStoreModel(),
             proxy: {
                 type: 'ajax',

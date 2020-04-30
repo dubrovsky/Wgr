@@ -39,7 +39,7 @@ Ext.define('TK.controller.exchange.Viewers', {
 
         var delBtn = grid.getDockedComponent('top').getComponent('del'),
             model = grid.getSelectionModel().getLastSelected();
-        if(delBtn) {
+        if(delBtn&&model) {
             this.isStatusLocked(model.get('tbc'), model.get('status'), model.get('fts'), model.get('btlc'), model.get('tdgFts')) ?
                 delBtn.disable() :
                 delBtn.enable();
@@ -51,14 +51,15 @@ Ext.define('TK.controller.exchange.Viewers', {
         var delBtn = grid.getDockedComponent('top').getComponent('del'),
             model = grid.getSelectionModel().getLastSelected();
 
-        if(delBtn) {
+        if(delBtn&&model) {
             this.isStatusLocked('', model.get('status'), model.get('fts'), model.get('btlc'), model.get('tdgFts')) ?
                 delBtn.disable() :
                 delBtn.enable();
         }
     },
     tbcStatusCheck: function(grid) {
-        var tbc = grid.selModel.getLastSelected().get('tbc'),
+        var selected=grid.selModel.getLastSelected(),
+            tbc = selected?selected.get('tbc'):'',
             tbcBtn = grid.down('button[action="exchange"] menuitem[action="tbc"]'),
             tbcOutBtn = grid.down('button[action="exchange"] menuitem[action="tbc_out"]');
 
@@ -88,7 +89,8 @@ Ext.define('TK.controller.exchange.Viewers', {
         }
     },
     ftsStatusCheck: function(grid) {
-        var fts = grid.selModel.getLastSelected().get('fts'),
+        var selected=grid.selModel.getLastSelected(),
+            fts = selected?selected.get('fts'):'',
             ftsBtn = grid.down('button[action="exchange"] menuitem[action="fts"]');
 
         switch (fts) {

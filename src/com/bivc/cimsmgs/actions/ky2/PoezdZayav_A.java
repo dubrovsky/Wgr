@@ -11,13 +11,17 @@ import com.bivc.cimsmgs.db.PackDoc;
 import com.bivc.cimsmgs.db.ky.PoezdZayav;
 import com.bivc.cimsmgs.doc2doc.Mapper;
 import com.bivc.cimsmgs.dto.ky2.PoezdZayavBaseDTO;
+import com.bivc.cimsmgs.exchange.KYPoezdLoader;
 import com.bivc.cimsmgs.exchange.KYZayavLoader;
 import com.bivc.cimsmgs.formats.json.Deserializer;
 import com.bivc.cimsmgs.formats.json.Serializer;
 import com.bivc.cimsmgs.sql.Select;
+import com.ibm.icu.text.SimpleDateFormat;
 import com.isc.utils.dbStore.dbTool;
+import com.isc.utils.dbStore.jsonStore;
 import com.isc.utils.dbStore.stPack;
 import com.isc.utils.dbStore.typesAndValues;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,6 +98,21 @@ public class PoezdZayav_A extends CimSmgsSupport_A {
         if (!ids.isEmpty())
             list = poezdZayavDAO.findByIds(ids);
 
+        //---------Этот фрагмент используется для поля поиска в фронтэнде---------------- поиск по номеру заявки и отправителю
+        // если передано значение для поиска
+        if(getQuery()!=null&&!getQuery().trim().isEmpty())
+        {
+            List<PoezdZayav> searchList= new ArrayList<>();
+            for (PoezdZayav poezdZayav : list){
+                if((poezdZayav.getNoZayav()!=null&&poezdZayav.getNoZayav().matches(".*"+getQuery()+".*"))
+                        || (poezdZayav.getGruzotpr()!=null&&poezdZayav.getGruzotpr().matches(".*"+getQuery()+".*"))
+                )
+                    searchList.add(poezdZayav);
+            }
+            list=searchList;
+        }
+        //------------Этот фрагмент используется для поля поиска в фронтэнде------------- поиск по номеру заявки и отправителю
+
         setJSONData(
                 defaultSerializer
                         .setLocale(getLocale())
@@ -109,6 +128,63 @@ public class PoezdZayav_A extends CimSmgsSupport_A {
     }
 
     private String list() throws Exception {
+        dbTool dbt = HibernateUtil.initDbTool();
+        stPack st = new stPack();
+        StringBuffer query = new StringBuffer();
+
+        typesAndValues tv = new typesAndValues().add(Types.CHAR, getUser().getUsr().getUn()).add(Types.NUMERIC, routeId);
+        query.append(" AND z.TRANS IN (");
+        for(int i = 0; i < getUser().getUsr().getTrans().size(); i++) {
+            tv.add(Types.CHAR, getUser().getUsr().getTrans().get(i));
+            if(i > 0) query.append(",");
+            query.append("?");
+        }
+        query.append(")");
+
+        List<Filter> filters = StringUtils.isNotBlank(filter) ?
+          (List<Filter>) defaultDeserializer.read(new ArrayList<Filter>() {
+          }.getClass().getGenericSuperclass(), filter) :
+          Collections.EMPTY_LIST;
+
+        if (CollectionUtils.isNotEmpty(filters)) {
+            for (Filter filter : filters) {
+                if (StringUtils.isNotBlank(filter.getProperty()) && StringUtils.isNotBlank(filter.getValue())) {
+                    if(filter.getProperty().equals("noZayav")) {
+                        query.append(" AND z.NO_ZAYAV LIKE CONCAT(?,'%')");
+                        tv.add(Types.CHAR, filter.getValue());
+                    }
+                    else if(filter.getProperty().equals("sname")) {
+                        query.append(" AND z.GRUZOTPR LIKE CONCAT(?,'%')");
+                        tv.add(Types.CHAR, filter.getValue());
+                    }
+                    else if(filter.getProperty().equals("npprm")) {
+                        query.append(" AND z.NPPRM LIKE CONCAT(?,'%')");
+                        tv.add(Types.CHAR, filter.getValue());
+                    }
+                    else if(filter.getProperty().equals("startDate")) {
+                        SimpleDateFormat df = new SimpleDateFormat("dd.MM.yy");
+                        query.append(" AND z.DATE_ZAYAV>=?");
+                        tv.add(Types.DATE, df.parse(filter.getValue()));
+                    }
+                }
+            }
+        }
+
+//        String q2 = "\nGROUP BY z.HID,z.NO_ZAYAV,z.DATE_ZAYAV,z.DATTR,z.UN,z.ALTERED,z.DIRECTION,z.TRANSPORT,z.HID_ROUTE,z.HID_PACK,z.NPPR,z.NPPRM,z.GRUZOTPR\n" +
+//          "ORDER BY COUNT(kzz.HID)=COUNT(kz.HID) AND COUNT(kzz.HID) > 0,z.DATE_ZAYAV DESC";
+
+//        dbt.read(st, Select.getSqlFile("ky/zajav/poezd_zayav_list") + query + q2, tv, getStart(), getLimit());
+        dbt.read(st, String.format(Select.getSqlFile("ky/zajav/poezd_zayav_list"),  query ), tv, getStart(), getLimit());
+
+        stPack st2 = new stPack();
+        tv.remove(0);
+        dbt.read(st2, Select.getSqlFile("ky/zajav/poezd_zayav_list_count") + query, tv);
+        if(st2.getRowCount() == 0) st2.setObject(0,0, 0);
+
+        setJSONData(new jsonStore(st, ((Number)st2.getObject(0,0)).intValue()).toString());
+        return SUCCESS;
+
+        /*
         List<Filter> filters = StringUtils.isNotBlank(filter) ?
                 (List<Filter>) defaultDeserializer.read(new ArrayList<Filter>() {
                 }.getClass().getGenericSuperclass(), filter) :
@@ -129,12 +205,13 @@ public class PoezdZayav_A extends CimSmgsSupport_A {
         );
 
         return SUCCESS;
+*/
     }
 
     public String uploadZayav() throws Exception {
         log.info("uploadZayav");
         PoezdZayav zayav = poezdZayavDAO.findById(getHid(), false);
-        new KYZayavLoader().load(fileData, zayav);
+        new /*KYZayavLoader*/KYPoezdLoader().load(fileData, zayav, false);
         setJSONData(Constants.convert2JSON_True());
         return SUCCESS;
     }

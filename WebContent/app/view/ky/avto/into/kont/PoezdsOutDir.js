@@ -1,6 +1,11 @@
 Ext.define('TK.view.ky.avto.into.kont.PoezdsOutDir', {
     extend: 'TK.view.ky.AbstractWindow',
     alias:'widget.kypoezdsoutavtointodir',
+
+    requires: [
+        'TK.view.ky.BasePoezdsOutDir'
+    ],
+
     itemId:'kypoezdsoutavtointodir',
 
     width: 550,

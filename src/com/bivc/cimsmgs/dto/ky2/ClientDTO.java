@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 /**
  * @author p.dzeviarylin
  */
-public class ClientDTO {
+public class ClientDTO implements Comparable<ClientDTO> {
     private Long hid;
     private String clNo;
     private String fname;
@@ -23,6 +23,8 @@ public class ClientDTO {
     private Date dateDog;
 
     private Integer freeDays;
+    private Integer cntPZ;
+    private Integer cntWZ;
     private String groups;
     private Set<ClientGroupsDTO> clientGroups;
 
@@ -32,6 +34,22 @@ public class ClientDTO {
             return clientGroups.stream().map(clientGroupsDTO -> clientGroupsDTO.getGroup().getName()).collect(Collectors.joining(", "));
         }
         return groups;
+    }
+
+    public Integer getCntPZ() {
+        return cntPZ;
+    }
+
+    public void setCntPZ(Integer cntPZ) {
+        this.cntPZ = cntPZ;
+    }
+
+    public Integer getCntWZ() {
+        return cntWZ;
+    }
+
+    public void setCntWZ(Integer cntWZ) {
+        this.cntWZ = cntWZ;
     }
 
     public Date getDateDog() {
@@ -100,5 +118,10 @@ public class ClientDTO {
 
     public void setHid(Long hid) {
         this.hid = hid;
+    }
+
+    @Override
+    public int compareTo(ClientDTO o) {
+        return 0;
     }
 }

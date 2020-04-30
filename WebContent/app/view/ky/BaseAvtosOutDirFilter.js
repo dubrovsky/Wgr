@@ -20,7 +20,7 @@ Ext.define('TK.view.ky.BaseAvtosOutDirFilter', {
                 ],
                 buttons: [
                     {
-                        text: 'Фильтровать',
+                        text: '!Фильтровать',
                         formBind: true,
                         disabled: true,
                         action: 'applyFilter'

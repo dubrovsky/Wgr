@@ -1,6 +1,11 @@
 Ext.define('TK.view.ky.BaseKontsAllDirFilter', {
     extend: 'Ext.window.Window',
     alias:'widget.kybasekontsalldirfilter',
+
+    requires: [
+        'TK.view.stamp.StampForm'
+    ],
+
     title: 'Фильтр',
     autoShow: true,
     y:0,

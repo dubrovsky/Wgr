@@ -5,12 +5,15 @@
     <session-factory>
         <!--<property name="hibernate.connection.driver_class">oracle.jdbc.OracleDriver</property>-->
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-<!--        <property name="hibernate.connection.password">wgr#2019</property>-->
-        <property name="hibernate.connection.password">wgr2013</property>
-        <property name="hibernate.connection.username">wgr</property>
-<!--        <property name="hibernate.connection.username">wgr_second</property>-->
+
         <property name="hibernate.connection.url">jdbc:mysql://10.50.25.238/wgr?zeroDateTimeBehavior=convertToNull&amp;useSSL=false</property>
-<!--        <property name="hibernate.connection.url">jdbc:mysql://localhost:33306/wgr_second?zeroDateTimeBehavior=convertToNull&amp;useSSL=false</property>-->
+        <property name="hibernate.connection.username">wgr</property>
+        <property name="hibernate.connection.password">wgr2013</property>
+
+<!--        <property name="hibernate.connection.url">jdbc:mysql://10.50.25.23:23306/wgr_second?zeroDateTimeBehavior=convertToNull&amp;useSSL=false</property>-->
+<!--        <property name="hibernate.connection.username">wgr_second</property>-->
+<!--        <property name="hibernate.connection.password">wgr#2019</property>-->
+
         <!--<property name="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</property>-->
         <property name="hibernate.dialect">com.bivc.cimsmgs.commons.MySqlDialect</property>
         <!--<property name="hibernate.generate_statistics">true</property>-->
@@ -51,6 +54,7 @@
         <mapping resource="com/bivc/cimsmgs/db/CimSmgsInvoiceBrief.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/CimSmgsFileInf.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/CimSmgsFile.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/CimSmgsFileNew.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/BIftminLog.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/FtsLog.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/NsiDir.hbm.xml"/>
@@ -87,6 +91,11 @@
         <mapping resource="com/bivc/cimsmgs/db/Doc2docTemplsRouteUnRefs.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/PrintBlank.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/PrintBlankTemplRef.hbm.xml"/>
+
+        <mapping resource="com/bivc/cimsmgs/db/PrintDataStamp.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/PrintDataStampBorder.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/PrintDataStampPicture.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/PrintDataStampText.hbm.xml"/>
 
         <mapping resource="com/bivc/cimsmgs/db/FieldsAccessFobidden.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/FieldsDir.hbm.xml"/>
@@ -131,6 +140,7 @@
         <mapping resource="com/bivc/cimsmgs/db/nsi/Management.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/nsi/Countrys.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/NsiTnved4.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/NsiTnvedDict.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/StaE.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/Status.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/StatusDir.hbm.xml"/>
@@ -163,6 +173,7 @@
         <mapping resource="com/bivc/cimsmgs/db/ky/YardSectorGroups.hbm.xml"/>
         <!--<mapping resource="com/bivc/cimsmgs/db/ky/KontStatus.hbm.xml"/>-->
         <mapping resource="com/bivc/cimsmgs/db/ky/KontStatusHistory.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/ky/VagonHistory.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/ky/Vagon.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/ky/Gruz.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/ky/NsiKyOwners.hbm.xml"/>
@@ -174,6 +185,9 @@
         <mapping resource="com/bivc/cimsmgs/db/ky/AvtoZayav.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/ky/PoezdZayav.hbm.xml"/>
         <mapping resource="com/bivc/cimsmgs/db/ky/AvtoFiles.hbm.xml"/>
+
+        <mapping resource="com/bivc/cimsmgs/db/GridConfig.hbm.xml"/>
+        <mapping resource="com/bivc/cimsmgs/db/BoardTalkNewMess.hbm.xml"/>
 
         <event type="merge">
             <listener class="org.springframework.orm.hibernate3.support.IdTransferringMergeEventListener"/>

@@ -2,6 +2,11 @@ Ext.define('TK.view.ky.BaseAvtosOutDir', {
     extend: 'TK.view.ky.BaseList',
     alias:'widget.kybaseavtosoutdir',
 
+    requires: [
+        'TK.view.components.PagingSizeChangerPlugin'
+    ],
+
+
     selType: 'checkboxmodel',
 
     buildColumns: function (config) {
@@ -17,6 +22,7 @@ Ext.define('TK.view.ky.BaseAvtosOutDir', {
     buildBottomToolbar: function(config) {
         config.bbar = {
             xtype: 'pagingtoolbar',
+            plugins : [Ext.create('TK.view.components.PagingSizeChangerPlugin', {options : [ 20, 50, 100, 200, 1000] })],
             store: config.store,
             displayInfo: true
         };

@@ -27,7 +27,8 @@ Ext.define('TK.view.ky2.ReportParams02', {
                             loadingText: "Поиск",
                             emptyText: "Не найдено"
                         }
-                    }
+                    },
+                    {xtype:'hidden', name:'rep_action', itemId:'rep_action'}
                 ],
                 buttons: [
                     {

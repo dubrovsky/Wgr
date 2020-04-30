@@ -19,6 +19,7 @@ public interface SmgsDAO extends GenericDAO<CimSmgs, Long> {
     public CimSmgs findById1(Long id);
 
     public CimSmgs findById2(CimSmgs smgs);
+    public CimSmgs findById3(Long smgs);
 
     //  public List findAll4Iftmins(Integer limit, Integer start, Search search, String trans);
 //  public Integer countAll4Iftmins(Search search, String trans);

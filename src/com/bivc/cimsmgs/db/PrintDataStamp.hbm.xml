@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.PrintDataStamp" table="PRINT_DATA_STAMP">
+        <id name="hid" type="java.lang.Long">
+            <column name="HID" precision="20" scale="0"/>
+            <generator class="sequence">
+                <param name="sequence">PRINT_DATA_STAMP_HID</param>
+            </generator>
+        </id>
+        <property name="dattr" type="date">
+            <column name="DATTR" not-null="true"/>
+        </property>
+        <property name="un" type="string">
+            <column name="UN" length="20" not-null="true"/>
+        </property>
+        <property name="trans" type="string">
+            <column name="TRANS" length="20" not-null="true"/>
+        </property>
+        <property name="altered" type="date">
+            <column name="ALTERED" not-null="true"/>
+        </property>
+        <property name="descr" type="string">
+            <column name="DESCR" length="100" />
+        </property>
+        <property name="codePer" type="string">
+            <column name="CODE_PER" length="4"/>
+        </property>
+        <property name="llx" type="java.lang.Float">
+            <column name="LLX" precision="6" scale="1" not-null="true" />
+        </property>
+        <property name="lly" type="java.lang.Float">
+            <column name="LLY" precision="6" scale="1" not-null="true" />
+        </property>
+        <property name="urx" type="java.lang.Float">
+            <column name="URX" precision="6" scale="1" not-null="true" />
+        </property>
+        <property name="ury" type="java.lang.Float">
+            <column name="URY" precision="6" scale="1" not-null="true" />
+        </property>
+
+        <set name="borders" table="PRINT_DATA_STAMP_BORDER" inverse="true" lazy="true" cascade="all, all-delete-orphan" batch-size="50">
+            <key>
+                <column name="HID_STAMP" precision="20" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.PrintDataStampBorder" />
+        </set>
+        <set name="texts" table="PRINT_DATA_STAMP_TEXT" inverse="true" lazy="true" cascade="all,all-delete-orphan" batch-size="50">
+            <key>
+                <column name="HID_STAMP" precision="20" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.PrintDataStampText" />
+        </set>
+        <set name="pics" table="PRINT_DATA_STAMP_PICTURE" inverse="true" lazy="true" cascade="all,all-delete-orphan" batch-size="50">
+            <key>
+                <column name="HID_STAMP" precision="20" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.PrintDataStampPicture" />
+        </set>
+    </class>
+</hibernate-mapping>

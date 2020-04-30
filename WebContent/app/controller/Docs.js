@@ -36,6 +36,8 @@ Ext.define('TK.controller.Docs', {
         'Ext.util.MixedCollection',
         'Ext.window.Window',
         'TK.Utils',
+        'TK.view.edit.GroupEdit',
+        'TK.view.edit.RouteSelect',
         'TK.view.edit.SelectCopy2AvisoElements',
         'TK.view.pogruz.PoezdSelectForm',
         'TK.view.stat.Form'
@@ -74,6 +76,12 @@ Ext.define('TK.controller.Docs', {
             'viewport > tabpanel > grid[inPack=false] button[action="edit"]': {
                 click: this.onEdit
             },
+            'viewport > tabpanel > grid[inPack=false] button[action="edit"] menuitem[action="edit"]': {
+                click: this.onEdit
+            },
+            'viewport > tabpanel > grid[inPack=false] button[action="edit"] menuitem[action="editgroup"]': {
+                click: this.onGroupEdit
+            },
             'viewport > tabpanel > grid[inPack=false]': {
                 itemdblclick: this.onEdit,
                 render: this.onPrepareGridToRender,
@@ -87,6 +95,21 @@ Ext.define('TK.controller.Docs', {
             },
             'viewport > tabpanel > grid[inPack=false] button[action="copy"] menuitem[action="copy2aviso"]': {
                 click: this.onCopy2AvisoInit
+            },
+            'viewport > tabpanel > grid[inPack=false] button[action="copy"] menuitem[action="copy2arch"]': {
+                click: this.onCopy2Arch
+            },
+            'viewport > tabpanel > grid[inPack=false] button[action="copy"] menuitem[action="copy2route"]': {
+                click: this.onCopy2Route
+            },
+            'smgsselectform':{
+                copy2routesmgses: this.onCopy2routeSmgses
+            },
+            'viewport > tabpanel > grid[inPack=false] button[action="copy"] menuitem[action="copy2routeSel"]': {
+                click: this.onCopy2RouteSel
+            },
+            'viewport > tabpanel > grid[inPack=false] button[action="copy"] menuitem[action="copy2archSel"]': {
+                click: this.copy2archSel
             },
             'viewport > tabpanel > grid[inPack=true] button[action="copy"]': {
                 click: this.onCopyInPack
@@ -102,6 +125,9 @@ Ext.define('TK.controller.Docs', {
             },
             'viewport > tabpanel > grid[inPack=false] button[action="del"]': {
                 click: this.onDelete
+            },
+            'viewport > tabpanel > grid[inPack=false] button[action="delList"]': {
+                click: this.onDeletedList
             },
             'viewport > tabpanel > grid[inPack=false] button[action="restore"]': {
                 click: this.onRestore
@@ -169,6 +195,9 @@ Ext.define('TK.controller.Docs', {
             'viewport > tabpanel > docsform button[action="save_print2"]': {
                 click: this.onSavePDF
             },
+            'viewport > tabpanel > docsform button[action="save_printAviso"]': {
+                click: this.onSavePDFAviso
+            },
             'viewport > tabpanel > form button[action="close"]': {
                 click: this.onExit
             },
@@ -192,6 +221,15 @@ Ext.define('TK.controller.Docs', {
             'viewport > tabpanel > grid button[action="aviso2smgs"]': {
                 click: this.onAviso2Smgs
             },
+            'viewport > tabpanel > grid button[action="aviso2smgs"] menuitem[action="aviso2smgs"]': {
+                click: this.onAviso2Smgs
+            },
+            'viewport > tabpanel > grid button[action="aviso2smgs"] menuitem[action="avisoXsmgses"]': {
+                click: this.onAvisoXsmgses
+            },
+            'viewport > tabpanel > grid button[action="aviso2smgs"] menuitem[action="aviso2smgsXLS"]': {
+                click: this.onAviso2SmgsXLS
+            },
             'viewport > tabpanel > grid button[action="aviso2smgsAppend"]': {
                 click: this.onAviso2Smgs
             },
@@ -209,6 +247,13 @@ Ext.define('TK.controller.Docs', {
             'docslist menuitem[action=searchTrains]': {
                 click: this.trainSearch
             },
+            'docslist menuitem[action=saveGridConfig]': {
+                click: this.onSaveGridConfig
+            },
+            'docslist menuitem[action=clearGridConfig]': {
+                click: this.clearGridConfig
+            },
+
             'window > grid button[action="copySelectedDocs"]': {
                 click: this.onCopySelected
             },
@@ -229,6 +274,12 @@ Ext.define('TK.controller.Docs', {
             },
             'avisocim':{
                 prepareData4RemoteSave: this.onPrepareData4RemoteSave
+            },
+            'viewport > tabpanel > docsform > smgs2_g1_detailpanel button[action=trlitg1]': {
+                click: this.onTranslitG1
+            },
+            'viewport > tabpanel > docsform > smgs2_g4_detailpanel button[action=trlitg4]': {
+                click: this.onTranslitG4
             },
             'ky2poezdoutform button[action="close"]': {
                 click: this.onExit
@@ -332,6 +383,8 @@ Ext.define('TK.controller.Docs', {
 
                 panel.un('activate', this.onActivateForm, this);
                 this.getCenter().getEl().unmask();
+                //удаляем Dirty флаг(пометку о том, что поля редактировались) со всем полей формы
+                TK.Utils.cleanDirtyFlags(panel);
             },
             failure: function(response) {
                 this.getCenter().getEl().unmask();
@@ -464,6 +517,8 @@ Ext.define('TK.controller.Docs', {
                     focus = doc;
                 }
             }
+            //удаляем Dirty флаг(пометку о том, что поля редактировались) со всем полей формы
+            TK.Utils.cleanDirtyFlags(doc);
         }, this);
         this.getCenter().getEl().unmask();
         this.getCenter().setActiveTab(focus);
@@ -487,11 +542,36 @@ Ext.define('TK.controller.Docs', {
         this.findController(doc.alias).initEvents(form);
 	  	this.getCenter().setActiveTab(form);
     },
-    onEdit: function(btn){
+    /**
+     * выбор документов для группового редактирования
+     * @param btn нажатая кнопка
+     */
+    onGroupEdit:function(btn)
+    {
+        var opts={};
+        opts['mode']='groupEdit';
+        this.getController('Doc2Doc').uploadPogruzListTrain(btn,opts);
+    },
+    /**
+     * редактирование документа
+     * @param btn
+     * @returns {boolean}
+     */
+    onEdit: function(btn, defTab){
         var list = btn.up('grid') || this.getCenter().getComponent(0);   // second choice for context menu
+        if (list.newDocClick) {
+            list.newDocClick = false;
+            return false;
+        }
 		if(!TK.Utils.isRowSelected(list)){
 		  	return false;
 		}
+		if(list.selModel.getSelection().length>1)
+        {
+            var sel= this.initEditObj(list);
+            this.groupEditShow(sel,btn.up('grid'));
+        }
+		else {
 //        this.getCenter().getEl().mask('Запрос ...','x-mask-loading');
 		var menuItem = this.getMenutree().lastSelectedLeaf,
             docName = menuItem.id.split('_')[3],
@@ -530,9 +610,9 @@ Ext.define('TK.controller.Docs', {
                 doc = this.getCenter().add({xtype:item.name, title:this.titleList+item.descr, inPack:true});
                 doc.initGrid({'search.routeId':data.routeId,'search.packId': data.packId,'task':'edit'});
                 doc.on('activate', this.onActivateList, this);
-                if(contextFocus && contextFocus == item.name){
+                if((contextFocus && contextFocus === item.name) || list.invoiceClick){
                     focus = doc;
-                } else if(docName == item.name){
+                } else if(docName === item.name ){
                     doc = this.getCenter().add({xtype:item.alias, title:item.descr, closable:false});
                     doc.initServiceFields(initObj(item, data));
                     controller.initEvents(doc);
@@ -540,17 +620,34 @@ Ext.define('TK.controller.Docs', {
                     focus = doc;
                 }
             } else if(item.range == 'panel'){   // tabpanel with list and form on it - for uploaded files
-                doc = this.getCenter().add({xtype:item.name, title:this.titleEdit+item.descr, closable:false, inPack:true});
+                    doc = this.getCenter().add({
+                        xtype: item.name,
+                        title: this.titleEdit + item.descr,
+                        closable: false,
+                        inPack: true
+                    });
                 doc.initServiceFields(initObj(item, data));
                 doc.on('activate', this.onActivatePanel, this);
                 if((contextFocus && contextFocus == item.name) || (!contextFocus && docName == item.name)){
                     focus = doc;
                 }
             }
+                //удаляем Dirty флаг(пометку о том, что поля редактировались) со всем полей формы
+                TK.Utils.cleanDirtyFlags(doc);
         }, this);
         this.getCenter().setActiveTab(focus);
         this.getCenter().remove(this.getCenter().getComponent(0), true);
         this.getCenter().resumeLayouts(true);
+        }
+    },
+    initEditObj: function(list)
+    {
+        var sel=[];
+        Ext.Array.each(list.selModel.getSelection(), function (item) {
+            sel.push(item.data.hid);
+        });
+
+        return sel;
     },
     onEditInPack: function(btn){
         var list = btn.up('grid');
@@ -693,6 +790,41 @@ Ext.define('TK.controller.Docs', {
         win.show();
     },
     /**
+     * вызов окна выбора документов по поезду для копирования в архив
+     * @param btn кнопка вызова
+     */
+    onCopy2Arch:function(btn)
+    {
+        var opts={};
+        opts['mode']='copy2arch';
+        this.getController('Doc2Doc').uploadPogruzListTrain(btn,opts);
+
+    },
+    /**
+     * копирование в архив выбранных выделением записей
+     * @param btn
+     * @returns {boolean}
+     */
+    copy2archSel:function(btn)
+    {
+        var list = btn.up('grid');
+        if(!TK.Utils.isRowSelected(list)){
+            return false;
+        }
+        // var doc = tkUser.docs.getByKey(this.getMenutree().lastSelectedLeaf.id.split('_')[3]);
+        Ext.Msg.show({title:this.delTitle, msg: this.msgCopy2Arch+'('+list.selModel.getSelection().length+')', buttons: Ext.Msg.YESNO,
+            closable: false, icon: Ext.Msg.QUESTION, scope: this,
+            fn: function(buttonId) {
+                //copy 2 arch confirmation
+                if(buttonId === 'yes')
+                {
+                    var paramsObj=this.initDelRstrObj('smgs', list,'copy2arch');
+                    TK.Utils.makeAjaxRequest('Smgs_copy2arch.do',paramsObj,function () {return 'OK';},list);
+                }
+            }
+        });
+    },
+    /**
      * создает копию документа в шаблон с выбранными графами
      * @param btn
      * @param unSel
@@ -748,6 +880,98 @@ Ext.define('TK.controller.Docs', {
         this.getCenter().setActiveTab(focus);
         this.getCenter().remove(this.getCenter().getComponent(0), true);
         this.getCenter().resumeLayouts(true);
+    },
+    /**
+     * создаем окно выбора документов по N поезду  для копирования/переноски в другой маршрут
+     * @param btn кнопка вызова
+     */
+    onCopy2Route:function(btn)
+    {
+        var opts={};
+        opts['mode']='copy2route';
+        this.getController('Doc2Doc').uploadPogruzListTrain(btn,opts);
+    },
+    /**
+     * создаем окно выбора маршрута для копирования/переноски выбранных документов в окне выбора документов по N поезду
+     * @param sel спислк ID выбранных документов
+     * @param routeId ID текущего маршрута
+     * @param parentStore родительское хранилище
+     */
+    onCopy2routeSmgses:function(sel,routeId,parentStore)
+    {
+        // создаем окно вбыора маршрута
+        var win = Ext.widget('routeselect');
+        // добавляем массив ID выбранных документов
+        win.currentRoute=routeId;
+        win.selection=sel;
+        win.parentStore=parentStore;
+        // добавляем обработчик подтверждения действия
+        Ext.ComponentQuery.query('#routeSelWin #bottomTB #okButton')[0].handler=this.getController('Docs').copy2RouteOkHandler;
+
+        win.show();
+    },
+    /**
+     *  создаем окно выбора маршрута для копирования/переноски документа
+     * @param btn кнопка вызова
+     */
+    onCopy2RouteSel:function(btn)
+    {
+        var list = btn.up('grid'),routeID=this.getMenutree().lastSelectedLeaf.id.split('_')[2];
+
+        if(!TK.Utils.isRowSelected(list)){
+            return;
+        }
+        // создаем окно вбыора маршрута
+        var win = Ext.widget('routeselect');
+        // добавляем массив ID выбранных документов
+        win.currentRoute=routeID;
+        win.selection=this.getSelectionIds(list);
+        win.parentStore=list.getStore();
+        // добавляем обработчик подтверждения действия
+        Ext.ComponentQuery.query('#routeSelWin #bottomTB #okButton')[0].handler=this.copy2RouteOkHandler;
+
+        win.show();
+    },
+    /**
+     * проверяет корректность выбора маршрута для копирования/переноски и выполняет запрос к серверу
+     * @param btn
+     */
+    copy2RouteOkHandler:function(btn,opt1,opt2,opt3)
+    {
+        var routeTree=Ext.ComponentQuery.query('#routeSelWin #routeTree')[0],
+            parent=this.up('routeselect');
+            // окно выбора  маршрута
+            form = btn.up().up(),
+            //признак переноса/копирования
+            move=Ext.ComponentQuery.query('#routeSelWin #topTB #copyMove')[0].getChecked()[0].inputValue,
+            //обработчик сообщения от сервера
+            responseHandler=function (response) {
+            // для тестирования
+            // return Ext.decode(response.responseText)['result']
+                return 'OK';
+            },
+            //действия после отображения сообщения от сервера
+            afterMsgHandler= function (form) {
+            if(form.parentStore)
+                form.parentStore.reload();
+            form.close();
+        };
+
+        // проверяем был ли выбран маршрут
+        if(routeTree.selModel.getCount()===0){
+            Ext.Msg.show({title: parent.showTitle, msg: parent.noRouteSelMsg, buttons: Ext.MessageBox.OK, icon:Ext.MessageBox.WARNING});
+            return;
+        }
+        //выбранный маршрут
+        var selectedRoute=Ext.ComponentQuery.query('#routeSelWin #routeTree')[0].selModel.getSelection()[0].raw['routeid'];
+        if(selectedRoute==form.currentRoute){
+            Ext.Msg.show({title: parent.showTitle, msg: parent.sameRouteMsg, buttons: Ext.MessageBox.OK, icon:Ext.MessageBox.WARNING});
+            return;
+        }
+        // заполняем данные для запроса
+        var initObj = {task:'copy2Route',query1:form.selection,query:selectedRoute,flag:move};
+        //запрос на сервер
+        TK.Utils.makeAjaxRequest('Smgs_copy2Route.do',initObj,responseHandler,this.up().up(), afterMsgHandler,form);
     },
     /**
      * очищает не выбранные поля документа при преобразовании его в шаблон
@@ -946,11 +1170,16 @@ Ext.define('TK.controller.Docs', {
         form.on('activate', this.onActivateForm, this);
         this.getCenter().setActiveTab(form);
     },
-    // generates parames to send to backend
+    /**
+     * generates parames to send to backend
+     * @param prefix
+     * @param list table
+     * @param operation delete/restore
+     * @returns {{task: *}}
+     */
     initDelRstrObj: function(prefix, list,operation)
     {
-        var initObj = {task:operation},data= {packId:'',hid:''},
-        sel_data = list.selModel.getSelection();
+        var initObj = {task:operation},data= {packId:'',hid:''};
         Ext.Array.each(list.selModel.getSelection(), function (item) {
 
             if(data.packId.length>0)
@@ -961,17 +1190,19 @@ Ext.define('TK.controller.Docs', {
                 data.hid+=',';
             data.hid+=item.data.hid;
         });
-        if(sel_data.length>1)
-        {
+
             initObj['query'] = data.packId;
             initObj['query1'] = data.hid;
-        }
-        else
-        {
-            initObj[prefix + '.packDoc.hid'] = data.packId;
-            initObj[prefix + '.hid'] = data.hid;
-        }
+
         return initObj;
+    },
+    getSelectionIds:function(grid)
+        {
+        var selection=[];
+        Ext.Array.each(grid.selModel.getSelection(), function (item) {
+            selection.push(item.data.hid);
+        });
+        return selection;
     },
     // delete records
     onDelete: function(btn){
@@ -1000,6 +1231,24 @@ Ext.define('TK.controller.Docs', {
 			    }
 		    }
 		});
+    },
+    /**
+     * показать удаленные записи/архив
+     * @param btn кнопка вызова
+     */
+    onDeletedList:function(btn)
+    {
+        var grid=btn.up('grid'),
+            store = grid.getStore();
+        store.getProxy().extraParams['search.deleted']=1;
+        store.loadPage(1, {
+            scope: this,
+            callback: function (records, operation, success) {
+                if (success) {
+                    grid.fireEvent("prepareGridToRender", grid);
+                }
+            }
+        });
     },
     onDestroy: function(btn){
         var list = btn.up('grid');
@@ -1639,11 +1888,15 @@ Ext.define('TK.controller.Docs', {
          }
     },
     // сохранение документа
-    onSave:function(btn){
+    onSave:function(btn,flag,actionFlag,actionName){
         var panel = btn.up('form'),
+            me=this,
             doc =   tkUser.docs.getByKey(panel.xtype) ||
                     tkUser.docs.getByKey(panel.xtype+'list') || // invoices
                     tkUser.docs.getByKey(panel.ownerCt.xtype),  // files
+            docToSave = tkUser.docs.getByKey(this.getMenutree().lastSelectedLeaf.id.split('_')[3]),
+            activeTab=this.getCenter().getActiveTab(),
+            currentTab=btn.up().up(),
             buildStatus = function(){
                 var form = panel.getForm(),
                     statusFid = form.findField('status');
@@ -1655,7 +1908,10 @@ Ext.define('TK.controller.Docs', {
                 }
             };
 
-
+        if(currentTab.xtype!==activeTab.xtype)
+        {
+            this.getCenter().setActiveTab(currentTab);
+        }
         if(panel.getForm().isValid() && panel.isGridDataValid()){
             buildStatus();
 
@@ -1663,6 +1919,17 @@ Ext.define('TK.controller.Docs', {
             // if(panel.prepareData4Save) {
             panel.fireEvent('prepareData4RemoteSave', panel, params);
             // }
+
+            // есили форма содержит флаг того что она является дополнительной формаой,а также флаг сохранения основного документа не установлен
+            //(Если форма яляется дополнительной, то необходимо сохранить основной документ прежде чем сохранять дополнительную форму)
+            if(panel.getForm().findField('isAdditional')&&panel.getForm().findField('isAdditional').getValue()&&flag!==true)
+            {
+
+                if(docToSave.name!=='invoicelist') {
+                    this.onSave(Ext.ComponentQuery.query('viewport > tabpanel >' + docToSave.alias)[0].down('#save'), btn, actionFlag, actionName);
+                    return;
+                }
+            }
 
             panel.getForm().submit({
 			    waitMsg:this.waitMsg1,
@@ -1698,6 +1965,28 @@ Ext.define('TK.controller.Docs', {
                             epdTab.on('activate', this.onActivateForm, this);
                         }
                     }
+                    TK.Utils.cleanDirtyFlags(panel);
+                    // проверяем, является ли флаг кнопкой сохраннения, если форма сохраняем форму
+                    // и если мы не в ИНвойсах
+                    if((flag.xtype===btn.xtype)&&(docToSave.name!=='invoicelist'))
+                        me.onSave(flag,true,actionFlag,actionName);
+                    else
+                        if(actionFlag) {
+                            switch(actionName)
+                            {
+                                case 'exit' :
+                                {
+                                    me.onExit(btn);
+                                }break;
+                                case 'printInvoice':
+                                {
+                                    var data={
+                                        hid:panel.getForm().findField(doc.prefix+'.hid').getValue(),
+                                    };
+                                    this.getController('print.Print').doPrint(doc,data);
+                                }break;
+                            }
+                        }
 			    },
 			    failure: panel.failureAlert
 			});
@@ -1705,42 +1994,71 @@ Ext.define('TK.controller.Docs', {
     		TK.Utils.failureDataMsg();
     	}
     },
-    onSaveExit:function(btn){
-        var panel = btn.up('form'),
-            doc = tkUser.docs.getByKey(panel.xtype) || tkUser.docs.getByKey(panel.xtype+'list'),
-            buildStatus = function(){
-                var form = panel.getForm(),
-                    statusFid = form.findField('status');
 
-                if(!form.findField(doc.prefix+'.hid').getValue()){
-                    statusFid.setRawValue(1);
-                } else {
-                    statusFid.setRawValue(13);
-                }
-            };
-    	if(panel.getForm().isValid() && panel.isGridDataValid()){
-            buildStatus();
-
-            var params = panel.prepareGridData4Save ? panel.prepareGridData4Save() : {};
-            // if(panel.prepareData4Save) {
-            panel.fireEvent('prepareData4RemoteSave', panel, params);
-            // }
-
-            panel.getForm().submit({
-			    waitMsg:this.waitMsg1,
-	            url: Ext.String.capitalize(doc.prefix) + '_save.do',
-                params: params,
-	            scope:this,
-			    success: function(form, action) {
-                    this.onExit(btn);
-			    },
-			    failure: this.failureAlert
-			});
-		}else {
-    		TK.Utils.failureDataMsg();
-    	}
+    onSaveExit:function(btn,flag){
+        // var panel = btn.up('form'),me=this,
+        //     doc = tkUser.docs.getByKey(panel.xtype) || tkUser.docs.getByKey(panel.xtype+'list'),
+        //     buildStatus = function(){
+        //         var form = panel.getForm(),
+        //             statusFid = form.findField('status');
+        //
+        //         if(!form.findField(doc.prefix+'.hid').getValue()){
+        //             statusFid.setRawValue(1);
+        //         } else {
+        //             statusFid.setRawValue(13);
+        //         }
+        //     };
+    	// if(panel.getForm().isValid() && panel.isGridDataValid()){
+        //     buildStatus();
+        //
+        //     var params = panel.prepareGridData4Save ? panel.prepareGridData4Save() : {};
+        //     // if(panel.prepareData4Save) {
+        //     panel.fireEvent('prepareData4RemoteSave', panel, params);
+        //     // }
+        //
+        //     // есили форма содержит флаг того что она является дополнительной формаой,а также флаг сохранения основного документа не установлен
+        //     //(Если форма яляется дополнительной, то необходимо сохранить основной документ прежде чем сохранять дополнительную форму)
+        //     if(panel.getForm().findField('isAdditional')&&panel.getForm().findField('isAdditional').getValue()&&flag!==true)
+        //     {
+        //         var docToSave = tkUser.docs.getByKey(this.getMenutree().lastSelectedLeaf.id.split('_')[3]);
+        //         this.onSaveExit(Ext.ComponentQuery.query('viewport > tabpanel >'+docToSave.alias)[0].down('#save'),btn);
+        //         return;
+        //     }
+        //
+        //     panel.getForm().submit({
+		// 	    waitMsg:this.waitMsg1,
+	    //         url: Ext.String.capitalize(doc.prefix) + '_save.do',
+        //         params: params,
+	    //         scope:this,
+		// 	    success: function(form, action) {
+        //
+        //             // проверяем, является ли флаг ссылкой на форму или значеним, если форма сохраняем форму
+        //             if(flag!==true)
+        //                 me.onSaveExit(flag,true);
+        //             else
+        //                 me.onExit(btn);
+		// 	    },
+		// 	    failure: this.failureAlert
+		// 	});
+		// }else {
+    	// 	TK.Utils.failureDataMsg();
+    	// }
+        this.onSave(btn,false,true,'exit');
     },
-    onSavePDF:function(btn){
+    /**
+     * печатает шаблон
+     * @param btn кнопка вызова
+     */
+    onSavePDFAviso:function(btn)
+    {
+        this.onSavePDF(btn,true);
+    },
+    /**
+     * сохраняем и печатаем документ
+     * @param btn кнопка вызова
+     * @param isAviso признак печати шаблона
+     */
+    onSavePDF:function(btn,isAviso){
         var panel = btn.up('form'),
             doc = tkUser.docs.getByKey(panel.xtype) || tkUser.docs.getByKey(panel.xtype+'list'),
             controller,
@@ -1754,6 +2072,16 @@ Ext.define('TK.controller.Docs', {
                     statusFid.setRawValue(13);
                 }
             };
+        if(doc.name==='invoicelist')
+        {
+
+            this.onSave(btn,false,true,'printInvoice');
+
+            return;
+        }
+        if(doc.name==='avisocim')// проверка является ли докуент шаблоном CIM иначе не найдет шаблон для документа
+            isAviso=true;
+
         if(panel.getForm().isValid() && panel.isGridDataValid()){
             buildStatus();
 
@@ -1761,7 +2089,6 @@ Ext.define('TK.controller.Docs', {
             // if(panel.prepareData4Save) {
             panel.fireEvent('prepareData4RemoteSave', panel, params);
             // }
-            //
 
             panel.getForm().submit({
 			    waitMsg:this.waitMsg1,
@@ -1769,6 +2096,16 @@ Ext.define('TK.controller.Docs', {
                 params: params,
 	            scope:this,
 			    success: function(form, action) {
+			        // У нас Инвойс?
+                    if(doc.prefix==='invoice')
+                    {
+                        var data = {},
+                            dock = tkUser.docs.getByKey(this.getMenutree().lastSelectedLeaf.id.split('_')[3]);
+                        data['hid']=form.findField('invoice.hid').getValue();
+                        this.getController('print.Print').doPrint(dock, data);
+                        return;
+                    }
+
                     if(form.findField(doc.prefix+'.packDoc.hid')) {
                         if(!form.findField(doc.prefix+'.packDoc.hid').getValue()){
                             this.setPackHids(action.result.hid[doc.prefix+'.packDoc.hid']);
@@ -1810,8 +2147,14 @@ Ext.define('TK.controller.Docs', {
 
 //                    this.doPrint1(doc, params);
 //                    controller = this.getController(Ext.String.capitalize(doc.alias));
+                    if(isAviso&&isAviso===true) // печатаем шаблон ?
+                    {
+                        this.getController('print.Print').doPrintAviso(doc, params);
+                    }
+                    else {
                     controller = this.findController(doc.alias);
                     controller.onPrint ? this.doPrint(doc, params) : this.doPrint1(doc, params);
+                    }
 
 			    },
 			    failure: this.failureAlert
@@ -2275,9 +2618,33 @@ Ext.define('TK.controller.Docs', {
     onAviso2CimSmgs: function (btn) {
        this.aviso2Doc(btn, 10);
     },
+
+    /**
+     * Отображения формы выбора поездов/документов при запуске действия "объединение домента и шаблона"
+     * @param btn
+     */
+    onAvisoXsmgses:function(btn)
+    {
+        var opts={};
+        opts['mode']='avisoXsmgses';
+        opts['aviso2doc']=true;
+        this.getController('Doc2Doc').uploadPogruzListTrain(btn,opts);
+    },
+    /**
+     * запуск формирования докуентов из выбранного шаблона
+     * @param btn
+     */
     onAviso2Smgs: function(btn){
         // var groupBy = btn.itemId === 'aviso2smgsAppend' ? 4 : 2;
         this.aviso2Doc(btn, 10);
+    },
+    /**
+     * отображение окна загрузуи документа XLS с данными для генерации документов при помощи выбранного шаблона.
+     * @param btn
+     */
+    onAviso2SmgsXLS:function(btn)
+    {
+        this.getController('Doc2Doc').onUploadXLSfile(btn);
     },
     aviso2Doc: function(btn, groupBy){
         var grid = btn.up('grid'),
@@ -2315,8 +2682,8 @@ Ext.define('TK.controller.Docs', {
             success: function(response, options) {
                 this.getCenter().getEl().unmask();
                 Ext.Msg.show({
-                    title: 'Операция завершена успешно',
-                    msg: Ext.decode(response.responseText)['result'],
+                    title: this.successMsgTitle,
+                    msg: this.processed+' '+Ext.decode(response.responseText)['result']+' '+this.docs,
                     buttons: Ext.Msg.OK,
                     icon: Ext.Msg.INFO,
                     fn: function(){
@@ -2482,9 +2849,11 @@ Ext.define('TK.controller.Docs', {
         var routeId=Ext.ComponentQuery.query('docslist')[0].getStore().getAt(0).get('routeId');
         var type=Ext.ComponentQuery.query('docslist')[0].getStore().getAt(0).get('type');
 
+
         win.routeId=routeId;
         win.type=type;
         win.mode='listsearch';
+        //родительское хранилище данных
         win.parentStore=Ext.ComponentQuery.query('docslist')[0].getStore();
 
         var btn= Ext.ComponentQuery.query('#poezdSeltopTBar > #buttonTrSrch')[0];
@@ -2856,5 +3225,216 @@ Ext.define('TK.controller.Docs', {
     },
     dragTabs:function () {
         console.log('drug');
+    },
+
+    /**
+     * Отправляет настройки текущей таблицы на сервер
+     * и записывает настройки в локальный объект настроек gridConfig
+     */
+    onSaveGridConfig:function()
+    {
+        var initObj={task:'saveGridConfig'},settings=[];
+
+        var grid=Ext.ComponentQuery.query('docslist')[0],
+            gridColumns=grid.headerCt.gridDataColumns;
+
+        //настройки сохраняютс ятолько в случае наличии идентификатора у компонента таблицы
+        if(grid.itemId) {
+
+            var sort=0;
+            for (var i = 0; i < gridColumns.length; i++) {
+                // проверяем, случай, если настройка видимости была изменена у родительской колонки
+                if (gridColumns[i].ownerCt.text&&gridColumns[i].ownerCt.hidden) {
+                    gridColumns[i].hidden = gridColumns[i].ownerCt.hidden;
+                }
+
+                // записываем все настройки в объект настройки для отправки на сервер
+                settings.push({
+                    'dataIndex': gridColumns[i].dataIndex,
+                    'itemId': grid.itemId,
+                    'width': gridColumns[i].width,
+                    'hidden': gridColumns[i].isHidden(),
+                    'sort': sort,
+                    'un': tkUser.un
+                });
+
+
+                // проверяем есть ли у нас настройки в целом и настройки для данной таблицы и столбца
+                // если нет то создаем
+                if(!gridConfig)
+                    gridConfig={};
+                if(!gridConfig[grid.itemId])
+                    gridConfig[grid.itemId]={};
+                if(!gridConfig[grid.itemId][gridColumns[i].dataIndex])
+                    gridConfig[grid.itemId][gridColumns[i].dataIndex]={};
+
+                // записывыаем настройки таблицы в соответствующий объект настроек
+
+                if (gridColumns[i].width)
+                    gridConfig[grid.itemId][gridColumns[i].dataIndex].width = gridColumns[i].width.toString();
+                gridConfig[grid.itemId][gridColumns[i].dataIndex].hidden = gridColumns[i].isHidden().toString();
+                gridConfig[grid.itemId][gridColumns[i].dataIndex].sort = sort;
+
+                if ((!gridColumns[i].ownerCt.text)||((i+1<gridColumns.length)&&gridColumns[i].ownerCt.text&&!gridColumns[i+1].ownerCt.text)||
+                    ((i+1<gridColumns.length)&&gridColumns[i].ownerCt.text!==gridColumns[i+1].ownerCt.text))
+                    sort++;
+            }
+            initObj.jsonData = Ext.encode(settings);
+            var responseHandler = function (response) {
+                // return Ext.decode(response.responseText)['result']
+                return 'Ok';
+            };
+            //отправляем запрос на сервер для сохранени настроек
+            TK.Utils.makeAjaxRequest('User_saveGridConfig.do', initObj, responseHandler, grid);
+        }
+    },
+    /**
+     * Сбрасывает настройки столбцов таблицы и отправляет заспрос на сервер для удаления настроек
+     */
+    clearGridConfig:function()
+    {
+        var grid=Ext.ComponentQuery.query('docslist')[0];
+        //настройки очищаются только в случае наличии идентификатора у компонента таблицы
+        if(grid.itemId) {
+            var initObj={task:'clearGridConfig',un:tkUser.un,gridId:grid.itemId};
+            var responseHandler = function (response) {
+                // return Ext.decode(response.responseText)['result']
+                return 'Ok';
+            };
+            //отправляем запрос на сервер для сохранени настроек
+            TK.Utils.makeAjaxRequest('User_clearGridConfig.do', initObj, responseHandler, grid);
+
+            if(gridConfig&&gridConfig[grid.itemId])
+                gridConfig[grid.itemId]={};
+
+            // for (var i = 0; i < grid.columns.length; i++) {
+            //     grid.columns[i].show();
+            //     grid.columns[i].width=grid.columns[i].initialConfig.width;
+            //     grid.columns[i].minWidth=grid.columns[i].initialConfig.minWidth;
+            //     grid.columns[i].maxWidth=grid.columns[i].initialConfig.maxWidth;
+            // }
+            // console.log(grid.headerCt.getMenu());
+            // var menu=grid.headerCt.getMenu();
+            // menu.removeAll(true);
+            // menu.add(menu.initialConfig.items);
+            // grid.headerCt.menu.add(grid.headerCt.menu.initialConfig.items);
+
+            // сбрасываем настройки заголовков на начальные
+            //ToDo исправить вылезающую ошибку после этого при попытке спрятать заголовок
+            grid.headerCt.removeAll(true);
+            grid.headerCt.add(grid.headerCt.initialConfig.items);
+
+            // console.log(grid.headerCt.getMenu().items.items[0].menu);
+            // console.log(grid.headerCt);
+
+            grid.getView().refresh();
+
+        }
+    },
+    /**
+     * показывает окно группового редактирования
+     * @param sel массив ID выбранных записей
+     * @param form табличная форма
+     */
+    groupEditShow:function(sel,form)
+    {
+        if (sel.length > 0) {
+            var url='Smgs_getGroupEdit.do',params={},me=this;
+            params['query'] = sel.join(",");
+            if(form)
+                form.setLoading(true);
+            Ext.Ajax.request({
+                url: url,
+                params: params,
+                scope: me,
+                success: function(response, options) {
+                    var win = Ext.widget('groupedit'),
+                        grid=Ext.ComponentQuery.query('#groupEditForm > #groupEditGrid')[0];
+                    win.parentStore=form.getStore();
+                    grid.store.loadRawData(Ext.JSON.decode(response.responseText.replace('success: true,','')));
+                    if(form)
+                        form.setLoading(false);
+                    win.show();
+                },
+                failure: function(response){
+                    TK.Utils.makeErrMsg(response, this.errorMsg);
+                    if(form)
+                        form.setLoading(false);
+                }
+            });
+        }
+    },
+    /**
+     *Склеивает данные об отправителе и запсиывает их в поле "Доп. Инфо", почле чего транслитерирует их в русский текст
+     * @param btn кнопка вызова
+     */
+    onTranslitG1:function (btn) {
+        var panel=btn.up().up().up(),
+            str=[],dop=panel.getComponent('smgs.g1_dop_info').getValue().trim(),
+            g1r=panel.getComponent('naim').getComponent('smgs.g1r').getValue().trim(),
+            g2_E=panel.getComponent('smgs.g2_E').getValue().trim(),
+            g16r=panel.getComponent('strn').getComponent('smgs.g16r').getValue().trim(),
+            g18r_1=panel.getComponent('smgs.g18r_1').getValue().trim(),
+            g19r=panel.getComponent('smgs.g19r').getValue().trim(),
+            g17_1=panel.getComponent('smgs.g17_1').getValue().trim();
+        if(g1r)
+            str.push(g1r);
+        if(g2_E)
+            str.push(g2_E);
+        if(g16r)
+            str.push(g16r);
+        if(g18r_1)
+            str.push(g18r_1);
+        if(g19r)
+            str.push(g19r);
+        if(g17_1)
+            str.push(g17_1);
+
+        panel.g1_dop_infoBack=panel.getComponent('smgs.g1_dop_info').getValue();
+        panel.getComponent('smgs.g1_dop_info').setValue((str.join(',')?(str.join(',')+'\n'):'')+dop);
+
+        TK.Utils.set_translit(g1r,panel.getComponent('naim').getComponent('smgs.g1r'),'en');
+        TK.Utils.set_translit(g2_E,panel.getComponent('smgs.g2_E'),'en');
+        TK.Utils.set_translit(g16r,panel.getComponent('strn').getComponent('smgs.g16r'),'en');
+        TK.Utils.set_translit(g18r_1,panel.getComponent('smgs.g18r_1'),'en');
+        TK.Utils.set_translit(g19r,panel.getComponent('smgs.g19r'),'en');
+        TK.Utils.set_translit(g17_1,panel.getComponent('smgs.g17_1'),'en');
+    },
+    /**
+     *Склеивает данные об получате и запсиывает их в поле "Доп. Инфо", почле чего транслитерирует их в русский текст
+     * @param btn кнопка вызова
+     */
+    onTranslitG4:function (btn) {
+
+        var panel=btn.up().up().up(),
+            str=[],dop=panel.getComponent('smgs.g4_dop_info').getValue().trim(),
+            g1r_1=panel.getComponent('naim').getComponent('smgs.g1r_1').getValue().trim(),
+            g5_E=panel.getComponent('smgs.g5_E').getValue().trim(),
+            g16r_1=panel.getComponent('strn').getComponent('smgs.g16r_1').getValue().trim(),
+            g18r_1_1=panel.getComponent('smgs.g18r_1_1').getValue().trim(),
+            g19r_1=panel.getComponent('smgs.g19r_1').getValue().trim(),
+            g47_1=panel.getComponent('smgs.g47_1').getValue().trim();
+        if(g1r_1)
+            str.push(g1r_1);
+        if(g5_E)
+            str.push(g5_E);
+        if(g16r_1)
+            str.push(g16r_1);
+        if(g18r_1_1)
+            str.push(g18r_1_1);
+        if(g19r_1)
+            str.push(g19r_1);
+        if(g47_1)
+            str.push(g47_1);
+
+        panel.g4_dop_infoBack=panel.getComponent('smgs.g4_dop_info').getValue();
+        panel.getComponent('smgs.g4_dop_info').setValue((str.join(',')?(str.join(',')+'\n'):'')+dop);
+
+        TK.Utils.set_translit(g1r_1,panel.getComponent('naim').getComponent('smgs.g1r_1'),'en');
+        TK.Utils.set_translit(g5_E,panel.getComponent('smgs.g5_E'),'en');
+        TK.Utils.set_translit(g16r_1,panel.getComponent('strn').getComponent('smgs.g16r_1'),'en');
+        TK.Utils.set_translit(g18r_1_1,panel.getComponent('smgs.g18r_1_1'),'en');
+        TK.Utils.set_translit(g19r_1,panel.getComponent('smgs.g19r_1'),'en');
+        TK.Utils.set_translit(g47_1,panel.getComponent('smgs.g47_1'),'en');
     }
 });

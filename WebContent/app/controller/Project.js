@@ -9,6 +9,7 @@ Ext.define('TK.controller.Project', {
         'Ext.toolbar.Toolbar',
         'Ext.ux.form.ItemSelector',
         'TK.Utils'
+        // 'TK.view.project.Form'
     ],
 
     views:  ['project.List','project.Form'],
@@ -18,6 +19,10 @@ Ext.define('TK.controller.Project', {
         {
             ref: 'center',
             selector: 'viewport > tabpanel'
+        },
+        {
+            ref: 'routes',
+            selector: 'viewport > tabpanel > project #routes'
         }
     ],
     init: function() {
@@ -43,6 +48,8 @@ Ext.define('TK.controller.Project', {
         });
     },
     initEvents: function(form){
+        this.getGroupsStore().on('load', this.onGroupsStoreLoad, this,form);
+
         form.getComponent('groups').down('gridcolumn[dataIndex=name]').editor.onTriggerClick = Ext.bind(function(){
             var nsiGrid = this.getController('Nsi').nsiGroups().getComponent(0);
             nsiGrid.on('itemdblclick', this.getController('Nsi').selectGroup, form.getComponent('groups'));
@@ -61,6 +68,27 @@ Ext.define('TK.controller.Project', {
                 Ext.bind(this.selectDocs, form.getComponent('routes'))
             );
         }, this);
+    },
+    /**
+     * Функция выставляет галочки ВЫБРАНО, согласго выбранных групп в записи.
+     */
+    onGroupsStoreLoad: function () {
+        var store=Ext.getStore('Groups'),
+            groups= this.getRoutes().selModel.getSelection()[0].groups().data.items,
+            grid=Ext.ComponentQuery.query('#projectGroups #projectGroupsGrid')[0],
+            arrGroups=[];
+        for(var i=0;i<groups.length;i++){
+            arrGroups.push(groups[i].data['name']);
+        }
+        if(arrGroups)
+        {
+            for (var i = 0; i < arrGroups.length; i++) {
+                var index = store.findExact('name', arrGroups[i]);
+                if (index != -1) {
+                    grid.selModel.select(index, true);
+                }
+            }
+        }
     },
     onCreate: function(btn){
         var doc = this.getCenter().add({xtype:'project'/*, title:'Проект'*/});
@@ -209,6 +237,10 @@ Ext.define('TK.controller.Project', {
         this.getView().refresh();
         window.close();
     },
+    /**
+     * Создает окно выбора групп для проекта
+     * @returns {*} окно выбора групп
+     */
     nsiGroupsMulti: function(){
         return Ext.widget('window', {
             title: this.labelGroups,
@@ -217,15 +249,19 @@ Ext.define('TK.controller.Project', {
             modal:true,
             layout: 'fit',
             autoShow: true,
+            itemId:'projectGroups',
+
 
             items:[{
                 xtype: 'grid',
+                itemId:'projectGroupsGrid',
                 enableColumnResize: false,
                 columnLines: true,
 //                forceFit: true,
 //                autoHeight:true,
                 selType:     'checkboxmodel',
-                selModel: {mode : 'MULTI'},
+                selModel: {mode : 'MULTI', checkOnly: true},
+
                 viewConfig: {
                     stripeRows: true,
                     singleSelect:true
@@ -233,11 +269,11 @@ Ext.define('TK.controller.Project', {
                 store:'Groups',
                 columns: {
                     items:[
-                        {text: this.headerName,dataIndex: 'name',flex:1},
-                        {text: this.headerDescr, dataIndex: 'descr', flex:2, renderer: TK.Utils.renderLongStr}
+                        {text: this.headerName,dataIndex: 'name',flex:1, hideable:false, menuDisabled:true, draggable:false, groupable:false},
+                        {text: this.headerDescr, dataIndex: 'descr', flex:2, sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false}
                     ],
                     defaults:{
-                        sortable:false,
+                        // sortable:false,
                         hideable:false,
                         menuDisabled:true,
                         draggable:false,
@@ -277,7 +313,17 @@ Ext.define('TK.controller.Project', {
                             btn.up('window').close();
                         }
                     }]
-            }]
+            },
+                {
+                    dock:   'top',
+                    xtype:  'toolbar',
+                    items: [
+                        {xtype: 'searchfield', store: Ext.getStore('Groups')},'-'
+                        // для перехода на локальный поиск без удаленной фильтрации
+                        // {xtype: 'searchfieldlocal', store: Ext.getStore('Groups'),paramName: 'name',},'-',
+                    ]
+                }
+            ]
         });
     },
     nsiRouteDocs: function(){

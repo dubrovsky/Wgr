@@ -8,7 +8,9 @@ Ext.define('TK.view.Viewport', {
         'Ext.layout.container.HBox',
         'Ext.tab.Panel',
         'Ext.util.Format',
-        'TK.view.MenuTree'
+        'TK.Utils',
+        'TK.view.MenuTree',
+        'TK.view.components.SearchFieldLocalTree'
     ],
     layout: 'border',
     id: 'TK.Viewport',
@@ -24,12 +26,32 @@ Ext.define('TK.view.Viewport', {
     buildItems:function(config){
         config.items = [{
             region: "north",
+            itemId:'northRegion',
             xtype: "container",
             height: 50,
             layout: 'hbox',
             defaults: {height: 48},
             cls: 'header-main',
-            items: [{
+            items: [
+                {
+                    xtype: "container",
+                    height: 53,
+                    layout     : {
+                        type : 'vbox',
+                        pack : 'end'
+                    },
+                    items: [
+                        {
+                            xtype: 'searchfieldlocaltree',
+                            store: Ext.getStore('MenuItems'),
+                            paramName: 'text',
+                            height: 22,
+                            width:210,
+                            itemId: 'searchMenu'
+                        }
+                    ]
+                },
+                {
                 xtype: "container",
                 //cls:'header-items-main header-logo1',
                 flex: 3
@@ -100,8 +122,18 @@ Ext.define('TK.view.Viewport', {
                     listeners:{
                         select:{
                             fn:function (cb, records) {
-                                var record = records[0];
-                                window.location.search = Ext.urlEncode({"lang":record.get("code")});
+                                var record = records[0],
+                                    lang={"lang":record.get("code")};
+
+                                    var initObj = {query: lang,query1:tkUser['un']},
+                                        respFn=function()
+                                        {
+                                            tkUser['lang']=lang;
+                                            window.location.search = Ext.urlEncode(lang);
+                                        };
+                                    TK.Utils.makeAjaxRequest("User_saveLang.do", initObj,respFn);
+
+
                             },
                             scope:this
                         }

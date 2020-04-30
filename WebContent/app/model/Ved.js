@@ -1,5 +1,10 @@
 Ext.define('TK.model.Ved', {
     extend: 'Ext.data.Model',
+
+    requires: [
+        'TK.model.VedVag'
+    ],
+
     fields: [
         'dattr','crdate','un',
         'train', 'trainname', 'num', 'pervednum', 'vagcount',

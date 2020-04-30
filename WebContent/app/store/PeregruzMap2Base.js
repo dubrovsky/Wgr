@@ -20,8 +20,7 @@ Ext.define('TK.store.PeregruzMap2Base', {
         {name: 'taravag',    type: 'auto'},
         {name: 'grpod',    type: 'auto'},
         {name: 'kolos',    type: 'auto'},
-        {name: 'isSelected',type: 'auto'
-        }
+        {name: 'isSelected',type: 'auto'}
     ],
     sorters: [{
         property: 'cs_hid',

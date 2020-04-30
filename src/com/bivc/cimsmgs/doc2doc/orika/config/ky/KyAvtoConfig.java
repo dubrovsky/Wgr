@@ -54,6 +54,8 @@ public class KyAvtoConfig extends ConfigurableMapper {
     private void mapBaseAvto(MapperFactory mapperFactory) {
         mapperFactory.classMap(Avto.class, AvtoBaseDTO.class)
                 .fieldAToB("konts", "konts")
+                .fieldAToB("messCount", "messCount")
+//                .fieldAToB("avtoFiles", "avtoFiles")
                 .byDefault()
                 .register();
 

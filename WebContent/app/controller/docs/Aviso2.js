@@ -25,25 +25,28 @@ Ext.define('TK.controller.docs.Aviso2', {
         ref: 'center',
         selector: 'viewport > tabpanel'
     }, {
-        ref:'docForm',
-        selector:'viewport > tabpanel > aviso2'
+        ref: 'docForm',
+        selector: 'viewport > tabpanel > aviso2'
     }, {
-        ref:'vagDispField',
-        selector:'viewport > tabpanel > aviso2 > field[name="disp.g7v"]'
+        ref: 'vagDispField',
+        selector: 'viewport > tabpanel > aviso2 > field[name="disp.g7v"]'
     }, {
-        ref:'kontDispField',
-        selector:'viewport > tabpanel > aviso2 > field[name="disp.g7k"]'
+        ref: 'kontDispField',
+        selector: 'viewport > tabpanel > aviso2 > field[name="disp.g7k"]'
     }, {
-        ref:'gruzDispField',
-        selector:'viewport > tabpanel > aviso2 > field[name="disp.g7g"]'
+        ref: 'gruzDispField',
+        selector: 'viewport > tabpanel > aviso2 > field[name="disp.g7g"]'
     }, {
-        ref:'doc9DispField',
-        selector:'viewport > tabpanel > aviso2 > field[name="disp.g24"]'
+        ref: 'doc9DispField',
+        selector: 'viewport > tabpanel > aviso2 > field[name="disp.g24"]'
     }],
-    init: function() {
+    init: function () {
         this.control({
-            'aviso2list':{
-                select: this.onRowclick
+            'aviso2list': {
+                select: this.onRowclick,
+                itemclick: function (view, record) {
+                    this.fireEvent('updateMessanger', view, record);
+                }
             },
             'aviso2 button[action=changeVgCtGr]': {
                 click: this.onSmgs2VgCtGrWinShow
@@ -65,9 +68,9 @@ Ext.define('TK.controller.docs.Aviso2', {
             }
         });
     },
-    initEvents: function(form,sort){
-        Ext.each(form.query('button[action=change]'), function(item, index) {
-            item.on('click', Ext.bind(this.onChangeData, form,sort));
+    initEvents: function (form, sort) {
+        Ext.each(form.query('button[action=change]'), function (item, index) {
+            item.on('click', Ext.bind(this.onChangeData, form, sort));
         }, this);
         form.getComponent('disp.g7v').getComponent('g7grid').on('edit', this.getController('docs.Smgs2').saveG7);
         form.getComponent('disp.g7g').getComponent('g15grid').on('itemdblclick', this.getController('docs.Smgs2').dblclickG15);
@@ -81,7 +84,7 @@ Ext.define('TK.controller.docs.Aviso2', {
         // нажатие кнопки выбора отправителя
         form.down('button[action=otpr]').on(
             'click',
-            function(btn){
+            function (btn) {
                 var nsiGrid = this.getController('docs.Cimsmgs').nsiOtpr(form.down('textfield[name=smgs.g1r]').getValue()).getComponent(0)/*, gridAction = nsiGrid.down('actioncolumn')*/;
                 nsiGrid.on('itemdblclick', this.getController('docs.Smgs2').selectOtprG1, form.getComponent('g1_panel'));
             },
@@ -90,37 +93,37 @@ Ext.define('TK.controller.docs.Aviso2', {
         // нажатие кнопки выбора страны получателя
         form.down('button[action=poluch]').on(
             'click',
-            function(btn){
+            function (btn) {
                 var nsiGrid = this.getController('docs.Cimsmgs').nsiOtpr(form.down('textfield[name=smgs.g4r]').getValue()).getComponent(0)/*, gridAction = nsiGrid.down('actioncolumn')*/;
                 nsiGrid.on('itemdblclick', this.getController('docs.Smgs2').selectOtprG4, form.getComponent('g4_panel'));
             },
             this
         );
         // нажатие кнопки выбора страны отправителя
-        form.down('triggerfield[name=smgs.g16r]').onTriggerClick = Ext.bind(function(){
-            var nsiGrid =  this.getController('Nsi').nsiCountries(form.down('triggerfield[name=smgs.g16r]').getValue()).getComponent(0);
+        form.down('triggerfield[name=smgs.g16r]').onTriggerClick = Ext.bind(function () {
+            var nsiGrid = this.getController('Nsi').nsiCountries(form.down('triggerfield[name=smgs.g16r]').getValue()).getComponent(0);
             nsiGrid.on('itemdblclick', this.getController('docs.Smgs2').selectCountriesG1, form);
         }, this);
         // нажатие кнопки выбора страны получателя
-        form.down('triggerfield[name=smgs.g46r]').onTriggerClick = Ext.bind(function(){
-            var nsiGrid =  this.getController('Nsi').nsiCountries(form.down('triggerfield[name=smgs.g46r]').getValue()).getComponent(0);
+        form.down('triggerfield[name=smgs.g46r]').onTriggerClick = Ext.bind(function () {
+            var nsiGrid = this.getController('Nsi').nsiCountries(form.down('triggerfield[name=smgs.g46r]').getValue()).getComponent(0);
             nsiGrid.on('itemdblclick', this.getController('docs.Smgs2').selectCountriesG4, form);
         }, this);
 
-        form.getComponent('smgs.g162r').onTriggerClick = Ext.bind(function(){
+        form.getComponent('smgs.g162r').onTriggerClick = Ext.bind(function () {
             var nsiGrid = this.getController('Nsi').nsiSta(form.getComponent('smgs.g162r').getValue()).getComponent(0);
             nsiGrid.on('itemdblclick', this.getController('docs.Smgs2').selectStaG162, form);
         }, this);
-        form.getComponent('smgs.g101r').onTriggerClick = Ext.bind(function(){
+        form.getComponent('smgs.g101r').onTriggerClick = Ext.bind(function () {
             var nsiGrid = this.getController('Nsi').nsiSta(form.getComponent('smgs.g101r').getValue()).getComponent(0);
             nsiGrid.on('itemdblclick', this.getController('docs.Smgs2').selectStaG101r, form);
         }, this);
 
         form.down('detailtabpanel[itemId=g6_panel_tab_13]').on(
             'add',
-            function(tabpanel, tab, inx){
-                if(tabpanel.isXType('detailtabpanel',true)) {
-                    tab.getComponent('text').onTriggerClick = Ext.bind(function(){
+            function (tabpanel, tab, inx) {
+                if (tabpanel.isXType('detailtabpanel', true)) {
+                    tab.getComponent('text').onTriggerClick = Ext.bind(function () {
                         var nsiGrid = this.getController('Nsi').nsiSta(tab.getComponent('text').getValue()).getComponent(0);
                         nsiGrid.on('itemdblclick', this.getController('docs.Smgs2').selectStaG6, tab);
                     }, this);
@@ -131,19 +134,19 @@ Ext.define('TK.controller.docs.Aviso2', {
 
         form.down('detailtabpanel[itemId=g22_panel_tab]').on(
             'add',
-            function(tabpanel, tab, inx){
-                if(tabpanel.isXType('detailtabpanel',true)) {
-                    tab.getComponent('stBeg').onTriggerClick = Ext.bind(function(){
+            function (tabpanel, tab, inx) {
+                if (tabpanel.isXType('detailtabpanel', true)) {
+                    tab.getComponent('stBeg').onTriggerClick = Ext.bind(function () {
                         var nsiGrid = this.getController('Nsi').nsiSta(tab.getComponent('stBeg').getValue()).getComponent(0);
                         nsiGrid.on('itemdblclick', this.getController('docs.Smgs2').selectStaG22StBeg, tab);
                     }, this);
-                    tab.getComponent('stEnd').onTriggerClick = Ext.bind(function(){
+                    tab.getComponent('stEnd').onTriggerClick = Ext.bind(function () {
                         var nsiGrid = this.getController('Nsi').nsiSta(tab.getComponent('stEnd').getValue()).getComponent(0);
                         nsiGrid.on('itemdblclick', this.getController('docs.Smgs2').selectStaG22StEnd, tab);
                     }, this);
-                    tab.getComponent('per').getComponent('codePer').onTriggerClick = Ext.bind(function(){
+                    tab.getComponent('per').getComponent('codePer').onTriggerClick = Ext.bind(function () {
                         var nsiGrid = this.getController('Nsi').nsiCarrier(/*tab.getComponent('namPer').getValue()*/).getComponent(0);
-                        nsiGrid.on('itemdblclick',  this.getController('docs.Smgs2').selectCarrier, tab);
+                        nsiGrid.on('itemdblclick', this.getController('docs.Smgs2').selectCarrier, tab);
                     }, this);
                 }
             },
@@ -152,9 +155,9 @@ Ext.define('TK.controller.docs.Aviso2', {
 
         form.down('detailtabpanel[itemId=g23_panel_tab]').on(
             'add',
-            function(tabpanel, tab, inx){
-                if(tabpanel.isXType('detailtabpanel',true)) {
-                    tab.getComponent('platR').onTriggerClick = Ext.bind(function(){
+            function (tabpanel, tab, inx) {
+                if (tabpanel.isXType('detailtabpanel', true)) {
+                    tab.getComponent('platR').onTriggerClick = Ext.bind(function () {
                         var nsiGrid = this.getController('Nsi').nsiPlat(tab.getComponent('platR').getValue()).getComponent(0)/*, gridAction = nsiGrid.down('actioncolumn')*/;
                         nsiGrid.on('itemdblclick', this.getController('Nsi').selectPlatG4, tab);
                     }, this);
@@ -163,13 +166,13 @@ Ext.define('TK.controller.docs.Aviso2', {
             this
         );
 
-        Ext.each(form.query('textfield'), function(item, index) {
+        Ext.each(form.query('textfield'), function (item, index) {
             item.on('focus', Ext.bind(this.onDivBlur, form));
         }, this);
 
-       /* Ext.each(form.query('textfield'), function(item, index) {
-            item.on('focus', Ext.bind(this.onDivBlur, form));
-        }, this);*/
+        /* Ext.each(form.query('textfield'), function(item, index) {
+             item.on('focus', Ext.bind(this.onDivBlur, form));
+         }, this);*/
         /*form.getComponent('disp.g15g').on({
             click: {
                 element: 'el', //bind to the underlying el property on the panel
@@ -199,7 +202,7 @@ Ext.define('TK.controller.docs.Aviso2', {
         );*/
     },
 
-    onDivBlur: function(){
+    onDivBlur: function () {
         var comp = this.getComponent('disp.g7g');
         comp.removeCls('div-active');
         comp.addCls('bg-c-white');
@@ -207,19 +210,19 @@ Ext.define('TK.controller.docs.Aviso2', {
         comp.removeCls('div-active');
         comp.addCls('bg-c-white');
     },
-    onChangeData:function(btn){
+    onChangeData: function (btn) {
         var panel, tabpanels;
-        if(btn.itemId.indexOf('g7') == -1){
+        if (btn.itemId.indexOf('g7') == -1) {
             panel = this.getComponent(btn.itemId + 'panel');
         }
         // установка кода отправителя
-        if(btn.itemId.indexOf('g1') != -1){
-            var value=this.getComponent('smgs.g2_').getValue();
+        if (btn.itemId.indexOf('g1') != -1) {
+            var value = this.getComponent('smgs.g2_').getValue();
             this.getComponent('g1_panel').getComponent('smgs.g2_E').setValue(value);
         }
         // установка кода получателя
-        if(btn.itemId.indexOf('g4') != -1){
-            var value=this.getComponent('smgs.g5_').getValue();
+        if (btn.itemId.indexOf('g4') != -1) {
+            var value = this.getComponent('smgs.g5_').getValue();
             this.getComponent('g4_panel').getComponent('smgs.g5_E').setValue(value);
         }
         /*else {
@@ -229,8 +232,8 @@ Ext.define('TK.controller.docs.Aviso2', {
         }*/
 
         tabpanels = panel.query('detailtabpanel');
-        for(var i = 0; i < tabpanels.length; i++){
-            if(tabpanels[i].items.getCount() == 0){
+        for (var i = 0; i < tabpanels.length; i++) {
+            if (tabpanels[i].items.getCount() == 0) {
                 tabpanels[i].onAddTab();
             }
         }
@@ -238,36 +241,36 @@ Ext.define('TK.controller.docs.Aviso2', {
         panel.show();
         this.maskPanel(true);
     },
-    onRowclick: function(rowModel, record, index){
+    onRowclick: function (rowModel, record, index) {
         var bar = this.getList().getDockedComponent('top'),
             data = this.getList().selModel.getLastSelected().data,
             status = data.status;
 
         this.getCenter().suspendLayouts();
 
-        if(bar.getComponent('aviso2smgs')){
-            if(status === '' || status === '4'){
+        if (bar.getComponent('aviso2smgs')) {
+            if (status === '' || status === '4') {
                 bar.getComponent('aviso2smgs').enable();
             } else {
                 bar.getComponent('aviso2smgs').disable();
             }
         }
-        if(bar.getComponent('aviso2smgsAppend')){
-            if(status === '' || status === '4'){
+        if (bar.getComponent('aviso2smgsAppend')) {
+            if (status === '' || status === '4') {
                 bar.getComponent('aviso2smgsAppend').enable();
             } else {
                 bar.getComponent('aviso2smgsAppend').disable();
             }
         }
-        if(bar.getComponent('export2Excel')){
-            if(status === '' || status === '4' || status === '7'){
+        if (bar.getComponent('export2Excel')) {
+            if (status === '' || status === '4' || status === '7') {
                 bar.getComponent('export2Excel').enable();
             } else {
                 bar.getComponent('export2Excel').disable();
             }
         }
-        if(bar.getComponent('del')){
-            if(status === '7'){
+        if (bar.getComponent('del')) {
+            if (status === '7') {
                 bar.getComponent('del').disable();
             } else {
                 bar.getComponent('del').enable();
@@ -276,7 +279,7 @@ Ext.define('TK.controller.docs.Aviso2', {
 
         this.getCenter().resumeLayouts();
     },
-    onSavePerevozDetailPanelClick: function(perevozPanel){
+    onSavePerevozDetailPanelClick: function (perevozPanel) {
         var vagPanelTab = perevozPanel.getComponent('g22_panel_tab'),
             perevozchik = perevozPanel.up('aviso2').down('displayfield[itemId="smgs.perevozchik"]');
 
@@ -289,26 +292,26 @@ Ext.define('TK.controller.docs.Aviso2', {
     isContOtpr: function () {
         return this.getController("docs.VgCtGrTreeDetailController").isContOtpr();
     },
-    onSmgs2VgCtGrWinShow: function(btn,selHid){
-        this.fireEvent('showVgCtGrWin', 'avisosmgs2VgCtGrTreeformWin', btn.up('docsform'),selHid);
+    onSmgs2VgCtGrWinShow: function (btn, selHid) {
+        this.fireEvent('showVgCtGrWin', 'avisosmgs2VgCtGrTreeformWin', btn.up('docsform'), selHid);
     },
-    onCimDocs9WinShow: function(btn){
+    onCimDocs9WinShow: function (btn) {
         this.fireEvent('showDocs9Win', 'avisosmgs2Docs9TreeformWin', btn.up('docsform'));
     },
-    onCimPlombsWinShow: function(btn,selPlombHid){
-        this.fireEvent('showPlombsWin', 'avisosmgs2PlombsTreeformWin', btn.up('docsform'),selPlombHid);
+    onCimPlombsWinShow: function (btn, selPlombHid) {
+        this.fireEvent('showPlombsWin', 'avisosmgs2PlombsTreeformWin', btn.up('docsform'), selPlombHid);
     },
-    setDisplayedVgCtGrFields: function(docForm){
+    setDisplayedVgCtGrFields: function (docForm) {
         this.fireEvent('displayedVgCtGrFields', this, docForm);
     },
-    setDisplayedDocs9Fields: function(docForm){
+    setDisplayedDocs9Fields: function (docForm) {
         this.fireEvent('displayedDocs9Fields', this, docForm);
     },
-    setDisplayedPlombsFields: function(docForm){
+    setDisplayedPlombsFields: function (docForm) {
         this.fireEvent('displayedPlombsFields', this, docForm);
         // docForm.getComponent('smgs.g2012').setValue(docForm.dataObj['g2012']);
     },
-    setG2012DataObj: function(docForm){
+    setG2012DataObj: function (docForm) {
         this.fireEvent('savePlombsToDataObj', this, docForm);
     }
 });

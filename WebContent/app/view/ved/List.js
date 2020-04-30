@@ -69,6 +69,7 @@ Ext.define('TK.view.ved.List', {
         config.dockedItems = new Array({
             dock: 'top',
             xtype: 'toolbar',
+            layout: 'column',
             itemId: 'top',
             items: [
                 // {text: this.btnStat, iconCls:'filter', action:'filter', itemId:'local', forDeleted: true, forPresent: true},

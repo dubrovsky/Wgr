@@ -1,7 +1,7 @@
 package com.bivc.cimsmgs.exchange;
 
 import Ti.db.MapPogruzDBOperations;
-import Ti.model.MapPogruz;
+import Ti.model.excel.MapPogruz;
 import com.bivc.cimsmgs.commons.ArrayMap;
 import com.bivc.cimsmgs.commons.HibernateUtil;
 import com.bivc.cimsmgs.commons.VidOtpr;
@@ -199,7 +199,7 @@ public class PrilDocLoader {
      * @return errors list
      */
     public ArrayList<String> processPeregruz2BaseList(List<MapPogruz> mapPogruzs) {
-        ArrayList errors = new ArrayList();
+        ArrayList<String> errors = new ArrayList<>();
         for (MapPogruz pogruz : mapPogruzs) {
             try {
                 MapPogruzDBOperations.processBase(mapPogruzs, pogruz.getCs_hid());

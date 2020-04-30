@@ -18,6 +18,7 @@ public class Usr implements Serializable {
 	private String ps;
 	private boolean locked;
 	private boolean su;
+	private String lng;
 	private Date dattr;
 	private String un1;
 	private Set<UsrGroups> groups = new HashSet<UsrGroups>(0);
@@ -378,4 +379,12 @@ public class Usr implements Serializable {
     public void setRouteUnPrintTemplateses(Set<RouteUnPrintTemplates> routeUnPrintTemplateses) {
         this.routeUnPrintTemplateses = routeUnPrintTemplateses;
     }
+
+	public String getLng() {
+		return lng;
+	}
+
+	public void setLng(String lng) {
+		this.lng = lng;
+	}
 }

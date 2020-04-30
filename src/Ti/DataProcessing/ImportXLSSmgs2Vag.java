@@ -3,7 +3,7 @@
  */
 package Ti.DataProcessing;
 
-import Ti.model.VagSmgs2;
+import Ti.model.excel.VagSmgs2;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 

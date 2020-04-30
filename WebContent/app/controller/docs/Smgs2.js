@@ -8,13 +8,13 @@ Ext.define('TK.controller.docs.Smgs2', {
         'TK.view.ved.List'
     ],
 
-
     views: [
         'smgs2.Smgs2List',
         'smgs2.Smgs2Form',
         'smgs2.Smgs2VgCtGrTreeFormWin',
         'smgs2.Smgs2Docs9TreeFormWin',
-        'smgs2.Smgs2PlombsTreeFormWin'
+        'smgs2.Smgs2PlombsTreeFormWin',
+        'file.Win'
     ],
     stores: ['Smgses'],
     models: [
@@ -75,7 +75,10 @@ Ext.define('TK.controller.docs.Smgs2', {
                 onSavePlombsToDataObj: this.setG2012DataObj
             },
             'smgs2list': {
-                celldblclick: this.onCellDblClick
+                celldblclick: this.onCellDblClick,
+                itemclick: function (view, record) {
+                    this.fireEvent('updateMessanger', view, record);
+                }
             }
         });
     },
@@ -572,10 +575,10 @@ Ext.define('TK.controller.docs.Smgs2', {
     setG2012DataObj: function(docForm){
         this.fireEvent('savePlombsToDataObj', this, docForm);
     },
-    onCellDblClick: function(view, td, cIndex, record){
+    onCellDblClick: function(view, td, cIndex, record, tr, rIndex, e){
         var center = this.getCenter(),
             grid, gridParams = {},
-            dataIndex = view.getGridColumns()[cIndex].dataIndex;
+            dataIndex = view.headerCt.columnManager.columns[cIndex].dataIndex;
         if (dataIndex === 'vagVedNum') {
             var value = record.get(dataIndex);
             if (value !== '') {
@@ -587,6 +590,21 @@ Ext.define('TK.controller.docs.Smgs2', {
                 Ext.apply(grid.getStore().getProxy().extraParams, gridParams);
                 grid.getStore().reload();
             }
+        }
+        else if (dataIndex === 'invQty' && record.get(dataIndex) !== '0') {
+            this.getSmgslist().invoiceClick = true;
+        }
+            // this.getSmgslist().fireEvent("itemdblclick", this.getSmgslist().getView(), 'invoicelist');
+        else if (dataIndex === 'newDoc') {
+            this.getSmgslist().newDocClick = true;
+            var win = Ext.widget('filewininvoice'),
+                initData = {};
+            initData['file.packDoc.hid'] = record.get('packId');
+            initData['file.route.hid'] = record.get('routeId');
+            initData['status'] = 15;
+            initData['task'] = 'edit';
+            initData['file.type'] = 'files';
+            win.initServiceFields(initData);
         }
     }
 

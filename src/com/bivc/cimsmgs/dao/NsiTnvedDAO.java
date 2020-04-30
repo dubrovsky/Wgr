@@ -12,4 +12,6 @@ public interface NsiTnvedDAO extends GenericDAO<NsiTnved4, BigDecimal>{
     Long countAll(String query);
 
     List<NsiTnved4> findAll();
+    List<NsiTnved4>findTnvedsByCodeList(List<String> tnveds);
+    List<NsiTnved4>findTnvedsByCodeListLike(List<String> tnveds);
 }

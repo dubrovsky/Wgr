@@ -8,7 +8,11 @@ Ext.define('TK.model.ky2.YardBase', {
         {name: 'konts'},
         {name: 'hid', type: 'int', useNull: true},
         {name: 'sector.hid', type: 'int', useNull: true},
-        {name: 'sector.name', persist: false}
+        {name: 'sector.name', persist: false},
+        {name: 'trans', type: 'string', persist: false},
+        {name: 'packId', type: 'int', useNull: true},
+        {name: 'messCount', type: 'int', persist: false},
+        {name: 'newMessCount', type: 'int', persist: false}
     ],
     belongsTo: [{
         model: 'TK.model.ky.YardSector',

@@ -3,6 +3,8 @@ package com.bivc.cimsmgs.doc2doc.orika.config.ky;
 import com.bivc.cimsmgs.db.ky.*;
 import com.bivc.cimsmgs.dto.ky.*;
 import com.bivc.cimsmgs.dto.ky.kont.*;
+import com.bivc.cimsmgs.dto.ky2.KontDTO;
+import com.bivc.cimsmgs.dto.ky2.KontSearchDTO;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
@@ -26,6 +28,18 @@ public class KyKontConfig extends ConfigurableMapper {
         mapKontInAvtoInto(mapperFactory);
         mapKontInAvtoOut(mapperFactory);
         mapKontInYard(mapperFactory);
+        mapKont(mapperFactory);
+    }
+
+    private void mapKont(MapperFactory mapperFactory) {
+        mapperFactory.classMap(Kont.class, KontSearchDTO.class)
+                .fieldAToB("pod_sila", "pod_sila")
+                .fieldAToB("type", "type")
+                .fieldAToB("vid", "vid")
+                .fieldAToB("massa_tar", "massa_tar")
+                .fieldAToB("client", "client")
+                .fieldAToB("yard", "yard")
+                .register();
     }
 
     private void mapPoezd(MapperFactory mapperFactory) {

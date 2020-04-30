@@ -10,12 +10,51 @@ public class KontBindViewDTO implements Comparable<KontBindViewDTO>{
 
     private Long hid;
     private String nkon;
-    private Byte sort;
-    private Long massa_tar;
+    private Integer sort;
+    private BigDecimal massa_tar;
     private BigDecimal massa_brutto;
     private BigDecimal massa_brutto_all;
     private BigDecimal pod_sila;
     private String vid;
+    private String prim;
+    private String gruzotpr;
+    private ClientDTO client;
+    private PoezdFilterDTO poezd;
+    private AvtoFilterDTO avto;
+
+    public PoezdFilterDTO getPoezd() {
+        return poezd;
+    }
+
+    public void setPoezd(PoezdFilterDTO poezd) {
+        this.poezd = poezd;
+    }
+
+    public void setAvto(AvtoFilterDTO avto) {
+        this.avto = avto;
+    }
+
+    public AvtoFilterDTO getAvto() {
+        return avto;
+    }
+
+    //    private Set<KontGruzHistoryDTO> history = new TreeSet<>();
+//
+//    public Set<KontGruzHistoryDTO> getHistory() {
+//        return history;
+//    }
+//
+//    public void setHistory(Set<KontGruzHistoryDTO> history) {
+//        this.history = history;
+//    }
+
+    public ClientDTO getClient() {
+        return client;
+    }
+
+    public void setClient(ClientDTO client) {
+        this.client = client;
+    }
 
     private TreeSet<GruzBindViewDTO> gruzs = new TreeSet<>();
 
@@ -35,11 +74,11 @@ public class KontBindViewDTO implements Comparable<KontBindViewDTO>{
         this.nkon = nkon;
     }
 
-    public Byte getSort() {
+    public Integer getSort() {
         return sort;
     }
 
-    public void setSort(Byte sort) {
+    public void setSort(Integer sort) {
         this.sort = sort;
     }
 
@@ -51,11 +90,11 @@ public class KontBindViewDTO implements Comparable<KontBindViewDTO>{
         this.gruzs = gruzs;
     }
 
-    public Long getMassa_tar() {
+    public BigDecimal getMassa_tar() {
         return massa_tar;
     }
 
-    public void setMassa_tar(Long massa_tar) {
+    public void setMassa_tar(BigDecimal massa_tar) {
         this.massa_tar = massa_tar;
     }
 
@@ -110,5 +149,21 @@ public class KontBindViewDTO implements Comparable<KontBindViewDTO>{
         } else {
             return thisSort.compareTo(thatSort);
         }
+    }
+
+    public String getPrim() {
+        return prim;
+    }
+
+    public void setPrim(String prim) {
+        this.prim = prim;
+    }
+
+    public String getGruzotpr() {
+        return gruzotpr;
+    }
+
+    public void setGruzotpr(String gruzotpr) {
+        this.gruzotpr = gruzotpr;
     }
 }

@@ -46,8 +46,9 @@ public class CopyKontMapper extends ConfigurableMapper {
                 .field("dprb", "dprb")
                 .field("poruz", "poruz")
                 .field("sort", "sort")
-                .field("punkt_otpr", "punkt_otpr")
-                .field("punkt_nazn", "punkt_nazn")
+                .field("zayav_in", "zayav_in")
+                .field("zayav_out", "zayav_out")
+                .field("isZayav", "isZayav")
                 .register();
     }
 }

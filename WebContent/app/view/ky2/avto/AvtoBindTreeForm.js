@@ -6,7 +6,8 @@ Ext.define('TK.view.ky2.avto.AvtoBindTreeForm', {
         'Ext.form.field.Text',
         'Ext.layout.container.HBox',
         'Ext.toolbar.Fill',
-        'Ext.tree.Panel'
+        'Ext.tree.Panel',
+        'TK.view.ky2.VagKontSearch'
     ],
 
     layout: {
@@ -29,6 +30,7 @@ Ext.define('TK.view.ky2.avto.AvtoBindTreeForm', {
             tools: this.buildTreeLeftPanelTools(),
             dockedItems: [{
                 xtype: 'toolbar',
+                layout: 'column',
                 dock: 'top',
                 items: this.buildTreeLeftPanelTopToolbarItems()
             }]
@@ -41,6 +43,7 @@ Ext.define('TK.view.ky2.avto.AvtoBindTreeForm', {
             viewConfig: this.buildTreeRightPanelViewConfig(),
             dockedItems: [{
                 xtype: 'toolbar',
+                layout: 'column',
                 dock: 'top',
                 items: this.buildTreeRightPanelTopToolbarItems()
             }]
@@ -49,10 +52,12 @@ Ext.define('TK.view.ky2.avto.AvtoBindTreeForm', {
 
         this.dockedItems = [{
             xtype: 'toolbar',
+            layout: 'column',
             dock: 'top',
             items: this.buildTopToolbarItems()
         }, {
             xtype: 'toolbar',
+            layout: 'column',
             dock: 'bottom',
             ui: 'footer',
             items: this.buildBottomToolbarItems()
@@ -62,8 +67,9 @@ Ext.define('TK.view.ky2.avto.AvtoBindTreeForm', {
 
     buildTreeRightPanelTopToolbarItems: function () {
         return [{
-                text: '< Переместить',
-                action: 'moveLeft'
+                tooltip: this.ttipMove,
+                action: 'moveLeft',
+                iconCls: 's_arrow_l'
             },
             '-',
             {
@@ -72,7 +78,14 @@ Ext.define('TK.view.ky2.avto.AvtoBindTreeForm', {
     },
 
     buildTreeRightPanelTopToolbarZayavFilter: function() {
-        return [];
+        // return [
+        //     '-',
+        //     {xtype:'button', text:this.btnRest, action:'clearFiltr',margins: '0 0 0 40'},
+        //     '-',
+        //     {xtype:'button', text:this.lblOrder, action:'zayvlist'},
+        //     '-',
+        //     {xtype:'button', text:this.btnFiltr, action:'clTrAvtoFilter'}
+        // ];
     },
 
 
@@ -83,8 +96,9 @@ Ext.define('TK.view.ky2.avto.AvtoBindTreeForm', {
             },
             '->', '-',
             {
-                text: 'Переместить >',
-                action: 'moveRight'
+                tooltip: this.ttipMove,
+                action: 'moveRight',
+                iconCls: 's_arrow_r'
             }
         ];
     },
@@ -97,14 +111,14 @@ Ext.define('TK.view.ky2.avto.AvtoBindTreeForm', {
         return [{
             xtype: 'tbfill',  // ->
             hidden: false
-        // }, {
-        //     text: this.btnEditPoezd,
-        //     iconCls: 'edit',
-        //     action: 'editAvto'
-        // }, {
-        //     text: this.btnVgCtGr,
-        //     iconCls: 'edit',
-        //     action: 'editCtGr'
+        }, {
+            text: this.btnEdit,
+            iconCls: 'edit',
+            action: 'editAvto'
+        }, {
+            text: this.btnVgCtGr,
+            iconCls: 'edit',
+            action: 'editCtGr'
         }, {
             xtype: 'tbfill',  // ->
             hidden: false

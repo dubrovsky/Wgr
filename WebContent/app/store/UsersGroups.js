@@ -1,5 +1,11 @@
 Ext.define('TK.store.UsersGroups', {
 	extend: 'Ext.data.Store',
+
+    requires: [
+        'TK.Utils',
+        'TK.model.UserGroup'
+    ],
+
     model: 'TK.model.UserGroup',
 //    autoLoad: true,
 	proxy: {

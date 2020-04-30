@@ -63,4 +63,11 @@ public class NsiClientDAOHib extends GenericHibernateDAO<Client, Long> implement
         }
         return (Long) crit.uniqueResult();
     }
+
+    @Override
+    public Client findById(Long hid) {
+        Criteria crit = getSession().createCriteria(getPersistentClass());
+        crit.add(Restrictions.eq("hid", hid));
+        return (Client) crit.uniqueResult();
+    }
 }

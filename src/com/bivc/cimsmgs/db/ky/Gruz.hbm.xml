@@ -22,6 +22,9 @@
         <many-to-one class="com.bivc.cimsmgs.db.ky.AvtoZayav" fetch="select" name="avtoZayav">
             <column name="HID_ZAYAV" precision="20" scale="0"/>
         </many-to-one>
+        <many-to-one class="com.bivc.cimsmgs.db.nsi.Client" fetch="select" name="client">
+            <column name="HID_CLIENT" precision="20" scale="0"/>
+        </many-to-one>
         <property name="upak" type="string">
             <column length="50" name="UPAK"/>
         </property>
@@ -35,8 +38,8 @@
             <column name="PLACES" precision="8" scale="0"/>
         </property>
 
-        <property name="sort" type="java.lang.Byte">
-            <column name="SORT" precision="2" scale="0"/>
+        <property name="sort" type="java.lang.Integer">
+            <column name="SORT" precision="3" scale="0"/>
         </property>
         <property name="massa" type="big_decimal">
             <column name="MASSA" precision="13" scale="3"/>
@@ -52,6 +55,9 @@
         </property>
         <property name="altered" type="timestamp" update="false">
             <column length="7" name="ALTERED"/>
+        </property>
+        <property name="gruzotpr" type="string">
+            <column length="128" name="GRUZOTPR"/>
         </property>
 
         <set fetch="select" inverse="true" lazy="true" name="history" sort="natural" table="KY_KONT_GRUZ_HISTORY" batch-size="50" cascade="delete">

@@ -1,12 +1,17 @@
 Ext.define('TK.view.ky2.poezd.into.PoezdZayavsIntoDir', {
     extend: 'TK.view.ky2.AbstractWindow',
     alias: 'widget.ky2poezdzayavsintodir',
+
+    requires: [
+        'TK.view.ky2.BasePoezdZayavsDir'
+    ],
+
     itemId: 'ky2poezdzayavsintodir',
 
     width: 550,
     maxHeight: 700,
     autoScroll: true,
-    title: 'Список заявок по прибытию',
+    title: this.title,
     config: {
         caller: undefined
     },

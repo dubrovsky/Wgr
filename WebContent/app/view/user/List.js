@@ -7,7 +7,8 @@ Ext.define('TK.view.user.List', {
         'Ext.toolbar.Paging',
         'Ext.toolbar.Separator',
         'Ext.ux.form.SearchField',
-        'TK.Utils'
+        'TK.Utils',
+        'TK.view.components.PagingSizeChangerPlugin'
     ],
 
     enableColumnHide:false,
@@ -32,20 +33,25 @@ Ext.define('TK.view.user.List', {
     },
     buildStore: function(config) {
         config.store = 'Users';
+        Ext.getStore('Users').clearFilter(true);
     },
     buildDockedItems: function(config) {
     	config.dockedItems = [{
             dock: 'top',
             xtype: 'toolbar',
+            layout: 'column',
             items: [
                 {xtype: 'searchfield', store: Ext.getStore('Users')},'-',
                 {text: this.btnCreate, iconCls:'user_add', action:'add'},'-',
                 {text: this.btnEdit, iconCls:'user_edit', action:'edit'},'-',
-                {text: this.btnCopy, iconCls:'user_edit2', action:'copy'},'-'
+                {text: this.btnCopy, iconCls:'user_edit2', action:'copy'},'-',
+                {text: this.btnGrFilter, itemId:'grFilter', iconCls:'filter', action:'grFilter'},'-',
+                {text: this.btnResetGrFilter, iconCls:'filter', action:'grFilterReset'},'-'
             ]
         },{
             dock: 'bottom',
             xtype: 'pagingtoolbar',
+            plugins : [Ext.create('TK.view.components.PagingSizeChangerPlugin', {options : [ 20, 50, 100, 200, 1000] })],
             store: config.store,
             displayInfo: true
         }
@@ -62,14 +68,15 @@ Ext.define('TK.view.user.List', {
     buildColums:function(config) {
         config.columns = [
             {xtype: 'rownumberer'},
-            {text: this.headerUn, dataIndex: 'usr.un'},
-            {text: this.headerName, dataIndex: 'usr.namKlient', flex:1, renderer: TK.Utils.renderLongStr},
-            {text: this.headerGroup, dataIndex: 'usr.group.name'},
-            {text: this.headerGroups, dataIndex: 'usr.groupsIds',renderer: this.privRenderer},
-            {text: this.headerPrivileg, dataIndex: 'usr.privilegsIds', width:150,renderer: this.privRenderer},
-            {text: this.headerLocked, dataIndex: 'usr.locked', renderer: this.admRenderer},
+            {text: this.headerUn, dataIndex: 'usr.un',flex:1},
+            {text: this.headerName, dataIndex: 'usr.namKlient', flex:2, renderer: TK.Utils.renderLongStr},
+            {text: this.headerGroup, dataIndex: 'usr.group.name',flex:1},
+            {text: this.headerGroups, dataIndex: 'usr.groupsIds',renderer: this.privRenderer,flex:1},
+            {text: this.headerPrivileg, dataIndex: 'usr.privilegsIds', width:150,renderer: this.privRenderer,flex:1},
+            {text: this.headerLocked, dataIndex: 'usr.locked', renderer: this.admRenderer,flex:1},
             {text: this.headerSu, dataIndex: 'usr.su', renderer: this.admRenderer},
-            {text: this.headerEmail, dataIndex: 'usr.email', width:120}
+            {text: this.headerEmail, dataIndex: 'usr.email',flex:1},
+            {text: this.headerLang, dataIndex: 'usr.lng', flex:1}
         ];
     },
     buildView: function(config) {

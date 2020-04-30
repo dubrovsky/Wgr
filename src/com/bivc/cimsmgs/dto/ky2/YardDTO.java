@@ -15,9 +15,27 @@ public class YardDTO {
     private Long x;
     private Long y;
     private Long z;
+    private String h;
     private String notes;
     private boolean empty;
+    private String trans;
+    private Long messCount;
+    private Long newMessCount;
     private TreeSet<KontViewDTO> konts = new TreeSet<>();
+    private Long packId;
+    private Long routeId;
+
+    public void setPackId(Long packId) {
+        this.packId = packId;
+    }
+
+    public Long getRouteId() {
+        return routeId;
+    }
+
+    public void setRouteId(Long routeId) {
+        this.routeId = routeId;
+    }
 
     public Long getHid() {
         return hid;
@@ -81,5 +99,41 @@ public class YardDTO {
 
     public void setKonts(TreeSet<KontViewDTO> konts) {
         this.konts = konts;
+    }
+
+    public String getH() {
+        return h;
+    }
+
+    public void setH(String h) {
+        this.h = h;
+    }
+
+    public String getTrans() {
+        return trans;
+    }
+
+    public void setTrans(String trans) {
+        this.trans = trans;
+    }
+
+    public Long getPackId() {
+        return -1000L; // for messenger
+    }
+
+    public Long getMessCount() {
+        return messCount;
+    }
+
+    public void setMessCount(Long messCount) {
+        this.messCount = messCount;
+    }
+
+    public Long getNewMessCount() {
+        return newMessCount;
+    }
+
+    public void setNewMessCount(Long newMessCount) {
+        this.newMessCount = newMessCount;
     }
 }

@@ -35,9 +35,15 @@ public class Mapper extends ConfigurableMapper {
                 .byDefault()
                 .register();
 
+        factory.classMap(PoezdZayav.class, PoezdZayavBaseDTO.class)
+                .fieldAToB("client.sname", "gruzotpr")
+                .byDefault()
+                .register();
+
         factory.classMap(Avto.class, AvtoDTO.class)
                 .fieldAToB("client.hid", "clientHid")
                 .fieldAToB("client.sname", "client")
+                .fieldAToB("route.hid", "routeHid")
                 .byDefault()
                 .register();
 
@@ -63,7 +69,15 @@ public class Mapper extends ConfigurableMapper {
                 .byDefault()
                 .register();
 
+        factory.classMap(Kont.class, KontBindViewDTO.class)
+                .fieldAToB("client.sname", "gruzotpr")
+                .byDefault()
+                .register();
+
         factory.classMap(Gruz.class, GruzDTO.class)
+                .fieldAToB("client.hid", "clientHid")
+                .fieldAToB("client.sname", "gruzotpr")
+                .fieldAToB("routeHid", "routeHid")
                 .byDefault()
                 .register();
 
@@ -86,6 +100,7 @@ public class Mapper extends ConfigurableMapper {
         factory.classMap(Yard.class, YardDTO.class)
                 .fieldAToB("sector", "sector")
                 .fieldAToB("konts", "konts")
+                .fieldAToB("messCount", "messCount")
                 .byDefault()
                 .register();
 
@@ -114,7 +129,14 @@ public class Mapper extends ConfigurableMapper {
 
         factory.classMap(Client.class, ClientDTO.class)
                 .field("hid", "hid")
+                .field("sname", "sname")
                 .register();
-
+        factory.classMap(KontGruzHistory.class, KontGruzHistoryFilterDTO.class)
+                .fieldAToB("poezd.hid", "poezdHid")
+                .fieldAToB("avto.hid", "avtoHid")
+                .fieldAToB("poezd.npprm", "npprm")
+                .fieldAToB("kont.hid", "kontHid")
+                .byDefault()
+                .register();
     }
 }

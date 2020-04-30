@@ -62,6 +62,10 @@ public class Client_A extends CimSmgsSupport_A {
         log.debug(query.toString());
 
         dbt.read(st, Select.getSqlFile("ky/client/kont_list") + query, tv, getStart(), getLimit());
+        stPack st2 = new stPack();
+        dbt.read(st2, Select.getSqlFile("ky/client/kont_list_count") + query, tv);
+        if(st2.getRowCount() == 0) st2.setObject(0,0, 0);
+
         Date d = new Date();
         for (int i = 0; i < st.getRowCount(); i++) {
             if (st.getObject(i, "dprb") != null) {
@@ -86,7 +90,7 @@ public class Client_A extends CimSmgsSupport_A {
                         )
         );
 */
-        setJSONData(new jsonStore(st).toString());
+        setJSONData(new jsonStore(st, ((Number)st2.getObject(0,0)).intValue()).toString());
         return SUCCESS;
     }
 

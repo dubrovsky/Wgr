@@ -20,10 +20,9 @@ import com.bivc.cimsmgs.formats.json.Deserializer;
 import com.bivc.cimsmgs.formats.json.Serializer;
 import com.bivc.cimsmgs.services.ky2.AvtoWzPzService;
 import com.bivc.cimsmgs.sql.Select;
-import com.isc.utils.dbStore.dbTool;
-import com.isc.utils.dbStore.stForm;
-import com.isc.utils.dbStore.stPack;
-import com.isc.utils.dbStore.typesAndValues;
+import com.ibm.icu.text.SimpleDateFormat;
+import com.isc.utils.dbStore.*;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -82,6 +81,83 @@ public class AvtoZayav_A extends CimSmgsSupport_A {
     public String list() throws Exception {
         log.debug("Rendering AvtoZayav list.");
 
+        dbTool dbt = HibernateUtil.initDbTool();
+        stPack st = new stPack();
+        StringBuffer query = new StringBuffer();
+
+        typesAndValues tv = new typesAndValues().add(Types.CHAR, getUser().getUsr().getUn()).add(Types.NUMERIC, routeId);
+        query.append(" AND z.TRANS IN (");
+        for(int i = 0; i < getUser().getUsr().getTrans().size(); i++) {
+            tv.add(Types.CHAR, getUser().getUsr().getTrans().get(i));
+            if(i > 0) query.append(",");
+            query.append("?");
+        }
+        query.append(")");
+
+        List<Filter> filters = StringUtils.isNotBlank(filter) ?
+          (List<Filter>) defaultDeserializer.read(new ArrayList<Filter>() {
+          }.getClass().getGenericSuperclass(), filter) :
+          Collections.EMPTY_LIST;
+
+        if (CollectionUtils.isNotEmpty(filters)) {
+            for (Filter filter : filters) {
+                if (StringUtils.isNotBlank(filter.getProperty()) && StringUtils.isNotBlank(filter.getValue())) {
+                    if(filter.getProperty().equals("no_avto")) {
+                        query.append(" AND z.NO_AVTO LIKE CONCAT(?,'%')");
+                        tv.add(Types.CHAR, filter.getValue());
+                    }
+                    else if(filter.getProperty().equals("no_trail")) {
+                        query.append(" AND z.NO_TRAIL LIKE CONCAT(?,'%')");
+                        tv.add(Types.CHAR, filter.getValue());
+                    }
+                    else if(filter.getProperty().equals("driver_fio")) {
+                        query.append(" AND z.DRIVER_FIO LIKE CONCAT(?,'%')");
+                        tv.add(Types.CHAR, filter.getValue());
+                    }
+                    else if(filter.getProperty().equals("nkon")) {
+                        query.append(" AND (kzz.NKON LIKE CONCAT(?,'%') OR SUBSTR(kzz.NKON,5) LIKE CONCAT(?,'%'))");
+                        tv.add(Types.CHAR, filter.getValue());
+                        tv.add(Types.CHAR, filter.getValue());
+                    }
+                    else if(filter.getProperty().equals("startDate")) {
+                        SimpleDateFormat df = new SimpleDateFormat("dd.MM.yy");
+                        query.append(" AND z.DATE_ZAYAV>=?");
+                        tv.add(Types.DATE, df.parse(filter.getValue()));
+                    }
+
+                }
+            }
+        }
+
+//        String q2 = "\nGROUP BY z.HID,z.NO_ZAYAV,z.DATE_ZAYAV,z.DATTR,z.UN,z.ALTERED,z.DIRECTION,z.HID_ROUTE,z.HID_PACK,z.NO_AVTO,z.NO_TRAIL,z.CLIENT,z.DRIVER_FIO";
+//        String q3 = "\nORDER BY COUNT(kzz.HID)=COUNT(kz.HID) AND COUNT(kzz.HID) > 0,z.DATE_ZAYAV DESC";
+
+        dbt.read(st, String.format(Select.getSqlFile("ky/zajav/avto_zayav_list"), query), tv, getStart(), getLimit());
+
+        stPack st2 = new stPack();
+        tv.remove(0);
+        dbt.read(st2, Select.getSqlFile("ky/zajav/avto_zayav_list_count") + query, tv);
+        if(st2.getRowCount() == 0) st2.setObject(0,0, 0);
+
+        Vector<String[]> vv1 = new Vector<>();
+        Vector<Integer> vv2 = new Vector<>();
+        for (int i = 0; i < st.getRowCount(); i++) {
+            if(((Number) st.getObject(i,"isZayavDone")).intValue() == 0) {
+                vv1.add(st.getTxt(i,"kont_s").split("\\s?,\\s?"));
+                vv2.add(i);
+            }
+        }
+        for (int i = 0; i < vv1.size(); i++) {
+            if( findRepeat(vv1, i)) {
+                st.setObject(vv2.get(i).intValue(), "repeatNkon", 1);
+            }
+        }
+
+        log.debug("Found {} avtoZayav entries.", ((Number)st2.getObject(0,0)).intValue());
+
+        setJSONData(new jsonStore(st, ((Number)st2.getObject(0,0)).intValue()).toString());
+        return SUCCESS;
+/*
         List<Filter> filters = StringUtils.isNotBlank(filter) ?
                 (List<Filter>) defaultDeserializer.read(new ArrayList<Filter>() {
                 }.getClass().getGenericSuperclass(), filter) :
@@ -104,6 +180,22 @@ public class AvtoZayav_A extends CimSmgsSupport_A {
         );
 
         return SUCCESS;
+*/
+    }
+
+    private boolean findRepeat(Vector<String []> v, int row) throws Exception {
+        String[] tt = v.get(row);
+        for (int i = 0; i < v.size(); i++) {
+            if(i != row) {
+                String[] t = v.get(i);
+                for (int j = 0; j < t.length; j++) {
+                    for (int k = 0; k < tt.length; k++) {
+                        if(t[j].length() > 0 && t[j].equals(tt[k])) return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     public String listOfActual() throws Exception {
@@ -154,6 +246,21 @@ public class AvtoZayav_A extends CimSmgsSupport_A {
         List<AvtoZayav> list = new ArrayList<>();
         if (!ids.isEmpty())
             list = avtoZayavDAO.findByIds( ids );
+
+        //---------Этот фрагмент используется для поля поиска в фронтэнде---------------- поиск по номеру заявки и отправителю
+        // если передано значение для поиска
+        if(getQuery()!=null&&!getQuery().trim().isEmpty())
+        {
+            List<AvtoZayav> searchList= new ArrayList<>();
+            for (AvtoZayav avtoZayav : list){
+                if((avtoZayav.getNo_zayav()!=null&&avtoZayav.getNo_zayav().matches(".*"+getQuery()+".*"))
+                        || (avtoZayav.getClient().getSname()!=null&&avtoZayav.getClient().getSname().matches(".*"+getQuery()+".*"))
+                )
+                    searchList.add(avtoZayav);
+            }
+            list=searchList;
+        }
+        //------------Этот фрагмент используется для поля поиска в фронтэнде------------- поиск по номеру заявки и отправителю
 
 /*
         List<Filter> filters = StringUtils.isNotBlank(filter) ?

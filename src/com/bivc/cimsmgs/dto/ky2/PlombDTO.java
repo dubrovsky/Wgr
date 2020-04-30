@@ -14,7 +14,7 @@ public class PlombDTO implements Comparable<PlombDTO>{
     private Short kpl;
     private String znak;
     private String station;
-    private Byte sort;
+    private Integer sort;
 
     @Override
     public String toString() {
@@ -53,11 +53,11 @@ public class PlombDTO implements Comparable<PlombDTO>{
         this.znak = znak;
     }
 
-    public Byte getSort() {
+    public Integer getSort() {
         return sort;
     }
 
-    public void setSort(Byte sort) {
+    public void setSort(Integer sort) {
         this.sort = sort;
     }
 

@@ -54,8 +54,8 @@ public class Doc2ExcelContList implements OutputStreamWriters {
         /// Init File_A to save Excel in DB
         File_A file_a = new File_A();
 
-        file_a.setUploadFileName(OUTPUT_FILE);
-        file_a.setUploadContentType(CONTENT_TYPE);
+        file_a.setUploadFileName(new String[]{OUTPUT_FILE});
+        file_a.setUploadContentType(new String[]{CONTENT_TYPE});
 //        file_a.setUpload(writeFile(doc2Excel));
 
 //        file_a.setOutputStreamt(writeFile(doc2Excel));

@@ -27,6 +27,7 @@ public class DefaultMapper extends ConfigurableMapper {
         factory.getConverterFactory().registerConverter(new CimSmgsCarListVagOtprConverter());
         factory.getConverterFactory().registerConverter(new CimSmgsKonListConverter());
         factory.getConverterFactory().registerConverter(new CimSmgsCimSmgsPlatelConverter());
+        factory.getConverterFactory().registerConverter(new CimSmgsCimSmgsPerevozConverter());
         factory.getConverterFactory().registerConverter(new CimSmgsCimSmgsPlombConverter());
         factory.getConverterFactory().registerConverter(new CimSmgsCimSmgsGruzConverter());
         factory.getConverterFactory().registerConverter(new CimSmgsCimSmgsDanGruzConverter());
@@ -107,6 +108,19 @@ public class DefaultMapper extends ConfigurableMapper {
         @Override
         public Map<Byte, CimSmgsPlatel> convertFrom(Map<Byte, Aviso2CimSmgsPlatelDTO> source, Type<Map<Byte, CimSmgsPlatel>> destinationType, MappingContext mappingContext) {
             return new TreeMap<>(mapperFacade.mapAsMap(source, new TypeBuilder<Map<Byte, Aviso2CimSmgsPlatelDTO>>(){}.build(), new TypeBuilder<Map<Byte, CimSmgsPlatel>>(){}.build()));
+        }
+    }
+
+    static class CimSmgsCimSmgsPerevozConverter extends BidirectionalConverter<Map<Byte,CimSmgsPerevoz>,Map<Byte,Aviso2CimSmgsPerevozDTO>>
+    {
+        @Override
+        public Map<Byte, Aviso2CimSmgsPerevozDTO> convertTo(Map<Byte, CimSmgsPerevoz> source, Type<Map<Byte, Aviso2CimSmgsPerevozDTO>> destinationType, MappingContext mappingContext) {
+            return new TreeMap<>(mapperFacade.mapAsMap(source, new TypeBuilder<Map<Byte, CimSmgsPerevoz>>(){}.build(), new TypeBuilder<Map<Byte, Aviso2CimSmgsPerevozDTO>>(){}.build()));
+        }
+
+        @Override
+        public Map<Byte, CimSmgsPerevoz> convertFrom(Map<Byte, Aviso2CimSmgsPerevozDTO> source, Type<Map<Byte, CimSmgsPerevoz>> destinationType, MappingContext mappingContext) {
+            return new TreeMap<>(mapperFacade.mapAsMap(source, new TypeBuilder<Map<Byte, Aviso2CimSmgsPerevozDTO>>(){}.build(), new TypeBuilder<Map<Byte, CimSmgsPerevoz>>(){}.build()));
         }
     }
 

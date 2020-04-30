@@ -1,12 +1,13 @@
 package Ti.db;
 
-import Ti.model.MapPogruz;
+import Ti.model.excel.MapPogruz;
 import com.bivc.cimsmgs.commons.HibernateUtil;
 import com.bivc.cimsmgs.db.*;
 import org.hibernate.HibernateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 
@@ -26,77 +27,92 @@ public class MapPogruzDBOperations {
         try {
             HibernateUtil.beginTransaction();
 
-            CimSmgs cs = (CimSmgs) HibernateUtil.getSession().get(CimSmgs.class, hid);
-            // читаем карту вагонов
-            Map<Byte, CimSmgsCarList> carListMap = cs.getCimSmgsCarLists();
+                CimSmgs cs = (CimSmgs) HibernateUtil.getSession().get(CimSmgs.class, hid);
+                // читаем карту вагонов
+                Map<Byte, CimSmgsCarList> carListMap = cs.getCimSmgsCarLists();
+                BigDecimal massaNetto=BigDecimal.valueOf(0);
+                BigDecimal tara=BigDecimal.valueOf(0);
 
-            Iterator<Byte> i = carListMap.keySet().iterator();
-            while (i.hasNext()) {
-                boolean stop_flag = false;
+                Iterator<Byte> i = carListMap.keySet().iterator();
+                while (i.hasNext()) {
+                    boolean stop_flag = false;
 
-                Byte aByte = i.next();
-                // считываем 1 вагон
-                CimSmgsCarList cimSmgsCarList = carListMap.get(aByte);
-                // считываем карту контейнеров на вагоне
-                Map<Byte, CimSmgsKonList> konListMap = carListMap.get(aByte).getCimSmgsKonLists();
+                    Byte aByte = i.next();
+                    // считываем 1 вагон
+                    CimSmgsCarList cimSmgsCarList = carListMap.get(aByte);
+                    // считываем карту контейнеров на вагоне
+                    Map<Byte, CimSmgsKonList> konListMap = carListMap.get(aByte).getCimSmgsKonLists();
 
-                Iterator<Byte> it = konListMap.keySet().iterator();
-                while (it.hasNext()) {
-                    Byte aByte1 = it.next();
-                    // считываем 1 контейнер
-                    CimSmgsKonList cimSmgsKonList = konListMap.get(aByte1);
-                    // считываем номер контейнера
-                    String utin = cimSmgsKonList.getUtiN().toLowerCase().replaceAll(" ","").replaceAll("-","");
-                    for (MapPogruz mapPeregruz : mapPeregruzs)
-                        // проверяем наш ли это контейнер
+                    Iterator<Byte> it = konListMap.keySet().iterator();
+                    while (it.hasNext()) {
+                        Byte aByte1 = it.next();
+                        // считываем 1 контейнер
+                        CimSmgsKonList cimSmgsKonList = konListMap.get(aByte1);
+                        // считываем номер контейнера
+                        String utin = cimSmgsKonList.getUtiN().toLowerCase().replaceAll(" ","").replaceAll("-","");
+                        for (MapPogruz mapPeregruz : mapPeregruzs)
+                            // проверяем наш ли это контейнер
                         if (mapPeregruz.getUtiN().toLowerCase().replaceAll(" ","").replaceAll("-","").equals(utin)) {
 
-                            //удаляем все имеющиеся пломбы
-                            delPlombs(cimSmgsKonList.getCimSmgsPlombs());
+                            if(mapPeregruz.getZnak().size()>0) {
+                                //удаляем все имеющиеся пломбы
+                                delPlombs(cimSmgsKonList.getCimSmgsPlombs());
 
-                            // создаем новую карту пломб
-                            Map<Byte, CimSmgsPlomb> plombMap = new TreeMap<>();
-                            List<String> plombs = mapPeregruz.getZnak();
+                                // создаем новую карту пломб
+                                Map<Byte, CimSmgsPlomb> plombMap = new TreeMap<>();
+                                List<String> plombs = mapPeregruz.getZnak();
 
-                            StringBuilder plombStr=new StringBuilder();
-                            // заносим записи из EXCEL в созданную карту пломб
-                            for (String pl : plombs) {
-                                CimSmgsPlomb plomb = new CimSmgsPlomb();
-                                plomb.setKpl(new Short("1"));
-                                plomb.setZnak(pl);
-                                if(plombStr.length()>0)
-                                    plombStr.append(",");
-                                plombStr.append(pl);
-                                plomb.setSort(new Byte(plSort));
-                                plSort++;
-                                plomb.setCimSmgs(cs);
-                                plomb.setCimSmgsKonList(cimSmgsKonList);
-                                // заносим пломбу в карту пломб
-                                plombMap.put(plSort, plomb);
+                                StringBuilder plombStr = new StringBuilder();
+                                // заносим записи из EXCEL в созданную карту пломб
+                                for (String pl : plombs) {
+                                    CimSmgsPlomb plomb = new CimSmgsPlomb();
+                                    plomb.setKpl(new Short("1"));
+                                    plomb.setZnak(pl);
+                                    if (plombStr.length() > 0)
+                                        plombStr.append(",");
+                                    plombStr.append(pl);
+                                    plomb.setSort(new Byte(plSort));
+                                    plSort++;
+                                    plomb.setCimSmgs(cs);
+                                    plomb.setCimSmgsKonList(cimSmgsKonList);
+                                    // заносим пломбу в карту пломб
+                                    plombMap.put(plSort, plomb);
 
-                                HibernateUtil.getSession().save(plomb);
+                                    HibernateUtil.getSession().save(plomb);
+                                }
+                                // сохраняем карту пломб
+                                cimSmgsKonList.setCimSmgsPlombs(plombMap);
+                                cs.setG2012(plombStr.toString());
                             }
-                            cs.setG694(mapPeregruz.getG694());
-                            // сохраняем карту пломб
-                            cimSmgsKonList.setCimSmgsPlombs(plombMap);
-                            cs.setG2012(plombStr.toString());
 
-                            cimSmgsKonList.setSizeFoot(mapPeregruz.getSizeFoot());
-                            cimSmgsKonList.setUtiType(mapPeregruz.getUti_type());
-                            cimSmgsKonList.setTaraKont(mapPeregruz.getTaraKont());
-                            cimSmgsKonList.setGrpod(mapPeregruz.getGrPodKont());
-                            cimSmgsKonList.setNvag(mapPeregruz.getNvag());
+                            if(!mapPeregruz.getG694().isEmpty())
+                                cs.setG694(mapPeregruz.getG694());
+                            if(!mapPeregruz.getSizeFoot().equals(new BigDecimal("0")))
+                                cimSmgsKonList.setSizeFoot(mapPeregruz.getSizeFoot());
+                            if(!mapPeregruz.getUti_type().isEmpty())
+                                cimSmgsKonList.setUtiType(mapPeregruz.getUti_type());
+                            if(mapPeregruz.getTaraKont()!=0)
+                                cimSmgsKonList.setTaraKont(mapPeregruz.getTaraKont());
+                            if(!mapPeregruz.getGrPodKont().equals(new BigDecimal("0")))
+                                cimSmgsKonList.setGrpod(mapPeregruz.getGrPodKont());
+                            if(!mapPeregruz.getNvag().isEmpty())
+                                cimSmgsKonList.setNvag(mapPeregruz.getNvag());
 
                             HibernateUtil.getSession().update(cimSmgsKonList);
 
                             // проверяем не находимся ли мы уже на нужном вагоне
                             if (cimSmgsCarList.getNvag()!=null&&mapPeregruz.getNvag().toLowerCase().equals(cimSmgsCarList.getNvag().toLowerCase())) {
                                 // заносим данные об вагоне
-                                cimSmgsCarList.setNvag(mapPeregruz.getNvag());
-                                cimSmgsCarList.setKolOs(mapPeregruz.getKolOs());
-                                cimSmgsCarList.setGrPod(mapPeregruz.getGrPod());
-                                cimSmgsCarList.setTaraVag(mapPeregruz.getTaraVag());
-                                cimSmgsCarList.setKlientName(mapPeregruz.getKlientName());
+                                if(!mapPeregruz.getNvag().isEmpty())
+                                    cimSmgsCarList.setNvag(mapPeregruz.getNvag());
+                                if(mapPeregruz.getKolOs()!=0)
+                                    cimSmgsCarList.setKolOs(mapPeregruz.getKolOs());
+                                if(!mapPeregruz.getGrPod().equals(new BigDecimal("0")))
+                                    cimSmgsCarList.setGrPod(mapPeregruz.getGrPod());
+                                if(!mapPeregruz.getTaraVag().equals(new BigDecimal("0")))
+                                    cimSmgsCarList.setTaraVag(mapPeregruz.getTaraVag());
+                                if(!mapPeregruz.getKlientName().isEmpty())
+                                    cimSmgsCarList.setKlientName(mapPeregruz.getKlientName());
 
                                 HibernateUtil.getSession().update(cimSmgsCarList);
                             }
@@ -165,10 +181,23 @@ public class MapPogruzDBOperations {
                             }
 
                         }
+                    }
+                    if (stop_flag)
+                        break;
                 }
-                if (stop_flag)
-                    break;
+            for (CimSmgsCarList carList:cs.getCimSmgsCarLists().values()) {
+                for (CimSmgsKonList konList:carList.getCimSmgsKonLists().values()) {
+                    if(konList.getTaraKont()!=null)
+                        tara=tara.add(BigDecimal.valueOf(konList.getTaraKont()));
+                    for (CimSmgsGruz smgsGruz:konList.getCimSmgsGruzs().values()) {
+                        if(smgsGruz.getMassa()!=null)
+                            massaNetto=massaNetto.add(smgsGruz.getMassa());
+                    }
+                }
             }
+            cs.setG24B(massaNetto.add(tara));
+            cs.setG24T(tara);
+
             cs.setAltered(new Date());
 // записываем в базу данных
             HibernateUtil.commitTransaction();
@@ -271,23 +300,6 @@ public class MapPogruzDBOperations {
             HibernateUtil.rollbackTransaction();
         }
     }
-
-//    public static List<Long> getCimSmgsList(Long hid) {
-//        List<Long> cimSmgsList = new ArrayList<>();
-//
-//        log.debug("setUpVagonPlaces");
-//        HibernateUtil.getSession().beginTransaction();
-//        try {
-//            CimSmgs cs = (CimSmgs) HibernateUtil.getSession().get(CimSmgs.class, hid);
-//
-//            String npoezd = cs.getNpoezd();
-//        }
-//        catch (HibernateException ex) {
-//            log.error(ex.getMessage());
-//            HibernateUtil.rollbackTransaction();
-//        }
-//        return cimSmgsList;
-//    }
 
     public static void createList2BaseList(ArrayList<MapPogruz> mapPeregruzs, Long hid) {
         log.debug("processBase");

@@ -8,6 +8,7 @@ public class KontGruzHistoryDTO implements Comparable<KontGruzHistoryDTO> {
     private Long hid;
     private VagonViewDTO vagon;
     private PoezdViewDTO poezd;
+    private AvtoViewDTO avto;
 
     public VagonViewDTO getVagon() {
         return vagon;
@@ -23,6 +24,14 @@ public class KontGruzHistoryDTO implements Comparable<KontGruzHistoryDTO> {
 
     public void setPoezd(PoezdViewDTO poezd) {
         this.poezd = poezd;
+    }
+
+    public AvtoViewDTO getAvto() {
+        return avto;
+    }
+
+    public void setAvto(AvtoViewDTO avto) {
+        this.avto = avto;
     }
 
     @Override

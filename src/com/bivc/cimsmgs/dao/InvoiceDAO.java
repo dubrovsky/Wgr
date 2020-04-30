@@ -18,6 +18,8 @@ public interface InvoiceDAO extends GenericDAO<CimSmgsInvoice, Long> {
 
     public CimSmgsInvoice findById2(CimSmgsInvoice invoice);
 
+    public List<CimSmgsInvoice>  findByIdinList(List<Long> hids);
+
     List<CimSmgsInvoice> findStat(Integer limit, Integer start, Search search, Usr usr);
 
     Long countAllStat(Search search, Usr usr);

@@ -15,6 +15,14 @@
     transform: rotate(270deg);
 }
 
+div.x-toolbar-separator-horizontal {
+    float: left;
+    margin: 4px 2px 4px 0;
+}
+/*.x-btn {*/
+/*    float: left;*/
+/*}*/
+
 .hideTreeNode {
     display: none;
 }
@@ -30,6 +38,12 @@
 .grid-13px-height .x-grid-cell-inner {
     padding-top: 2px;
     padding-bottom: 2px;
+    height: 16px;
+}
+
+.grid-15px-height .x-grid-cell-inner{
+    padding-top: 1px;
+    padding-bottom: 1px;
     height: 16px;
 }
 
@@ -59,6 +73,10 @@
 
 .cont {
     background: url(./../images/kont.png) no-repeat !important;
+}
+
+.flag_3 {
+    background: url(./../images/flag-3.png) no-repeat !important;
 }
 
 .red {
@@ -104,6 +122,11 @@
     height: 25px;
     line-height: 25px;
     padding: 0 30px;
+}
+
+.leftSearch {
+    float: left;
+    margin: 1px 0;
 }
 
 .top .left {
@@ -472,6 +495,9 @@ textarea.x-form-focus {
 .change {
     background-image: url(./../images/change.gif) !important;
 }
+.change_u {
+    background-image: url(./../images/change.png) !important;
+}
 
 .bind {
     background-image: url(./../images/bind.png) !important;
@@ -661,12 +687,20 @@ textarea.x-form-focus {
     background-image: url(./../images/search.png) !important;
 }
 
+.archive {
+    background-image: url(./../images/arch.png) !important;
+}
+
 .del {
     background-image: url(./../images/del.gif) !important;
 }
 
 .edit {
     background-image: url(./../images/edit.gif) !important;
+}
+
+.editgroup {
+    background-image: url(./../images/edit_group.gif) !important;
 }
 
 .copy {
@@ -745,6 +779,10 @@ textarea.x-form-focus {
     background-image: url(./../images/smgs_back.gif) !important;
 }
 
+.smgs_x_dock {
+    background-image: url(./../images/docXdoc.png) !important;
+}
+
 .blank {
     background-image: url(./../images/blank.gif) !important;
 }
@@ -767,6 +805,10 @@ textarea.x-form-focus {
 
 .pdf_blank_off {
     background-image: url(./../images/pdf_blank_off.gif) !important;
+}
+
+.pdfs_blank_off {
+    background-image: url(./../images/pdfs_blank_off.png) !important;
 }
 
 .blank_off_back {
@@ -815,6 +857,30 @@ textarea.x-form-focus {
 
 .d_arrow_r {
     background-image: url(./../images/d_arrow_r.png) !important;
+}
+
+.s_arrow_l {
+    background-image: url(./../images/s_arrow_l.png) !important;
+}
+
+.d_arrow_l {
+    background-image: url(./../images/d_arrow_l.png) !important;
+}
+
+.expand {
+    background-image: url(./../images/expand.png) !important;
+}
+
+.collapse {
+    background-image: url(./../images/collapse.png) !important;
+}
+
+.show {
+    background-image: url(./../images/show.png) !important;
+}
+
+.hide {
+    background-image: url(./../images/hide.png) !important;
 }
 
 .x-tool-img.x-tool-s-arrow-r {
@@ -928,6 +994,10 @@ background-image:url() !important;
 
 .yardReturnNkon {
     background-color: #4ce37a !important;
+}
+
+.repeatNkon .x-grid-cell{
+    background-color: #ce9491 !important;
 }
 
 .executed .x-grid-cell {
@@ -1190,4 +1260,42 @@ background-image:url() !important;
 
 .excel {
     background-image: url(./../images/excel-icon.png) !important;
+}
+.translate {
+    background-image: url(./../images/translate.png) !important;
+}
+.message-question {
+    float: right;
+    border: 1px solid #a46512;
+    background: #fffdea;
+    font-weight: normal;
+    color: #545454;
+    clear: both;
+    width: 95%;
+    margin: 5px 5px;
+    padding: 5px;
+    border-radius: 5px;
+    white-space: pre-line;
+    -moz-border-radius: 5px;  /* для firefox */
+    -webkit-border-radius: 5px;
+}
+.message-question .mess-nam-klient {
+    color: #106512;
+    font-size: 14px;
+}
+.message-question .mess-to-nam-klients {
+    color: #08579b;
+    font-size: 14px;
+}
+.message-question .mess-dattr {
+    float: right;
+    font-size: 12px;
+}
+.message-question .mess-content {
+    clear: both;
+    color: #a46512;
+}
+.message-question .mess-delimiter {
+    font-size: 17px;
+    line-height: 14px;
 }

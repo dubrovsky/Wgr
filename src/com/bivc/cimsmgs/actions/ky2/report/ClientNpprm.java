@@ -12,6 +12,10 @@ import com.isc.utils.dbStore.typesAndValues;
 import java.sql.Types;
 
 public class ClientNpprm extends ReportAction {
+
+    public ClientNpprm() throws Exception {
+    }
+
     @Override
     public String execute(Report_A report) throws Exception {
         dbTool dbt = HibernateUtil.initDbTool();

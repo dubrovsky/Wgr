@@ -1,5 +1,11 @@
 Ext.define('TK.store.Tbc1logs', {
     extend: 'Ext.data.Store',
+
+    requires: [
+        'TK.Utils',
+        'TK.model.Tbc1log'
+    ],
+
     model: 'TK.model.Tbc1log',
     proxy: {
         type: 'ajax',

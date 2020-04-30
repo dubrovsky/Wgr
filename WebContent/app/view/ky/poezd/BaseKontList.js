@@ -2,6 +2,11 @@ Ext.define('TK.view.ky.poezd.BaseKontList', {
     extend: 'TK.view.ky.AbstractWindow',
     alias:'widget.kybasekontlistforpoezd',
 
+    requires: [
+        'TK.view.ky.AbstractList'
+    ],
+
+
     width: 500,
     maxHeight: 500,
     title: 'Список контейнеров по поезду',

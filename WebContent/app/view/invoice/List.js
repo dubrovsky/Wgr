@@ -6,6 +6,7 @@ Ext.define('TK.view.invoice.List', {
         'Ext.button.Split',
         'TK.Utils'
     ],
+    itemId:'invoicelistMain',
 
     buildStore:function (config) {
         if(this.inPack){
@@ -50,6 +51,7 @@ Ext.define('TK.view.invoice.List', {
         config.dockedItems = new Array({
             dock: 'top',
             xtype: 'toolbar',
+            layout: 'column',
             itemId: 'top',
             items: [
                 {text: this.btnStat, iconCls:'filter', action:'filter', itemId:'local', forDeleted: true, forPresent: true},
@@ -60,7 +62,7 @@ Ext.define('TK.view.invoice.List', {
                 {xtype:'splitbutton', text: this.btnCopy, iconCls:'copy', action:'copy',
                     menu: [
                         {text: this.btnCopy, action:'copy', iconCls:'copy'},
-                        {text: 'Копия, выбрать...', action:'showCopySelectedWin', iconCls:'copySelected'}
+                        {text: '!Копия, выбрать...', action:'showCopySelectedWin', iconCls:'copySelected'}
                     ]
                 },'-',
                 {text: this.btnEdit,iconCls:'edit', action:'edit'},'-'
@@ -90,6 +92,11 @@ Ext.define('TK.view.invoice.List', {
         }*/
 
         config.dockedItems[0].items.push({text:this.btnHistory, iconCls:'history', action:'history'}, '-');
+        // Если мы в ЕПД добавляем кнопку спецификации
+        if(config.store==='InvoicesInPack')
+            config.dockedItems[0].items.push({text:this.btnSpecs, iconCls:'excel', action:'specExport'}, '-');
+
+        config.dockedItems[0].items.push({text:this.btnInvoiceImport, iconCls:'excel', action:'importInvoiceXls'}, '-');
 
     },
     buildView: function(config) {

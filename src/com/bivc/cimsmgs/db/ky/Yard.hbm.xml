@@ -22,6 +22,9 @@
         <property name="z" type="java.lang.Long">
             <column name="Z" not-null="true" precision="10" scale="0"/>
         </property>
+        <property name="h" type="string">
+            <column name="H" length="1"/>
+        </property>
         <property name="notes" type="string">
             <column length="100" name="NOTES"/>
         </property>
@@ -43,6 +46,9 @@
         <property name="un" type="string" update="false">
             <column length="20" name="UN"/>
         </property>
+        <property name="messCount" type="java.lang.Long">
+            <column length="128" name="MESS_COUNT"/>
+        </property>
 
         <set fetch="select" inverse="true" lazy="true" sort="natural" name="konts" table="KY_KONT" batch-size="50" >
             <key>
@@ -56,6 +62,13 @@
                 <column name="HID_YARD" precision="20" scale="0"/>
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.ky.KontGruzHistory"/>
+        </set>
+
+        <set fetch="select" inverse="true" lazy="true" name="boardTalkNewMesses" sort="natural" table="BOARDTALK_NEW_MESS" batch-size="50" cascade="none">
+            <key>
+                <column name="DOC_HID" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.BoardTalkNewMess"/>
         </set>
 
 <!--        <one-to-one name="kont" class="com.bivc.cimsmgs.db.ky.Kont" property-ref="yard"/>-->

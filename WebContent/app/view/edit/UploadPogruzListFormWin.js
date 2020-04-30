@@ -16,7 +16,9 @@ Ext.define('TK.view.edit.UploadPogruzListFormWin', {
         items.splice(0, 0,
             {xtype: 'hidden', name: "hid_cs", text: '', allowBlank: true},
             {xtype: 'hidden', name: "query", text: '', allowBlank: true},
-            {xtype: 'hidden', name: "query1", text: '', allowBlank: true}
+            {xtype: 'hidden', name: "query1", text: '', allowBlank: true},
+            {xtype: 'hidden', name: "search.date1", text: '', allowBlank: true},
+            {xtype: 'hidden', name: "search.date2", text: '', allowBlank: true}
         );
         return items;
     }

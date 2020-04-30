@@ -50,7 +50,7 @@ public class ExportContList2Excel extends Export2Excel {
      * генерирует EXEL лист с вагонной ведомостью СМГС2
      */
     public void makeSmgs2VagList() {
-
+        log.debug("makeSmgs2VagList");
         int nPP=1,current_row=5;
 
         if(docs==null)
@@ -121,7 +121,7 @@ public class ExportContList2Excel extends Export2Excel {
      * генерирует EXEL лист с контейнерной ведомостью СМГС2
      */
     public void makeSmgs2ContList() {
-
+        log.debug("makeSmgs2ContList");
         int nPP=1,current_row=6;
 
         if(docs==null)
@@ -218,6 +218,7 @@ public class ExportContList2Excel extends Export2Excel {
     }
 
     public void makeSmgsContList_PL() {
+        log.debug("makeSmgsContList_PL");
         final int tableDataRowIndex = 14;
 //        final int cellMaxIndex = 19;
         Row row;
@@ -561,6 +562,7 @@ public class ExportContList2Excel extends Export2Excel {
     }
 
     public void export() {
+        log.debug("export");
         Row row;
 
         Font font = getWb().createFont();

@@ -34,6 +34,7 @@ Ext.define('TK.view.avisocimsmgs.AvisoCimSmgsForm', {
             {xtype:'hidden', name:'smgs.packDoc.hid', itemId:'smgs.packDoc.hid'},
             {xtype:'hidden', name:'smgs.docType1', itemId:'smgs.docType1', value:27},
             {xtype:'hidden', name:'smgs.status', itemId:'smgs.status'},
+            {xtype:'hidden', name:'smgs.messCount', itemId:'smgs.messCount'},
             {xtype:'hidden', name:'search.docType', itemId:'search.docType', value:'avisocimsmgs'},
 
             {x:9, y:38, xtype:'label', text:'№:'},
@@ -694,6 +695,11 @@ Ext.define('TK.view.avisocimsmgs.AvisoCimSmgsForm', {
                 iconCls:'save_close',
                 action:'save_close',
                 itemId:'save_close'
+            }, '-', { // сохранить и распечатать шаблон
+                text:this.btnSavePrint,
+                iconCls:'save_print2',
+                action:'save_printAviso',
+                itemId:'save_printAviso'
             });
         }
 

@@ -1,7 +1,12 @@
 Ext.define('TK.view.ky2.avto.out.AvtoZayavForm', {
     extend: 'Ext.container.Container',
     alias: 'widget.ky2avtozayavoutform',
-    title: 'Авто, отправление',
+
+    requires: [
+        'TK.view.ky2.avto.BaseAvtoZayavForm'
+    ],
+
+    title: this.title,
 
     closable: false,
     layout: 'fit',

@@ -53,7 +53,6 @@ Ext.define('TK.view.edit.DetailTabPanel', {
 		this.items.each(
 		    function(item, index,length){
 		      	item.getComponent('sort').setValue(index);
-//                console.log(item.getComponent('sort').getValue());
 		    }
 		);
 	},

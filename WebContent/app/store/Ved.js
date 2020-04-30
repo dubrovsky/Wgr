@@ -1,5 +1,11 @@
 Ext.define('TK.store.Ved', {
 	extend: 'Ext.data.Store',
+
+    requires: [
+        'TK.Utils',
+        'TK.model.Ved'
+    ],
+
     model: 'TK.model.Ved',
 //    storeId:'Project',
     proxy: {

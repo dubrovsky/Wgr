@@ -6,6 +6,7 @@ import com.bivc.cimsmgs.db.ky.Vagon;
 import com.bivc.cimsmgs.dto.ky.NsiKyOwnersDTO;
 import com.bivc.cimsmgs.dto.ky.PoezdBaseDTO;
 import com.bivc.cimsmgs.dto.ky.VagonBaseDTO;
+import com.bivc.cimsmgs.dto.ky2.VagonDTO;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
@@ -18,6 +19,7 @@ public class KyVagonConfig extends ConfigurableMapper {
     @Override
     protected void configure(MapperFactory mapperFactory) {
         mapVagon(mapperFactory);
+        mapVagon2(mapperFactory);
         mapPoezd(mapperFactory);
         mapOwner(mapperFactory);
     }
@@ -39,6 +41,16 @@ public class KyVagonConfig extends ConfigurableMapper {
                         }
                 )
                 .byDefault()
+                .register();
+
+    }
+
+    private void mapVagon2(MapperFactory mapperFactory) {
+        mapperFactory.classMap(Vagon.class, VagonDTO.class)
+                .fieldAToB("podSila", "podSila")
+                .fieldAToB("kolOs", "kolOs")
+                .fieldAToB("masTar", "masTar")
+                .fieldAToB("sobstv", "sobstv")
                 .register();
 
     }

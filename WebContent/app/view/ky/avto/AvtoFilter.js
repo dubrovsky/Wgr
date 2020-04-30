@@ -21,7 +21,7 @@ Ext.define('TK.view.ky.avto.AvtoFilter', {
                 ],
                 buttons: [
                     {
-                        text: 'Фильтровать',
+                        text: '!Фильтровать',
                         formBind: true,
                         disabled: true,
                         action: 'applyFilter'

@@ -2,6 +2,11 @@ Ext.define('TK.view.ky2.avto.out.Avto2YardBindTreeForm', {
     extend: 'TK.view.ky2.avto.AbstractAvto2YardBindTreeForm',
     alias: 'widget.ky2avto2yardbindtreeformout',
 
+    requires: [
+        'TK.view.ky2.KontByZayavFilter'
+    ],
+
+
     buildTreeLeftPanelStore: function () {
         return 'ky2.AvtoBindTreeLeftNodes';
     },
@@ -30,9 +35,11 @@ Ext.define('TK.view.ky2.avto.out.Avto2YardBindTreeForm', {
         //         emptyText: "Не найдено"
         //     }
         // }, {
-            xtype: 'kontbyzayavfilter',
-            store: 'ky2.AvtoZayavsFilter',
-            displayField: 'no_zayav'
-        }];
+                xtype: 'kontbyzayavfilter',
+                store: 'ky2.AvtoZayavsFilter',
+                displayField: 'no_zayav'
+            }, '-',
+            {tooltip: 'Загрузить XLS файл' , iconCls: 'excel', action: 'upload'}
+        ];
     }
 });

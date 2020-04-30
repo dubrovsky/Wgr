@@ -1,6 +1,11 @@
 Ext.define('TK.controller.docs.Gu29k', {
     extend: 'Ext.app.Controller',
 
+    requires: [
+        'TK.Utils'
+    ],
+
+
     views: ['gu29k.List', 'gu29k.Form'],
     stores: ['Gu29ks'],
     models: ['Gu29k','SmgsPlomb'],

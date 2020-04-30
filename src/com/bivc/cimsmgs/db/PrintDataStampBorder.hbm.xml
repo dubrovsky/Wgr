@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.bivc.cimsmgs.db.PrintDataStampBorder" table="PRINT_DATA_STAMP_BORDER" batch-size="50">
+        <id name="hid" type="java.lang.Long">
+            <column name="HID" precision="20" scale="0"/>
+            <generator class="sequence">
+                <param name="sequence">PRINT_DATA_STAMP_BORDER_HID</param>
+            </generator>
+        </id>
+        <many-to-one name="stamp" class="com.bivc.cimsmgs.db.PrintDataStamp" fetch="select" not-null="true">
+            <column name="HID_STAMP" precision="20" scale="0" />
+        </many-to-one>
+        <property name="border" type="java.lang.Byte" >
+            <column name="BORDER" precision="1" scale="0"/>
+        </property>
+        <property name="color" type="string">
+            <column name="COLOR" length="8"/>
+        </property>
+        <property name="rllx" type="java.lang.Float">
+            <column name="RLLX" precision="6" scale="1" not-null="true" />
+        </property>
+        <property name="rlly" type="java.lang.Float">
+            <column name="RLLY" precision="6" scale="1" not-null="true" />
+        </property>
+        <property name="rurx" type="java.lang.Float">
+            <column name="RURX" precision="6" scale="1" not-null="true" />
+        </property>
+        <property name="rury" type="java.lang.Float">
+            <column name="RURY" precision="6" scale="1" not-null="true" />
+        </property>
+        <property name="radius" type="java.lang.Integer" >
+            <column name="RADIUS" precision="2" />
+        </property>
+    </class>
+</hibernate-mapping>

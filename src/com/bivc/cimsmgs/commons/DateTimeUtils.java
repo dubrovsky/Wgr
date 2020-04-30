@@ -15,23 +15,28 @@ public class DateTimeUtils {
     public static final String RU_DATETIME_FORMAT = "dd.MM.yy HH:mm";
     public static final String RU_TIME_FORMAT = "HH:mm";
 
-    public static final String EN_DATE_FORMAT = "MM/dd/yy";
-    public static final String EN_DATETIME_FORMAT = "MM/dd/yy h:mm a";
-    public static final String EN_TIME_FORMAT = "h:mm a";
+    public static final String PL_DATE_FORMAT = "dd.MM.yy";
+    public static final String PL_DATETIME_FORMAT = "dd.MM.yy HH:mm";
+    public static final String PL_TIME_FORMAT = "HH:mm";
 
-    public static final String DE_DATE_FORMAT = "MM/dd/yy";
-    public static final String DE_DATETIME_FORMAT = "MM/dd/yy h:mm a";
-    public static final String DE_TIME_FORMAT = "h:mm a";
+    public static final String EN_DATE_FORMAT = "dd.MM.yy";
+    public static final String EN_DATETIME_FORMAT = "dd.MM.yy HH:mm";
+    public static final String EN_TIME_FORMAT = "HH:mm";
 
-    public static final String ZH_DATE_FORMAT = "yy/MM/dd";
-    public static final String ZH_DATETIME_FORMAT = "yy/MM/dd h:mm a";
-    public static final String ZH_TIME_FORMAT = "h:mm a";
+    public static final String DE_DATE_FORMAT = "dd.MM.yy";
+    public static final String DE_DATETIME_FORMAT = "dd.MM.yy HH:mm";
+    public static final String DE_TIME_FORMAT = "HH:mm";
+
+    public static final String ZH_DATE_FORMAT = "dd.MM.yy";
+    public static final String ZH_DATETIME_FORMAT = "dd.MM.yy HH:mm";
+    public static final String ZH_TIME_FORMAT = "HH:mm";
 
     public enum Parser {
         ru(new String[]{RU_DATE_FORMAT, RU_DATETIME_FORMAT, RU_TIME_FORMAT}),
         en(new String[]{EN_DATE_FORMAT, EN_DATETIME_FORMAT, EN_TIME_FORMAT}),
         de(new String[]{DE_DATE_FORMAT, DE_DATETIME_FORMAT, DE_TIME_FORMAT}),
-        zh(new String[]{ZH_DATE_FORMAT, ZH_DATETIME_FORMAT, ZH_TIME_FORMAT});
+        zh(new String[]{ZH_DATE_FORMAT, ZH_DATETIME_FORMAT, ZH_TIME_FORMAT}),
+        pl(new String[]{PL_DATE_FORMAT, PL_DATETIME_FORMAT, PL_TIME_FORMAT});
 
         private final String[] formats;
 
@@ -65,7 +70,8 @@ public class DateTimeUtils {
         ru(RU_DATE_FORMAT),
         en(EN_DATE_FORMAT),
         de(DE_DATE_FORMAT),
-        zh(ZH_DATE_FORMAT);
+        zh(ZH_DATE_FORMAT),
+        pl(PL_DATE_FORMAT);
 
         private final String format;
 
@@ -82,7 +88,8 @@ public class DateTimeUtils {
         ru(RU_DATETIME_FORMAT),
         en(EN_DATETIME_FORMAT),
         de(DE_DATETIME_FORMAT),
-        zh(ZH_DATETIME_FORMAT);
+        zh(ZH_DATETIME_FORMAT),
+        pl(PL_DATETIME_FORMAT);
 
         private final String format;
 
@@ -103,8 +110,8 @@ public class DateTimeUtils {
         ru(RU_TIME_FORMAT),
         en(EN_TIME_FORMAT),
         de(DE_TIME_FORMAT),
-        zh(ZH_TIME_FORMAT);
-
+        zh(ZH_TIME_FORMAT),
+        pl(PL_TIME_FORMAT);
         private final String format;
 
         FormaterTime(String format){
@@ -123,6 +130,20 @@ public class DateTimeUtils {
         time_cal.setTime(time);
         date_cal.add(Calendar.HOUR_OF_DAY, time_cal.get(Calendar.HOUR_OF_DAY));
         date_cal.add(Calendar.MINUTE, time_cal.get(Calendar.MINUTE));
+        return date_cal.getTime();
+    }
+
+    static public Date addOneMinToDate(Date date){
+        Calendar date_cal = Calendar.getInstance();
+        date_cal.setTime(date);
+        date_cal.add(Calendar.MINUTE, 1);
+        return date_cal.getTime();
+    }
+
+    static public Date addDayToDate(Date date, int days){
+        Calendar date_cal = Calendar.getInstance();
+        date_cal.setTime(date);
+        date_cal.add(Calendar.DAY_OF_YEAR, days);
         return date_cal.getTime();
     }
 }

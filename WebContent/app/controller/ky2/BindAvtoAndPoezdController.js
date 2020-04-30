@@ -1,6 +1,11 @@
 Ext.define('TK.controller.ky2.BindAvtoAndPoezdController', {
     extend: 'Ext.app.Controller',
 
+    requires: [
+        'TK.Utils'
+    ],
+
+
     selectedNodesPoezd: [],  // last selection
     selectedNodesAvto: [],  // last selection
     sourceVagModels: [],   // to use in after drop event

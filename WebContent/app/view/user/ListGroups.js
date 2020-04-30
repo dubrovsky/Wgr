@@ -23,15 +23,18 @@ Ext.define('TK.view.user.ListGroups', {
         this.buildDockedItems(config);
     },
     buildSelModel:function(config) {
-        this.selType = 'checkboxmodel';
-        this.selModel = {mode: (this.ownerBtn && (this.ownerBtn.action === 'groups' || this.ownerBtn.action === 'getUserGroups')) ? 'MULTI' : 'SINGLE'};
+        this.selModel = Ext.create('Ext.selection.CheckboxModel', {
+            mode: (this.ownerBtn && this.ownerBtn.action === 'groups') ? 'MULTI' : 'SINGLE',
+            checkOnly: true
+        })
     },
     buildDockedItems: function(config) {
     	config.dockedItems = [{
             dock: 'top',
             xtype: 'toolbar',
             items: [
-                {text: this.btnSelect, iconCls:'check1', action:'check'},'-',
+                {xtype: 'searchfield', store: Ext.getStore('UsersGroups')},'-',
+                {text: this.btnSelect,itemId:'selBtn', iconCls:'check1', action:'check'},'-',
                 {text: this.btnAdd, iconCls:'add1', action:'add'},'-',
                 {text: this.btnEdit, iconCls:'edit1', action:'edit'},'-'
             ]
@@ -46,6 +49,7 @@ Ext.define('TK.view.user.ListGroups', {
     },
     buildStore: function(config) {
         config.store = 'UsersGroups';
+        Ext.getStore('UsersGroups').clearFilter(true);
     },
     buildColums:function(config) {
         config.columns = [
@@ -57,7 +61,8 @@ Ext.define('TK.view.user.ListGroups', {
     buildView: function(config) {
     	config.viewConfig = {
             stripeRows: true,
-            singleSelect:true
+            singleSelect:true,
+            enableTextSelection: true
         };
     }
 });

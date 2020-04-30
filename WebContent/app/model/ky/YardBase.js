@@ -1,6 +1,12 @@
 Ext.define('TK.model.ky.YardBase', {
     extend: 'Ext.data.Model',
 
+    requires: [
+        'TK.Utils',
+        'TK.model.ky.YardSector'
+    ],
+
+
     fields: [
 
         {name:'x', type:'int', useNull:true},

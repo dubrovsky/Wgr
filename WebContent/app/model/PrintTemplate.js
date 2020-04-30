@@ -1,5 +1,6 @@
 Ext.define('TK.model.PrintTemplate', {
     extend: 'Ext.data.Model',
+
     idProperty:'hid',
     fields: [
         'dattr','name','routes','fontFamily','blanks',

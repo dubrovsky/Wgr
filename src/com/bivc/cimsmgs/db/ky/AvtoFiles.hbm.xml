@@ -29,6 +29,9 @@
         <property name="docType" type="string">
             <column name="DOC_TYPE" length="2" />
         </property>
+        <property name="num" type="string">
+            <column name="NUM" length="15" />
+        </property>
         <property name="npp" type="long">
             <column name="NPP" length="200" />
         </property>

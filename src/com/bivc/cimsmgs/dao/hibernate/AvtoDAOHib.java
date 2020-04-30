@@ -1,5 +1,6 @@
 package com.bivc.cimsmgs.dao.hibernate;
 
+import com.bivc.cimsmgs.commons.DateTimeUtils;
 import com.bivc.cimsmgs.commons.Filter;
 import com.bivc.cimsmgs.dao.AvtoDAO;
 import com.bivc.cimsmgs.db.Usr;
@@ -39,7 +40,7 @@ public class AvtoDAOHib extends GenericHibernateDAO<Avto, Long> implements AvtoD
         crit.add(Restrictions.eq("direction", direction));
         crit.addOrder(Order.desc("dattr"));
 
-        applyFilter(filters, crit, locale);
+        applyFilter(filters, crit, locale, direction);
 
         return listAndCast(crit);
     }
@@ -55,7 +56,7 @@ public class AvtoDAOHib extends GenericHibernateDAO<Avto, Long> implements AvtoD
 
         crit.setProjection(Projections.countDistinct("hid"));
 
-        applyFilter(filters, crit, locale);
+        applyFilter(filters, crit, locale, direction);
 
         return (Long) crit.uniqueResult();
     }
@@ -132,7 +133,7 @@ public class AvtoDAOHib extends GenericHibernateDAO<Avto, Long> implements AvtoD
 
         crit.add(Restrictions.eq("direction", (byte) 2)).addOrder(Order.desc("dprb"));// otpavlenie
 
-        applyFilter(filters, crit, locale);
+        applyFilter(filters, crit, locale, (byte)2);
 
         return listAndCast(crit);
     }
@@ -149,12 +150,12 @@ public class AvtoDAOHib extends GenericHibernateDAO<Avto, Long> implements AvtoD
 
         crit.setProjection(Projections.countDistinct("hid"));
 
-        applyFilter(filters, crit, locale);
+        applyFilter(filters, crit, locale, (byte)2);
 
         return (Long) crit.uniqueResult();
     }
 
-    private void applyFilter(List<Filter> filters, Criteria crit, Locale locale) {
+    private void applyFilter(List<Filter> filters, Criteria crit, Locale locale, Byte direction) {
         if(CollectionUtils.isNotEmpty(filters)){
             for(Filter filter: filters){
                 if(StringUtils.isNotBlank(filter.getProperty()) && StringUtils.isNotBlank(filter.getValue())){
@@ -162,6 +163,19 @@ public class AvtoDAOHib extends GenericHibernateDAO<Avto, Long> implements AvtoD
                     switch (Avto.FilterFields.valueOf(filter.getProperty().toUpperCase())){
                         case NO_AVTO:
                             crit.add(Restrictions.ilike(Avto.FilterFields.NO_AVTO.getName(), StringUtils.trim(filter.getValue()), MatchMode.ANYWHERE));
+                            break;
+                        case NO_TRAIL:
+                            crit.add(Restrictions.ilike(Avto.FilterFields.NO_TRAIL.getName(), StringUtils.trim(filter.getValue()), MatchMode.ANYWHERE));
+                            break;
+                        case DRIVER_FIO:
+                            crit.add(Restrictions.ilike(Avto.FilterFields.DRIVER_FIO.getName(), StringUtils.trim(filter.getValue()), MatchMode.ANYWHERE));
+                            break;
+                        case NKON:
+                            crit.createAlias("konts", "konts").add(Restrictions.ilike("konts.nkon", StringUtils.trim(filter.getValue()), MatchMode.ANYWHERE));
+                            break;
+                        case STARTDATE:
+                            date = DateTimeUtils.Parser.valueOf(locale.getLanguage()).parse(StringUtils.trim(filter.getValue()));
+                            crit.add(Restrictions.gt(direction == 1 ?  "dprb" : "dotp", date));
                             break;
                     }
                 }

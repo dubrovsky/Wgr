@@ -24,7 +24,7 @@ public class KYZayavLoader {
         TreeMap<String, Vagon> vagMap = new TreeMap<>();
 
         short vagSort = 0;
-        byte konSort = 0;
+        int konSort = 0;
 
         try (Workbook wb = WorkbookFactory.create(file)) {
             Sheet sheet = wb.getSheetAt(0);
@@ -58,29 +58,31 @@ public class KYZayavLoader {
                     Kont kont = new Kont();
                     kont.setSort(konSort++);
                     kont.setIsZayav((byte) 1);
+                    kont.setClient(zajav.getClient());
                     kont.setNkon(nkon);
                     kont.setNotp(getStrVal(sheet, j, "C"));
                     BigDecimal mnet = getNumVal(sheet, j, "E");
                     kont.setMassa_brutto(mnet);
-                    BigDecimal tara = getNumVal(sheet, j, "F", 0);
+                    BigDecimal tara = getNumVal(sheet, j, "F", 2);
                     if (tara != null) {
-                        kont.setMassa_tar(tara.longValue());
+                        kont.setMassa_tar(tara);
                     }
                     BigDecimal mbrt = getNumVal(sheet, j, "G");
                     kont.setMassa_brutto_all(mbrt);
 
-                    short plombSort = 0;
+                    int plombSort = 0;
                     String znak = getStrVal(sheet, j, "J");
                     String[] zn = znak.split(",");
                     for (String item : zn) {
                         Plomb plomb = new Plomb();
                         plomb.setZnak(item);
-                        plomb.setKpl(plombSort++);
+                        plomb.setKpl((short) 1);
+                        plomb.setSort(plombSort++);
                         kont.addPlomb(plomb);
                     }
 
                     Gruz gruz = new Gruz();
-                    gruz.setSort((byte) 0);
+                    gruz.setSort(0);
                     gruz.setKgvn(getStrVal(sheet, j, "H"));
                     gruz.setMassa(kont.getMassa_brutto());
                     kont.addGruz(gruz);

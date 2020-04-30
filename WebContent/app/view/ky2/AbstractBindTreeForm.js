@@ -7,9 +7,10 @@ Ext.define('TK.view.ky2.AbstractBindTreeForm', {
         'Ext.layout.container.HBox',
         'Ext.toolbar.Fill',
         'Ext.tree.Panel',
-        'TK.view.ky2.MyFixedTreeModel'
+        'TK.view.ky2.MyFixedTreeModel',
+        'TK.view.ky2.VagKontSearch'
     ],
-
+    autoScroll: true,
     layout: {
         type: 'hbox',
         align: 'stretch'
@@ -30,6 +31,7 @@ Ext.define('TK.view.ky2.AbstractBindTreeForm', {
             selModel: Ext.create('TK.view.ky2.MyFixedTreeModel'),
             dockedItems: [{
                 xtype: 'toolbar',
+                layout: 'column',
                 dock: 'top',
                 items: this.buildTreeLeftPanelTopToolbarItems()
             }, {
@@ -48,6 +50,7 @@ Ext.define('TK.view.ky2.AbstractBindTreeForm', {
             selModel: Ext.create('TK.view.ky2.MyFixedTreeModel'),
             dockedItems: [{
                 xtype: 'toolbar',
+                layout: 'column',
                 dock: 'top',
                 items: this.buildTreeRightPanelTopToolbarItems()
             }, {
@@ -113,28 +116,34 @@ Ext.define('TK.view.ky2.AbstractBindTreeForm', {
     buildTreeLeftPanelTopToolbarItems: function () {
         return [
             {
-                text: 'Спрятать вагоны',
-                action: 'hideVags'
+                tooltip: this.ttipHideWags,
+                action: 'hideVags',
+                iconCls: 'hide'
             }, '-',
             {
-                text: 'Показать вагоны',
-                action: 'showVags'
+                tooltip: this.ttipShowWags,
+                action: 'showVags',
+                iconCls: 'show'
             }, '-',
             {
-                text: 'Развернуть',
-                action: 'expandConts'
+                tooltip: this.ttipShow,
+                action: 'expandConts',
+                iconCls: 'expand'
             }, '-',
             {
-                text: 'Свернуть',
-                action: 'collapseConts'
+                tooltip: this.ttipHide,
+                action: 'collapseConts',
+                iconCls: 'collapse'
             }, '-',
             {
                 xtype: 'vagkontsearch'
             },
             '->', '-',
             {
-                text: 'Переместить >',
-                action: 'moveRight'
+                tooltip: this.labelMove,
+                action: 'moveRight',
+                iconCls: 's_arrow_r'
+
             }
         ];
     },
@@ -146,16 +155,19 @@ Ext.define('TK.view.ky2.AbstractBindTreeForm', {
     buildTreeRightPanelTopToolbarItems: function () {
         return [
             {
-                text: '< Переместить',
-                action: 'moveLeft'
+                tooltip: this.labelMove,
+                action: 'moveLeft',
+                iconCls: 's_arrow_l'
             }, '-',
             {
-                text: 'Развернуть',
-                action: 'expandAll'
+                tooltip: this.ttipShow,
+                action: 'expandAll',
+                iconCls: 'expand'
             }, '-',
             {
-                text: 'Свернуть',
-                action: 'collapseAll'
+                tooltip: this.ttipHide,
+                action: 'collapseAll',
+                iconCls: 'collapse'
             }, '-',
             {
                 xtype: 'vagkontsearch'

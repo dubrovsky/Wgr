@@ -12,6 +12,10 @@ import com.isc.utils.dbStore.typesAndValues;
 import java.sql.Types;
 
 public class PoezdsInInterval extends ReportAction {
+
+    public PoezdsInInterval() throws Exception {
+    }
+
     @Override
     public String execute(Report_A report) throws Exception {
         ReportParamsDTO dto = report.getDefaultDeserializer().setLocale(report.getLocale()).read(ReportParamsDTO.class, report.getReportParams());
@@ -20,7 +24,7 @@ public class PoezdsInInterval extends ReportAction {
         dbTool dbt = HibernateUtil.initDbTool();
         stPack st = new stPack();
 
-        typesAndValues tv = new typesAndValues().add(Types.DATE, dto.getStartDate()).add(Types.DATE, report.getEndDate(dto));
+        typesAndValues tv = new typesAndValues().add(Types.DATE, dto.getStartDate()).add(Types.DATE, report.getEndDate(dto.getEndDate()));
 
         StringBuffer query = new StringBuffer();
         query.append(" AND p.TRANS IN (");

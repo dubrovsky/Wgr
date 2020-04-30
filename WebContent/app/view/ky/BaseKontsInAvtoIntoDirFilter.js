@@ -25,7 +25,7 @@ Ext.define('TK.view.ky.BaseKontsInAvtoIntoDirFilter', {
                 ],
                 buttons: [
                     {
-                        text: 'Фильтровать',
+                        text: '!Фильтровать',
                         formBind: true,
                         disabled: true,
                         action: 'applyFilter'

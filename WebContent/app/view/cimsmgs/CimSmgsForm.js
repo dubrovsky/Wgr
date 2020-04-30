@@ -27,6 +27,7 @@ Ext.define('TK.view.cimsmgs.CimSmgsForm', {
             {xtype:'box', autoEl:{tag: 'img', src: 'resources/images/cimsmgs4.jpg'}},
             {xtype:'hidden', name:'smgs.hid', itemId:'smgs.hid'},
             {xtype:'hidden', name:'task', itemId:'task'},
+            {xtype:'hidden', name:'smgs.messCount', itemId:'smgs.messCount'},
             {xtype:'hidden', name:'status', itemId:'status'},   // status of the current operation with this doc
             {xtype:'hidden', name:'smgs.type', itemId:'smgs.type', value:'1'},
             {xtype:'hidden', name:'smgs.route.hid', itemId:'smgs.route.hid'},

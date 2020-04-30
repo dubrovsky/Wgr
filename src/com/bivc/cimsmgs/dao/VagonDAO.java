@@ -17,4 +17,7 @@ public interface VagonDAO extends GenericDAO<Vagon, Long> {
     Long countPoezdsOut4Kont(List<Filter> filters, Usr usr, Locale locale);
 
     List<Vagon> getVagsForPoezdout(Long poezdHid);
+
+    Vagon findByNvag(String nvag);
+
 }

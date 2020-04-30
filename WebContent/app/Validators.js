@@ -17,6 +17,16 @@ Ext.define('TK.Validators', {
         return Ext.isString(result) ? result : TK.Validators.kontNumLastDigit(val);
     },
 
+    kontNum2: function(val){
+        if(!val){
+            return 'Незаполнено поле';
+        }
+
+        var result = TK.Validators.kontNumLength(val);
+        return result;
+        // return Ext.isString(result) ? result : TK.Validators.kontNumLastDigit(val);
+    },
+
     kontNumLength: function(val) {
         var result = /^[a-zA-Z]{4}[0-9]{7}$/.test(val);
         if(!result) {

@@ -3,14 +3,19 @@ package com.bivc.cimsmgs.dao.hibernate;
 import com.bivc.cimsmgs.commons.Filter;
 import com.bivc.cimsmgs.dao.AvtoZayavDAO;
 import com.bivc.cimsmgs.db.Usr;
+import com.bivc.cimsmgs.db.ky.Avto;
 import com.bivc.cimsmgs.db.ky.AvtoZayav;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -35,7 +40,7 @@ public class AvtoZayavDAOHib extends GenericHibernateDAO<AvtoZayav, Long> implem
 //        crit.add(Restrictions.eq("transport", "A"));
         crit.addOrder(Order.desc("dattr"));
 
-//        applyFilter(filters, crit, locale);
+        applyFilter(filters, crit, locale);
 
         return listAndCast(crit);
     }
@@ -86,7 +91,7 @@ public class AvtoZayavDAOHib extends GenericHibernateDAO<AvtoZayav, Long> implem
 
         crit.setProjection(Projections.countDistinct("hid"));
 
-//        applyFilter(filters, crit, locale);
+        applyFilter(filters, crit, locale);
 
         return (Long) crit.uniqueResult();
     }
@@ -97,5 +102,31 @@ public class AvtoZayavDAOHib extends GenericHibernateDAO<AvtoZayav, Long> implem
         crit.add(Restrictions.in("hid", ids));
         return listAndCast(crit);
     }
+
+    private void applyFilter(List<Filter> filters, Criteria crit, Locale locale) {
+        if(CollectionUtils.isNotEmpty(filters)){
+            for(Filter filter: filters){
+                if(StringUtils.isNotBlank(filter.getProperty()) && StringUtils.isNotBlank(filter.getValue())){
+                    Date date;
+                    switch (Avto.FilterFields.valueOf(filter.getProperty().toUpperCase())){
+                        case NO_AVTO:
+                            crit.add(Restrictions.ilike(Avto.FilterFields.NO_AVTO.getName(), StringUtils.trim(filter.getValue()), MatchMode.ANYWHERE));
+                            break;
+                        case NO_TRAIL:
+                            crit.add(Restrictions.ilike(Avto.FilterFields.NO_TRAIL.getName(), StringUtils.trim(filter.getValue()), MatchMode.ANYWHERE));
+                            break;
+                        case DRIVER_FIO:
+                            crit.add(Restrictions.ilike(Avto.FilterFields.DRIVER_FIO.getName(), StringUtils.trim(filter.getValue()), MatchMode.ANYWHERE));
+                            break;
+                        case NKON:
+                            crit.createAlias("konts", "konts").add(Restrictions.ilike("konts.nkon", StringUtils.trim(filter.getValue()), MatchMode.ANYWHERE));
+                            break;
+                    }
+                }
+
+            }
+        }
+    }
+
 
 }

@@ -5,6 +5,10 @@ import com.bivc.cimsmgs.commons.Response;
 import com.bivc.cimsmgs.dto.ky.ReportParamsDTO;
 
 public class ParamsForm extends ReportAction {
+
+    public ParamsForm() throws Exception {
+    }
+
     @Override
     public String execute(Report_A report) throws Exception {
         ReportParamsDTO dto = new ReportParamsDTO();

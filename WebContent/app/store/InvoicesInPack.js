@@ -1,5 +1,11 @@
 Ext.define('TK.store.InvoicesInPack', {
     extend: 'Ext.data.Store',
+
+    requires: [
+        'TK.Utils',
+        'TK.model.Invoice'
+    ],
+
     model: 'TK.model.Invoice',
     pageSize: 20,
     proxy: {

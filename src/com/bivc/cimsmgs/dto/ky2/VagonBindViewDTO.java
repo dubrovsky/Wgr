@@ -14,7 +14,7 @@ public class VagonBindViewDTO implements Comparable<VagonBindViewDTO> {
     private String nvag;
     private Otpravka otpravka;
     private BigDecimal podSila;
-    private Long masTar;
+    private BigDecimal masTar;
     private Integer kolOs;
     private String sobstv;
     private TreeSet<GruzBindViewDTO> gruzs = new TreeSet<>();
@@ -68,11 +68,11 @@ public class VagonBindViewDTO implements Comparable<VagonBindViewDTO> {
         this.podSila = podSila;
     }
 
-    public Long getMasTar() {
+    public BigDecimal getMasTar() {
         return masTar;
     }
 
-    public void setMasTar(Long masTar) {
+    public void setMasTar(BigDecimal masTar) {
         this.masTar = masTar;
     }
 

@@ -1,6 +1,13 @@
 Ext.define('TK.model.ky.KontInAvtoOut', {
     extend: 'TK.model.ky.KontInTranspOut',
 
+    requires: [
+        'TK.model.ky.AvtoOut',
+        'TK.model.ky.GruzInAvtoOut',
+        'TK.model.ky.PlombInAvtoOut'
+    ],
+
+
     fields: [
         {name:'avtoOut.hid', type:'int', useNull:true}
     ],

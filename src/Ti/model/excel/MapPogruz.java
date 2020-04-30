@@ -1,4 +1,4 @@
-package Ti.model;
+package Ti.model.excel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Класс MapPogruz используется для отображения модели 1 записи списка в карте перегзрузки
  */
-public class MapPogruz implements Serializable {
+public class MapPogruz extends XlsDefaultModel implements Serializable {
 
     /**
      * ID cimsmgs

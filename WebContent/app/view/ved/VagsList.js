@@ -7,9 +7,10 @@ Ext.define('TK.view.ved.VagsList', {
     requires: [
         'Ext.grid.plugin.CellEditing',
         'Ext.ux.grid.FiltersFeature',
-        'TK.store.VedSmgses',
-        'TK.view.ved.MenuPart'
-        // 'Ext.form.field.Date',
+        'TK.Validators',
+        'TK.model.Ved',
+        'TK.model.VedVag'
+// 'Ext.form.field.Date',
         // 'Ext.form.field.Number',
         // 'Ext.form.field.Text',
         // 'Ext.form.field.TextArea',
@@ -25,6 +26,9 @@ Ext.define('TK.view.ved.VagsList', {
         clicksToEdit: 1,
         pluginId: 'cellplugin'
     }],
+    selModel: {
+        selType: 'cellmodel'
+    },
 
     features: [{
         ftype: 'filters'

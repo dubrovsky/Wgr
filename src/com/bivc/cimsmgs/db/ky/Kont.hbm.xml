@@ -78,6 +78,9 @@
         <property name="altered" type="timestamp" update="false">
             <column length="7" name="ALTERED"/>
         </property>
+        <property name="sid" type="java.lang.Long">
+            <column length="14" name="SID"/>
+        </property>
         <property name="nkon" type="string">
             <column length="14" name="NKON"/>
         </property>
@@ -94,14 +97,14 @@
             <column length="7" name="DYARD"/>
         </property>
 
-        <property name="massa_tar" type="java.lang.Long">
-            <column precision="20" scale="0" name="MASSA_TAR"/>
+        <property name="massa_tar" type="java.math.BigDecimal">
+            <column precision="20" scale="3" name="MASSA_TAR"/>
         </property>
         <property name="massa_brutto" type="java.math.BigDecimal">
-            <column precision="20" scale="0" name="MASSA_BRUTTO"/>
+            <column precision="20" scale="3" name="MASSA_BRUTTO"/>
         </property>
         <property name="massa_brutto_all" type="java.math.BigDecimal">
-            <column precision="20" scale="0" name="MASSA_BRUTTO_ALL"/>
+            <column precision="20" scale="3" name="MASSA_BRUTTO_ALL"/>
         </property>
         <property name="pod_sila" type="java.math.BigDecimal">
             <column precision="20" scale="2" name="POD_SILA"/>
@@ -153,8 +156,8 @@
         <property name="poruz" type="java.lang.Boolean">
             <column name="PORUZ" precision="1" scale="0"/>
         </property>
-        <property name="sort" type="java.lang.Byte">
-            <column name="SORT" precision="2" scale="0"/>
+        <property name="sort" type="java.lang.Integer">
+            <column name="SORT" precision="3" scale="0"/>
         </property>
 
         <property name="ky_x" type="java.lang.Long">
@@ -174,11 +177,11 @@
         <property name="prim" type="string">
             <column length="128" name="PRIM"/>
         </property>
-        <property name="punkt_otpr" type="string">
-            <column length="96" name="PUNKT_OTPR"/>
+        <property name="zayav_in" type="string">
+            <column length="96" name="ZAYAV_IN"/>
         </property>
-        <property name="punkt_nazn" type="string">
-            <column length="96" name="PUNKT_NAZN"/>
+        <property name="zayav_out" type="string">
+            <column length="96" name="ZAYAV_OUT"/>
         </property>
         <property name="isZayav" type="byte">
             <column length="1" name="IS_ZAJAV"/>

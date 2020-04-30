@@ -37,8 +37,8 @@ public class EDIConvertor97A2015 extends EDIConvertor {
 
 
   static {
-    loadingMap.put((byte)1, "4");
-    loadingMap.put((byte)2, "1");
+    loadingMap.put((byte)1, "4");   // отправителем
+    loadingMap.put((byte)2, "1");   // перевозчиком
 
     otmksobMap3.put("П", (byte) 3);
     otmksobMap3.put("О", (byte) 2);
@@ -479,7 +479,7 @@ public class EDIConvertor97A2015 extends EDIConvertor {
           text += "MEA+AAH+G+KGM:" + format(mbrt.setScale(3, BigDecimal.ROUND_HALF_UP), 18) + nl;
         }
       }
-      else if (isManyGruz) {
+      else {
         BigDecimal mnet = csgOb.getMassa();
         if (mnet == null) {
           mnet = BigDecimal.ZERO;

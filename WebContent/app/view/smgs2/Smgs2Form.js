@@ -54,6 +54,7 @@ Ext.define('TK.view.smgs2.Smgs2Form', {
             {xtype: 'hidden', name: 'smgs.btlc_status', itemId: 'smgs.btlc_status'},
             {xtype: 'hidden', name: 'smgs.tdg_status1', itemId: 'smgs.tdg_status1'},
             {xtype: 'hidden', name: 'smgs.g25', itemId: 'smgs.g25'},
+            {xtype:'hidden', name:'smgs.messCount', itemId:'smgs.messCount'},
             // {xtype:'hidden', name:'smgs.g17', itemId:'smgs.g17'},
             // {xtype: 'hidden', name: 'smgs.g171', itemId: 'smgs.g171'},
             {xtype: 'hidden', name: 'smgs.g12', itemId: 'smgs.g12'},
@@ -287,7 +288,7 @@ Ext.define('TK.view.smgs2.Smgs2Form', {
             },
 
             // 26. Дата заключения договора перевозки
-            {x: 60, y: 1511, xtype: 'datefield', name: 'smgs.g281', itemId: 'smgs.g281',format: 'm.d.Y', width: 90},
+            {x: 60, y: 1511, xtype: 'datefield', name: 'smgs.g281', itemId: 'smgs.g281',format: 'd.m.Y', width: 90},
 
             // 28. Отметки для выполнения таможенных и других административных формальностей
             {
@@ -296,7 +297,7 @@ Ext.define('TK.view.smgs2.Smgs2Form', {
                 xtype: 'textarea',
                 name: 'smgs.g26',
                 itemId: 'smgs.g26',
-                maxLength: 128,
+                maxLength: 1024,
                 width: 610,
                 height: 180
             },
@@ -1215,7 +1216,7 @@ Ext.define('TK.view.smgs2.Smgs2Form', {
                                 itemId: 'dog',
                                 items:[
                                     {xtype: 'textfield',itemId: "nDog",  maxLength: 20,flex:5},
-                                    {xtype: 'datefield',itemId: "datDog",format: 'm.d.Y', flex: 3}
+                                    {xtype: 'datefield',itemId: "datDog",format: 'd.m.Y', flex: 3}
                                 ]
                             },
                             {xtype: 'hidden', itemId: "sort"},

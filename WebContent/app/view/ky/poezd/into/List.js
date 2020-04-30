@@ -1,6 +1,9 @@
 Ext.define('TK.view.ky.poezd.into.List', {
     extend:'TK.view.ky.poezd.BasePoezdList',
     alias:'widget.kypoezdintolist',
+
+    requires: [],
+
     itemId:'kypoezdlist',
 
     buildColumns:function (config) {

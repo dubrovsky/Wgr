@@ -5,6 +5,7 @@ import com.bivc.cimsmgs.commons.Response;
 import com.bivc.cimsmgs.dao.KontGruzHistoryDAO;
 import com.bivc.cimsmgs.dao.NsiClientDAO;
 import com.bivc.cimsmgs.dao.PoezdDAO;
+import com.bivc.cimsmgs.dao.VagonHistoryDAO;
 import com.bivc.cimsmgs.db.ky.Poezd;
 import com.bivc.cimsmgs.doc2doc.orika.Mapper;
 import com.bivc.cimsmgs.dto.ky2.PoezdDTO;
@@ -65,7 +66,7 @@ public class PoezdVgCtGr_A extends CimSmgsSupport_A {
         Poezd poezd = poezdDAO.findById(dto.getHid(), false);
         final Map<String, List<?>> contGruz4History = poezd.updateVags(dto.getVagons(), mapper, clientDAO);
         poezd = poezdDAO.makePersistent(poezd);
-        saveContGruzHistory(contGruz4History, kontGruzHistoryDAO, POEZD);
+        saveVagContGruzHistory(contGruz4History, kontGruzHistoryDAO, POEZD, vagonHistoryDAO, getUser().getUsr().getUn(), null);
         poezdDAO.flush(); // to get ids
 
         setJSONData(
@@ -90,6 +91,8 @@ public class PoezdVgCtGr_A extends CimSmgsSupport_A {
     private PoezdDAO poezdDAO;
     @Autowired
     private KontGruzHistoryDAO kontGruzHistoryDAO;
+    @Autowired
+    private VagonHistoryDAO vagonHistoryDAO;
     @Autowired
     private NsiClientDAO clientDAO;
 

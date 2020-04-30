@@ -1,5 +1,10 @@
 Ext.define('TK.store.ky.Yards', {
     extend: 'Ext.data.Store',
+
+    requires: [
+        'TK.model.ky.Yard'
+    ],
+
     model: 'TK.model.ky.Yard',
     remoteFilter: true,
     pageSize: 20/*,

@@ -2,6 +2,11 @@ Ext.define('TK.view.ky.yard.List', {
     extend: 'TK.view.ky.BaseList',
     alias:'widget.kyyardlist',
 
+    requires: [
+        'TK.Utils'
+    ],
+
+
     buildColumns:function (config) {
         config.columns = {
             items:[

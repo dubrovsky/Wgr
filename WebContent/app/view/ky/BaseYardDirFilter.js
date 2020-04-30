@@ -51,7 +51,7 @@ Ext.define('TK.view.ky.BaseYardDirFilter', {
                 ],
                 buttons: [
                     {
-                        text: 'Фильтровать',
+                        text: '!Фильтровать',
                         formBind: true,
                         disabled: true,
                         action: 'applyFilterYardDir'

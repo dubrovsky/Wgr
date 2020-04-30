@@ -50,6 +50,11 @@ public class ReportService {
         cellIndex++;
 
         cell = row.createCell(cellIndex);
+        cell.setCellValue("Klient");
+        cell.setCellStyle(style2);
+        cellIndex++;
+
+        cell = row.createCell(cellIndex);
         cell.setCellValue("Data\nwjazdu");
         cell.setCellStyle(style2);
         cellIndex++;
@@ -167,7 +172,7 @@ public class ReportService {
         rowIndex++;
 
         for (int i = 0; i < st.getRowCount(); i++) {
-            // HID;NVAG1;NPPR1;DPRB;NKON;TYPE;VID;GRUZOTPR;KONT_PLOMB;MASSA_TAR;POD_SILA;MASSA_BRUTTO;KONT_POSITION;DOTP;KOLEYA;NVAG2;DRIVER_NM
+            // HID;NVAG1;NPPR1;DPRB;NKON;TYPE;VID;GRUZOTPR;KONT_PLOMB;MASSA_TAR;POD_SILA;MASSA_BRUTTO;KONT_POSITION;DOTP;KOLEYA;NVAG2;DRIVER_FIO
             //  st.getTxt(i, "HID");
             //  st.getObject(i, "HID");
             cellIndex = 0;
@@ -180,6 +185,12 @@ public class ReportService {
             cellIndex++;
 
             // B
+            cell = row.createCell(cellIndex);
+            cell.setCellValue(st.getTxt(i, "GRUZOTPR"));
+            cell.setCellStyle(style3);
+            cellIndex++;
+
+            // C
             Date dprb = (Date) st.getObject(i, "DPRB");
             cell = row.createCell(cellIndex);
             String date = dprb != null ? dateFormat.format(dprb) : "";
@@ -187,80 +198,83 @@ public class ReportService {
             cell.setCellStyle(style3);
             cellIndex++;
 
-            // C
+            // D
             cell = row.createCell(cellIndex);
             cell.setCellValue(st.getTxt(i, "NVAG1"));
             cell.setCellStyle(style3);
             cellIndex++;
 
-            // D
+            // E
             cell = row.createCell(cellIndex);
             cell.setCellValue(st.getTxt(i, "NPPR1"));
             cell.setCellStyle(style3);
             cellIndex++;
 
-            // E
+            // F
             cell = row.createCell(cellIndex);
             date = dprb != null ? timeFormat.format(dprb) : "";
             cell.setCellValue(date);
             cell.setCellStyle(style3);
             cellIndex++;
 
-            // F
+            // G
             cell = row.createCell(cellIndex);
             cell.setCellValue(st.getTxt(i, "NKON"));
             cell.setCellStyle(style3);
             cellIndex++;
 
-            // G
+            // H
             cell = row.createCell(cellIndex);
             cell.setCellValue(st.getTxt(i, "TYPE"));
             cell.setCellStyle(style3);
             cellIndex++;
 
-            // H
+            // I
             cell = row.createCell(cellIndex);
             cell.setCellValue(st.getTxt(i, "VID"));
             cell.setCellStyle(style3);
             cellIndex++;
 
-            // I
-            cell = row.createCell(cellIndex);
-            cell.setCellValue(st.getTxt(i, "GRUZOTPR"));
-            cell.setCellStyle(style3);
-            cellIndex++;
-
             // J
             cell = row.createCell(cellIndex);
-            cell.setCellValue(st.getTxt(i, "KONT_PLOMB"));
+            cell.setCellValue(st.getTxt(i, "DRIVER_FIO"));
             cell.setCellStyle(style3);
             cellIndex++;
 
             // K
             cell = row.createCell(cellIndex);
-            cell.setCellValue(st.getTxt(i, "MASSA_TAR"));
+            cell.setCellValue(st.getTxt(i, "KONT_PLOMB"));
             cell.setCellStyle(style3);
             cellIndex++;
 
             // L
+            Number nval = (Number) st.getObject(i, "MASSA_TAR");
             cell = row.createCell(cellIndex);
-            cell.setCellValue(st.getTxt(i, "POD_SILA"));
+            if(nval != null)  cell.setCellValue(nval.doubleValue());
             cell.setCellStyle(style3);
             cellIndex++;
 
             // M
+            nval = (Number) st.getObject(i, "POD_SILA");
             cell = row.createCell(cellIndex);
-            cell.setCellValue(st.getTxt(i, "MASSA_BRUTTO"));
+            if(nval != null) cell.setCellValue(nval.doubleValue());
             cell.setCellStyle(style3);
             cellIndex++;
 
             // N
+            nval =(Number) st.getObject(i, "MASSA_BRUTTO");
+            cell = row.createCell(cellIndex);
+            if(nval != null) cell.setCellValue(nval.doubleValue());
+            cell.setCellStyle(style3);
+            cellIndex++;
+
+            // O
             cell = row.createCell(cellIndex);
             cell.setCellValue(st.getTxt(i, "KONT_POSITION"));
             cell.setCellStyle(style3);
             cellIndex++;
 
-            // O
+            // P
             Date dotp = (Date) st.getObject(i, "DOTP");
             cell = row.createCell(cellIndex);
             date = dotp != null ? dateFormat.format(dotp) : "";
@@ -268,25 +282,25 @@ public class ReportService {
             cell.setCellStyle(style3);
             cellIndex++;
 
-            // P
+            // Q
             cell = row.createCell(cellIndex);
             cell.setCellValue(st.getTxt(i, "KOLEYA"));
             cell.setCellStyle(style3);
             cellIndex++;
 
-            // Q
+            // R
             cell = row.createCell(cellIndex);
             cell.setCellValue(st.getTxt(i, "NVAG2"));
             cell.setCellStyle(style3);
             cellIndex++;
 
-            // R
+            // S
             cell = row.createCell(cellIndex);
-            cell.setCellValue(st.getTxt(i, "DRIVER_NM"));
+            cell.setCellValue(st.getTxt(i, "DRIVER_FIO2"));
             cell.setCellStyle(style3);
             cellIndex++;
 
-            // S
+            // T
             cell = row.createCell(cellIndex);
             date = dotp != null ? timeFormat.format(dotp) : "";
             cell.setCellValue(date);
@@ -324,16 +338,17 @@ public class ReportService {
         sheet.autoSizeColumn((short) 17);
         sheet.autoSizeColumn((short) 18);
         sheet.autoSizeColumn((short) 19);
+        sheet.autoSizeColumn((short) 20);
 
         return wb;
     }
 
-    private String dayInterval(Date d1, Date d2) throws Exception {
-        if(d1 == null || d2 == null) return "";
+    private long dayInterval(Date d1, Date d2) throws Exception {
+        if(d1 == null || d2 == null) return 0;
         int ro = TimeZone.getDefault().getRawOffset();
         long dt1 = (d1.getTime() + ro) / (1000 * 60 * 60 * 24);
         long dt2 = (d2.getTime() + ro) / (1000 * 60 * 60 * 24);
-        return (dt2 - dt1 + 1) + " ";
+        return (dt2 - dt1 + 1);
     }
 
 /*

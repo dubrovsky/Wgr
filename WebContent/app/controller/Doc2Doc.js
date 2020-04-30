@@ -17,30 +17,43 @@ Ext.define('TK.controller.Doc2Doc', {
         'TK.Validators',
         'TK.model.VgCtGrTreeNode',
         'TK.view.edit.UploadDoc9FormWin',
+        'TK.view.edit.UploadGrafCopiesWin',
         'TK.view.edit.UploadFormWin',
         'TK.view.edit.UploadPogruzListFormWin',
+        'TK.view.edit.UploadGrafCopiesPart2Win',
         'TK.view.pogruz.Map2BaseSelectForm',
         'TK.view.pogruz.PoezdSelectForm'
     ],
 
-    refs: [{
-        ref: 'center',
-        selector: 'viewport > tabpanel'
-    },{
-        ref: 'menutree',
-        selector: 'viewport > menutree'
-    },{
-        ref: 'uploadDoc9Form',
-        selector: 'uploadDoc9FormWin > form'
-    },{
-        ref: 'uploadPogruzListForm',
-        selector: 'uploadPogruzListFormWin > form'
-    }, {ref: 'vgCtGrTreeWin',
-        selector: 'vgCtGrTreeFormWin'
-    }, {
-        ref: 'vgCtGrTree',
-        selector: 'vgCtGrTreeFormWin > treepanel'
-    }
+    refs: [
+        {
+            ref: 'center',
+            selector: 'viewport > tabpanel'
+        },{
+            ref: 'menutree',
+            selector: 'viewport > menutree'
+        },{
+            ref: 'uploadGrafCopiesFormPart2',
+            selector: 'uploadGrafCopiesFormPart2Win > form'
+        },{
+            ref: 'uploadGrafCopiesForm',
+            selector: 'uploadGrafCopiesFormWin > form'
+        },{
+            ref: 'uploadDoc9Form',
+            selector: 'uploadDoc9FormWin > form'
+        },{
+            ref: 'uploadPogruzListForm',
+            selector: 'uploadPogruzListFormWin > form'
+        }, {ref: 'vgCtGrTreeWin',
+            selector: 'vgCtGrTreeFormWin'
+        }, {
+            ref: 'vgCtGrTree',
+            selector: 'vgCtGrTreeFormWin > treepanel'
+        },
+        {
+            ref:'grid',
+            selector: 'viewport > tabpanel > grid'
+        }
     ],
     init: function() {
         this.control({
@@ -65,11 +78,17 @@ Ext.define('TK.controller.Doc2Doc', {
             'smgs2 menuitem[action="contsListSmgs2"]': {
                 click: this.onContListOnForm
             },
-            'vgCtGrTreeFormWin button[action="uploadVagsXLS"]': {
-                click: this.onUploadVagsContList
-            },
             'uploadFormWin button[action="uploadXLSvags"]': {
                 click: this.onUploadXLSvags
+            },
+            'uploadFormWin button[action="uploadAviso2smgsXLS"]': {
+                click: this.onUploadAviso2smgsXLS
+            },
+            'uploadFormWin button[action="uploadInvXlsCargo"]': {
+                click: this.onUploadInvoiceXlsCargo
+            },
+            'uploadFormWin button[action="importInvXls"]': {
+                click: this.onUploadInvoiceXls
             },
             'uploadFormWin button[action="downloaduploadContsXLS"]': {
                 click: this.onDownloadTpl
@@ -77,17 +96,35 @@ Ext.define('TK.controller.Doc2Doc', {
             'uploadFormWin button[action="downloaduploadVagsXLS"]': {
                 click: this.onDownloadTpl
             },
+            'uploadFormWin button[action="downloadaviso2smgsXLS"]': {
+                click: this.onDownloadTpl
+            },
+            'uploadFormWin button[action="downloaduploadInvoiceXlsCargo"]': {
+                click: this.onDownloadTpl
+            },
+            'uploadFormWin button[action="downloadimportInvoiceXls"]': {
+                click: this.onDownloadTpl
+            },
             'vgCtGrTreeFormWin button[action="uploadContsXLS"]': {
-                click: this.onUploadVagsContList
+                click: this.onUploadXLSfile
+            },
+            'vgCtGrTreeFormWin button[action="uploadVagsXLS"]': {
+                click: this.onUploadXLSfile
+            },
+            'invoice button[action="uploadInvoiceXlsCargo"]': {
+                click: this.onUploadXLSfile
             },
             'cimsmgslist button[action="doc2doc"] menuitem[action="dopList"]': {
                 click: this.dopListOnList
             },
-            'cimsmgslist button[action="doc2doc"] menuitem[action="uploadPogruzList"]': {
+            'docslist button[action="doc2doc"] menuitem[action="uploadPogruzList"]': {
                 click: this.uploadPogruzList
             },
-            'cimsmgslist button[action="doc2doc"] menuitem[action="uploadPogruzListTrain"]': {
+            'docslist button[action="doc2doc"] menuitem[action="uploadPogruzListTrain"]': {
                 click: this.uploadPogruzListTrain
+            },
+            'docslist button[action="doc2doc"] menuitem[action="uploadGrafCopies"]': {
+                click: this.uploadGrafCopies
             },
             'cimsmgslist button[action="doc2doc"] menuitem[action="uploadCimSmgsDocs9"]': {
                 click: this.uploadCimSmgsDocs9OnList
@@ -98,14 +135,113 @@ Ext.define('TK.controller.Doc2Doc', {
             'uploadDoc9FormWin > form > trigger[name="cimSmgsDoc.ncas"]': {
                 ontriggerclick: this.onNcasClick
             },
+            // 'uploadGrafCopiesFormWin field[name="type"]': {
+            //     change: this.onUploadTypeChange
+            // },
             'uploadDoc9FormWin button[action="upload"]': {
                 click: this.onUploadDoc9
+            },
+            'uploadGrafCopiesFormWin button[action="upload"]': {
+                click: this.onUploadGrafCopies
+            },
+            'uploadGrafCopiesFormPart2Win button[action="upload"]': {
+                click: this.onUploadGrafCopiesPart2
             },
             'uploadPogruzListFormWin button[action="upload"]': {
                 click: this.onUploadDocMapPeregruz
             }
         });
     },
+    onUploadGrafCopiesPart2: function(btn) {
+        var form = this.getUploadGrafCopiesFormPart2(),
+            store = form.down('grid').getStore(),
+            params = [];
+        store.each(function (record) {
+            params.push({'id': record.get('id'), 'nkon': record.get('nkon')});
+        }, this);
+        this.getUploadGrafCopiesFormPart2().setLoading(true);
+        Ext.Ajax.request({
+            url: 'Doc2Doc_uploadGrafCopiesPart2.do',
+            params:  {'name' : Ext.encode(params), 'search.routeId': this.getMenutree().lastSelectedLeaf.id.split('_')[2], 'search.docType': this.getMenutree().lastSelectedLeaf.id.split('_')[3]},
+            scope: this,
+            success: function (response) {
+                Ext.Msg.show({
+                    title: this.successMsgTitle,
+                    msg: 'Ok',
+                    buttons: Ext.Msg.OK,
+                    icon: Ext.Msg.INFO,
+                    scope: this,
+                    fn: function () {
+                        setTimeout(this.reloadGrid.bind(this), 1000);
+                        this.getUploadGrafCopiesFormPart2().up('window').close();
+                    }
+                });
+            },
+            failure: function (response) {
+                this.getUploadGrafCopiesFormPart2().up('window').close();
+                TK.Utils.makeErrMsg(response, 'Error...');
+            }
+        });
+    },
+    onUploadGrafCopies: function(btn){
+        var form = this.getUploadGrafCopiesForm().getForm();
+        if(form.isValid()){
+            this.getUploadGrafCopiesForm().setLoading(true);
+            form.submit({
+                url: 'Doc2Doc_uploadGrafCopies.do',
+                scope:this,
+                success: function(form, action) {
+                    this.getUploadGrafCopiesForm().setLoading(false);
+                    var msg = Ext.decode(action.response.responseText)['msg'];
+                    if (msg == null || msg.length === 0) {
+                        Ext.Msg.show({
+                            title: this.successMsgTitle,
+                            msg: 'Ok',
+                            buttons: Ext.Msg.OK,
+                            icon: Ext.Msg.INFO,
+                            scope: this,
+                            fn: function () {
+                                this.getUploadGrafCopiesForm().up('window').close();
+                            }
+                        });
+                    } else {
+                        this.getUploadGrafCopiesForm().up('window').close();
+                        var win = Ext.widget('uploadGrafCopiesFormPart2Win'),
+                            store = win.down('#uploadGraf').getStore();
+                        Ext.Array.each(msg, function (file) {
+                            store.add({fileName: file.file, nkon: '', id: file.id})
+                        });
+                        win.show();
+                    }
+                    setTimeout(this.reloadGrid.bind(this), 1000);
+                },
+                failure: function (form, action) {
+                    this.getUploadGrafCopiesForm().setLoading(false);
+                    TK.Utils.makeErrMsg(action.response, this.errorMsg);
+                }
+            });
+        }
+    },
+
+    reloadGrid: function () {
+        this.getCenter().down('grid').store.reload();
+    },
+
+    // onUploadTypeChange: function (radio, newVal) {
+    //     if (newVal && radio.itemId === 'grafTypeNew')
+    //         radio.up('form').down('#poezdNum').setDisabled(false);
+    //     if (newVal && radio.itemId === 'grafTypeRefresh')
+    //         radio.up('form').down('#poezdNum').setDisabled(true);
+    //
+    //
+    // },
+    uploadGrafCopies: function (btn) {
+        var win = Ext.widget('uploadGrafCopiesFormWin');
+        this.getUploadGrafCopiesForm().getForm().findField('search.routeId').setValue(this.getMenutree().lastSelectedLeaf.id.split('_')[2]);
+        this.getUploadGrafCopiesForm().getForm().findField('search.docType').setValue(this.getMenutree().lastSelectedLeaf.id.split('_')[3]);
+        win.show();
+    },
+
     onSmgs2Invoice: function(btn){
         var list = btn.up('grid'),
             selectedModels,
@@ -412,6 +548,19 @@ Ext.define('TK.controller.Doc2Doc', {
             {
                 data['docType']='CONTS_TEMPLATE_CS2.xls';
             }break;
+            case 'downloadaviso2smgsXLS':
+            {
+                data['docType']='AVISO2SMGS_TEMPLATE_CS2.xls';
+            }break;
+            case 'downloaduploadInvoiceXlsCargo':
+            {
+                data['docType']='INVOICE_CARGO_TEMPLATE.xls';
+            }break;
+            case 'downloadimportInvoiceXls':
+            {
+                data['docType']='INVOICE_TEMPLATE.xls';
+            }break;
+
         }
         this.contsList(data);
     },
@@ -530,19 +679,40 @@ Ext.define('TK.controller.Doc2Doc', {
     },
     /**
      * Shows train find window to upload Pogruz list
-     * @param btn
+     * @param btn brn caller
+     * @param opts options
      */
-    uploadPogruzListTrain:function(btn)
+    uploadPogruzListTrain:function(btn,opts)
     {
-        var win= Ext.create('TK.view.pogruz.PoezdSelectForm');
-        var routeId=btn.up('docslist').getStore().getAt(0).get('routeId');
-        var type=btn.up('docslist').getStore().getAt(0).get('type');
+        var win= Ext.create('TK.view.pogruz.PoezdSelectForm'),
+            routeId=btn.up('docslist').getStore().getAt(0).get('routeId'),
+            type=btn.up('docslist').getStore().getAt(0).get('type'),hid;
+        win.parentStore=btn.up('docslist').getStore();
+        if(btn.up('docslist').selModel.getLastSelected())
+            hid = btn.up('docslist').selModel.getLastSelected().data['hid'];
+        if(opts['aviso2doc'])
+        {
+            switch (type)
+            {
+                case '11':type='12';break;
+            }
+        }
 
         win.parent=this;
         win.routeId=routeId;
         win.type=type;
-        var btn= Ext.ComponentQuery.query('#poezdSeltopTBar > #buttonTrSrch')[0];
-        btn.fireHandler();
+        win.hid=hid;
+        win.opts=opts;
+        if(opts['mode']&&typeof opts['mode']==='string') {
+            win.mode = opts['mode'];
+            if(opts['task'])
+                win.task = opts['task'];
+        }
+        else
+            win.mode='uploadPogruzList';
+
+        var btn2fire= Ext.ComponentQuery.query('#poezdSeltopTBar > #buttonTrSrch')[0];
+        btn2fire.fireHandler();
         // win.localStore.load();
         win.show();
     },
@@ -606,14 +776,74 @@ Ext.define('TK.controller.Doc2Doc', {
      * создание окна загрузки XLS файлами c контейнерами/вагонами
      * @param btn
      */
-    onUploadVagsContList:function (btn) {
-
-        var win = Ext.widget('uploadFormWin');
+    onUploadXLSfile:function (btn) {
+        var win = Ext.widget('uploadFormWin'),
+            downloadTplActions=[
+                'uploadContsXLS','uploadVagsXLS','aviso2smgsXLS','uploadInvoiceXlsCargo','importInvoiceXls'
+            ];
         win.down('form').getComponent('uploadField').validator=TK.Validators.validExcel;
         win.down('form').getComponent('uploadName').setValue(btn.action);
-        win.dockedItems.items[0].getComponent('savebtn').action='uploadXLSvags';
+        win.actionBtn=btn;
 
-        if(btn.action==='uploadContsXLS'||btn.action==='uploadVagsXLS')
+        switch (btn.action) {
+            //загружаем XLS контейнерной/вагонной перевозки
+            case 'uploadContsXLS':
+            case 'uploadVagsXLS':
+            {
+                win.dockedItems.items[0].getComponent('savebtn').action='uploadXLSvags';
+            }break;
+            case  'aviso2smgsXLS': // загружаем XLS c данными для генерации СМГС из шаблона
+            {
+                win.dockedItems.items[0].getComponent('savebtn').action='uploadAviso2smgsXLS';
+            }break;
+            case  'uploadInvoiceXlsCargo': // загружаем XLS c грузами для добавления в Invoice
+            {
+                win.dockedItems.items[0].getComponent('savebtn').action='uploadInvXlsCargo';
+            }break;
+            case  'importInvoiceXls': // загружаем XLS c invoice
+            {
+                var doc= this.getMenutree().lastSelectedLeaf.id.split('_')[3],
+                    routeId = this.getMenutree().lastSelectedLeaf.id.split('_')[2],
+                    cimsmgsForm,packHid,packHidtmp,smgs2Form,cimHidForm;
+                if(doc!=='invoicelist') {
+                    var cimsmgs=Ext.ComponentQuery.query('viewport > tabpanel >cimsmgs')[0];
+                    // проверяем есть ли закладка cimsmgs
+                    if(cimsmgs) {
+                        cimsmgsForm =cimsmgs.getForm();
+                        packHid=cimsmgsForm.findField('smgs.packDoc.hid').value;
+                    }
+                    // проверяем есть ли закладка smgs2
+                    var smgs2=Ext.ComponentQuery.query('viewport > tabpanel >smgs2')[0];
+                    if(smgs2&&!packHid) {
+                        smgs2Form = smgs2.getForm();
+                        packHid=smgs2Form.findField('smgs.packDoc.hid').value;
+                    }
+                    // проверяем есть ли закладка cim
+                    var cim=Ext.ComponentQuery.query('viewport > tabpanel >cim')[0];
+                    if(cim&&!packHid) {
+                        cimHidForm = cim.getForm();
+                        packHid=cimsmgsForm.findField('smgs.packDoc.hid').value;
+                    }
+                    if(packHid)
+                        win.down('form').getComponent('hid').setValue(packHid);
+                    else
+                    {
+                        Ext.Msg.show({
+                            title: this.titleWarning,
+                            msg: this.msgSaveBeforeImport,
+                            buttons: Ext.Msg.OK,
+                            icon: Ext.Msg.INFO
+                        });
+                        return;
+                    }
+                }
+                win.down('form').getComponent('query').setValue(routeId);
+                win.dockedItems.items[0].getComponent('savebtn').action='importInvXls';
+            }break;
+        }
+
+        // скачать шаблон документа
+        if( downloadTplActions.indexOf(btn.action)!==-1)
         {
             win.dockedItems.items[0].getComponent('downloadTpl').hidden=false;
             win.dockedItems.items[0].getComponent('downloadTpl').action='download'+btn.action;
@@ -628,7 +858,7 @@ Ext.define('TK.controller.Doc2Doc', {
      */
     onUploadXLSvags:function(btn)
     {
-        var url='Doc2Doc_uploadXLSvags.do';
+        var url='Doc2Doc_uploadXLS.do';
         var form = btn.up().up().down('form');
         if(form.isValid()){
             form.setLoading(true);
@@ -640,6 +870,125 @@ Ext.define('TK.controller.Doc2Doc', {
                         vagsConts=response['rows'],type=response['type'];
 
                     this.importContsVagsFromXLS(vagsConts,type);
+                    form.setLoading(false);
+                    form.up('window').close();
+                },
+                failure: function (form2, action) {
+                    form.setLoading(false);
+                    TK.Utils.makeErrMsg(action.response, this.errorMsg);
+                }
+            });
+        }
+    },
+    /**
+     * загрузка XLS файла с доукументами и слияние его с шаблоном СМГС
+     * @param btn кнопка вызова
+     */
+    onUploadAviso2smgsXLS:function(btn)
+    {
+        var grid=this.getGrid(),
+            record=this.getGrid().selModel.getSelection()[0],
+            params={};
+        Ext.apply(params, {'search.hid': record.get('hid'),'search.type': record.get('type'), 'status': '7', 'search.routeId':record.get('routeId')});
+        record = grid.selModel.getLastSelected();
+        var data = record.data;
+        var url='Doc2Doc_uploadXLS.do';
+        var form = btn.up().up().down('form');
+        if(form.isValid()){
+            form.setLoading(true);
+            form.submit({
+                url: url,
+                scope:this,
+                params: params,
+                success: function(form2, action) {
+                    this.getCenter().getEl().unmask();
+                    form.setLoading(false);
+                    var response=action.response;
+                    Ext.Msg.show({
+                        title: this.successMsgTitle,
+                        msg: this.processed+' '+Ext.decode(response.responseText)['result']+' '+this.docs,
+                        buttons: Ext.Msg.OK,
+                        icon: Ext.Msg.INFO,
+                        fn: function(){
+                            grid.getSelectionModel().deselect(record, true);
+                        }
+                    });
+                },
+                failure: function (form2, action) {
+                    form.setLoading(false);
+                    TK.Utils.makeErrMsg(action.response, this.errorMsg);
+                }
+            });
+        }
+    },
+    /**
+     * Отправляем XLS файл грузов для Invoice на сервер и записываем ответ в хранилище грузов или выводим сообщение об ошибке
+     * @param btn внопка вызова
+     */
+    onUploadInvoiceXlsCargo:function(btn)
+    {
+        console.log('onUploadInvoiceXlsCargo');
+
+        var url='Doc2Doc_uploadXLS.do',
+            actionBtn=btn.up('window').actionBtn, // кнопка которая запустила процесс загрузки XLS файла
+            form = btn.up().up().down('form');
+        if(form.isValid()){
+            form.setLoading(true);
+            form.submit({
+                url: url,
+                scope:this,
+                success: function(form2, action) {
+                    var response=Ext.JSON.decode(action.response.responseText.replace('success: true,','')),
+                        cargo=response['rows'];
+
+                    var store=actionBtn.up().up().getStore(), arr= store.getRange();
+
+                    arr=arr.concat(cargo);
+                    store.loadData(arr);
+
+                   // this.importContsVagsFromXLS(vagsConts,type);
+                    form.setLoading(false);
+                    form.up('window').close();
+                },
+                failure: function (form2, action) {
+                    form.setLoading(false);
+                    var response=Ext.JSON.decode(action.response.responseText.replace('success: true,','')),
+                        cargo=response['rows'];
+                    if(cargo)
+                    {
+                        var store=Ext.ComponentQuery.query('invoice #gruz')[0].getStore(), arr= store.getRange();
+
+                        arr=arr.concat(cargo);
+                        store.loadData(arr);
+
+                        // this.importContsVagsFromXLS(vagsConts,type);
+                        form.setLoading(false);
+                        form.up('window').close();
+                    }
+                    else
+                        TK.Utils.makeErrMsg(action.response, this.errorMsg);
+                }
+            });
+        }
+    },
+    /**
+     * Отправляем XLS файл с данными Invoice и грузов  на сервер, где они после прочтения из файла будут записаны в базу данных
+     * @param btn кнопка вызова
+     */
+    onUploadInvoiceXls:function(btn)
+    {
+        console.log('onUploadInvoiceXls');
+
+        var url='Doc2Doc_uploadXLS.do',
+            actionBtn=btn.up('window').actionBtn, // кнопка которая запустила процесс загрузки XLS файла
+            form = btn.up().up().down('form');
+        if(form.isValid()){
+            form.setLoading(true);
+            form.submit({
+                url: url,
+                scope:this,
+                success: function(form2, action) {
+                    actionBtn.up().up().getStore().reload();
                     form.setLoading(false);
                     form.up('window').close();
                 },
@@ -698,9 +1047,9 @@ Ext.define('TK.controller.Doc2Doc', {
                     nvag:nvagT,
                     klientName:cont['klientName']?cont['klientName']:rootVagData['klientName']?rootVagData['klientName']:'',
                     vagOtm:rootVagData['vagOtm']?rootVagData['vagOtm']:'',
-                    grPod:cont['grPod']?cont['grPod']:rootVagData['grPod']?'grPod':'',
-                    taraVag:cont['taraVag']?cont['taraVag']:rootVagData['taraVag']?'taraVag':'',
-                    kolOs:cont['kolOs']?cont['kolOs']:rootVagData['kolOs']?'kolOs':'',
+                    grPod:cont['grPod']?cont['grPod']:(rootVagData['grPod']?rootVagData['grPod']:''),
+                    taraVag:cont['taraVag']?cont['taraVag']:rootVagData['taraVag']?rootVagData['taraVag']:'',
+                    kolOs:cont['kolOs']?cont['kolOs']:rootVagData['kolOs']?rootVagData['kolOs']:'',
                     rod:rootVagData['rod']?rootVagData['rod']:'',
 
                     text: nvagT,
@@ -723,7 +1072,7 @@ Ext.define('TK.controller.Doc2Doc', {
                 sizeFoot:cont['sizeFoot']?cont['sizeFoot']:rootVagData['sizeFoot']?rootVagData['sizeFoot']:'',
                 taraKont:cont['taraKont']?cont['taraKont']:rootVagData['taraKont']?rootVagData['taraKont']:'',
                 utiType:cont['utiType']?cont['utiType']:rootVagData['utiType']?rootVagData['utiType']:'',
-                grpod:cont['grPod']?cont['grPod']:rootVagData['grPod']?rootVagData['grPod']:'',
+                grpod:cont['grPodCont']?cont['grPodCont']:cont['grPodCont']?cont['grPodCont']: rootVagData['grPod']?rootVagData['grPod']:'',
 
                 text: utiNT,
                 who: 'cont',

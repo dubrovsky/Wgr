@@ -4,7 +4,6 @@ import com.bivc.cimsmgs.commons.DateTimeUtils;
 import com.bivc.cimsmgs.commons.TimeSerializer;
 import com.bivc.cimsmgs.dto.PackDocDTO;
 import com.bivc.cimsmgs.dto.RouteDTO;
-import com.bivc.cimsmgs.dto.ky.NsiKyOwnersDTO;
 import com.bivc.cimsmgs.formats.json.serializers.DateSerializer;
 import com.bivc.cimsmgs.formats.json.serializers.DateTimeDeserializer;
 import com.bivc.cimsmgs.formats.json.serializers.DateTimeSerializer;
@@ -33,6 +32,13 @@ public class AvtoZayavBaseDTO {
     private String no_avto;
     private String no_trail;
     private String driver_fio;
+    private String driver_pasp;
+    private String prim;
+    private String client_sname;
+    private String kont_s;
+    private Integer repeatNkon;
+    private Integer isZayavDone;
+
     private ClientDTO client;
     private TreeSet<KontDTO> konts = new TreeSet<>();
 
@@ -54,8 +60,25 @@ public class AvtoZayavBaseDTO {
     @JsonSerialize(using = DateTimeSerializer.class)
     private Date altered;
     private String un;
+    private Long packId;
+    private Long routeId;
 
-//    @JsonSerialize(using = DateTimeSerializer.class)
+    public Long getPackId() {
+        return packId;
+    }
+
+    public void setPackId(Long packId) {
+        this.packId = packId;
+    }
+
+    public Long getRouteId() {
+        return routeId;
+    }
+
+    public void setRouteId(Long routeId) {
+        this.routeId = routeId;
+    }
+    //    @JsonSerialize(using = DateTimeSerializer.class)
 //    private Date dprb;
 
     public Date getDateZayav() {
@@ -66,6 +89,54 @@ public class AvtoZayavBaseDTO {
             }
         }
         return this.dateZayav;
+    }
+
+    public String getPrim() {
+        return prim;
+    }
+
+    public void setPrim(String prim) {
+        this.prim = prim;
+    }
+
+    public String getDriver_pasp() {
+        return driver_pasp;
+    }
+
+    public void setDriver_pasp(String driver_pasp) {
+        this.driver_pasp = driver_pasp;
+    }
+
+    public String getClient_sname() {
+        return client_sname;
+    }
+
+    public void setClient_sname(String client_sname) {
+        this.client_sname = client_sname;
+    }
+
+    public String getKont_s() {
+        return kont_s;
+    }
+
+    public void setKont_s(String kont_s) {
+        this.kont_s = kont_s;
+    }
+
+    public Integer getRepeatNkon() {
+        return repeatNkon;
+    }
+
+    public void setRepeatNkon(Integer repeatNkon) {
+        this.repeatNkon = repeatNkon;
+    }
+
+    public Integer getIsZayavDone() {
+        return isZayavDone;
+    }
+
+    public void setIsZayavDone(Integer isZayavDone) {
+        this.isZayavDone = isZayavDone;
     }
 
     public TreeSet<KontDTO> getKonts() {

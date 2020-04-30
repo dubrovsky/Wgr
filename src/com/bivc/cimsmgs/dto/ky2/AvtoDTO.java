@@ -16,6 +16,8 @@ public class AvtoDTO {
     private Long hid;
     private Byte direction;
     private Long clientHid;
+    private Long routeHid;
+
     private String client;
     private TreeSet<KontDTO> konts = new TreeSet<>();
     private TreeSet<GruzDTO> gruzs = new TreeSet<>();
@@ -38,6 +40,14 @@ public class AvtoDTO {
     @JsonSerialize(using = TimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeserializer.class)
     private Date dotpTime;
+
+    public Long getRouteHid() {
+        return routeHid;
+    }
+
+    public void setRouteHid(Long routeHid) {
+        this.routeHid = routeHid;
+    }
 
     public Long getClientHid() {
         return clientHid;

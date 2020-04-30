@@ -26,7 +26,7 @@ Ext.define('TK.view.ky2.avto.BaseAvtoForm', {
                     type: 'hbox',
                     defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
                 },
-                fieldLabel: 'Номер авто',
+                fieldLabel: this.lblTruckN,
                 items: [{
                     xtype: 'textfield',
                     name: 'no_avto',
@@ -44,200 +44,48 @@ Ext.define('TK.view.ky2.avto.BaseAvtoForm', {
                 }]
             }, {
                 xtype: 'textfield',
-                fieldLabel: 'Номер прицепа',
+                fieldLabel: this.lblTrailerN,
                 name: 'no_trail',
                 maxLength: 250
             }, {
                 xtype: 'textfield',
-                fieldLabel: 'ФИО водителя',
+                fieldLabel: this.lblDriverFullName,
                 name: 'driver_fio',
                 maxLength: 250
             }, {
-            //     xtype: 'textfield',
-            //     fieldLabel: 'Марка автотранспортного средства',
-            //     name: 'type_avto',
-            //     maxLength: 250
+                xtype: 'textfield',
+                fieldLabel: this.lblDriversPasport,
+                name: 'driver_pasp',
+                maxLength: 25
+            },{
+                name : 'prim',
+                xtype: 'textarea',
+                fieldLabel: this.lblNotes,
+                width:450,
+                maxLength: 500
             // }, {
             //     xtype: 'fieldcontainer',
             //     layout: {
             //         type: 'hbox',
             //         defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
             //     },
-            //     fieldLabel: 'Собственник',
+            //     fieldLabel: 'Клиент',
             //     items: [{
             //         xtype: 'textfield',
-            //         name: 'naim_sob',
+            //         name: 'client.sname',
             //         maxLength: 128,
             //         // rows: 3,
-            //         flex: 1
-            //         //allowBlank: false,
-            //         //readOnly: true
+            //         flex: 1,
+            //         readOnly: true,
+            //         allowBlank: false
             //     }, {
             //         xtype: 'button',
             //         text: '...',
-            //         action: 'nsiOwner'
-            //     }, {
-            //         xtype: 'hidden',
-            //         name: 'owner.hid'
+            //         itemId: 'gruzotprDir',
+            //         action: 'nsiOtpr'
             //     }]
-            // }, {
-                xtype: 'fieldcontainer',
-                layout: {
-                    type: 'hbox',
-                    defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
-                },
-                fieldLabel: 'Клиент',
-                items: [{
-                    xtype: 'textfield',
-                    name: 'client.sname',
-                    maxLength: 128,
-                    // rows: 3,
-                    flex: 1,
-                    readOnly: true,
-                    allowBlank: false
-                }, {
-                    xtype: 'button',
-                    text: '...',
-                    itemId: 'gruzotprDir',
-                    action: 'nsiOtpr'
-                }]
-            // }, {
-            //     xtype: 'fieldcontainer',
-            //     layout: {
-            //         type: 'hbox',
-            //         defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
-            //     },
-            //     fieldLabel: 'Грузоотправитель',
-            //     items: [{
-            //         xtype: 'textfield',
-            //         name: 'otp_cargo',
-            //         maxLength: 500,
-            //         // rows: 3,
-            //         flex: 1
-            //     }, {
-            //         xtype: 'button',
-            //         text: '...',
-            //         action: 'nsiGruzOtpr'
-            //     }]
-            // }, {
-            //     xtype: 'textfield',
-            //     fieldLabel: 'Пункт отправления',
-            //     name: 'departure',
-            //     maxLength: 500,
-            //     // rows: 3
-            // }, {
-            //     xtype: 'fieldcontainer',
-            //     layout: {
-            //         type: 'hbox',
-            //         defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
-            //     },
-            //     fieldLabel: 'Грузополучатель',
-            //     items: [{
-            //         xtype: 'textfield',
-            //         name: 'pol_cargo',
-            //         maxLength: 500,
-            //         // rows: 3,
-            //         flex: 1
-            //     }, {
-            //         xtype: 'button',
-            //         text: '...',
-            //         action: 'nsiGruzPol'
-            //     }]
-            // },/*{
-            //                 xtype: 'textarea',
-            //                 fieldLabel: 'Грузополучатель',
-            //                 name: 'pol_cargo',
-            //                 maxLength: 500,
-            //                 rows: 3
-            //             },*/{
-            //     xtype: 'textfield',
-            //     fieldLabel: 'Пункт назначения',
-            //     name: 'destination',
-            //     maxLength: 500,
-            //     // rows: 3
-            // }, {
-            //     xtype: 'textfield',
-            //     fieldLabel: 'Примечание',
-            //     name: 'prim_avto',
-            //     maxLength: 500,
-            //     // rows: 3
             }]
         }]
-        // , {
-        //     xtype: 'container',
-        //     flex: 2,
-        //     layout: 'anchor',
-        //     defaults: {
-        //         anchor: '100%'
-        //     },
-        //     items: [/*{
-        //         xtype: 'textarea',
-        //         fieldLabel: 'Грузоотправитель',
-        //         name: 'otp_cargo',
-        //         maxLength: 500,
-        //         rows: 3
-        //     },*/{
-        //         xtype: 'fieldcontainer',
-        //         layout: {
-        //             type: 'hbox',
-        //             defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
-        //         },
-        //         fieldLabel: 'Грузоотправитель',
-        //         items: [{
-        //             xtype: 'textarea',
-        //             name: 'otp_cargo',
-        //             maxLength: 500,
-        //             rows: 3,
-        //             flex: 1
-        //         }, {
-        //             xtype: 'button',
-        //             text: '...',
-        //             action: 'nsiGruzOtpr'
-        //         }]
-        //     }, {
-        //         xtype: 'textarea',
-        //         fieldLabel: 'Пункт отправления',
-        //         name: 'departure',
-        //         maxLength: 500,
-        //         rows: 3
-        //     }, {
-        //         xtype: 'fieldcontainer',
-        //         layout: {
-        //             type: 'hbox',
-        //             defaultMargins: {top: 0, right: 5, bottom: 0, left: 0}
-        //         },
-        //         fieldLabel: 'Грузополучатель',
-        //         items: [{
-        //             xtype: 'textarea',
-        //             name: 'pol_cargo',
-        //             maxLength: 500,
-        //             rows: 3,
-        //             flex: 1
-        //         }, {
-        //             xtype: 'button',
-        //             text: '...',
-        //             action: 'nsiGruzPol'
-        //         }]
-        //     },/*{
-        //         xtype: 'textarea',
-        //         fieldLabel: 'Грузополучатель',
-        //         name: 'pol_cargo',
-        //         maxLength: 500,
-        //         rows: 3
-        //     },*/{
-        //         xtype: 'textarea',
-        //         fieldLabel: 'Пункт назначения',
-        //         name: 'destination',
-        //         maxLength: 500,
-        //         rows: 3
-        //     }, {
-        //         xtype: 'textarea',
-        //         fieldLabel: 'Примечание',
-        //         name: 'prim_avto',
-        //         maxLength: 500,
-        //         rows: 3
-        //     }]
-        // }]
     },
     buildTopToolbar: function (config) {
         config.tbar = this.buildButtons();

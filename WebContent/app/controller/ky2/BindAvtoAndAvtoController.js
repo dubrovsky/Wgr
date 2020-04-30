@@ -1,6 +1,12 @@
 Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
     extend: 'Ext.app.Controller',
 
+    requires: [
+        'TK.Utils',
+        'TK.model.ky2.AvtoBindTreeNode'
+    ],
+
+
     sourceAvtoModels: [], // to use in after drop event
     selectedNodesLeft: [], // last selection
     selectedNodesRight: [], // last selection
@@ -60,12 +66,6 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
             },
             'ky2avtooutlist button[action="showAvtosIntoDir4AvtoOutBind"]': {
                 click: this.getAvtoOutAndAvtoIntoForBind
-            },
-            'ky2avtoctgrtreeform button[action="showAvtosOutDir4AvtoIntoBind"]': {
-                click: this.getAvtoIntoAndAvtoOutForBindFromVgCntGr
-            },
-            'ky2avtoctgrtreeform button[action="showAvtosIntoDir4AvtoOutBind"]': {
-                click: this.getAvtoIntoAndAvtoOutForBindFromVgCntGr
             },
             'ky2avto2avtobindtreeforminto button[action=moveRight]': {
                 click: this.moveNodesRight
@@ -148,15 +148,6 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
         }
         var avtoModel = avtolist.getSelectionModel().getLastSelected();
         this.getAvtoAndAvtoForBind(widget, title, direction, avtoModel.get('hid'));
-
-    },
-
-    getAvtoIntoAndAvtoOutForBindFromVgCntGr: function (btn) {
-        var rootNode = btn.up('panel').down('treepanel').getRootNode();
-        if (rootNode.get('direction') === 1)
-            this.getAvtoAndAvtoForBind('ky2poezd2poezdbindtreeforminto', 'На поезд по отправлению', 2, rootNode.get('hid'));
-        else
-            this.getAvtoAndAvtoForBind('ky2poezd2poezdbindtreeformout', 'На поезд по прибытию', 1, rootNode.get('hid'));
     },
 
     getAvtoAndAvtoForBind: function (widget, title, direction, avtoHid) {
@@ -205,7 +196,7 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
 
     titleForAvto: function (title) {
         return title +
-            "Номер контейнера/Масса тары/Масса брутто/Типоразмер/Грузоподъемность";
+            this.tittle1;
     },
 
     initRootNode: function (rootNode, dataObj) {
@@ -693,6 +684,6 @@ Ext.define('TK.controller.ky2.BindAvtoAndAvtoController', {
         }
 
         afterMoveFn.call(fnScope, sourceNodes, targetNode);
-    },
+    }
 
 });

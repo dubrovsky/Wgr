@@ -3,7 +3,7 @@
  */
 package Ti.DataProcessing;
 
-import Ti.model.ContSmgs2;
+import Ti.model.excel.ContSmgs2;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 

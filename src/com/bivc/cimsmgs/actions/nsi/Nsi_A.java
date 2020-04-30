@@ -6,12 +6,13 @@ import com.bivc.cimsmgs.commons.JSONAware;
 import com.bivc.cimsmgs.dao.*;
 import com.bivc.cimsmgs.db.*;
 import com.bivc.cimsmgs.db.nsi.*;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Nsi_A extends CimSmgsSupport_A implements JSONAware, NsiSmgsGngDAOAware, NsiGngDeDAOAware, NsiSmgsStEuDAOAware, NsiSmgsStCisDAOAware,
         NsiSmgsFieldsOptDAOAware, NsiSmgsCompanyDAOAware, NsiSmgsEtsngcodeDAOAware, NsiCountriesDAOAware, /*NsiStaDAOAware,*/ NsiCurrencyDAOAware,
@@ -267,6 +268,40 @@ public class Nsi_A extends CimSmgsSupport_A implements JSONAware, NsiSmgsGngDAOA
         List<Project> project = projectDAO.findAll(getLimit(), getStart(), getQuery(), getUser().getUsr());
         Long total = projectDAO.countAll(getQuery());
         jsonData = Constants.convert2JSON_NsiProject(project, total);
+        return SUCCESS;
+    }
+
+    /**
+     * Проверяет введенные коды ТНВЭД на наличие в базе
+     * @return возвращает список ТНВЭД, которые отсутствуют в базе
+     * и список ТНВЕД, которые совпадают с кодами из базы по первым 6 символам
+     */
+    public String checkTNVEDs()
+    {
+        log.info("checkTNVEDs");
+        // получаем список ТНВЭД для проверки
+        Set<String> tnveds= new HashSet<>(Arrays.asList(getQuery().split(",")));
+        List<String> tnvedsList= new ArrayList<>(tnveds);
+        //получем список ТНВЭД по коду, которые присутствуют в базе
+        List<NsiTnved4> presentList=tnvedDAO.findTnvedsByCodeList(tnvedsList);
+        //получем список кодов ТНВЭД , которые присутствуют в базе
+        List<String> presentTnveds=presentList.stream().map(NsiTnved4::getKod).collect(Collectors.toList());
+        //получем список кодов ТНВЭД, которые отсутствуют в базе
+        List<String> absentTnveds= (List<String>) CollectionUtils.subtract(tnvedsList,presentTnveds);
+        // получаем список кодов ТНВЭД отсутствующих в базе обрезаных до 6 символов
+        List<String> absentTnveds6=absentTnveds.stream().map(s -> s.substring(0,Math.min(s.length(),6))).collect(Collectors.toList());
+        //получем список ТНВЭД по коду, которые присутствуют в базе c первыми 6 символами совпадающими с кодами в списке
+        List<NsiTnved4> presentList6=tnvedDAO.findTnvedsByCodeListLike(absentTnveds6);
+        Set<String> presentTnveds6=presentList6.stream().map(NsiTnved4::getKod).map(s -> s.substring(0,Math.min(s.length(),6))).collect(Collectors.toSet());
+        List<String> presnt6= new ArrayList<>();
+
+        // проверяем из списка отсутствующих присутствующие по 6 символами
+        for (String s:absentTnveds6) {
+            if(presentTnveds6.contains(s))
+                presnt6.add(s);
+        }
+
+        jsonData=Constants.convertCheckTnvedResults2Json(absentTnveds,presnt6);
         return SUCCESS;
     }
 

@@ -45,7 +45,7 @@
         <property name="kolOs" type="java.lang.Integer">
             <column name="KOL_OS" precision="2" scale="0"/>
         </property>
-        <property name="masTar" type="java.lang.Long">
+        <property name="masTar" type="java.math.BigDecimal">
             <column name="MAS_TAR" precision="20" scale="0"/>
         </property>
         <property name="sobstv" type="string">
@@ -140,6 +140,12 @@
                 <column name="HID_VAGON" precision="20" scale="0"/>
             </key>
             <one-to-many class="com.bivc.cimsmgs.db.ky.KontGruzHistory"/>
+        </set>
+        <set fetch="select" inverse="true" lazy="true" name="vagHistory" sort="natural" table="KY_VAGON_HISTORY" batch-size="50" cascade="delete">
+            <key>
+                <column name="HID_VAGON" precision="20" scale="0"/>
+            </key>
+            <one-to-many class="com.bivc.cimsmgs.db.ky.VagonHistory"/>
         </set>
         <!--<set fetch="select" inverse="true" lazy="true" sort="natural" name="kontsOut" table="KY_KONT" batch-size="50" cascade="delete">
             <key>

@@ -13,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellReference;
@@ -20,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.bivc.cimsmgs.exchange.DateFormat.*;
+import static org.apache.commons.lang3.StringUtils.normalizeSpace;
 
 public class Utils {
 
@@ -78,6 +80,26 @@ public class Utils {
       res += s;
     }
     return res;
+  }
+
+  public static String format(Date d, FastDateFormat sdf) {
+    return d != null ? sdf.format(d) : "";
+  }
+
+  public static String format(String d) {
+    return d != null ? d : "";
+  }
+
+  public static String formatUp(String str) {
+    return format(str).trim().toUpperCase();
+  }
+
+  public static String formatUpClean(String str) {
+    return normalizeSpace(format(str).trim());
+  }
+
+  public static String format(Number d) {
+    return d != null ? d.toString() : "";
   }
 
   public static String[] split(String input, String regex) {
@@ -249,9 +271,25 @@ public class Utils {
   public static String normNvagNkonStr(String str) {
     String res = "";
     if (str != null) {
-      res = str.replaceAll(" ", "").replaceAll("-", "");
+      res = str.replaceAll(" ", "").replaceAll("-", "").toUpperCase();
     }
     return res;
+  }
+
+  static public Cell createCell(Row row, String colName, CellStyle style) {
+    return createCell(row, CellReference.convertColStringToIndex(colName), style);
+  }
+
+  static public Cell createCell(Row row, int colIndex, CellStyle style) {
+    Cell cell = row.createCell(colIndex);
+    cell.setCellStyle(style);
+    return cell;
+  }
+
+  static public void setDoubleCellValue(Cell cell, BigDecimal val, int scale, RoundingMode roundingMode) {
+    if (val != null)
+      cell.setCellValue(val.setScale(scale, roundingMode).doubleValue());
+
   }
 
   static public Cell getCell(Sheet sheet, int row, String col) {

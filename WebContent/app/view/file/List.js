@@ -1,20 +1,26 @@
 Ext.define('TK.view.file.List', {
     extend: 'TK.view.DocsList',
     alias: 'widget.filelist',
+    itemId:'fileList',
 
     buildStore: function(config) {
         config.store = 'FileInfs';
     },
     buildColumns: function(config) {
     	config.columns = [
-            {text: this.headerID, dataIndex: 'hid', width: 45, sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false},
-            {text: this.headerCreation, dataIndex: 'dattr', width: 150, sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false},
+            {text: this.headerID, dataIndex: 'hid', width: 45,  groupable:false},
+            {text: this.headerCreation, dataIndex: 'dattr', width: 150,  groupable:false},
+            {text: this.headerUser, dataIndex: 'un', renderer: this.rendererUn, width: 80},
+            {text: 'Сообщения', dataIndex: 'messCount', width: 80, renderer: TK.Utils.renderMessCount},
+            {text: 'Att', dataIndex: 'newDoc', width: 28, renderer: TK.Utils.rendererNewDoc},
 
-            {text: this.headerNumOtpr, dataIndex: 'numOtpr', width: 100, sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false},
-            {text: this.headerNumCont, dataIndex: 'numCont', width: 100, sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false},
-            {text: this.headerDateOtpr, dataIndex: 'dateOtpr', width: 100, sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false},
+            {text: this.headerNumOtpr, dataIndex: 'numOtpr', width: 100, groupable:false},
+            {text: this.headerNumCont, dataIndex: 'numCont', width: 100, groupable:false},
+            {text: this.headerDateOtpr, dataIndex: 'dateOtpr', width: 100,  groupable:false},
+            {text: this.headerVagNum, dataIndex: 'numWag', flex:1, renderer: TK.Utils.renderLongStr},
+            {text: this.headerNPoezd, dataIndex: 'npoezd', width: 85, renderer: TK.Utils.renderLongStr}
 
-            {text: this.headerDescr, dataIndex: 'nkon', flex: 1, sortable:false, hideable:false, menuDisabled:true, draggable:false, groupable:false}
+            // {text: this.headerDescr, dataIndex: 'nkon', flex: 1, groupable:false}
         ];
     },
     buildTopToolbar: function(config) {
@@ -26,9 +32,27 @@ Ext.define('TK.view.file.List', {
                 {text: this.btnStat, iconCls:'filter', action:'filter', forDeleted: true, forPresent: true},
                 {xtype: 'tbseparator', itemId:'filter1', forDeleted: true, forPresent: true},
                 {text: this.btnCreate,iconCls:'doc_new', action:'create'},'-',
-                {text: this.btnEdit,iconCls:'edit', action:'edit'},'-'
+                {text: this.btnEdit,iconCls:'edit', action:'edit'},'-',
+                {text: 'Messenger', iconCls: 'doc_new', itemId: 'messanger', action: 'showMessanger'}, '-'
             ]
         });
+        if (tkUser.hasPriv('CIM_DOC2DOC')) {
+            config.dockedItems[0].items.push({
+                text: this.btnPlusDocs, iconCls: 'copy', action: 'doc2doc',
+                arrowAlign: 'bottom',
+                menu: [
+                    {text: "+ графические копии", action: 'uploadGrafCopies', iconCls: 'copy'}
+                ]
+            }, '-');
+        }
+        config.dockedItems[0].items.push({
+            text: 'Messenger',
+            iconCls: 'doc_new',
+            itemId: 'messanger',
+            action: 'showMessanger'
+        }, '-');
+
+
         if(tkUser.hasPriv('CIM_DELETE')){
             config.dockedItems[0].items.push({text: this.btnDelete,iconCls:'del',itemId:'del', action:'del'},{xtype: 'tbseparator', itemId:'del1'});
         }

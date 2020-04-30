@@ -10,11 +10,16 @@ import com.bivc.cimsmgs.db.ky.Kont;
 import com.bivc.cimsmgs.db.ky.Plomb;
 import com.bivc.cimsmgs.dto.ky.ReportParamsDTO;
 import com.bivc.cimsmgs.formats.json.Deserializer;
+import com.bivc.cimsmgs.formats.json.serializers.DateSerializer;
+import com.bivc.cimsmgs.formats.json.serializers.DateTimeDeserializer;
 import com.bivc.cimsmgs.services.ky2.AvtoWzPzService;
 import com.bivc.cimsmgs.formats.json.Serializer;
 import com.bivc.cimsmgs.services.ky2.ReportService;
 import com.bivc.cimsmgs.sql.Select;
 import com.bivc.cimsmgs.xls.Excel;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.isc.utils.dbStore.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -65,9 +70,9 @@ public class Report_A extends CimSmgsSupport_A implements ServletRequestAware, S
         }
     }
 
-    public Date getEndDate(ReportParamsDTO dto) throws Exception {
+    public Date getEndDate(Date endDate) throws Exception {
         GregorianCalendar edt = new GregorianCalendar();
-        edt.setTime(dto.getEndDate());
+        edt.setTime(endDate);
         edt.add(Calendar.DATE, 1);
         return edt.getTime();
     }
@@ -75,6 +80,46 @@ public class Report_A extends CimSmgsSupport_A implements ServletRequestAware, S
     private String action;
     private String reportParams;
     private Long hid_client;
+    private Long routeId;
+
+    private Date startDt;
+    private Date endDt;
+
+    public Date getStartDt() {
+        return startDt;
+    }
+
+    public void setStartDt(Date startDt) {
+        this.startDt = startDt;
+    }
+
+    public Date getEndDt() {
+        return endDt;
+    }
+
+    public void setEndDt(Date endDt) {
+        this.endDt = endDt;
+    }
+
+    //    @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+    private String stan;
+
+    public String getStan() {
+//        if(stan != null && stan.length == 1 && (stan[0] == null || stan[0].length() == 0)) return null;
+        return stan;
+    }
+
+    public void setStan(String stan) {
+        this.stan = stan;
+    }
+
+    public Long getRouteId() {
+        return routeId;
+    }
+
+    public void setRouteId(Long routeId) {
+        this.routeId = routeId;
+    }
 
     public Long getHid_client() {
         return hid_client;
