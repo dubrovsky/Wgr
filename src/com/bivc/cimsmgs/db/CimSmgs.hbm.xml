@@ -24,6 +24,9 @@
         <many-to-one name="cimSmgs" class="com.bivc.cimsmgs.db.CimSmgs" fetch="select" update="false" insert="false">
             <column name="HID_CS" precision="20" scale="0"/>
         </many-to-one>
+        <property name="userFlag" type="string">
+            <column name="USER_FLAG" length="512"/>
+        </property>
         <property name="g1" type="string">
             <column name="G_1" length="512"/>
         </property>

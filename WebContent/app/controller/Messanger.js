@@ -168,8 +168,8 @@ Ext.define('TK.controller.Messanger', {
                         this.messanger.down('dataview').getStore().load({    // get messages
                                 params: {
                                     PACK_DOC_HID: parentModel.get('packDoc.hid') || parentModel.get('packId'),
-                                    DOC_NAME: this.extraParams['docName'],
-                                    DOC_HID: parentModel.get('hid'),
+                                    DOC_NAME: this.extraParams['docName'] ? this.extraParams['docName'] : 'smgs2',
+                                    DOC_HID: parentModel.get('headHid') ? parentModel.get('headHid') : parentModel.get('hid'),
                                     UN: tkUser.un
                                 },
                                 scope: this,
@@ -215,11 +215,11 @@ Ext.define('TK.controller.Messanger', {
                 url: './putMessage',
                 params: {
                     PACK_DOC_HID: parentModel.get('packDoc.hid') || parentModel.get('packId'),
-                    DOC_NAME: this.extraParams['docName'],
-                    DOC_HID: parentModel.get('hid'),
+                    DOC_NAME: this.extraParams['docName'] ? this.extraParams['docName'] : 'smgs2',
+                    DOC_HID: parentModel.get('headHid') ? parentModel.get('headHid') : parentModel.get('hid'),
                     UN: tkUser.un,
                     CONTENT: form.findField('message').getValue(),
-                    TABLE_NAME: this.extraParams['tableName'],
+                    TABLE_NAME: this.extraParams['tableName'] ? this.extraParams['tableName'] : 'CIM_SMGS',
                     UNS: checkedUsers.length > 0 ? checkedUsers.join(',') : [],
                     SEND_MAIL: this.messanger.down('#toEmail').getValue() ? 1 : 0
                 },

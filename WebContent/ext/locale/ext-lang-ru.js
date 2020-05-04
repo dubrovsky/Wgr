@@ -1548,7 +1548,9 @@ Ext.define("TK.locale.ru.controller.docs.File", {
     waitMsg1: 'Идет сохранение данных...',
     delTitle: 'Удаление...',
     delMsg: 'Вы действительно хотите удалить..?',
-    errorMsg: 'Внимание! Ошибка...'
+    errorMsg: 'Внимание! Ошибка...',
+    menuTrSearch: 'Поиск поезда'
+
 });
 
 Ext.define("TK.locale.ru.controller.docs.Gu27v", {

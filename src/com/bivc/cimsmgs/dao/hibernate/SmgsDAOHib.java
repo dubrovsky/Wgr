@@ -411,6 +411,14 @@ public class SmgsDAOHib extends GenericHibernateDAO<CimSmgs, Long> implements Sm
         q.executeUpdate();
     }
 
+    public void changeUserFlag(String userFlag, Long hid) {
+        final String query = "UPDATE CimSmgs s SET s.userFlag = :user_flag WHERE s.hid = :hid";
+        Query q = getSession().createQuery(query);
+        q.setString("user_flag", userFlag);
+        q.setLong("hid", hid);
+        q.executeUpdate();
+    }
+
     public List<CimSmgs> findStat(Integer limit, Integer start, Search search, Usr usr) {
 //        log.info("findStat");
         Criteria crit = getSession().createCriteria(getPersistentClass(), "smgs");

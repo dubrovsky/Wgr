@@ -12,7 +12,8 @@ Ext.define('TK.view.file.List', {
             {text: this.headerCreation, dataIndex: 'dattr', width: 150,  groupable:false},
             {text: this.headerUser, dataIndex: 'un', renderer: this.rendererUn, width: 80},
             {text: 'Сообщения', dataIndex: 'messCount', width: 80, renderer: TK.Utils.renderMessCount},
-            {text: 'Att', dataIndex: 'newDoc', width: 28, renderer: TK.Utils.rendererNewDoc},
+            {text: 'Фл.', dataIndex: 'userFlag', width: 32, renderer: TK.Utils.rendererUserFlag},
+            {text: 'Att', dataIndex: 'newDoc', width: 28, renderer: this.rendererNewDoc},
 
             {text: this.headerNumOtpr, dataIndex: 'numOtpr', width: 100, groupable:false},
             {text: this.headerNumCont, dataIndex: 'numCont', width: 100, groupable:false},
@@ -64,5 +65,9 @@ Ext.define('TK.view.file.List', {
                 {xtype: 'tbseparator', itemId:'destroy1', forDeleted: true, hidden: true}
             );
         }
+    },
+    rendererNewDoc: function (value) {
+        return (value && value === 2) ? '<img src="./resources/images/doc_new.png" width="16" height="16">' : '';
     }
+
 });

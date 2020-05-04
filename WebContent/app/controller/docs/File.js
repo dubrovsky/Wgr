@@ -84,11 +84,40 @@ Ext.define('TK.controller.docs.File', {
             'filelist': {
                 itemclick: function (view, record) {
                     this.fireEvent('updateMessanger', view, record);
-                }
+                },
+                afterrender: this.onAfterrender,
+                celldblclick: this.onCellDblClick
+
             }
 
         });
     },
+
+    onCellDblClick: function(view, td, cIndex, record, tr, rIndex, e){
+        this.getController('docs.Smgs2').onCellDblClick(view, td, cIndex, record, tr, rIndex, e, 'file')
+    },
+
+    onAfterrender: function(grid){
+
+        var menu = grid.headerCt.getMenu();
+
+        var menuItem = menu.add({
+            itemid: 'searchTrainHeader',
+            text: this.menuTrSearch,
+            icon: './images/loupe.png',
+            action: 'searchTrains'
+        });
+        menu.on('beforeshow', function () {
+            var currentDataIndex = menu.activeHeader.dataIndex;
+            if (currentDataIndex === 'npoezd') {
+                menuItem.show();
+            } else {
+                menuItem.hide();
+            }
+        });
+        // this.callParent(arguments);
+    },
+
     onWinClose: function(btn){
         btn.up('window').close();
         this.getController('docs.File').getCenter().down('grid').store.reload();

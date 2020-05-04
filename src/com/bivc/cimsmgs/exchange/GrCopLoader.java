@@ -24,6 +24,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.bivc.cimsmgs.commons.Validators.checkKontNumber;
+import static com.bivc.cimsmgs.commons.Validators.checkVagNumber;
 import static com.bivc.cimsmgs.exchange.Utils.normNvagNkonStr;
 import static java.nio.file.StandardOpenOption.READ;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -84,7 +86,7 @@ public class GrCopLoader {
                 if (k >= 0)
                     fileExt = name.substring(k + 1).toUpperCase();
 
-                kontList = findAllParam(name, multi_prin_nkon_p);
+                kontList = findAllParam(name, multi_prin_nkon_p, true);
                 if (kontList.size() > 0) {
                     isKont = true;
                     vagList = new ArrayList<>(1);  // пустышка для контейнорной отправки
@@ -92,7 +94,7 @@ public class GrCopLoader {
                 }
                 else {
                     isKont = false;
-                    vagList = findAllParam(name, multi_nvag_p);
+                    vagList = findAllParam(name, multi_nvag_p, false);
                     if (vagList.size() == 0) {
                         log.error("Filename {} does not match the mask. Add to missed", name);
                         misList.addFileItem(item);
@@ -333,11 +335,18 @@ public class GrCopLoader {
         return misList;
     }
 
-    protected static ArrayList<String> findAllParam(String str, Pattern p) {
+    protected static ArrayList<String> findAllParam(String str, Pattern p, boolean isKont) {
         ArrayList<String> res = new ArrayList<>();
         Matcher m = p.matcher(str);
         while (m.find()) {
-            res.add(normNvagNkonStr(m.group()));
+            String group = m.group();
+            boolean check = isKont ? checkKontNumber(group) : checkVagNumber(group);
+            if (check) {
+                res.add(normNvagNkonStr(group));
+            }
+            else {
+                log.warn("Wrong check mark in " + group);
+            }
         }
         log.debug("{}", res);
         return res;

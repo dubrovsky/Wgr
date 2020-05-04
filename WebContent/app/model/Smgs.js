@@ -17,6 +17,8 @@ Ext.define('TK.model.Smgs', {
         {name: 'messCount', type: 'int', persist: false},
         {name: 'newMessCount', type: 'int', persist: false},
         'gng', 'nstn', 'route', 'dop_info',
-        {name:'newDoc', type:'int'}
+        {name:'newDoc', type:'int'},
+        {name:'userFlag', type:'int', useNull: true}
+
     ]
 });

@@ -37,6 +37,7 @@ Ext.define('TK.view.smgs2.Smgs2List', {
                         ]
                 },
                 {text: 'Сообщения', dataIndex: 'messCount', width: 80, renderer: TK.Utils.renderMessCount},
+                {text: 'Фл.', dataIndex: 'userFlag', width: 32, renderer: TK.Utils.rendererUserFlag},
                 {text: 'Att', dataIndex: 'newDoc', width: 28, renderer: this.rendererNewDoc}
             ],
             defaults: {}

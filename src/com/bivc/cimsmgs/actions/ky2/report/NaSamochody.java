@@ -5,6 +5,7 @@ import com.bivc.cimsmgs.commons.HibernateUtil;
 import com.bivc.cimsmgs.sql.Select;
 import com.bivc.cimsmgs.xls.Excel;
 import com.isc.utils.dbStore.dbTool;
+import com.isc.utils.dbStore.sortedStPack;
 import com.isc.utils.dbStore.stPack;
 import com.isc.utils.dbStore.typesAndValues;
 import org.apache.poi.ss.usermodel.Cell;
@@ -85,6 +86,7 @@ public class NaSamochody extends ReportAction {
 
 
         dbt.read(st, String.format(Select.getSqlFile("ky/report/NaSamochody/kont[-a]"), query), tv);
+        new sortedStPack(st, "A_NUM", true);
         if (st.getRowCount() > 0) {
             int r = 6;
             Number nval;
@@ -104,7 +106,12 @@ public class NaSamochody extends ReportAction {
                 if ((ob = st.getObject(i, "DPRB")) != null) {
                     row.getCell(5).setCellValue(dtf_day.format(ob));
                 }
-                row.getCell(6).setCellValue(st.getTxt(i, "NO_ZAYAV"));
+                if ((ob = st.getObject(i, "DOTP")) != null) {
+                    row.getCell(6).setCellValue(dtf_day.format(ob));
+                }
+                row.getCell(7).setCellValue(st.getTxt(i, "NPPRM"));
+                row.getCell(8).setCellValue(st.getTxt(i, "NOTP"));
+                row.getCell(9).setCellValue(st.getTxt(i, "NO_ZAYAV"));
                 nval = (Number) st.getObject(i, "HID_CLIENT");
                 if(nval != null && hid_cl.indexOf(nval) == -1) {
                     hid_cl.add(nval);

@@ -15,5 +15,7 @@ public interface FileInfDAO extends GenericDAO<CimSmgsFileInf, Long> {
 
     public CimSmgsFileInf findById2(CimSmgsFileInf file);
 
+    public void changeUserFlag(String flag, Long hid);
+
     Long countAll(PackDoc packDoc);
 }

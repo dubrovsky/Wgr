@@ -18,7 +18,7 @@ import static com.bivc.cimsmgs.commons.Constants.convert2JSON_True;
  * Date: 17.04.12
  * Time: 13:39
  */
-public class Status_A extends CimSmgsSupport_A implements StatusDAOAware, UsrDAOAware, SmgsDAOAware, LoggingEventDAOAware {
+public class Status_A extends CimSmgsSupport_A implements StatusDAOAware, UsrDAOAware, SmgsDAOAware, LoggingEventDAOAware, FileInfDAOAware {
     final static private Logger log = LoggerFactory.getLogger(Status_A.class);
 
     public String history(){
@@ -49,6 +49,17 @@ public class Status_A extends CimSmgsSupport_A implements StatusDAOAware, UsrDAO
         setJSONData(convert2JSON_True());
         return SUCCESS;
     }
+
+    public String changeUserFlag(){
+        log.info("changeUserFlag");
+        if ("smgs2".equals(getName()))
+            smgsDAO.changeUserFlag("0".equals(getUserFlag()) ? null : getUserFlag(), getHid());
+        else if ("file".equals(getName()))
+            fileInfDAO.changeUserFlag("0".equals(getUserFlag()) ? null : getUserFlag(), getHid());
+        setJSONData(convert2JSON_True());
+        return SUCCESS;
+    }
+
 
     public String changeTbcStatus(){
         log.info("changeTbcStatus");
@@ -98,7 +109,17 @@ public class Status_A extends CimSmgsSupport_A implements StatusDAOAware, UsrDAO
     private StatusDAO dao;
     private UsrDAO usrDAO;
     private SmgsDAO smgsDAO;
+    private FileInfDAO fileInfDAO;
     private LoggingEventDAO loggingEventDAO;
+    private String userFlag;
+
+    public String getUserFlag() {
+        return userFlag;
+    }
+
+    public void setUserFlag(String userFlag) {
+        this.userFlag = userFlag;
+    }
 
     public void setStatusDAO(StatusDAO dao) {
         this.dao = dao;
@@ -130,6 +151,14 @@ public class Status_A extends CimSmgsSupport_A implements StatusDAOAware, UsrDAO
 
     public LoggingEventDAO getLoggingEventDAO(){
         return this.loggingEventDAO;
+    }
+
+    public FileInfDAO getFileInfDAO() {
+        return fileInfDAO;
+    }
+
+    public void setFileInfDAO(FileInfDAO fileInfDAO) {
+        this.fileInfDAO = fileInfDAO;
     }
 
     public CimSmgs getSmgs() {

@@ -26,8 +26,18 @@ public class CimSmgsFileInf implements Serializable {
 	private String un;
 	private Set<CimSmgsFile> cimSmgsFiles = new HashSet<CimSmgsFile>(0);
     private String trans;
+	private String userFlag;
 
-    public String getTrans() {
+
+	public String getUserFlag() {
+		return userFlag;
+	}
+
+	public void setUserFlag(String userFlag) {
+		this.userFlag = userFlag;
+	}
+
+	public String getTrans() {
         return trans;
     }
 

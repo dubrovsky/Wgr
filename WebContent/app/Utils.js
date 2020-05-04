@@ -121,6 +121,9 @@ Ext.define('TK.Utils', {
     rendererNewDoc: function (value) {
         return value ? '<img src="./resources/images/doc_new.png" width="16" height="16">' : '';
     },
+    rendererUserFlag: function (value) {
+        return (value != null) ? '<img src="./resources/images/flag-' + value + '.png" width="16" height="16">' : '';
+    },
     isRowSelected: function (grid) {
         if (grid.selModel.getCount() == 0) {
             Ext.Msg.show({

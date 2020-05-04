@@ -29,6 +29,9 @@
         <property name="un" type="string">
             <column name="UN" length="20" not-null="true" />
         </property>
+        <property name="userFlag" type="string">
+            <column name="USER_FLAG" length="1" />
+        </property>
         <property name="trans" type="string">
             <column name="TRANS" length="20" />
         </property>

@@ -56,6 +56,9 @@ Ext.define('TK.controller.docs.Smgs2', {
             /*'smgs2 > detailpanel#g7v_panel': {
                 saveDetailPanelClick: this.onSaveVagonDetailPanelClick
             },*/
+            'smgs2flags button[action="saveFlag"]': {
+                click: this.onSaveFlag
+            },
             'smgs2 button[action=changeVgCtGr]': {
                 click: this.onSmgs2VgCtGrWinShow
             },
@@ -284,6 +287,38 @@ Ext.define('TK.controller.docs.Smgs2', {
         var g24B = vagonPanel.ownerCt.down('numberfield[name=smgs.g24B]');
         g24B.setValue(parseFloat(netto + tara));
     },*/
+
+    onSaveFlag: function(btn) {
+        var panel = btn.up('form');  // flags
+        // Ext.Ajax.request({
+        //     url: 'Status_changeUserFlag.do',
+        //     params: {'smgs.userFlag': panel.down('radiogroup').getValue(), 'smgs.hid': panel.down('smgs2Hid').getValue()},
+        //     scope:this,
+        //     success: function (response, options) {
+        //         win.close();
+        //     },
+        //     failure: function (response, options) {
+        //         TK.Utils.makeErrMsg(response, this.errorMsg);
+        //     }
+        // });
+
+        if(panel.getForm().isValid()){
+	    	panel.getForm().submit({
+			    waitMsg: this.waitMsg1,
+	            url: 'Status_changeUserFlag.do',
+	            scope: panel,
+			    success: function(form, action) {
+			            this.grid4Refresh.getStore().reload();
+			        panel.up('window').close();
+			    },
+			    failure: panel.failureAlert
+			});
+		} else {
+    		TK.Utils.failureDataMsg();
+    	}
+    },
+
+
     /**
      * saveG7 сохраняет введенные значения в таблицу G7 в основную запись
      * @param editor
@@ -575,7 +610,7 @@ Ext.define('TK.controller.docs.Smgs2', {
     setG2012DataObj: function(docForm){
         this.fireEvent('savePlombsToDataObj', this, docForm);
     },
-    onCellDblClick: function(view, td, cIndex, record, tr, rIndex, e){
+    onCellDblClick: function(view, td, cIndex, record, tr, rIndex, e, docType){
         var center = this.getCenter(),
             grid, gridParams = {},
             dataIndex = view.headerCt.columnManager.columns[cIndex].dataIndex;
@@ -592,11 +627,16 @@ Ext.define('TK.controller.docs.Smgs2', {
             }
         }
         else if (dataIndex === 'invQty' && record.get(dataIndex) !== '0') {
-            this.getSmgslist().invoiceClick = true;
+            view.up().invoiceClick = true;
+        }
+        else if (dataIndex === 'userFlag') {
+            view.up().skipClick = true;
+            var flagsWin = Ext.widget('smgs2flags');
+            flagsWin.initFlags(record.get('userFlag'), record.get('hid'), view.up(), docType ? docType : 'smgs2');
         }
             // this.getSmgslist().fireEvent("itemdblclick", this.getSmgslist().getView(), 'invoicelist');
         else if (dataIndex === 'newDoc') {
-            this.getSmgslist().newDocClick = true;
+            view.up().skipClick = true;
             var win = Ext.widget('filewininvoice'),
                 initData = {};
             initData['file.packDoc.hid'] = record.get('packId');

@@ -1003,7 +1003,7 @@ Ext.define('TK.controller.Nsi', {
             rec = form.getValues(),
             owner = Ext.ComponentQuery.query('#clientGrid')[0],
             grid = owner.down('gridpanel'),
-            data = owner.prepareData(rec);
+            data = owner.prepareData4Save(rec);
 
         if (form.isValid()) {
             Ext.Ajax.request({
@@ -1416,9 +1416,13 @@ Ext.define('TK.controller.Nsi', {
                      }*/
                 },
                 prepareData: function (rec) {
-                    // rec['groups'] = rec['usr.groupsIds'];
-                    // delete rec['usr.groupsIds'];
                     return {'hid': rec.data['hid']};
+                },
+                prepareData4Save: function (rec) {
+                    rec['groups'] = rec['usr.groupsIds'];
+                    delete rec['usr.groupsIds'];
+                    // return {'hid': rec.data['hid']};
+                    return rec;
                 }
             });
         return win;

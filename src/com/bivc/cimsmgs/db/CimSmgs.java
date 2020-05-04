@@ -267,6 +267,7 @@ public class CimSmgs extends ActionSupport implements Serializable, BoardMesseng
     private String g4_dop_info;
     private String g16_dop_info;
     private String vagVedNum;
+    private String userFlag;
 
     private Map<Integer, CimSmgsDocs> cimSmgsDocses7 = new TreeMap<>();
 
@@ -413,6 +414,14 @@ public class CimSmgs extends ActionSupport implements Serializable, BoardMesseng
     private Set<BoardTalkNewMess> boardTalkNewMesses = new TreeSet<>();
     private long newMessCount;
     private String btsNomer;
+
+    public String getUserFlag() {
+        return userFlag;
+    }
+
+    public void setUserFlag(String userFlag) {
+        this.userFlag = userFlag;
+    }
 
     public String getBtsNomer() {
         return btsNomer;

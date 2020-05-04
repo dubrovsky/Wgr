@@ -97,5 +97,6 @@
     <orderEntry type="library" name="janino-2.x" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="Tomcat 7.0.84" level="application_server_libraries" />
     <orderEntry type="library" name="mailTool" level="application" />
+    <orderEntry type="library" name="commons-configuration-1.x" level="application" />
   </component>
 </module>

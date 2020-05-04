@@ -2,18 +2,20 @@ package com.bivc.cimsmgs.dao.hibernate;
 
 import com.bivc.cimsmgs.commons.Search;
 import com.bivc.cimsmgs.dao.FileInfDAO;
+import com.bivc.cimsmgs.db.CimSmgs;
 import com.bivc.cimsmgs.db.CimSmgsFileInf;
 import com.bivc.cimsmgs.db.PackDoc;
 import com.bivc.cimsmgs.db.Usr;
+import com.bivc.cimsmgs.db.ky.YardSectorGroups;
 import com.bivc.cimsmgs.exceptions.InfrastructureException;
+import org.apache.commons.lang3.ArrayUtils;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.Query;
+import org.hibernate.criterion.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -69,6 +71,18 @@ public class FileInfDAOHib extends GenericHibernateDAO<CimSmgsFileInf, Long> imp
                 crit.add(Restrictions.le("altered", date2));
             }
 
+            if (search.getParams() != null) {
+                if (Arrays.asList(search.getParams()).contains("smgslistfilter")) {
+                    search.setParams(ArrayUtils.removeElement(search.getParams(), "smgslistfilter"));
+                    DetachedCriteria yardSectorGroups =
+                            DetachedCriteria.forClass(CimSmgs.class, "smgs").
+                                    setProjection(Property.forName("hid")).
+                                    add(Restrictions.in("npoezd", String.join("", search.getParams()).split(","))).
+                                    add(Property.forName("smgs.packDoc.hid").eqProperty("pack.hid"));
+                    crit.add(Subqueries.exists(yardSectorGroups));
+                }
+            }
+
 		}
 		return crit.list();
 	}
@@ -117,6 +131,17 @@ public class FileInfDAOHib extends GenericHibernateDAO<CimSmgsFileInf, Long> imp
                 crit.add(Restrictions.le("altered", date2));
             }
 
+            if (search.getParams() != null) {
+                if (Arrays.asList(search.getParams()).contains("smgslistfilter")) {
+                    search.setParams(ArrayUtils.removeElement(search.getParams(), "smgslistfilter"));
+                    DetachedCriteria yardSectorGroups =
+                            DetachedCriteria.forClass(CimSmgs.class, "smgs").
+                                    setProjection(Property.forName("hid")).
+                                    add(Restrictions.in("npoezd", String.join("", search.getParams()).split(","))).
+                                    add(Property.forName("smgs.packDoc.hid").eqProperty("pack.hid"));
+                    crit.add(Subqueries.exists(yardSectorGroups));
+                }
+            }
 		}
 		return (Long) crit.uniqueResult();
 	}
@@ -134,6 +159,15 @@ public class FileInfDAOHib extends GenericHibernateDAO<CimSmgsFileInf, Long> imp
         }
         return (CimSmgsFileInf)crit.uniqueResult();
 	}
+
+    public void changeUserFlag(String userFlag, Long hid) {
+        final String query = "UPDATE CimSmgsFileInf s SET s.userFlag = :user_flag WHERE s.hid = :hid";
+        Query q = getSession().createQuery(query);
+        q.setString("user_flag", userFlag);
+        q.setLong("hid", hid);
+        q.executeUpdate();
+    }
+
 
     @Override
     public Long countAll(PackDoc packDoc) {

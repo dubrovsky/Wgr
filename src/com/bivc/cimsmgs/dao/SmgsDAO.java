@@ -47,6 +47,8 @@ public interface SmgsDAO extends GenericDAO<CimSmgs, Long> {
 
     public void changeTbcStatus(Byte status, Long hid);
 
+    public void changeUserFlag(String flag, Long hid);
+
 //    List<CimSmgs> findAllRep1(Search search, Usr usr);
 
     public List<CimSmgs> findStat(Integer limit, Integer start, Search search, Usr usr);

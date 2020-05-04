@@ -40,7 +40,8 @@ Ext.define('TK.controller.Docs', {
         'TK.view.edit.RouteSelect',
         'TK.view.edit.SelectCopy2AvisoElements',
         'TK.view.pogruz.PoezdSelectForm',
-        'TK.view.stat.Form'
+        'TK.view.stat.Form',
+        'TK.view.smgs2.Flags'
     ],
 
     refs: [
@@ -559,8 +560,8 @@ Ext.define('TK.controller.Docs', {
      */
     onEdit: function(btn, defTab){
         var list = btn.up('grid') || this.getCenter().getComponent(0);   // second choice for context menu
-        if (list.newDocClick) {
-            list.newDocClick = false;
+        if (list.skipClick) {
+            list.skipClick = false;
             return false;
         }
 		if(!TK.Utils.isRowSelected(list)){

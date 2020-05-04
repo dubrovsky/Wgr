@@ -404,6 +404,8 @@ public class Constants {
                 buffer.append(elem.getFtsStatus() != null ? elem.getFtsStatus() : "0");
                 buffer.append(",btlc:");
                 buffer.append(elem.getBtlc_status() != null ? elem.getBtlc_status() : "0");
+                buffer.append(",userFlag:");
+                buffer.append(elem.getUserFlag());
 
                 buffer.append(",tdgFts:");
                 buffer.append(elem.getTdg_status1() != null ? elem.getTdg_status1() : "0");
@@ -2909,6 +2911,8 @@ public class Constants {
                 buffer.append(elem.getPackDoc().getHid());
                 buffer.append(",routeId:");
                 buffer.append(elem.getRoute().getHid());
+                buffer.append(",userFlag:");
+                buffer.append(elem.getUserFlag());
 
                 switch (elem.getType()) {
                     case "filecimsmgs":  // Графика ЦИМ/СМГС
@@ -2997,6 +3001,11 @@ public class Constants {
                             if(smgs != null) {
                                 buffer.append("',npoezd:'");
                                 buffer.append(StringUtils.defaultString(smgs.getNpoezd()));
+                                buffer.append("',headHid:");
+                                buffer.append(smgs.getHid());
+                                buffer.append(",messCount:'");
+                                buffer.append(smgs.getMessCount());
+
                             }
                             buffer.append("',newDoc:'");
                             byte newDoc = 0;
