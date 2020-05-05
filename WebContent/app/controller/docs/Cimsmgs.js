@@ -68,8 +68,14 @@ Ext.define('TK.controller.docs.Cimsmgs', {
             'cimsmgslist':{
                 select: this.onRowclick,
                 celldblclick: this.onCellDblClick,
-                itemclick: function (view, record) {
+                /*itemclick: function (view, record) {
                     this.fireEvent('updateMessanger', view, record);
+                },*/
+                cellclick: function (view, td, cellIndex, record) {
+                    var dataIndex = view.panel.headerCt.getHeaderAtIndex(cellIndex).dataIndex;
+                    if (dataIndex === 'messCount') {
+                        this.fireEvent('showOrUpdateMessanger', view, record);
+                    }
                 }
             },
             'cimsmgs button[action=changeVgCtGr]': {

@@ -44,8 +44,14 @@ Ext.define('TK.controller.docs.Aviso2', {
         this.control({
             'aviso2list': {
                 select: this.onRowclick,
-                itemclick: function (view, record) {
+                /*itemclick: function (view, record) {
                     this.fireEvent('updateMessanger', view, record);
+                },*/
+                cellclick: function (view, td, cellIndex, record) {
+                    var dataIndex = view.panel.headerCt.getHeaderAtIndex(cellIndex).dataIndex;
+                    if (dataIndex === 'messCount') {
+                        this.fireEvent('showOrUpdateMessanger', view, record);
+                    }
                 }
             },
             'aviso2 button[action=changeVgCtGr]': {

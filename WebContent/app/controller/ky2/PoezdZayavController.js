@@ -81,20 +81,38 @@ Ext.define('TK.controller.ky2.PoezdZayavController', {
             },
             'ky2poezdzayavlist': {
                 itemdblclick: this.onEditZayav,
-                itemclick: function (view, record) {
+                /*itemclick: function (view, record) {
                     this.fireEvent('updateMessanger', view, record);
+                },*/
+                cellclick: function (view, td, cellIndex, record) {
+                    var dataIndex = view.panel.headerCt.getHeaderAtIndex(cellIndex).dataIndex;
+                    if (dataIndex === 'messCount') {
+                        this.fireEvent('showOrUpdateMessanger', view, record);
+                    }
                 }
             },
             'ky2poezdzayavintolist': {
                 itemdblclick: this.editZayavInto,
-                itemclick: function (view, record) {
+                /*itemclick: function (view, record) {
                     this.fireEvent('updateMessanger', view, record);
+                },*/
+                cellclick: function (view, td, cellIndex, record) {
+                    var dataIndex = view.panel.headerCt.getHeaderAtIndex(cellIndex).dataIndex;
+                    if (dataIndex === 'messCount') {
+                        this.fireEvent('showOrUpdateMessanger', view, record);
+                    }
                 }
             },
             'ky2poezdzayavoutlist': {
                 itemdblclick: this.editZayavOut,
-                itemclick: function (view, record) {
+                /*itemclick: function (view, record) {
                     this.fireEvent('updateMessanger', view, record);
+                },*/
+                cellclick: function (view, td, cellIndex, record) {
+                    var dataIndex = view.panel.headerCt.getHeaderAtIndex(cellIndex).dataIndex;
+                    if (dataIndex === 'messCount') {
+                        this.fireEvent('showOrUpdateMessanger', view, record);
+                    }
                 }
             },
             'ky2poezdzayavlist button[action="delete"]': {

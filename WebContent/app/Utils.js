@@ -82,19 +82,19 @@ Ext.define('TK.Utils', {
         Ext.Ajax.request({
             url: url,
             params: params,
-           // scope: this,
+            // scope: this,
             success: function (response, options) {
                 var msgTxt;
-                if(respHandler)
-                    msgTxt=respHandler(response,form);
-                if(msgTxt)
-                Ext.Msg.show({
-                    title: me.successMsgTitle,
-                    msg: msgTxt,
-                    buttons: Ext.Msg.OK,
-                    icon: Ext.Msg.INFO,
-                    fn: afterHandl(opts)
-                });
+                if (respHandler)
+                    msgTxt = respHandler(response, form);
+                if (msgTxt)
+                    Ext.Msg.show({
+                        title: me.successMsgTitle,
+                        msg: msgTxt,
+                        buttons: Ext.Msg.OK,
+                        icon: Ext.Msg.INFO,
+                        fn: afterHandl(opts)
+                    });
                 if (form && form.getEl())
                     form.getEl().unmask();
             },
@@ -110,9 +110,22 @@ Ext.define('TK.Utils', {
         meta.style = 'white-space:normal;';
         return value;
     },
+// return '<div class="view_tbc" onclick="TK.app.getController(\'Docs\').unText(\'' + rec.data.un + '\')">' + val + '</div>';
 
-    renderMessCount: function (value) {
-        return value ? value : '';
+
+    renderMessCount: function (value, meta, record, rowIndex, colIndex, store, view) {
+        var result = '';
+        meta.style = 'cursor: pointer;';
+        if (value) {
+            meta.style += 'background: #fffdea;';
+            // result = '<div style="cursor: pointer">';
+            if (record.get('newMessCount')) {
+                result = '<b>' + record.get('newMessCount') + '</b>' + '/';
+            }
+            result += value;
+            // result += '</div>';
+        }
+        return result;
     },
 
     renderNonZeroStr: function (value, meta) {
@@ -416,7 +429,7 @@ Ext.define('TK.Utils', {
             c.originalValue = c.getValue();
         }
     },
-    isFunction:function(functionToCheck) {
-    return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
+    isFunction: function (functionToCheck) {
+        return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
     }
 });

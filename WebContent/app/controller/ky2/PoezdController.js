@@ -128,12 +128,24 @@ Ext.define('TK.controller.ky2.PoezdController', {
 
             'ky2poezdintolist': {
                 itemdblclick: this.editPoezdInto,
-                itemclick: this.onClickItem
+                itemclick: this.onClickItem,
+                cellclick: function (view, td, cellIndex, record) {
+                    var dataIndex = view.panel.headerCt.getHeaderAtIndex(cellIndex).dataIndex;
+                    if (dataIndex === 'messCount' /*&& record.get(dataIndex)*/) {
+                        this.fireEvent('showOrUpdateMessanger', view, record);
+                    }
+                }
             },
             'ky2poezdoutlist': {
                 itemdblclick: this.editPoezdOut,
-                itemclick: function (view, record) {
+                /*itemclick: function (view, record) {
                     this.fireEvent('updateMessanger', view, record);
+                },*/
+                cellclick: function (view, td, cellIndex, record) {
+                    var dataIndex = view.panel.headerCt.getHeaderAtIndex(cellIndex).dataIndex;
+                    if (dataIndex === 'messCount') {
+                        this.fireEvent('showOrUpdateMessanger', view, record);
+                    }
                 }
             },
             'ky2poezdintolist button[action="delete"]': {
@@ -1002,7 +1014,7 @@ Ext.define('TK.controller.ky2.PoezdController', {
     },
 
     onClickItem: function (gridview, record) {
-        this.fireEvent('updateMessanger', gridview, record);
+        // this.fireEvent('updateMessanger', gridview, record);
         var yardBtn = gridview.ownerCt.down('toolbar[dock="top"] button#yard');
         if (!record.get('vagCount') || record.get('vagCount') === 0) {
             yardBtn.hide();

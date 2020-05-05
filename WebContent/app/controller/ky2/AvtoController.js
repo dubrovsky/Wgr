@@ -81,14 +81,26 @@ Ext.define('TK.controller.ky2.AvtoController', {
 
             'ky2avtointolist': {
                 itemdblclick: this.editAvtoInto,
-                itemclick: function (view, record) {
+                /*itemclick: function (view, record) {
                     this.fireEvent('updateMessanger', view, record);
+                },*/
+                cellclick: function (view, td, cellIndex, record) {
+                    var dataIndex = view.panel.headerCt.getHeaderAtIndex(cellIndex).dataIndex;
+                    if (dataIndex === 'messCount') {
+                        this.fireEvent('showOrUpdateMessanger', view, record);
+                    }
                 }
             },
             'ky2avtooutlist': {
                 itemdblclick: this.editAvtoOut,
-                itemclick: function (view, record) {
+                /*itemclick: function (view, record) {
                     this.fireEvent('updateMessanger', view, record);
+                },*/
+                cellclick: function (view, td, cellIndex, record) {
+                    var dataIndex = view.panel.headerCt.getHeaderAtIndex(cellIndex).dataIndex;
+                    if (dataIndex === 'messCount') {
+                        this.fireEvent('showOrUpdateMessanger', view, record);
+                    }
                 }
             },
             'ky2avtointolist button[action="delete"]': {

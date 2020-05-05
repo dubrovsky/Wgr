@@ -25,30 +25,34 @@ Ext.define('TK.controller.Messanger', {
         this.listen({
             controller: {
                 '*': {
-                    updateMessanger: this.onUpdateMessanger,
+                    //updateMessanger: this.onUpdateMessanger,
+                    showOrUpdateMessanger: this.onShowOrUpdateMessanger,
                     menuDocItemChanged: this.clearMessenger
                 }
             }
         });
 
         this.control({
+            /*'dataview': {
+                showOrUpdateMessenger: this.onShowOrUpdateMessenger
+            },*/
             'ky2baselist button[action="showMessanger"]': {
-                click: this.showMessanger
+                click: this.onShowMessanger
             },
             'smgs2list button[action="showMessanger"]': {
-                click: this.showMessanger
+                click: this.onShowMessanger
             },
             'aviso2list button[action="showMessanger"]': {
-                click: this.showMessanger
+                click: this.onShowMessanger
             },
             'cimsmgslist button[action="showMessanger"]': {
-                click: this.showMessanger
+                click: this.onShowMessanger
             },
             'avisocimsmgslist button[action="showMessanger"]': {
-                click: this.showMessanger
+                click: this.onShowMessanger
             },
             'filelist button[action="showMessanger"]': {
-                click: this.showMessanger
+                click: this.onShowMessanger
             },
             'messanger button[action="sendMessage"]': {
                 click: this.sendMessage
@@ -78,7 +82,7 @@ Ext.define('TK.controller.Messanger', {
             }
         }
     },
-    showMessanger: function (btn) {
+    onShowMessanger: function (btn) {
         if (this.messanger) {
             return;
         }
@@ -87,11 +91,14 @@ Ext.define('TK.controller.Messanger', {
         if (!TK.Utils.isRowSelected(parentList)) {
             return false;
         }
+        this.showMessanger(parentList, parentList.getSelectionModel().getLastSelected());
+    },
+    showMessanger: function (view, record) {
         this.messanger = Ext.widget('messanger');
         this.messanger.alignTo(Ext.getBody(), "br-br");
-        this.parentList = parentList;
-        this.extraParams = parentList.getStore().getProxy().extraParams;
-        this.parentModel = parentList.getSelectionModel().getLastSelected();
+        this.parentList = view;
+        this.extraParams = view.getStore().getProxy().extraParams;
+        this.parentModel = record;
         this.task = Ext.TaskManager.start({
             run: this.loadMessanger,
             scope: this,
@@ -102,7 +109,14 @@ Ext.define('TK.controller.Messanger', {
     onReload: function (btn) {
         this.loadMessanger();
     },
-    onUpdateMessanger: function (view, record) {
+    onShowOrUpdateMessanger: function (view, record) {
+        if (this.messanger) {
+            this.updateMessanger(view, record);
+        } else {
+            this.showMessanger(view, record);
+        }
+    },
+    updateMessanger: function (view, record) {
         if (!this.messanger) {
             return;
         }
@@ -157,7 +171,7 @@ Ext.define('TK.controller.Messanger', {
                                                 who: 'user',
                                                 groupId: user['GROUP_ID'],
                                                 leaf: true,
-                                                checked: false
+                                                checked: user['UN'] === parentModel.get('un')
                                             })
                                         );
                                     }
@@ -292,5 +306,8 @@ Ext.define('TK.controller.Messanger', {
                 }
             }
         }
+    },
+    showOrUpdateMessenger: function (record) {
+        alert('aaaa');
     }
 });

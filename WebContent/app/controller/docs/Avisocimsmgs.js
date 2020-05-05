@@ -54,8 +54,14 @@ Ext.define('TK.controller.docs.Avisocimsmgs', {
         this.control({
             'avisocimsmgslist':{
                 select: this.onRowclick,
-                itemclick: function (view, record) {
+                /*itemclick: function (view, record) {
                     this.fireEvent('updateMessanger', view, record);
+                },*/
+                cellclick: function (view, td, cellIndex, record) {
+                    var dataIndex = view.panel.headerCt.getHeaderAtIndex(cellIndex).dataIndex;
+                    if (dataIndex === 'messCount') {
+                        this.fireEvent('showOrUpdateMessanger', view, record);
+                    }
                 }
             },
             'avisocimsmgs button[action=changeVgCtGr]': {

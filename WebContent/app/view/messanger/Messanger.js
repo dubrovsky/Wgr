@@ -91,7 +91,7 @@ Ext.define('TK.view.messanger.Messanger', {
             useArrows: true,
             width: 120,
             collapsible: true,
-            collapsed: true,
+            collapsed: false,
             split: true,
             itemId: 'usersPanel',
             bodyPadding: 5,
