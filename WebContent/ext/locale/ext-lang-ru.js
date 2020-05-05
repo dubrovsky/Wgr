@@ -1228,6 +1228,7 @@ Ext.define("TK.locale.ru.view.epd.Form", {
 Ext.define("TK.locale.ru.view.file.Form", {
     override: "TK.view.file.Form",
 
+    btnClose: 'Закрыть',
     labelGeneralInfo: 'Общая информация',
     labelDownloadFile: 'Загрузить файл'
 });

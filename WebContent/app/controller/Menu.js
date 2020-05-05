@@ -314,7 +314,7 @@ Ext.define('TK.controller.Menu', {
             }
         }
     },
-    onItemclick: function (view, record) {
+    onItemclick: function (view, record, item, index, e, eOpts, extraParams) {
         var ids = record.data['id'].split('_'),
             doc = ids[3] || record.data['id'],
             routeId = ids[2],
@@ -496,7 +496,12 @@ Ext.define('TK.controller.Menu', {
                 break;
             case 'files':
                 grid = Ext.widget('filelist', {/*title:'Журнал Прочих документов',*/ inPack: false});
-                gridParams = {'search.routeId': routeId, 'search.docType': 'files', 'task': 'list'};
+                if (extraParams)
+                    gridParams = extraParams;
+                else {
+                    grid.getStore().getProxy().extraParams = {};
+                    gridParams = {'search.routeId': routeId, 'search.docType': 'files', 'task': 'list'};
+                }
 //                grid.initGrid({'search.routeId':routeId, 'search.docType':'files', 'task':'list'});
                 break;
 

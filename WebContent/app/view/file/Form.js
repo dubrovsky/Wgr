@@ -15,16 +15,35 @@ Ext.define('TK.view.file.Form', {
     ],
     closable: false,
     bodyPadding: 5,
+    extraParams: null,
 
     initComponent: function() {
         var config = {};
         this.buildConfig(config);
+        this.buildDockedItems(config);
         Ext.apply(this, config);
         this.callParent(arguments);
     },
     buildConfig: function(config) {
         this.buildItems(config);
     },
+    buildDockedItems:function (config) {
+        config.dockedItems = [
+            {
+                xtype:'toolbar',
+                dock:'bottom',
+                items:['->']
+            }
+        ];
+        config.dockedItems[0].items.push(
+            '-', {
+                text:this.btnClose,
+                iconCls:'close1',
+                action:'close'
+            }
+        );
+    },
+
     buildItems:function(config) {
         config.items = [{
             xtype: 'docsform',
@@ -179,7 +198,7 @@ Ext.define('TK.view.file.Form', {
             }
         }];
     },
-    initServiceFields: function(data){
+    initServiceFields: function(data, extraParams){
         var form = this.getComponent('fileInf'),
             grid = this.getComponent('filesList');
         data['file.type'] = this.xtype;
@@ -190,6 +209,7 @@ Ext.define('TK.view.file.Form', {
         grid.getView().refresh();
         grid.store.proxy.extraParams = {'search.docType':data['file.type'], 'search.packId':data['file.packDoc.hid']};
         grid.getDockedItems('pagingtoolbar')[0].bindStore(grid.store);
+        this.extraParams = extraParams;
 
     }
 });

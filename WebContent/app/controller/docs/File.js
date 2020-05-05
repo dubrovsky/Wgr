@@ -56,6 +56,9 @@ Ext.define('TK.controller.docs.File', {
             'viewport > tabpanel > panel > form button[action="save"]': {
                 click: this.onSaveFile
             },
+            'files button[action="close"]': {
+                click: this.onExit
+            },
             'viewport > tabpanel > panel > grid button[action="flag"]': {
                 click: this.onFlag
             },
@@ -91,6 +94,16 @@ Ext.define('TK.controller.docs.File', {
             }
 
         });
+    },
+
+    onExit:function(btn){
+	    var menu = this.getMenutree(),
+            node = menu.lastSelectedLeaf;
+
+        menu.selModel.select(node, false, true);
+        menu.fireEvent('itemclick', menu.view, node, null, null, null, null, btn.up('panel').extraParams);
+
+
     },
 
     onCellDblClick: function(view, td, cIndex, record, tr, rIndex, e){

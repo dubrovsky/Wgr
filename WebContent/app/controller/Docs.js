@@ -627,7 +627,7 @@ Ext.define('TK.controller.Docs', {
                         closable: false,
                         inPack: true
                     });
-                doc.initServiceFields(initObj(item, data));
+                doc.initServiceFields(initObj(item, data), list.getStore().getProxy().extraParams);
                 doc.on('activate', this.onActivatePanel, this);
                 if((contextFocus && contextFocus == item.name) || (!contextFocus && docName == item.name)){
                     focus = doc;
